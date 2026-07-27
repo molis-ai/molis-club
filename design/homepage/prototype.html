@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>烤个梨呀 · 认识做东西的人</title>
+  <meta name="description" content="烤个梨呀是由 Adeptify 发起的 AI 创作者、作品和早期用户社区。认识做东西的人，体验正在长大的作品。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* =========================================================
+       烤个梨呀 · Homepage Prototype
+       Design Read: comic portrait + indie magazine + open studio
+       Dials: VARIANCE 8 / MOTION 5 / DENSITY 5
+       Accent lock: pear yellow
+       ========================================================= */
+
+    :root {
+      --paper: #f2f3f0;
+      --paper-2: #e6e7e2;
+      --surface: #ffffff;
+      --ink: #171a15;
+      --ink-soft: #4a4f48;
+      --muted: #7a8078;
+      --line: rgba(23, 26, 21, 0.09);
+      --line-strong: rgba(23, 26, 21, 0.16);
+      --accent: #d4a12a;
+      --accent-hover: #c4921f;
+      --accent-soft: rgba(212, 161, 42, 0.14);
+      --accent-ink: #171a15;
+      --leaf: #5f7d3b;
+      --leaf-soft: rgba(95, 125, 59, 0.12);
+      --shadow: 0 18px 50px rgba(23, 26, 21, 0.08);
+      --shadow-sm: 0 8px 24px rgba(23, 26, 21, 0.06);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --radius-avatar: 16px;
+      --nav-h: 68px;
+      --max: 1180px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --font-sans: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Outfit", system-ui, sans-serif;
+      --font-display: "Outfit", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
+
+    [data-theme="dark"] {
+      --paper: #141612;
+      --paper-2: #1a1d18;
+      --surface: #1c1f1a;
+      --ink: #edeeea;
+      --ink-soft: #a8ada4;
+      --muted: #7c827a;
+      --line: rgba(237, 238, 234, 0.1);
+      --line-strong: rgba(237, 238, 234, 0.18);
+      --accent: #e0b03a;
+      --accent-hover: #ecc04f;
+      --accent-soft: rgba(224, 176, 58, 0.16);
+      --accent-ink: #141612;
+      --leaf: #8fb05c;
+      --leaf-soft: rgba(143, 176, 92, 0.16);
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+      --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 80% -10%, var(--accent-soft), transparent 55%),
+        var(--paper);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+    ul { list-style: none; margin: 0; padding: 0; }
+
+    .wrap {
+      width: min(100% - 2.5rem, var(--max));
+      margin-inline: auto;
+    }
+
+    /* ---------- Nav ---------- */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      backdrop-filter: blur(14px) saturate(1.2);
+      -webkit-backdrop-filter: blur(14px) saturate(1.2);
+      background: color-mix(in srgb, var(--paper) 82%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      width: min(100% - 2.5rem, var(--max));
+      margin-inline: auto;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-shrink: 0;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background:
+        radial-gradient(circle at 32% 28%, #f7e08a, var(--accent) 52%, #9a7210 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* roasted pear glyph */
+    .brand-mark::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      width: 14px;
+      height: 17px;
+      transform: translateX(-50%);
+      border-radius: 48% 48% 46% 46%;
+      background: color-mix(in srgb, var(--accent-ink) 42%, transparent);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+    }
+
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 5px;
+      width: 2px;
+      height: 5px;
+      transform: translateX(-50%) rotate(-12deg);
+      border-radius: 2px;
+      background: color-mix(in srgb, var(--accent-ink) 48%, transparent);
+    }
+
+    .brand-text {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-sub {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      margin-top: 1px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.15rem;
+      margin-left: 0.5rem;
+    }
+
+    .nav-links a {
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      transition: color 0.2s var(--ease), background 0.2s var(--ease);
+    }
+
+    .nav-links a:hover,
+    .nav-links a[aria-current="page"] {
+      color: var(--ink);
+      background: var(--accent-soft);
+    }
+
+    .nav-spacer { flex: 1; }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: var(--ink-soft);
+      border: 1px solid transparent;
+      transition: background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+    }
+
+    .icon-btn:hover {
+      background: var(--surface);
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    .icon-btn:focus-visible,
+    .btn:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      min-height: 42px;
+      padding: 0 1.05rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.92rem;
+      white-space: nowrap;
+      transition: transform 0.15s var(--ease), background 0.2s var(--ease), box-shadow 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+      box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 8px 20px rgba(212, 161, 42, 0.22);
+    }
+
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line-strong);
+    }
+
+    .btn-ghost:hover {
+      background: var(--surface);
+      border-color: var(--ink-soft);
+    }
+
+    .btn-soft {
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-soft:hover { border-color: var(--accent); }
+
+    .menu-toggle { display: none; }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      /* Cap so ultra-tall windows do not create a void hero */
+      min-height: min(calc(100dvh - var(--nav-h)), 860px);
+      display: grid;
+      align-items: center;
+      padding: 2.25rem 0 3.5rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: 2.5rem 3rem;
+      align-items: center;
+    }
+
+    .hero-copy {
+      max-width: 34rem;
+      animation: rise 0.8s var(--ease) both;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(2.15rem, 4.2vw, 3.35rem);
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: color-mix(in srgb, var(--accent) 85%, var(--ink));
+      font-weight: 600;
+    }
+
+    .hero-lead {
+      margin: 1.15rem 0 0;
+      max-width: 32ch;
+      font-size: 1.05rem;
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 1.75rem;
+    }
+
+    .hero-meta {
+      margin-top: 1.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-family: var(--font-mono);
+    }
+
+    .hero-meta strong {
+      color: var(--ink-soft);
+      font-weight: 500;
+    }
+
+    .hero-stage {
+      position: relative;
+      min-height: 420px;
+      animation: rise 0.9s var(--ease) 0.08s both;
+    }
+
+    .stage-board {
+      position: relative;
+      height: 100%;
+      min-height: 420px;
+      border-radius: 22px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .stage-board img.stage-bg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.02);
+    }
+
+    .stage-board::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, color-mix(in srgb, var(--paper) 18%, transparent), transparent 45%),
+        linear-gradient(to top, color-mix(in srgb, var(--ink) 35%, transparent), transparent 48%);
+      pointer-events: none;
+    }
+
+    .float-card {
+      position: absolute;
+      z-index: 2;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--line-strong);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), border-color 0.35s var(--ease);
+    }
+
+    .float-card:hover,
+    .float-card.is-active {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: var(--shadow);
+      border-color: var(--accent);
+    }
+
+    .portrait {
+      width: 92px;
+      height: 92px;
+      padding: 6px;
+      left: 7%;
+      top: 12%;
+    }
+
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 14px;
+      background: var(--paper-2);
+    }
+
+    .portrait.p2 { left: 28%; top: 48%; width: 78px; height: 78px; }
+    .portrait.p3 { left: 8%; top: 62%; width: 70px; height: 70px; }
+
+    .work-chip {
+      right: 6%;
+      top: 18%;
+      width: min(210px, 46%);
+      padding: 0.7rem 0.8rem;
+    }
+
+    .work-chip .chip-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .work-chip strong {
+      display: block;
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+    }
+
+    .work-chip p {
+      margin: 0.25rem 0 0;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.55rem;
+      padding: 0.18rem 0.5rem;
+      border-radius: 999px;
+      background: var(--leaf-soft);
+      color: var(--leaf);
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .status-pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .relation-note {
+      left: 38%;
+      bottom: 8%;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      max-width: 180px;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+
+    .hero-stage.is-linked .relation-note {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stage-caption {
+      position: absolute;
+      z-index: 2;
+      left: 1rem;
+      bottom: 1rem;
+      color: #f4f4f0;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      text-shadow: 0 1px 8px rgba(0,0,0,.4);
+    }
+
+    /* ---------- Sections shared ---------- */
+    section { padding: 4.5rem 0; }
+    .section-tight { padding: 3.25rem 0; }
+
+    .section-head {
+      margin-bottom: 1.75rem;
+      max-width: 40rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin: 0 0 0.55rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(1.55rem, 2.5vw, 2rem);
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+    }
+
+    .section-head p {
+      margin: 0.65rem 0 0;
+      color: var(--ink-soft);
+      max-width: 48ch;
+    }
+
+    .head-row {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .head-row .section-head { margin-bottom: 0; }
+
+    .text-link {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      border-bottom: 1px solid var(--line-strong);
+      padding-bottom: 1px;
+      transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+    }
+
+    .text-link:hover {
+      color: color-mix(in srgb, var(--accent) 70%, var(--ink));
+      border-color: var(--accent);
+    }
+
+    /* ---------- Flagship Cognia ---------- */
+    .flagship {
+      padding-top: 1rem;
+    }
+
+    .flagship-panel {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 0;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .flagship-media {
+      position: relative;
+      min-height: 360px;
+      background: var(--paper-2);
+    }
+
+    .flagship-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+    }
+
+    .flagship-body {
+      padding: 2rem 2rem 1.85rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .flagship-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 0.85rem;
+    }
+
+    .flagship-label span {
+      display: inline-flex;
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      background: var(--accent-soft);
+      color: color-mix(in srgb, var(--accent) 70%, var(--ink));
+      font-weight: 600;
+    }
+
+    .flagship-body h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(1.7rem, 2.6vw, 2.2rem);
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .flagship-body .lead {
+      margin: 0.9rem 0 0;
+      color: var(--ink-soft);
+      font-size: 1rem;
+      max-width: 34ch;
+    }
+
+    .flagship-facts {
+      margin: 1.35rem 0 0;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .flagship-facts li {
+      display: grid;
+      grid-template-columns: 5.5rem 1fr;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .flagship-facts li:first-child { border-top: 0; padding-top: 0; }
+
+    .flagship-facts .k {
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .flagship-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 1.5rem;
+    }
+
+    /* ---------- Happening strip ---------- */
+    .happening {
+      background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--paper-2) 55%, transparent) 30%, transparent);
+    }
+
+    .strip {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(260px, 300px);
+      gap: 1rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .strip::-webkit-scrollbar { height: 8px; }
+    .strip::-webkit-scrollbar-thumb {
+      background: var(--line-strong);
+      border-radius: 999px;
+    }
+
+    .event-card {
+      scroll-snap-align: start;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.15rem 1.15rem;
+      min-height: 168px;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+    }
+
+    .event-card:hover {
+      border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+      transform: translateY(-2px);
+    }
+
+    .event-type {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 0.55rem;
+    }
+
+    .event-card h3 {
+      margin: 0;
+      font-size: 1.02rem;
+      letter-spacing: -0.015em;
+      line-height: 1.35;
+    }
+
+    .event-card p {
+      margin: 0.45rem 0 0;
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+      flex: 1;
+    }
+
+    .event-foot {
+      margin-top: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    /* ---------- Makers ---------- */
+    .makers-rail {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr 1fr 1fr 1fr;
+      gap: 0.9rem;
+    }
+
+    .maker {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      min-height: 280px;
+      transition: transform 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    }
+
+    .maker:first-child { min-height: 340px; }
+
+    .maker:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+      box-shadow: var(--shadow-sm);
+    }
+
+    .maker img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+      transition: transform 0.5s var(--ease);
+    }
+
+    .maker:hover img { transform: scale(1.03); }
+
+    .maker-veil {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(20,22,18,.82) 0%, rgba(20,22,18,.15) 48%, transparent 70%);
+    }
+
+    .maker-body {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 1rem 1rem 1.05rem;
+      color: #f3f3ef;
+    }
+
+    .maker-role {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      opacity: 0.8;
+      margin-bottom: 0.25rem;
+    }
+
+    .maker-body h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .maker:first-child .maker-body h3 { font-size: 1.45rem; }
+
+    .maker-body p {
+      margin: 0.35rem 0 0;
+      font-size: 0.84rem;
+      opacity: 0.88;
+      max-width: 24ch;
+    }
+
+    .maker-work {
+      display: inline-flex;
+      margin-top: 0.55rem;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.16);
+    }
+
+    /* ---------- Works bento ---------- */
+    .works-bento {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1rem;
+    }
+
+    .work {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+    }
+
+    .work:hover {
+      border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+      transform: translateY(-2px);
+    }
+
+    .work-lg { grid-row: span 2; }
+
+    .work-media {
+      aspect-ratio: 16 / 11;
+      background: var(--paper-2);
+      overflow: hidden;
+    }
+
+    .work-lg .work-media { aspect-ratio: 4 / 3; min-height: 240px; }
+
+    .work-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.45s var(--ease);
+    }
+
+    .work:hover .work-media img { transform: scale(1.03); }
+
+    .work-body {
+      padding: 1.05rem 1.1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .work-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      align-items: start;
+      margin-bottom: 0.45rem;
+    }
+
+    .work-type {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.18rem 0.45rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: color-mix(in srgb, var(--accent) 55%, var(--ink));
+      white-space: nowrap;
+    }
+
+    .badge.leaf {
+      background: var(--leaf-soft);
+      color: var(--leaf);
+    }
+
+    .work h3 {
+      margin: 0;
+      font-size: 1.12rem;
+      letter-spacing: -0.02em;
+    }
+
+    .work-lg h3 { font-size: 1.35rem; }
+
+    .work p {
+      margin: 0.45rem 0 0;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      flex: 1;
+    }
+
+    .work-meta {
+      margin-top: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .creator-mini {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+    }
+
+    .creator-mini img {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    /* ---------- Forum ---------- */
+    .forum-panel {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    .thread-list {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .thread {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      padding: 1.05rem 1.15rem;
+      border-bottom: 1px solid var(--line);
+      transition: background 0.2s var(--ease);
+    }
+
+    .thread:last-child { border-bottom: 0; }
+    .thread:hover { background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
+
+    .thread h3 {
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .thread p {
+      margin: 0.3rem 0 0;
+      font-size: 0.86rem;
+      color: var(--ink-soft);
+    }
+
+    .thread-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.55rem;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      color: var(--muted);
+      padding: 0.12rem 0.42rem;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .thread-side {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .side-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.15rem;
+    }
+
+    .side-card h3 {
+      margin: 0 0 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .side-card li {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.55rem 0;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+    }
+
+    .side-card li:first-of-type { border-top: 0; }
+    .side-card .n { color: var(--muted); font-family: var(--font-mono); font-size: 0.78rem; }
+
+    /* ---------- Tools shelf ---------- */
+    .tools {
+      background: var(--ink);
+      color: #edeeea;
+    }
+
+    [data-theme="dark"] .tools {
+      background: #0f110e;
+    }
+
+    .tools .section-head h2 { color: #edeeea; }
+    .tools .section-head p { color: #a8ada4; }
+    .tools .eyebrow { color: var(--accent); }
+    .tools .text-link {
+      color: #edeeea;
+      border-color: rgba(237,238,234,.28);
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .tool {
+      border-radius: var(--radius);
+      border: 1px solid rgba(237,238,234,.12);
+      background: rgba(237,238,234,.04);
+      padding: 1.25rem 1.2rem 1.3rem;
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.25s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease);
+    }
+
+    .tool:hover {
+      border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+      background: rgba(237,238,234,.07);
+      transform: translateY(-2px);
+    }
+
+    .tool-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .tool h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .tool p {
+      margin: 0.5rem 0 0;
+      color: #a8ada4;
+      font-size: 0.9rem;
+      flex: 1;
+    }
+
+    .tool-foot {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: #7c827a;
+      font-family: var(--font-mono);
+    }
+
+    .tool-foot .go {
+      color: var(--accent);
+      font-family: var(--font-sans);
+      font-weight: 600;
+    }
+
+    /* ---------- Join ---------- */
+    .join {
+      padding: 4rem 0 4.5rem;
+    }
+
+    .join-panel {
+      border-radius: 22px;
+      padding: 2.4rem 2.2rem;
+      background:
+        radial-gradient(600px 220px at 90% 0%, rgba(255,255,255,.25), transparent 55%),
+        linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 70%, #8a6410));
+      color: var(--accent-ink);
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.5rem;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    .join-panel h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 2.5vw, 2.1rem);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .join-panel p {
+      margin: 0.7rem 0 0;
+      max-width: 42ch;
+      opacity: 0.88;
+    }
+
+    .join-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      justify-content: flex-end;
+    }
+
+    .join .btn-primary {
+      background: var(--ink);
+      color: #edeeea;
+      box-shadow: none;
+    }
+
+    .join .btn-primary:hover {
+      background: #0f110e;
+    }
+
+    .join .btn-ghost {
+      border-color: rgba(23,26,21,.28);
+      color: var(--accent-ink);
+      background: rgba(255,255,255,.18);
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 2.5rem 0 2rem;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--ink);
+      font-size: 1.05rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .footer-grid h4 {
+      margin: 0 0 0.7rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .footer-grid a {
+      display: block;
+      padding: 0.22rem 0;
+      color: var(--ink-soft);
+    }
+
+    .footer-grid a:hover { color: var(--ink); }
+
+    .footer-bottom {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .mock-note {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      z-index: 50;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 0.4rem 0.55rem;
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--surface) 90%, transparent);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      backdrop-filter: blur(8px);
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 960px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 1.75rem; }
+      .hero { min-height: auto; padding-top: 1.5rem; }
+      .hero-stage, .stage-board { min-height: 340px; }
+      .flagship-panel { grid-template-columns: 1fr; }
+      .flagship-media { min-height: 240px; }
+      .makers-rail { grid-template-columns: repeat(2, 1fr); }
+      .maker:first-child { grid-column: span 2; min-height: 300px; }
+      .works-bento { grid-template-columns: 1fr 1fr; }
+      .work-lg { grid-column: span 2; grid-row: auto; }
+      .forum-panel { grid-template-columns: 1fr; }
+      .tool-grid { grid-template-columns: 1fr; }
+      .join-panel { grid-template-columns: 1fr; }
+      .join-actions { justify-content: flex-start; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .menu-toggle { display: grid; }
+      .wrap, .nav-inner { width: min(100% - 1.5rem, var(--max)); }
+      .hero h1 { font-size: 2rem; }
+      .hero-lead { max-width: none; }
+      .portrait { width: 72px; height: 72px; }
+      .portrait.p2 { width: 64px; height: 64px; }
+      .portrait.p3 { width: 58px; height: 58px; }
+      .work-chip { width: min(180px, 52%); }
+      .makers-rail { grid-template-columns: 1fr 1fr; }
+      .works-bento { grid-template-columns: 1fr; }
+      .work-lg { grid-column: auto; }
+      .thread { grid-template-columns: 1fr; }
+      .thread-side { text-align: left; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .btn-login-label { display: none; }
+    }
+
+    /* Mobile nav drawer */
+    .drawer {
+      display: none;
+      position: fixed;
+      inset: var(--nav-h) 0 0 0;
+      z-index: 35;
+      background: color-mix(in srgb, var(--paper) 96%, transparent);
+      backdrop-filter: blur(12px);
+      padding: 1rem 1.25rem;
+    }
+
+    .drawer.open { display: block; }
+    .drawer a {
+      display: block;
+      padding: 0.9rem 0.25rem;
+      border-bottom: 1px solid var(--line);
+      font-size: 1.05rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="mock-note" data-mock="true">Prototype · mock content</div>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="烤个梨呀首页">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>
+          <span class="brand-text">烤个梨呀</span>
+          <span class="brand-sub">由 Adeptify 发起</span>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="主导航">
+        <a href="#top" aria-current="page">首页</a>
+        <a href="#works">发现</a>
+        <a href="#forum">论坛</a>
+        <a href="#tools">开发者</a>
+        <a href="#about">关于</a>
+      </nav>
+
+      <div class="nav-spacer"></div>
+
+      <div class="nav-actions">
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="切换浅色或深色主题" title="主题">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <path d="M12 3v2M12 19v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M3 12h2M19 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+            <circle cx="12" cy="12" r="3.5"/>
+          </svg>
+        </button>
+        <button class="icon-btn" type="button" aria-label="搜索" title="搜索">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"/>
+            <path d="M16.5 16.5L21 21"/>
+          </svg>
+        </button>
+        <a class="btn btn-ghost btn-login-label" href="#login">登录</a>
+        <a class="btn btn-primary" href="#join">注册参与</a>
+        <button class="icon-btn menu-toggle" id="menuToggle" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="mobileDrawer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer" id="mobileDrawer" hidden>
+    <a href="#top">首页</a>
+    <a href="#works">发现</a>
+    <a href="#forum">论坛</a>
+    <a href="#tools">开发者</a>
+    <a href="#about">关于</a>
+    <a href="#login">登录</a>
+  </div>
+
+  <main id="top">
+    <!-- HERO: asymmetric workbench -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <h1>认识做东西的人，<br />体验正在<em>长大</em>的作品。</h1>
+          <p class="hero-lead">这里记录 Maker 和 Builder 的作品、尝试、反馈，以及它们后来变成了什么。</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#works">逛逛作品</a>
+            <a class="btn btn-ghost" href="#makers">看看谁在做</a>
+          </div>
+          <div class="hero-meta">
+            <span><strong>人</strong> 是长期节点</span>
+            <span><strong>作品</strong> 是阶段性观察</span>
+            <span data-mock="true">社区预览稿</span>
+          </div>
+        </div>
+
+        <div class="hero-stage" id="heroStage" aria-label="漫画工作台示意">
+          <div class="stage-board">
+            <img class="stage-bg" src="assets/hero-studio.jpg" width="1280" height="720" alt="开放工作室工作台静物：草稿、梨与漫画分镜" />
+            <span class="stage-caption">开放工作室 · 漫画识别</span>
+          </div>
+
+          <button class="float-card portrait p1" type="button" data-person="mago" data-work="ideas" aria-label="查看马哥关联作品">
+            <img src="assets/头像5.jpg" width="92" height="92" alt="马哥的漫画头像风格参考" />
+          </button>
+          <button class="float-card portrait p2" type="button" data-person="guoguo" data-work="cognia" aria-label="查看果果关联作品">
+            <img src="assets/头像1.jpg" width="78" height="78" alt="果果的漫画头像风格参考" />
+          </button>
+          <button class="float-card portrait p3" type="button" data-person="junzai" data-work="forklight" aria-label="查看俊仔关联作品">
+            <img src="assets/头像4.jpg" width="70" height="70" alt="俊仔的漫画头像风格参考" />
+          </button>
+
+          <div class="float-card work-chip" id="workChip" data-work="cognia">
+            <div class="chip-kicker">关联作品</div>
+            <strong id="chipTitle">Cognia</strong>
+            <p id="chipDesc">把观察变成可继续的成长现场。</p>
+            <span class="status-pill" id="chipStatus">Public Beta</span>
+          </div>
+
+          <div class="float-card relation-note" id="relationNote">
+            hover 人物，看见作品关系
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLAGSHIP -->
+    <section class="flagship section-tight" id="cognia" aria-labelledby="cognia-title">
+      <div class="wrap">
+        <article class="flagship-panel">
+          <div class="flagship-media">
+            <img src="assets/cognia-product.jpg" width="1152" height="864" alt="Cognia 产品场景示意：平静的个人成长工作台" />
+          </div>
+          <div class="flagship-body">
+            <div class="flagship-label">
+              Flagship
+              <span>Cognia</span>
+            </div>
+            <h2 id="cognia-title">当前主角不是目录，是一件真正在用的作品。</h2>
+            <p class="lead">Cognia 承担首页最高叙事权重：讲清价值、真实状态和体验入口，不与所有小项目等权排列。</p>
+            <ul class="flagship-facts">
+              <li><span class="k">价值</span><span>陪伴长期目标，把材料与行动接回同一现场</span></li>
+              <li><span class="k">状态</span><span>Public Beta · 兼容和支持边界仍在收紧</span></li>
+              <li><span class="k">Created by</span><span>Adeptify Makers · Published by Adeptify</span></li>
+            </ul>
+            <div class="flagship-actions">
+              <a class="btn btn-primary" href="#cognia-use">开始体验</a>
+              <a class="btn btn-soft" href="#works/cognia">了解作品</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- HAPPENING -->
+    <section class="happening" id="feed" aria-labelledby="feed-title">
+      <div class="wrap">
+        <div class="head-row">
+          <div class="section-head">
+            <p class="eyebrow">正在烤</p>
+            <h2 id="feed-title">作品在变，讨论也算进度。</h2>
+            <p>更新、Build Log、测试招募和论坛回应会回到这里。不是热榜，是策展后的真实发生。</p>
+          </div>
+          <a class="text-link" href="#feed-all">查看完整动态</a>
+        </div>
+
+        <div class="strip" role="list">
+          <article class="event-card" role="listitem" data-mock="true">
+            <div class="event-type">Build Log</div>
+            <h3>Cognia：回归态不再展示缺席天数</h3>
+            <p>根据种子用户反馈，首屏只保留可继续的一小步。</p>
+            <div class="event-foot"><span>Cognia</span><span>2 天前</span></div>
+          </article>
+          <article class="event-card" role="listitem" data-mock="true">
+            <div class="event-type">测试招募</div>
+            <h3>马哥的馊主意 · 寻找 20 位吐槽官</h3>
+            <p>需要真实使用一周，并留下至少一条可行动反馈。</p>
+            <div class="event-foot"><span>Recruiting</span><span>开放中</span></div>
+          </article>
+          <article class="event-card" role="listitem" data-mock="true">
+            <div class="event-type">论坛回应</div>
+            <h3>ForkLight 安装边界写进文档首页</h3>
+            <p>把「它现在能做什么 / 不能做什么」放到第一次访问就能看到的位置。</p>
+            <div class="event-foot"><span>ForkLight</span><span>4 天前</span></div>
+          </article>
+          <article class="event-card" role="listitem" data-mock="true">
+            <div class="event-type">After Story</div>
+            <h3>一次停更，不等于故事结束</h3>
+            <p>暂停的实验会保留完整记录，方便后来的人判断是否重启。</p>
+            <div class="event-foot"><span>社区编辑</span><span>本周</span></div>
+          </article>
+          <article class="event-card" role="listitem" data-mock="true">
+            <div class="event-type">作品更新</div>
+            <h3>Relay 补充 MCP 示例索引</h3>
+            <p>示例按真实场景分组，而不是按 API 字母表排列。</p>
+            <div class="event-foot"><span>Relay</span><span>本周</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAKERS -->
+    <section id="makers" aria-labelledby="makers-title">
+      <div class="wrap">
+        <div class="head-row">
+          <div class="section-head">
+            <h2 id="makers-title">先认识做东西的人。</h2>
+            <p>Maker 是 Adeptify 团队关系。Builder 是外部创作者。同一种 Profile，不同的归属说明。</p>
+          </div>
+          <a class="text-link" href="#explore/people">全部创作者</a>
+        </div>
+
+        <div class="makers-rail">
+          <a class="maker" href="#people/mago">
+            <img src="assets/头像3.jpg" width="640" height="800" alt="马哥漫画肖像风格参考" />
+            <div class="maker-veil"></div>
+            <div class="maker-body">
+              <div class="maker-role">Maker</div>
+              <h3>马哥</h3>
+              <p data-mock="true">一句话介绍待本人确认后上线。</p>
+              <span class="maker-work">马哥的馊主意</span>
+            </div>
+          </a>
+          <a class="maker" href="#people/guoguo">
+            <img src="assets/头像1.jpg" width="400" height="500" alt="果果漫画头像风格参考" />
+            <div class="maker-veil"></div>
+            <div class="maker-body">
+              <div class="maker-role">Maker</div>
+              <h3>果果</h3>
+              <p data-mock="true">介绍待确认</p>
+              <span class="maker-work">Cognia</span>
+            </div>
+          </a>
+          <a class="maker" href="#people/junzai">
+            <img src="assets/头像4.jpg" width="400" height="500" alt="俊仔漫画头像风格参考" />
+            <div class="maker-veil"></div>
+            <div class="maker-body">
+              <div class="maker-role">Maker</div>
+              <h3>俊仔</h3>
+              <p data-mock="true">介绍待确认</p>
+              <span class="maker-work">ForkLight</span>
+            </div>
+          </a>
+          <a class="maker" href="#people/zhezi">
+            <img src="assets/头像2.jpg" width="400" height="500" alt="哲子漫画头像风格参考" />
+            <div class="maker-veil"></div>
+            <div class="maker-body">
+              <div class="maker-role">Maker</div>
+              <h3>哲子</h3>
+              <p data-mock="true">介绍待确认</p>
+              <span class="maker-work">Relay</span>
+            </div>
+          </a>
+          <a class="maker" href="#people/feige">
+            <img src="assets/头像5.jpg" width="400" height="500" alt="飞哥漫画头像风格参考" />
+            <div class="maker-veil"></div>
+            <div class="maker-body">
+              <div class="maker-role">Maker</div>
+              <h3>飞哥</h3>
+              <p data-mock="true">介绍待确认</p>
+              <span class="maker-work">Adeptify SDK</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKS -->
+    <section id="works" aria-labelledby="works-title">
+      <div class="wrap">
+        <div class="head-row">
+          <div class="section-head">
+            <h2 id="works-title">可以立即体验的作品</h2>
+            <p>每件作品只放一个主动作。类型不同，版式和入口也不同。</p>
+          </div>
+          <a class="text-link" href="#explore/works">更多作品</a>
+        </div>
+
+        <div class="works-bento">
+          <article class="work work-lg">
+            <div class="work-media">
+              <img src="assets/cognia-product.jpg" width="800" height="600" alt="Cognia 作品封面" />
+            </div>
+            <div class="work-body">
+              <div class="work-top">
+                <span class="work-type">Flagship Product</span>
+                <span class="badge leaf">Public Beta</span>
+              </div>
+              <h3>Cognia</h3>
+              <p>把分散的材料、目标和行动，接回一个可以继续的成长现场。</p>
+              <div class="work-meta">
+                <div class="creator-mini">
+                  <img src="assets/头像1.jpg" alt="" />
+                  <span>Adeptify Makers</span>
+                </div>
+                <a class="btn btn-primary" href="#cognia-use">开始体验</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="work">
+            <div class="work-media">
+              <img src="assets/work-ideas.jpg" width="640" height="480" alt="马哥的馊主意封面静物" />
+            </div>
+            <div class="work-body">
+              <div class="work-top">
+                <span class="work-type">App</span>
+                <span class="badge">Recruiting</span>
+              </div>
+              <h3>马哥的馊主意</h3>
+              <p>收集那些听起来不靠谱、却值得认真试一次的想法。</p>
+              <div class="work-meta">
+                <div class="creator-mini">
+                  <img src="assets/头像5.jpg" alt="" />
+                  <span>马哥</span>
+                </div>
+                <a class="btn btn-soft" href="#apply-ideas">申请体验</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="work">
+            <div class="work-media">
+              <img src="assets/work-forklight.jpg" width="640" height="480" alt="ForkLight 封面静物" />
+            </div>
+            <div class="work-body">
+              <div class="work-top">
+                <span class="work-type">Builder Tool</span>
+                <span class="badge leaf">Testable</span>
+              </div>
+              <h3>ForkLight</h3>
+              <p>有边界的外部 coding worker，帮你把任务跑完并收回结果。</p>
+              <div class="work-meta">
+                <div class="creator-mini">
+                  <img src="assets/头像4.jpg" alt="" />
+                  <span>俊仔</span>
+                </div>
+                <a class="btn btn-soft" href="#tools/forklight">查看文档</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="work">
+            <div class="work-media" style="background:
+              linear-gradient(145deg, color-mix(in srgb, var(--accent) 22%, var(--paper-2)), var(--paper-2));
+              display:grid; place-items:center;">
+              <div style="font-family:var(--font-display); font-size:1.6rem; font-weight:700; letter-spacing:-0.03em;">Relay</div>
+            </div>
+            <div class="work-body">
+              <div class="work-top">
+                <span class="work-type">Builder Tool</span>
+                <span class="badge">Testable</span>
+              </div>
+              <h3>Relay</h3>
+              <p>连接模型、工具与应用现场的中继能力。</p>
+              <div class="work-meta">
+                <div class="creator-mini">
+                  <img src="assets/头像2.jpg" alt="" />
+                  <span>哲子</span>
+                </div>
+                <a class="btn btn-soft" href="#tools/relay">查看文档</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="work">
+            <div class="work-media" style="background:
+              linear-gradient(160deg, #1c1f1a, #2a3026);
+              display:grid; place-items:center; color:#edeeea;">
+              <div style="text-align:center; padding:1rem;">
+                <div style="font-family:var(--font-mono); font-size:0.72rem; opacity:.7; margin-bottom:.35rem;">SDK / Capability</div>
+                <div style="font-family:var(--font-display); font-size:1.25rem; font-weight:700; letter-spacing:-0.02em;">Adeptify SDK</div>
+              </div>
+            </div>
+            <div class="work-body">
+              <div class="work-top">
+                <span class="work-type">SDK</span>
+                <span class="badge">Internal → 逐步公开</span>
+              </div>
+              <h3>Adeptify SDK</h3>
+              <p>开发者底座。成熟度以事实来源为准，不做过度承诺。</p>
+              <div class="work-meta">
+                <div class="creator-mini">
+                  <img src="assets/头像5.jpg" alt="" />
+                  <span>飞哥 等</span>
+                </div>
+                <a class="btn btn-soft" href="#tools/sdk">查看文档</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORUM -->
+    <section id="forum" aria-labelledby="forum-title">
+      <div class="wrap">
+        <div class="head-row">
+          <div class="section-head">
+            <h2 id="forum-title">社区正在讨论</h2>
+            <p>优先展示与具体作品、版本或开发问题有关的交流。不根据回复数自动制造热榜。</p>
+          </div>
+          <a class="text-link" href="#forum">进入论坛</a>
+        </div>
+
+        <div class="forum-panel">
+          <div class="thread-list">
+            <a class="thread" href="#forum/recruiting/cognia-seeds" data-mock="true">
+              <div>
+                <h3>Cognia 种子用户：你希望回归时看到什么？</h3>
+                <p>我们在收紧首屏信息，想听真实使用路径，而不是礼貌好评。</p>
+                <div class="thread-tags">
+                  <span class="tag">测试招募</span>
+                  <span class="tag">Cognia</span>
+                </div>
+              </div>
+              <div class="thread-side">
+                <div>12 回复</div>
+                <div>今天</div>
+              </div>
+            </a>
+            <a class="thread" href="#forum/feedback/ideas-week1" data-mock="true">
+              <div>
+                <h3>马哥的馊主意用了一周：哪些想法其实能站住？</h3>
+                <p>欢迎带场景反馈。空泛夸赞会被折叠。</p>
+                <div class="thread-tags">
+                  <span class="tag">产品反馈</span>
+                  <span class="tag">马哥的馊主意</span>
+                </div>
+              </div>
+              <div class="thread-side">
+                <div>8 回复</div>
+                <div>昨天</div>
+              </div>
+            </a>
+            <a class="thread" href="#forum/dev/forklight-boundary" data-mock="true">
+              <div>
+                <h3>ForkLight 任务预算耗尽后如何恢复？</h3>
+                <p>开发者支持分区。请带 runtime 与失败类别。</p>
+                <div class="thread-tags">
+                  <span class="tag">开发支持</span>
+                  <span class="tag">ForkLight</span>
+                </div>
+              </div>
+              <div class="thread-side">
+                <div>5 回复</div>
+                <div>3 天前</div>
+              </div>
+            </a>
+            <a class="thread" href="#forum/build/relay-examples" data-mock="true">
+              <div>
+                <h3>Relay 示例：从「能跑」到「敢给别人用」</h3>
+                <p>Build Log 讨论。关注安全边界与凭证隔离。</p>
+                <div class="thread-tags">
+                  <span class="tag">作品更新</span>
+                  <span class="tag">Relay</span>
+                </div>
+              </div>
+              <div class="thread-side">
+                <div>6 回复</div>
+                <div>本周</div>
+              </div>
+            </a>
+          </div>
+
+          <aside class="side-card" aria-label="论坛板块">
+            <h3>首批板块</h3>
+            <ul>
+              <li><span>作品发布与 Build Log</span><span class="n">开放</span></li>
+              <li><span>找人体验与产品反馈</span><span class="n">开放</span></li>
+              <li><span>创作讨论与问题求助</span><span class="n">开放</span></li>
+              <li><span>开发者支持</span><span class="n">开放</span></li>
+              <li><span>随便聊聊</span><span class="n">开放</span></li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOLS -->
+    <section class="tools" id="tools" aria-labelledby="tools-title">
+      <div class="wrap">
+        <div class="head-row">
+          <div class="section-head">
+            <p class="eyebrow">Builder 工具架</p>
+            <h2 id="tools-title">做东西的人，也需要底座。</h2>
+            <p>Adeptify SDK、ForkLight、Relay 保持独立产品身份。成熟度必须来自事实，不写虚假承诺。</p>
+          </div>
+          <a class="text-link" href="#developers">开发者中心</a>
+        </div>
+
+        <div class="tool-grid">
+          <a class="tool" href="#developers/adeptify-sdk">
+            <div class="tool-mark">SDK</div>
+            <h3>Adeptify SDK</h3>
+            <p>帮助 Builder 接入共同能力。公开范围以当前事实页为准。</p>
+            <div class="tool-foot">
+              <span>Capability</span>
+              <span class="go">查看文档</span>
+            </div>
+          </a>
+          <a class="tool" href="#developers/forklight">
+            <div class="tool-mark">FL</div>
+            <h3>ForkLight</h3>
+            <p>有边界的外部 coding worker。适合把可验收任务外包给运行时。</p>
+            <div class="tool-foot">
+              <span>Testable</span>
+              <span class="go">查看文档</span>
+            </div>
+          </a>
+          <a class="tool" href="#developers/relay">
+            <div class="tool-mark">RY</div>
+            <h3>Relay</h3>
+            <p>模型、工具与应用现场之间的中继。先讲清边界，再谈接入。</p>
+            <div class="tool-foot">
+              <span>Testable</span>
+              <span class="go">查看文档</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- JOIN -->
+    <section class="join" id="join" aria-labelledby="join-title">
+      <div class="wrap">
+        <div class="join-panel">
+          <div>
+            <h2 id="join-title">来用作品，也欢迎你来做作品。</h2>
+            <p>普通用户可以注册、体验、反馈和讨论。已有作品的人可以申请 Builder 入驻，经基础审核后进入公开目录。</p>
+          </div>
+          <div class="join-actions">
+            <a class="btn btn-primary" href="#signup">注册参与</a>
+            <a class="btn btn-ghost" href="#join/builder">申请成为 Builder</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="about">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">烤个梨呀</div>
+          <p>由 Adeptify 发起的 AI 创作者、作品与早期用户社区。连接关系，不占有关系。</p>
+        </div>
+        <div>
+          <h4>探索</h4>
+          <a href="#works">作品</a>
+          <a href="#makers">创作者</a>
+          <a href="#forum">论坛</a>
+          <a href="#feed">正在烤</a>
+        </div>
+        <div>
+          <h4>开发者</h4>
+          <a href="#developers/adeptify-sdk">Adeptify SDK</a>
+          <a href="#developers/forklight">ForkLight</a>
+          <a href="#developers/relay">Relay</a>
+        </div>
+        <div>
+          <h4>关于</h4>
+          <a href="#about">品牌关系</a>
+          <a href="#trust">信任与边界</a>
+          <a href="#login">登录</a>
+          <a href="#signup">注册</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>烤个梨呀，由 Adeptify 发起。</span>
+        <span data-mock="true">设计原型 · 非生产站点</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const themeToggle = document.getElementById("themeToggle");
+      const menuToggle = document.getElementById("menuToggle");
+      const drawer = document.getElementById("mobileDrawer");
+      const stage = document.getElementById("heroStage");
+      const chipTitle = document.getElementById("chipTitle");
+      const chipDesc = document.getElementById("chipDesc");
+      const chipStatus = document.getElementById("chipStatus");
+      const workChip = document.getElementById("workChip");
+
+      const works = {
+        cognia: {
+          title: "Cognia",
+          desc: "把观察变成可继续的成长现场。",
+          status: "Public Beta",
+        },
+        ideas: {
+          title: "马哥的馊主意",
+          desc: "听起来不靠谱，却值得认真试一次。",
+          status: "Recruiting",
+        },
+        forklight: {
+          title: "ForkLight",
+          desc: "有边界的外部 coding worker。",
+          status: "Testable",
+        },
+      };
+
+      function systemTheme() {
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+
+      function applyTheme(theme) {
+        root.setAttribute("data-theme", theme);
+        try { localStorage.setItem("rp-theme", theme); } catch (_) {}
+      }
+
+      const params = new URLSearchParams(location.search);
+      const queryTheme = params.get("theme");
+      const saved = (() => {
+        try { return localStorage.getItem("rp-theme"); } catch (_) { return null; }
+      })();
+      if (queryTheme === "light" || queryTheme === "dark") {
+        applyTheme(queryTheme);
+      } else {
+        applyTheme(saved || systemTheme());
+      }
+
+      themeToggle?.addEventListener("click", () => {
+        const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        applyTheme(next);
+      });
+
+      menuToggle?.addEventListener("click", () => {
+        const open = drawer.classList.toggle("open");
+        drawer.hidden = !open;
+        menuToggle.setAttribute("aria-expanded", String(open));
+      });
+
+      drawer?.querySelectorAll("a").forEach((a) => {
+        a.addEventListener("click", () => {
+          drawer.classList.remove("open");
+          drawer.hidden = true;
+          menuToggle.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      function setWork(key) {
+        const w = works[key];
+        if (!w) return;
+        chipTitle.textContent = w.title;
+        chipDesc.textContent = w.desc;
+        chipStatus.textContent = w.status;
+        workChip.dataset.work = key;
+        stage.classList.add("is-linked");
+        document.querySelectorAll(".float-card.portrait").forEach((el) => {
+          el.classList.toggle("is-active", el.dataset.work === key);
+        });
+      }
+
+      document.querySelectorAll(".float-card.portrait").forEach((el) => {
+        const activate = () => setWork(el.dataset.work);
+        el.addEventListener("mouseenter", activate);
+        el.addEventListener("focus", activate);
+        el.addEventListener("click", activate);
+      });
+
+      // Reveal on scroll for sections (lightweight, no scroll-state React)
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!reduce && "IntersectionObserver" in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "none";
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.12 }
+        );
+        document.querySelectorAll("section").forEach((sec, i) => {
+          if (i === 0) return;
+          sec.style.opacity = "0";
+          sec.style.transform = "translateY(16px)";
+          sec.style.transition = "opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1)";
+          io.observe(sec);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
