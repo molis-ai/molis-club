@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>加入 · 烤个梨呀</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/site.css" />
+</head>
+<body>
+  <div data-rp-nav></div>
+  <main id="main">
+    <header class="page-hero">
+      <div class="wrap">
+        <div class="crumbs"><a href="../index.html">首页</a><span>/</span><span>加入</span></div>
+        <h1>过来递一铲</h1>
+        <p class="lead">普通用户开放注册。想上创作者目录，走 Builder 入驻与基础审核。</p>
+      </div>
+    </header>
+    <div class="page-body">
+      <div class="wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start">
+        <div class="reveal">
+          <h2 class="h-section" style="font-size:1.35rem">注册 Member</h2>
+          <form class="form" data-join-form style="margin-top:1.1rem">
+            <div class="field">
+              <label for="email">邮箱</label>
+              <input id="email" name="email" type="email" required placeholder="you@example.com" autocomplete="email" />
+            </div>
+            <div class="field">
+              <label for="name">显示名</label>
+              <input id="name" name="name" type="text" required placeholder="怎么称呼你" autocomplete="nickname" />
+            </div>
+            <div class="field">
+              <label for="pass">密码</label>
+              <input id="pass" name="pass" type="password" required placeholder="至少 8 位（示意）" autocomplete="new-password" />
+            </div>
+            <button class="btn btn-primary" type="submit">创建账号</button>
+            <p class="meta" data-form-note hidden style="color:var(--leaf)"></p>
+            <p class="help muted" style="font-size:.82rem">示意表单，不提交真实数据。正式环境将发送验证邮件。</p>
+          </form>
+        </div>
+
+        <div class="reveal reveal-d1" id="builder">
+          <div class="issue" style="padding:1.6rem 1.7rem">
+            <span class="stamp">Builder</span>
+            <h2 class="h-section" style="color:var(--ink-on-ivory);margin-top:1rem">申请成为 Builder</h2>
+            <p style="color:var(--muted-on-ivory);margin:.65rem 0 0;font-size:.95rem">
+              通过后可建公开 Profile、提交作品、写更新与测试招募。首次公开作品需审核。
+            </p>
+            <form class="form" style="margin-top:1.25rem" onsubmit="event.preventDefault();this.querySelector('[data-builder-note]').hidden=false">
+              <div class="field">
+                <label for="why" style="color:var(--ink-on-ivory)">你在做什么</label>
+                <textarea id="why" name="why" required placeholder="一句话 + 当前状态" style="background:#fff;color:var(--ink-on-ivory);border-color:var(--line-ivory)"></textarea>
+              </div>
+              <div class="field">
+                <label for="link" style="color:var(--ink-on-ivory)">作品或主页链接</label>
+                <input id="link" name="link" type="url" placeholder="https://" style="background:#fff;color:var(--ink-on-ivory);border-color:var(--line-ivory)" />
+              </div>
+              <button class="btn btn-ivory" type="submit">提交申请</button>
+              <p class="meta" data-builder-note hidden style="color:var(--leaf)">示意：已进入审核队列。</p>
+            </form>
+          </div>
+          <div class="lacquer-card" style="padding:1.15rem;margin-top:1rem">
+            <div class="meta">Maker 呢？</div>
+            <p class="muted" style="margin:.45rem 0 0;font-size:.88rem">Maker 是 Adeptify 团队关系，由管理员授予，不能自助申请。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div data-rp-footer></div>
+  <script>window.RP = { inPages: true, page: "join" };</script>
+  <script src="../js/partials.js"></script>
+  <script src="../js/site.js"></script>
+</body>
+</html>

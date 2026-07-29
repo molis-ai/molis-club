@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>烤个梨呀 · 人在烤，东西在长</title>
+  <meta name="description" content="烤个梨呀，由 Adeptify 发起。认识做东西的人，试用正在长大的作品，炉边聊聊，顺手拿开发工具。" />
+  <!--
+    THESIS: 漆梨台面上摊开的月刊封面——高级材质 + 编辑叙事。
+    OWN-WORLD: lacquer black shell, ivory issue paper, pear amber, vermillion stamp.
+    STORY: 封面认人 → 主菜 → 作品 → 工具 → 人与 IP → 炉边 → 加入。
+    FIRST VIEWPORT: 左大标题+目录轨，右封面大图+浮层肖像。
+    FORM: 用户选定 漆梨 + 月刊 融合；完整多页原型。
+    FINISH: 以 design/site 可点击全链路为准。
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/site.css" />
+</head>
+<body>
+  <div data-rp-nav></div>
+
+  <main id="main">
+    <!-- Cover hero -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <div class="vol">
+            <span class="stamp">VOL.01</span>
+            <span class="meta">本期封面 · 开放工作室</span>
+          </div>
+          <h1>人在烤，<em>东西在长</em></h1>
+          <p class="lead" style="margin-top:1.1rem">
+            烤个梨呀是 Adeptify 的创作者小馆：认识做东西的人，试用正在长大的作品，炉边聊聊，顺手拿开发工具。不装热闹。
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="pages/explore.html">打开本期</a>
+            <a class="btn btn-ghost" href="pages/people-mago.html">封面人物</a>
+          </div>
+          <nav class="hero-toc" aria-label="本期目录">
+            <a href="#mains"><span class="n">01</span><span>炉上主菜</span><span class="hint">Cognia · Notebook · Nexus</span></a>
+            <a href="#works"><span class="n">02</span><span>桌上正在烤</span><span class="hint">Maker 作品</span></a>
+            <a href="#tools"><span class="n">03</span><span>开发者架子</span><span class="hint">ForkLight · Relay · SDK</span></a>
+            <a href="#people"><span class="n">04</span><span>人与 IP</span><span class="hint">Maker · 视频 · 搞怪</span></a>
+            <a href="#hearth"><span class="n">05</span><span>炉边</span><span class="hint">活动 · 论坛</span></a>
+          </nav>
+        </div>
+
+        <div class="cover" data-parallax data-mock="true">
+          <img src="assets/hero-studio.jpg" alt="开放工作室封面视觉" width="1280" height="720" />
+          <div class="cover-veil"></div>
+          <div class="float-portraits">
+            <a href="pages/people-mago.html" title="马哥">
+              <img src="assets/头像1.jpg" alt="马哥" width="1254" height="1254" />
+            </a>
+            <a href="pages/explore.html" title="果果">
+              <img src="assets/头像4.jpg" alt="果果" width="1254" height="1254" />
+            </a>
+            <a href="pages/explore.html" title="俊仔">
+              <img src="assets/头像5.jpg" alt="俊仔" width="1254" height="1254" />
+            </a>
+          </div>
+          <div class="cover-meta">
+            <div>
+              <strong>马哥还在烤馊主意</strong>
+              <span>封面故事 · 从人到作品</span>
+            </div>
+            <a class="btn btn-primary" href="pages/work-ideas.html">读作品</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 主菜 -->
+    <section class="block" id="mains">
+      <div class="wrap">
+        <div class="block-head reveal">
+          <div>
+            <h2 class="h-section">炉上主菜</h2>
+            <p>Adeptify 自己押注的产品。先说清能干什么。</p>
+          </div>
+          <a class="text-link" href="pages/explore.html?kind=product">全部主菜</a>
+        </div>
+        <div class="shelf reveal">
+          <a class="lacquer-card shelf-card featured" href="pages/work-cognia.html">
+            <div class="shelf-media">
+              <img src="assets/cognia-product.jpg" alt="Cognia" width="1152" height="864" />
+            </div>
+            <div class="shelf-body">
+              <div style="display:flex;justify-content:space-between;gap:.5rem;align-items:center">
+                <span class="meta">Flagship</span>
+                <span class="badge leaf">可试用</span>
+              </div>
+              <h3>Cognia</h3>
+              <p>把碎片材料、笔记和对话收成可回看的工作台。适合长期项目。</p>
+              <div class="shelf-foot">
+                <span class="meta">Adeptify</span>
+                <span class="go">开始体验</span>
+              </div>
+            </div>
+          </a>
+          <a class="lacquer-card shelf-card" href="pages/explore.html">
+            <div class="shelf-media"><div class="shelf-glyph">Nb</div></div>
+            <div class="shelf-body">
+              <div style="display:flex;justify-content:space-between;gap:.5rem">
+                <span class="meta">Product</span>
+                <span class="badge">内测</span>
+              </div>
+              <h3>Notebook</h3>
+              <p>为研究与写作准备的笔记本。强调结构与引用。</p>
+              <div class="shelf-foot">
+                <span class="meta">Adeptify</span>
+                <span class="go">了解进展</span>
+              </div>
+            </div>
+          </a>
+          <a class="lacquer-card shelf-card" href="pages/explore.html">
+            <div class="shelf-media"><div class="shelf-glyph">Nx</div></div>
+            <div class="shelf-body">
+              <div style="display:flex;justify-content:space-between;gap:.5rem">
+                <span class="meta">Product</span>
+                <span class="badge">招募中</span>
+              </div>
+              <h3>Nexus</h3>
+              <p>连接人、项目与上下文。先服务团队，再慢慢打开。</p>
+              <div class="shelf-foot">
+                <span class="meta">Adeptify</span>
+                <span class="go">申请试用</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 作品 issue paper -->
+    <section class="block" id="works" style="padding-top:1rem">
+      <div class="wrap">
+        <div class="issue works-issue reveal">
+          <div class="block-head" style="margin-bottom:0">
+            <div>
+              <h2 class="h-section" style="color:var(--ink-on-ivory)">桌上正在烤</h2>
+              <p style="color:var(--muted-on-ivory)">Maker 手里的半成品与小工具。成熟度如实写。</p>
+            </div>
+            <a class="text-link" href="pages/explore.html" style="color:var(--ink-on-ivory);border-color:var(--line-ivory)">发现页</a>
+          </div>
+          <div class="works-grid" data-mock="true">
+            <a class="work-card" href="pages/work-ideas.html">
+              <div class="media"><img src="assets/work-ideas.jpg" alt="" width="1152" height="864" /></div>
+              <div class="body">
+                <span class="meta">App · 公开试用</span>
+                <h3>马哥的馊主意</h3>
+                <p>离谱点子快速落成可测小样。正经产品的反面教材。</p>
+                <div class="foot">
+                  <span class="mini"><img src="assets/头像1.jpg" alt="" />马哥</span>
+                  <span class="badge leaf">可下载</span>
+                </div>
+              </div>
+            </a>
+            <a class="work-card" href="pages/explore.html">
+              <div class="media"><div class="glyph">KG</div></div>
+              <div class="body">
+                <span class="meta">Tool · 内测</span>
+                <h3>Knowledge-Graphify</h3>
+                <p>散落笔记梳成可浏览的关系图。</p>
+                <div class="foot">
+                  <span class="mini"><img src="assets/头像4.jpg" alt="" />团队</span>
+                  <span class="badge">内测</span>
+                </div>
+              </div>
+            </a>
+            <a class="work-card" href="pages/explore.html">
+              <div class="media"><div class="glyph">众生卷</div></div>
+              <div class="body">
+                <span class="meta">App · 招募中</span>
+                <h3>众生卷</h3>
+                <p>围绕角色与世界观的创作卷轴。先讲清设定。</p>
+                <div class="foot">
+                  <span class="mini"><img src="assets/头像2.jpg" alt="" />哲子</span>
+                  <span class="badge">招测试</span>
+                </div>
+              </div>
+            </a>
+            <a class="work-card" href="pages/explore.html">
+              <div class="media"><div class="glyph">Else</div></div>
+              <div class="body">
+                <span class="meta">Experience · 原型</span>
+                <h3>Elsewhere</h3>
+                <p>另一处空间的轻量入口。还在烤。</p>
+                <div class="foot">
+                  <span class="mini"><img src="assets/头像5.jpg" alt="" />俊仔</span>
+                  <span class="badge">原型</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tools -->
+    <section class="block" id="tools">
+      <div class="wrap tools-grid">
+        <div class="reveal">
+          <h2 class="h-section">开发者的架子</h2>
+          <p class="lead" style="margin-top:.65rem">
+            不是橱窗。是你真要动手时能抄起的工具。社区里写代码的人，也从这里进来。
+          </p>
+          <div class="panel" style="padding:1rem 1.1rem;margin-top:1.25rem">
+            <strong style="font-size:.92rem">建议路径</strong>
+            <p class="muted" style="margin:.4rem 0 0;font-size:.88rem">看边界 → Quick Start → 论坛开带上下文的帖。不承诺万能，只保证说清楚。</p>
+          </div>
+          <a class="btn btn-primary" style="margin-top:1.25rem" href="pages/developers.html">进入开发者中心</a>
+        </div>
+        <div class="tool-list reveal reveal-d1">
+          <a class="lacquer-card tool" href="pages/developers.html#forklight">
+            <span class="tool-mark">FL</span>
+            <span>
+              <h3>ForkLight</h3>
+              <p>长任务交给外部 Worker，主会话不被拖死。</p>
+            </span>
+            <span class="go">文档 →</span>
+          </a>
+          <a class="lacquer-card tool" href="pages/developers.html#relay">
+            <span class="tool-mark">RL</span>
+            <span>
+              <h3>Relay</h3>
+              <p>连接与转发，把多端消息对齐到同一条路径。</p>
+            </span>
+            <span class="go">文档 →</span>
+          </a>
+          <a class="lacquer-card tool" href="pages/developers.html#sdk">
+            <span class="tool-mark">SDK</span>
+            <span>
+              <h3>Adeptify SDK</h3>
+              <p>公共底座。成熟度与 License 以文档为准。</p>
+            </span>
+            <span class="go">文档 →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- People + IP -->
+    <section class="block" id="people">
+      <div class="wrap">
+        <div class="block-head reveal">
+          <div>
+            <h2 class="h-section">烤梨人与 IP</h2>
+            <p>先认人，再认作品。正经之外，人得先有味道。</p>
+          </div>
+          <a class="text-link" href="pages/explore.html?kind=people">创作者目录</a>
+        </div>
+        <div class="people-layout reveal" data-mock="true">
+          <div class="maker-rail">
+            <a class="maker" href="pages/people-mago.html">
+              <img src="assets/头像1.jpg" alt="马哥" />
+              <div class="maker-veil"></div>
+              <div class="maker-body">
+                <div class="meta">Maker</div>
+                <h3>马哥</h3>
+                <p>馊主意生产线（自称）</p>
+              </div>
+            </a>
+            <a class="maker" href="pages/explore.html">
+              <img src="assets/头像4.jpg" alt="果果" />
+              <div class="maker-veil"></div>
+              <div class="maker-body"><div class="meta">Maker</div><h3>果果</h3><p>介绍待补</p></div>
+            </a>
+            <a class="maker" href="pages/explore.html">
+              <img src="assets/头像5.jpg" alt="俊仔" />
+              <div class="maker-veil"></div>
+              <div class="maker-body"><div class="meta">Maker</div><h3>俊仔</h3><p>介绍待补</p></div>
+            </a>
+            <a class="maker" href="pages/explore.html">
+              <img src="assets/头像2.jpg" alt="哲子" />
+              <div class="maker-veil"></div>
+              <div class="maker-body"><div class="meta">Maker</div><h3>哲子</h3><p>介绍待补</p></div>
+            </a>
+            <a class="maker" href="pages/explore.html">
+              <img src="assets/头像3.jpg" alt="飞哥" />
+              <div class="maker-veil"></div>
+              <div class="maker-body"><div class="meta">Maker</div><h3>飞哥</h3><p>介绍待补</p></div>
+            </a>
+          </div>
+          <div class="ip-stack">
+            <a class="lacquer-card ip-card video" href="pages/forum.html">
+              <div class="meta">团队视频</div>
+              <h3>开放工作室 vlog · 这一周烤了什么</h3>
+              <p>半成品、翻车、临时决定。</p>
+            </a>
+            <a class="lacquer-card ip-card" href="pages/forum.html">
+              <div class="meta">每日搞怪</div>
+              <h3>#47 马哥的桌面事故</h3>
+              <p>不是产品更新。是把自己当内容的那一格。</p>
+            </a>
+            <a class="lacquer-card ip-card" href="pages/explore.html">
+              <div class="meta">个人与团队 IP</div>
+              <h3>漫画头像、花名、小剧场</h3>
+              <p>人设不编造；上线前换真实边界。</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hearth -->
+    <section class="block" id="hearth">
+      <div class="wrap">
+        <div class="block-head reveal">
+          <div>
+            <h2 class="h-section">炉边：活动与论坛</h2>
+            <p>带着具体问题来。反馈能变成更新，才算烤熟了。</p>
+          </div>
+          <a class="text-link" href="pages/forum.html">进论坛</a>
+        </div>
+        <div class="hearth-grid reveal" data-mock="true">
+          <div style="display:grid;gap:.75rem">
+            <a class="lacquer-card event" href="pages/forum.html">
+              <div class="meta">本周五 · 20:00</div>
+              <h3>开放工作室夜：带着半成品来</h3>
+              <p>每人 8 分钟。讲卡点，不讲愿景。</p>
+              <div class="foot"><span>活动</span><span>还可报名</span></div>
+            </a>
+            <a class="lacquer-card event" href="pages/forum.html">
+              <div class="meta">下周三 · 21:00</div>
+              <h3>ForkLight 安装互助局</h3>
+              <p>踩坑实录优先。带上 runtime 与报错。</p>
+              <div class="foot"><span>开发者</span><span>论坛联动</span></div>
+            </a>
+            <a class="lacquer-card event" href="pages/work-cognia.html">
+              <div class="meta">持续</div>
+              <h3>Cognia 试用反馈周</h3>
+              <p>写清场景与翻车点。有用的回复进 FAQ。</p>
+              <div class="foot"><span>产品</span><span>征集中</span></div>
+            </a>
+          </div>
+          <div class="thread-panel">
+            <div class="thread-panel-head">
+              <h3>最近在聊</h3>
+              <a class="text-link" href="pages/forum.html">全部</a>
+            </div>
+            <a class="thread" href="pages/forum.html">
+              <div>
+                <h4>Cognia 里长对话怎么收成可回看的笔记？</h4>
+                <p>试了两周，想对齐一下预期工作流。</p>
+                <div class="thread-tags"><span class="tag">Cognia</span><span class="tag">反馈</span></div>
+              </div>
+              <div class="thread-side">12 回复<br />2h</div>
+            </a>
+            <a class="thread" href="pages/forum.html">
+              <div>
+                <h4>ForkLight Worker 超时后，主会话怎么恢复？</h4>
+                <p>附 runtime 日志。已按文档重试。</p>
+                <div class="thread-tags"><span class="tag">ForkLight</span><span class="tag">求助</span></div>
+              </div>
+              <div class="thread-side">7 回复<br />昨天</div>
+            </a>
+            <a class="thread" href="pages/forum.html">
+              <div>
+                <h4>众生卷：角色设定模板求拍砖</h4>
+                <p>想把设定字段收敛到 12 个以内。</p>
+                <div class="thread-tags"><span class="tag">众生卷</span><span class="tag">共创</span></div>
+              </div>
+              <div class="thread-side">5 回复<br />昨天</div>
+            </a>
+            <a class="thread" href="pages/join.html">
+              <div>
+                <h4>新 Builder 入驻：第一件作品审核大概多久？</h4>
+                <p>材料已齐。想知道队列规则。</p>
+                <div class="thread-tags"><span class="tag">入驻</span><span class="tag">规则</span></div>
+              </div>
+              <div class="thread-side">3 回复<br />3d</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Join -->
+    <section class="join" id="join">
+      <div class="wrap">
+        <div class="join-band reveal">
+          <div>
+            <h2>梨还在炉子里。要不要过来递一铲？</h2>
+            <p>普通用户开放注册。想上创作者目录，走 Builder 入驻与基础审核。</p>
+          </div>
+          <div class="join-actions">
+            <a class="btn btn-primary" href="pages/join.html">注册参与</a>
+            <a class="btn btn-ghost" href="pages/join.html#builder">申请成为 Builder</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-rp-footer></div>
+
+  <script>window.RP = { inPages: false, page: "home" };</script>
+  <script src="js/partials.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>

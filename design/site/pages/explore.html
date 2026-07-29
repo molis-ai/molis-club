@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>发现 · 烤个梨呀</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/site.css" />
+</head>
+<body>
+  <div data-rp-nav></div>
+  <main id="main">
+    <header class="page-hero">
+      <div class="wrap">
+        <div class="crumbs"><a href="../index.html">首页</a><span>/</span><span>发现</span></div>
+        <h1>发现</h1>
+        <p class="lead">人和作品统一入口。按关系组织，不按热度排行。</p>
+      </div>
+    </header>
+    <div class="page-body">
+      <div class="wrap">
+        <div class="filters" data-filters>
+          <button type="button" data-filter="all" aria-pressed="true">全部</button>
+          <button type="button" data-filter="product">拳头产品</button>
+          <button type="button" data-filter="work">Maker 作品</button>
+          <button type="button" data-filter="people">创作者</button>
+          <button type="button" data-filter="tool">开发者工具</button>
+        </div>
+        <div class="explore-grid" data-mock="true">
+          <a class="lacquer-card shelf-card" data-kind="product" href="work-cognia.html" style="min-height:auto">
+            <div class="shelf-media" style="min-height:160px"><img src="../assets/cognia-product.jpg" alt="" /></div>
+            <div class="shelf-body">
+              <span class="badge leaf">可试用</span>
+              <h3>Cognia</h3>
+              <p>拳头产品 · 工作台</p>
+            </div>
+          </a>
+          <a class="lacquer-card shelf-card" data-kind="product" href="../index.html#mains" style="min-height:auto">
+            <div class="shelf-media" style="min-height:160px"><div class="shelf-glyph">Nb</div></div>
+            <div class="shelf-body"><span class="badge">内测</span><h3>Notebook</h3><p>拳头产品 · 研究笔记</p></div>
+          </a>
+          <a class="lacquer-card shelf-card" data-kind="product" href="../index.html#mains" style="min-height:auto">
+            <div class="shelf-media" style="min-height:160px"><div class="shelf-glyph">Nx</div></div>
+            <div class="shelf-body"><span class="badge">招募中</span><h3>Nexus</h3><p>拳头产品 · 枢纽</p></div>
+          </a>
+          <a class="lacquer-card shelf-card" data-kind="work" href="work-ideas.html" style="min-height:auto">
+            <div class="shelf-media" style="min-height:160px"><img src="../assets/work-ideas.jpg" alt="" /></div>
+            <div class="shelf-body"><span class="badge leaf">可下载</span><h3>马哥的馊主意</h3><p>Maker · 马哥</p></div>
+          </a>
+          <a class="lacquer-card shelf-card" data-kind="work" href="#" style="min-height:auto">
+            <div class="shelf-media" style="min-height:160px"><div class="shelf-glyph">KG</div></div>
+            <div class="shelf-body"><span class="badge">内测</span><h3>Knowledge-Graphify</h3><p>Maker 作品</p></div>
+          </a>
+          <a class="lacquer-card shelf-card" data-kind="work" href="#" style="min-height:auto">
+            <div class="shelf-media" style="min-height:160px"><div class="shelf-glyph">卷</div></div>
+            <div class="shelf-body"><span class="badge">招测试</span><h3>众生卷</h3><p>Maker · 哲子</p></div>
+          </a>
+          <a class="lacquer-card shelf-card" data-kind="work" href="#" style="min-height:auto">
+            <div class="shelf-media" style="min-height:160px"><div class="shelf-glyph">El</div></div>
+            <div class="shelf-body"><span class="badge">原型</span><h3>Elsewhere</h3><p>Maker · 俊仔</p></div>
+          </a>
+          <a class="lacquer-card shelf-card" data-kind="people" href="people-mago.html" style="min-height:auto">
+            <div class="shelf-media" style="min-height:160px"><img src="../assets/头像1.jpg" alt="" style="object-fit:cover;width:100%;height:100%;position:absolute;inset:0" /></div>
+            <div class="shelf-body"><span class="meta">Maker</span><h3>马哥</h3><p>封面人物</p></div>
+          </a>
+          <a class="lacquer-card shelf-card" data-kind="tool" href="developers.html#forklight" style="min-height:auto">
+            <div class="shelf-media" style="min-height:160px"><img src="../assets/work-forklight.jpg" alt="" /></div>
+            <div class="shelf-body"><span class="meta">Tool</span><h3>ForkLight</h3><p>开发者 · Worker</p></div>
+          </a>
+          <a class="lacquer-card shelf-card" data-kind="tool" href="developers.html#relay" style="min-height:auto">
+            <div class="shelf-media" style="min-height:160px"><div class="shelf-glyph">RL</div></div>
+            <div class="shelf-body"><span class="meta">Tool</span><h3>Relay</h3><p>开发者 · 连接</p></div>
+          </a>
+          <a class="lacquer-card shelf-card" data-kind="tool" href="developers.html#sdk" style="min-height:auto">
+            <div class="shelf-media" style="min-height:160px"><div class="shelf-glyph">SDK</div></div>
+            <div class="shelf-body"><span class="meta">Tool</span><h3>Adeptify SDK</h3><p>开发者 · 底座</p></div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div data-rp-footer></div>
+  <script>window.RP = { inPages: true, page: "explore" };</script>
+  <script src="../js/partials.js"></script>
+  <script src="../js/site.js"></script>
+</body>
+</html>
