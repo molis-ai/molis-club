@@ -1,0 +1,37 @@
+# Integration (anti hero-paste)
+
+## living-anthology
+tokens=true nav=true below=true sketchWebps=0
+OK: no .impeccable/sketches/*.webp in HTML (UI is CSS-built)
+OK: shared tokens/chrome across page
+OK: world-native components below first viewport
+## teletext-service
+tokens=true nav=true below=true sketchWebps=0
+OK: no .impeccable/sketches/*.webp in HTML (UI is CSS-built)
+OK: shared tokens/chrome across page
+OK: world-native components below first viewport
+## pixel-maker-city
+tokens=true nav=true below=true sketchWebps=0
+OK: no .impeccable/sketches/*.webp in HTML (UI is CSS-built)
+OK: shared tokens/chrome across page
+OK: world-native components below first viewport
+## riso-release-wall
+tokens=true nav=true below=true sketchWebps=0
+OK: no .impeccable/sketches/*.webp in HTML (UI is CSS-built)
+OK: shared tokens/chrome across page
+OK: world-native components below first viewport
+## slow-fire-index
+tokens=true nav=true below=true sketchWebps=0
+OK: no .impeccable/sketches/*.webp in HTML (UI is CSS-built)
+OK: shared tokens/chrome across page
+OK: world-native components below first viewport
+## homepage-overdrive
+tokens=true nav=true below=true sketchWebps=0
+OK: no .impeccable/sketches/*.webp in HTML (UI is CSS-built)
+OK: shared tokens/chrome across page
+OK: world-native components below first viewport
+## canon
+tokens=true nav=true below=true sketchWebps=0
+OK: no .impeccable/sketches/*.webp in HTML (UI is CSS-built)
+OK: shared tokens/chrome across page
+OK: world-native components below first viewport

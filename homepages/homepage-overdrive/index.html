@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>烤个梨呀 · 开放工作室 2.0</title>
+  <meta name="description" content="烤个梨呀开放工作室：认识做东西的人，体验正在长大的作品。由 Adeptify 发起。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-direction="homepage-overdrive">
+  <header class="topbar">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span><strong>烤个梨呀</strong><small>由 Adeptify 发起</small></span>
+    </a>
+    <nav class="nav" aria-label="主导航">
+      <a class="active" href="#top">首页</a>
+      <a href="#works">发现</a>
+      <a href="#hearth">论坛</a>
+      <a href="#tools">开发者</a>
+      <a href="#people">关于</a>
+    </nav>
+    <div class="top-actions">
+      <a class="btn btn-ghost" href="#join">登录</a>
+      <a class="btn btn-pear" href="#join">注册参与</a>
+    </div>
+  </header>
+
+  <main class="wrap" id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="kicker">OPEN STUDIO 2.0</span>
+        <h1>烤个梨呀</h1>
+        <p class="lead">开放工作室 2.0<br />认识做东西的人，<br />体验正在长大的作品。</p>
+        <div class="cta-row">
+          <a class="btn btn-pear" href="#works">逛逛作品</a>
+          <a class="btn btn-ghost" href="#people">看看谁在做</a>
+        </div>
+        <div class="principles">
+          <div>👤 人是长期节点</div>
+          <div>📄 作品是阶段性观察</div>
+          <div>💬 社区是预览稿，不是热闹榜</div>
+        </div>
+      </div>
+
+      <div class="desk" aria-label="开放工作台：HTML 便签与实机截图，非 sketch 底图">
+        <a class="note" href="#people">
+          <span class="n">01</span>
+          <img class="avatar" src="../../design/homepage/assets/头像1.jpg" alt="马哥" width="48" height="48" />
+          <strong>马哥</strong>
+          <span>创作中 · 还在烤馊主意</span>
+        </a>
+
+        <a class="note laptop" href="#mains">
+          <span class="n">02</span>
+          <div class="chrome"><span><i class="dot"></i>Cognia</span><span>Public Beta</span></div>
+          <img src="../../design/homepage/assets/cognia-product.jpg" alt="Cognia 工作台" width="400" height="140" />
+          <div class="cap">
+            <strong>炉上主菜 · 可试用</strong>
+            <span style="display:block;font-size:.78rem;color:var(--quiet)">碎片材料 → 可回看工作台</span>
+          </div>
+        </a>
+
+        <div class="note sticky" data-mock="true">
+          <span class="n">03</span>
+          <strong>Build Log</strong>
+          <span>v0.1 → v0.4 阶段回流（示意）</span>
+          <div class="timeline" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+        </div>
+
+        <div class="note" data-mock="true">
+          <span class="n">04</span>
+          <strong>反馈墙</strong>
+          <span>论坛示意 · 写下你的想法</span>
+          <div class="mini-faces">
+            <img src="../../design/homepage/assets/头像4.jpg" alt="" width="22" height="22" />
+            <img src="../../design/homepage/assets/头像5.jpg" alt="" width="22" height="22" />
+            <img src="../../design/homepage/assets/头像2.jpg" alt="" width="22" height="22" />
+          </div>
+        </div>
+
+        <a class="note" href="#tools">
+          <span class="n">05</span>
+          <strong>ForkLight</strong>
+          <span>长任务 Worker · 与 Relay / SDK 同桌</span>
+        </a>
+
+        <a class="note sticky" href="#works" style="transform:rotate(1.2deg)">
+          <span class="n">06</span>
+          <strong>桌上小菜</strong>
+          <span>馊主意 · KG · 众生卷 · Elsewhere</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="feed-head">
+      <h2>正在发生</h2>
+      <div class="chips">
+        <span class="chip on">全部</span>
+        <span class="chip">进行中</span>
+        <span class="chip">发布</span>
+        <span class="chip">反馈中</span>
+      </div>
+      <a href="#hearth" style="font-size:.9rem;color:var(--quiet)">查看全部 →</a>
+    </div>
+    <div class="feed-grid" id="works">
+      <div class="cards">
+        <article class="card">
+          <div class="media"><img src="../../design/homepage/assets/work-ideas.jpg" alt="马哥的馊主意" width="400" height="250" /></div>
+          <div class="body"><div class="tag">进行中</div><h3>马哥的馊主意</h3><p>聊天馊主意 → 可执行下一步</p></div>
+        </article>
+        <article class="card">
+          <div class="media"><img src="../../design/homepage/assets/cognia-product.jpg" alt="Cognia" width="400" height="250" /></div>
+          <div class="body"><div class="tag">可试用</div><h3>Cognia</h3><p>炉上主菜 · 长期项目工作台</p></div>
+        </article>
+        <article class="card">
+          <div class="media"><img src="../../design/homepage/assets/work-forklight.jpg" alt="ForkLight" width="400" height="250" /></div>
+          <div class="body"><div class="tag">开发者</div><h3>ForkLight</h3><p>长任务交给外部 Worker</p></div>
+        </article>
+      </div>
+      <aside class="side" id="people">
+        <h3>今日开放中</h3>
+        <div class="online">
+          <figure><img src="../../design/homepage/assets/头像1.jpg" alt="马哥" width="40" height="40" /><figcaption>马哥</figcaption></figure>
+          <figure><img src="../../design/homepage/assets/头像4.jpg" alt="果果" width="40" height="40" /><figcaption>果果</figcaption></figure>
+          <figure><img src="../../design/homepage/assets/头像5.jpg" alt="俊仔" width="40" height="40" /><figcaption>俊仔</figcaption></figure>
+          <figure><img src="../../design/homepage/assets/头像2.jpg" alt="哲子" width="40" height="40" /><figcaption>哲子</figcaption></figure>
+          <figure><img src="../../design/homepage/assets/头像3.jpg" alt="飞哥" width="40" height="40" /><figcaption>飞哥</figcaption></figure>
+        </div>
+        <p style="margin:.85rem 0 0;font-size:.85rem;color:var(--quiet)">介绍未齐标「待补」。人设不编造。</p>
+      </aside>
+    </div>
+
+    <section class="section" id="mains">
+      <h2>炉上主菜</h2>
+      <div class="grid3">
+        <article class="tile"><div class="meta">可试用</div><h3>Cognia</h3><p>把碎片材料、笔记和对话收成可回看的工作台。</p></article>
+        <article class="tile"><div class="meta">内测</div><h3>Notebook</h3><p>为研究与写作准备的笔记本。强调结构与引用。</p></article>
+        <article class="tile"><div class="meta">招募中</div><h3>Nexus</h3><p>连接人、项目与上下文。先服务团队，再慢慢打开。</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>桌上正在烤</h2>
+      <div class="grid4">
+        <article class="tile"><div class="meta">公开迭代</div><h3>马哥的馊主意</h3><p>拆局与下一步。</p></article>
+        <article class="tile"><div class="meta">可离线试</div><h3>Knowledge-Graphify</h3><p>文章 → 知识图谱。</p></article>
+        <article class="tile"><div class="meta">原型</div><h3>众生卷</h3><p>故事线交换试写。</p></article>
+        <article class="tile"><div class="meta">本地私密</div><h3>Elsewhere</h3><p>未选之路，再回现实。</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="tools">
+      <h2>开发者架子</h2>
+      <div class="grid3">
+        <article class="tile"><h3>ForkLight</h3><p>把长任务交给外部 Worker，避免主会话被拖死。</p></article>
+        <article class="tile"><h3>Relay</h3><p>连接与转发，多端消息与回调对齐。</p></article>
+        <article class="tile"><h3>Adeptify SDK</h3><p>接入 Adeptify 能力的公共底座。</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="hearth" data-mock="true">
+      <h2>炉边 · 论坛 / 活动 / 团队 IP</h2>
+      <div class="grid3">
+        <article class="tile"><h3>论坛</h3><p>Cognia 试用反馈 · ForkLight 接入问答 · Build Log 回流</p></article>
+        <article class="tile"><h3>活动</h3><p>开放工作室夜 · 安装互助局 · 产品试用反馈周</p></article>
+        <article class="tile"><h3>团队 IP</h3><p>团队视频 · 每日搞怪 · 花名小剧场</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="join">
+      <h2>下一铲给你</h2>
+      <div class="cta-row">
+        <a class="btn btn-pear" href="#people">注册参与</a>
+        <a class="btn btn-ghost" href="#tools">申请成为 Builder</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div><strong>烤个梨呀</strong> · 由 Adeptify 发起 · 开放工作室全页系统</div>
+      <div>人在烤，东西在长</div>
+    </footer>
+  </main>
+</body>
+</html>

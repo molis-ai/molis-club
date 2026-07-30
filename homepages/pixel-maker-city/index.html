@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>烤个梨呀 · 像素共创城</title>
+  <meta name="description" content="烤个梨呀像素共创城：认识做东西的人，体验正在长大的作品。由 Adeptify 发起。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-direction="pixel-maker-city">
+  <header class="topbar">
+    <a class="logo" href="#top" aria-label="烤个梨呀">梨</a>
+    <nav class="tabs" aria-label="城区">
+      <a class="active" href="#top">⌂</a>
+      <a href="#mains" title="主菜场馆">▣</a>
+      <a href="#works" title="店铺">★</a>
+      <a href="#people" title="居民">☺</a>
+      <a href="#tools" title="工具">&lt;/&gt;</a>
+      <a href="#hearth" title="广场">💬</a>
+    </nav>
+    <div class="top-actions">
+      <span class="icon-btn" aria-hidden="true">⌕</span>
+      <a class="btn btn-red" href="#people">加入</a>
+    </div>
+  </header>
+
+  <div class="wrap" id="top">
+    <div class="plaza">
+      <aside class="intro">
+        <h1>烤个梨呀</h1>
+        <p>认识做东西的人，体验正在长大的作品。Maker、作品与工具共同搭成一座可逛的小城。由 Adeptify 发起。</p>
+        <div class="actions">
+          <a class="btn btn-red" href="#works">逛逛作品 →</a>
+          <a class="btn btn-ghost" href="#people">看看谁在做</a>
+        </div>
+      </aside>
+
+      <section class="city" aria-label="CSS 街区地图（非 sketch 贴图）">
+        <div class="city-label">
+          <span>CITY MAP · HTML DISTRICTS</span>
+          <span>无生成全景糊贴</span>
+        </div>
+        <div class="districts">
+          <a class="district d-west" href="#works">
+            <span class="pin"><img src="../../design/homepage/assets/头像1.jpg" alt="马哥" width="28" height="28" /></span>
+            <h2>西区 · 桌上小菜</h2>
+            <p>马哥的馊主意店铺开张，Knowledge-Graphify 在隔壁。</p>
+            <span class="tag">公开迭代</span>
+          </a>
+
+          <a class="district d-cognia" href="#mains">
+            <span class="pin">🍐</span>
+            <h2>中央 · Cognia 主场馆</h2>
+            <div class="building" aria-hidden="true"></div>
+            <p>炉上主菜旗舰。可试用。旁边是 Notebook / Nexus 配楼。</p>
+            <span class="tag">可试用</span>
+          </a>
+
+          <a class="district d-east" href="#hearth">
+            <span class="pin">💬</span>
+            <h2>东区 · 论坛广场</h2>
+            <p>反馈、求助、Build Log 与活动告示牌。</p>
+            <span class="tag">讨论中</span>
+          </a>
+
+          <a class="district d-market" href="#people">
+            <span class="pin"><img src="../../design/homepage/assets/头像4.jpg" alt="果果" width="28" height="28" /></span>
+            <h2>市集 · 创作者</h2>
+            <p>马哥、果果、俊仔、哲子、飞哥的摊位。</p>
+            <span class="tag">在场</span>
+          </a>
+
+          <a class="district d-tools" href="#tools">
+            <span class="pin">⚙</span>
+            <h2>工区 · 开发者</h2>
+            <p>ForkLight 厂房、Relay 中转站、Adeptify SDK 库房。</p>
+            <span class="tag">开放</span>
+          </a>
+
+          <div class="district d-plaza">
+            <div>
+              <h2>广场 · 今日在场</h2>
+              <p>团队 IP：视频 · 每日搞怪（人设不编造）</p>
+            </div>
+            <div class="crowd" aria-label="在场创作者">
+              <img src="../../design/homepage/assets/头像1.jpg" alt="马哥" width="36" height="36" />
+              <img src="../../design/homepage/assets/头像4.jpg" alt="果果" width="36" height="36" />
+              <img src="../../design/homepage/assets/头像5.jpg" alt="俊仔" width="36" height="36" />
+              <img src="../../design/homepage/assets/头像2.jpg" alt="哲子" width="36" height="36" />
+              <img src="../../design/homepage/assets/头像3.jpg" alt="飞哥" width="36" height="36" />
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="board" id="mains">
+      <h2>主菜场馆目录</h2>
+      <div class="shop-grid">
+        <article class="shop"><div class="bar r"></div><h3>Cognia</h3><p>可回看的工作台</p><div class="meta">可试用 · 炉上主菜</div></article>
+        <article class="shop"><div class="bar b"></div><h3>Notebook</h3><p>结构与引用</p><div class="meta">内测</div></article>
+        <article class="shop"><div class="bar g"></div><h3>Nexus</h3><p>人、项目与上下文</p><div class="meta">招募中</div></article>
+        <article class="shop"><div class="bar y"></div><h3>Adeptify SDK</h3><p>公共底座入口</p><div class="meta">开发者</div></article>
+      </div>
+    </section>
+
+    <section class="board" id="works">
+      <h2>店铺街区 · 桌上正在烤</h2>
+      <div class="shop-grid">
+        <article class="shop"><div class="bar r"></div><h3>马哥的馊主意</h3><p>聊天馊主意 → 下一步</p><div class="meta">公开迭代 · 马哥</div></article>
+        <article class="shop"><div class="bar b"></div><h3>Knowledge-Graphify</h3><p>文章 → 图谱 HTML</p><div class="meta">可离线试</div></article>
+        <article class="shop"><div class="bar g"></div><h3>众生卷</h3><p>故事线交换试写</p><div class="meta">原型</div></article>
+        <article class="shop"><div class="bar y"></div><h3>Elsewhere</h3><p>未选之路，再回现实</p><div class="meta">本地私密</div></article>
+      </div>
+    </section>
+
+    <section class="board" id="people">
+      <h2>街区居民</h2>
+      <div class="people">
+        <div class="person"><img src="../../design/homepage/assets/头像1.jpg" alt="马哥" width="52" height="52" /><strong>马哥</strong><span>还在烤馊主意</span></div>
+        <div class="person"><img src="../../design/homepage/assets/头像4.jpg" alt="果果" width="52" height="52" /><strong>果果</strong><span>徐晶 · 待补</span></div>
+        <div class="person"><img src="../../design/homepage/assets/头像5.jpg" alt="俊仔" width="52" height="52" /><strong>俊仔</strong><span>谢俊 · 待补</span></div>
+        <div class="person"><img src="../../design/homepage/assets/头像2.jpg" alt="哲子" width="52" height="52" /><strong>哲子</strong><span>庄昊哲 · 待补</span></div>
+        <div class="person"><img src="../../design/homepage/assets/头像3.jpg" alt="飞哥" width="52" height="52" /><strong>飞哥</strong><span>杨鹏飞 · 待补</span></div>
+      </div>
+    </section>
+
+    <section class="board" id="tools">
+      <h2>东区工具站</h2>
+      <div class="tri">
+        <article class="tile"><h3>ForkLight</h3><p>把长任务交给外部 Worker，避免主会话被拖死。</p></article>
+        <article class="tile"><h3>Relay</h3><p>连接与转发，多端消息与回调对齐。</p></article>
+        <article class="tile"><h3>Adeptify SDK</h3><p>接入 Adeptify 能力的公共底座。</p></article>
+      </div>
+    </section>
+
+    <section class="board" id="hearth" data-mock="true">
+      <h2>广场告示 · 论坛 / 活动 / IP</h2>
+      <div class="tri">
+        <article class="tile"><h3>论坛</h3><p>Cognia 试用反馈 · ForkLight 接入 · 馊主意 Build Log #04</p></article>
+        <article class="tile"><h3>活动</h3><p>开放工作室夜 · 安装互助局 · 产品试用反馈周</p></article>
+        <article class="tile"><h3>团队 IP</h3><p>团队视频 · 每日搞怪 · 花名小剧场</p></article>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div><strong>烤个梨呀</strong> · 由 Adeptify 发起 · 像素共创城（CSS 街区）</div>
+      <div>人在烤，东西在长</div>
+    </footer>
+  </div>
+</body>
+</html>

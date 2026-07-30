@@ -30,7 +30,25 @@
 
 ## 设计原型
 
-### 漆梨 × 月刊（当前主推多页稿）
+### 七向 sketch 高保真首页（各自独立）
+
+对应 `.impeccable/sketches/` 七个方向，每向一版静态首页：
+
+```bash
+cd /path/to/roast-pear && python3 -m http.server 8765
+# 打开 http://127.0.0.1:8765/homepages/<direction>/
+# 例：living-anthology · teletext-service · pixel-maker-city ·
+#     riso-release-wall · slow-fire-index · homepage-overdrive · canon
+node homepages/verify-homepages.mjs
+```
+
+| 路径 | 内容 |
+|---|---|
+| [`homepages/`](./homepages/) | **七向首页**：各目录自有 HTML+CSS，内容种子 `content.json` |
+| `homepages/README.md` | 方向映射与打开方式 |
+| `homepages/verify-homepages.mjs` | 内容 / 区分度门禁 |
+
+### 漆梨 × 月刊（多页稿）
 
 ```bash
 open design/site/index.html
@@ -38,7 +56,7 @@ open design/site/index.html
 
 | 路径 | 内容 |
 |---|---|
-| [`design/site/`](./design/site/) | **完整多页原型**：首页 + 发现 / 人 / 作品 / 论坛 / 开发者 / 加入 |
+| [`design/site/`](./design/site/) | 完整多页原型：首页 + 发现 / 人 / 作品 / 论坛 / 开发者 / 加入 |
 | `design/site/README.md` | 页面清单与动效说明 |
 
 ### 早期单页探索稿
@@ -62,5 +80,5 @@ open design/homepage/prototype.html
 ## 状态
 
 - 规划与产品范围：以 `ROAST-PEAR.md` 与产品技术计划为准  
-- 视觉：回到初始首页原型；新一版风格方向待重新选择后再做  
+- 视觉：七向 sketch 首页已在 `homepages/` 落地；主推方向待产品选定  
 - 工程：尚未进入生产实现  

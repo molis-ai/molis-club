@@ -1,0 +1,257 @@
+/* Pixel Maker City — CSS districts, no sketch-as-map */
+:root {
+  --cream: #fff4c7;
+  --paper: #fffaf0;
+  --ink: #201a17;
+  --red: #ff3b30;
+  --blue: #1565ff;
+  --green: #00b978;
+  --yellow: #ffd54a;
+  --purple: #7c5cff;
+  --line: #201a17;
+  --pixel: "Press Start 2P", monospace;
+  --sans: "Nunito", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #fff8e4, var(--cream) 40%, #f0e2b8);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* Shared chrome */
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center; gap: .45rem;
+  padding: .45rem .75rem;
+  background: var(--paper);
+  border-bottom: 3px solid var(--ink);
+}
+.logo {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--red); color: #fff;
+  display: grid; place-items: center;
+  font-family: var(--pixel); font-size: 10px;
+  border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink);
+}
+.tabs { display: flex; gap: .1rem; flex: 1; overflow-x: auto; }
+.tabs a {
+  min-width: 40px; height: 38px; padding: 0 .5rem;
+  display: grid; place-items: center; border-radius: 8px;
+  border: 2px solid transparent; font-size: 15px;
+}
+.tabs a.active {
+  border-color: var(--ink); background: #fff;
+  box-shadow: inset 0 -3px 0 var(--red);
+}
+.top-actions { display: flex; gap: .35rem; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 38px; padding: 0 .9rem; border-radius: 999px; font-weight: 800;
+  border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink);
+}
+.btn-red { background: var(--red); color: #fff; }
+.btn-ghost { background: #fff; }
+.icon-btn {
+  width: 36px; height: 36px; border-radius: 10px;
+  border: 2px solid var(--ink); background: #fff;
+  display: grid; place-items: center;
+}
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 1rem .85rem 2.5rem; }
+
+/* Hero: city plaza built from district tiles (not a webp dump) */
+.plaza {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: .75rem;
+  margin-bottom: .85rem;
+}
+.intro {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 4px 4px 0 rgba(32,26,23,.12);
+}
+.intro h1 {
+  margin: 0 0 .45rem;
+  font-family: var(--pixel); font-size: 14px; line-height: 1.55;
+  color: var(--red); text-shadow: 2px 2px 0 #ffd0cc;
+}
+.intro p { margin: 0 0 .85rem; font-size: .92rem; color: #4a4038; }
+.intro .actions { display: flex; flex-direction: column; gap: .4rem; }
+
+/* Isometric-ish CSS city grid */
+.city {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  padding: .75rem;
+  box-shadow: 5px 5px 0 rgba(32,26,23,.1);
+}
+.city-label {
+  font-family: var(--pixel); font-size: 9px; margin: 0 0 .55rem;
+  display: flex; justify-content: space-between; gap: .5rem;
+}
+.districts {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: .5rem;
+  min-height: 380px;
+}
+.district {
+  border: 3px solid var(--ink);
+  border-radius: 12px;
+  padding: .7rem .75rem;
+  position: relative;
+  min-height: 110px;
+  display: flex; flex-direction: column;
+  box-shadow: 3px 3px 0 rgba(32,26,23,.12);
+  transition: transform .12s ease;
+}
+.district:hover { transform: translate(-1px, -1px); }
+.district .pin {
+  position: absolute; top: -10px; right: 10px;
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid var(--ink); background: #fff;
+  display: grid; place-items: center; font-size: 12px;
+  overflow: hidden;
+}
+.district .pin img { width: 100%; height: 100%; object-fit: cover; }
+.district h2 {
+  margin: 0 0 .35rem;
+  font-family: var(--pixel); font-size: 9px; line-height: 1.45;
+}
+.district p { margin: 0; font-size: .82rem; color: #4a4038; flex: 1; }
+.district .tag {
+  margin-top: .5rem; align-self: flex-start;
+  font-size: 11px; font-weight: 800;
+  border: 2px solid var(--ink); border-radius: 6px;
+  padding: .1rem .4rem; background: var(--yellow);
+}
+
+.d-cognia {
+  grid-column: 2; grid-row: 1 / span 2;
+  background: linear-gradient(160deg, #e8f0ff, #fff);
+  min-height: 230px;
+}
+.d-cognia h2 { color: var(--blue); font-size: 11px; }
+.d-cognia .building {
+  margin: .5rem 0;
+  height: 72px;
+  border: 2px solid var(--ink);
+  border-radius: 8px 8px 0 0;
+  background:
+    linear-gradient(90deg, var(--blue) 0 30%, transparent 30%),
+    repeating-linear-gradient(90deg, #cde 0 8px, #e8f0ff 8px 16px),
+    #dce8ff;
+  position: relative;
+}
+.d-cognia .building::after {
+  content: "Cognia";
+  position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
+  background: var(--red); color: #fff; font-weight: 800; font-size: 12px;
+  padding: .15rem .45rem; border: 2px solid var(--ink);
+}
+.d-west { grid-column: 1; grid-row: 1; background: #f3e8ff; }
+.d-east { grid-column: 3; grid-row: 1; background: #e8fff4; }
+.d-market { grid-column: 1; grid-row: 2; background: #fff3e0; }
+.d-tools { grid-column: 3; grid-row: 2; background: #e3f2fd; }
+.d-plaza {
+  grid-column: 1 / -1; grid-row: 3;
+  background: #fffde7;
+  flex-direction: row; flex-wrap: wrap; gap: .75rem; align-items: center;
+  min-height: 88px;
+}
+.d-plaza .crowd {
+  display: flex; flex: 1; gap: .35rem; flex-wrap: wrap;
+}
+.d-plaza .crowd img {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 2px solid var(--ink); object-fit: cover;
+}
+
+/* Below-fold: same thick border "building board" language */
+.board {
+  margin-top: .85rem;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  padding: .9rem 1rem;
+}
+.board h2 {
+  margin: 0 0 .7rem;
+  font-family: var(--pixel); font-size: 11px; line-height: 1.5;
+}
+.shop-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: .55rem;
+}
+.shop {
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: .7rem;
+  background: #fff;
+  box-shadow: 2px 2px 0 rgba(32,26,23,.1);
+}
+.shop .bar { height: 8px; border: 2px solid var(--ink); border-radius: 0 0 4px 4px; margin: -.7rem -.7rem .55rem; }
+.shop .bar.r { background: var(--red); }
+.shop .bar.b { background: var(--blue); }
+.shop .bar.g { background: var(--green); }
+.shop .bar.y { background: var(--yellow); }
+.shop h3 { margin: 0 0 .25rem; font-size: .95rem; }
+.shop p { margin: 0; font-size: .82rem; color: #5a5048; }
+.shop .meta { margin-top: .45rem; font-size: 11px; font-weight: 800; color: var(--blue); }
+
+.people {
+  display: flex; flex-wrap: wrap; gap: .55rem;
+}
+.person {
+  width: 112px; text-align: center;
+  border: 2px solid var(--ink); border-radius: 12px;
+  padding: .55rem; background: #fff;
+}
+.person img {
+  width: 52px; height: 52px; border-radius: 50%;
+  object-fit: cover; margin: 0 auto .3rem;
+  border: 2px solid var(--ink);
+}
+.person strong { display: block; font-size: .88rem; }
+.person span { font-size: 11px; color: #5a5048; }
+
+.tri { display: grid; grid-template-columns: repeat(3, 1fr); gap: .55rem; }
+.tile {
+  border: 2px solid var(--ink); border-radius: 10px;
+  padding: .75rem; background: #fff;
+}
+.tile h3 { margin: 0 0 .3rem; font-size: .95rem; }
+.tile p { margin: 0; font-size: .85rem; color: #5a5048; }
+
+.footer {
+  margin-top: 1rem;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: .4rem;
+  font-size: .85rem; color: #5a5048;
+  border-top: 3px solid var(--ink); padding-top: .75rem;
+}
+.footer strong { color: var(--ink); }
+
+@media (max-width: 900px) {
+  .plaza { grid-template-columns: 1fr; }
+  .districts { grid-template-columns: 1fr 1fr; }
+  .d-cognia { grid-column: 1 / -1; grid-row: auto; }
+  .d-plaza { grid-column: 1 / -1; }
+  .shop-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .districts, .shop-grid, .tri { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .district { transition: none; }
+}

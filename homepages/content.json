@@ -1,0 +1,103 @@
+{
+  "brand": {
+    "name": "烤个梨呀",
+    "byline": "由 Adeptify 发起",
+    "promise": "认识做东西的人，体验正在长大的作品",
+    "tagline": "人在烤，东西在长",
+    "slow": "慢一点，把东西做好。",
+    "about": "烤个梨呀是 Adeptify 的创作者小馆：认识做东西的人，试用正在长大的作品，炉边聊聊，顺手拿开发工具。不装热闹。"
+  },
+  "mains": [
+    {
+      "name": "Cognia",
+      "tier": "炉上主菜",
+      "status": "可试用",
+      "blurb": "把碎片材料、笔记和对话收成可回看的工作台。适合长期项目。"
+    },
+    {
+      "name": "Notebook",
+      "tier": "炉上主菜",
+      "status": "内测",
+      "blurb": "为研究与写作准备的笔记本。强调结构与引用。"
+    },
+    {
+      "name": "Nexus",
+      "tier": "炉上主菜",
+      "status": "招募中",
+      "blurb": "连接人、项目与上下文。先服务团队，再慢慢打开。"
+    }
+  ],
+  "sides": [
+    {
+      "name": "马哥的馊主意",
+      "maker": "马哥",
+      "status": "公开迭代",
+      "blurb": "把聊天里的馊主意拆成可执行的下一步。"
+    },
+    {
+      "name": "Knowledge-Graphify",
+      "maker": "团队",
+      "status": "可离线试",
+      "blurb": "把文章变成可检视的知识图谱与离线 HTML。"
+    },
+    {
+      "name": "众生卷",
+      "maker": "团队",
+      "status": "原型",
+      "blurb": "故事线交换与角色扮演试写的试验场。"
+    },
+    {
+      "name": "Elsewhere",
+      "maker": "团队",
+      "status": "本地私密",
+      "blurb": "走完一条未选的人生，再安静回到现实。"
+    }
+  ],
+  "tools": [
+    {
+      "name": "ForkLight",
+      "blurb": "把长任务交给外部 Worker，避免主会话被拖死。"
+    },
+    {
+      "name": "Relay",
+      "blurb": "连接与转发，多端消息与回调对齐。"
+    },
+    {
+      "name": "Adeptify SDK",
+      "blurb": "接入 Adeptify 能力的公共底座。"
+    }
+  ],
+  "people": [
+    { "name": "马哥", "slug": "mago", "note": "还在烤馊主意", "avatar": "头像1.jpg" },
+    { "name": "果果", "slug": "guoguo", "note": "徐晶 · 待补一句话", "avatar": "头像4.jpg" },
+    { "name": "俊仔", "slug": "junzai", "note": "谢俊 · 待补一句话", "avatar": "头像5.jpg" },
+    { "name": "哲子", "slug": "zhezi", "note": "庄昊哲 · 待补一句话", "avatar": "头像2.jpg" },
+    { "name": "飞哥", "slug": "feige", "note": "杨鹏飞 · 待补一句话", "avatar": "头像3.jpg" }
+  ],
+  "forum": [
+    { "title": "Cognia 试用反馈周：你卡在哪一步？", "tag": "反馈", "meta": "关联 Cognia · 示意" },
+    { "title": "ForkLight 怎么接进自己的长任务？", "tag": "求助", "meta": "关联 ForkLight · 示意" },
+    { "title": "开放工作室夜 · 本周五围炉", "tag": "活动", "meta": "线下 / 线上 · 示意" },
+    { "title": "马哥的馊主意 Build Log #04", "tag": "Build Log", "meta": "更新回流 · 示意" }
+  ],
+  "events": [
+    { "title": "开放工作室夜", "when": "周五晚", "form": "围炉 + 演示" },
+    { "title": "安装互助局", "when": "周末午后", "form": "一起把环境跑通" },
+    { "title": "产品试用反馈周", "when": "本周", "form": "围绕 Cognia" }
+  ],
+  "ip": [
+    { "title": "团队视频", "blurb": "开放工作室 vlog，人还在烤。" },
+    { "title": "每日搞怪", "blurb": "小剧场与花名，不编造人设。" }
+  ],
+  "ctas": {
+    "explore": "逛逛作品",
+    "people": "看看谁在做",
+    "join": "注册参与",
+    "tryCognia": "开始体验",
+    "builder": "申请成为 Builder",
+    "forum": "去论坛看看",
+    "devs": "开发者中心"
+  },
+  "assetsRoot": "../../design/homepage/assets",
+  "sketchesRoot": "../../.impeccable/sketches"
+}

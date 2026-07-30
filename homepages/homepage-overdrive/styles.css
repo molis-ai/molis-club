@@ -1,0 +1,254 @@
+/* Homepage Overdrive — open studio desk built in CSS (no sketch dump) */
+:root {
+  --paper: #f2f3f0;
+  --surface: #ffffff;
+  --ink: #141612;
+  --quiet: #5a5f58;
+  --line: rgba(20, 22, 18, 0.09);
+  --pear: #d4a12a;
+  --leaf: #5f7d3b;
+  --desk: #e8e4d8;
+  --sans: "Outfit", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding: .7rem 1.4rem;
+  background: rgba(242,243,240,.94);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+}
+.brand { display: flex; align-items: center; gap: .5rem; }
+.brand-mark {
+  width: 32px; height: 32px; border-radius: 10px;
+  background: linear-gradient(145deg, #e0b03a, var(--pear));
+}
+.brand strong { display: block; font-size: .95rem; }
+.brand small { color: var(--quiet); font-size: .72rem; }
+.nav { display: flex; gap: .15rem; }
+.nav a {
+  padding: .4rem .7rem; border-radius: 8px;
+  color: var(--quiet); font-weight: 500; font-size: .9rem;
+}
+.nav a.active {
+  color: var(--ink); box-shadow: inset 0 -2px 0 var(--pear); border-radius: 0;
+}
+.top-actions { display: flex; align-items: center; gap: .4rem; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 40px; padding: 0 1rem; border-radius: 10px; font-weight: 600;
+}
+.btn-pear { background: var(--pear); color: var(--ink); }
+.btn-ghost { background: var(--surface); border: 1px solid var(--line); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 1.25rem 1.4rem 2.5rem; }
+
+.hero {
+  display: grid;
+  grid-template-columns: .9fr 1.25fr;
+  gap: 1.25rem;
+  align-items: stretch;
+  margin-bottom: 1.5rem;
+}
+.hero-copy h1 {
+  margin: 0 0 .4rem;
+  font-size: clamp(2.4rem, 4.5vw, 3.4rem);
+  font-weight: 700; letter-spacing: -.03em; line-height: 1.05;
+  display: inline-block; position: relative;
+}
+.hero-copy h1::after {
+  content: "";
+  position: absolute; left: 0; right: 10%; bottom: .1em;
+  height: .28em; background: rgba(212,161,42,.42);
+  z-index: -1; transform: rotate(-1deg);
+}
+.kicker {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
+  color: var(--quiet); display: block; margin-bottom: .55rem;
+}
+.lead {
+  margin: .7rem 0 1.1rem; color: var(--quiet);
+  font-size: 1.05rem; max-width: 28ch;
+}
+.cta-row { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.principles {
+  display: grid; gap: .35rem; font-size: .88rem; color: var(--quiet);
+}
+
+/* CSS desk surface — primary UI, not sketch image */
+.desk {
+  background:
+    radial-gradient(ellipse at 60% 40%, rgba(212,161,42,.08), transparent 50%),
+    linear-gradient(180deg, #f7f4ea, var(--desk));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  min-height: 520px;
+  padding: 1rem;
+  position: relative;
+  box-shadow: 0 18px 40px rgba(20,22,18,.06);
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  grid-template-rows: auto auto 1fr;
+  gap: .65rem;
+}
+.note {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: .7rem .75rem;
+  box-shadow: 0 8px 20px rgba(20,22,18,.07);
+  position: relative;
+}
+.note .n {
+  position: absolute; top: -9px; left: -9px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--pear); color: var(--ink);
+  font-size: 11px; font-weight: 800;
+  display: grid; place-items: center;
+  border: 2px solid #fff;
+}
+.note strong { display: block; font-size: .88rem; margin-bottom: .15rem; }
+.note span { font-size: .78rem; color: var(--quiet); }
+.note img.avatar {
+  width: 48px; height: 48px; border-radius: 12px; object-fit: cover;
+  margin-bottom: .35rem; border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.note.sticky {
+  background: #fff8d6;
+  border-color: rgba(212,161,42,.35);
+  transform: rotate(-1.5deg);
+}
+.note.laptop {
+  grid-column: 2; grid-row: 1 / span 2;
+  padding: 0; overflow: hidden; transform: none;
+  background: #1a1d18; color: #edeeea;
+}
+.note.laptop .chrome {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .55rem .7rem; font-size: .8rem;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.note.laptop .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #6fbf4a; display: inline-block; margin-right: .3rem;
+}
+.note.laptop img {
+  width: 100%; height: 140px; object-fit: cover; opacity: .95;
+}
+.note.laptop .cap {
+  padding: .55rem .7rem .7rem; background: var(--surface); color: var(--ink);
+}
+.mini-faces { display: flex; margin-top: .35rem; }
+.mini-faces img {
+  width: 22px; height: 22px; border-radius: 50%; object-fit: cover;
+  margin-left: -6px; border: 1.5px solid #fff;
+}
+.mini-faces img:first-child { margin-left: 0; }
+.timeline {
+  display: flex; gap: .25rem; margin-top: .4rem;
+}
+.timeline i {
+  flex: 1; height: 4px; border-radius: 99px; background: #e5e7e1;
+}
+.timeline i.on { background: var(--pear); }
+
+/* Feed + sections share surface cards */
+.feed-head {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem; margin-bottom: .75rem; flex-wrap: wrap;
+}
+.feed-head h2 { margin: 0; font-size: 1.15rem; }
+.chips { display: flex; gap: .35rem; flex-wrap: wrap; }
+.chip {
+  padding: .32rem .65rem; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--surface);
+  font-size: .82rem; color: var(--quiet); font-weight: 500;
+}
+.chip.on { background: var(--pear); color: var(--ink); border-color: transparent; }
+
+.feed-grid {
+  display: grid; grid-template-columns: 1.4fr .7fr; gap: .75rem;
+  margin-bottom: 1.5rem;
+}
+.cards {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.card .media { aspect-ratio: 16/10; background: #e8e9e4; overflow: hidden; }
+.card .media img { width: 100%; height: 100%; object-fit: cover; }
+.card .body { padding: .7rem .8rem .85rem; }
+.card .tag { font-size: 11px; font-weight: 700; color: var(--leaf); margin-bottom: .2rem; }
+.card h3 { margin: 0 0 .2rem; font-size: .95rem; }
+.card p { margin: 0; font-size: .85rem; color: var(--quiet); }
+
+.side {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: .9rem 1rem;
+}
+.side h3 { margin: 0 0 .6rem; font-size: .95rem; }
+.online { display: flex; flex-wrap: wrap; gap: .45rem; }
+.online figure { margin: 0; width: 56px; text-align: center; }
+.online img {
+  width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+  margin: 0 auto .2rem; border: 2px solid #fff;
+  box-shadow: 0 0 0 2px rgba(95,125,59,.3);
+}
+.online figcaption { font-size: 11px; color: var(--quiet); }
+
+.section { margin-bottom: 1.4rem; }
+.section h2 { margin: 0 0 .7rem; font-size: 1.15rem; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; }
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: .9rem 1rem;
+}
+.tile .meta {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
+  color: var(--pear); margin-bottom: .35rem;
+}
+.tile h3 { margin: 0 0 .25rem; font-size: 1rem; }
+.tile p { margin: 0; color: var(--quiet); font-size: .9rem; }
+
+.footer {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem;
+  color: var(--quiet); font-size: .85rem;
+}
+
+@media (max-width: 980px) {
+  .hero { grid-template-columns: 1fr; }
+  .desk { grid-template-columns: 1fr 1fr; min-height: auto; }
+  .note.laptop { grid-column: 1 / -1; grid-row: auto; }
+  .feed-grid, .cards, .grid3, .grid4 { grid-template-columns: 1fr 1fr; }
+  .nav { display: none; }
+}
+@media (max-width: 600px) {
+  .desk, .cards, .grid3, .grid4, .feed-grid { grid-template-columns: 1fr; }
+}

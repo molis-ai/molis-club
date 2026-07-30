@@ -1,0 +1,146 @@
+{
+  "ok": true,
+  "results": [
+    {
+      "dir": "living-anthology",
+      "pass": 1,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 1259
+    },
+    {
+      "dir": "living-anthology",
+      "pass": 2,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 1259
+    },
+    {
+      "dir": "teletext-service",
+      "pass": 1,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 1269
+    },
+    {
+      "dir": "teletext-service",
+      "pass": 2,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 1269
+    },
+    {
+      "dir": "pixel-maker-city",
+      "pass": 1,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 982
+    },
+    {
+      "dir": "pixel-maker-city",
+      "pass": 2,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 982
+    },
+    {
+      "dir": "riso-release-wall",
+      "pass": 1,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 1098
+    },
+    {
+      "dir": "riso-release-wall",
+      "pass": 2,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 1098
+    },
+    {
+      "dir": "slow-fire-index",
+      "pass": 1,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 675
+    },
+    {
+      "dir": "slow-fire-index",
+      "pass": 2,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 675
+    },
+    {
+      "dir": "homepage-overdrive",
+      "pass": 1,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 1018
+    },
+    {
+      "dir": "homepage-overdrive",
+      "pass": 2,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 1018
+    },
+    {
+      "dir": "canon",
+      "pass": 1,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 908
+    },
+    {
+      "dir": "canon",
+      "pass": 2,
+      "status": 200,
+      "hasBrand": true,
+      "painted": true,
+      "errors": [],
+      "ok": true,
+      "textLen": 908
+    }
+  ],
+  "shots": "/var/folders/m2/tx2tqs290l913y61zqz413dr0000gn/T/grok-goal-73712dc4c2b5/implementer/shots"
+}

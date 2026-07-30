@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>烤个梨呀 · 慢火清单</title>
+  <meta name="description" content="烤个梨呀慢火清单：慢一点，把东西做好。由 Adeptify 发起。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-direction="slow-fire-index">
+  <header class="topbar">
+    <a class="brand" href="#top"><span class="drop" aria-hidden="true"></span>烤个梨呀</a>
+    <nav class="nav" aria-label="火候索引">
+      <a href="#mains">主菜</a>
+      <a href="#works">刚出炉</a>
+      <a href="#hearth">围炉</a>
+      <a href="#tools">工具</a>
+      <a href="#join">加入</a>
+    </nav>
+  </header>
+
+  <main class="shell" id="top">
+    <div class="fire-layout">
+      <div class="fire-spine" aria-hidden="true"></div>
+      <div><!-- spacer for first column content via station-dot --></div>
+
+      <!-- dots and bodies alternate via station pattern: each station has dot in col1 and body in col2 -->
+    </div>
+
+    <!-- Use explicit two-column stations -->
+    <div class="fire-layout">
+      <div class="fire-spine" aria-hidden="true">
+        <div class="station-dot hot" style="margin-top:2rem"></div>
+        <div class="station-dot hot" style="margin-top:12rem"></div>
+        <div class="station-dot warm" style="margin-top:10rem"></div>
+        <div class="station-dot warm" style="margin-top:9rem"></div>
+        <div class="station-dot warm" style="margin-top:8rem"></div>
+        <div class="station-dot cool" style="margin-top:8rem"></div>
+        <div class="station-dot cool" style="margin-top:7rem"></div>
+      </div>
+
+      <div>
+        <section class="station-body hero">
+          <p class="station-kicker">慢火清单 / SLOW-FIRE INDEX</p>
+          <h1>慢一点，<br />把东西做好。</h1>
+          <div class="rule" aria-hidden="true"></div>
+          <p class="sub">
+            <span>长期主义的创作社区</span>
+            <span>· 真实的过程</span>
+            <span>· 彼此成就</span>
+          </p>
+          <a class="btn-ember" id="join" href="#people">加入烤个梨呀 →</a>
+          <a class="link-quiet" href="#hearth">阅读社区指南 →</a>
+          <p class="promise">认识做东西的人，体验正在长大的作品。烤个梨呀，由 Adeptify 发起。</p>
+        </section>
+
+        <section class="station-body" id="mains">
+          <p class="station-kicker">炉上主菜</p>
+          <div class="main-grid">
+            <article class="main-card">
+              <h3>Cognia</h3>
+              <p>可回看的工作台。炉上主菜 · <span class="status leaf">● 可试用</span></p>
+            </article>
+            <article class="main-card">
+              <h3>Notebook</h3>
+              <p>结构与引用。 · <span class="status gold">● 内测</span></p>
+            </article>
+            <article class="main-card">
+              <h3>Nexus</h3>
+              <p>人与项目上下文。 · <span class="status ember">● 招募中</span></p>
+            </article>
+          </div>
+        </section>
+
+        <section class="station-body" id="people">
+          <p class="station-kicker">正在创作的人</p>
+          <div class="people-row">
+            <img src="../../design/homepage/assets/头像1.jpg" alt="马哥" width="40" height="40" title="马哥" />
+            <img src="../../design/homepage/assets/头像4.jpg" alt="果果" width="40" height="40" title="果果" />
+            <img src="../../design/homepage/assets/头像5.jpg" alt="俊仔" width="40" height="40" title="俊仔" />
+            <img src="../../design/homepage/assets/头像2.jpg" alt="哲子" width="40" height="40" title="哲子" />
+            <img src="../../design/homepage/assets/头像3.jpg" alt="飞哥" width="40" height="40" title="飞哥" />
+          </div>
+          <p style="margin:.75rem 0 0;color:var(--quiet);font-size:.88rem">马哥 · 果果 · 俊仔 · 哲子 · 飞哥 — 介绍未齐标「待补」。</p>
+        </section>
+
+        <section class="station-body" id="works">
+          <p class="station-kicker">刚出炉 · 桌上小菜</p>
+          <div class="work-list">
+            <div class="work-row">
+              <div class="thumb"><img src="../../design/homepage/assets/cognia-product.jpg" alt="" width="44" height="44" /></div>
+              <div><strong>Cognia</strong><span>炉上主菜 · 可回看工作台</span></div>
+              <span class="status leaf">● 可试用</span>
+            </div>
+            <div class="work-row">
+              <div class="thumb">馊</div>
+              <div><strong>马哥的馊主意</strong><span>桌上小菜 · 马哥</span></div>
+              <span class="status gold">● 公开迭代</span>
+            </div>
+            <div class="work-row">
+              <div class="thumb">KG</div>
+              <div><strong>Knowledge-Graphify</strong><span>图谱与离线 HTML</span></div>
+              <span class="status leaf">● 可离线试</span>
+            </div>
+            <div class="work-row">
+              <div class="thumb">El</div>
+              <div><strong>Elsewhere · 众生卷</strong><span>本地私密 · 原型</span></div>
+              <span class="status ember">● 刚出炉</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="station-body" id="hearth" data-mock="true">
+          <p class="station-kicker">围炉讨论 · 活动</p>
+          <div class="thread">
+            <div class="ico">💬</div>
+            <div><strong>Cognia 试用反馈周：你卡在哪一步？</strong><span>论坛 · 示意</span></div>
+            <span style="color:var(--quiet);font-size:.8rem">讨论</span>
+          </div>
+          <div class="thread">
+            <div class="ico">⚑</div>
+            <div><strong>开放工作室夜 · 本周五围炉</strong><span>活动 · 安装互助局同周</span></div>
+            <span style="color:var(--quiet);font-size:.8rem">活动</span>
+          </div>
+          <div class="thread">
+            <div class="ico">🎬</div>
+            <div><strong>团队视频 · 每日搞怪</strong><span>团队 IP · 人设不编造</span></div>
+            <span style="color:var(--quiet);font-size:.8rem">IP</span>
+          </div>
+          <div class="thread">
+            <div class="ico">📝</div>
+            <div><strong>马哥的馊主意 Build Log #04</strong><span>更新回流 · 示意</span></div>
+            <span style="color:var(--quiet);font-size:.8rem">Log</span>
+          </div>
+        </section>
+
+        <section class="station-body" id="tools">
+          <p class="station-kicker">开发工具</p>
+          <a class="tool-link" href="#tools"><span>ForkLight · 长任务 Worker</span><span>→</span></a>
+          <a class="tool-link" href="#tools"><span>Relay · 连接与转发</span><span>→</span></a>
+          <a class="tool-link" href="#tools"><span>Adeptify SDK · 公共底座</span><span>→</span></a>
+        </section>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div><strong>烤个梨呀</strong> · 由 Adeptify 发起 · 慢火全页火候线</div>
+      <div>慢一点，把东西做好。</div>
+    </footer>
+  </main>
+</body>
+</html>
