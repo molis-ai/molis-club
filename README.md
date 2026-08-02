@@ -1,84 +1,114 @@
-# 烤个梨呀 (Roast Pear)
+# 烤个梨呀 / Roast Pear
 
-由 [Adeptify](https://github.com/adeptify) 发起的创作者、作品与早期用户社区。
+[中文](#中文) · [English](#english)
+
+---
+
+## 中文
+
+### 这是什么
+
+**烤个梨呀（Roast Pear）** 是由 Adeptify 发起的创作者、作品与早期用户社区。
 
 > 认识做东西的人，体验正在长大的作品。
 
-## 文档（先读这个）
+当前仓库以 **产品定义 + 高保真静态原型** 为主（首页七向 sketch、漆梨月刊多页稿），完整后端产品仍按技术计划迭代。协作首选产品范围文档：[`ROAST-PEAR.md`](./ROAST-PEAR.md)。
 
-| 文件 | 说明 |
-|---|---|
-| **[ROAST-PEAR.md](./ROAST-PEAR.md)** | **产品是什么、要做哪些功能**（范围说明，协作首选） |
-| [PRODUCT.md](./PRODUCT.md) | 设计 / Impeccable 用产品记录 |
-| [2026-07-25-adeptify-ecosystem-business-plan.md](./2026-07-25-adeptify-ecosystem-business-plan.md) | Adeptify 生态与商业战略母文档 |
-| [2026-07-27-roast-pear-product-design-and-technical-plan.md](./2026-07-27-roast-pear-product-design-and-technical-plan.md) | 产品设计与技术迭代计划（全文） |
+### 主要功能点（产品范围）
 
-## 我们要做的事（极简）
+1. **社区首页与发现**  
+   - 人、拳头产品、Maker 作品、工具、活动、论坛、团队 IP  
+   - 分层叙事：炉上主菜（Cognia / Notebook / Nexus）· 桌上小菜（马哥的馊主意、KGF、众生卷、Elsewhere…）· 工具架（ForkLight、Relay、Adeptify SDK）
 
-1. **社区首页与发现**：人、拳头产品、Maker 作品、工具、活动、论坛、团队 IP  
-2. **账号与身份**：Member / Builder / Maker；Builder 入驻与审核  
-3. **创作者 Profile 与作品分发**：展示、试用/下载、更新、Build Log  
-4. **论坛与活动**：围绕作品的反馈闭环  
-5. **开发者中心**：ForkLight、Relay、Adeptify SDK  
-6. **Library + Admin**：回访关系与治理  
+2. **账号与身份**  
+   - Member / Builder / Maker  
+   - Builder 入驻与审核  
 
-分层叙事：
+3. **创作者 Profile 与作品分发**  
+   - 展示、试用/下载、更新、Build Log  
 
-- **炉上主菜**：Cognia、Notebook、Nexus  
-- **桌上小菜**：马哥的馊主意、Knowledge-Graphify、众生卷、Elsewhere 等  
-- **工具架**：ForkLight、Relay、Adeptify SDK  
+4. **论坛与活动**  
+   - 围绕作品的反馈闭环  
 
-## 设计原型
+5. **开发者中心**  
+   - ForkLight、Relay、Adeptify SDK 入口与文档导流  
 
-### 七向 sketch 高保真首页（各自独立）
+6. **Library + Admin**  
+   - 回访关系与社区治理  
 
-对应 `.impeccable/sketches/` 七个方向，每向一版静态首页：
+### 本仓库当前可运行内容
+
+#### 七向高保真首页
 
 ```bash
-cd /path/to/roast-pear && python3 -m http.server 8765
+cd /path/to/roast-pear
+python3 -m http.server 8765
 # 打开 http://127.0.0.1:8765/homepages/<direction>/
-# 例：living-anthology · teletext-service · pixel-maker-city ·
-#     riso-release-wall · slow-fire-index · homepage-overdrive · canon
+# 方向例：living-anthology · teletext-service · pixel-maker-city ·
+#         riso-release-wall · slow-fire-index · homepage-overdrive · canon
 node homepages/verify-homepages.mjs
 ```
 
-| 路径 | 内容 |
-|---|---|
-| [`homepages/`](./homepages/) | **七向首页**：各目录自有 HTML+CSS，内容种子 `content.json` |
-| `homepages/README.md` | 方向映射与打开方式 |
-| `homepages/verify-homepages.mjs` | 内容 / 区分度门禁 |
-
-### 漆梨 × 月刊（多页稿）
+#### 漆梨 × 月刊多页原型
 
 ```bash
 open design/site/index.html
 ```
 
-| 路径 | 内容 |
-|---|---|
-| [`design/site/`](./design/site/) | 完整多页原型：首页 + 发现 / 人 / 作品 / 论坛 / 开发者 / 加入 |
-| `design/site/README.md` | 页面清单与动效说明 |
-
-### 早期单页探索稿
+#### 早期单页探索
 
 ```bash
 open design/homepage/prototype.html
 ```
 
-| 路径 | 内容 |
-|---|---|
-| `design/homepage/prototype.html` | 初始单页高保真 |
-| `design/homepage/assets/` | 共享视觉资产 |
+### 品牌关系
 
-## 品牌关系
+| 名称 | 角色 |
+|------|------|
+| Adeptify | 公司与技术母品牌 |
+| 烤个梨呀 | 创作者与作品社区 |
+| Cognia / Notebook / Nexus | 拳头产品 |
+| SDK / ForkLight / Relay | 开发者能力（独立产品身份） |
 
-- **Adeptify**：公司与技术母品牌  
-- **烤个梨呀**：创作者与作品社区  
-- **Cognia / Notebook / Nexus**：拳头产品  
-- **Adeptify SDK / ForkLight / Relay**：开发者能力（独立产品身份）  
+### 文档索引
 
-## 状态
+| 文件 | 说明 |
+|------|------|
+| [`ROAST-PEAR.md`](./ROAST-PEAR.md) | **产品是什么、做哪些功能** |
+| [`PRODUCT.md`](./PRODUCT.md) | 设计 / Impeccable 产品记录 |
+| `2026-07-25-adeptify-ecosystem-business-plan.md` | 生态与商业战略 |
+| `2026-07-27-roast-pear-product-design-and-technical-plan.md` | 产品设计与技术计划 |
 
-- 规划与产品范围：以 `ROAST-PEAR.md` 与产品技术计划为准  
-- 视觉：七向 sketch 首页已在 `homepages/` 落地；主推方向待产品选定  
-- 工程：尚未进入生产实现  
+### 开发说明
+
+本仓现阶段 **无统一 npm app 启动脚本**；以静态 HTML/CSS 原型与文档为主。验证首页内容/区分度：`node homepages/verify-homepages.mjs`。
+
+---
+
+## English
+
+### What it is
+
+**Roast Pear (烤个梨呀)** is Adeptify’s community for makers, works-in-progress, and early users: meet people who build things, and try products that are still growing. This repo currently holds **product scope docs and high-fidelity static prototypes**; full backend productization follows the technical plan.
+
+### Feature scope
+
+1. Discovery home: people, flagship products, maker works, tools, events, forum, team IPs.  
+2. Identity: Member / Builder / Maker with onboarding review.  
+3. Creator profiles and distribution (try/download, updates, build logs).  
+4. Forum & events feedback loops.  
+5. Developer hub for ForkLight, Relay, Adeptify SDK.  
+6. Library + admin governance.
+
+### Run prototypes locally
+
+```bash
+python3 -m http.server 8765
+# http://127.0.0.1:8765/homepages/<direction>/
+open design/site/index.html
+node homepages/verify-homepages.mjs
+```
+
+### Docs
+
+Start with [`ROAST-PEAR.md`](./ROAST-PEAR.md). Design notes in `PRODUCT.md`; longer plans in the dated markdown files at repo root.
