@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-09T07:26:21Z",
+  "title": "Design System: 烤个梨呀",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "暖灰纸面", "canonical": "#f4f1e9", "tonalRamp": ["oklch(15% 0.0111 89.7)", "oklch(27% 0.0111 89.7)", "oklch(39% 0.0111 89.7)", "oklch(51% 0.0111 89.7)", "oklch(63% 0.0111 89.7)", "oklch(75% 0.0111 89.7)", "oklch(87% 0.0111 89.7)", "oklch(95% 0.0111 89.7)"] },
+      "paper-soft": { "role": "neutral", "displayName": "柔纸", "canonical": "#ebe6dc", "tonalRamp": ["oklch(15% 0.0144 84.6)", "oklch(27% 0.0144 84.6)", "oklch(39% 0.0144 84.6)", "oklch(51% 0.0144 84.6)", "oklch(63% 0.0144 84.6)", "oklch(75% 0.0144 84.6)", "oklch(87% 0.0144 84.6)", "oklch(95% 0.0144 84.6)"] },
+      "paper-deep": { "role": "neutral", "displayName": "深纸", "canonical": "#ddd5c6", "tonalRamp": ["oklch(15% 0.0221 83.3)", "oklch(27% 0.0221 83.3)", "oklch(39% 0.0221 83.3)", "oklch(51% 0.0221 83.3)", "oklch(63% 0.0221 83.3)", "oklch(75% 0.0221 83.3)", "oklch(87% 0.0221 83.3)", "oklch(95% 0.0221 83.3)"] },
+      "surface": { "role": "neutral", "displayName": "近白内容面", "canonical": "#fbfaf6", "tonalRamp": ["oklch(15% 0.0054 95.1)", "oklch(27% 0.0054 95.1)", "oklch(39% 0.0054 95.1)", "oklch(51% 0.0054 95.1)", "oklch(63% 0.0054 95.1)", "oklch(75% 0.0054 95.1)", "oklch(87% 0.0054 95.1)", "oklch(95% 0.0054 95.1)"] },
+      "ink": { "role": "neutral", "displayName": "炭黑", "canonical": "#1d1c19", "tonalRamp": ["oklch(15% 0.0059 91.6)", "oklch(27% 0.0059 91.6)", "oklch(39% 0.0059 91.6)", "oklch(51% 0.0059 91.6)", "oklch(63% 0.0059 91.6)", "oklch(75% 0.0059 91.6)", "oklch(87% 0.0059 91.6)", "oklch(95% 0.0059 91.6)"] },
+      "ink-secondary": { "role": "neutral", "displayName": "次级炭黑", "canonical": "#4b4943", "tonalRamp": ["oklch(15% 0.0102 91.6)", "oklch(27% 0.0102 91.6)", "oklch(39% 0.0102 91.6)", "oklch(51% 0.0102 91.6)", "oklch(63% 0.0102 91.6)", "oklch(75% 0.0102 91.6)", "oklch(87% 0.0102 91.6)", "oklch(95% 0.0102 91.6)"] },
+      "muted": { "role": "neutral", "displayName": "静音灰", "canonical": "#716d64", "tonalRamp": ["oklch(15% 0.0146 86.9)", "oklch(27% 0.0146 86.9)", "oklch(39% 0.0146 86.9)", "oklch(51% 0.0146 86.9)", "oklch(63% 0.0146 86.9)", "oklch(75% 0.0146 86.9)", "oklch(87% 0.0146 86.9)", "oklch(95% 0.0146 86.9)"] },
+      "line": { "role": "neutral", "displayName": "墨线", "canonical": "rgba(29, 28, 25, 0.14)", "tonalRamp": ["oklch(15% 0.0118 84.6)", "oklch(27% 0.0118 84.6)", "oklch(39% 0.0118 84.6)", "oklch(51% 0.0118 84.6)", "oklch(63% 0.0118 84.6)", "oklch(75% 0.0118 84.6)", "oklch(87% 0.0118 84.6)", "oklch(95% 0.0118 84.6)"] },
+      "line-strong": { "role": "neutral", "displayName": "强调墨线", "canonical": "rgba(29, 28, 25, 0.28)", "tonalRamp": ["oklch(15% 0.0133 86.8)", "oklch(27% 0.0133 86.8)", "oklch(39% 0.0133 86.8)", "oklch(51% 0.0133 86.8)", "oklch(63% 0.0133 86.8)", "oklch(75% 0.0133 86.8)", "oklch(87% 0.0133 86.8)", "oklch(95% 0.0133 86.8)"] },
+      "pear": { "role": "primary", "displayName": "梨黄火候", "canonical": "#d79a1e", "tonalRamp": ["oklch(15% 0.1440 78.6)", "oklch(27% 0.1440 78.6)", "oklch(39% 0.1440 78.6)", "oklch(51% 0.1440 78.6)", "oklch(63% 0.1440 78.6)", "oklch(75% 0.1440 78.6)", "oklch(87% 0.1440 78.6)", "oklch(95% 0.1440 78.6)"] },
+      "pear-dark": { "role": "primary", "displayName": "深烤梨黄", "canonical": "#9a6810", "tonalRamp": ["oklch(15% 0.1128 74.3)", "oklch(27% 0.1128 74.3)", "oklch(39% 0.1128 74.3)", "oklch(51% 0.1128 74.3)", "oklch(63% 0.1128 74.3)", "oklch(75% 0.1128 74.3)", "oklch(87% 0.1128 74.3)", "oklch(95% 0.1128 74.3)"] },
+      "pear-soft": { "role": "primary", "displayName": "梨黄余温", "canonical": "#f0d694", "tonalRamp": ["oklch(15% 0.0887 88.9)", "oklch(27% 0.0887 88.9)", "oklch(39% 0.0887 88.9)", "oklch(51% 0.0887 88.9)", "oklch(63% 0.0887 88.9)", "oklch(75% 0.0887 88.9)", "oklch(87% 0.0887 88.9)", "oklch(95% 0.0887 88.9)"] },
+      "pear-hover": { "role": "primary", "displayName": "梨黄悬停", "canonical": "#e2a52b", "tonalRamp": ["oklch(15% 0.1458 79.4)", "oklch(27% 0.1458 79.4)", "oklch(39% 0.1458 79.4)", "oklch(51% 0.1458 79.4)", "oklch(63% 0.1458 79.4)", "oklch(75% 0.1458 79.4)", "oklch(87% 0.1458 79.4)", "oklch(95% 0.1458 79.4)"] },
+      "ink-hover": { "role": "neutral", "displayName": "炭黑悬停", "canonical": "#34322d", "tonalRamp": ["oklch(15% 0.0091 88.7)", "oklch(27% 0.0091 88.7)", "oklch(39% 0.0091 88.7)", "oklch(51% 0.0091 88.7)", "oklch(63% 0.0091 88.7)", "oklch(75% 0.0091 88.7)", "oklch(87% 0.0091 88.7)", "oklch(95% 0.0091 88.7)"] },
+      "leaf": { "role": "secondary", "displayName": "松叶绿", "canonical": "#58743c", "tonalRamp": ["oklch(15% 0.0879 130.7)", "oklch(27% 0.0879 130.7)", "oklch(39% 0.0879 130.7)", "oklch(51% 0.0879 130.7)", "oklch(63% 0.0879 130.7)", "oklch(75% 0.0879 130.7)", "oklch(87% 0.0879 130.7)", "oklch(95% 0.0879 130.7)"] },
+      "alert": { "role": "tertiary", "displayName": "烤痕陶红", "canonical": "#9a4d31", "tonalRamp": ["oklch(15% 0.1109 40.2)", "oklch(27% 0.1109 40.2)", "oklch(39% 0.1109 40.2)", "oklch(51% 0.1109 40.2)", "oklch(63% 0.1109 40.2)", "oklch(75% 0.1109 40.2)", "oklch(87% 0.1109 40.2)", "oklch(95% 0.1109 40.2)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Hero Display", "purpose": "Hero 主张；先帮助路人理解社区与下一步行动。" },
+      "headline": { "displayName": "Editorial Headline", "purpose": "章节标题、品牌与结尾号召的宋体声部。" },
+      "title": { "displayName": "Content Title", "purpose": "实时内容和可扫描条目的主要标题。" },
+      "body": { "displayName": "Body", "purpose": "正文、解释和内容摘要。" },
+      "label": { "displayName": "Action Label", "purpose": "按钮、导航和明确动作标签。" }
+    },
+    "shadows": [
+      { "name": "ambient-overlay", "value": "0 18px 42px rgba(44, 39, 30, 0.1)", "purpose": "外观菜单、话题编辑器、主视觉图和媒体卡悬停。" },
+      { "name": "ambient-compact", "value": "0 8px 22px rgba(44, 39, 30, 0.08)", "purpose": "搜索框、头像纸片和工作室条目。" },
+      { "name": "focus-warm", "value": "0 10px 30px rgba(86, 62, 19, 0.13)", "purpose": "搜索容器获得焦点时收束注意力。" },
+      { "name": "action-warm", "value": "0 9px 20px rgba(154, 104, 16, 0.16)", "purpose": "梨黄主按钮的克制行动阴影。" },
+      { "name": "paper-offset", "value": "3px 4px 0 rgba(29, 28, 25, 0.05)", "purpose": "作品纸条的轻微手工错版感。" }
+    ],
+    "motion": [
+      { "name": "ease-slow-fire", "value": "cubic-bezier(.16, 1, .3, 1)", "purpose": "所有悬停位移、菜单和状态变化的共享缓动。" },
+      { "name": "duration-state", "value": "0.2s", "purpose": "按钮、实时条目、头像和普通状态反馈。" },
+      { "name": "duration-card", "value": "0.22s", "purpose": "媒体卡悬停位移与阴影。" },
+      { "name": "duration-nav", "value": "0.24s", "purpose": "主导航梨黄下划线展开。" },
+      { "name": "reduced-motion", "value": "0.01ms", "purpose": "prefers-reduced-motion 下压缩动画与过渡，并关闭平滑滚动。" }
+    ],
+    "breakpoints": [
+      { "name": "nav-collapse", "value": "1050px" },
+      { "name": "mobile", "value": "760px" },
+      { "name": "compact-mobile", "value": "390px" }
+    ],
+    "components": [
+      {
+        "name": "Primary Button",
+        "kind": "button",
+        "refersTo": "button-primary",
+        "description": "梨黄主行动；用于随便逛逛、保存草稿等当前任务的首要下一步。",
+        "html": "<button class=\"ds-button ds-button-primary\" type=\"button\">随便逛逛 <span aria-hidden=\"true\">↓</span></button>",
+        "css": ".ds-button { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 0 19px; border: 1px solid transparent; border-radius: var(--radius-small); font-family: var(--sans); font-size: 14px; font-weight: 600; transition: transform .2s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease); cursor: pointer; } .ds-button-primary { background: var(--pear); border-color: var(--pear-dark); color: var(--ink); box-shadow: 0 9px 20px rgba(154, 104, 16, .16); } .ds-button-primary:hover { background: #e2a52b; transform: translateY(-2px); } .ds-button-primary:active { transform: translateY(0); } .ds-button-primary:focus-visible { outline: 3px solid var(--pear-dark); outline-offset: 3px; }"
+      },
+      {
+        "name": "Secondary Button",
+        "kind": "button",
+        "refersTo": "button-secondary",
+        "description": "透明纸面次行动；与主按钮并列但不争夺优先级。",
+        "html": "<button class=\"ds-button ds-button-secondary\" type=\"button\">发起一个话题</button>",
+        "css": ".ds-button { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 0 19px; border: 1px solid transparent; border-radius: var(--radius-small); font-family: var(--sans); font-size: 14px; font-weight: 600; transition: transform .2s var(--ease), background .2s var(--ease); cursor: pointer; } .ds-button-secondary { background: transparent; border-color: var(--line-strong); color: var(--ink); } .ds-button-secondary:hover { background: var(--surface); transform: translateY(-2px); } .ds-button-secondary:active { transform: translateY(0); } .ds-button-secondary:focus-visible { outline: 3px solid var(--pear-dark); outline-offset: 3px; }"
+      },
+      {
+        "name": "Discovery Search",
+        "kind": "input",
+        "refersTo": "search-field",
+        "description": "Hero 的统一发现入口，把作品、话题、作者和工具收进同一项任务。",
+        "html": "<form class=\"ds-search\" role=\"search\"><label class=\"ds-search-label\" for=\"ds-query\">搜索烤个梨呀</label><svg class=\"ds-search-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"6.8\"/><path d=\"m16 16 4 4\"/></svg><input id=\"ds-query\" type=\"search\" placeholder=\"搜作品、话题、作者或工具\"><kbd aria-hidden=\"true\">⌘ K</kbd><button type=\"submit\">搜索</button></form>",
+        "css": ".ds-search { width: 100%; max-width: 820px; height: 66px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius); box-shadow: var(--shadow-small); display: flex; align-items: center; padding: 8px; font-family: var(--sans); } .ds-search:focus-within { border-color: var(--pear-dark); box-shadow: 0 10px 30px rgba(86, 62, 19, .13); } .ds-search-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .ds-search-icon { width: 22px; margin: 0 14px 0 8px; fill: none; stroke: var(--muted); stroke-width: 1.6; flex: 0 0 auto; } .ds-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font: inherit; font-size: 17px; } .ds-search input::placeholder { color: #817c72; opacity: 1; } .ds-search kbd { border: 1px solid var(--line); background: var(--paper); color: var(--muted); border-radius: 6px; font-size: 11px; padding: 3px 7px; margin-right: 8px; font-family: var(--sans); } .ds-search button { height: 48px; padding: 0 23px; border: 0; border-radius: 9px; background: var(--ink); color: var(--surface); font-family: var(--sans); font-weight: 600; cursor: pointer; } .ds-search button:hover { background: #31302c; } .ds-search button:focus-visible { outline: 3px solid var(--pear-dark); outline-offset: 3px; }"
+      },
+      {
+        "name": "Primary Navigation",
+        "kind": "nav",
+        "refersTo": "primary-navigation",
+        "description": "低噪声文本导航，以梨黄细线标识当前位置。",
+        "html": "<nav class=\"ds-primary-nav\" aria-label=\"主导航\"><a href=\"#\" aria-current=\"page\">发现</a><a href=\"#\">作品</a><a href=\"#\">作者</a><a href=\"#\">论坛</a><a href=\"#\">开发者</a></nav>",
+        "css": ".ds-primary-nav { display: flex; align-items: center; gap: 4px; font-family: var(--sans); } .ds-primary-nav a { min-height: 44px; display: grid; place-items: center; padding: 0 13px; color: var(--ink-2); font-size: 14px; text-decoration: none; position: relative; } .ds-primary-nav a::after { content: \"\"; position: absolute; left: 13px; right: 13px; bottom: 6px; height: 1px; background: var(--pear-dark); transform: scaleX(0); transform-origin: left; transition: transform .24s var(--ease); } .ds-primary-nav a:hover::after, .ds-primary-nav a[aria-current=\"page\"]::after { transform: scaleX(1); } .ds-primary-nav a:focus-visible { outline: 3px solid var(--pear-dark); outline-offset: 3px; }"
+      },
+      {
+        "name": "Appearance Toggle",
+        "kind": "button",
+        "refersTo": "appearance-toggle",
+        "description": "三种共享视觉系统的拓扑切换器；默认显示慢火清单。",
+        "html": "<button class=\"ds-appearance-toggle\" type=\"button\" aria-haspopup=\"menu\" aria-expanded=\"false\"><span class=\"ds-heat-dot\" aria-hidden=\"true\"></span><span>外观 · 慢火清单</span><svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"m4 6 4 4 4-4\"/></svg></button>",
+        "css": ".ds-appearance-toggle { height: 42px; min-width: 178px; border: 1px solid var(--line-strong); border-radius: var(--radius-small); background: transparent; color: var(--ink); display: flex; align-items: center; justify-content: center; gap: 9px; padding: 0 12px; font-family: var(--sans); cursor: pointer; } .ds-appearance-toggle:hover { background: var(--surface); } .ds-appearance-toggle:focus-visible { outline: 3px solid var(--pear-dark); outline-offset: 3px; } .ds-appearance-toggle svg { width: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; } .ds-heat-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--pear); box-shadow: 0 0 0 4px rgba(215, 154, 30, .14); }"
+      },
+      {
+        "name": "Category Filters",
+        "kind": "chip",
+        "refersTo": "category-filter",
+        "description": "连续的六类发现入口；选中态用梨黄余温，不引入新彩色体系。",
+        "html": "<div class=\"ds-category-nav\" aria-label=\"按内容类型浏览\"><button type=\"button\" aria-pressed=\"true\"><span>应用</span><small>直接使用</small></button><button type=\"button\" aria-pressed=\"false\"><span>工具</span><small>下载或接入</small></button><button type=\"button\" aria-pressed=\"false\"><span>视频</span><small>打开观看</small></button><button type=\"button\" aria-pressed=\"false\"><span>小说 / 漫画</span><small>开始阅读</small></button><button type=\"button\" aria-pressed=\"false\"><span>文章</span><small>阅读与讨论</small></button><button type=\"button\" aria-pressed=\"false\"><span>开发者 SDK</span><small>文档与支持</small></button></div>",
+        "css": ".ds-category-nav { max-width: 920px; display: grid; grid-template-columns: repeat(6, 1fr); border: 1px solid var(--line); border-radius: var(--radius-small); overflow: auto; background: rgba(251, 250, 246, .56); font-family: var(--sans); } .ds-category-nav button { min-width: 126px; min-height: 70px; border: 0; border-right: 1px solid var(--line); background: transparent; color: var(--ink); display: grid; align-content: center; gap: 1px; text-align: left; padding: 10px 14px; cursor: pointer; } .ds-category-nav button:last-child { border-right: 0; } .ds-category-nav button:hover, .ds-category-nav button[aria-pressed=\"true\"] { background: var(--pear-soft); } .ds-category-nav button:focus-visible { outline: 3px solid var(--pear-dark); outline-offset: -3px; } .ds-category-nav span { font-weight: 600; font-size: 14px; } .ds-category-nav small { color: var(--muted); font-size: 11px; } .ds-category-nav button[aria-pressed=\"true\"] small { color: var(--ink-2); }"
+      },
+      {
+        "name": "Maturity Status Chips",
+        "kind": "chip",
+        "refersTo": "status-chip",
+        "description": "以低透明语义色陈述作品成熟度和参与状态。",
+        "html": "<div class=\"ds-status-row\"><span class=\"ds-status ds-status-ready\">炉上主菜</span><span class=\"ds-status ds-status-prototype\">阅读示例</span><span class=\"ds-status ds-status-open\">等你参与</span></div>",
+        "css": ".ds-status-row { display: flex; align-items: center; gap: 10px; font-family: var(--sans); } .ds-status { display: inline-flex; align-items: center; min-height: 24px; padding: 0 8px; border: 1px solid var(--line); border-radius: 999px; font-size: 11px; font-weight: 600; } .ds-status-ready { color: #365324; border-color: rgba(88, 116, 60, .36); background: rgba(88, 116, 60, .09); } .ds-status-prototype { color: #6f5420; border-color: rgba(154, 104, 16, .32); background: rgba(215, 154, 30, .09); } .ds-status-open { color: #6f321d; border-color: rgba(154, 77, 49, .3); background: rgba(154, 77, 49, .08); }"
+      },
+      {
+        "name": "Fireline Live Item",
+        "kind": "custom",
+        "refersTo": "live-feed-item",
+        "description": "慢火清单的签名条目，以预览、事实状态、标题、摘要和行动形成一条可扫描记录。",
+        "html": "<article class=\"ds-live-item\"><div class=\"ds-live-symbol\" aria-hidden=\"true\"><span>&gt;_</span></div><div class=\"ds-live-copy\"><div class=\"ds-live-meta\"><span class=\"ds-status ds-status-ready\">开发者</span><span>工具 / 文档</span></div><h3><a href=\"#\">ForkLight：从长任务 Quick Start 开始</a></h3><p>进入开发者中心查看用途、接入说明和带上下文的支持入口。</p><a class=\"ds-inline-action\" href=\"#\">打开文档</a></div></article>",
+        "css": ".ds-live-item { min-height: 150px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 24px 0; display: grid; grid-template-columns: 168px 1fr; gap: 24px; color: var(--ink); font-family: var(--sans); transition: background .2s var(--ease), transform .2s var(--ease); } .ds-live-item:hover { background: var(--paper); transform: translateX(6px); } .ds-live-symbol { width: 168px; min-height: 104px; display: grid; place-items: center; border: 1px solid var(--line); background: var(--ink); color: var(--surface); border-radius: var(--radius-small); font-family: ui-monospace, monospace; font-size: 20px; } .ds-live-copy { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; min-width: 0; } .ds-live-meta { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; margin-bottom: 8px; } .ds-status { display: inline-flex; align-items: center; min-height: 24px; padding: 0 8px; border: 1px solid rgba(88, 116, 60, .36); border-radius: 999px; color: #365324; background: rgba(88, 116, 60, .09); font-size: 11px; font-weight: 600; } .ds-live-copy h3 { margin: 0; font-size: clamp(19px, 2vw, 26px); line-height: 1.36; font-weight: 600; } .ds-live-copy h3 a { color: inherit; text-decoration: none; } .ds-live-copy h3 a:hover { text-decoration: underline; text-decoration-color: var(--pear); text-underline-offset: 5px; } .ds-live-copy p { margin: 7px 0 12px; color: var(--ink-2); max-width: 65ch; } .ds-inline-action { color: var(--ink); font-weight: 600; font-size: 13px; text-decoration: underline; text-decoration-color: var(--pear); text-underline-offset: 5px; } .ds-live-item a:focus-visible { outline: 3px solid var(--pear-dark); outline-offset: 3px; } @media (max-width: 760px) { .ds-live-item { grid-template-columns: 72px 1fr; gap: 14px; min-height: 0; padding: 20px 0; } .ds-live-symbol { width: 72px; min-height: 88px; } .ds-live-copy h3 { font-size: 18px; } .ds-live-copy p { font-size: 13px; margin-bottom: 8px; } }"
+      },
+      {
+        "name": "Work Slip",
+        "kind": "card",
+        "refersTo": "work-slip",
+        "description": "作者与作品关系区的直角纸条，用淡错版影而非悬浮玻璃表达层级。",
+        "html": "<a class=\"ds-work-slip\" href=\"#\"><small>工具 · 作品与更新</small><strong>马哥的馊主意</strong><span>查看作品与 Build Log →</span></a>",
+        "css": ".ds-work-slip { min-height: 98px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); padding: 16px 18px; display: grid; grid-template-columns: 1fr auto; align-items: center; box-shadow: 3px 4px 0 rgba(29, 28, 25, .05); font-family: var(--sans); text-decoration: none; } .ds-work-slip small { grid-column: 1; color: var(--muted); font-size: 11px; } .ds-work-slip strong { grid-column: 1; font-size: 18px; } .ds-work-slip span { grid-column: 2; grid-row: 1 / span 2; color: var(--ink-2); font-size: 12px; } .ds-work-slip:hover { border-color: var(--pear-dark); } .ds-work-slip:focus-visible { outline: 3px solid var(--pear-dark); outline-offset: 3px; }"
+      }
+    ],
+    "narrative": {
+      "northStar": "慢火社区前台 / The Slow-fire Commons",
+      "overview": "烤个梨呀不是商品陈列墙，而是一张在公共炉边摊开的社区前台：路人先用清楚的大标题、统一搜索、内容分类和两项行动理解这里有什么，再沿着火候线进入作品、作者、更新与讨论。气质是温暖、开放、克制但不冷；创作者必须可追溯，但 Hero 不用头像抢占路人的理解路径。\n\n视觉以暖灰纸面承载炭黑文字，用梨黄记录火候、连接关系和标记可行动之处。列表、索引、细线和纸张切片比悬浮卡墙更重要。慢火清单、开放工作室、当期封面共享同一套颜色、字型、状态与组件，只改变「正在发生」区域的拓扑；默认外观是慢火清单。当前实现只有 light 色彩系统，三外观不是明暗主题。",
+      "keyCharacteristics": [
+        "暖灰纸面与近白内容面交替，保持公开社区的呼吸感。",
+        "炭黑负责信息，梨黄只标火候、关系、行动和少量强调。",
+        "大标题先解释价值，真实作者在后续关系区可追溯。",
+        "一维清单是默认阅读方式，另两种外观只改变内容组织。",
+        "细边线、低饱和图片和少量纸张位移构成克制的手作感。"
+      ],
+      "rules": [
+        { "name": "The 火候稀缺 Rule", "body": "梨黄只出现在火候、关系、状态和行动上；任何屏幕都不把它铺成高饱和彩色墙。", "section": "colors" },
+        { "name": "The 双声部 Rule", "body": "操作和正文坚持清楚的无衬线，宋体系只负责品牌与章节气口；不要让两套字体在同一层级争抢主次。", "section": "typography" },
+        { "name": "The 纸面先行 Rule", "body": "默认表面保持平整；只有菜单、聚焦输入、主视觉或交互响应获得阴影，深度必须解释状态或层级。", "section": "elevation" }
+      ],
+      "dos": [
+        "Do 先让路人通过标题、搜索、分类和明确行动理解社区，再在关系区展示可追溯的创作者。",
+        "Do 用暖灰纸面、炭黑信息和稀缺梨黄维持低跳跃节奏。",
+        "Do 让三种外观共享同一套颜色、状态、组件和内容事实，并以慢火清单为默认。",
+        "Do 用细线、列表、索引、诚实状态和轻微纸片位移表达「正在长大」。"
+      ],
+      "donts": [
+        "Don't 使用 AI 紫渐变、玻璃拟态墙或高饱和色块连续跳跃。",
+        "Don't 把首页变成排行榜、Logo 墙或三等分功能推销卡。",
+        "Don't 在 Hero 堆创作者头像；作者要可追溯，但不能挡住路人的第一步理解与行动。",
+        "Don't 为三种外观复制三套 token，或把它们误写成 light / dark 主题。"
+      ]
+    }
+  }
+}

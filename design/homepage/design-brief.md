@@ -1,127 +1,84 @@
-# 烤个梨呀首页 · Taste Design Brief
+# 烤个梨呀最终主页 · Design Brief
 
-版本：v0.1  
-日期：2026-07-27  
-状态：方向探索稿（`NOT_IMPLEMENTATION_REFERENCE` 可演进为 handoff）  
-上游：`2026-07-27-roast-pear-product-design-and-technical-plan.md` · `2026-07-25-adeptify-ecosystem-business-plan.md`  
-Skill：`design-taste-frontend` + 产品视觉约束
+版本：v1.0
 
----
+状态：最终高保真静态原型 · Finish review PASS
 
-## Design Read
+入口：[`index.html`](./index.html)
 
-Reading this as: **greenfield creator-community homepage** for Chinese Makers / Builders / early users, with a **comic-portrait + indie-magazine + open-studio** language, leaning toward **custom token CSS + asymmetric editorial layout** (not SaaS landing, not AI purple, not product-catalog Steam clone).
+## 页面任务
 
-## Taste Scenario
+首页首先服务不了解 Maker、Builder 和 Adeptify 产品关系的路人。用户应在一个视口内理解：
 
-- 主场景：Brand / Marketing / Public Website（社区首页）
-- 辅助场景：Visual Companion（真实图 + 漫画头像系统）
-- 本轮读取：taste-skill §0-9、§14；产品计划 §5.1 / §8；场景库 Brand 段
-- 不适用：工作台 density 规则、ops console、Serene Companion 全套槽位
-- 产品旋钮（计划已给定，覆盖 taste 默认 8/6/4）：
+> 这里可以发现、体验、观看或阅读不同形态的作品，也可以参与讨论和作品成长。
 
-| 旋钮 | 值 | 理由 |
+首页不是 Cognia 官网、创作者海报、AI App 排行榜或纯产品目录。
+
+## 首屏契约
+
+Hero 不放创作者头像或人物卡。它必须同时提供：
+
+1. 普通用户能懂的一句话定位；
+2. 搜索作品、话题、作者和开发者资源；
+3. 应用、工具、视频、小说/漫画、文章、开发者 SDK 六类入口；
+4. 面向路人的「随便逛逛」；
+5. 可以先写、提交时再登录的「发起一个话题」；
+6. 不依赖虚构数据的今日入口。
+
+首屏之后首先出现「正在发生」，再进入拳头产品、人物与作品关系、跨媒介作品、论坛和开发者支持。
+
+## 信息顺序
+
+| 顺序 | 模块 | 任务 |
 |---|---|---|
-| `DESIGN_VARIANCE` | **8** | 杂志式非对称，人物与作品可重叠关联 |
-| `MOTION_INTENSITY` | **5** | 进入、hover 关联、状态反馈；无滚动劫持 |
-| `VISUAL_DENSITY` | **5** | 策展感留白，但信息足够扫描 |
+| 1 | Hero 社区前台 | 解释、搜索、分类和立即行动 |
+| 2 | 正在发生 | 证明这里持续更新，不做热榜 |
+| 3 | 炉上主菜 | 重点展示 Cognia / Notebook / Nexus，但不垄断首页 |
+| 4 | 谁在做什么 | 从作品追溯到作者和作品集 |
+| 5 | 跨媒介作品 | 保留使用、观看、阅读、文档等不同动作 |
+| 6 | 围炉讨论 | 反馈、求助、共创与 Build Log 关联具体作品 |
+| 7 | 开发者支持 | ForkLight、Relay、Adeptify SDK 的清晰入口 |
+| 8 | 加入 | 用户理解社区后再注册或申请 Builder |
 
-## Brand Spine
+## 三种外观
 
-| 项 | 决策 |
-|---|---|
-| 品类 | AI 创作者与作品社区（不是目录、不是 Steam 克隆） |
-| 受众 | Maker / Builder / 想体验真实 AI 作品的用户 / 开发者 |
-| 承诺 | 认识做东西的人，体验正在长大的作品 |
-| 文化位置 | 开放工作室 + 独立杂志 + 漫画人物识别 |
-| 隐喻 | 烤梨：慢火、过程、热气、可分享；不是速成清单 |
-| 避免 | AI 紫渐变、玻璃卡片墙、三等分功能卡、排行榜叙事、假截图 |
+外观切换不改变内容、路由和颜色系统，只改变「正在发生」的浏览拓扑：
 
-## Palette Lock（梨黄锁定）
+- **慢火清单（默认）**：火候线 + 纵向更新列表，理解成本最低；
+- **开放工作室**：关系画布式编排，强调作品、更新和参与的联系；
+- **当期封面**：一件主作品 + 右侧实时索引，强调编辑策展。
 
-| Token | Light | Dark | 用途 |
-|---|---|---|---|
-| `--paper` | `#F2F3F0` | `#141612` | 页面底（冷中性，避开 craft-beige 默认） |
-| `--surface` | `#FFFFFF` | `#1C1F1A` | 卡片 / 抬升 |
-| `--ink` | `#171A15` | `#EDEEEA` | 正文 |
-| `--ink-soft` | `#4A4F48` | `#A8ADA4` | 次级 |
-| `--muted` | `#7A8078` | `#7C827A` | 辅助 |
-| `--line` | `rgba(23,26,21,.09)` | `rgba(237,238,234,.10)` | 分隔 |
-| `--accent` | `#D4A12A` | `#E0B03A` | **唯一品牌强调：梨黄** |
-| `--accent-ink` | `#171A15` | `#141612` | 梨黄按钮上的字 |
-| `--leaf` | `#5F7D3B` | `#8FB05C` | 仅语义状态（可体验 / 成功），非整站第二强调 |
+选择保存在浏览器本地。移动端三种模式统一降级为清楚的单列信息流。
 
-**Shape lock：** 卡片 14px · 按钮 10px · 头像圆角方 16px · 不胶囊整站。
+## 视觉系统
 
-**Type lock：**
+- 场景：白天在普通屏幕上浏览的公开社区；因此使用浅色暖灰纸面。
+- 主色：纸白、暖灰、炭黑；梨黄只用于行动和火候状态；叶绿只表示可用状态。
+- 不使用 AI 紫、玻璃拟态、渐变、排行榜、虚构计数或高饱和色块。
+- Hero 使用清楚的现代中文无衬线，章节标题使用系统宋体；不依赖外部字体请求。
+- 卡片不是页面骨架：更新是列表/索引，关系区是连线与作品切片，工具区是文档架。
 
-- 中文显示 / 正文：系统 `PingFang SC` / `Noto Sans SC` / `system-ui`（清楚有人味）
-- 拉丁标题强调：`Outfit`（几何无衬线，非 Inter）
-- 数字 / meta / 代码：`IBM Plex Mono`
+## 真实性边界
 
-## Signature Element（页内唯一强记忆点）
+- Cognia、Notebook、Nexus、ForkLight、Relay、Adeptify SDK 来自产品计划；成熟度仍需上线前校验。
+- 视频、文章、活动和讨论的示例均在条目内标注「内容位示意」或「示意讨论」。
+- 小说、视频和文章均提供独立示例页，用来验证不同媒介的阅读/观看路径；示例不冒充正式内容。
+- 外部 Builder 使用明确标注为虚构示例的 Profile 与作品集，验证结构而不伪造真实成员。
+- 漫画头像明确标注为设计参考，不能冒充正式个人资料。
+- 不展示下载量、在线人数、排名、评分、虚构回复数。
 
-**漫画工作台 Hero：** 左文案 + 右工作室静物与可交互漫画肖像叠层；hover 人物时点亮关联作品浮签。整页其他 section 保持克制，不与 Hero 抢戏。
+## 响应式与无障碍
 
-## Section Rhythm（布局家族不重复）
+- 桌面目标：1440×900；移动目标：390×844，并覆盖 320px 起的单列布局。
+- 移动端首屏保留定位、搜索、前三个分类及两个行动入口；分类横向滚动。
+- 搜索为真实 `role="search"`，支持 `⌘/Ctrl + K`、方向键、Enter 和 Escape。
+- 外观菜单支持方向键和 Escape；所有交互有可见焦点。
+- 话题编辑器是页内展开，不使用不必要的 Modal；草稿保存在本机。
+- 支持 `prefers-reduced-motion`，不使用自动轮播和滚动劫持。
 
-| # | Section | 布局家族 | 任务 |
-|---|---|---|---|
-| 1 | Nav | sticky single-line | 定位与登录 |
-| 2 | Hero | asymmetric split + floating portraits | hook |
-| 3 | Cognia | full-bleed editorial feature | proof / flagship |
-| 4 | 正在烤 | horizontal magazine strip | educate / live |
-| 5 | 创作者 | large portrait rail（非等分三列） | people |
-| 6 | 作品 | irregular bento | convert use |
-| 7 | 讨论 | dense community list | social proof of real talk |
-| 8 | 工具架 | tool shelf row | developer path |
-| 9 | 加入 | solid accent band | convert join |
-| 10 | Footer | sparse columns | utility |
+## 不在本轮实现
 
-Eyebrow 配额：10 section → max 4；本稿实际使用 **2**（Hero 无 eyebrow；「正在烤」「工具架」各 1）。
-
-## CTA Intent Map（一 intent 一 label）
-
-| Intent | Label |
-|---|---|
-| 逛作品 | 逛逛作品 |
-| 看人 | 看看谁在做 |
-| 体验 Cognia | 开始体验 |
-| 注册 | 注册参与 |
-| Builder 入驻 | 申请成为 Builder |
-| 登录 | 登录 |
-
-## Copy Rules
-
-- 产品文案优先用计划书原句，不编造 Maker 职位与人格标签
-- 成熟度词用真实词：Recruiting / Testable / Public Beta / Stable…
-- 禁止 em-dash；禁止 Elevate / Seamless / Next-gen
-- Mock 内容以 `data-mock="true"` 标注
-
-## Anti-Slop Checklist（本稿自检）
-
-- [x] 无 AI 紫 / mesh / 玻璃墙
-- [x] 无三等分功能卡
-- [x] 无 section 编号 eyebrow
-- [x] 无 scroll cue / weather strip / version footer
-- [x] 无 div 假截图（真实生成图 + 漫画头像参考）
-- [x] 无 em-dash
-- [x] 主题整页锁定（light 默认，支持 dark tokens + 切换）
-- [x] reduced-motion 可降级
-- [x] Hero 首屏可见 CTA
-
-## Deliverables
-
-| 文件 | 说明 |
-|---|---|
-| `prototype.html` | 可交互高保真首页 |
-| `assets/*` | Hero / Cognia / 作品封面 / 漫画头像参考 |
-| `design-brief.md` | 本文 |
-| `design-handoff.md` | 工程 handoff 摘要 |
-
-## Open Questions
-
-1. 品牌强调最终锁梨黄还是梨绿？（本稿先锁梨黄）
-2. 五位 Maker 正式头像与一句话介绍上线前需真实素材替换
-3. Cognia / 作品截图应用产品真实 UI 替换生成静物
-4. 是否在 V1 首页保留「工具架」完整三件，或只露出入口
+- 真实账号、搜索服务、推荐服务和论坛提交 API；
+- 作品真实安装、支付和统一下载器；
+- 正式视频、文章、活动日程和成员资料；
+- 头像生成 Provider、隐私期限和审核流程。

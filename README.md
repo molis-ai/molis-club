@@ -12,7 +12,7 @@
 
 > 认识做东西的人，体验正在长大的作品。
 
-当前仓库以 **产品定义 + 高保真静态原型** 为主（首页七向 sketch、漆梨月刊多页稿），完整后端产品仍按技术计划迭代。协作首选产品范围文档：[`ROAST-PEAR.md`](./ROAST-PEAR.md)。
+当前仓库以 **产品定义 + 高保真静态原型** 为主（最终主页、首页七向设计档案、漆梨月刊多页稿），完整后端产品仍按技术计划迭代。协作首选产品范围文档：[`ROAST-PEAR.md`](./ROAST-PEAR.md)。
 
 ### 主要功能点（产品范围）
 
@@ -38,12 +38,14 @@
 
 ### 本仓库当前可运行内容
 
-#### 七向高保真首页
+#### 最终高保真首页与 Gallery
 
 ```bash
 cd /path/to/roast-pear
 python3 -m http.server 8765
-# 打开 http://127.0.0.1:8765/homepages/<direction>/
+# 最终版：http://127.0.0.1:8765/design/homepage/
+# Gallery：http://127.0.0.1:8765/homepages/
+# 设计档案：http://127.0.0.1:8765/homepages/<direction>/
 # 方向例：living-anthology · teletext-service · pixel-maker-city ·
 #         riso-release-wall · slow-fire-index · homepage-overdrive · canon
 node homepages/verify-homepages.mjs
@@ -76,6 +78,7 @@ open design/homepage/prototype.html
 |------|------|
 | [`ROAST-PEAR.md`](./ROAST-PEAR.md) | **产品是什么、做哪些功能** |
 | [`PRODUCT.md`](./PRODUCT.md) | 设计 / Impeccable 产品记录 |
+| [`DESIGN.md`](./DESIGN.md) | 最终视觉系统、组件规则与响应式约束 |
 | `2026-07-25-adeptify-ecosystem-business-plan.md` | 生态与商业战略 |
 | `2026-07-27-roast-pear-product-design-and-technical-plan.md` | 产品设计与技术计划 |
 
