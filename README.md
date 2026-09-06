@@ -1,4 +1,6 @@
-# 烤个梨呀 / Roast Pear
+# Molis AI
+
+> 2026-09-06：当前网站已更名 **Molis AI**，实现位于 [`community/`](./community/README.md)。使用用户指定Logo的冷银白、海军蓝、雾蓝配色与简洁光影；支持作品、文章、邮箱账号及身份留言。Google/GitHub接入待应用凭据。部署与成本见 [`community/DEPLOYMENT.md`](./community/DEPLOYMENT.md)，接入步骤见 [`community/AUTH-SETUP.md`](./community/AUTH-SETUP.md)。以下旧品牌主页与规划为历史记录，不再约束当前网站。
 
 [中文](#中文) · [English](#english)
 

@@ -1,291 +1,161 @@
 ---
-name: "烤个梨呀"
-description: "一座以暖灰纸面、炭黑与梨黄火候线组织作品、作者和参与入口的公开社区前台。"
+name: Molis AI
+description: 暖纸、柔和墨蓝与灰蓝手绘背景构成的独立 AI 创作工作室。
 colors:
-  paper: "#f4f1e9"
-  paper-soft: "#ebe6dc"
-  paper-deep: "#ddd5c6"
-  surface: "#fbfaf6"
-  ink: "#1d1c19"
-  ink-secondary: "#4b4943"
-  muted: "#716d64"
-  line: "rgba(29, 28, 25, 0.14)"
-  line-strong: "rgba(29, 28, 25, 0.28)"
-  pear: "#d79a1e"
-  pear-dark: "#9a6810"
-  pear-soft: "#f0d694"
-  pear-hover: "#e2a52b"
-  ink-hover: "#34322d"
-  leaf: "#58743c"
-  alert: "#9a4d31"
+  paper: "#f5f1eb"
+  ink: "#24324b"
+  muted: "#706d69"
+  line: "#dcd6ce"
+  accent: "#ded8cd"
+  input-border: "#aaa79f"
+  focus: "#4c6073"
+  primary-hover: "#38485b"
+  error: "#9e3353"
+  success: "#315a67"
 typography:
-  display:
-    fontFamily: '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif'
-    fontSize: "clamp(48px, 6vw, 82px)"
-    fontWeight: 520
-    lineHeight: 1.12
-    letterSpacing: "-0.035em"
-  headline:
-    fontFamily: '"Songti SC", "STSong", "Noto Serif CJK SC", serif'
-    fontSize: "clamp(34px, 4vw, 54px)"
-    fontWeight: 600
-    lineHeight: 1.22
-    letterSpacing: "-0.02em"
-  title:
-    fontFamily: '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif'
-    fontSize: "clamp(19px, 2vw, 26px)"
-    fontWeight: 600
-    lineHeight: 1.36
-    letterSpacing: "normal"
   body:
-    fontFamily: '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif'
-    fontSize: "16px"
+    fontFamily: "Geist, sans-serif"
+    fontSize: "15px"
+    lineHeight: 1.7
+  editorial:
+    fontFamily: "Newsreader, Georgia, serif"
     fontWeight: 400
-    lineHeight: 1.6
-    letterSpacing: "normal"
-  label:
-    fontFamily: '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif'
-    fontSize: "14px"
-    fontWeight: 600
-    lineHeight: 1.6
-    letterSpacing: "normal"
+  heading:
+    fontFamily: "Geist, sans-serif"
+    fontWeight: 500
+  action:
+    fontFamily: "Geist, sans-serif"
+    fontSize: "13px"
 rounded:
-  small: "10px"
-  surface: "14px"
-  pill: "999px"
+  square: "0px"
+spacing:
+  section-desktop: "115px 6%"
+  section-mobile: "70px 6%"
+  button: "13px 24px"
+  field: "12px 14px"
 components:
   button-primary:
-    backgroundColor: "{colors.pear}"
-    textColor: "{colors.ink}"
-    typography: "{typography.label}"
-    rounded: "{rounded.small}"
-    padding: "0 19px"
-    height: "48px"
-  button-primary-hover:
-    backgroundColor: "{colors.pear-hover}"
-    textColor: "{colors.ink}"
-    typography: "{typography.label}"
-    rounded: "{rounded.small}"
-    padding: "0 19px"
-    height: "48px"
-  button-secondary:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink}"
-    typography: "{typography.label}"
-    rounded: "{rounded.small}"
-    padding: "0 19px"
-    height: "48px"
-  button-dark:
     backgroundColor: "{colors.ink}"
-    textColor: "{colors.surface}"
-    typography: "{typography.label}"
-    rounded: "{rounded.small}"
-    padding: "0 19px"
-    height: "48px"
-  button-dark-hover:
-    backgroundColor: "{colors.ink-hover}"
-    textColor: "{colors.surface}"
-    typography: "{typography.label}"
-    rounded: "{rounded.small}"
-    padding: "0 19px"
-    height: "48px"
-  search-field:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.surface}"
-    padding: "8px"
-    height: "66px"
-  primary-navigation:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink-secondary}"
-    typography: "{typography.label}"
-    padding: "0 13px"
-    height: "44px"
-  appearance-toggle:
+    textColor: "{colors.paper}"
+    typography: "{typography.action}"
+    rounded: "{rounded.square}"
+    padding: "{spacing.button}"
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
+  button-light:
     backgroundColor: "transparent"
     textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.small}"
-    padding: "0 12px"
-    height: "42px"
-  category-filter:
+    typography: "{typography.action}"
+    rounded: "{rounded.square}"
+    padding: "{spacing.button}"
+  field:
     backgroundColor: "transparent"
     textColor: "{colors.ink}"
-    typography: "{typography.label}"
-    padding: "10px 14px"
-    height: "70px"
-  category-filter-selected:
-    backgroundColor: "{colors.pear-soft}"
-    textColor: "{colors.ink}"
-    typography: "{typography.label}"
-    padding: "10px 14px"
-    height: "70px"
-  status-chip:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink-secondary}"
-    rounded: "{rounded.pill}"
-    padding: "0 8px"
-    height: "24px"
-  live-feed-item:
-    backgroundColor: "transparent"
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    padding: "24px 0"
-    height: "150px"
-  work-slip:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    rounded: "0"
-    padding: "16px 18px"
-    height: "98px"
+    rounded: "{rounded.square}"
+    padding: "{spacing.field}"
 ---
 
-# Design System: 烤个梨呀
+# Design System: Molis AI
 
 ## Overview
 
-**Creative North Star: "慢火社区前台 / The Slow-fire Commons"**
+**Creative North Star: "好奇心与人的温度"**
 
-烤个梨呀不是商品陈列墙，而是一张在公共炉边摊开的社区前台：路人先用清楚的大标题、统一搜索、内容分类和两项行动理解这里有什么，再沿着火候线进入作品、作者、更新与讨论。气质是温暖、开放、克制但不冷；创作者必须可追溯，但 Hero 不用头像抢占路人的理解路径。
+暖纸留白、柔和墨蓝文字、无衬线与衬线斜体相接的大标题，构成当前工作室语言。首页恢复“A curious mind. / A human touch.”及底部双入口和中文介绍；用户指定的四人围桌手绘图作为其背景，保留原来的页面构图与浏览路径。
 
-视觉以暖灰纸面承载炭黑文字，用梨黄记录火候、连接关系和标记可行动之处。列表、索引、细线和纸张切片比悬浮卡墙更重要。慢火清单、开放工作室、当期封面共享同一套颜色、字型、状态与组件，只改变「正在发生」区域的拓扑；默认外观是慢火清单。当前实现只有 light 色彩系统，三外观不是明暗主题。
+当前背景为 `community/public/images/molis-makers-studio.png`：低饱和灰蓝、柔和墨色、少量柔杏橙与暖纸，协调原 Logo 而不要求所有元素同色。它是共同创作的想象，不代表真实团队合影。原 Logo 使用 `community/public/images/molis-logo.png`，海军蓝和橙色原样保留，不滤色、不混合着色。
 
 **Key Characteristics:**
 
-- 暖灰纸面与近白内容面交替，保持公开社区的呼吸感。
-- 炭黑负责信息，梨黄只标火候、关系、行动和少量强调。
-- 大标题先解释价值，真实作者在后续关系区可追溯。
-- 一维清单是默认阅读方式，另两种外观只改变内容组织。
-- 细边线、低饱和图片和少量纸张位移构成克制的手作感。
+- 大标题浮于柔和背景，人物场景承担氛围，文字和行动保持可辨认。
+- 开放产品索引、深蓝 Solutions、工作室叙述、文章与问答形成阅读节奏。
+- 产品实际成熟度、可用入口和账号状态清楚可见。
+
+唯一视觉需求书为 `specs/studio-auth-rebuild/visual-redesign.md`。本文件依据当前 `community/app/globals.css` 最终级联、页面与字体配置记录，不追加已撤销方向。独立 `restored_studio_review` 的 ship 结论仅覆盖桌面首页首屏、390px 首页首屏与登录三图证据，无 material fixes；不代表全站或完整手机长页已全面验收。交付范围仍为私有预览。
 
 ## Colors
 
-这是一套低跳跃的纸面调色板：梨黄是唯一主强调，绿与陶红只承担语义状态，绝不扩张成彩色货架。
-
 ### Primary
 
-- **梨黄火候**：用于主行动、当前节点、关系线、选中筛选和链接下划线；它表达「正在烤」与「可以参与」。
-- **深烤梨黄**：用于梨黄组件的边界、可见焦点、关系标签和细线，保证浅纸面上的结构清楚。
-- **梨黄余温**：用于选中分类、讨论符号和媒体卡的大面积柔和底色，不承担正文。
+柔和墨蓝 `ink` 承担标题、正文和主要按钮；Solutions 与页脚使用同色深底、暖纸文字反转。主按钮 hover 使用 `primary-hover`。
 
 ### Secondary
 
-- **松叶绿**：用于可试用、文档就绪或草稿保存成功等正向状态，只作为小面积语义信号。
-
-### Tertiary
-
-- **烤痕陶红**：用于开放参与、提醒或需要回应的状态；保持低饱和，不转化为高警报红。
+背景图以灰蓝和柔和墨色为主，少量柔杏橙呼应原 Logo。`accent` 是浅暖灰选区色；`focus` 是较深灰蓝，用于键盘焦点、输入光标与复选框。图像中的橙色不扩展为大片页面装饰。
 
 ### Neutral
 
-- **暖灰纸面**：全局背景，是视觉材料的基底。
-- **柔纸与深纸**：用于分区、轨道和层级分隔，使内容靠色调而不是浮层建立秩序。
-- **近白内容面**：用于搜索、菜单、表单和「正在发生」等需要更清晰可读性的区域。
-- **炭黑与次级炭黑**：分别承担正文主信息与说明性信息；静音灰只用于辅助文案和元信息。
-- **墨线与强调墨线**：分别承担常规分隔和可交互组件边界，保留纸张的通透感。
+`paper` 是页面底色，`muted` 用于辅助说明和 placeholder，`line` 划分内容行，`input-border` 明确输入边界。工作室介绍区采用浅暖灰（`#ece7e0`）。错误与成功使用语义色和文字共同提示。
 
-### Named Rules
-
-**The 火候稀缺 Rule.** 梨黄只出现在火候、关系、状态和行动上；任何屏幕都不把它铺成高饱和彩色墙。
+**The Original Mark Rule.** 原 Logo 及其橙色段完整保留；背景可以与之协调，但不能通过改色、滤色或混合模式重塑标识。
 
 ## Typography
 
-**Display Font:** PingFang SC（回退至 Hiragino Sans GB、Microsoft YaHei、系统无衬线）  
-**Body Font:** PingFang SC（同一无衬线回退栈）  
-**Editorial Font:** Songti SC（回退至 STSong、Noto Serif CJK SC、serif）
+Geist 承担信息和无衬线标题；Newsreader 承担英文斜体强调，回退 Georgia。两者通过 `next/font/google` 加载拉丁字集，中文由浏览器可用字体回退。字体配置不代表完整中文覆盖。
 
-**Character:** 无衬线负责让路人快速理解和操作，宋体系只在章节标题、品牌名与少量编辑性标记中制造纸本温度。两者分工清楚，不用装饰性字体制造「文艺感」。
+- 首页大标题：桌面 `clamp(65px, 6.9vw, 96px)`，行高 1.03、字距 −0.04em；≤1000px 为 80px；≤640px 最终为 `clamp(40px, 10.4vw, 61px)`、行高 1.13。第二行使用 Newsreader 斜体。
+- 目录主标题：桌面/中屏/手机 70/60/54px；衬线英文副标题依次 39/32/29px。
+- 普通区段标题约 24–30px；目录、产品线、方案说明桌面 15px，手机 14px，行高 1.9。首页介绍桌面 15px，手机 14px。
+- 长文正文桌面 16px/2.15，手机 15px/2.1；文章标题 46px，手机 33px。
+- 表单输入 16px；标签、关键状态、说明和反馈为 13px/1.8；目录筛选链接 14px、最小高 44px。
+- 页头字标桌面 29px、手机 20px；页脚字标为 `clamp(70px, 15vw, 205px)`，手机 18vw。
 
-### Hierarchy
-
-- **Display**（520，流体大字号，1.12）：只用于 Hero 主张；桌面居中，窄屏左对齐并收至更紧凑的 36–44px 区间。
-- **Headline**（600，流体章节字号，1.22）：用于页面分区标题和结尾号召，以宋体系建立编辑性节奏。
-- **Title**（600，流体内容标题，1.36）：用于实时条目等可扫描内容标题，保持比营销标题更克制。
-- **Body**（400，16px，1.6）：用于正文和说明；长内容摘要通常限制在 40–65ch，避免宽屏散开。
-- **Label**（600，14px）：用于按钮、导航和动作标签；更小的 10–13px 字级只服务元信息、状态与署名。
-
-### Named Rules
-
-**The 双声部 Rule.** 操作和正文坚持清楚的无衬线，宋体系只负责品牌与章节气口；不要让两套字体在同一层级争抢主次。
+**The Two Voices Rule.** 无衬线承担信息，衬线斜体承担短句的情感强调；中文正文维持连续、平实的阅读。
 
 ## Layout
 
-页面使用 1240px 最大内容宽度，桌面两侧至少留 24px；Hero 的阅读与搜索核心收在 1080px。固定导航高 72px，章节上下留白采用 78–128px 的流体区间，靠细边线而不是独立卡片分割长页面。
+桌面页头高 104px、左右留白 4.5%；普通内容段采用 frontmatter 的 section 间距。≥1700px 时，内容段与页脚按 1500px 内容跨度约束两侧留白。首页高 `calc(100svh - 104px)`，受 660–850px 限制；标题从左上展开，底部双入口与中文介绍左右相对。插画覆盖首页背景，不是标题下方的独立画幅。
 
-默认「慢火清单」用 150px 火候索引加一列实时内容；「开放工作室」把同一批条目放入 12 栏关系画布；「当期封面」用一块主作品配右侧实时索引。三者只改变拓扑，不改变色彩、组件层级与内容事实。
+产品线与方案行使用 `1fr 1.3fr 30px`，依次为标题、说明、箭头。产品目录使用左侧简介与右侧产品行双栏，桌面比例 `1fr 2.3fr`；详情最大宽 1250px，文章 810px，账号 740px。首页沿产品索引、Solutions、工作室、文章与问答展开。
 
-在 1050px 以下，主导航折叠，双栏作品与媒体布局开始收束；在 760px 以下，页边距缩为 15px、导航高 62px，Hero 左对齐，三种外观都归一为同一条单列动态流，分类与媒体改为横向滚动；390px 以下再压缩外观切换器、头像关系区与结尾行动。
+断点为 1000px 与 640px。≤1000px 隐藏 Studio/Journal 次级导航；Products、Solutions 和账号入口保留。手机页头高 82px、左右留白 6%，Logo 40px；正文段落、目录和详情转单列，箭头保留标题右侧。首页移动顶部内边距最终为 64px，底部介绍与入口纵向排列，二者间距 22px。
+
+登录桌面采用 `1.05fr 1fr` 双栏，左侧手绘背景与品牌短句，右侧真实表单；手机纵排，插画区最小高 240px，表单最大宽 440px。联系页沿原双栏表单结构，手机转单栏，并使用同系列插画。
 
 ## Elevation & Depth
 
-系统以色调分层和细边线为主、柔和阴影为辅。常规列表、论坛、工具架和大部分纸片保持平面；菜单、搜索、主视觉图和工作室视图中的可移动纸片才使用低对比环境阴影。悬停通过 2–6px 的轻位移和阴影响应，不制造玻璃悬浮感。
+当前界面不使用盒阴影。深度来自淡化插画、暖纸留白、深蓝区段与细线。首页背景图使用空 alt，作为装饰氛围，不作为团队身份信息。
 
-### Shadow Vocabulary
+桌面背景图 cover 铺满，透明度 0.58、定位 `center 20%`，叠加暖纸渐变保证标题和底部操作可读。≤640px 背景从容器顶部 28% 开始，使用图片自身比例的高度，透明度 0.62；上下边缘通过 mask 淡出（25%–76% 保持不透明），避免硬边并衔接暖纸。登录图透明度 0.33、居中；联系图 cover，定位 `center 68%`。
 
-- **环境浮层**：用于外观菜单、话题编辑器、主视觉图和媒体卡悬停。
-- **紧凑浮层**：用于搜索框、头像纸片和工作室条目。
-- **焦点暖影**：仅在搜索聚焦时加强边界，并把注意力收回输入任务。
-- **行动暖影**：只用于梨黄主按钮，强调可行动性而非装饰。
-- **纸片错版影**：工作条目使用向右下偏移的硬边淡影，形成轻微手工装订感。
-
-### Named Rules
-
-**The 纸面先行 Rule.** 默认表面保持平整；只有菜单、聚焦输入、主视觉或交互响应获得阴影，深度必须解释状态或层级。
+首页图片执行一次 1.5 秒轻微显现，缓动为 `cubic-bezier(0.16, 1, 0.3, 1)`，从 1.025 倍与 brightness(1.08) 回落到原值；入口箭头 hover 以 0.25 秒移动 3px。减少动态偏好关闭动画、过渡与平滑滚动。
 
 ## Shapes
 
-主要交互面使用轻柔圆角：普通按钮、外观切换和缩略图使用小圆角，搜索、菜单与浮层使用更大的内容面圆角。状态胶囊和关系节点使用完全圆形；作品纸条、论坛行与工具索引保持直角，以维持清单和纸张切片的骨架。图片可轻微旋转或裁切，但容器轮廓始终清楚，边界以 1px 墨线为准。
+按钮、输入和作品色面采用直角。1px 细线定义内容关系，文本入口以下划线提示行动，筛选用底线表示选择。Logo 圆润闭环属于标识，不扩展成胶囊按钮或全站圆角卡片。人物插画留在背景角色，不复制成界面各处的装饰部件。
 
 ## Components
 
-### Buttons
+### Navigation and actions
 
-- **Shape:** 48px 最小高度的小圆角行动面，内部横向留白 19px。
-- **Primary:** 梨黄底、深烤梨黄边、炭黑字，并带克制暖影；用于当前页面的主要参与动作。
-- **Hover / Focus:** 悬停上移 2px并把梨黄稍微提亮；按下回到原位；所有键盘焦点统一使用 3px 深烤梨黄外轮廓和 3px 偏移。
-- **Secondary / Dark:** 次行动使用透明纸面与强调墨线；深色按钮用于嵌在作品叙事中的单一强入口。
+页头显示原 Logo 和 Molis AI 字标，Logo 桌面 59px，使用 normal 混合模式；导航 hover 下划线，账号入口在右侧。首页用“发现产品”和“为业务寻找 AI 方案”两条入口；页脚以深蓝背景、放大文字字标和联系入口收尾。
 
-### Inputs / Fields
+基础主按钮最小高 48px；次级按钮透明底和细边框。普通禁用态透明度 0.65、光标 `not-allowed`。全局键盘焦点为 2px `focus` 描边、外偏移 5px；页首提供跳过导航入口。
 
-- **Style:** 搜索是 66px 高的近白内容面，含左侧搜索图标、输入、快捷键提示和炭黑提交按钮；编辑器字段用暖灰纸底和更紧的 8px 圆角。
-- **Focus:** 搜索整体边界切为深烤梨黄并出现焦点暖影；内部输入不额外套第二圈轮廓。
-- **Error / Disabled:** 当前实现没有独立错误或禁用视觉 token；不要凭空扩展，后续应从可见焦点和语义色体系继续建立。
+### Products and solutions
 
-### Navigation
+Products 三线、10 个产品：情绪与体验（Elsewhere、Seentoo、ASTRALO），轻量工具（niul.ai、DropAgent、Jelly），AI 与工程效率（Prologue、Flyleaf、ForkLight、GoalBoard）。Solutions 为 Content Growth、Evrik、Aether。名称、场景、成熟度与下一步来自真实内容，不补假下载状态或热度。
 
-桌面导航是 44px 最小高度的无衬线文本链接，当前项与悬停项只展开一条梨黄细下划线。1050px 以下切换为菜单按钮和纸面网格导航；移动链接保持 48px 可点高度。外观切换器是带火候点的描边按钮，菜单以单选语义展示三种共享系统的拓扑。
+分类使用服务端按 URL 输出的链接，`aria-current="page"` 与底线标记选中，无 JavaScript 仍可浏览。全部产品目录保留 Jelly/niul.ai 的已有入口提示；详情说明适用场景、当前边界与下一步，并返回所属目录。
 
-### Chips
+### Forms and account states
 
-- **Category Filters:** 六类入口组成连续分段条，未选中透明，悬停或选中后填入梨黄余温；移动端保持原宽并横向滚动。
-- **Status Chips:** 24px 高胶囊，用松叶绿、梨黄或陶红的低透明底与描边表达成熟度和参与状态；文案必须是事实标签。
+字段使用可见标签、透明底、细边框和 16px 输入字号，最小高 49px；textarea 最小高 145px，可纵向缩放。placeholder 保留已修正的 `muted` 对比度；聚焦边框和 1px 轮廓使用 `focus`；错误文字包含 `role="alert"`。
 
-### Cards / Containers
+邮箱注册、登录、会话、退出与改密是真实行为。提交中禁用按钮并显示“请稍候…”。Google/GitHub 缺凭据时禁用且显示“待开放”；真实账户不等于邮箱已验证，邮件验证和找回缺口继续明确呈现。
 
-- **Corner Style:** 内容图、浮层和工作室卡使用柔和圆角；默认实时清单、论坛条目、工具架和作品纸条保持直角。
-- **Background:** 在暖灰纸面、柔纸和近白内容面之间交替，不创建额外彩色卡片族。
-- **Shadow Strategy:** 平面清单无阴影；只有浮层、主图、工作室纸片和悬停媒体卡使用既有阴影词汇。
-- **Border:** 1px 墨线是主要结构手段；强调墨线只用于搜索、切换器和明确可交互边界。
-- **Internal Padding:** 实时条目使用 24px 垂直节奏，工作纸条使用 16px × 18px，媒体卡使用 22px。
+### Reading and discovery
 
-### Fireline Live Item
+文章用窄栏、充足行高和段距，保留原文；留言以细线划分身份、时间和正文。FAQ 使用原生 details/summary，桌面两栏、手机单列，摘要 16px、正文 15px/1.95、最大 60ch。
 
-默认动态条目把 168px 预览或符号放在左侧，右侧按「状态与类型 → 标题 → 摘要 → 内联行动」排序。悬停只向右移动 6px 并露出暖灰底；窄屏把预览压至 72px、条目归一为单列索引节奏。工作室和封面视图复用同一信息结构，不复制第二套组件。
+首页、目录、作品和文章保留独立标题、摘要、规范地址、分享信息与匹配可见事实的结构化数据。私有预览继续 noindex，robots 禁抓、sitemap 不列公开 URL；这些实现不代表已公开、已收录或获得 AI 引用。
 
 ## Do's and Don'ts
 
-### Do:
-
-- **Do** 先让路人通过标题、搜索、分类和明确行动理解社区，再在关系区展示可追溯的创作者。
-- **Do** 用暖灰纸面、炭黑信息和稀缺梨黄维持低跳跃节奏。
-- **Do** 让三种外观共享同一套颜色、状态、组件和内容事实，并以慢火清单为默认。
-- **Do** 用细线、列表、索引、诚实状态和轻微纸片位移表达「正在长大」。
-
-### Don't:
-
-- **Don't** 使用 AI 紫渐变、玻璃拟态墙或高饱和色块连续跳跃。
-- **Don't** 把首页变成排行榜、Logo 墙或三等分功能推销卡。
-- **Don't** 在 Hero 堆创作者头像；作者要可追溯，但不能挡住路人的第一步理解与行动。
-- **Don't** 为三种外观复制三套 token，或把它们误写成 light / dark 主题。
+- **Do** 保留已恢复的大标题、Newsreader 斜体、底部双入口和中文说明；以最终源码级联为准。
+- **Do** 将四人手绘图作为首页背景，采用灰蓝、少量柔杏橙与暖纸的协调关系，优先保证文字和行动可辨认。
+- **Do** 原样使用 Logo，保留实际产品状态、表单反馈和键盘焦点。
+- **Don't** 把首页重新拆成上方文字、下方独立插画，或增加新的“小事入口”首页区段。
+- **Don't** 把插画视为真实团队合影，或要求页面每种颜色都复制 Logo。
+- **Don't** 将微小装饰字、字符箭头或过往方案残留固化为复用标准。
+- **Don't** 把有限三图的 ship 结论扩大为全站或完整手机长页验收通过。
