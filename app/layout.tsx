@@ -1,15 +1,20 @@
 import type { Metadata } from 'next';
-import { Geist } from 'next/font/google';
+import { Geist, Newsreader } from 'next/font/google';
 import './globals.css';
+const newsreader = Newsreader({
+  variable: '--font-editorial',
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+});
 const geist = Geist({ variable: '--font-geist', subsets: ['latin'] });
 export const metadata: Metadata = {
   title: {
-    default: '烤个梨呀 · 有些东西，值得做出来',
-    template: '%s · 烤个梨呀',
+    default: 'Molis AI · A human touch',
+    template: '%s · Molis AI',
   },
-  icons: { icon: '/favicon.svg' },
+  icons: { icon: '/images/molis-logo.png' },
   description:
-    '认识做东西的人，体验正在长大的作品。由 Adeptify 发起的创造者社区，让有生命力的作品找到最早相信它的人。',
+    'Molis AI，一个保持好奇的 AI 创作工作室。从真实的感受出发，用设计与代码，把有意思的想法做成作品。',
   robots: { index: false, follow: false },
 };
 export default function RootLayout({
@@ -19,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <body className={geist.variable}>
+      <body className={`${geist.variable} ${newsreader.variable}`}>
         <a className="skip-link" href="#main">
           跳到主要内容
         </a>

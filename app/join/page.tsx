@@ -45,7 +45,7 @@ export default function Join() {
           <h1>
             有个想法？
             <br />
-            桌边还有位置。
+            聊聊看。
           </h1>
           <p>
             你不必已经有一个成熟的作品。
@@ -53,8 +53,8 @@ export default function Join() {
             说说你想做什么，或者想陪什么东西长大。
           </p>
           <img
-            src="/images/worktable.png"
-            alt="创造者围坐在开放工作桌旁"
+            src="/images/molis-light-blue.png"
+            alt="银灰与雾蓝色的抽象光影"
             width="1536"
             height="1024"
           />

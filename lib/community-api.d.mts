@@ -7,6 +7,7 @@ export function saveNote(
   request: Request,
   db: D1Database,
   slugs: string[],
+  user?: { id: string; name: string } | null,
 ): Promise<Response>;
 export function saveApplication(
   request: Request,

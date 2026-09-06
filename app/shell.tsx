@@ -1,45 +1,57 @@
 import Link from 'next/link';
-import { ArrowUpRight, Sprout } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
+import { AccountLink } from './account-link';
 export function Header() {
   return (
     <header className="site-header">
-      <Link className="brand" href="/" aria-label="烤个梨呀首页">
-        <span className="brand-mark">
-          <Sprout size={25} />
-        </span>
-        <span>
-          烤个梨呀<small>ROAST PEAR</small>
-        </span>
+      <Link className="brand" href="/" aria-label="Molis AI首页">
+        <img src="/images/molis-logo.png" alt="" width="64" height="64" />
+        <span className="wordmark">Molis AI</span>
       </Link>
       <nav aria-label="主导航">
-        <Link href="/#works">看作品</Link>
-        <Link href="/#people">认识我们</Link>
-        <Link href="/story/human-scale">为什么做</Link>
-        <Link href="/#tools">开发工具</Link>
+        <Link href="/products">Products</Link>
+        <Link href="/solutions">Solutions</Link>
+        <Link className="secondary-nav" href="/#studio">
+          Studio
+        </Link>
+        <Link className="secondary-nav" href="/#journal">
+          Journal
+        </Link>
       </nav>
-      <Link className="header-join" href="/join">
-        带个想法来 <ArrowUpRight size={17} />
-      </Link>
+      <AccountLink />
     </header>
   );
 }
 export function Footer() {
   return (
     <footer className="site-footer">
-      <div>
-        <Link className="footer-brand" href="/">
-          烤个梨呀<span>由 Adeptify 发起</span>
+      <div className="footer-top">
+        <p>
+          保持好奇。
+          <br />
+          让想法成为作品。
+        </p>
+        <Link className="text-link" href="/join">
+          从一个想法开始 <ArrowUpRight size={20} />
         </Link>
-        <p>创造是日用品，见证是必需品。</p>
       </div>
-      <div className="footer-links">
-        <Link href="/story/idealism">一份自白</Link>
-        <Link href="/story/human-scale">我们的故事</Link>
-        <a href="https://github.com/adeptify" target="_blank" rel="noreferrer">
-          GitHub <ArrowUpRight size={14} />
-        </a>
+      <Link className="footer-wordmark" href="/">
+        Molis AI
+      </Link>
+      <div className="footer-bottom">
+        <span>Molis AI · An independent AI studio</span>
+        <div>
+          <Link href="/privacy">隐私说明</Link>
+          <a
+            href="https://github.com/adeptify"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub ↗
+          </a>
+          <span>© 2026</span>
+        </div>
       </div>
-      <small>© 2026 Adeptify · 私有试用版</small>
     </footer>
   );
 }

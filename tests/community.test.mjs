@@ -1,15 +1,22 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { readFileSync } from 'node:fs';
-import { listNotes, saveNote, saveApplication } from '../lib/community-api.mjs';
+import { readFileSync, readdirSync } from 'node:fs';
+import {
+  listNotes,
+  saveNote as saveAuthenticatedNote,
+  saveApplication,
+} from '../lib/community-api.mjs';
 function dbFixture() {
   const sql = new DatabaseSync(':memory:');
+  for (const file of readdirSync(new URL('../drizzle/', import.meta.url))
+    .filter((f) => f.endsWith('.sql'))
+    .sort())
+    sql.exec(
+      readFileSync(new URL('../drizzle/' + file, import.meta.url), 'utf8'),
+    );
   sql.exec(
-    readFileSync(
-      new URL('../drizzle/0000_jittery_lady_deathstrike.sql', import.meta.url),
-      'utf8',
-    ),
+    "INSERT INTO user(id,name,email,email_verified,created_at,updated_at) VALUES ('tester','试用访客','tester@example.com',0,0,0),('other','另一位','other@example.com',0,0,0)",
   );
   return {
     sql,
@@ -33,6 +40,8 @@ function dbFixture() {
     },
   };
 }
+const saveNote = (request, db, slugs) =>
+  saveAuthenticatedNote(request, db, slugs, { id: 'tester', name: '试用访客' });
 const req = (route, data, origin = 'http://localhost:3000') =>
   new Request(`http://localhost:3000/api/${route}`, {
     method: 'POST',
@@ -86,7 +95,7 @@ test('外站请求、未知作品、空白和超长留言拒绝且不写库', as
   const db = dbFixture();
   for (const d of [
     { ...note(), work: 'nope' },
-    { ...note(), name: ' ' },
+    { ...note(), body: ' ' },
     { ...note(), body: 'x'.repeat(1201) },
     { ...note(), id: 'bad' },
   ])
@@ -175,4 +184,30 @@ test('数据库失败返回可重试错误，不把失败说成保存成功', as
     ).status,
     503,
   );
+});
+
+test('匿名不能留言，客户端不能冒名，另一账户不能复用同一请求id', async () => {
+  const db = dbFixture(),
+    d = { ...note(), name: '被冒充的人' };
+  assert.equal(
+    (await saveAuthenticatedNote(req('notes', d), db, ['niulai'], null)).status,
+    401,
+  );
+  assert.equal(db.sql.prepare('SELECT count(*) AS n FROM notes').get().n, 0);
+  const saved = await saveNote(req('notes', d), db, ['niulai']);
+  assert.equal((await saved.json()).note.name, '试用访客');
+  assert.equal(
+    db.sql.prepare('SELECT user_id FROM notes').get().user_id,
+    'tester',
+  );
+  assert.equal(
+    (
+      await saveAuthenticatedNote(req('notes', d), db, ['niulai'], {
+        id: 'other',
+        name: '另一位',
+      })
+    ).status,
+    409,
+  );
+  assert.equal(db.sql.prepare('SELECT count(*) AS n FROM notes').get().n, 1);
 });

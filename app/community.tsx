@@ -1,251 +1,176 @@
 'use client';
-import { useEffect, useState } from 'react';
+/* Direction contract — Purpose: introduce a studio through its work and writing.
+Craft: legible typography, real project status, quiet functional account entry.
+Own-world: warm-white negative space, navy ink, mist-blue and silver light; original logo keeps its apricot accent, the supplied Molis logo; no representational art.
+Story: curiosity becomes a small thing people can live with.
+First viewport: editorial typography in a calm silver and mist-blue field of light.
+Form: open asymmetric portfolio, typographic studies; never dashboard cards.
+Finish: restrained one-time graphic reveal, clear focus, honest unavailable states. */
 import Link from 'next/link';
-import { ArrowRight, ArrowUpRight, MoveDown, Plus } from 'lucide-react';
-import { Header, Footer } from './shell';
+import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
 import { works } from '../content/works';
+import { productLines } from '../content/lines';
+import { Header, Footer } from './shell';
 export default function Community() {
-  const [filter, setFilter] = useState('全部');
-  useEffect(() => {
-    const context = (
-      document as Document & {
-        modelContext?: {
-          registerTool: (
-            tool: unknown,
-            options: { signal: AbortSignal },
-          ) => void | Promise<void>;
-        };
-      }
-    ).modelContext;
-    if (!context) return;
-    const controller = new AbortController();
-    const tool = {
-      name: 'filter_community_works',
-      title: '筛选社区作品',
-      description: '按全部、有趣的作品或开发者工具筛选当前作品现场。',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          category: {
-            type: 'string',
-            enum: ['全部', '有趣的作品', '开发者工具'],
-          },
-        },
-        required: ['category'],
-        additionalProperties: false,
-      },
-      annotations: { readOnlyHint: false, untrustedContentHint: false },
-      execute(input: unknown) {
-        const category = (input as { category?: unknown })?.category;
-        if (
-          typeof category !== 'string' ||
-          !['全部', '有趣的作品', '开发者工具'].includes(category)
-        )
-          throw new Error('请选择有效分类');
-        setFilter(category);
-        return {
-          category,
-          works: works
-            .filter((w) => category === '全部' || w.category === category)
-            .map((w) => ({ name: w.name, url: `/works/${w.slug}` })),
-        };
-      },
-    };
-    try {
-      void Promise.resolve(
-        context.registerTool(tool, { signal: controller.signal }),
-      ).catch(() => {});
-    } catch {}
-    return () => controller.abort();
-  }, []);
-  const visible = works.filter(
-    (w) => filter === '全部' || w.category === filter,
-  );
   return (
     <>
       <Header />
       <main id="main">
-        <section className="hero">
-          <div className="hero-copy">
+        <section className="studio-hero">
+          <img
+            className="hero-light"
+            src="/images/molis-light-blue.png"
+            width="1536"
+            height="1024"
+            alt=""
+            fetchPriority="high"
+          />
+          <div className="hero-content">
             <h1>
-              有些东西，
+              A curious mind.
               <br />
-              值得<span>做出来。</span>
+              <em>A human touch.</em>
             </h1>
-            <p>
-              一个想法，一群做东西的人，
-              <br />
-              还有最早相信它的你。
-            </p>
-            <div className="hero-actions">
-              <a className="button primary" href="#works">
-                看看正在发生什么 <ArrowRight size={18} />
+            <div className="hero-bottom">
+              <a className="hero-explore" href="#works">
+                看看我们在做什么 <ArrowDownRight size={28} />
               </a>
-              <Link className="text-link" href="/story/idealism">
-                读一份自白 <ArrowUpRight size={16} />
-              </Link>
+              <div>
+                <h2>让技术，多一点人的温度。</h2>
+                <p>
+                  Molis AI，一个保持好奇的 AI 创作工作室。
+                  <br className="desktop-break" />
+                  从真实的感受出发，把有意思的想法做成作品。
+                </p>
+              </div>
             </div>
           </div>
-          <figure className="hero-art">
-            <img
-              src="/images/worktable.png"
-              width="1536"
-              height="1024"
-              alt="四位创造者围坐在工作桌旁，桌上有笔记本、小牛、树苗、外星生命和梨灯"
-            />
-            <figcaption>留个位置，给还没被做出来的东西。</figcaption>
-          </figure>
-          <div className="hero-bottom">
-            <span>独自起意，一起见证。</span>
-            <a href="#works">
-              往下逛逛 <MoveDown size={16} />
-            </a>
+          <div className="hero-caption">
+            <span>Curiosity, made tangible.</span>
+            <span>MOLIS AI · INDEPENDENT STUDIO</span>
           </div>
         </section>
-        <section id="works" className="works-section">
+        <section className="product-lines section-wrap" id="works">
           <div className="section-heading">
-            <div>
-              <h2>
-                正在长大的东西<span className="heading-dot">.</span>
-              </h2>
-              <p>有些能带走，有些还在试。每一个，都有它想存在的理由。</p>
-            </div>
-            <span className="quiet-label">来自我们的真实仓库</span>
-          </div>
-          <div className="filter-row" role="group" aria-label="作品分类">
-            {['全部', '有趣的作品', '开发者工具'].map((f) => (
-              <button
-                key={f}
-                className={filter === f ? 'filter active' : 'filter'}
-                onClick={() => setFilter(f)}
-                aria-pressed={filter === f}
-              >
-                {f}
-              </button>
-            ))}
-            <span>{visible.length} 件作品</span>
-          </div>
-          <div className="works-grid">
-            {visible.map((w) => (
-              <Link
-                className="work-card"
-                href={`/works/${w.slug}`}
-                key={w.slug}
-              >
-                <div className={`work-art ${w.tone}`}>
-                  <div className="art-top">
-                    <span>{w.english}</span>
-                    <ArrowUpRight size={20} />
-                  </div>
-                  <span className="work-symbol">{w.symbol}</span>
-                  <span className="art-bottom">{w.name}</span>
-                </div>
-                <div className="work-info">
-                  <div className="work-meta">
-                    <span>{w.owner}</span>
-                    <span className="status">{w.status}</span>
-                  </div>
-                  <h3>{w.title}</h3>
-                  <p>{w.description}</p>
-                  <span className="work-open">
-                    认识这个作品 <ArrowRight size={16} />
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-        <section className="belief">
-          <p className="belief-intro">
-            做东西的门槛越来越低。
-            <br />
-            被认真看见，依然珍贵。
-          </p>
-          <div>
             <h2>
-              我们想找到的，
-              <br />
-              是最早的<span>十个相信者。</span>
+              Products<span>给日常一点不同，给创造多一点可能。</span>
             </h2>
-            <p>
-              一个有生命力的作品，需要有人试用、有人挑毛病、有人回来看看。你的一句“这就是我想要的”，可能就是它继续长下去的理由。
-            </p>
-            <Link className="text-link" href="/story/human-scale">
-              为什么要有这样一个地方 <ArrowUpRight size={18} />
+            <Link className="text-link" href="/products">
+              全部产品 <ArrowUpRight size={18} />
             </Link>
           </div>
-        </section>
-        <section id="people" className="people-section">
-          <div className="section-heading">
-            <div>
-              <h2>作品后面，是人。</h2>
-              <p>先认识一下这张桌子旁的人。</p>
-            </div>
-          </div>
-          <div className="people-layout">
-            <div className="founder">
-              <div className="founder-name">
-                <span className="avatar-letter">骏</span>
-                <div>
-                  <h3>一骏</h3>
-                  <p>Adeptify 发起人 · 也在这里做东西</p>
+          {productLines.map((line) => (
+            <div className="line-row" key={line.id}>
+              <Link className="line-title" href={`/products?line=${line.id}`}>
+                <h3>{line.name}</h3>
+                <em>{line.english}</em>
+              </Link>
+              <div>
+                <p>{line.description}</p>
+                <div className="line-projects">
+                  {line.projects.map((slug) => {
+                    const w = works.find((w) => w.slug === slug)!;
+                    return (
+                      <Link key={slug} href={`/works/${slug}`}>
+                        {w.name}
+                        <ArrowUpRight size={12} />
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
-              <blockquote>
-                “做一件事，先问这件事值不值得存在，再问有没有人为它买单。”
-              </blockquote>
-              <Link className="text-link" href="/story/idealism">
-                这是我的自白 <ArrowUpRight size={17} />
+              <Link
+                className="line-arrow"
+                aria-label={`查看${line.name}`}
+                href={`/products?line=${line.id}`}
+              >
+                <ArrowUpRight size={24} />
               </Link>
             </div>
-            <div className="open-seat">
-              <Plus size={28} />
-              <h3>下一把椅子，留给你。</h3>
-              <p>
-                会写代码，会画画，会讲故事，或者只是有个一直想做的东西。带着它来。
-              </p>
-              <Link className="button light" href="/join">
-                说说你想做什么 <ArrowUpRight size={17} />
-              </Link>
-            </div>
-          </div>
+          ))}
         </section>
-        <section id="tools" className="tools-section">
-          <div>
+        <section className="solutions-preview section-wrap" id="solutions">
+          <div className="section-heading">
             <h2>
-              把执行交给机器，
-              <br />
-              把判断留给自己。
+              Solutions<span>把 AI 放进真实的业务。</span>
             </h2>
-            <p>我们也在造工具，让一个人能把事情做得更远。</p>
-            <a
-              className="text-link"
-              href="https://github.com/adeptify"
-              target="_blank"
-              rel="noreferrer"
-            >
-              到 GitHub 看施工现场 <ArrowUpRight size={17} />
-            </a>
+            <Link className="text-link" href="/solutions">
+              探索解决方案 <ArrowUpRight size={18} />
+            </Link>
           </div>
-          <div className="tool-list">
+          <div className="solution-lines">
             {works
-              .filter((w) => w.category === '开发者工具')
+              .filter((w) => w.category === 'Solutions')
               .map((w) => (
-                <Link key={w.slug} href={`/works/${w.slug}`}>
-                  <span>
-                    <strong>{w.name}</strong>
-                    <small>{w.description}</small>
-                  </span>
-                  <ArrowUpRight size={24} />
+                <Link
+                  className="solution-line"
+                  key={w.slug}
+                  href={`/works/${w.slug}`}
+                >
+                  <div>
+                    <h3>{w.name}</h3>
+                    <span>
+                      {w.slug === 'content-growth'
+                        ? '内容与增长'
+                        : w.slug === 'evrik'
+                          ? '软件 Agent 化'
+                          : '数据与洞察'}
+                    </span>
+                  </div>
+                  <p>{w.description}</p>
+                  <ArrowUpRight size={23} />
                 </Link>
               ))}
           </div>
+          <p className="solution-caption">
+            这些方案正在逐步验证。每个项目页都保留了当前阶段与边界。
+          </p>
         </section>
-        <section className="closing">
-          <p>不必先证明它能改变世界。</p>
-          <h2>先让它来到世界。</h2>
-          <Link className="button primary" href="/join">
-            带个想法，来烤个梨 <ArrowUpRight size={18} />
+        <section className="studio-about section-wrap" id="studio">
+          <div>
+            <h2>
+              Made with AI.
+              <br />
+              <em>Meant for people.</em>
+            </h2>
+            <span className="about-signature">MOLIS AI / ADEPTIFY</span>
+          </div>
+          <div className="about-copy">
+            <h3>
+              能力不断生长，
+              <br />
+              人的尺度始终在场。
+            </h3>
+            <p>
+              一头替你留意 AI
+              进度的牛，一次与陌生生命的相遇，一段关于“如果”的旅程。我们想做的东西，常常从一个很小、很具体的感受开始。
+            </p>
+            <p>
+              机器可以承担更多执行。至于什么值得做、做成什么样，仍然由人来决定。
+            </p>
+            <Link className="text-link" href="/story/human-scale">
+              读读我们的故事 <ArrowUpRight size={18} />
+            </Link>
+          </div>
+        </section>
+        <section className="journal section-wrap" id="journal">
+          <div className="section-heading">
+            <h2>
+              作品以外<span>Notes from the studio</span>
+            </h2>
+            <p>一些还在生长的判断。</p>
+          </div>
+          <Link className="journal-row" href="/story/idealism">
+            <span>一份自白</span>
+            <h3>落地主义</h3>
+            <p>一种不承认自己是哲学的哲学。</p>
+            <ArrowUpRight size={24} />
+          </Link>
+          <Link className="journal-row" href="/story/human-scale">
+            <span>一个故事</span>
+            <h3>人的尺度</h3>
+            <p>理想主义在 AI 时代的生与死。</p>
+            <ArrowUpRight size={24} />
           </Link>
         </section>
       </main>

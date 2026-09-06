@@ -1,7 +1,15 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { authClient } from '../lib/auth-client';
 import { ArrowRight, RotateCcw } from 'lucide-react';
-type Note = { id: string; name: string; body: string; createdAt: string };
+type Note = {
+  id: string;
+  name: string;
+  body: string;
+  createdAt: string;
+  registered: number;
+};
 export default function Notes({
   work,
   question,
@@ -15,11 +23,9 @@ export default function Notes({
     [saving, setSaving] = useState(false),
     [message, setMessage] = useState(''),
     [failed, setFailed] = useState(false);
-  const [name, setName] = useState(''),
-    [body, setBody] = useState('');
-  const pending = useRef<{ id: string; name: string; body: string } | null>(
-    null,
-  );
+  const { data: session, isPending: sessionPending } = authClient.useSession();
+  const [body, setBody] = useState('');
+  const pending = useRef<{ id: string; body: string } | null>(null);
   const load = useCallback(async () => {
     setLoading(true);
     setLoadError(false);
@@ -43,12 +49,8 @@ export default function Notes({
     setSaving(true);
     setMessage('');
     setFailed(false);
-    if (
-      !pending.current ||
-      pending.current.name !== name ||
-      pending.current.body !== body
-    )
-      pending.current = { id: crypto.randomUUID(), name, body };
+    if (!pending.current || pending.current.body !== body)
+      pending.current = { id: crypto.randomUUID(), body };
     try {
       const r = await fetch('/api/notes', {
         method: 'POST',
@@ -72,40 +74,41 @@ export default function Notes({
     <section className="notes">
       <h2>一起把它往前推一点。</h2>
       <p>{question}</p>
-      <form onSubmit={submit}>
-        <label className="field">
-          <span>怎么称呼你</span>
-          <input
-            required
-            maxLength={40}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            autoComplete="nickname"
-            placeholder="一个让作者记住的名字"
-          />
-        </label>
-        <label className="field">
-          <span>你的具体想法</span>
-          <textarea
-            required
-            minLength={5}
-            maxLength={1200}
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            placeholder="说说你想用它做什么、哪里没看懂，或一个可以变好的地方。"
-          />
-        </label>
-        <p className="form-caption">
-          留言会展示在作品下。试用版署名未经身份验证，请不要留下私人信息。
-        </p>
-        <button className="button primary" disabled={saving}>
-          {saving ? '正在保存…' : '留下这句反馈'}
-          <ArrowRight size={17} />
-        </button>
-        <p role="status" className={`feedback ${failed ? 'error' : 'success'}`}>
-          {message}
-        </p>
-      </form>
+      {sessionPending ? (
+        <p>正在读取登录状态…</p>
+      ) : !session ? (
+        <Link href="/login" className="text-link">
+          登录后留下想法 <ArrowRight size={17} />
+        </Link>
+      ) : (
+        <form onSubmit={submit}>
+          <p className="form-caption">以 {session.user.name} 的身份留言。</p>
+          <label className="field">
+            <span>你的具体想法</span>
+            <textarea
+              required
+              minLength={5}
+              maxLength={1200}
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              placeholder="说说你想用它做什么、哪里没看懂，或一个可以变好的地方。"
+            />
+          </label>
+          <p className="form-caption">
+            留言与显示名会展示在作品下，请不要留下私人信息。
+          </p>
+          <button className="button primary" disabled={saving}>
+            {saving ? '正在保存…' : '留下这句反馈'}
+            <ArrowRight size={17} />
+          </button>
+          <p
+            role="status"
+            className={`feedback ${failed ? 'error' : 'success'}`}
+          >
+            {message}
+          </p>
+        </form>
+      )}
       <div className="note-list" aria-live="polite">
         {loading ? (
           <p className="empty-notes">正在看看大家说了什么…</p>
@@ -123,7 +126,10 @@ export default function Notes({
             <article className="note" key={n.id}>
               <div>
                 <strong>{n.name}</strong>
-                <small>访客署名 · {n.createdAt.slice(0, 10)}</small>
+                <small>
+                  {n.registered ? '注册用户' : '历史访客署名'} ·{' '}
+                  {n.createdAt.slice(0, 10)}
+                </small>
               </div>
               <p>{n.body}</p>
             </article>

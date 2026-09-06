@@ -18,8 +18,12 @@ export default async function WorkPage({ params }: Props) {
     <>
       <Header />
       <main className="detail-container" id="main">
-        <Link className="back-link" href="/#works">
-          <ArrowLeft size={16} /> 回到作品现场
+        <Link
+          className="back-link"
+          href={w.category === 'Solutions' ? '/solutions' : '/products'}
+        >
+          <ArrowLeft size={16} />{' '}
+          {w.category === 'Solutions' ? '回到 Solutions' : '回到 Products'}
         </Link>
         <section className="detail-hero">
           <div>
@@ -54,7 +58,9 @@ export default async function WorkPage({ params }: Props) {
           <div>
             <h2>为什么想做它</h2>
             <p>{w.why}</p>
-            <h2>现在走到了哪里</h2>
+            <h2>
+              {w.category === 'Solutions' ? '当前阶段与边界' : '现在走到了哪里'}
+            </h2>
             <p>{w.detail}</p>
           </div>
           <aside>

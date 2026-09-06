@@ -24,7 +24,7 @@ export default async function Story({ params }: Props) {
       <Header />
       <main className="reading" id="main">
         <Link className="back-link" href="/">
-          <ArrowLeft size={16} /> 回到烤个梨呀
+          <ArrowLeft size={16} /> 回到Molis AI
         </Link>
         <h1>{story.title}</h1>
         <p className="reading-meta">
