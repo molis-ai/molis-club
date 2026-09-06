@@ -1,9 +1,9 @@
 'use client';
 /* Direction contract — Purpose: introduce a studio through its work and writing.
 Craft: legible typography, real project status, quiet functional account entry.
-Own-world: cool silver-white negative space, navy ink, mist-blue and silver light; the logo accent is now mist-blue by explicit user request, the supplied Molis logo; no representational art.
+Own-world: warm ivory negative space, soft ink-blue, warm neutral light; the original supplied Molis logo and orange accent are unchanged by explicit user instruction; no representational art.
 Story: curiosity becomes a small thing people can live with.
-First viewport: editorial typography in a calm silver and mist-blue field of light.
+First viewport: editorial typography in a calm warm-neutral field of light.
 Form: open asymmetric portfolio, typographic studies; never dashboard cards.
 Finish: restrained one-time graphic reveal, clear focus, honest unavailable states. */
 import Link from 'next/link';
@@ -19,7 +19,7 @@ export default function Community() {
         <section className="studio-hero">
           <img
             className="hero-light"
-            src="/images/molis-light-blue.png"
+            src="/images/molis-light-warm-neutral.png"
             width="1536"
             height="1024"
             alt=""

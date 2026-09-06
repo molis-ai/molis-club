@@ -22,14 +22,14 @@ export function pageMetadata(
       description,
       url,
       images: [
-        { url: `${siteUrl}/images/molis-logo-cool.png`, alt: 'Molis AI 标志' },
+        { url: `${siteUrl}/images/molis-logo.png`, alt: 'Molis AI 标志' },
       ],
     },
     twitter: {
       card: 'summary',
       title: `${title} · Molis AI`,
       description,
-      images: [`${siteUrl}/images/molis-logo-cool.png`],
+      images: [`${siteUrl}/images/molis-logo.png`],
     },
   };
 }
@@ -39,6 +39,6 @@ export const studioIdentity = {
   name: 'Molis AI',
   url: siteUrl,
   description: studioDescription,
-  logo: `${siteUrl}/images/molis-logo-cool.png`,
+  logo: `${siteUrl}/images/molis-logo.png`,
   sameAs: ['https://github.com/adeptify'],
 };

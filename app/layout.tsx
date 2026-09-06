@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: 'Molis AI · A human touch',
     template: '%s · Molis AI',
   },
-  icons: { icon: '/images/molis-logo-cool.png' },
+  icons: { icon: '/images/molis-logo.png' },
   description:
     'Molis AI，一个保持好奇的 AI 创作工作室。从真实的感受出发，用设计与代码，把有意思的想法做成作品。',
   robots: { index: publiclyIndexable, follow: publiclyIndexable },

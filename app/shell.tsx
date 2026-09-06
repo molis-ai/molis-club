@@ -5,7 +5,7 @@ export function Header() {
   return (
     <header className="site-header">
       <Link className="brand" href="/" aria-label="Molis AI首页">
-        <img src="/images/molis-logo-cool.png" alt="" width="64" height="64" />
+        <img src="/images/molis-logo.png" alt="" width="64" height="64" />
         <span className="wordmark">Molis AI</span>
       </Link>
       <nav aria-label="主导航">

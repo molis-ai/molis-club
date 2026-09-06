@@ -1,10 +1,10 @@
 @import 'tailwindcss';
 :root {
-  --paper: #f6f8fb;
-  --ink: #19294f;
-  --muted: #66697a;
-  --line: #d6dfe9;
-  --accent: #c6d7ed;
+  --paper: #f5f1eb;
+  --ink: #24324b;
+  --muted: #706d69;
+  --line: #dcd6ce;
+  --accent: #ded8cd;
   --font-sans: var(--font-geist), sans-serif;
   --font-serif: var(--font-editorial), Georgia, serif;
 }
@@ -57,14 +57,14 @@ button {
 }
 input,
 textarea {
-  caret-color: #466d9a;
+  caret-color: #4c6073;
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: #96a7bd var(--paper);
+  scrollbar-color: #aaa69e var(--paper);
 }
 :focus-visible {
-  outline: 2px solid #466d9a;
+  outline: 2px solid #4c6073;
   outline-offset: 5px;
 }
 h1,
@@ -200,14 +200,14 @@ section[id] {
 .hero-bottom p {
   font-size: 14px;
   line-height: 1.9;
-  color: #46516c;
+  color: #515760;
 }
 .hero-explore {
   display: flex;
   gap: 26px;
   align-items: center;
   font-size: 13px;
-  border-bottom: 1px solid #727a91;
+  border-bottom: 1px solid #8a8986;
   padding: 14px 0;
   min-width: 216px;
 }
@@ -224,7 +224,7 @@ section[id] {
   right: 4.5%;
   display: flex;
   justify-content: space-between;
-  color: #4d5b77;
+  color: #626568;
   font-size: 10px;
   letter-spacing: 0.04em;
 }
@@ -276,7 +276,7 @@ section[id] {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: 100px;
-  background: #eaf0f6;
+  background: #ece7e0;
   padding-top: 120px;
   padding-bottom: 130px;
 }
@@ -304,7 +304,7 @@ section[id] {
 .about-copy p {
   font-size: 14px;
   line-height: 2;
-  color: #526078;
+  color: #646768;
   margin-bottom: 20px;
 }
 .text-link {
@@ -347,8 +347,8 @@ section[id] {
 }
 .site-footer {
   padding: 64px 6% 25px;
-  background: #19294f;
-  color: #eef3fa;
+  background: #24324b;
+  color: #f5f1eb;
 }
 .footer-top {
   display: flex;
@@ -361,7 +361,7 @@ section[id] {
   line-height: 1.6;
 }
 .footer-top .text-link {
-  border-color: #8da8cc;
+  border-color: #c7c0b3;
 }
 .footer-wordmark {
   font-size: clamp(70px, 15vw, 205px);
@@ -377,14 +377,14 @@ section[id] {
   margin-left: 10px;
 }
 .footer-bottom {
-  border-top: 1px solid #53607c;
+  border-top: 1px solid #667078;
   margin-top: 55px;
   padding-top: 23px;
   display: flex;
   justify-content: space-between;
   gap: 20px;
   font-size: 10px;
-  color: #c8cfdd;
+  color: #d5d2cb;
 }
 .footer-bottom > div {
   display: flex;
@@ -406,7 +406,7 @@ section[id] {
   color: var(--paper);
 }
 .button.primary:hover:not(:disabled) {
-  background: #34476c;
+  background: #38485b;
 }
 .button.light {
   border-color: var(--line);
@@ -445,7 +445,7 @@ section[id] {
 .field select {
   width: 100%;
   min-height: 49px;
-  border: 1px solid #aaaec0;
+  border: 1px solid #aaa79f;
   background: transparent;
   color: var(--ink);
   padding: 12px 14px;
@@ -458,12 +458,12 @@ section[id] {
 }
 .field input::placeholder,
 .field textarea::placeholder {
-  color: #6b7182;
+  color: #777771;
 }
 .field input:focus,
 .field textarea:focus {
-  border-color: #466d9a;
-  outline: 1px solid #466d9a;
+  border-color: #4c6073;
+  outline: 1px solid #4c6073;
   outline-offset: 0;
 }
 .form-caption {
@@ -494,7 +494,7 @@ section[id] {
   text-decoration: underline;
 }
 .consent input {
-  accent-color: #466d9a;
+  accent-color: #4c6073;
   width: 15px;
   height: 15px;
 }
@@ -555,15 +555,15 @@ section[id] {
   align-items: center;
   gap: 9px;
   background: none;
-  border: 1px solid #aaaec0;
+  border: 1px solid #aaa79f;
   min-height: 47px;
   flex: 1;
   font-size: 13px;
 }
 .social-buttons button:disabled {
   opacity: 1;
-  color: #667084;
-  background: #eaf0f6;
+  color: #6f726e;
+  background: #ece7e0;
   border-color: var(--line);
 }
 .social-buttons small {
@@ -676,17 +676,17 @@ section[id] {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: #dce5f0;
+  background: #e5dfd5;
 }
 .work-art.dark {
-  background: #19294f;
-  color: #eef3fa;
+  background: #24324b;
+  color: #f5f1eb;
 }
 .work-art.green {
-  background: #dce2ee;
+  background: #dfe1d7;
 }
 .work-art.paper {
-  background: #d5e0ef;
+  background: #dedfda;
 }
 .work-symbol {
   font-size: 85px;
@@ -794,7 +794,7 @@ section[id] {
 .prose {
   font-size: 16px;
   line-height: 2.15;
-  color: #3f4b65;
+  color: #444f59;
 }
 .prose p {
   margin: 24px 0;
@@ -819,7 +819,7 @@ section[id] {
   font-size: 23px;
   margin: 35px 0;
   padding: 15px 0;
-  color: #445f81;
+  color: #57616a;
 }
 .prose hr {
   border: 0;
@@ -1242,7 +1242,7 @@ section[id] {
   }
 }
 
-/* Molis AI: supplied mark and an mist-blue/navy palette. */
+/* Molis AI: unaltered supplied mark, warm ivory light, and soft ink-blue typography. */
 .brand {
   align-items: center;
   gap: 9px;
@@ -1310,7 +1310,7 @@ section[id] {
 }
 .line-title em {
   font-size: 22px;
-  color: #6a7082;
+  color: #72746e;
   display: block;
   margin-top: 9px;
 }
@@ -1343,21 +1343,21 @@ section[id] {
   padding-top: 9px;
 }
 .solutions-preview {
-  background: #19294f;
-  color: #f6f8fb;
+  background: #24324b;
+  color: #f5f1eb;
 }
 .solutions-preview .section-heading h2 span {
-  color: #c1c9d8;
+  color: #d1cec6;
 }
 .solutions-preview .text-link {
-  border-color: #8da8cc;
+  border-color: #c7c0b3;
 }
 .solution-line {
   display: grid;
   grid-template-columns: 1fr 1.3fr 30px;
   gap: 45px;
   align-items: start;
-  border-top: 1px solid #4a5977;
+  border-top: 1px solid #626c72;
   padding: 35px 0;
 }
 .solution-line h3 {
@@ -1367,14 +1367,14 @@ section[id] {
 }
 .solution-line span {
   font-size: 11px;
-  color: #afc5e3;
+  color: #d6ccba;
   display: block;
   margin-top: 9px;
 }
 .solution-line p {
   font-size: 13px;
   line-height: 1.95;
-  color: #d0d6e0;
+  color: #dfdbd2;
   max-width: 460px;
 }
 .solution-line:hover h3 {
@@ -1383,7 +1383,7 @@ section[id] {
 }
 .solution-caption {
   font-size: 11px;
-  color: #c1c9d8;
+  color: #d1cec6;
   margin-top: 25px;
 }
 .catalog-page {
@@ -1463,7 +1463,7 @@ section[id] {
 .catalog-row p {
   font-size: 13px;
   line-height: 1.9;
-  color: #546079;
+  color: #62676b;
 }
 .catalog-row:hover h3 {
   text-decoration: underline;

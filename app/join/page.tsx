@@ -53,8 +53,8 @@ export default function Join() {
             说说你想做什么，或者想陪什么东西长大。
           </p>
           <img
-            src="/images/molis-light-blue.png"
-            alt="银灰与雾蓝色的抽象光影"
+            src="/images/molis-light-warm-neutral.png"
+            alt="暖米白与浅暖灰的抽象光影"
             width="1536"
             height="1024"
           />
