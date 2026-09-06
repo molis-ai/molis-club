@@ -1,5 +1,3 @@
-'use client';
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { works } from '../content/works';
@@ -7,21 +5,11 @@ import { productLines } from '../content/lines';
 import { Header, Footer } from './shell';
 export default function Catalog({
   solutions = false,
+  line = 'all',
 }: {
   solutions?: boolean;
+  line?: string;
 }) {
-  const [line, setLine] = useState('all');
-  useEffect(() => {
-    const value = new URLSearchParams(window.location.search).get('line');
-    if (productLines.some((l) => l.id === value)) setLine(value!);
-  }, []);
-  function select(id: string) {
-    setLine(id);
-    const u = new URL(window.location.href);
-    if (id === 'all') u.searchParams.delete('line');
-    else u.searchParams.set('line', id);
-    window.history.replaceState(null, '', u);
-  }
   const groups = solutions
     ? [
         {
@@ -54,19 +42,34 @@ export default function Catalog({
           </p>
         </div>
         {!solutions && (
-          <div className="filters catalog-filters" aria-label="产品线筛选">
-            <button onClick={() => select('all')} aria-pressed={line === 'all'}>
+          <nav className="filters catalog-filters" aria-label="产品线筛选">
+            <Link
+              href="/products"
+              aria-current={line === 'all' ? 'page' : undefined}
+            >
               全部产品
-            </button>
+            </Link>
             {productLines.map((l) => (
-              <button
+              <Link
                 key={l.id}
-                onClick={() => select(l.id)}
-                aria-pressed={line === l.id}
+                href={`/products?line=${l.id}`}
+                aria-current={line === l.id ? 'page' : undefined}
               >
                 {l.name}
-              </button>
+              </Link>
             ))}
+          </nav>
+        )}
+        {!solutions && line === 'all' && (
+          <div className="catalog-start">
+            <p>想先用起来？</p>
+            <div>
+              <Link href="/works/jelly">Jelly · Mac 日程与笔记安装包</Link>
+              <Link href="/works/niulai">
+                niul.ai · AI 进度桌面伙伴的开源仓库
+              </Link>
+            </div>
+            <span>其他作品也在持续开发中，下面可以查看每一项的进度。</span>
           </div>
         )}
         {groups.map((g) => (

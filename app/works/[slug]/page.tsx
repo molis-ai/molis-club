@@ -4,11 +4,15 @@ import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { works } from '../../../content/works';
 import { Header, Footer } from '../../shell';
 import Notes from '../../notes';
+import { pageMetadata, siteUrl } from '../../../lib/site';
+import { StructuredData } from '../../structured-data';
 type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   const w = works.find((w) => w.slug === slug);
-  return { title: w?.name ?? '作品未找到', description: w?.description };
+  return w
+    ? pageMetadata(`${w.name} · ${w.title}`, w.description, `/works/${w.slug}`)
+    : { title: '作品未找到', robots: { index: false } };
 }
 export default async function WorkPage({ params }: Props) {
   const { slug } = await params;
@@ -16,6 +20,21 @@ export default async function WorkPage({ params }: Props) {
   if (!w) notFound();
   return (
     <>
+      <StructuredData
+        json={JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'CreativeWork',
+          name: w.name,
+          headline: w.title,
+          description: w.description,
+          url: `${siteUrl}/works/${w.slug}`,
+          creativeWorkStatus: w.status,
+          inLanguage: 'zh-CN',
+          creator: { '@type': 'Organization', name: 'Adeptify' },
+          audience: { '@type': 'Audience', audienceType: w.audience },
+          ...(w.url ? { sameAs: w.url } : {}),
+        })}
+      />
       <Header />
       <main className="detail-container" id="main">
         <Link
@@ -51,11 +70,13 @@ export default async function WorkPage({ params }: Props) {
           <div className={`work-art ${w.tone}`}>
             <div className="art-top">{w.english}</div>
             <span className="work-symbol">{w.symbol}</span>
-            <span className="art-bottom">{w.name} · ADEPTIFY</span>
+            <span className="art-bottom">{w.name} · MOLIS AI</span>
           </div>
         </section>
         <section className="detail-body">
           <div>
+            <h2>适合什么场景</h2>
+            <p>{w.audience}</p>
             <h2>为什么想做它</h2>
             <p>{w.why}</p>
             <h2>

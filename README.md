@@ -1,6 +1,6 @@
 # Molis AI
 
-一个保持好奇的 AI 创作工作室。当前网站保留10 个产品、3 项方案和一骏《落地主义》《人的尺度》，以暖白底、海军蓝文字与雾蓝银灰光影呈现。
+一个保持好奇的 AI 创作工作室。当前网站保留10 个产品、3 项方案和一骏《落地主义》《人的尺度》，以冷银白底、海军蓝文字与雾蓝银灰光影呈现。
 
 React / Vinext + Cloudflare Workers + D1 + Better Auth。功能可用的私有试用版本；第三方 OAuth 等待外部凭据。
 
@@ -20,3 +20,5 @@ React / Vinext + Cloudflare Workers + D1 + Better Auth。功能可用的私有�
 [部署、费用与限制](./DEPLOYMENT.md) · [Google/GitHub配置步骤](./AUTH-SETUP.md)
 
 [产品线分类与依据](./PRODUCT-LINES.md)
+
+网站的浏览路径、SEO / GEO 准备和公开后流量验证见 [DISCOVERY.md](./DISCOVERY.md)。目前保留私有 noindex，尚未提交搜索收录。

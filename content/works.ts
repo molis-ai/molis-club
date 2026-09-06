@@ -1,6 +1,7 @@
 export const works = [
   {
     slug: 'niulai',
+    audience: '同时运行多个 AI 会话，希望减少反复切窗口查看进度的 Mac 用户。',
     name: 'niul.ai',
     english: 'NIUL.AI',
     category: '轻量工具',
@@ -14,13 +15,14 @@ export const works = [
     question: '当你同时开着几个 AI 时，最想被提醒的是哪一刻？',
     url: 'https://github.com/adeptify/niul.ai',
     action: '去 GitHub 牵头牛',
-    tone: 'orange',
+    tone: 'blue',
     symbol: '牛',
     owner: 'Adeptify',
     source: 'GitHub README · 2026.09.06',
   },
   {
     slug: 'astralo',
+    audience: '喜欢探索、推理与慢节奏叙事，愿意通过观察理解陌生语言的玩家。',
     name: 'ASTRALO',
     english: 'FIRST CONTACT',
     category: '情绪与体验',
@@ -41,7 +43,8 @@ export const works = [
   },
   {
     slug: 'seentoo',
-    name: '见过',
+    audience: '喜欢用照片记录街区，希望围绕日常事物产生轻量连接的人。',
+    name: 'Seentoo · 见过',
     english: 'SEENTOO',
     category: '情绪与体验',
     status: '手机原型',
@@ -60,6 +63,7 @@ export const works = [
   },
   {
     slug: 'elsewhere',
+    audience: '想认真回看一次人生选择，体验一段有结束、有归来的互动叙事的人。',
     name: 'Elsewhere',
     english: 'THE ROAD NOT TAKEN',
     category: '情绪与体验',
@@ -80,6 +84,8 @@ export const works = [
   },
   {
     slug: 'forklight',
+    audience:
+      '需要把有边界的工程任务交给 AI，同时保留过程检查和接管能力的开发者。',
     name: 'ForkLight',
     english: 'EXECUTION, IN YOUR HANDS',
     category: 'AI 与工程效率',
@@ -99,6 +105,8 @@ export const works = [
   },
   {
     slug: 'goalboard',
+    audience:
+      '跨多个 AI 会话推进长期项目，需要共同维护目标、进度与完成证据的人。',
     name: 'GoalBoard',
     english: 'ONE SHARED GOAL',
     category: 'AI 与工程效率',
@@ -112,13 +120,14 @@ export const works = [
     question: '你最近一次重新解释同一个项目，重复最多的是哪一部分？',
     url: 'https://github.com/adeptify/GoalBoard',
     action: '打开 GoalBoard 仓库',
-    tone: 'orange',
+    tone: 'blue',
     symbol: 'g_',
     owner: 'Adeptify',
     source: 'GitHub README · 2026.09.06',
   },
   {
     slug: 'dropagent',
+    audience: '希望用已安装的本地 Agent 处理文件、网页和文字的 Mac 用户。',
     name: 'DropAgent',
     english: 'DROP IN. TAKE OUT.',
     category: '轻量工具',
@@ -139,6 +148,8 @@ export const works = [
   },
   {
     slug: 'jelly',
+    audience:
+      '使用 Apple silicon Mac、希望在本地一起整理日程、清单和笔记的人。',
     name: 'Jelly',
     english: 'A LITTLE ORDER.',
     category: '轻量工具',
@@ -159,6 +170,7 @@ export const works = [
   },
   {
     slug: 'prologue',
+    audience: '正在开发 AI 应用，需要接入模型、会话、工具与授权能力的开发者。',
     name: 'Prologue',
     english: 'THE FIRST CHAPTER.',
     category: 'AI 与工程效率',
@@ -179,6 +191,8 @@ export const works = [
   },
   {
     slug: 'flyleaf',
+    audience:
+      '需要让多个 AI 应用共享工作上下文，并保留统一授权和接管入口的团队。',
     name: 'Flyleaf',
     english: 'ROOM TO CREATE.',
     category: 'AI 与工程效率',
@@ -199,6 +213,7 @@ export const works = [
   },
   {
     slug: 'content-growth',
+    audience: '需要组织研究、内容判断与多平台创作的品牌团队和独立创作者。',
     name: 'Content Growth',
     english: 'MAKE IT RESONATE.',
     category: 'Solutions',
@@ -219,6 +234,8 @@ export const works = [
   },
   {
     slug: 'evrik',
+    audience:
+      '已有业务软件，希望让 AI 执行工作，同时保留原有权限与数据规则的团队。',
     name: 'Evrik',
     english: 'SOFTWARE, WITH AGENCY.',
     category: 'Solutions',
@@ -239,6 +256,7 @@ export const works = [
   },
   {
     slug: 'aether',
+    audience: '在多个系统之间取数、解释指标并交付报告的分析师与业务运营。',
     name: 'Aether',
     english: 'FROM DATA TO CLARITY.',
     category: 'Solutions',
