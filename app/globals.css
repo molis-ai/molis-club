@@ -153,7 +153,6 @@ section[id] {
 .studio-hero {
   min-height: 660px;
   height: calc(100svh - 104px);
-  max-height: 850px;
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -963,9 +962,8 @@ section[id] {
     width: 13px;
   }
   .studio-hero {
-    height: calc(100svh - 80px);
+    height: calc(100svh - 82px);
     min-height: 640px;
-    max-height: 800px;
   }
   .hero-content {
     padding: 80px 7% 75px;
