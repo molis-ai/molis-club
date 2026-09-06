@@ -1,13 +1,5 @@
-'use client';
-/* Direction contract — Purpose: introduce a studio through its work and writing.
-Craft: legible typography, real project status, quiet functional account entry.
-Own-world: warm ivory negative space, soft ink-blue, warm neutral light; the original supplied Molis logo and orange accent are unchanged by explicit user instruction; no representational art.
-Story: curiosity becomes a small thing people can live with.
-First viewport: editorial typography in a calm warm-neutral field of light.
-Form: open asymmetric portfolio, typographic studies; never dashboard cards.
-Finish: restrained one-time graphic reveal, clear focus, honest unavailable states. */
 import Link from 'next/link';
-import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { works } from '../content/works';
 import { productLines } from '../content/lines';
 import { Header, Footer } from './shell';
@@ -16,49 +8,45 @@ export default function Community() {
     <>
       <Header />
       <main id="main">
-        <section className="studio-hero">
-          <img
-            className="hero-light"
-            src="/images/molis-light-warm-neutral.png"
-            width="1536"
-            height="1024"
-            alt=""
-            fetchPriority="high"
-          />
-          <div className="hero-content">
+        <section className="studio-hero makers-hero">
+          <div className="hero-copy">
             <h1>
-              A curious mind.
+              A little more
               <br />
-              <em>A human touch.</em>
+              <span>human.</span>
             </h1>
-            <div className="hero-bottom">
-              <div className="hero-paths">
-                <Link className="hero-explore" href="/products">
-                  发现产品 <ArrowDownRight size={28} />
-                </Link>
-                <Link className="hero-secondary" href="/solutions">
-                  为业务寻找 AI 方案 <ArrowUpRight size={16} />
-                </Link>
-              </div>
-              <div>
-                <h2>让技术，多一点人的温度。</h2>
-                <p>
-                  Molis AI，一个保持好奇的 AI 创作工作室。
-                  <br className="desktop-break" />
-                  做有感受的游戏、轻巧的工具，让 AI 融入日常与工作。
-                </p>
-              </div>
+            <h2>让技术，多一点人的温度。</h2>
+          </div>
+          <div className="hero-intro">
+            <p>
+              Molis AI 是一个保持好奇的 AI
+              创作工作室。我们做游戏、工具，也探索更好的工作方式。
+            </p>
+            <p>把有意思的想法，做成生活里用得上的东西。</p>
+            <div className="hero-actions">
+              <Link className="button primary" href="/products">
+                发现产品 <ArrowUpRight size={19} />
+              </Link>
+              <Link className="hero-secondary" href="/solutions">
+                探索解决方案 <ArrowUpRight size={17} />
+              </Link>
             </div>
           </div>
-          <div className="hero-caption">
-            <span>Curiosity, made tangible.</span>
-            <span>MOLIS AI · INDEPENDENT STUDIO</span>
-          </div>
+          <figure className="makers-scene">
+            <img
+              src="/images/molis-makers-green.png"
+              width="1536"
+              height="1024"
+              alt="四个人围坐桌边，讨论、摆弄植物和小作品的手绘插画"
+              fetchPriority="high"
+            />
+            <figcaption>关于一起创造的想象。</figcaption>
+          </figure>
         </section>
         <section className="product-lines section-wrap" id="works">
           <div className="section-heading">
             <h2>
-              Products<span>给日常一点不同，给创造多一点可能。</span>
+              从日常，到下一次创造。<span>Products · 三条探索方向</span>
             </h2>
             <Link className="text-link" href="/products">
               全部产品 <ArrowUpRight size={18} />
@@ -94,10 +82,46 @@ export default function Community() {
             </div>
           ))}
         </section>
+        <section
+          className="open-works section-wrap"
+          aria-labelledby="open-works-title"
+        >
+          <div className="open-works-intro">
+            <h2 id="open-works-title">
+              先从一件
+              <br />
+              小事开始。
+            </h2>
+            <p>
+              可以公开了解的作品，
+              <br />
+              和它们正在解决的小问题。
+            </p>
+          </div>
+          <div className="open-work-list">
+            <Link href="/works/jelly">
+              <div>
+                <h3>Jelly</h3>
+                <span>Mac 日程与笔记 · 已有安装包</span>
+              </div>
+              <p>把安排、清单和灵感，放回自己的生活节奏。</p>
+              <ArrowUpRight size={24} />
+            </Link>
+            <Link href="/works/niulai">
+              <div>
+                <h3>niul.ai</h3>
+                <span>AI 进度桌面伙伴 · 公开仓库</span>
+              </div>
+              <p>谁在忙，谁在等你。一头牛，替你留意。</p>
+              <ArrowUpRight size={24} />
+            </Link>
+          </div>
+        </section>
         <section className="solutions-preview section-wrap" id="solutions">
           <div className="section-heading">
             <h2>
-              Solutions<span>把 AI 放进真实的业务。</span>
+              把 AI，放进真实的业务。
+              <span>Solutions · 从你正在面对的问题开始</span>
             </h2>
             <Link className="text-link" href="/solutions">
               探索解决方案 <ArrowUpRight size={18} />
@@ -134,17 +158,17 @@ export default function Community() {
         <section className="studio-about section-wrap" id="studio">
           <div>
             <h2>
-              Made with AI.
+              有用，也有意思。
               <br />
-              <em>Meant for people.</em>
+              <em>两件事，我们都在意。</em>
             </h2>
             <span className="about-signature">MOLIS AI / ADEPTIFY</span>
           </div>
           <div className="about-copy">
             <h3>
-              能力不断生长，
+              机器承担执行，
               <br />
-              人的尺度始终在场。
+              人决定什么值得。
             </h3>
             <p>
               我们是 Adeptify 团队。Molis AI 是我们的 AI 创作工作室。
