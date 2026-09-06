@@ -53,8 +53,8 @@ export default function Join() {
             说说你想做什么，或者想陪什么东西长大。
           </p>
           <img
-            src="/images/molis-makers-green.png"
-            alt="围桌一起创造的手绘场景"
+            src="/images/molis-makers-studio.png"
+            alt="灰蓝与杏橙点缀的围桌创作插画"
             width="1536"
             height="1024"
           />

@@ -81,7 +81,7 @@ export default function Login() {
       <main className="auth-page" id="main">
         <aside className="auth-art">
           <img
-            src="/images/molis-makers-green.png"
+            src="/images/molis-makers-studio.png"
             alt=""
             width="1536"
             height="1024"

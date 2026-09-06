@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
-import { Geist, Bricolage_Grotesque } from 'next/font/google';
+import { Geist, Newsreader } from 'next/font/google';
 import './globals.css';
 import { siteUrl, publiclyIndexable } from '../lib/site';
-const studioType = Bricolage_Grotesque({
-  variable: '--font-studio',
+const newsreader = Newsreader({
+  variable: '--font-editorial',
   subsets: ['latin'],
+  style: ['normal', 'italic'],
 });
 const geist = Geist({ variable: '--font-geist', subsets: ['latin'] });
 export const metadata: Metadata = {
@@ -25,13 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <body className={`${geist.variable} ${studioType.variable}`}>
-        <template
-          dangerouslySetInnerHTML={{
-            __html:
-              '<!-- THESIS: A shared studio table for useful and curious AI work; original logo remains unchanged. OWN-WORLD: near-white, charcoal, user-provided hand-drawn maker scene recolored in moss green; open typography. STORY: identify the studio, browse by purpose, inspect real status. FIRST VIEWPORT: Bricolage headline upper left, clear intro and actions upper right, complete maker illustration below. FORM: user-pinned illustrated studio overrides candidate 3, seed 569a6424; single scene reveal with reduced-motion fallback. FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance -->',
-          }}
-        />
+      <body className={`${geist.variable} ${newsreader.variable}`}>
         <a className="skip-link" href="#main">
           跳到主要内容
         </a>
