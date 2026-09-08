@@ -70,7 +70,7 @@ export default async function WorkPage({ params }: Props) {
           <div className={`work-art ${w.tone}`}>
             <div className="art-top">{w.english}</div>
             <span className="work-symbol">{w.symbol}</span>
-            <span className="art-bottom">{w.name} · molis-club</span>
+            <span className="art-bottom">{w.name} · Molis AI</span>
           </div>
         </section>
         <section className="detail-body">

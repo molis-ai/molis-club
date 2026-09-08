@@ -7,7 +7,7 @@ import { pageMetadata, siteUrl } from '../../../lib/site';
 import { StructuredData } from '../../structured-data';
 const descriptions: Record<string, string> = {
   idealism:
-    '一骏的自白：从落地与实践出发，讨论想法、行动与自我判断。这也是 molis-club 创作作品的起点。',
+    '一骏的自白：从落地与实践出发，讨论想法、行动与自我判断。这也是 Molis AI 创作作品的起点。',
   'human-scale':
     '一骏讲述 AI 时代的理想主义与人的尺度：当机器能够承担更多执行，我们如何决定什么值得做。',
 };
@@ -46,7 +46,7 @@ export default async function Story({ params }: Props) {
       <Header />
       <main className="reading" id="main">
         <Link className="back-link" href="/">
-          <ArrowLeft size={16} /> 回到molis-club
+          <ArrowLeft size={16} /> 回到 Molis AI
         </Link>
         <h1>{story.title}</h1>
         <p className="reading-meta">

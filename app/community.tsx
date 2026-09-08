@@ -40,7 +40,7 @@ export default function Community() {
               <div>
                 <h2>让技术，多一点人的温度。</h2>
                 <p>
-                  molis-club，连接创作者、作品与使用者。
+                  Molis AI，连接创作者、作品与使用者。
                   <br className="desktop-break" />
                   做有感受的游戏、轻巧的工具，让 AI 融入日常与工作。
                 </p>
@@ -49,7 +49,7 @@ export default function Community() {
           </div>
           <div className="hero-caption">
             <span>Curiosity, made tangible.</span>
-            <span>molis-club · A COMMUNITY FOR MAKERS</span>
+            <span>Molis AI · A COMMUNITY FOR MAKERS</span>
           </div>
         </section>
         <section className="product-lines section-wrap" id="works">
@@ -134,7 +134,7 @@ export default function Community() {
               <br />
               <em>Meant for people.</em>
             </h2>
-            <span className="about-signature">molis-club / ADEPTIFY</span>
+            <span className="about-signature">Molis AI / ADEPTIFY</span>
           </div>
           <div className="about-copy">
             <h3>
@@ -143,7 +143,7 @@ export default function Community() {
               人的尺度始终在场。
             </h3>
             <p>
-              我们是 Adeptify 团队。molis-club 是我们的创作者社区。 一头替你留意
+              我们是 Adeptify 团队。Molis AI 是我们的创作者社区。 一头替你留意
               AI
               进度的牛，一次与陌生生命的相遇，一段关于“如果”的旅程。我们想做的东西，常常从一个很小、很具体的感受开始。
             </p>
@@ -198,7 +198,7 @@ export default function Community() {
             <details>
               <summary>需要注册才能了解或下载作品吗？</summary>
               <p>
-                站内浏览产品、阅读文章和前往公开仓库不需要注册 molis-club
+                站内浏览产品、阅读文章和前往公开仓库不需要注册 Molis AI
                 账号。站内留言需要登录；合作联系可以直接提交。当前网站仍是受访问权限保护的私有预览。
               </p>
             </details>
