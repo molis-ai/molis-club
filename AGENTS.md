@@ -1,7 +1,8 @@
 # molis-club 项目事实
 
 - 单一 React / Vinext 应用，源码位于仓库根目录；无旧版静态原型目录。
-- npm 包与 GitHub 仓库均为 molis-club；项目范围见 PRODUCT.md，视觉见 DESIGN.md，当前任务规格见 specs/molis-club/spec.md。
+- 网页品牌始终为 Molis AI；仅 npm 包、GitHub 仓库和本地目录为 molis-club，仓库更名不授权修改对外品牌。
+- 项目范围见 PRODUCT.md，视觉见 DESIGN.md，首页当前任务规格见 specs/product-showcase/spec.md；目录更名历史见 specs/molis-club/spec.md。
 - 命令：npm run dev、npm run check、npm test、npm run build；本地服务运行后 npm run test:http。
 - 真实凭据在忽略文件 .dev.vars；勿提交或输出。保留 .wrangler/state 本地数据，勿作为缓存清理。
 - .openai/hosting.json 绑定现有私有 Sites 项目；继续复用，不新建项目或数据库，不为部署扩大访问范围。

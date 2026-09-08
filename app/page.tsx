@@ -22,7 +22,7 @@ export default function Home() {
             {
               '@type': 'WebSite',
               '@id': `${siteUrl}/#website`,
-              name: 'molis-club',
+              name: 'Molis AI',
               url: siteUrl,
               inLanguage: 'zh-CN',
               publisher: { '@id': `${siteUrl}/#studio` },

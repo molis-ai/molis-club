@@ -9,7 +9,7 @@ export default function Privacy() {
         <article className="prose">
           <h2>账号与作品反馈</h2>
           <p>
-            molis-club由 Adeptify
+            Molis AI 由 Adeptify
             团队运营。邮箱注册会保存你的显示名、邮箱和经过单向加密处理的密码。登录时还会记录会话、IP
             地址和浏览器信息，用于保持登录及限制异常请求。密码不会以明文保存。
           </p>
