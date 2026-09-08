@@ -1,22 +1,8 @@
 import Link from 'next/link';
 import { ArrowDownRight, ArrowUpRight, ArrowRight, Plus } from 'lucide-react';
 import { works } from '../content/works';
-import { productLines } from '../content/lines';
+import ProductShowcase from './product-showcase';
 import { Header, Footer } from './shell';
-const lineArtwork = {
-  experience: {
-    src: '/images/line-experience.jpg',
-    alt: '手账、信与分岔小路，关于选择和相遇的手绘插画',
-  },
-  tools: {
-    src: '/images/line-tools.jpg',
-    alt: '小牛、日历与便签组成的轻盈桌面插画',
-  },
-  engineering: {
-    src: '/images/line-engineering.jpg',
-    alt: '双手连接纸质模块，关于协作与创造的插画',
-  },
-};
 const solutionRoutes = {
   'content-growth': ['研究与判断', '内容创作', '反馈与复盘'],
   evrik: ['业务能力', '目标与授权', '执行与检查'],
@@ -45,10 +31,10 @@ export default function Community() {
             <div className="hero-bottom">
               <div className="hero-paths">
                 <Link className="hero-explore" href="/products">
-                  发现产品 <ArrowDownRight size={28} />
+                  发现产品 <ArrowDownRight size={20} />
                 </Link>
                 <Link className="hero-secondary" href="/solutions">
-                  为业务寻找 AI 方案 <ArrowUpRight size={16} />
+                  <span>为业务寻找 AI 方案</span> <ArrowUpRight size={16} />
                 </Link>
               </div>
               <div>
@@ -75,80 +61,7 @@ export default function Community() {
               全部产品 <ArrowUpRight size={18} />
             </Link>
           </div>
-          <div className="illustrated-lines">
-            {productLines.map((line) => (
-              <article className="illustrated-line" key={line.id}>
-                <div className="line-art-scene">
-                  <Link
-                    className="line-illustration"
-                    href={`/products?line=${line.id}`}
-                    aria-label={`浏览${line.name}`}
-                  >
-                    <img
-                      src={lineArtwork[line.id].src}
-                      alt={lineArtwork[line.id].alt}
-                      width="1536"
-                      height="1024"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </Link>
-                  {line.projects.slice(0, 2).map((slug) => {
-                    const w = works.find((work) => work.slug === slug)!;
-                    return (
-                      <div className="floating-product" key={slug}>
-                        <Link href={`/works/${slug}`}>
-                          <span>
-                            {w.name}
-                            <ArrowUpRight size={15} aria-hidden="true" />
-                          </span>
-                          <small>{w.status}</small>
-                        </Link>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div className="illustrated-line-copy">
-                  <Link
-                    className="line-title"
-                    href={`/products?line=${line.id}`}
-                  >
-                    <h3>{line.name}</h3>
-                    <em>{line.english}</em>
-                  </Link>
-                  <p>{line.description}</p>
-                  <details className="work-disclosure">
-                    <summary>
-                      <span className="disclosure-closed">
-                        展开 {line.projects.length} 件作品
-                      </span>
-                      <span className="disclosure-open">收起作品</span>
-                      <Plus size={20} aria-hidden="true" />
-                    </summary>
-                    <div className="work-disclosure-content">
-                      {line.projects.map((slug) => {
-                        const w = works.find((w) => w.slug === slug)!;
-                        return (
-                          <Link
-                            className="disclosed-work"
-                            key={slug}
-                            href={`/works/${slug}`}
-                          >
-                            <div>
-                              <h4>{w.name}</h4>
-                              <ArrowUpRight size={16} />
-                            </div>
-                            <p>{w.title}</p>
-                            <span>{w.status}</span>
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </details>
-                </div>
-              </article>
-            ))}
-          </div>
+          <ProductShowcase />
         </section>
         <section className="solutions-preview section-wrap" id="solutions">
           <div className="section-heading">
