@@ -1,119 +1,67 @@
-# Molis AI
+# molis-club
 
-> 2026-09-06：当前网站已更名 **Molis AI**，实现位于 [`community/`](./community/README.md)。使用用户指定Logo的冷银白、海军蓝、雾蓝配色与简洁光影；支持作品、文章、邮箱账号及身份留言。Google/GitHub接入待应用凭据。部署与成本见 [`community/DEPLOYMENT.md`](./community/DEPLOYMENT.md)，接入步骤见 [`community/AUTH-SETUP.md`](./community/AUTH-SETUP.md)。以下旧品牌主页与规划为历史记录，不再约束当前网站。
+我们的 AI 创作者社区网站：发现作品、理解创作过程，与做东西的人交流。
 
-[中文](#中文) · [English](#english)
+现行网站直接位于仓库根目录。React + Vinext 提供页面与 API，Cloudflare Workers + D1 承载运行和数据，Better Auth 处理账号。
 
----
+## 当前可用
 
-## 中文
+- **作品发现**：10 个产品、3 项方案，按真实场景分类，标明当前阶段与可用入口。
+- **首页体验**：手绘配图、浮动作品卡片、滚动动效，以及可展开的作品和方案介绍。
+- **阅读与反馈**：《落地主义》《人的尺度》原文，登录后可在作品下留下持久化反馈。
+- **账号**：邮箱密码注册、登录、退出、会话与改密。
+- **联系**：私密合作表单；申请内容不公开展示。
 
-### 这是什么
+当前是受访问权限保护的私有试用站。Google/GitHub 登录仍待 OAuth 凭据；邮箱验证、密码找回、创作者发布后台与社区治理尚未完成。
 
-**烤个梨呀（Roast Pear）** 是由 Adeptify 发起的创作者、作品与早期用户社区。
+## 本地运行
 
-> 认识做东西的人，体验正在长大的作品。
-
-当前仓库以 **产品定义 + 高保真静态原型** 为主（最终主页、首页七向设计档案、漆梨月刊多页稿），完整后端产品仍按技术计划迭代。协作首选产品范围文档：[`ROAST-PEAR.md`](./ROAST-PEAR.md)。
-
-### 主要功能点（产品范围）
-
-1. **社区首页与发现**  
-   - 人、拳头产品、Maker 作品、工具、活动、论坛、团队 IP  
-   - 分层叙事：炉上主菜（Cognia / Notebook / Nexus）· 桌上小菜（马哥的馊主意、KGF、众生卷、Elsewhere…）· 工具架（ForkLight、Relay、Adeptify SDK）
-
-2. **账号与身份**  
-   - Member / Builder / Maker  
-   - Builder 入驻与审核  
-
-3. **创作者 Profile 与作品分发**  
-   - 展示、试用/下载、更新、Build Log  
-
-4. **论坛与活动**  
-   - 围绕作品的反馈闭环  
-
-5. **开发者中心**  
-   - ForkLight、Relay、Adeptify SDK 入口与文档导流  
-
-6. **Library + Admin**  
-   - 回访关系与社区治理  
-
-### 本仓库当前可运行内容
-
-#### 最终高保真首页与 Gallery
+需要 Node.js 22.13+。
 
 ```bash
-cd /path/to/roast-pear
-python3 -m http.server 8765
-# 最终版：http://127.0.0.1:8765/design/homepage/
-# Gallery：http://127.0.0.1:8765/homepages/
-# 设计档案：http://127.0.0.1:8765/homepages/<direction>/
-# 方向例：living-anthology · teletext-service · pixel-maker-city ·
-#         riso-release-wall · slow-fire-index · homepage-overdrive · canon
-node homepages/verify-homepages.mjs
+git clone https://github.com/molis-ai/molis-club.git
+cd molis-club
+npm ci
+cp .dev.vars.example .dev.vars
 ```
 
-#### 漆梨 × 月刊多页原型
+在 `.dev.vars` 填入至少 32 字符的随机 `BETTER_AUTH_SECRET`，本地 `BETTER_AUTH_URL` 保持 `http://localhost:3000`。可用 `openssl rand -hex 32` 生成随机值；不要提交真实凭据。
+
+首次启动前，构建本地 Worker 配置并按序初始化本地数据库：
 
 ```bash
-open design/site/index.html
+npm run build
+npx wrangler d1 execute DB --local --config dist/server/wrangler.json --file drizzle/0000_jittery_lady_deathstrike.sql
+npx wrangler d1 execute DB --local --config dist/server/wrangler.json --file drizzle/0001_nebulous_power_man.sql
+npm run dev
 ```
 
-#### 早期单页探索
+已有本地数据库时不要重复初始化迁移。打开 [本地网站](http://localhost:3000)。本地数据保存在忽略的 `.wrangler/` 中，与生产数据库分开。
+
+## 验证
 
 ```bash
-open design/homepage/prototype.html
+npm run check
+npm test
+npm run build
+# 另一个终端保持 npm run dev 运行
+npm run test:http
 ```
 
-### 品牌关系
+`test:http` 仅用于本地开发服务，会创建本地测试账号并验证真实认证、留言持久化与页面发现路径。
 
-| 名称 | 角色 |
-|------|------|
-| Adeptify | 公司与技术母品牌 |
-| 烤个梨呀 | 创作者与作品社区 |
-| Cognia / Notebook / Nexus | 拳头产品 |
-| SDK / ForkLight / Relay | 开发者能力（独立产品身份） |
+## 代码结构
 
-### 文档索引
+| 目录 | 职责 |
+| --- | --- |
+| `app/` | 页面、共享界面和 API 路由 |
+| `content/` | 产品、方案与文章内容 |
+| `lib/` | 身份认证、元数据和社区写入规则 |
+| `db/`、`drizzle/` | 数据结构与迁移 |
+| `public/images/` | 当前网站使用的图片 |
+| `tests/` | 业务与真实 HTTP 验证 |
+| `docs/` | 部署、认证和产品说明 |
 
-| 文件 | 说明 |
-|------|------|
-| [`ROAST-PEAR.md`](./ROAST-PEAR.md) | **产品是什么、做哪些功能** |
-| [`PRODUCT.md`](./PRODUCT.md) | 设计 / Impeccable 产品记录 |
-| [`DESIGN.md`](./DESIGN.md) | 最终视觉系统、组件规则与响应式约束 |
-| `2026-07-25-adeptify-ecosystem-business-plan.md` | 生态与商业战略 |
-| `2026-07-27-roast-pear-product-design-and-technical-plan.md` | 产品设计与技术计划 |
+[产品范围](PRODUCT.md) · [视觉系统](DESIGN.md) · [需求与验收](specs/molis-club/spec.md) · [部署与成本](docs/DEPLOYMENT.md) · [登录配置](docs/AUTH-SETUP.md) · [产品分类](docs/PRODUCT-LINES.md) · [SEO/GEO](docs/DISCOVERY.md)
 
-### 开发说明
-
-本仓现阶段 **无统一 npm app 启动脚本**；以静态 HTML/CSS 原型与文档为主。验证首页内容/区分度：`node homepages/verify-homepages.mjs`。
-
----
-
-## English
-
-### What it is
-
-**Roast Pear (烤个梨呀)** is Adeptify’s community for makers, works-in-progress, and early users: meet people who build things, and try products that are still growing. This repo currently holds **product scope docs and high-fidelity static prototypes**; full backend productization follows the technical plan.
-
-### Feature scope
-
-1. Discovery home: people, flagship products, maker works, tools, events, forum, team IPs.  
-2. Identity: Member / Builder / Maker with onboarding review.  
-3. Creator profiles and distribution (try/download, updates, build logs).  
-4. Forum & events feedback loops.  
-5. Developer hub for ForkLight, Relay, Adeptify SDK.  
-6. Library + admin governance.
-
-### Run prototypes locally
-
-```bash
-python3 -m http.server 8765
-# http://127.0.0.1:8765/homepages/<direction>/
-open design/site/index.html
-node homepages/verify-homepages.mjs
-```
-
-### Docs
-
-Start with [`ROAST-PEAR.md`](./ROAST-PEAR.md). Design notes in `PRODUCT.md`; longer plans in the dated markdown files at repo root.
+旧版原型与废弃方案已从工作树移除，需要回看时使用 Git 历史。

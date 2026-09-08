@@ -1,9 +1,0 @@
-# Homepage inventory map
-
-living-anthology -> homepages/living-anthology/index.html
-teletext-service -> homepages/teletext-service/index.html
-pixel-maker-city -> homepages/pixel-maker-city/index.html
-riso-release-wall -> homepages/riso-release-wall/index.html
-slow-fire-index -> homepages/slow-fire-index/index.html
-homepage-overdrive -> homepages/homepage-overdrive/index.html
-canon -> homepages/canon/index.html

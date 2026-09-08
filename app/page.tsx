@@ -1,0 +1,36 @@
+import Community from './community';
+import { StructuredData } from './structured-data';
+import {
+  pageMetadata,
+  siteUrl,
+  communityDescription,
+  communityIdentity,
+} from '../lib/site';
+export const metadata = pageMetadata(
+  'AI 创作者社区 · 产品与解决方案',
+  communityDescription,
+  '/',
+);
+export default function Home() {
+  return (
+    <>
+      <StructuredData
+        json={JSON.stringify({
+          '@context': 'https://schema.org',
+          '@graph': [
+            communityIdentity,
+            {
+              '@type': 'WebSite',
+              '@id': `${siteUrl}/#website`,
+              name: 'molis-club',
+              url: siteUrl,
+              inLanguage: 'zh-CN',
+              publisher: { '@id': `${siteUrl}/#studio` },
+            },
+          ],
+        })}
+      />
+      <Community />
+    </>
+  );
+}
