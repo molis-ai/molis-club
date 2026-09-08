@@ -4,6 +4,8 @@ import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { works } from '../../../content/works';
 import { Header, Footer } from '../../shell';
 import Notes from '../../notes';
+import { WorkIdentity, SolutionPath } from '../../work-presentation';
+import '../../inner-pages.css';
 import { pageMetadata, siteUrl } from '../../../lib/site';
 import { StructuredData } from '../../structured-data';
 type Props = { params: Promise<{ slug: string }> };
@@ -36,68 +38,115 @@ export default async function WorkPage({ params }: Props) {
         })}
       />
       <Header />
-      <main className="detail-container" id="main">
+      <main
+        className={`work-page inner-width${w.category === 'Solutions' ? ' work-page-solution' : ''}`}
+        id="main"
+      >
         <Link
           className="back-link"
           href={w.category === 'Solutions' ? '/solutions' : '/products'}
         >
           <ArrowLeft size={16} />{' '}
-          {w.category === 'Solutions' ? '回到 Solutions' : '回到 Products'}
+          {w.category === 'Solutions' ? '全部解决方案' : '全部作品'}
         </Link>
-        <section className="detail-hero">
-          <div>
-            <div className="detail-name">
-              {w.name} <span className="status">{w.status}</span>
-            </div>
+        <section className="work-opening">
+          <div className="work-opening-main">
+            <WorkIdentity work={w} />
             <h1>{w.title}</h1>
             <p>{w.description}</p>
-            {w.url ? (
-              <a
-                className="button primary"
-                href={w.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {w.action}
-                <ArrowUpRight size={17} />
-              </a>
-            ) : (
-              <a className="text-link" href="#feedback">
-                先和我们聊聊这个想法 <ArrowUpRight size={17} />
-              </a>
-            )}
+            <div className="work-opening-actions">
+              {w.url ? (
+                <a
+                  className="inner-action"
+                  href={w.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {w.action}
+                  <ArrowUpRight size={18} />
+                </a>
+              ) : (
+                <a className="inner-action" href="#feedback">
+                  聊聊这个想法 <ArrowUpRight size={18} />
+                </a>
+              )}
+              <span>{w.status}</span>
+            </div>
           </div>
-          <div className={`work-art ${w.tone}`}>
-            <div className="art-top">{w.english}</div>
-            <span className="work-symbol">{w.symbol}</span>
-            <span className="art-bottom">{w.name} · Molis AI</span>
-          </div>
-        </section>
-        <section className="detail-body">
-          <div>
-            <h2>适合什么场景</h2>
-            <p>{w.audience}</p>
+          <aside className="work-origin">
             <h2>为什么想做它</h2>
             <p>{w.why}</p>
-            <h2>
-              {w.category === 'Solutions' ? '当前阶段与边界' : '现在走到了哪里'}
-            </h2>
-            <p>{w.detail}</p>
+            <div>
+              <span>Adeptify 团队</span>
+              <em>{w.english}</em>
+            </div>
+          </aside>
+        </section>
+        {w.category === 'Solutions' && (
+          <section className="work-approach" aria-label="方案的示意路径">
+            <SolutionPath slug={w.slug} />
+          </section>
+        )}
+        <section className="work-reading-grid">
+          <div className="work-context">
+            <section>
+              <h2>它为谁而做</h2>
+              <p>{w.audience}</p>
+            </section>
+            <section>
+              <h2>
+                {w.category === 'Solutions'
+                  ? '当前阶段与边界'
+                  : '现在走到了哪里'}
+              </h2>
+              <p>{w.detail}</p>
+            </section>
           </div>
-          <aside>
-            <strong>做东西的人</strong>
-            <p>Adeptify 团队</p>
-            <strong>它关心的事</strong>
-            <p>{w.category}</p>
-            <strong>内容依据</strong>
-            <p>{w.source}</p>
+          <aside className="work-facts">
+            <h2>关于这件作品</h2>
+            <dl>
+              <div>
+                <dt>创作者</dt>
+                <dd>Adeptify 团队</dd>
+              </div>
+              <div>
+                <dt>关心的事</dt>
+                <dd>{w.category}</dd>
+              </div>
+              <div>
+                <dt>当前阶段</dt>
+                <dd>{w.status}</dd>
+              </div>
+              <div>
+                <dt>内容依据</dt>
+                <dd>{w.source}</dd>
+              </div>
+            </dl>
             <Link className="text-link" href="/story/human-scale">
-              读我们的故事 <ArrowUpRight size={15} />
+              读我们的故事 <ArrowUpRight size={16} />
             </Link>
           </aside>
         </section>
-        <div id="feedback">
+        <section
+          className="work-conversation"
+          id="feedback"
+          aria-label="关于作品的讨论"
+        >
+          <div className="work-conversation-intro">
+            <em>Still becoming.</em>
+            <p>
+              作品还在生长。
+              <br />
+              你的感受，也是下一步的线索。
+            </p>
+          </div>
           <Notes key={w.slug} work={w.slug} question={w.question} />
+        </section>
+        <div className="work-return">
+          <Link href={w.category === 'Solutions' ? '/solutions' : '/products'}>
+            <ArrowLeft size={17} />
+            继续逛逛{w.category === 'Solutions' ? '解决方案' : '其他作品'}
+          </Link>
         </div>
       </main>
       <Footer />
