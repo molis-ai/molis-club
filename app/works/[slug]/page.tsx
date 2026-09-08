@@ -1,12 +1,11 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, ArrowUpRight, ArrowDown } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { works } from '../../../content/works';
 import { Header, Footer } from '../../shell';
 import Notes from '../../notes';
 import { WorkIdentity, SolutionPath } from '../../work-presentation';
 import '../../inner-pages.css';
-import '../../scroll-scenes.css';
 import { pageMetadata, siteUrl } from '../../../lib/site';
 import { StructuredData } from '../../structured-data';
 type Props = { params: Promise<{ slug: string }> };
@@ -50,8 +49,8 @@ export default async function WorkPage({ params }: Props) {
           <ArrowLeft size={16} />{' '}
           {w.category === 'Solutions' ? '全部解决方案' : '全部作品'}
         </Link>
-        <section className="work-scroll-book">
-          <div className="work-book-heading">
+        <section className="work-opening">
+          <div className="work-opening-main">
             <WorkIdentity work={w} />
             <h1>{w.title}</h1>
             <p>{w.description}</p>
@@ -73,48 +72,61 @@ export default async function WorkPage({ params }: Props) {
               )}
               <span>{w.status}</span>
             </div>
-            <p className="work-book-cue">
-              <ArrowDown size={17} /> 往下读，一页页认识它。
-            </p>
           </div>
-          <div className="work-paper-stack">
-            <article className="work-paper work-paper-origin">
-              <h2>为什么想做它</h2>
-              <p>{w.why}</p>
-              <div>
-                <span>Adeptify 团队</span>
-                <em>{w.english}</em>
-              </div>
-            </article>
-            <article className="work-paper work-paper-audience">
+          <aside className="work-origin">
+            <h2>为什么想做它</h2>
+            <p>{w.why}</p>
+            <div>
+              <span>Adeptify 团队</span>
+              <em>{w.english}</em>
+            </div>
+          </aside>
+        </section>
+        {w.category === 'Solutions' && (
+          <section className="work-approach" aria-label="方案的示意路径">
+            <SolutionPath slug={w.slug} />
+          </section>
+        )}
+        <section className="work-reading-grid">
+          <div className="work-context">
+            <section>
               <h2>它为谁而做</h2>
               <p>{w.audience}</p>
-              <div>
-                <span>它关心的事</span>
-                <span>{w.category}</span>
-              </div>
-            </article>
-            <article className="work-paper work-paper-state">
+            </section>
+            <section>
               <h2>
                 {w.category === 'Solutions'
                   ? '当前阶段与边界'
                   : '现在走到了哪里'}
               </h2>
               <p>{w.detail}</p>
-              {w.category === 'Solutions' && <SolutionPath slug={w.slug} />}
-              <div>
-                <span>{w.status}</span>
-                <span>{w.source}</span>
-              </div>
-            </article>
+            </section>
           </div>
+          <aside className="work-facts">
+            <h2>关于这件作品</h2>
+            <dl>
+              <div>
+                <dt>创作者</dt>
+                <dd>Adeptify 团队</dd>
+              </div>
+              <div>
+                <dt>关心的事</dt>
+                <dd>{w.category}</dd>
+              </div>
+              <div>
+                <dt>当前阶段</dt>
+                <dd>{w.status}</dd>
+              </div>
+              <div>
+                <dt>内容依据</dt>
+                <dd>{w.source}</dd>
+              </div>
+            </dl>
+            <Link className="text-link" href="/story/human-scale">
+              读我们的故事 <ArrowUpRight size={16} />
+            </Link>
+          </aside>
         </section>
-        <div className="work-book-afterword">
-          <p>技术在生长，人的尺度始终在场。</p>
-          <Link href="/story/human-scale">
-            读我们的故事 <ArrowUpRight size={17} />
-          </Link>
-        </div>
         <section
           className="work-conversation"
           id="feedback"
