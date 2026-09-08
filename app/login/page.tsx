@@ -1,13 +1,16 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ArrowUpRight, Code2, Mail } from 'lucide-react';
 import { authClient } from '../../lib/auth-client';
+import { formText } from '../../lib/forms';
 import { Header, Footer } from '../shell';
 export default function Login() {
   const [mode, setMode] = useState<'login' | 'signup'>('login'),
     [busy, setBusy] = useState(false),
-    [error, setError] = useState('');
+    [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
   const [providers, setProviders] = useState({ google: false, github: false });
   const [providerError, setProviderError] = useState(false);
   const { data: session } = authClient.useSession();
@@ -20,7 +23,7 @@ export default function Login() {
       .then((d) => setProviders(d as { google: boolean; github: boolean }))
       .catch(() => setProviderError(true));
   }, []);
-  async function submit(e: React.FormEvent<HTMLFormElement>) {
+  async function submit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy) return;
     setBusy(true);
@@ -28,14 +31,14 @@ export default function Login() {
     const f = new FormData(e.currentTarget);
     try {
       const values = {
-        email: String(f.get('email')).trim(),
-        password: String(f.get('password')),
+        email: formText(f, 'email').trim(),
+        password: formText(f, 'password'),
       };
       const result =
         mode === 'signup'
           ? await authClient.signUp.email({
               ...values,
-              name: String(f.get('name')).trim(),
+              name: formText(f, 'name').trim(),
             })
           : await authClient.signIn.email(values);
       if (result.error) {
@@ -71,10 +74,6 @@ export default function Login() {
       setBusy(false);
     }
   }
-  useEffect(() => {
-    if (new URLSearchParams(window.location.search).has('error'))
-      setError('这次第三方登录没有完成。你可以重新授权，或使用邮箱登录。');
-  }, []);
   return (
     <>
       <Header />
@@ -148,7 +147,7 @@ export default function Login() {
                     <span>怎么称呼你</span>
                     <input
                       name="name"
-                      autoComplete="nickname"
+                      autoComplete="name"
                       required
                       maxLength={40}
                       placeholder="你的名字"
@@ -193,7 +192,10 @@ export default function Login() {
                   <ArrowUpRight size={18} />
                 </button>
                 <p className="feedback error" role="alert">
-                  {error}
+                  {error ??
+                    (searchParams.has('error')
+                      ? '这次第三方登录没有完成。你可以重新授权，或使用邮箱登录。'
+                      : '')}
                 </p>
               </form>
               <p className="auth-switch">

@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { authClient } from '../lib/auth-client';
 import { ArrowRight, RotateCcw } from 'lucide-react';
@@ -10,6 +10,12 @@ type Note = {
   createdAt: string;
   registered: number;
 };
+async function fetchNotes(work: string): Promise<Note[]> {
+  const response = await fetch(`/api/notes?work=${work}`);
+  if (!response.ok) throw new Error('留言暂时没能加载。');
+  const data = (await response.json()) as { notes: Note[] };
+  return data.notes;
+}
 export default function Notes({
   work,
   question,
@@ -26,24 +32,36 @@ export default function Notes({
   const { data: session, isPending: sessionPending } = authClient.useSession();
   const [body, setBody] = useState('');
   const pending = useRef<{ id: string; body: string } | null>(null);
-  const load = useCallback(async () => {
+  useEffect(() => {
+    let active = true;
+    fetchNotes(work).then(
+      (items) => {
+        if (!active) return;
+        setNotes(items);
+        setLoading(false);
+      },
+      () => {
+        if (!active) return;
+        setLoadError(true);
+        setLoading(false);
+      },
+    );
+    return () => {
+      active = false;
+    };
+  }, [work]);
+  async function retry() {
     setLoading(true);
     setLoadError(false);
     try {
-      const r = await fetch(`/api/notes?work=${work}`);
-      if (!r.ok) throw new Error();
-      const d = (await r.json()) as { notes: Note[] };
-      setNotes(d.notes);
+      setNotes(await fetchNotes(work));
     } catch {
       setLoadError(true);
     } finally {
       setLoading(false);
     }
-  }, [work]);
-  useEffect(() => {
-    void load();
-  }, [load]);
-  async function submit(e: React.FormEvent) {
+  }
+  async function submit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (saving) return;
     setSaving(true);
@@ -101,12 +119,9 @@ export default function Notes({
             {saving ? '正在保存…' : '留下这句反馈'}
             <ArrowRight size={17} />
           </button>
-          <p
-            role="status"
-            className={`feedback ${failed ? 'error' : 'success'}`}
-          >
+          <output className={`feedback ${failed ? 'error' : 'success'}`}>
             {message}
-          </p>
+          </output>
         </form>
       )}
       <div className="note-list" aria-live="polite">
@@ -115,7 +130,7 @@ export default function Notes({
         ) : loadError ? (
           <div className="feedback error">
             留言暂时没能加载。
-            <button className="button light" onClick={load}>
+            <button className="button light" onClick={retry}>
               重试 <RotateCcw size={16} />
             </button>
           </div>

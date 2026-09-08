@@ -4,7 +4,7 @@ import { pageMetadata } from '../../lib/site';
 import { productLines } from '../../content/lines';
 export const metadata = pageMetadata(
   'AI 产品 · 情绪体验、Mac 工具与工程效率',
-  '浏览 Molis AI 的游戏与情绪体验、Mac 日常工具和 AI 开发工具。每个产品标明当前阶段，公开仓库和安装包均提供真实入口。',
+  '浏览 molis-club 的游戏与情绪体验、Mac 日常工具和 AI 开发工具。每个产品标明当前阶段，公开仓库和安装包均提供真实入口。',
   '/products',
 );
 export default async function Page({
@@ -22,7 +22,7 @@ export default async function Page({
       <CatalogSchema
         slugs={slugs}
         path={selected ? `/products?line=${selected.id}` : '/products'}
-        name={selected ? selected.name : 'Molis AI 产品'}
+        name={selected ? selected.name : 'molis-club 产品'}
       />
       <Catalog line={selected?.id ?? 'all'} />
     </>

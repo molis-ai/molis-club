@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-export const siteUrl = 'https://molis-ai.yijunw0212.chatgpt.site';
+export const siteUrl = 'https://molis-club.yijunw0212.chatgpt.site';
 // Change only as part of an explicitly authorized public launch, with Sites access updated too.
 export const publiclyIndexable = false;
-export const studioDescription =
-  'Molis AI 是 Adeptify 团队的 AI 创作工作室，探索情绪体验、Mac 轻量工具与 AI 工程效率，并验证内容增长、软件 Agent 化和数据分析方案。';
+export const communityDescription =
+  'molis-club 是 Adeptify 团队的 AI 创作者社区，探索情绪体验、Mac 轻量工具与 AI 工程效率，并验证内容增长、软件 Agent 化和数据分析方案。';
 export function pageMetadata(
   title: string,
   description: string,
@@ -16,29 +16,29 @@ export function pageMetadata(
     alternates: { canonical: url },
     openGraph: {
       type: 'website',
-      siteName: 'Molis AI',
+      siteName: 'molis-club',
       locale: 'zh_CN',
-      title: `${title} · Molis AI`,
+      title: `${title} · molis-club`,
       description,
       url,
       images: [
-        { url: `${siteUrl}/images/molis-logo.png`, alt: 'Molis AI 标志' },
+        { url: `${siteUrl}/images/molis-logo.png`, alt: 'molis-club 标志' },
       ],
     },
     twitter: {
       card: 'summary',
-      title: `${title} · Molis AI`,
+      title: `${title} · molis-club`,
       description,
       images: [`${siteUrl}/images/molis-logo.png`],
     },
   };
 }
-export const studioIdentity = {
+export const communityIdentity = {
   '@type': 'Organization',
   '@id': `${siteUrl}/#studio`,
-  name: 'Molis AI',
+  name: 'molis-club',
   url: siteUrl,
-  description: studioDescription,
+  description: communityDescription,
   logo: `${siteUrl}/images/molis-logo.png`,
   sameAs: ['https://github.com/adeptify'],
 };

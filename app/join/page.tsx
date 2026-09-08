@@ -7,7 +7,7 @@ export default function Join() {
   const [busy, setBusy] = useState(false),
     [done, setDone] = useState(false),
     [error, setError] = useState('');
-  async function submit(e: React.FormEvent<HTMLFormElement>) {
+  async function submit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy) return;
     const data = new FormData(e.currentTarget);
@@ -61,7 +61,7 @@ export default function Join() {
         </div>
         <div className="join-form">
           {done ? (
-            <div className="join-success" role="status">
+            <div className="join-success" aria-live="polite" aria-atomic="true">
               <Check size={38} />
               <h2>想法已收下。</h2>
               <p>

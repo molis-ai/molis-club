@@ -4,9 +4,9 @@ import { AccountLink } from './account-link';
 export function Header() {
   return (
     <header className="site-header">
-      <Link className="brand" href="/" aria-label="Molis AI首页">
+      <Link className="brand" href="/" aria-label="molis-club首页">
         <img src="/images/molis-logo.png" alt="" width="64" height="64" />
-        <span className="wordmark">Molis AI</span>
+        <span className="wordmark">molis-club</span>
       </Link>
       <nav aria-label="主导航">
         <Link href="/products">Products</Link>
@@ -36,10 +36,10 @@ export function Footer() {
         </Link>
       </div>
       <Link className="footer-wordmark" href="/">
-        Molis AI
+        molis-club
       </Link>
       <div className="footer-bottom">
-        <span>Molis AI · An independent AI studio</span>
+        <span>molis-club · A community for makers</span>
         <div>
           <Link href="/privacy">隐私说明</Link>
           <a

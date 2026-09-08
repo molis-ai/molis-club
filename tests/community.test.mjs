@@ -128,7 +128,7 @@ test('申请邮箱归一化且重复不覆盖，不在返回值暴露私人资�
       idea: '我想做一个观察街边树木的工具。',
       consent: true,
     };
-  let r = await saveApplication(req('join', d), db);
+  const r = await saveApplication(req('join', d), db);
   assert.equal(r.status, 201);
   assert.deepEqual(Object.keys(await r.json()).sort(), ['message', 'status']);
   await saveApplication(

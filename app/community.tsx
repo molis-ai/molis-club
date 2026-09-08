@@ -1,16 +1,27 @@
-'use client';
-/* Direction contract — Purpose: introduce a studio through its work and writing.
-Craft: legible typography, real project status, quiet functional account entry.
-Own-world: warm ivory negative space, soft ink-blue, a softly tinted illustrated maker table as the background; the original supplied Molis logo and orange accent are unchanged by explicit user instruction; the user-provided maker illustration replaces abstract light only.
-Story: curiosity becomes a small thing people can live with.
-First viewport: restore the original large sans/italic-serif headline and bottom actions over a quiet maker illustration.
-Form: open asymmetric portfolio, typographic studies; never dashboard cards.
-Finish: restrained one-time graphic reveal, clear focus, honest unavailable states. */
 import Link from 'next/link';
-import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, ArrowRight, Plus } from 'lucide-react';
 import { works } from '../content/works';
 import { productLines } from '../content/lines';
 import { Header, Footer } from './shell';
+const lineArtwork = {
+  experience: {
+    src: '/images/line-experience.jpg',
+    alt: '手账、信与分岔小路，关于选择和相遇的手绘插画',
+  },
+  tools: {
+    src: '/images/line-tools.jpg',
+    alt: '小牛、日历与便签组成的轻盈桌面插画',
+  },
+  engineering: {
+    src: '/images/line-engineering.jpg',
+    alt: '双手连接纸质模块，关于协作与创造的插画',
+  },
+};
+const solutionRoutes = {
+  'content-growth': ['研究与判断', '内容创作', '反馈与复盘'],
+  evrik: ['业务能力', '目标与授权', '执行与检查'],
+  aether: ['指标与知识', '分析与解释', '可编辑报告'],
+};
 export default function Community() {
   return (
     <>
@@ -43,7 +54,7 @@ export default function Community() {
               <div>
                 <h2>让技术，多一点人的温度。</h2>
                 <p>
-                  Molis AI，一个保持好奇的 AI 创作工作室。
+                  molis-club，连接创作者、作品与使用者。
                   <br className="desktop-break" />
                   做有感受的游戏、轻巧的工具，让 AI 融入日常与工作。
                 </p>
@@ -52,7 +63,7 @@ export default function Community() {
           </div>
           <div className="hero-caption">
             <span>Curiosity, made tangible.</span>
-            <span>MOLIS AI · INDEPENDENT STUDIO</span>
+            <span>molis-club · A COMMUNITY FOR MAKERS</span>
           </div>
         </section>
         <section className="product-lines section-wrap" id="works">
@@ -64,35 +75,80 @@ export default function Community() {
               全部产品 <ArrowUpRight size={18} />
             </Link>
           </div>
-          {productLines.map((line) => (
-            <div className="line-row" key={line.id}>
-              <Link className="line-title" href={`/products?line=${line.id}`}>
-                <h3>{line.name}</h3>
-                <em>{line.english}</em>
-              </Link>
-              <div>
-                <p>{line.description}</p>
-                <div className="line-projects">
-                  {line.projects.map((slug) => {
-                    const w = works.find((w) => w.slug === slug)!;
+          <div className="illustrated-lines">
+            {productLines.map((line) => (
+              <article className="illustrated-line" key={line.id}>
+                <div className="line-art-scene">
+                  <Link
+                    className="line-illustration"
+                    href={`/products?line=${line.id}`}
+                    aria-label={`浏览${line.name}`}
+                  >
+                    <img
+                      src={lineArtwork[line.id].src}
+                      alt={lineArtwork[line.id].alt}
+                      width="1536"
+                      height="1024"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </Link>
+                  {line.projects.slice(0, 2).map((slug) => {
+                    const w = works.find((work) => work.slug === slug)!;
                     return (
-                      <Link key={slug} href={`/works/${slug}`}>
-                        {w.name}
-                        <ArrowUpRight size={12} />
-                      </Link>
+                      <div className="floating-product" key={slug}>
+                        <Link href={`/works/${slug}`}>
+                          <span>
+                            {w.name}
+                            <ArrowUpRight size={15} aria-hidden="true" />
+                          </span>
+                          <small>{w.status}</small>
+                        </Link>
+                      </div>
                     );
                   })}
                 </div>
-              </div>
-              <Link
-                className="line-arrow"
-                aria-label={`查看${line.name}`}
-                href={`/products?line=${line.id}`}
-              >
-                <ArrowUpRight size={24} />
-              </Link>
-            </div>
-          ))}
+                <div className="illustrated-line-copy">
+                  <Link
+                    className="line-title"
+                    href={`/products?line=${line.id}`}
+                  >
+                    <h3>{line.name}</h3>
+                    <em>{line.english}</em>
+                  </Link>
+                  <p>{line.description}</p>
+                  <details className="work-disclosure">
+                    <summary>
+                      <span className="disclosure-closed">
+                        展开 {line.projects.length} 件作品
+                      </span>
+                      <span className="disclosure-open">收起作品</span>
+                      <Plus size={20} aria-hidden="true" />
+                    </summary>
+                    <div className="work-disclosure-content">
+                      {line.projects.map((slug) => {
+                        const w = works.find((w) => w.slug === slug)!;
+                        return (
+                          <Link
+                            className="disclosed-work"
+                            key={slug}
+                            href={`/works/${slug}`}
+                          >
+                            <div>
+                              <h4>{w.name}</h4>
+                              <ArrowUpRight size={16} />
+                            </div>
+                            <p>{w.title}</p>
+                            <span>{w.status}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </details>
+                </div>
+              </article>
+            ))}
+          </div>
         </section>
         <section className="solutions-preview section-wrap" id="solutions">
           <div className="section-heading">
@@ -103,28 +159,55 @@ export default function Community() {
               探索解决方案 <ArrowUpRight size={18} />
             </Link>
           </div>
-          <div className="solution-lines">
+          <div className="solution-studies">
             {works
               .filter((w) => w.category === 'Solutions')
-              .map((w) => (
-                <Link
-                  className="solution-line"
+              .map((w, index) => (
+                <details
+                  className="solution-study"
                   key={w.slug}
-                  href={`/works/${w.slug}`}
+                  name="home-solutions"
+                  open={index === 0}
                 >
-                  <div>
-                    <h3>{w.name}</h3>
-                    <span>
-                      {w.slug === 'content-growth'
-                        ? '内容与增长'
-                        : w.slug === 'evrik'
-                          ? '软件 Agent 化'
-                          : '数据与洞察'}
-                    </span>
+                  <summary>
+                    <div>
+                      <h3>{w.name}</h3>
+                      <span>
+                        {w.slug === 'content-growth'
+                          ? '内容与增长'
+                          : w.slug === 'evrik'
+                            ? '软件 Agent 化'
+                            : '数据与洞察'}
+                      </span>
+                    </div>
+                    <p>{w.description}</p>
+                    <Plus size={23} aria-hidden="true" />
+                  </summary>
+                  <div className="solution-study-content">
+                    <div className="solution-route">
+                      <p>方案路径</p>
+                      <ol>
+                        {solutionRoutes[w.slug].map((step, stepIndex) => (
+                          <li key={step}>
+                            <span>{step}</span>
+                            {stepIndex < 2 && (
+                              <ArrowRight size={19} aria-hidden="true" />
+                            )}
+                          </li>
+                        ))}
+                      </ol>
+                      <span>示意路径 · 实际能力以当前阶段为准</span>
+                    </div>
+                    <div className="solution-context">
+                      <h4>{w.status}</h4>
+                      <p>{w.detail}</p>
+                      <Link className="text-link" href={`/works/${w.slug}`}>
+                        了解 {w.name}
+                        <ArrowUpRight size={17} />
+                      </Link>
+                    </div>
                   </div>
-                  <p>{w.description}</p>
-                  <ArrowUpRight size={23} />
-                </Link>
+                </details>
               ))}
           </div>
           <p className="solution-caption">
@@ -138,7 +221,7 @@ export default function Community() {
               <br />
               <em>Meant for people.</em>
             </h2>
-            <span className="about-signature">MOLIS AI / ADEPTIFY</span>
+            <span className="about-signature">molis-club / ADEPTIFY</span>
           </div>
           <div className="about-copy">
             <h3>
@@ -147,8 +230,8 @@ export default function Community() {
               人的尺度始终在场。
             </h3>
             <p>
-              我们是 Adeptify 团队。Molis AI 是我们的 AI 创作工作室。
-              一头替你留意 AI
+              我们是 Adeptify 团队。molis-club 是我们的创作者社区。 一头替你留意
+              AI
               进度的牛，一次与陌生生命的相遇，一段关于“如果”的旅程。我们想做的东西，常常从一个很小、很具体的感受开始。
             </p>
             <p>
@@ -166,18 +249,24 @@ export default function Community() {
             </h2>
             <p>一些还在生长的判断。</p>
           </div>
-          <Link className="journal-row" href="/story/idealism">
-            <span>一份自白</span>
-            <h3>落地主义</h3>
-            <p>一种不承认自己是哲学的哲学。</p>
-            <ArrowUpRight size={24} />
-          </Link>
-          <Link className="journal-row" href="/story/human-scale">
-            <span>一个故事</span>
-            <h3>人的尺度</h3>
-            <p>理想主义在 AI 时代的生与死。</p>
-            <ArrowUpRight size={24} />
-          </Link>
+          <div className="journal-spread">
+            <Link className="journal-entry" href="/story/idealism">
+              <h3>落地主义</h3>
+              <em aria-hidden="true">Ideas, into life.</em>
+              <p>一种不承认自己是哲学的哲学。</p>
+              <span>
+                读一份自白 <ArrowUpRight size={22} />
+              </span>
+            </Link>
+            <Link className="journal-entry" href="/story/human-scale">
+              <h3>人的尺度</h3>
+              <em aria-hidden="true">A human measure.</em>
+              <p>理想主义在 AI 时代的生与死。</p>
+              <span>
+                读一个故事 <ArrowUpRight size={22} />
+              </span>
+            </Link>
+          </div>
         </section>
         <section
           className="studio-questions section-wrap"
@@ -196,7 +285,7 @@ export default function Community() {
             <details>
               <summary>需要注册才能了解或下载作品吗？</summary>
               <p>
-                站内浏览产品、阅读文章和前往公开仓库不需要注册 Molis AI
+                站内浏览产品、阅读文章和前往公开仓库不需要注册 molis-club
                 账号。站内留言需要登录；合作联系可以直接提交。当前网站仍是受访问权限保护的私有预览。
               </p>
             </details>

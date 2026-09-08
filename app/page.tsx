@@ -3,12 +3,12 @@ import { StructuredData } from './structured-data';
 import {
   pageMetadata,
   siteUrl,
-  studioDescription,
-  studioIdentity,
+  communityDescription,
+  communityIdentity,
 } from '../lib/site';
 export const metadata = pageMetadata(
-  'AI 创作工作室 · 产品与解决方案',
-  studioDescription,
+  'AI 创作者社区 · 产品与解决方案',
+  communityDescription,
   '/',
 );
 export default function Home() {
@@ -18,11 +18,11 @@ export default function Home() {
         json={JSON.stringify({
           '@context': 'https://schema.org',
           '@graph': [
-            studioIdentity,
+            communityIdentity,
             {
               '@type': 'WebSite',
               '@id': `${siteUrl}/#website`,
-              name: 'Molis AI',
+              name: 'molis-club',
               url: siteUrl,
               inLanguage: 'zh-CN',
               publisher: { '@id': `${siteUrl}/#studio` },

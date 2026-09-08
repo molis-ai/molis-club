@@ -40,3 +40,12 @@ next-env.d.ts
 *.tsbuildinfo
 
 .dev.vars*
+
+# Local tooling and editor artifacts
+.impeccable/
+.idea/
+.vscode/
+*.swp
+*.log
+Thumbs.db
+!.dev.vars.example

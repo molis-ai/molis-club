@@ -70,7 +70,7 @@ export default async function WorkPage({ params }: Props) {
           <div className={`work-art ${w.tone}`}>
             <div className="art-top">{w.english}</div>
             <span className="work-symbol">{w.symbol}</span>
-            <span className="art-bottom">{w.name} · MOLIS AI</span>
+            <span className="art-bottom">{w.name} · molis-club</span>
           </div>
         </section>
         <section className="detail-body">
@@ -97,7 +97,7 @@ export default async function WorkPage({ params }: Props) {
           </aside>
         </section>
         <div id="feedback">
-          <Notes work={w.slug} question={w.question} />
+          <Notes key={w.slug} work={w.slug} question={w.question} />
         </div>
       </main>
       <Footer />

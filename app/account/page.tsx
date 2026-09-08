@@ -2,13 +2,14 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { authClient } from '../../lib/auth-client';
+import { formText } from '../../lib/forms';
 import { Header, Footer } from '../shell';
 export default function Account() {
   const { data, isPending, error: sessionError } = authClient.useSession();
   const [busy, setBusy] = useState(false),
     [message, setMessage] = useState(''),
     [error, setError] = useState('');
-  async function change(e: React.FormEvent<HTMLFormElement>) {
+  async function change(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const f = new FormData(form);
@@ -17,8 +18,8 @@ export default function Account() {
     setError('');
     try {
       const r = await authClient.changePassword({
-        currentPassword: String(f.get('current')),
-        newPassword: String(f.get('new')),
+        currentPassword: formText(f, 'current'),
+        newPassword: formText(f, 'new'),
         revokeOtherSessions: true,
       });
       if (r.error)
@@ -50,7 +51,7 @@ export default function Account() {
       <Header />
       <main className="account-page" id="main">
         {isPending ? (
-          <p role="status">正在读取账号…</p>
+          <output>正在读取账号…</output>
         ) : sessionError ? (
           <>
             <h1>暂时无法读取账号。</h1>
@@ -114,9 +115,7 @@ export default function Account() {
                   {busy ? '请稍候…' : '保存新密码'}
                 </button>
               </form>
-              <p role="status" className="feedback success">
-                {message}
-              </p>
+              <output className="feedback success">{message}</output>
             </section>
             <p role="alert" className="feedback error">
               {error}

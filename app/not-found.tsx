@@ -8,7 +8,7 @@ export default function NotFound() {
         <h1>这里还没长出东西。</h1>
         <p>这个页面不存在，或作品还没有搬过来。</p>
         <Link className="button primary" href="/">
-          回到Molis AI
+          回到molis-club
         </Link>
       </main>
       <Footer />

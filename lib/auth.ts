@@ -14,7 +14,7 @@ export function getAuth() {
     throw new Error('Account service is not configured');
   const providers = authOptions();
   return betterAuth({
-    appName: 'Molis AI',
+    appName: 'molis-club',
     baseURL: env.BETTER_AUTH_URL,
     secret: env.BETTER_AUTH_SECRET,
     trustedOrigins: [env.BETTER_AUTH_URL],

@@ -11,12 +11,12 @@ const geist = Geist({ variable: '--font-geist', subsets: ['latin'] });
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Molis AI · A human touch',
-    template: '%s · Molis AI',
+    default: 'molis-club · A human touch',
+    template: '%s · molis-club',
   },
   icons: { icon: '/images/molis-logo.png' },
   description:
-    'Molis AI，一个保持好奇的 AI 创作工作室。从真实的感受出发，用设计与代码，把有意思的想法做成作品。',
+    'molis-club，一个保持好奇的 AI 创作者社区。从真实的感受出发，用设计与代码，把有意思的想法做成作品。',
   robots: { index: publiclyIndexable, follow: publiclyIndexable },
 };
 export default function RootLayout({
