@@ -5,7 +5,6 @@ import { productLines } from '../content/lines';
 import { Header, Footer } from './shell';
 import { WorkIdentity, SolutionPath } from './work-presentation';
 import './inner-pages.css';
-import { ProductScene, SolutionScene } from './scroll-scenes';
 
 const lineImages: Record<string, string> = {
   experience: '/images/line-experience.jpg',
@@ -28,6 +27,8 @@ export default function Catalog({
   const groups = productLines.filter(
     (group) => line === 'all' || group.id === line,
   );
+  const niulai = works.find((work) => work.slug === 'niulai')!;
+  const jelly = works.find((work) => work.slug === 'jelly')!;
   return (
     <>
       <Header />
@@ -37,7 +38,36 @@ export default function Catalog({
       >
         {solutions ? (
           <>
-            <SolutionScene />
+            <section className="solution-opening inner-width">
+              <div>
+                <h1>
+                  把 AI，
+                  <br />
+                  放进你的<span>日常业务。</span>
+                </h1>
+                <p>
+                  内容增长、软件 Agent 化与数据洞察。
+                  <br />
+                  从具体场景出发，保留人的判断。
+                </p>
+                <a href="#approaches" className="inner-action">
+                  找到你的场景 <ArrowDown size={18} />
+                </a>
+              </div>
+              <div className="solution-opening-note">
+                <em>
+                  Built around
+                  <br />
+                  your work.
+                </em>
+                <p>
+                  从一个业务问题开始，
+                  <br />
+                  一起找到能落地的路径。
+                </p>
+                <span>Solutions / Molis AI</span>
+              </div>
+            </section>
             <div className="solution-directory inner-width" id="approaches">
               <div className="inner-section-heading">
                 <h2>工作，从哪里卡住？</h2>
@@ -100,19 +130,57 @@ export default function Catalog({
           </>
         ) : (
           <>
-            {line === 'all' ? (
-              <ProductScene />
-            ) : (
-              <section className="collection-opening inner-width">
-                <div>
-                  <h1>
-                    Products<em>好奇，总有去处。</em>
-                  </h1>
-                  <p>按一个场景，找到值得认识的作品。</p>
-                </div>
-                <a className="collection-scroll" href="#collection">
-                  浏览作品 <ArrowDown size={19} />
-                </a>
+            <section className="collection-opening inner-width">
+              <div>
+                <h1>
+                  Products<em>Made for the way we live.</em>
+                </h1>
+                <p>
+                  有的作品关心感受，有的替你省下一步，
+                  <br className="desktop-break" />
+                  有的让下一次创造更容易。
+                </p>
+              </div>
+              <a className="collection-scroll" href="#collection">
+                逛逛作品 <ArrowDown size={19} />
+              </a>
+            </section>
+            {line === 'all' && (
+              <section
+                className="featured-products inner-width"
+                aria-label="可以先用起来的作品"
+              >
+                <Link className="featured-cow" href="/works/niulai">
+                  <div className="featured-cow-copy">
+                    <WorkIdentity work={niulai} />
+                    <h2>{niulai.title}</h2>
+                    <div className="featured-bottom">
+                      <span>{niulai.status}</span>
+                      <span>
+                        认识这头牛 <ArrowUpRight size={18} />
+                      </span>
+                    </div>
+                  </div>
+                  <img
+                    src="/images/line-tools.jpg"
+                    alt="小牛与桌面工具的主题插画"
+                    width="1024"
+                    height="1024"
+                  />
+                </Link>
+                <Link className="featured-jelly" href="/works/jelly">
+                  <WorkIdentity work={jelly} />
+                  <div>
+                    <h2>{jelly.title}</h2>
+                    <p>{jelly.description}</p>
+                  </div>
+                  <div className="featured-bottom">
+                    <span>{jelly.status}</span>
+                    <span>
+                      认识 Jelly <ArrowUpRight size={18} />
+                    </span>
+                  </div>
+                </Link>
               </section>
             )}
             <div className="collection-body inner-width" id="collection">
