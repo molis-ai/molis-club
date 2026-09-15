@@ -3,83 +3,81 @@ import { useEffect, useRef, type ReactNode } from 'react';
 
 export default function StudioScene({ children }: { children: ReactNode }) {
   const rootRef = useRef<HTMLElement>(null);
-
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
     let frame = 0;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    const preference = () => {
-      if (media.matches) root.classList.remove('has-ripple');
+    let x = 0;
+    let y = 0;
+    const draw = () => {
+      frame = 0;
+      if (document.hidden) return;
+      const rect = root.getBoundingClientRect();
+      const progress = media.matches
+        ? 0
+        : Math.max(
+            0,
+            Math.min(
+              1,
+              (window.innerHeight - rect.top) /
+                (window.innerHeight + rect.height),
+            ),
+          );
+      root.style.setProperty('--journey', String(progress));
+      root.style.setProperty('--scene-x', `${media.matches ? 0 : x}px`);
+      root.style.setProperty('--scene-y', `${media.matches ? 0 : y}px`);
     };
-    preference();
-
-    media.addEventListener('change', preference);
+    const schedule = () => {
+      if (!frame && !document.hidden) frame = requestAnimationFrame(draw);
+    };
     const move = (event: PointerEvent) => {
       if (media.matches || event.pointerType === 'touch') return;
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const rect = root.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width;
-        const y = (event.clientY - rect.top) / rect.height;
-        root.style.setProperty('--scene-x', `${(x - 0.5) * 14}px`);
-        root.style.setProperty('--scene-y', `${(y - 0.5) * 8}px`);
-        root.style.setProperty('--light-x', `${x * 100}%`);
-        root.style.setProperty('--light-y', `${y * 100}%`);
-      });
+      const rect = root.getBoundingClientRect();
+      x = ((event.clientX - rect.left) / rect.width - 0.5) * 16;
+      y = (event.clientY / window.innerHeight - 0.5) * 10;
+      schedule();
     };
     const leave = () => {
-      cancelAnimationFrame(frame);
-      root.style.setProperty('--scene-x', '0px');
-      root.style.setProperty('--scene-y', '0px');
-    };
-    const click = (event: MouseEvent) => {
-      if (
-        media.matches ||
-        (event.target instanceof Element && event.target.closest('a,button'))
-      )
-        return;
-      const rect = root.getBoundingClientRect();
-      root.style.setProperty('--ripple-x', `${event.clientX - rect.left}px`);
-      root.style.setProperty('--ripple-y', `${event.clientY - rect.top}px`);
-      root.classList.remove('has-ripple');
-      void root.offsetWidth;
-      root.classList.add('has-ripple');
-      clearTimeout(timer);
-      timer = setTimeout(() => root.classList.remove('has-ripple'), 1800);
+      x = 0;
+      y = 0;
+      schedule();
     };
     root.addEventListener('pointermove', move);
     root.addEventListener('pointerleave', leave);
-    root.addEventListener('click', click);
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    media.addEventListener('change', leave);
+    document.addEventListener('visibilitychange', schedule);
+    schedule();
     return () => {
       cancelAnimationFrame(frame);
-      clearTimeout(timer);
-      media.removeEventListener('change', preference);
       root.removeEventListener('pointermove', move);
       root.removeEventListener('pointerleave', leave);
-      root.removeEventListener('click', click);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      media.removeEventListener('change', leave);
+      document.removeEventListener('visibilitychange', schedule);
     };
   }, []);
-
   return (
     <section
       className="studio-entrance"
       ref={rootRef}
-      aria-label="Molis AI 创作工作室"
+      aria-label="一起创作的人"
     >
-      <div className="entrance-illustration" aria-hidden="true">
-        <img
-          src="/images/molis-makers-studio.png"
-          width="1536"
-          height="1024"
-          alt=""
-          fetchPriority="high"
-        />
-        <div className="entrance-daylight" />
+      <div className="entrance-stage">
+        <div className="entrance-illustration" aria-hidden="true">
+          <img
+            src="/images/molis-makers-studio.png"
+            width="1536"
+            height="1024"
+            alt=""
+            loading="lazy"
+          />
+        </div>
+        {children}
       </div>
-      <div className="entrance-ripple" aria-hidden="true" />
-      {children}
     </section>
   );
 }

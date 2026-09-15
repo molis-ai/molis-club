@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowUpRight, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { works } from '../content/works';
 import { productLines } from '../content/lines';
 import { WorkIdentity } from './work-presentation';
@@ -75,50 +75,46 @@ export default function Catalog({
             return (
               <section className="approach" id={work.slug} key={work.slug}>
                 <header>
-                  <h2>{approach.title}</h2>
+                  <h2>
+                    <Link href={`/works/${work.slug}`}>{approach.title}</Link>
+                  </h2>
                   <div>
-                    <span>{work.name}</span>
+                    <span>
+                      {work.name} · {work.status}
+                    </span>
                     <p>{work.description}</p>
                   </div>
                 </header>
-                <div className="approach-layout">
-                  <div className="approach-path">
-                    <p className="approach-caption">
-                      方案示意 · 实际能力以当前阶段为准
-                    </p>
-                    <div>
-                      <span>带来什么</span>
-                      <h3>{approach.input}</h3>
-                    </div>
-                    <ArrowRight className="path-arrow" size={22} />
-                    <div>
-                      <span>希望得到</span>
-                      <h3>{approach.output}</h3>
-                    </div>
-                  </div>
-                  <div className="approach-roles">
-                    <div>
-                      <h3>AI 承担的工作</h3>
-                      <p>{approach.ai}</p>
-                    </div>
-                    <div>
-                      <h3>人保留的判断</h3>
-                      <p>{approach.human}</p>
-                    </div>
-                  </div>
-                </div>
                 <details className="approach-status">
-                  <summary>
-                    <span>当前阶段：{work.status}</span>
-                    <span>
-                      展开说明 <ArrowRight size={16} />
-                    </span>
-                  </summary>
+                  <summary>方案如何工作</summary>
+                  <div className="approach-layout">
+                    <div className="approach-path">
+                      <p className="approach-caption">
+                        方案示意 · 实际能力以当前阶段为准
+                      </p>
+                      <div>
+                        <span>带来什么</span>
+                        <h3>{approach.input}</h3>
+                      </div>
+                      <ArrowRight className="path-arrow" size={22} />
+                      <div>
+                        <span>希望得到</span>
+                        <h3>{approach.output}</h3>
+                      </div>
+                    </div>
+                    <div className="approach-roles">
+                      <div>
+                        <h3>AI 承担的工作</h3>
+                        <p>{approach.ai}</p>
+                      </div>
+                      <div>
+                        <h3>人保留的判断</h3>
+                        <p>{approach.human}</p>
+                      </div>
+                    </div>
+                  </div>
                   <p>{work.detail}</p>
                 </details>
-                <Link className="edition-link" href={`/works/${work.slug}`}>
-                  了解 {work.name} 的完整方案 <ArrowUpRight size={17} />
-                </Link>
               </section>
             );
           })}
@@ -149,8 +145,8 @@ export default function Catalog({
             <h2>{niulai.title}</h2>
             <p>{niulai.description}</p>
             <div>
-              <Link className="edition-button" href="/works/niulai">
-                认识这头牛 <ArrowUpRight size={17} />
+              <Link className="edition-link" href="/works/niulai">
+                认识这头牛
               </Link>
               <span>{niulai.status}</span>
             </div>
@@ -167,22 +163,13 @@ export default function Catalog({
           <Link className="product-exhibition-side" href="/works/jelly">
             <WorkIdentity work={jelly} />
             <div>
-              <em>
-                A little
-                <br />
-                order.
-              </em>
               <h2>
                 让日程、笔记和灵感，
                 <br />
                 待在一起。
               </h2>
             </div>
-            <p>{jelly.description}</p>
-            <span>
-              {jelly.status}
-              <ArrowUpRight size={20} />
-            </span>
+            <span>{jelly.status}</span>
           </Link>
         </section>
       )}
@@ -225,7 +212,7 @@ export default function Catalog({
       <section className="edition-closing">
         <p>每件作品，都从一个具体的感受开始。</p>
         <Link className="edition-link" href="/community/adeptify">
-          认识创作团队 <ArrowUpRight size={17} />
+          认识创作团队
         </Link>
       </section>
     </EditorialPage>

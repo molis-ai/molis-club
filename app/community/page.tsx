@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
 import { works } from '../../content/works';
 import { members } from '../../content/members';
 import { pageMetadata } from '../../lib/site';
@@ -53,11 +52,8 @@ export default function Page() {
             <br />
             开始认识彼此。
           </h2>
-          <p>
-            一个想法、一点尝试，慢慢变成可以触碰的东西。这里连接创作者、作品，和愿意停下来体验的人。
-          </p>
           <a className="edition-link" href="#community-works">
-            发现作品 <ArrowUpRight size={18} />
+            发现作品
           </a>
         </div>
       </section>
@@ -65,7 +61,7 @@ export default function Page() {
         <div className="edition-section-head">
           <h2>从这些作品开始</h2>
           <Link className="edition-link" href="/products">
-            更多产品 <ArrowUpRight size={17} />
+            更多产品
           </Link>
         </div>
         <div className="community-works">
@@ -101,7 +97,6 @@ export default function Page() {
                 <p>{member.description}</p>
                 <span className="edition-link">
                   认识{member.slug === 'adeptify' ? '团队' : '作者'}{' '}
-                  <ArrowUpRight size={17} />
                 </span>
               </div>
             </Link>

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import { artistSkills } from '../../content/artists';
 import { knowledge } from '../../content/knowledge';
 import { pageMetadata } from '../../lib/site';
@@ -40,26 +39,18 @@ export default function Page() {
       <section className="wiki-feature">
         <div className="wiki-feature-copy">
           <h2>
-            Molis
+            把喜欢的表达，
             <br />
-            <em>Wikipedia.</em>
+            变成能力。
           </h2>
-          <p>
-            从艺术风格到网页与动效。
-            <br />
-            看作品，试一试，把创作方法带走。
-            <br />
-            让「我想要这种感觉」有一个准确的说法。
-          </p>
+          <p>看作品，试一试，把创作方法带走。</p>
           <a className="edition-link" href="#entries">
-            探索网页与动效 <ArrowDown size={17} />
+            探索网页与动效
           </a>
         </div>
         <div className="wiki-feature-demo">
           <KnowledgeDemo entry={knowledge[0]} />
-          <Link href="/wiki/stagger">
-            错落入场 · 看看它如何实现 <ArrowUpRight size={17} />
-          </Link>
+          <Link href="/wiki/stagger">错落入场 · 看看它如何实现</Link>
         </div>
       </section>
       <ArtistSeries />
@@ -83,7 +74,7 @@ export default function Page() {
             是起点，你的内容与判断决定最终的表达。
           </p>
           <Link className="edition-link" href="/join">
-            告诉我们你想了解的能力 <ArrowUpRight size={17} />
+            告诉我们你想了解的能力
           </Link>
         </div>
       </section>

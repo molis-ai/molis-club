@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowUpRight } from 'lucide-react';
 import { members } from '../../../content/members';
 import { works } from '../../../content/works';
 import stories from '../../../content/stories.json';
@@ -62,7 +61,7 @@ export default async function Page({ params }: Props) {
               target="_blank"
               rel="noreferrer"
             >
-              公开仓库 <ArrowUpRight size={17} />
+              公开仓库
             </a>
           )}
         </div>
@@ -93,7 +92,6 @@ export default async function Page({ params }: Props) {
                 <Link href={`/story/${storySlug}`} key={storySlug}>
                   <h3>{story.title}</h3>
                   <span>{story.label}</span>
-                  <ArrowUpRight size={22} />
                 </Link>
               );
             })}

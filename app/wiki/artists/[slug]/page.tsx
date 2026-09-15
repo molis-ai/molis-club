@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Download, ArrowUpRight } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { artistSkills } from '../../../../content/artists';
 import { pageMetadata, siteUrl } from '../../../../lib/site';
 import { EditorialPage, Trail } from '../../../editorial';
@@ -145,7 +145,6 @@ export default async function Page({ params }: Props) {
                   {item.name}
                   <em>{item.english}</em>
                 </span>
-                <ArrowUpRight size={19} />
               </Link>
             ))}
         </div>

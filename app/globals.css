@@ -2452,3 +2452,59 @@ section[id] {
     margin-top: 12px;
   }
 }
+
+/* Quiet studio chrome: content supplies the emphasis. */
+.site-header { height: 84px; padding-inline: 4.5%; }
+.site-header .brand { font-size: 20px; gap: 7px; }
+.site-header .brand > img { width: 36px; height: 36px; margin-left: -5px; }
+.site-header nav { margin-right: 45px; }
+.site-header nav a, .header-account { font-size: 13px; }
+.site-header .header-account { border: 0; min-width: 0; min-height: 44px; color: var(--muted); }
+.site-header .nav-menu > summary { border: 0; min-height: 44px; }
+.site-header .nav-menu-panel { border: 0; border-radius: 0; padding: 18px 0; box-shadow: 0 16px 36px #24324b12; }
+.site-header .nav-menu-panel a { font-size: 18px; padding: 13px 25px; }
+.site-footer { background: var(--paper); color: var(--ink); padding-top: 80px; }
+.site-footer .text-link { border: 0; }
+.site-footer .footer-bottom { border: 0; color: var(--muted); }
+.site-footer .footer-wordmark { font-size: clamp(60px, 10vw, 144px); padding-block: 45px; }
+@media (max-width: 760px) {
+  .site-header { height: 74px; padding-inline: 6%; }
+  .site-header .brand { font-size: 18px; gap: 5px; }
+  .site-header .brand > img { width: 32px; height: 32px; }
+  .site-header nav { margin-right: 0; }
+  .site-header .header-account { margin-left: 22px; }
+  .site-footer { padding-top: 45px; }
+}
+
+/* Forms and long reading use the same open, paper-based layout. */
+.auth-page { border: 0; margin-top: 32px; }
+.auth-art { padding: 40px 6%; flex-direction: column; justify-content: center; align-items: stretch; gap: 50px; }
+.auth-art > div { order: -1; }
+.auth-art > div > p { font-size: clamp(38px, 4vw, 58px); }
+.auth-art > img { position: static; height: auto; max-height: 360px; object-fit: contain; mix-blend-mode: multiply; z-index: auto; opacity: 1; }
+.auth-panel { padding-top: 40px; padding-bottom: 40px; }
+.auth-divider::before, .auth-divider::after { display: none; }
+.auth-divider { justify-content: flex-start; }
+.social-buttons button { border: 0; background: #ebe7df; }
+.social-buttons button svg { display: none; }
+.auth-switch button { text-decoration: none; color: var(--ink); font-weight: 550; min-height: 44px; }
+.field input, .field textarea, .field select { border: 0; background: #ebe7df; border-radius: 3px; padding: 14px 16px; }
+.field input:focus, .field textarea:focus, .field select:focus { outline: 2px solid #61706f; outline-offset: 2px; }
+.button { border: 0; border-radius: 3px; min-height: 48px; gap: 12px; }
+.button.wide { justify-content: center; }
+.text-button, .account-actions .text-link { border: 0; min-height: 44px; }
+.password-section { border: 0; padding-top: 16px; }
+.join-page { padding-top: 85px; gap: 10%; }
+.join-intro .back-link { display: none; }
+.reading { padding-top: 90px; }
+.reading .prose h2 { font-size: 26px; }
+.note { border: 0; padding-block: 24px; }
+@media (max-width: 760px) {
+  .auth-page { margin-top: 0; }
+  .auth-art { display: none; }
+  .auth-art > img { display: none; }
+  .auth-panel { padding-inline: 6%; }
+  .join-page { padding-top: 45px; }
+  .reading { padding: 50px 6% 70px; }
+  .account-page { padding-top: 55px; }
+}

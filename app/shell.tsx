@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { ArrowUpRight, Plus } from 'lucide-react';
 import { AccountLink } from './account-link';
 import NavLinks from './nav-links';
+import StudioDirectory from './studio-directory';
 export function Header() {
   return (
     <header className="site-header">
@@ -16,7 +16,6 @@ export function Header() {
         <details className="nav-menu">
           <summary>
             <span>菜单</span>
-            <Plus size={18} aria-hidden="true" />
           </summary>
           <div className="nav-menu-panel">
             <NavLinks />
@@ -37,12 +36,10 @@ export function Footer() {
           让想法成为作品。
         </p>
         <Link className="text-link" href="/join">
-          从一个想法开始 <ArrowUpRight size={20} />
+          从一个想法开始
         </Link>
       </div>
-      <Link className="footer-wordmark" href="/">
-        Molis AI
-      </Link>
+      <StudioDirectory />
       <div className="footer-bottom">
         <span>Molis AI · A community for makers</span>
         <div>
@@ -52,7 +49,7 @@ export function Footer() {
             target="_blank"
             rel="noreferrer"
           >
-            GitHub ↗
+            GitHub
           </a>
           <span>© 2026</span>
         </div>

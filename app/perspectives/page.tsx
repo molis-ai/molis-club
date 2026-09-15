@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
 import stories from '../../content/stories.json';
 import { pageMetadata } from '../../lib/site';
 import { EditorialPage, Opening, CollectionData } from '../editorial';
@@ -66,9 +65,6 @@ export default function Page() {
                   <Link href="/community/yijun">一骏</Link>
                   <span>{Math.ceil(story.body.length / 500)} 分钟阅读</span>
                 </div>
-                <Link className="edition-link" href={`/story/${essay.slug}`}>
-                  读这篇观点 <ArrowUpRight size={19} />
-                </Link>
               </div>
             </article>
           );
@@ -81,7 +77,7 @@ export default function Page() {
           <em>判断，值得认真留下。</em>
         </p>
         <Link className="edition-link" href="/community">
-          看看这些想法长成了什么 <ArrowUpRight size={18} />
+          看看这些想法长成了什么
         </Link>
       </section>
     </EditorialPage>

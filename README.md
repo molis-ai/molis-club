@@ -7,7 +7,8 @@ Molis AI 的代码仓库（molis-club）。我们的 AI 创作者社区网站：
 ## 当前可用
 
 - **作品发现**：10 个产品、3 项方案，按真实场景分类，标明当前阶段与可用入口。
-- **首页体验**：原围桌插画、简短工作室介绍与一个作品入口；背景轻微回应鼠标和点击，遵循减少动态偏好，不显示操作说明。
+- **首页体验**：暖灰流动光影、简短工作室介绍、大字标与一个作品入口，随后是原围桌插画；光影回应鼠标，离开视口暂停，减少动态或图形不可用时显示静态背景。
+- **整站体验**：开放排版、减少重复文案，方案细节按需展开；页尾栏目在悬停或键盘聚焦时联动渐变、文字与插画。
 - **百科与 Skill**：6 个网页/动效条目支持搜索、实际演示和 Prompt 复制；4 个艺术家系列 Skill 可下载到本地使用。
 - **社区与观点**：团队/作者介绍与作品、观点互相连接；栏目为社区、百科、产品、解决方案、观点。
 - **阅读与反馈**：《落地主义》《人的尺度》原文，登录后可在作品下留下持久化反馈。
@@ -65,6 +66,6 @@ npm run test:http
 | `tests/` | 业务与真实 HTTP 验证 |
 | `docs/` | 部署、认证和产品说明 |
 
-[产品范围](PRODUCT.md) · [视觉系统](DESIGN.md) · [内页需求与验收](specs/editorial-pages/spec.md) · [部署与成本](docs/DEPLOYMENT.md) · [登录配置](docs/AUTH-SETUP.md) · [产品分类](docs/PRODUCT-LINES.md) · [SEO/GEO](docs/DISCOVERY.md)
+[产品范围](PRODUCT.md) · [视觉系统](DESIGN.md) · [整站体验与验收](specs/studio-flow/spec.md) · [内页需求与验收](specs/editorial-pages/spec.md) · [部署与成本](docs/DEPLOYMENT.md) · [登录配置](docs/AUTH-SETUP.md) · [产品分类](docs/PRODUCT-LINES.md) · [SEO/GEO](docs/DISCOVERY.md)
 
 旧版原型与废弃方案已从工作树移除，需要回看时使用 Git 历史。

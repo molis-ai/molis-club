@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
 import { artistSkills } from '../content/artists';
 export function ArtistSeries({ full = false }: { full?: boolean }) {
   return (
@@ -11,7 +10,7 @@ export function ArtistSeries({ full = false }: { full?: boolean }) {
         </div>
         {!full && (
           <Link className="edition-link" href="/wiki/artists">
-            探索整个系列 <ArrowUpRight size={17} />
+            探索整个系列
           </Link>
         )}
       </div>
@@ -35,10 +34,8 @@ export function ArtistSeries({ full = false }: { full?: boolean }) {
               </figure>
               <div>
                 <h3>{skill.name}</h3>
-                <ArrowUpRight size={18} />
               </div>
               <em>{skill.english}</em>
-              <p>{skill.description}</p>
             </Link>
           ))}
       </div>
@@ -54,9 +51,7 @@ export function ArtistSeries({ full = false }: { full?: boolean }) {
             <h3>构建你自己的风格 Skill</h3>
             <p>把原作观察、研究与成图反馈，变成可复用的创作方法。</p>
           </div>
-          <span className="edition-link">
-            了解构建方法 <ArrowUpRight size={18} />
-          </span>
+          <span className="edition-link">了解构建方法</span>
         </Link>
       )}
     </section>

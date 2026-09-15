@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, ArrowLeft, Check } from 'lucide-react';
+import { ArrowLeft, Check } from 'lucide-react';
 import { Header, Footer } from '../shell';
 export default function Join() {
   const [busy, setBusy] = useState(false),
@@ -67,8 +67,8 @@ export default function Join() {
               <p>
                 申请已保存到团队的私密收件箱。我们会从这里开始认识你；目前不会自动发送邮件。如果这个邮箱已申请，我们保留的是先前那一份。
               </p>
-              <Link href="/#works" className="button primary">
-                再认识几个作品 <ArrowUpRight size={17} />
+              <Link href="/products" className="button primary">
+                再认识几个作品
               </Link>
             </div>
           ) : (
@@ -132,7 +132,6 @@ export default function Join() {
               </label>
               <button className="button primary" disabled={busy}>
                 {busy ? '正在递给我们…' : '把想法递过来'}
-                <ArrowUpRight size={17} />
               </button>
               <p role="alert" className="feedback error">
                 {error}

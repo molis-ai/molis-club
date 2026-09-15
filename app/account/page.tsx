@@ -79,7 +79,7 @@ export default function Account() {
               </p>
             )}
             <div className="account-actions">
-              <Link className="text-link" href="/#works">
+              <Link className="text-link" href="/products">
                 继续看作品
               </Link>
               <button className="text-button" onClick={logout} disabled={busy}>

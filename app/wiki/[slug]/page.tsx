@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowUpRight } from 'lucide-react';
 import { knowledge } from '../../../content/knowledge';
 import { pageMetadata, siteUrl } from '../../../lib/site';
 import { EditorialPage, Trail } from '../../editorial';
@@ -73,7 +72,6 @@ export default async function Page({ params }: Props) {
             rel="noreferrer"
           >
             {entry.source.name}
-            <ArrowUpRight size={16} />
           </a>
           <a
             className="edition-link"
@@ -82,7 +80,6 @@ export default async function Page({ params }: Props) {
             rel="noreferrer"
           >
             MDN · 减少动态偏好
-            <ArrowUpRight size={16} />
           </a>
         </aside>
       </div>
@@ -100,7 +97,6 @@ export default async function Page({ params }: Props) {
                   {item.name}
                   <em>{item.english}</em>
                 </span>
-                <ArrowUpRight size={20} />
               </Link>
             ))}
         </div>

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { ArrowUpRight, Code2, Mail } from 'lucide-react';
+import { Code2, Mail } from 'lucide-react';
 import { authClient } from '../../lib/auth-client';
 import { formText } from '../../lib/forms';
 import { Header, Footer } from '../shell';
@@ -100,7 +100,7 @@ export default function Login() {
               <h1>你已经登录了。</h1>
               <p>{session.user.name}，欢迎回来。</p>
               <Link className="button primary" href="/account">
-                查看我的账号 <ArrowUpRight size={18} />
+                查看我的账号
               </Link>
             </div>
           ) : (
@@ -189,7 +189,6 @@ export default function Login() {
                 )}
                 <button className="button primary wide" disabled={busy}>
                   {busy ? '请稍候…' : mode === 'login' ? '登录' : '创建账号'}
-                  <ArrowUpRight size={18} />
                 </button>
                 <p className="feedback error" role="alert">
                   {error ??

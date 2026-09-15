@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowUpRight } from 'lucide-react';
 import { works } from '../../../content/works';
 import Notes from '../../notes';
 import { WorkIdentity, SolutionPath } from '../../work-presentation';
@@ -65,12 +64,10 @@ export default async function WorkPage({ params }: Props) {
                 rel="noreferrer"
               >
                 {w.action}
-                <ArrowUpRight size={17} />
               </a>
             ) : (
               <a className="edition-button" href="#feedback">
                 聊聊这个想法
-                <ArrowUpRight size={17} />
               </a>
             )}
             <span>{w.status}</span>
@@ -81,7 +78,6 @@ export default async function WorkPage({ params }: Props) {
           <p>{w.why}</p>
           <Link className="edition-link" href="/community/adeptify">
             Adeptify 团队
-            <ArrowUpRight size={16} />
           </Link>
           <em>{w.english}</em>
         </aside>
@@ -143,11 +139,9 @@ export default async function WorkPage({ params }: Props) {
           href={isSolution ? '/solutions' : '/products'}
         >
           继续发现{isSolution ? '解决方案' : '其他产品'}
-          <ArrowUpRight size={17} />
         </Link>
         <Link className="edition-link" href="/community">
           回到社区
-          <ArrowUpRight size={17} />
         </Link>
       </section>
     </EditorialPage>

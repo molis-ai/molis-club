@@ -1,11 +1,12 @@
 import Link from 'next/link';
-import { ArrowUpRight, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import type { ReactNode } from 'react';
 import type { Work } from '../content/works';
 import { siteUrl } from '../lib/site';
 import { Header, Footer } from './shell';
 import { StructuredData } from './structured-data';
 import { WorkIdentity } from './work-presentation';
+import EditorialMotion from './editorial-motion';
 import './editorial.css';
 
 export function EditorialPage({
@@ -18,9 +19,9 @@ export function EditorialPage({
   return (
     <>
       <Header />
-      <main id="main" className={`edition ${className}`}>
+      <EditorialMotion className={`edition ${className}`}>
         {children}
-      </main>
+      </EditorialMotion>
       <Footer />
     </>
   );
@@ -120,12 +121,8 @@ export function WorkRow({
       <Link className="edition-work-link" href={`/works/${work.slug}`}>
         <WorkIdentity work={work} />
         <h3>{work.title}</h3>
-        <p>{work.description}</p>
         <span className="edition-work-foot">
           <span>{work.status}</span>
-          <span>
-            了解作品 <ArrowUpRight size={17} />
-          </span>
         </span>
       </Link>
       {author && (
@@ -149,7 +146,7 @@ export function Invitation({
       <div>
         <p>{text}</p>
         <Link className="edition-link" href="/join">
-          和我们聊聊 <ArrowUpRight size={18} />
+          和我们聊聊
         </Link>
       </div>
     </section>
