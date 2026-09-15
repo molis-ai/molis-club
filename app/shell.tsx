@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from './edition-link';
 import { AccountLink } from './account-link';
 import NavLinks from './nav-links';
 import StudioDirectory from './studio-directory';

@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import Link from 'next/link';
+import Link from '../edition-link';
 import { ArrowLeft, Check } from 'lucide-react';
 import { Header, Footer } from '../shell';
 export default function Join() {

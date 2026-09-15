@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '../edition-link';
 import stories from '../../content/stories.json';
 import { pageMetadata } from '../../lib/site';
 import { EditorialPage, Opening, CollectionData } from '../editorial';

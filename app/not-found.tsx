@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from './edition-link';
 import { Header, Footer } from './shell';
 export default function NotFound() {
   return (

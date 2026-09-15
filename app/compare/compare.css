@@ -1,0 +1,127 @@
+.compare-page {
+  max-width: 1400px;
+  margin: auto;
+  padding: 35px 6% 100px;
+}
+.compare-page > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.compare-page > header a {
+  font-size: 25px;
+  letter-spacing: -0.04em;
+}
+.compare-page > header span {
+  font-size: 13px;
+}
+.compare-page h1 {
+  font-size: clamp(35px, 4vw, 58px);
+  font-weight: 450;
+  line-height: 1.4;
+  margin: 90px 0 60px;
+}
+.compare-editions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.compare-editions > a {
+  min-height: 450px;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  position: relative;
+  overflow: hidden;
+}
+.compare-editions span {
+  font-size: 14px;
+}
+.compare-editions h2 {
+  font-weight: 450;
+  font-size: 30px;
+  margin: 16px 0;
+}
+.compare-editions p {
+  font-size: 14px;
+}
+.compare-a {
+  background:
+    radial-gradient(ellipse at 80% 20%, #f1eadc, transparent 60%),
+    linear-gradient(145deg, #586a6a, #a3ac9d 50%, #d8d4c7);
+  color: var(--ink);
+}
+.compare-b img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 65%;
+  transition: transform 800ms;
+}
+.compare-b::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent, #152120a6);
+}
+.compare-b > div {
+  z-index: 1;
+  position: relative;
+  color: var(--paper);
+}
+.compare-b:hover img {
+  transform: scale(1.025);
+}
+.compare-page > section {
+  margin-top: 90px;
+}
+.compare-page > section h2 {
+  font-size: 24px;
+  font-weight: 450;
+  margin-bottom: 30px;
+}
+.compare-routes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 70px;
+}
+.compare-routes > div {
+  display: flex;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  gap: 30px;
+}
+.compare-routes span {
+  margin-right: auto;
+  font-size: 14px;
+}
+.compare-routes a {
+  padding: 8px 15px;
+  font-size: 14px;
+}
+.compare-routes a:hover {
+  background: var(--paper-deep);
+}
+@media (max-width: 640px) {
+  .compare-editions,
+  .compare-routes {
+    grid-template-columns: 1fr;
+  }
+  .compare-editions > a {
+    min-height: 380px;
+    padding: 32px;
+  }
+  .compare-page h1 {
+    margin: 65px 0 40px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .compare-b img {
+    transition: none;
+    transform: none !important;
+  }
+}

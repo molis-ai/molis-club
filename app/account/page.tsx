@@ -1,10 +1,11 @@
 'use client';
-import Link from 'next/link';
+import Link, { useEditionPath } from '../edition-link';
 import { useState } from 'react';
 import { authClient } from '../../lib/auth-client';
 import { formText } from '../../lib/forms';
 import { Header, Footer } from '../shell';
 export default function Account() {
+  const editionPath = useEditionPath();
   const { data, isPending, error: sessionError } = authClient.useSession();
   const [busy, setBusy] = useState(false),
     [message, setMessage] = useState(''),
@@ -40,7 +41,7 @@ export default function Account() {
     try {
       const r = await authClient.signOut();
       if (r.error) throw Error();
-      window.location.assign('/login');
+      window.location.assign(editionPath('/login'));
     } catch {
       setError('退出未完成，请重试。');
       setBusy(false);

@@ -1,5 +1,5 @@
 'use client';
-import Link from 'next/link';
+import Link from './edition-link';
 import { authClient } from '../lib/auth-client';
 export function AccountLink() {
   const { data } = authClient.useSession();

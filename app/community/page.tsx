@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '../edition-link';
 import { works } from '../../content/works';
 import { members } from '../../content/members';
 import { pageMetadata } from '../../lib/site';

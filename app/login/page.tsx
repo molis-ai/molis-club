@@ -1,12 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import Link, { useEditionPath } from '../edition-link';
 import { useSearchParams } from 'next/navigation';
 import { Code2, Mail } from 'lucide-react';
 import { authClient } from '../../lib/auth-client';
 import { formText } from '../../lib/forms';
 import { Header, Footer } from '../shell';
 export default function Login() {
+  const editionPath = useEditionPath();
   const [mode, setMode] = useState<'login' | 'signup'>('login'),
     [busy, setBusy] = useState(false),
     [error, setError] = useState<string | null>(null);
@@ -51,7 +52,7 @@ export default function Login() {
         );
         return;
       }
-      window.location.assign('/account');
+      window.location.assign(editionPath('/account'));
     } catch {
       setError('账号服务暂时没有响应，请稍后重试。');
     } finally {
@@ -64,8 +65,8 @@ export default function Login() {
     try {
       const r = await authClient.signIn.social({
         provider,
-        callbackURL: '/account',
-        errorCallbackURL: '/login?error=oauth',
+        callbackURL: editionPath('/account'),
+        errorCallbackURL: editionPath('/login?error=oauth'),
       });
       if (r.error) setError('这次授权未能开始，请稍后重试。');
     } catch {

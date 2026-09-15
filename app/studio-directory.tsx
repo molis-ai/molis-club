@@ -1,5 +1,5 @@
 'use client';
-import Link from 'next/link';
+import Link from './edition-link';
 import { useState, type CSSProperties, type PointerEvent } from 'react';
 import './studio-directory.css';
 

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '../edition-link';
 import { artistSkills } from '../../content/artists';
 import { knowledge } from '../../content/knowledge';
 import { pageMetadata } from '../../lib/site';

@@ -1,5 +1,5 @@
 'use client';
-import Link from 'next/link';
+import Link from './edition-link';
 import './nav-links.css';
 import { usePathname } from 'next/navigation';
 export const navItems = [

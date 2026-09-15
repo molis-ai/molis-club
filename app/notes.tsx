@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
+import Link from './edition-link';
 import { authClient } from '../lib/auth-client';
 import { ArrowRight, RotateCcw } from 'lucide-react';
 type Note = {

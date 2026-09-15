@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '../../edition-link';
 import { notFound } from 'next/navigation';
 import { members } from '../../../content/members';
 import { works } from '../../../content/works';

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from './edition-link';
 import { Header, Footer } from './shell';
 import StudioScene from './studio-scene';
 import StudioWater from './studio-water';

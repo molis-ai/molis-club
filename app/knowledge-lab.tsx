@@ -1,7 +1,7 @@
 'use client';
 /* oxlint-disable jsx-a11y/no-noninteractive-tabindex -- Scrollable specimens must accept keyboard scrolling. */
 import { useRef, useState, type CSSProperties } from 'react';
-import Link from 'next/link';
+import Link from './edition-link';
 import {
   ArrowLeft,
   ArrowRight,
@@ -104,10 +104,10 @@ export function KnowledgeDemo({
           className={`demo-underline-content${replay ? ' is-playing' : ''}`}
           key={replay}
         >
-          <a href={compact ? `/wiki/${entry.slug}` : '#usage'}>
+          <Link href={compact ? `/wiki/${entry.slug}` : '#usage'}>
             留一点好奇心
             <ArrowUpRight size={22} />
-          </a>
+          </Link>
           <p>悬停，或用 Tab 键聚焦</p>
         </div>
       )}

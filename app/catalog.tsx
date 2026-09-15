@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from './edition-link';
 import { ArrowRight } from 'lucide-react';
 import { works } from '../content/works';
 import { productLines } from '../content/lines';
