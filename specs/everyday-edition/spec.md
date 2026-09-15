@@ -45,9 +45,9 @@ B主栏目重新编排。详情复用真实数据与功能，独立版式适配�
 
 ## 实现记录
 B 独立主栏目、共享摄影与控件、/compare 入口已完成。内部链接依据当前路径解析 /atelier 前缀；不依赖自定义 React Context，避免 SSR 子组件隔离时登录链接回到 A。新摄影的完整 prompt、来源与生成原文件见 docs/ATELIER-ASSETS.md，压缩图保留来源元数据。
-38 条 B 路径的 HTTP 验证已通过（含真实产品、6 个百科条目、4 个 Artist Skill）。桌面1280×900和手机390×844已检查各页面类别，无横向溢出。当前继续交互验收、独立审阅与发布。
+38 条 B 路径的 HTTP 验证已通过（含真实产品、6 个百科条目、4 个 Artist Skill）。桌面1280×900和手机390×844已检查各页面类别，无横向溢出。交互验收、独立审阅与私有发布均已完成。
 
-## 验收结果（发布前）
+## 验收结果
 - 通过：A 根路径与既有内容保留。共享链接只增加基于当前路径的版本解析；A 的 discovery/editorial HTTP 回归通过。
 - 通过：B 的 38 条页面路径、分类筛选、缺失页面 404、版本内导航、原下载地址和 /compare 配对入口。`node tests/atelier-http.mjs`。
 - 通过：`npm run check`、`npm run lint`、`npm run build`。对比度修正后再次构建通过。
@@ -58,4 +58,4 @@ B 独立主栏目、共享摄影与控件、/compare 入口已完成。内部链
 - 通过：独立审阅检查了 42 张主页面/状态及比较截图。唯一 material fix 为照片上小字对比度，已修正且复核 resolved，disposition: ship；背景采样对比度6.99–8.29:1、主要行动11.43:1。独立审阅支持设计范围与此修复，不代表实机或生产账户测试。
 - 通过：canonical 继续指向相同内容的 A 身份，保留 Article/ProfilePage/DefinedTerm/CreativeWork 等事实与私有 noindex。尚不向搜索引擎公开。
 - 未运行：实体手机测试；B 中真实账号注册/改密/联系提交没有重复产生数据，继续使用 A 已验证的同一 API 和表单逻辑。
-- 待完成：原私有 Sites 发布及最终版本记录。
+- 通过：原私有 Sites 发布成功。源提交 `97e5f0ccbeb531de44567a436e27b03789258edf`；版本 `appgprj_6a9d31d1aef481918325ac7afd64e641~appgver_e1a7b0f5628c819191e5825de024fb1f`；部署 `appgdep_6aa9abdab0f4819185fec58a60911348` 状态 succeeded（2026-09-16，北京时间）。A 为 https://molis-club.yijunw0212.chatgpt.site/ ，B 为 /atelier，对比入口为 /compare。访问权限继续私有。
