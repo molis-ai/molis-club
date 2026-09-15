@@ -13,6 +13,16 @@ function schemas(page) {
     ),
   ].map((m) => JSON.parse(m[1]));
 }
+const home = await html('/');
+assert.match(home, /一间与 AI 一起创作的工作室/);
+assert.match(home, /href="\/products"[^>]*>[\s\S]*?探索作品/);
+assert.match(home, /href="\/community\/adeptify"/);
+assert.match(home, /href="\/join"/);
+assert.match(home, /class="entrance-fallback"/);
+assert(!home.includes('class="product-lines '));
+assert(!home.includes('class="solutions-preview '));
+assert(!home.includes('class="studio-questions '));
+assert.match(schemas(home)[0]['@graph'][0].description, /工作室/);
 const engineering = await html('/products?line=engineering');
 assert.deepEqual(
   schemas(engineering)[0].itemListElement.map((e) => e.item.name),

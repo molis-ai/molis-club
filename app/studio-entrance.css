@@ -1,0 +1,381 @@
+/* Studio entrance: an interactive paper loop, clear studio identity and one primary path.
+   The warm paper and ink world is inherited; content lives in the five existing columns.
+   Motion follows the visitor. Pause, reduced motion and static geometry preserve access. */
+.studio-home {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+.studio-home main {
+  flex: 1;
+  display: flex;
+}
+.studio-home .site-header {
+  flex: none;
+}
+.studio-entrance {
+  width: 100%;
+  min-height: 700px;
+  min-height: max(700px, calc(100svh - 170px));
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.entrance-copy {
+  position: relative;
+  z-index: 2;
+  width: 54%;
+  padding: 36px 0 100px 7%;
+  pointer-events: none;
+}
+.entrance-copy h1 {
+  font-size: clamp(40px, 4.4vw, 66px);
+  font-weight: 500;
+  line-height: 1.48;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+}
+.entrance-copy h1 > span {
+  color: #ab795c;
+}
+.entrance-english {
+  margin-top: 23px;
+  font-size: clamp(26px, 2.5vw, 38px);
+  line-height: 1.14;
+  color: #667465;
+}
+.entrance-introduction {
+  margin-top: 39px;
+  font-size: 15px;
+  line-height: 1.9;
+  color: #545a5b;
+}
+.entrance-introduction p + p {
+  margin-top: 9px;
+}
+.entrance-mobile-break {
+  display: none;
+}
+.entrance-paths {
+  display: flex;
+  align-items: center;
+  gap: 29px;
+  margin-top: 30px;
+  pointer-events: auto;
+  width: fit-content;
+}
+.entrance-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 45px;
+  min-height: 56px;
+  padding: 13px 23px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 3px;
+  font-size: 15px;
+  transition:
+    background 220ms,
+    box-shadow 350ms;
+}
+.entrance-action svg {
+  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.entrance-action:hover,
+.entrance-action:focus-visible {
+  background: #3e5149;
+  box-shadow: 0 9px 20px #24324b12;
+}
+.entrance-action:hover svg,
+.entrance-action:focus-visible svg {
+  transform: translate(3px, -3px);
+}
+.entrance-about {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 48px;
+  font-size: 13px;
+}
+.entrance-about svg {
+  transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.entrance-about:hover svg {
+  transform: translateX(4px);
+}
+.entrance-about:hover {
+  text-decoration: underline;
+}
+.entrance-object {
+  position: absolute;
+  z-index: -1;
+  right: -4%;
+  top: 0;
+  width: 63%;
+  height: 100%;
+  pointer-events: none;
+}
+.entrance-object canvas,
+.entrance-fallback {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+.entrance-object canvas {
+  opacity: 0;
+  transition: opacity 700ms ease-out;
+}
+.entrance-object.is-ready canvas {
+  opacity: 1;
+}
+.entrance-object.is-ready .entrance-fallback {
+  visibility: hidden;
+}
+.entrance-art-note {
+  position: absolute;
+  right: 12.7%;
+  bottom: 116px;
+  text-align: center;
+  pointer-events: none;
+}
+.entrance-art-note > span {
+  font-family: var(--font-serif);
+  font-size: 21px;
+  font-style: italic;
+}
+.entrance-art-note > em {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-style: normal;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.entrance-interaction {
+  position: absolute;
+  bottom: 29px;
+  right: 7%;
+  left: 7%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 23px;
+  font-size: 11px;
+  color: #6a6d66;
+}
+.entrance-interaction > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.entrance-interaction button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #a4a89c;
+  min-height: 38px;
+  padding: 6px 3px;
+  font-size: 11px;
+}
+.touch-instruction {
+  display: none;
+}
+.entrance-ripple {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  left: var(--ripple-x);
+  top: var(--ripple-y);
+  width: 16px;
+  height: 16px;
+  border: 1px solid #687c7070;
+  border-radius: 50%;
+  opacity: 0;
+}
+.entrance-ripple::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border: 1px solid #687c7040;
+  border-radius: 50%;
+}
+.has-ripple .entrance-ripple {
+  animation: entrance-ripple 1800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes entrance-ripple {
+  0% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(28);
+  }
+}
+.entrance-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  padding: 21px 4.5%;
+  border-top: 1px solid #dcd6ce80;
+  font-size: 11px;
+  color: var(--muted);
+}
+.entrance-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 24px;
+}
+.entrance-footer a:nth-child(2) {
+  color: var(--ink);
+  font-size: 12px;
+}
+.entrance-footer a:hover {
+  text-decoration: underline;
+}
+@media (min-width: 1600px) {
+  .entrance-copy {
+    padding-left: 9%;
+  }
+  .entrance-object {
+    right: 0;
+    width: 59%;
+  }
+}
+@media (max-width: 1100px) {
+  .entrance-copy {
+    padding-left: 5%;
+    width: 58%;
+  }
+  .entrance-copy h1 {
+    font-size: 45px;
+  }
+  .entrance-object {
+    right: -12%;
+    width: 68%;
+  }
+  .entrance-art-note {
+    right: 10%;
+  }
+}
+@media (max-width: 760px) {
+  .studio-entrance {
+    min-height: auto;
+    display: block;
+    padding-bottom: 405px;
+  }
+  .entrance-copy {
+    width: 100%;
+    padding: 40px 7% 0;
+  }
+  .entrance-copy h1 {
+    font-size: clamp(34px, 6.4vw, 48px);
+    line-height: 1.45;
+    letter-spacing: -0.035em;
+  }
+  .entrance-english {
+    font-size: 26px;
+    margin-top: 16px;
+  }
+  .entrance-english br {
+    display: none;
+  }
+  .entrance-english br::after {
+    content: ' ';
+  }
+  .entrance-introduction {
+    margin-top: 25px;
+    font-size: 14px;
+  }
+  .entrance-introduction p + p {
+    margin-top: 7px;
+  }
+  .entrance-paths {
+    margin-top: 24px;
+    gap: 26px;
+  }
+  .entrance-action {
+    gap: 35px;
+    min-height: 52px;
+    padding: 12px 20px;
+  }
+  .entrance-object {
+    width: 100%;
+    height: 390px;
+    top: auto;
+    bottom: 35px;
+    right: 0;
+  }
+  .entrance-art-note {
+    right: 0;
+    width: 100%;
+    bottom: 72px;
+  }
+  .entrance-art-note > span {
+    font-size: 18px;
+  }
+  .entrance-art-note > em {
+    display: none;
+  }
+  .entrance-interaction {
+    bottom: 15px;
+    right: 7%;
+    left: 7%;
+    justify-content: center;
+    gap: 22px;
+  }
+  .entrance-footer {
+    padding: 15px 7%;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+  }
+  .entrance-footer a:nth-child(2) {
+    order: -1;
+    width: 100%;
+    padding-bottom: 8px;
+  }
+}
+@media (max-width: 400px) {
+  .entrance-copy {
+    padding: 28px 6% 0;
+  }
+  .entrance-copy h1 {
+    font-size: 34px;
+  }
+  .entrance-english {
+    font-size: 23px;
+  }
+  .entrance-mobile-break {
+    display: initial;
+  }
+}
+@media (hover: none) {
+  .pointer-instruction {
+    display: none;
+  }
+  .touch-instruction {
+    display: inline;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .entrance-object canvas,
+  .entrance-action,
+  .entrance-action svg,
+  .entrance-about svg {
+    transition: none;
+  }
+  .has-ripple .entrance-ripple {
+    animation: none;
+  }
+}
+.studio-entrance.is-still .entrance-ripple {
+  animation: none;
+}
