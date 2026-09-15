@@ -6,6 +6,7 @@ import { pageMetadata, siteUrl } from '../../../../lib/site';
 import { EditorialPage, Trail } from '../../../editorial';
 import { StructuredData } from '../../../structured-data';
 import { SkillPrompt } from '../../../skill-prompt';
+import { ImageCurtain } from '../../../image-curtain';
 type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
@@ -68,6 +69,7 @@ export default async function Page({ params }: Props) {
               target="_blank"
               rel="noreferrer"
               aria-label="查看完整创作试样"
+              data-image-curtain
             >
               <img
                 src={skill.image}
@@ -75,6 +77,7 @@ export default async function Page({ params }: Props) {
                 height={skill.height}
                 alt={skill.imageAlt}
               />
+              <ImageCurtain label="查看完整图像" tone="paper" />
             </a>
             <figcaption>
               Artist-skill · AI 创作试样，非艺术家原作。点击查看完整图像。

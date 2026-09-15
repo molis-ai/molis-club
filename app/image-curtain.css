@@ -1,0 +1,275 @@
+/* A veil enters the picture; the page and its content remain still. */
+[data-image-curtain] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.image-curtain[data-tone] {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  pointer-events: none;
+  color: var(--paper);
+}
+.image-curtain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    color-mix(in srgb, var(--ink) 92%, transparent),
+    color-mix(in srgb, var(--ink) 45%, transparent) 55%,
+    color-mix(in srgb, var(--ink) 12%, transparent)
+  );
+  clip-path: inset(100% 0 0);
+  transition: clip-path 340ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.image-curtain[data-tone='paper'] {
+  color: var(--ink);
+}
+.image-curtain[data-tone='paper']::before {
+  background: linear-gradient(
+    0deg,
+    color-mix(in srgb, var(--paper) 97%, transparent),
+    color-mix(in srgb, var(--paper) 62%, transparent) 55%,
+    color-mix(in srgb, var(--paper) 8%, transparent)
+  );
+}
+.image-curtain > .image-curtain-caption {
+  position: absolute;
+  inset: auto 28px 28px;
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 500;
+  color: inherit;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 140ms,
+    transform 240ms;
+}
+[data-image-curtain]:focus-visible > .image-curtain::before,
+.artist-gallery-item:focus-visible > figure > .image-curtain::before {
+  clip-path: inset(0);
+  transition-duration: 650ms;
+}
+[data-image-curtain]:focus-visible .image-curtain-caption,
+.artist-gallery-item:focus-visible .image-curtain-caption {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 300ms 100ms,
+    transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.atelier-photo-link[data-image-curtain] > div {
+  z-index: 3;
+  transition: translate 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.atelier-photo-link[data-image-curtain]:focus-visible > div {
+  translate: 0 -5px;
+}
+.atelier-solution-stories > article > .atelier-solution-photo {
+  display: block;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.atelier-solution-stories > article:nth-child(even) > .atelier-solution-photo {
+  order: 2;
+}
+.atelier-solution-photo .atelier-photo {
+  min-height: 100%;
+}
+
+/* The pale sheet belongs to real text links, never to reading paragraphs. */
+:is(
+  .atelier-work-index > a,
+  .atelier-people > a,
+  .edition-work-link,
+  .member-entry
+) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+:is(
+  .atelier-work-index > a,
+  .atelier-people > a,
+  .edition-work-link,
+  .member-entry
+)::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: var(--atelier-sage, var(--field));
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+:is(
+    .atelier-work-index > a,
+    .atelier-people > a,
+    .edition-work-link,
+    .member-entry
+  )
+  :is(h2, h3) {
+  transition: translate 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+:is(
+    .atelier-work-index > a,
+    .atelier-people > a,
+    .edition-work-link,
+    .member-entry
+  ):focus-visible::before {
+  clip-path: inset(0);
+  transition-duration: 550ms;
+}
+:is(
+    .atelier-work-index > a,
+    .atelier-people > a,
+    .edition-work-link,
+    .member-entry
+  ):focus-visible
+  :is(h2, h3) {
+  translate: 5px 0;
+}
+
+/* Non-interactive detail photography gets a window shade, not a link cue. */
+.atelier-detail-photo {
+  position: relative;
+  isolation: isolate;
+}
+.atelier-detail-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    color-mix(in srgb, var(--paper) 22%, transparent) 40%,
+    color-mix(in srgb, var(--paper) 22%, transparent) 62%,
+    transparent 62%
+  );
+  opacity: 0;
+  transform: translateX(-12%);
+  transition:
+    opacity 250ms,
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  [data-image-curtain]:hover > .image-curtain::before,
+  .artist-gallery-item:hover > figure > .image-curtain::before {
+    clip-path: inset(0);
+    transition-duration: 650ms;
+  }
+  [data-image-curtain]:hover .image-curtain-caption,
+  .artist-gallery-item:hover .image-curtain-caption {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 300ms 100ms,
+      transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .atelier-photo-link[data-image-curtain]:hover > div {
+    translate: 0 -5px;
+  }
+  :is(
+      .atelier-work-index > a,
+      .atelier-people > a,
+      .edition-work-link,
+      .member-entry
+    ):hover::before {
+    clip-path: inset(0);
+    transition-duration: 550ms;
+  }
+  :is(
+      .atelier-work-index > a,
+      .atelier-people > a,
+      .edition-work-link,
+      .member-entry
+    ):hover
+    :is(h2, h3) {
+    translate: 5px 0;
+  }
+  .atelier-detail-photo:hover::after {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (hover: none) {
+  [data-image-curtain]:active > img {
+    opacity: 0.88;
+  }
+}
+@media (max-width: 640px) {
+  .atelier-solution-stories
+    > article:nth-child(even)
+    > .atelier-solution-photo {
+    order: 0;
+  }
+  .atelier-solution-stories > article > .atelier-solution-photo {
+    height: 390px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .image-curtain::before {
+    clip-path: none !important;
+    opacity: 0;
+    transition: opacity 140ms !important;
+  }
+  [data-image-curtain]:focus-visible > .image-curtain::before,
+  .artist-gallery-item:focus-visible > figure > .image-curtain::before {
+    opacity: 1;
+  }
+  .image-curtain-caption {
+    transform: none !important;
+    transition: opacity 140ms !important;
+  }
+  .atelier-photo-link[data-image-curtain] > div,
+  :is(
+      .atelier-work-index > a,
+      .atelier-people > a,
+      .edition-work-link,
+      .member-entry
+    )
+    :is(h2, h3) {
+    translate: none !important;
+    transition: none;
+  }
+  :is(
+    .atelier-work-index > a,
+    .atelier-people > a,
+    .edition-work-link,
+    .member-entry
+  )::before {
+    clip-path: none;
+    opacity: 0;
+    transition: opacity 140ms;
+  }
+  :is(
+      .atelier-work-index > a,
+      .atelier-people > a,
+      .edition-work-link,
+      .member-entry
+    ):focus-visible::before {
+    opacity: 1;
+  }
+  .atelier-detail-photo::after {
+    transform: none;
+    transition: opacity 140ms;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    [data-image-curtain]:hover > .image-curtain::before,
+    .artist-gallery-item:hover > figure > .image-curtain::before,
+    :is(
+        .atelier-work-index > a,
+        .atelier-people > a,
+        .edition-work-link,
+        .member-entry
+      ):hover::before {
+      opacity: 1;
+    }
+  }
+}

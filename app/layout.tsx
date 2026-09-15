@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Newsreader } from 'next/font/google';
 import './globals.css';
+import './image-curtain.css';
 import { siteUrl, publiclyIndexable } from '../lib/site';
 const newsreader = Newsreader({
   variable: '--font-editorial',

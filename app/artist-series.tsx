@@ -1,5 +1,6 @@
 import Link from './edition-link';
 import { artistSkills } from '../content/artists';
+import { ImageCurtain } from './image-curtain';
 export function ArtistSeries({ full = false }: { full?: boolean }) {
   return (
     <section className="artist-series" id="artist-skills">
@@ -23,7 +24,7 @@ export function ArtistSeries({ full = false }: { full?: boolean }) {
               className={`artist-gallery-item artist-${skill.slug}`}
               key={skill.slug}
             >
-              <figure>
+              <figure data-image-curtain>
                 <img
                   src={skill.image}
                   width={skill.width}
@@ -31,6 +32,7 @@ export function ArtistSeries({ full = false }: { full?: boolean }) {
                   alt={skill.imageAlt}
                   loading="lazy"
                 />
+                <ImageCurtain label="探索创作方法" tone="paper" />
               </figure>
               <div>
                 <h3>{skill.name}</h3>

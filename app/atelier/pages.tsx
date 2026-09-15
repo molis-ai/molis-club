@@ -10,6 +10,7 @@ import { KnowledgeDirectory } from '../knowledge-lab';
 import AtelierMotion, { Photo } from './motion';
 import Collections from './collections';
 import { CollectionData } from '../editorial';
+import { ImageCurtain } from '../image-curtain';
 
 export function RoomHero({
   title,
@@ -59,8 +60,9 @@ function PhotoLink({
   href: string;
 }) {
   return (
-    <Link href={href} className="atelier-photo-link">
+    <Link href={href} className="atelier-photo-link" data-image-curtain>
       <Photo src={image} />
+      <ImageCurtain tone={image.includes('/products/') ? 'paper' : 'ink'} />
       <div>
         <h2>{title}</h2>
         <p>{text}</p>
@@ -276,11 +278,18 @@ export function AtelierSolutions() {
       <section className="atelier-solution-stories">
         {solutions.map((work, i) => (
           <article key={work.slug} id={work.slug}>
-            <div data-photo-motion>
+            <Link
+              href={`/works/${work.slug}`}
+              className="atelier-solution-photo"
+              aria-label={`了解 ${work.name} 方案`}
+              data-photo-motion
+              data-image-curtain
+            >
               <Photo
                 src={`/images/atelier/${['reading-room', 'studio-desk', 'threshold'][i]}.jpg`}
               />
-            </div>
+              <ImageCurtain label="了解方案" />
+            </Link>
             <div>
               <span>
                 {work.name} · {work.status}
@@ -350,12 +359,15 @@ export function AtelierPerspectives() {
               <Link
                 href={`/story/${slug}`}
                 className="atelier-essay-photo"
+                aria-label={`阅读${s.title}`}
                 data-photo-motion
+                data-image-curtain
               >
                 <Photo
                   priority={i === 0}
                   src={`/images/atelier/${i === 0 ? 'reading-room' : 'studio-desk'}.jpg`}
                 />
+                <ImageCurtain label="阅读观点" />
               </Link>
               <div>
                 <span>一骏 · {Math.ceil(s.body.length / 500)} 分钟阅读</span>

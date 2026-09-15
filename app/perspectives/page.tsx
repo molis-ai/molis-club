@@ -2,6 +2,7 @@ import Link from '../edition-link';
 import stories from '../../content/stories.json';
 import { pageMetadata } from '../../lib/site';
 import { EditorialPage, Opening, CollectionData } from '../editorial';
+import { ImageCurtain } from '../image-curtain';
 const essays = [
   {
     slug: 'human-scale',
@@ -47,6 +48,7 @@ export default function Page() {
                 className="perspective-cover"
                 href={`/story/${essay.slug}`}
                 aria-label={`阅读${story.title}`}
+                data-image-curtain
               >
                 <img
                   src={essay.image}
@@ -55,6 +57,7 @@ export default function Page() {
                   alt={`${story.title}主题插画`}
                   loading="lazy"
                 />
+                <ImageCurtain label="阅读观点" tone="paper" />
               </Link>
               <div className="perspective-copy">
                 <h2>
