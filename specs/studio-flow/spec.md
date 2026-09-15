@@ -58,10 +58,12 @@ FINISH：有界浏览器视觉与行为验收，独立视觉审阅，设计文�
 - 通过：npm run check、npm run lint、npm run build、node tests/discovery-http.mjs、node tests/editorial-http.mjs。内容元数据、私有索引边界、旧路由与艺术家下载路径继续通过。
 - 通过：独立视觉审阅 disposition: ship，无阻塞或重要问题；手机成员长标题的标签已改为上下排列，登录手机优先呈现表单。
 - 未运行：真实触摸硬件；本轮未重复认证与数据库写入测试，行为未改动。
-- 发布：本地构建与体验验收完成，等待同一私有Sites更新。
+- 发布：A版已发布至原私有Sites，版本16；部署 appgdep_6aa9a10877688191b2ff0a098fdc08c3 状态 succeeded。
 
 ## 新首页追加验收
 - 通过：桌面1280×900构图、390×844手机首屏与原插画续段；无横向溢出。后续只提高shader阴影亮度保障文字对比，并将字距放宽到-0.04em。
 - 通过：WebGL真实绘制25帧，鼠标输入改变uniform到约0.718/0.689；离开首屏后帧数269跨调用不变；减少动态帧数270跨调用不变，Canvas隐藏。
 - 通过：模拟WebGL上下文丢失后Canvas退出显示，静态CSS背景、Molis AI标题、作品链接保留。
 - 设计检查：修正大字标过紧字距；逐条检查47条色彩/圆角提示，活动表单状态色、产品身份色、材质色，以及已被覆盖或未启用的旧样式按具体文件/值记录40条例外，不屏蔽整个文件或规则。无未判定项。
+
+- 最终：首页字距修复后独立审阅 disposition: ship；最终check、lint、discovery HTTP与build通过，完整editorial HTTP已通过。A版源提交2dbd756210d7fedc4269724965997cc5546a3ee3，在线入口 https://molis-club.yijunw0212.chatgpt.site 。后续B版为独立保留版本，不覆盖A。
