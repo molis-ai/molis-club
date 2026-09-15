@@ -1230,31 +1230,20 @@
   position: relative;
   display: block;
   height: 355px;
-  background: #e9e6de;
+  background: transparent;
   overflow: hidden;
-}
-.perspective-cover > em {
-  position: relative;
-  display: block;
-  z-index: 1;
-  font-size: clamp(45px, 5.4vw, 74px);
-  line-height: 0.97;
-  white-space: pre-line;
-  padding: 32px;
 }
 .perspective-cover > img {
   position: absolute;
   right: 0;
   bottom: 0;
   height: 100%;
-  width: 72%;
-  object-fit: cover;
-  opacity: 0.82;
+  width: 100%;
+  object-fit: contain;
+  opacity: 1;
   mix-blend-mode: multiply;
 }
-.perspective-entry:nth-child(2) .perspective-cover {
-  background: #e4e9e3;
-}
+
 .perspective-copy h2 {
   font-size: 42px;
 }
@@ -2590,4 +2579,41 @@
   }
 }
 
-@media (max-width: 560px) { .wiki-feature h2 em { margin-left: .15em; } }
+@media (max-width: 560px) {
+  .wiki-feature h2 em {
+    margin-left: 0.15em;
+  }
+}
+
+/* The studio's editorial drawings accompany existing content. */
+.illustrated-note {
+  align-items: center;
+}
+.illustrated-note > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  mix-blend-mode: multiply;
+}
+.illustrated-note h2 {
+  margin-bottom: 22px;
+}
+.solution-opening-illustration {
+  display: block;
+  width: min(100%, 310px);
+  height: auto;
+  margin-top: 28px;
+  mix-blend-mode: multiply;
+}
+@media (max-width: 760px) {
+  .illustrated-note {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .illustrated-note > img {
+    max-width: 440px;
+  }
+  .solution-opening-illustration {
+    width: min(100%, 280px);
+  }
+}

@@ -46,6 +46,14 @@ export default function Catalog({
             从一段具体的工作开始，
             <br />让 AI 的能力，有合适的位置。
           </p>
+          <img
+            className="solution-opening-illustration"
+            src="/images/studio-series/solutions-atelier.jpg"
+            width="1200"
+            height="800"
+            loading="lazy"
+            alt="两个创作者在桌边一起搭建纸模型的主题插画"
+          />
         </Opening>
         <div className="solution-map">
           <p>选择你正在面对的问题</p>

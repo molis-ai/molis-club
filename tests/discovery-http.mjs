@@ -16,9 +16,11 @@ function schemas(page) {
 const home = await html('/');
 assert.match(home, /一间与 AI 一起创作的工作室/);
 assert.match(home, /href="\/products"[^>]*>[\s\S]*?探索作品/);
-assert.match(home, /href="\/community\/adeptify"/);
+assert(!home.includes('移动鼠标'));
+assert(!home.includes('静态画面'));
 assert.match(home, /href="\/join"/);
-assert.match(home, /class="entrance-fallback"/);
+assert.match(home, /src="\/images\/molis-makers-studio.png"/);
+assert(!home.includes('<canvas'));
 assert(!home.includes('class="product-lines '));
 assert(!home.includes('class="solutions-preview '));
 assert(!home.includes('class="studio-questions '));

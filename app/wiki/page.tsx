@@ -68,15 +68,24 @@ export default function Page() {
         <p>看懂一种表达，带走实现方法。</p>
       </div>
       <KnowledgeDirectory />
-      <section className="wiki-note">
-        <h2>从看见，到做到。</h2>
-        <p>
-          这里收录可以亲手尝试的知识与方法。每个条目都有用途、边界和参考资料；Prompt
-          是起点，你的内容与判断决定最终的表达。
-        </p>
-        <Link className="edition-link" href="/join">
-          告诉我们你想了解的能力 <ArrowUpRight size={17} />
-        </Link>
+      <section className="wiki-note illustrated-note">
+        <img
+          src="/images/studio-series/encyclopedia-atelier.jpg"
+          width="1200"
+          height="800"
+          loading="lazy"
+          alt="翻开的参考书、知识卡片与整理材料的手的主题插画"
+        />
+        <div>
+          <h2>从看见，到做到。</h2>
+          <p>
+            这里收录可以亲手尝试的知识与方法。每个条目都有用途、边界和参考资料；Prompt
+            是起点，你的内容与判断决定最终的表达。
+          </p>
+          <Link className="edition-link" href="/join">
+            告诉我们你想了解的能力 <ArrowUpRight size={17} />
+          </Link>
+        </div>
       </section>
     </EditorialPage>
   );
