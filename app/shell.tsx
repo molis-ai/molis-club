@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Plus } from 'lucide-react';
 import { AccountLink } from './account-link';
+import NavLinks from './nav-links';
 export function Header() {
   return (
     <header className="site-header">
@@ -9,14 +10,18 @@ export function Header() {
         <span className="wordmark">Molis AI</span>
       </Link>
       <nav aria-label="主导航">
-        <Link href="/products">Products</Link>
-        <Link href="/solutions">Solutions</Link>
-        <Link className="secondary-nav" href="/#studio">
-          Studio
-        </Link>
-        <Link className="secondary-nav" href="/#journal">
-          Journal
-        </Link>
+        <div className="nav-inline">
+          <NavLinks />
+        </div>
+        <details className="nav-menu">
+          <summary>
+            <span>菜单</span>
+            <Plus size={18} aria-hidden="true" />
+          </summary>
+          <div className="nav-menu-panel">
+            <NavLinks />
+          </div>
+        </details>
       </nav>
       <AccountLink />
     </header>

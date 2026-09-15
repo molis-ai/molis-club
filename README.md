@@ -8,6 +8,8 @@ Molis AI 的代码仓库（molis-club）。我们的 AI 创作者社区网站：
 
 - **作品发现**：10 个产品、3 项方案，按真实场景分类，标明当前阶段与可用入口。
 - **首页体验**：Logo 与简介组成的横向产品卡片、首屏主次入口，以及方案和阅读模块动效。
+- **百科与 Skill**：6 个网页/动效条目支持搜索、实际演示和 Prompt 复制；4 个艺术家系列 Skill 可下载到本地使用。
+- **社区与观点**：团队/作者介绍与作品、观点互相连接；栏目为社区、百科、产品、解决方案、观点。
 - **阅读与反馈**：《落地主义》《人的尺度》原文，登录后可在作品下留下持久化反馈。
 - **账号**：邮箱密码注册、登录、退出、会话与改密。
 - **联系**：私密合作表单；申请内容不公开展示。
@@ -55,13 +57,14 @@ npm run test:http
 | 目录 | 职责 |
 | --- | --- |
 | `app/` | 页面、共享界面和 API 路由 |
-| `content/` | 产品、方案与文章内容 |
+| `content/` | 产品、方案、观点、百科与成员内容 |
 | `lib/` | 身份认证、元数据和社区写入规则 |
 | `db/`、`drizzle/` | 数据结构与迁移 |
 | `public/images/` | 当前网站使用的图片 |
+| `public/downloads/artists/` | 艺术家 Skill 分发包，更新来源见 docs/ARTIST-SKILL-SOURCES.md |
 | `tests/` | 业务与真实 HTTP 验证 |
 | `docs/` | 部署、认证和产品说明 |
 
-[产品范围](PRODUCT.md) · [视觉系统](DESIGN.md) · [需求与验收](specs/molis-club/spec.md) · [部署与成本](docs/DEPLOYMENT.md) · [登录配置](docs/AUTH-SETUP.md) · [产品分类](docs/PRODUCT-LINES.md) · [SEO/GEO](docs/DISCOVERY.md)
+[产品范围](PRODUCT.md) · [视觉系统](DESIGN.md) · [内页需求与验收](specs/editorial-pages/spec.md) · [部署与成本](docs/DEPLOYMENT.md) · [登录配置](docs/AUTH-SETUP.md) · [产品分类](docs/PRODUCT-LINES.md) · [SEO/GEO](docs/DISCOVERY.md)
 
 旧版原型与废弃方案已从工作树移除，需要回看时使用 Git 历史。

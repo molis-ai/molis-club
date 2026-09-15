@@ -36,3 +36,11 @@
 - [Google 生成式 AI 搜索优化指南](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)：SEO 基础与真实有用内容仍适用；不要求特殊 schema 或 llms.txt，不保证可见度。
 
 验证：本地服务运行后 `node tests/discovery-http.mjs` 检查真实服务端分类、规范地址、方案阶段与私有索引边界。
+
+## 2026-09-16 内页扩展
+
+导航为社区、百科、产品、解决方案、观点。百科条目提供可直接访问的定义、适用场景、实际演示、Prompt 与官方来源；艺术家系列有独立详情、创作方法、带明确 AI 标识的试样和真实下载包。成员、作品、观点互相连接，阅读页保留完整原文并增加可定位目录。
+
+新增可见面包屑及 BreadcrumbList、百科 DefinedTerm、成员 ProfilePage，以及栏目 CollectionPage/ItemList；不填不存在的出版日期或资历。旧 Journal/Creators/Studio 地址永久转向新栏目或团队页。公开状态仍未改变。
+
+`node tests/editorial-http.mjs` 验证这些入口、正文、canonical、私有 noindex、下载与历史地址重定向；浏览器交互验收记录见 `specs/editorial-pages/spec.md`。

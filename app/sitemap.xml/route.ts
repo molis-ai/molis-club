@@ -1,4 +1,7 @@
 import { works } from '../../content/works';
+import { knowledge } from '../../content/knowledge';
+import { artistSkills } from '../../content/artists';
+import { members } from '../../content/members';
 import stories from '../../content/stories.json';
 import { publiclyIndexable, siteUrl } from '../../lib/site';
 export function GET() {
@@ -8,6 +11,13 @@ export function GET() {
         '/',
         '/products',
         '/solutions',
+        '/community',
+        '/perspectives',
+        '/wiki',
+        '/wiki/artists',
+        ...knowledge.map((entry) => `/wiki/${entry.slug}`),
+        ...artistSkills.map((skill) => `/wiki/artists/${skill.slug}`),
+        ...members.map((member) => `/community/${member.slug}`),
         ...works.map((w) => `/works/${w.slug}`),
         ...stories.map((s) => `/story/${s.slug}`),
       ]

@@ -1,0 +1,4 @@
+.site-header nav a[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 9px; }
+.site-header nav a { transition: color 180ms; }
+.site-header nav a:hover { color: #92633d; }
+@media (prefers-reduced-motion: reduce) { .site-header nav a { transition: none; } }

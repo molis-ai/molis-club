@@ -188,7 +188,10 @@ export default function Community() {
           <h2 id="questions-title">来之前，你也许想知道</h2>
           <div>
             <details>
-              <summary>现在有哪些产品可以使用？</summary>
+              <summary>
+                <span>现在有哪些产品可以使用？</span>
+                <Plus size={20} aria-hidden="true" />
+              </summary>
               <p>
                 Jelly 已有 Mac 安装包；niul.ai、ForkLight 和 GoalBoard
                 已有公开仓库。其余作品处于原型、开发或内部验证阶段，具体运行条件和进度都写在产品页。
@@ -196,14 +199,20 @@ export default function Community() {
               </p>
             </details>
             <details>
-              <summary>需要注册才能了解或下载作品吗？</summary>
+              <summary>
+                <span>需要注册才能了解或下载作品吗？</span>
+                <Plus size={20} aria-hidden="true" />
+              </summary>
               <p>
                 站内浏览产品、阅读文章和前往公开仓库不需要注册 Molis AI
                 账号。站内留言需要登录；合作联系可以直接提交。当前网站仍是受访问权限保护的私有预览。
               </p>
             </details>
             <details>
-              <summary>有业务问题，可以从哪里开始合作？</summary>
+              <summary>
+                <span>有业务问题，可以从哪里开始合作？</span>
+                <Plus size={20} aria-hidden="true" />
+              </summary>
               <p>
                 先告诉我们你在为谁解决问题、现在怎样完成这项工作、最容易卡在哪里。我们会从具体场景讨论可行路径；方案页保留当前验证边界。
                 <Link href="/join">说明你的场景</Link>
