@@ -33,4 +33,4 @@
 - 通过：390×844 且 hover 禁用时，首页、方案与艺术家目录的主体常显、幕面默认收起；一次普通点击进入正确产品页。
 - 验证缺口：工具不支持真实 touch 事件派发，实体触屏未测。未将鼠标点击模拟宣称为硬件触摸验证。
 - 证据：`.impeccable/review/image-curtains/` 的截图和 checks.json。临时视口与媒体模拟已恢复。
-- 发布：准备发布到原私有 Sites。
+- 发布通过：原私有 Sites 版本18，源提交 `3dc4921412ff23d5a828cc9aaabd82f09371fe92`，部署 `appgdep_6aa9b4c13a288191867cf1ecc5c7ecc9` 状态 succeeded。原 A/B 入口均保留，访问权限未改变。
