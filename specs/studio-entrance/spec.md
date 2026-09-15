@@ -43,4 +43,4 @@ FINISH：独立视觉审阅后同步 DESIGN.md，生成资产保留完整提示�
 - 通过：首页真实鼠标使位移变量改变，空白点击显示波纹，减少动态时波纹关闭且 transform 为 none。
 - 未运行：实体手机触摸；已验证手机布局，交互使用原生click且不拦截滚动。
 - 通过：最终构建；独立视觉审阅 disposition: ship，无 material fixes。
-- 待完成：设计文档同步与发布。
+- 通过：DESIGN.md 已同步；现有私有 Sites 第15版发布 succeeded，访问范围不变。发布源码 e8243a2c94a36d1160447241b4c580ef3c5d4ecb，部署 appgdep_6aa993489c0c8191b93977d6e2067358。
