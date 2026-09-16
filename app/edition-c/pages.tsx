@@ -68,6 +68,11 @@ function Hero({
           {action}
         </Link>
       </div>
+      {home && (
+        <div className="c-home-wordmark" aria-hidden="true">
+          MolisAI
+        </div>
+      )}
     </section>
   );
 }
