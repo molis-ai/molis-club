@@ -9,7 +9,7 @@ import { ArtistSeries } from '../artist-series';
 import { KnowledgeDirectory } from '../knowledge-lab';
 import { CollectionData } from '../editorial';
 import { ImageCurtain } from '../image-curtain';
-import { CMain, CScenes } from './motion';
+import { CMain, CScenes, CWordCycle } from './motion';
 
 export function CPhoto({
   src,
@@ -63,7 +63,7 @@ function Hero({
     <section className={`c-hero${home ? ' c-home-hero' : ''}`}>
       <CPhoto src={image} priority />
       <div className="c-hero-copy">
-        <h1>{title}</h1>
+        {home ? <CWordCycle /> : <h1>{title}</h1>}
         <Link className="c-button c-button-glass" href={href}>
           {action}
         </Link>
@@ -154,7 +154,7 @@ export function CHome() {
     <CMain>
       <Hero
         home
-        title={'为新的想法，\n做一些新的东西。'}
+        title={'Amplify\nIdeas'}
         image="/images/edition-c/studio-light.jpg"
         href="/products"
         action="探索作品"

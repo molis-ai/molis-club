@@ -1,6 +1,88 @@
 'use client';
-import { useRef, useState, useEffect, type ReactNode } from 'react';
+import {
+  useRef,
+  useState,
+  useEffect,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 import Link from '../edition-link';
+const headlinePhrases = [
+  ['mplify', 'deas'],
+  ['waken', 'magination'],
+  ['dvance', 'ntuition'],
+];
+export function CWordCycle() {
+  const heading = useRef<HTMLHeadingElement>(null);
+  const [paused, setPaused] = useState(false);
+  useEffect(() => {
+    const el = heading.current;
+    if (!el) return;
+    const media = matchMedia('(prefers-reduced-motion: reduce)');
+    let inView = false;
+    const sync = () => {
+      el.dataset.animated = String(!media.matches);
+      el.style.setProperty(
+        '--ai-play-state',
+        inView && !document.hidden ? 'running' : 'paused',
+      );
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      sync();
+    });
+    observer.observe(el);
+    media.addEventListener('change', sync);
+    document.addEventListener('visibilitychange', sync);
+    sync();
+    return () => {
+      observer.disconnect();
+      media.removeEventListener('change', sync);
+      document.removeEventListener('visibilitychange', sync);
+    };
+  }, []);
+  return (
+    <h1
+      className="c-ai-headline"
+      ref={heading}
+      data-paused={paused}
+      aria-label="Amplify Ideas — Molis AI 创作工作室"
+    >
+      <button
+        className="c-ai-words"
+        type="button"
+        aria-label={paused ? '播放标题动画' : '暂停标题动画'}
+        aria-pressed={paused}
+        onClick={() => setPaused((current) => !current)}
+      >
+        {['A', 'I'].map((initial, row) => (
+          <span className="c-ai-row" key={initial} aria-hidden="true" lang="en">
+            <span className="c-ai-initial">{initial}</span>
+            <span className="c-ai-tail">
+              {headlinePhrases.map((phrase, group) => (
+                <span className="c-ai-phrase" key={phrase[row]}>
+                  {Array.from(phrase[row]).map((letter, index) => (
+                    <span
+                      className="c-ai-letter"
+                      key={index}
+                      style={
+                        {
+                          '--ai-delay': `${group * 4200 + index * 35}ms`,
+                        } as CSSProperties
+                      }
+                    >
+                      {letter}
+                    </span>
+                  ))}
+                </span>
+              ))}
+            </span>
+          </span>
+        ))}
+      </button>
+    </h1>
+  );
+}
 export function CMain({ children }: { children: ReactNode }) {
   const root = useRef<HTMLElement>(null);
   useEffect(() => {
