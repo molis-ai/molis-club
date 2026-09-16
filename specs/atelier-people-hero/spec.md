@@ -44,4 +44,11 @@
 - 通过：图片实际加载1672px，h1唯一；减少动态时 transform 为 none，照片中心裁切保留；浏览器临时尺寸与媒体偏好已恢复。
 - 通过：`npm run check`、`node tests/atelier-http.mjs`（38条B路径、导航、比较入口等）、Sites构建脚本、`git diff --check`。
 - 未运行：真实触屏硬件；布局已用浏览器手机尺寸检查。
-- 发布：待原 owner-private 站点发布完成，不更改访问范围。
+- 通过：原 owner-private 站点发布 succeeded，不更改访问范围。
+
+## 摄影修正版发布
+- 源码：`87239cc4047d69517b2101dc88120274562d4b00`
+- Sites版本20：`appgprj_6a9d31d1aef481918325ac7afd64e641~appgver_e2de989fe14c8191b6e927650717da38`
+- 部署：`appgdep_6aaa1de7b44081919925900ae0a68354`，2026-09-16 succeeded。
+- 线上 B 首页：https://molis-club.yijunw0212.chatgpt.site/atelier
+- 首次上传返回服务内部错误；确认未保存本源码后重试成功。本记录为发布后文档更新。
