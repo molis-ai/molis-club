@@ -7,7 +7,7 @@ export function AtelierHeader() {
   const pathname = usePathname();
   const home = pathname === '/atelier' || pathname === '/atelier/';
   return (
-    <header className={`atelier-header${home ? ' on-photo' : ''}`}>
+    <header className={`atelier-header${home ? ' on-art' : ''}`}>
       <Link className="atelier-brand" href="/">
         Molis AI
       </Link>

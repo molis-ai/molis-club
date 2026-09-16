@@ -28,16 +28,21 @@ export function RoomHero({
       className={`atelier-room-hero${home ? ' home-room' : ''}`}
       data-photo-motion
     >
-      <Photo src={`/images/atelier/${image}.jpg`} priority />
+      <Photo
+        src={`/images/atelier/${home ? 'makers-conversation' : image}.jpg`}
+        alt={home ? '四位创作者围坐桌边，交流草图与想法的工作室插画' : ''}
+        priority
+      />
       <div className="atelier-room-copy">
-        <h1>{title}</h1>
+        {home ? <p className="atelier-home-message">{title}</p> : <h1>{title}</h1>}
         <p>{text}</p>
         {home && (
           <Link href="/products" className="atelier-action">
-            发现我们的作品
+            探索作品
           </Link>
         )}
       </div>
+      {home && <h1 className="atelier-home-wordmark">Molis AI</h1>}
     </section>
   );
 }
@@ -88,7 +93,7 @@ export function AtelierHome() {
     <AtelierMotion className="atelier-home">
       <RoomHero
         home
-        title={'给想法，\n一个生长的地方。'}
+        title="给想法，一个生长的地方。"
         text="一个与 AI 一起创作的工作室。做产品，也分享方法。"
       />
       <Statement>

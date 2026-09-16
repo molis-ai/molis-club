@@ -16,8 +16,14 @@ export function Photo({
       className={`atelier-photo ${className}`}
       src={src}
       alt={alt}
-      width="1440"
-      height={src.endsWith('/threshold.jpg') ? 900 : 960}
+      width={src.endsWith('/makers-conversation.jpg') ? 1920 : 1440}
+      height={
+        src.endsWith('/makers-conversation.jpg')
+          ? 1080
+          : src.endsWith('/threshold.jpg')
+            ? 900
+            : 960
+      }
       loading={priority ? 'eager' : 'lazy'}
       fetchPriority={priority ? 'high' : undefined}
     />

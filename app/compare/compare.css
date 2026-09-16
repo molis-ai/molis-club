@@ -65,12 +65,12 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(transparent, #152120a6);
+  background: linear-gradient(transparent 35%, var(--paper) 90%);
 }
 .compare-b > div {
   z-index: 1;
   position: relative;
-  color: var(--paper);
+  color: var(--ink);
 }
 .compare-b:hover img {
   transform: scale(1.025);
