@@ -1,15 +1,10 @@
 'use client';
 import Link from '../edition-link';
-import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { AccountLink } from '../account-link';
 import { navItems } from '../nav-links';
 export function CHeader() {
   const path = usePathname()?.replace('/edition-c', '').replace(/\/$/, '');
-  const menu = useRef<HTMLDetailsElement>(null);
-  useEffect(() => {
-    if (menu.current) menu.current.open = false;
-  }, [path]);
   const photograph = [
     '',
     '/community',
@@ -22,32 +17,25 @@ export function CHeader() {
       <Link className="c-brand" href="/" aria-label="Molis AI 首页">
         Molis AI
       </Link>
-      <Link
-        className="c-top-link"
-        href="/products"
-        aria-current={path?.startsWith('/products') ? 'page' : undefined}
-      >
-        产品
-      </Link>
-      <Link
-        className="c-top-link"
-        href="/wiki"
-        aria-current={path?.startsWith('/wiki') ? 'page' : undefined}
-      >
-        百科
-      </Link>
-      <details className="c-menu" ref={menu}>
-        <summary>工作室</summary>
-        <nav aria-label="主导航">
-          {navItems.map((item) => (
-            <Link key={item.href} href={item.href}>
-              {item.label}
-            </Link>
-          ))}
-          <Link href="/join">聊聊你的想法</Link>
-          <AccountLink />
-        </nav>
-      </details>
+      <nav className="c-primary-nav" aria-label="栏目导航">
+        {navItems.map((item) => (
+          <Link
+            className="c-top-link"
+            key={item.href}
+            href={item.href}
+            aria-current={
+              path === item.href || path?.startsWith(item.href + '/')
+                ? 'page'
+                : undefined
+            }
+          >
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+      <div className="c-header-account">
+        <AccountLink />
+      </div>
     </header>
   );
 }

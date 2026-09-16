@@ -13,7 +13,7 @@ import MemberPage from '../../community/[slug]/page';
 import KnowledgePage from '../../wiki/[slug]/page';
 import ArtistPage from '../../wiki/artists/[slug]/page';
 import StoryPage from '../../story/[slug]/page';
-import Login from '../../login/page';
+import { CLogin } from '../login';
 import Join from '../../join/page';
 import Account from '../../account/page';
 import Privacy from '../../privacy/page';
@@ -71,7 +71,7 @@ export default async function Page({ params, searchParams }: Props) {
     page = <StoryPage {...prop} />;
     type = 'essay';
     photo = 'reading-room';
-  } else if (section === 'login' && !slug) page = <Login />;
+  } else if (section === 'login' && !slug) page = <CLogin />;
   else if (section === 'join' && !slug) page = <Join />;
   else if (section === 'account' && !slug) page = <Account />;
   else if (section === 'privacy' && !slug) page = <Privacy />;
