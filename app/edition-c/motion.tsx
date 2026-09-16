@@ -3,7 +3,7 @@ import {
   useRef,
   useState,
   useEffect,
-  type CSSProperties,
+  useLayoutEffect,
   type ReactNode,
 } from 'react';
 import Link from '../edition-link';
@@ -19,18 +19,25 @@ const headlinePhrases = [
 ];
 export function CWordCycle() {
   const heading = useRef<HTMLHeadingElement>(null);
+  const animations = useRef<Animation[]>([]);
+  const previousPositions = useRef<number[]>([]);
+  const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [available, setAvailable] = useState(false);
+  const [reduced, setReduced] = useState(true);
+  const playing = available && !reduced && !paused && !hovered && !focused;
+
   useEffect(() => {
     const el = heading.current;
     if (!el) return;
     const media = matchMedia('(prefers-reduced-motion: reduce)');
     let inView = false;
     const sync = () => {
-      el.dataset.animated = String(!media.matches);
-      el.style.setProperty(
-        '--ai-play-state',
-        inView && !document.hidden ? 'running' : 'paused',
-      );
+      setReduced(media.matches);
+      if (media.matches) setActive(0);
+      setAvailable(inView && !document.hidden);
     };
     const observer = new IntersectionObserver(([entry]) => {
       inView = entry.isIntersecting;
@@ -46,11 +53,78 @@ export function CWordCycle() {
       document.removeEventListener('visibilitychange', sync);
     };
   }, []);
+
+  useLayoutEffect(() => {
+    const el = heading.current;
+    if (!el || reduced) {
+      previousPositions.current = [];
+      return;
+    }
+    const words = Array.from(el.querySelectorAll<HTMLElement>('.c-ai-row'));
+    const letters = Array.from(el.querySelectorAll('.c-ai-letter'));
+    const typingStarts = 450;
+    const typingEnds = typingStarts + letters.length * 90;
+    const erasingStarts = typingEnds + 2300;
+    const duration = erasingStarts + letters.length * 45 + 200;
+
+    // One timeline, in reading order: finish the A word before typing the I word.
+    const typing = letters.map((letter, index) => {
+      const typedAt = typingStarts + (index + 1) * 90;
+      const erasedAt = erasingStarts + (letters.length - index) * 45;
+      const animation = letter.animate(
+        [
+          { opacity: 0, offset: 0, easing: 'steps(1, end)' },
+          { opacity: 1, offset: typedAt / duration, easing: 'steps(1, end)' },
+          { opacity: 0, offset: erasedAt / duration },
+          { opacity: 0, offset: 1 },
+        ],
+        { duration, fill: 'both' },
+      );
+      animation.pause();
+      return animation;
+    });
+    // Only the initials are visible while the next phrase settles into place.
+    const movement = words.flatMap((word, index) => {
+      const previous = previousPositions.current[index];
+      if (previous === undefined) return [];
+      const distance = previous - word.getBoundingClientRect().left;
+      const animation = word.animate(
+        [
+          { transform: `translateX(${distance}px)` },
+          { transform: 'translateX(0)' },
+        ],
+        { duration: 420, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' },
+      );
+      animation.pause();
+      return [animation];
+    });
+    animations.current = [...typing, ...movement];
+    typing[0].onfinish = () => {
+      previousPositions.current = words.map(
+        (word) => word.getBoundingClientRect().left,
+      );
+      setActive((current) => (current + 1) % headlinePhrases.length);
+    };
+    return () => {
+      typing[0].onfinish = null;
+      animations.current.forEach((animation) => animation.cancel());
+      animations.current = [];
+    };
+  }, [active, reduced]);
+
+  useLayoutEffect(() => {
+    animations.current.forEach((animation) => {
+      if (playing && animation.playState === 'paused') animation.play();
+      if (!playing && animation.playState === 'running') animation.pause();
+    });
+  }, [playing, active, reduced]);
+
   return (
     <h1
       className="c-ai-headline"
       ref={heading}
       data-paused={paused}
+      data-animated={!reduced}
       aria-label="Amplify Ideas — Molis AI 创作工作室"
     >
       <button
@@ -59,26 +133,22 @@ export function CWordCycle() {
         aria-label={paused ? '播放标题动画' : '暂停标题动画'}
         aria-pressed={paused}
         onClick={() => setPaused((current) => !current)}
+        onPointerEnter={(event) => {
+          if (event.pointerType === 'mouse') setHovered(true);
+        }}
+        onPointerLeave={() => setHovered(false)}
+        onFocus={(event) =>
+          setFocused(event.currentTarget.matches(':focus-visible'))
+        }
+        onBlur={() => setFocused(false)}
       >
         {['A', 'I'].map((initial, row) => (
           <span className="c-ai-row" key={initial} aria-hidden="true" lang="en">
             <span className="c-ai-initial">{initial}</span>
             <span className="c-ai-tail">
-              {headlinePhrases.map((phrase, group) => (
-                <span className="c-ai-phrase" key={phrase[row]}>
-                  {Array.from(phrase[row]).map((letter, index) => (
-                    <span
-                      className="c-ai-letter"
-                      key={index}
-                      style={
-                        {
-                          '--ai-delay': `${group * 4200 + index * 35}ms`,
-                        } as CSSProperties
-                      }
-                    >
-                      {letter}
-                    </span>
-                  ))}
+              {Array.from(headlinePhrases[active][row]).map((letter, index) => (
+                <span className="c-ai-letter" key={index}>
+                  {letter}
                 </span>
               ))}
             </span>
