@@ -11,6 +11,11 @@ const headlinePhrases = [
   ['mplify', 'deas'],
   ['waken', 'magination'],
   ['dvance', 'ntuition'],
+  ['ugment', 'ntelligence'],
+  ['ccelerate', 'nnovation'],
+  ['rtistic', 'nspiration'],
+  ['rtful', 'nteractions'],
+  ['daptive', 'nterfaces'],
 ];
 export function CWordCycle() {
   const heading = useRef<HTMLHeadingElement>(null);

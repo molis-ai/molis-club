@@ -114,3 +114,10 @@ C版含完整展开顶栏与新版登录/注册页面，2026-09-16发布原owner
 修改范围：app/edition-c/motion.tsx、pages.tsx、edition.css，DESIGN.md。验收：实际时间采样覆盖完整循环及A/I固定位置；暂停与恢复有效；移动端最长词无溢出；减少动态回到静态首组；类型/lint/C HTTP/构建通过，发布原私有站点。功能可用等级。
 
 循环验收：真实动画850/5100/9308/13508ms分别显示三组词语并回到首组，A/I坐标不变；点击暂停时动画时间保持不变，继续后时间递增，滚出首屏运行状态为paused。390px最长Awaken Imagination无横向溢出；减少动态仅显示Amplify Ideas且无动画。类型/lint通过。
+
+## 单行八组AI词语（2026-09-16）
+用户要求：循环标题改为一行，扩展到七八组AI词语。保留固定A/I和现有播放控制。
+方案：8组依次为Amplify Ideas、Awaken Imagination、Advance Intuition、Augment Intelligence、Accelerate Innovation、Artistic Inspiration、Artful Interactions、Adaptive Interfaces。两个单词横向排列，各自预留最长词宽，A/I位置固定；每组仍4.2秒，完整循环33.6秒。手机标题使用随视口收缩的字号，一行完整显示。
+范围：motion.tsx词组数据、edition.css单行布局与循环时间、DESIGN。其他页面、底部打字机与导航不变。验收：8组及回到首组顺序正确，A/I同一行且坐标稳定；1280、390及320px最长词不溢出；暂停/减少动态沿用；type/lint/build通过并发布原私有站点。
+
+单行验收：浏览器实播取样覆盖前四组及Artful Interactions、Adaptive Interfaces；动画定位取样确认Accelerate Innovation、Artistic Inspiration与回到Amplify Ideas。八组A/I同一y且x保持固定。1280、390、320px均无横向溢出，手机字号分别25.35/20.8px；减少动态静态首组正常。type/lint通过。

@@ -133,6 +133,8 @@
 }
 .c-ai-words {
   display: inline-grid;
+  grid-template-columns: repeat(2, max-content);
+  column-gap: 0.35em;
   padding: 0;
   border: 0;
   background: none;
@@ -162,7 +164,7 @@
 }
 .c-ai-headline[data-animated='true'] .c-ai-letter {
   display: inline-block;
-  animation: c-ai-cycle 12600ms cubic-bezier(0.16, 1, 0.3, 1) var(--ai-delay)
+  animation: c-ai-cycle 33600ms cubic-bezier(0.16, 1, 0.3, 1) var(--ai-delay)
     infinite both;
   animation-play-state: var(--ai-play-state, paused);
 }
@@ -180,12 +182,12 @@
     opacity: 0;
     transform: translateY(0.2em);
   }
-  4%,
-  26% {
+  1.5%,
+  9.75% {
     opacity: 1;
     transform: translateY(0);
   }
-  30%,
+  11.25%,
   100% {
     opacity: 0;
     transform: translateY(-0.16em);
@@ -1159,6 +1161,9 @@
   .edition-c .c-hero h1 {
     font-size: 31px;
     line-height: 1.3;
+  }
+  .edition-c .c-hero .c-ai-headline {
+    font-size: clamp(20px, 6.5vw, 31px);
   }
   .c-hero-copy {
     width: 94%;
