@@ -19,22 +19,22 @@ export function CHeader() {
         Molis AI
       </Link>
       <nav className="c-primary-nav" aria-label="栏目导航">
-        {navItems
-          .flatMap((item) =>
-            item.href === '/wiki'
-              ? [item, { href: '/wiki/artists', label: 'Artist Skill' }]
-              : [item],
-          )
-          .map((item) => (
-            <Link
-              key={item.href}
-              className="c-top-link"
-              href={item.href}
-              aria-current={path === item.href ? 'page' : undefined}
-            >
-              {item.label}
-            </Link>
-          ))}
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            className="c-top-link"
+            href={item.href}
+            aria-current={
+              path === item.href
+                ? 'page'
+                : path?.startsWith(`${item.href}/`)
+                  ? 'location'
+                  : undefined
+            }
+          >
+            {item.label}
+          </Link>
+        ))}
       </nav>
       <div className="c-header-account">
         <AccountLink />

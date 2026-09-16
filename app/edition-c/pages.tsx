@@ -187,7 +187,7 @@ export function CHome() {
         <Tile
           image="/images/artists/monet-pond.jpg"
           title="Artist Skill"
-          text={'换一种方式，\n观看与创作。'}
+          text={'百科里的艺术家方法，\n带进你的创作。'}
           href="/wiki/artists"
         />
       </section>
@@ -387,11 +387,11 @@ export function CWiki() {
         action="打开百科"
       />
       <Statement href="/wiki/artists" action="探索 Artist Skill">
-        从艺术家的观看方式，
+        工作室的创作方法，
         <br />
-        到网页里的细微动效。
+        从网页、动效到艺术家 Skill。
         <br />
-        试一试，把方法带走。
+        带回你的下一次创作。
       </Statement>
       <section className="c-content">
         <ArtistSeries />
@@ -411,7 +411,7 @@ export function CArtists() {
     <CMain>
       <Title
         title={'艺术家的\n观看方式。'}
-        text="把光、形态与场面中的方法，带进下一次创作。"
+        text="百科的艺术家 Skill 系列，把观看的方法带进创作。"
       />
       <CollectionData
         name="Artist Skill"
