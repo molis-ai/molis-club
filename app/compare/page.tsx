@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { pageMetadata } from '../../lib/site';
 import './compare.css';
 export const metadata = pageMetadata(
-  '两种工作室',
-  'Molis AI 的两套完整设计。',
+  '三种工作室',
+  'Molis AI 的三套完整设计。',
   '/compare',
 );
 const pages = [
@@ -34,7 +34,7 @@ export default function Compare() {
         <span>设计对比</span>
       </header>
       <h1>
-        两种工作室，
+        三种工作室，
         <br />
         同一份好奇。
       </h1>
@@ -57,6 +57,19 @@ export default function Compare() {
             <p>围桌的人、自然光与成组的画面。</p>
           </div>
         </Link>
+        <Link href="/edition-c" className="compare-b compare-c">
+          <img
+            src="/images/edition-c/studio-light.jpg"
+            width="1672"
+            height="941"
+            alt="自然光落在工作室的桌面"
+          />
+          <div>
+            <span>C</span>
+            <h2>新的日常</h2>
+            <p>居中排版、全幅照片与简洁的画面节奏。</p>
+          </div>
+        </Link>
       </div>
       <section>
         <h2>逐页看看</h2>
@@ -72,6 +85,12 @@ export default function Compare() {
                 aria-label={`B 版${label}`}
               >
                 B
+              </Link>
+              <Link
+                href={path === '/' ? '/edition-c' : '/edition-c' + path}
+                aria-label={`C 版${label}`}
+              >
+                C
               </Link>
             </div>
           ))}

@@ -1,0 +1,1153 @@
+/* User-pinned Everyday reference; C alone owns these neutral surfaces and compact type. */
+.edition-c {
+  --font-serif: var(--font-geist), sans-serif;
+  --ink: #252522;
+  --paper: #f8f7f4;
+  --paper-deep: #eae9e5;
+  --muted: #62625d;
+  --line: #d9d9d3;
+  --c-surface: #f6f6f3;
+  --c-white: #fff;
+  background: var(--c-white);
+  color: var(--ink);
+  font-family: var(--font-geist), sans-serif;
+  font-weight: 450;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.edition-c ::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+.edition-c :focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 5px;
+}
+.edition-c :where(h1, h2, h3, p) {
+  margin: 0;
+}
+.edition-c h1,
+.edition-c h2,
+.edition-c h3 {
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.edition-c a {
+  text-underline-offset: 5px;
+}
+.c-header {
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  padding: 16px;
+  position: relative;
+  z-index: 20;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.c-header-photo {
+  position: absolute;
+  inset: 0 0 auto;
+  color: var(--c-white);
+}
+.c-header-photo::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 -60px;
+  pointer-events: none;
+  background: linear-gradient(
+    color-mix(in srgb, var(--ink) 78%, transparent),
+    color-mix(in srgb, var(--ink) 64%, transparent) 56px,
+    transparent
+  );
+}
+.c-header .c-brand {
+  justify-self: start;
+  font-size: 22px;
+}
+.c-header .c-top-link {
+  justify-self: center;
+}
+.c-header a:hover {
+  opacity: 0.76;
+}
+.c-menu {
+  justify-self: end;
+}
+.c-menu summary {
+  list-style: none;
+  cursor: pointer;
+  min-height: 44px;
+}
+.c-menu summary::-webkit-details-marker {
+  display: none;
+}
+.c-menu[open] summary {
+  text-decoration: underline;
+}
+.c-menu nav {
+  position: absolute;
+  right: 8px;
+  top: 62px;
+  width: 330px;
+  max-width: calc(100vw - 16px);
+  background: var(--c-surface);
+  color: var(--ink);
+  padding: 16px;
+  border-radius: 4px;
+  box-shadow: 0 14px 40px color-mix(in srgb, var(--ink) 12%, transparent);
+  display: grid;
+}
+.c-menu nav a {
+  padding: 14px 16px;
+  font-size: 22px;
+  border: 0;
+  border-radius: 4px;
+  transition:
+    background 0.35s,
+    padding 0.35s;
+}
+.c-menu nav a:hover,
+.c-menu nav a:focus-visible {
+  opacity: 1;
+  background: var(--paper-deep);
+  padding-left: 24px;
+}
+.c-brand {
+  font-size: 26px;
+  letter-spacing: -0.035em;
+  font-weight: 550;
+  line-height: 1.1;
+}
+.c-main {
+  width: 100%;
+}
+.c-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.c-hero {
+  position: relative;
+  height: 88svh;
+  min-height: 560px;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--c-white);
+}
+.c-home-hero {
+  height: 100svh;
+}
+.c-hero > img {
+  position: absolute;
+  inset: 0;
+  transform: translateX(var(--c-pan, 0px)) scale(1.025);
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.c-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--ink) 26%, transparent);
+  pointer-events: none;
+}
+.c-hero-copy {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  text-align: center;
+}
+.edition-c .c-hero h1 {
+  font-size: clamp(32px, 3.296vw, 64px);
+  line-height: 1.22;
+  white-space: pre-line;
+  letter-spacing: -0.03em;
+}
+.c-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--c-white);
+  font:
+    500 12px/1.26 var(--font-geist),
+    sans-serif;
+  letter-spacing: -0.02em;
+  transition:
+    background 0.25s,
+    color 0.25s;
+}
+.c-button:hover {
+  background: color-mix(in srgb, var(--ink) 78%, var(--c-white));
+}
+.c-button-light {
+  color: var(--ink);
+  background: var(--c-white);
+}
+.c-button-light:hover {
+  background: var(--paper-deep);
+}
+.c-button-glass {
+  background: color-mix(in srgb, var(--ink) 55%, transparent);
+  backdrop-filter: blur(8px);
+}
+.c-hero-copy .c-button {
+  margin-top: 36px;
+}
+.c-statement {
+  margin: 8px;
+  padding: 24px 7% 16px;
+  min-height: 72svh;
+  border-radius: 4px;
+  background: var(--c-surface);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  justify-content: space-between;
+  gap: 70px;
+}
+.edition-c .c-statement h2 {
+  font-size: clamp(29px, 3.296vw, 56px);
+  line-height: 1.35;
+  max-width: 1150px;
+}
+.c-grid {
+  display: grid;
+  gap: 8px;
+  margin: 8px;
+}
+.c-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.c-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.c-tile {
+  height: 78svh;
+  min-height: 430px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  color: var(--c-white);
+  background: var(--ink);
+}
+.c-tile .c-photo {
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.c-tile::after {
+  content: '';
+  position: absolute;
+  inset: 25% 0 0;
+  background: linear-gradient(
+    transparent,
+    color-mix(in srgb, var(--ink) 74%, transparent)
+  );
+  pointer-events: none;
+}
+.c-tile > div {
+  position: absolute;
+  z-index: 2;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.edition-c .c-tile h2,
+.edition-c .c-tile p {
+  font-size: clamp(20px, 1.65vw, 30px);
+  line-height: 1.35;
+  letter-spacing: -0.025em;
+  white-space: pre-line;
+  font-weight: 500;
+}
+.edition-c .c-tile p {
+  margin-top: 20px;
+}
+.c-tile:hover .c-photo,
+.c-tile:focus-visible .c-photo {
+  transform: scale(1.035);
+}
+.c-tile:hover > div,
+.c-tile:focus-visible > div {
+  transform: translateY(-4px);
+}
+.c-scenes {
+  margin: 8px;
+}
+.c-scene {
+  height: 90svh;
+  min-height: 620px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  color: var(--c-white);
+  background: var(--ink);
+}
+.c-scene > img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: c-image-in 0.7s ease-out;
+}
+.c-scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ink) 62%, transparent),
+    transparent 90%
+  );
+}
+.c-scene-copy {
+  position: absolute;
+  z-index: 1;
+  left: 24px;
+  top: 30px;
+  max-width: 440px;
+}
+.edition-c .c-scene-copy h2 {
+  font-size: clamp(30px, 3.296vw, 56px);
+  line-height: 1.22;
+  white-space: pre-line;
+}
+.c-scene-copy p {
+  max-width: 24em;
+  margin: 24px 0;
+  font-size: 16px;
+}
+.c-scene-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+.c-scene-tabs button {
+  text-align: left;
+  padding: 26px 24px;
+  min-height: 144px;
+  border: 0;
+  border-radius: 4px;
+  color: var(--ink);
+  background: var(--c-surface);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.c-scene-tabs button[aria-selected='true'] {
+  background: var(--paper-deep);
+}
+.c-scene-tabs button:hover {
+  background: var(--paper-deep);
+}
+.c-scene-tabs span:first-child {
+  display: block;
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.c-scene-tabs span:last-child {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.c-feature {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px;
+  background: var(--c-surface);
+  border-radius: 4px;
+  overflow: hidden;
+  min-height: 620px;
+}
+.c-feature > .c-photo,
+.c-feature-image {
+  min-height: 620px;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.c-feature-image > img {
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.c-feature-image:hover > img {
+  transform: scale(1.03);
+}
+.c-feature > div {
+  padding: 40px 8%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+.edition-c .c-feature h2 {
+  font-size: clamp(28px, 2.8vw, 48px);
+  line-height: 1.3;
+}
+.c-feature p {
+  margin-top: 26px;
+  max-width: 30em;
+}
+.c-feature .c-button {
+  margin-top: 30px;
+}
+.c-feature details {
+  margin-top: 22px;
+  width: 100%;
+}
+.c-feature summary {
+  cursor: pointer;
+  padding-block: 10px;
+  font-size: 14px;
+}
+.c-feature details p {
+  font-size: 14px;
+  margin-top: 12px;
+}
+.c-feature .c-meta {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.c-feature:nth-child(even) > .c-feature-image {
+  order: 2;
+}
+.c-page-title {
+  text-align: center;
+  padding: 80px 24px 110px;
+}
+.edition-c .c-page-title h1 {
+  font-size: clamp(36px, 4.2vw, 64px);
+  line-height: 1.22;
+  white-space: pre-line;
+}
+.c-page-title p {
+  margin-top: 28px;
+}
+.c-content {
+  padding: 72px 24px;
+}
+.c-content > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 28px;
+  margin-bottom: 36px;
+}
+.edition-c .c-content > header h2 {
+  font-size: 30px;
+}
+.c-content nav {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+.c-content nav a {
+  padding-block: 8px;
+}
+.c-content nav a[aria-current],
+.c-content nav a:hover {
+  text-decoration: underline;
+}
+.c-work-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.c-work {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: var(--c-surface);
+  padding: 40px 30px;
+  min-height: 310px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+.c-work:hover {
+  background: var(--paper-deep);
+}
+.c-work .work-identity {
+  font-size: 26px;
+  gap: 14px;
+}
+.edition-c .c-work h3 {
+  font-size: 23px;
+  line-height: 1.4;
+  margin: 34px 0;
+  text-wrap: initial;
+}
+.c-work > span {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: auto;
+}
+.c-product-feature {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 430px;
+  padding: 72px 24px 24px;
+  background: var(--c-surface);
+  border-radius: 4px;
+}
+.c-product-feature img {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+  margin: auto;
+  transition: transform 0.6s;
+}
+.c-product-feature:hover img {
+  transform: translateY(-8px) rotate(-3deg);
+}
+.c-product-feature > div {
+  align-self: stretch;
+}
+.c-product-feature h2 {
+  font-size: 28px;
+}
+.c-product-feature p {
+  font-size: 20px;
+  margin-top: 20px;
+}
+.c-product-feature span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+.c-people {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px;
+}
+.c-people > a {
+  padding: 70px 8%;
+  background: var(--c-surface);
+  border-radius: 4px;
+  transition: background 0.4s;
+}
+.c-people > a:hover {
+  background: var(--paper-deep);
+}
+.c-people span {
+  font-size: 13px;
+  color: var(--muted);
+}
+.c-people h2 {
+  font-size: 42px;
+  margin: 32px 0 24px;
+}
+.c-people p {
+  max-width: 32em;
+}
+.c-footer {
+  background: var(--c-surface);
+  padding: 50px 24px 24px;
+  margin: 8px;
+  border-radius: 4px;
+}
+.c-footer-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr;
+  gap: 40px;
+  padding-bottom: 120px;
+}
+.c-footer nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 22px;
+  line-height: 1.2;
+}
+.c-footer nav a {
+  position: relative;
+  isolation: isolate;
+  padding: 4px 0;
+  transition: transform 0.4s;
+}
+.c-footer nav a::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -6px -20px;
+  background: radial-gradient(ellipse, var(--paper-deep), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.c-footer nav a:hover,
+.c-footer nav a:focus-visible {
+  transform: translateX(5px);
+}
+.c-footer nav a:hover::before,
+.c-footer nav a:focus-visible::before {
+  opacity: 1;
+}
+.c-footer-contact p {
+  font-size: 30px;
+  line-height: 1.35;
+  font-weight: 500;
+}
+.c-footer-contact .c-button {
+  margin-top: 30px;
+}
+.c-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  font-size: 12px;
+}
+.c-footer-bottom > div {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+.c-footer .header-account {
+  padding: 0;
+  min-width: 0;
+  border: 0;
+  font-size: inherit;
+  color: inherit;
+}
+.edition-c .edition-opening h1 em,
+.edition-c .work-identity-type > span,
+.edition-c .demo-topline > span:first-child,
+.edition-c .demo-snap-content span {
+  font-style: normal;
+}
+.edition-c .signature-yijun > span,
+.edition-c .demo-stagger-content > span,
+.edition-c .essay-body blockquote,
+.edition-c .work-detail-origin > p {
+  font-family: inherit;
+}
+/* Content, utilities and readers use the same production data, with C's own type and spacing. */
+.c-detail .site-header,
+.c-detail .site-footer {
+  display: none;
+}
+.c-detail-photo {
+  height: 48svh;
+  min-height: 280px;
+  max-height: 500px;
+  margin: 8px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.c-detail .edition {
+  width: auto;
+  max-width: 1320px;
+  padding: 54px 4% 100px;
+  margin: auto;
+}
+.c-detail h1 {
+  font-size: clamp(32px, 3.296vw, 56px);
+  line-height: 1.25;
+}
+.c-detail .edition-trail {
+  font-size: 12px;
+  margin-bottom: 45px;
+  color: var(--muted);
+}
+.c-detail .work-detail-opening,
+.c-detail .member-opening {
+  grid-template-columns: 1.1fr 1fr;
+  gap: 7%;
+  padding-block: 20px 70px;
+}
+.c-detail .work-detail-reading {
+  background: var(--c-surface);
+  border-radius: 4px;
+  padding: 48px;
+  margin-top: 0;
+}
+.c-detail .work-detail-lede {
+  font-size: 17px;
+  line-height: 1.8;
+}
+.c-detail .work-detail-feedback {
+  margin-top: 75px;
+}
+.c-detail .essay-opening {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 75px;
+}
+.c-detail .essay-opening > p {
+  max-width: 35em;
+  margin-inline: auto;
+}
+.c-detail .essay-meta {
+  justify-content: center;
+}
+.c-detail .essay-layout {
+  grid-template-columns: 170px minmax(0, 720px);
+  justify-content: center;
+  gap: 65px;
+}
+.c-detail .essay-body {
+  font-size: 17px;
+  line-height: 2;
+}
+.c-detail .essay-body h2 {
+  font-size: 28px;
+}
+.c-detail .knowledge-heading {
+  max-width: 900px;
+  padding-block: 25px 55px;
+}
+.c-detail .knowledge-lab {
+  padding: 40px;
+  border-radius: 4px;
+  background: var(--c-surface);
+}
+.c-detail .knowledge-reading {
+  max-width: 800px;
+  margin: 60px auto 0;
+}
+.c-detail .artist-heading {
+  padding-block: 25px 55px;
+}
+.c-detail .artist-detail-spread {
+  gap: 45px;
+}
+.c-detail .artist-use {
+  border-radius: 4px;
+  background: var(--c-surface);
+  padding: 42px;
+}
+.c-detail .edition-invitation {
+  background: var(--c-surface);
+  border-radius: 4px;
+  padding: 40px;
+  margin-top: 65px;
+}
+.edition-c .artist-series {
+  padding: 0;
+}
+.edition-c .edition-section-head {
+  margin-bottom: 34px;
+}
+.edition-c .edition-section-head h2 {
+  font-size: 30px;
+}
+.edition-c .artist-gallery {
+  gap: 8px;
+}
+.edition-c .artist-gallery-item {
+  background: var(--c-surface);
+  padding-bottom: 24px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.edition-c .artist-gallery-item figure {
+  margin: 0;
+  height: 400px;
+}
+.edition-c .artist-gallery-item > div,
+.edition-c .artist-gallery-item > em {
+  padding-inline: 22px;
+}
+.edition-c .artist-gallery-item h3 {
+  font-size: 23px;
+}
+.edition-c .artist-gallery-item > em {
+  font-family: inherit;
+  font-style: normal;
+  font-size: 13px;
+  color: var(--muted);
+}
+.edition-c .artist-gallery-item figure img {
+  object-fit: cover;
+}
+.edition-c .artist-wes-anderson-poster figure img {
+  object-fit: contain;
+}
+.edition-c .artist-builder {
+  background: var(--c-surface);
+  border-radius: 4px;
+}
+.edition-c .artist-disclosure {
+  font-size: 12px;
+}
+.edition-c .knowledge-grid {
+  gap: 8px;
+}
+.edition-c .knowledge-tile {
+  background: var(--c-surface);
+  border-radius: 4px;
+  padding: 26px;
+}
+.edition-c .knowledge-tile h3 {
+  font-size: 25px;
+}
+.edition-c .knowledge-filters button {
+  border-radius: 4px;
+}
+.edition-c .knowledge-controls input {
+  border-radius: 4px;
+  background: var(--c-surface);
+}
+.edition-c .edition-link {
+  font-family: inherit;
+  font-size: 13px;
+}
+.edition-c .edition-link svg {
+  display: none;
+}
+.c-detail .auth-page {
+  width: auto;
+  margin: 8px;
+  min-height: 78svh;
+  grid-template-columns: 1fr 1fr;
+  background: var(--c-surface);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.c-detail .auth-art {
+  background: url('/images/edition-c/studio-light.jpg') center/cover;
+  padding: 0;
+}
+.c-detail .auth-art > * {
+  display: none;
+}
+.c-detail .auth-panel {
+  padding: 65px 12%;
+}
+.c-detail .join-page {
+  max-width: 1250px;
+  margin: auto;
+  padding: 65px 5% 100px;
+}
+.c-detail .join-intro > img {
+  display: none;
+}
+.c-detail .join-intro::after {
+  content: '';
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.3;
+  margin-top: 40px;
+  background: url('/images/edition-c/making-study.jpg') center/cover;
+  border-radius: 4px;
+}
+.c-detail .account-page {
+  background: var(--c-surface);
+  border-radius: 4px;
+  max-width: 850px;
+  margin: 60px auto 100px;
+  padding: 50px;
+}
+.c-detail .reading {
+  max-width: 820px;
+  padding: 65px 30px 100px;
+}
+.c-detail input,
+.c-detail textarea,
+.c-detail button {
+  border-radius: 4px;
+}
+.c-detail button {
+  font-family: inherit;
+}
+@keyframes c-image-in {
+  from {
+    opacity: 0.65;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (max-width: 850px) {
+  .c-header {
+    font-size: 18px;
+  }
+  .c-work-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .c-content > header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .c-detail .essay-layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .c-detail .essay-toc {
+    position: static;
+  }
+}
+@media (max-width: 640px) {
+  .c-header {
+    grid-template-columns: 1fr auto auto auto;
+    gap: 25px;
+    padding: 18px 16px;
+    font-size: 14px;
+  }
+  .c-header .c-brand {
+    font-size: 21px;
+  }
+  .c-hero {
+    height: 90svh;
+    min-height: 570px;
+  }
+  .c-home-hero {
+    height: 100svh;
+  }
+  .edition-c .c-hero h1 {
+    font-size: 31px;
+    line-height: 1.3;
+  }
+  .c-hero-copy {
+    width: 94%;
+  }
+  .c-hero-copy .c-button {
+    margin-top: 30px;
+  }
+  .c-statement {
+    min-height: 550px;
+    padding: 28px 20px 20px;
+    margin: 6px;
+  }
+  .edition-c .c-statement h2 {
+    font-size: 28px;
+    line-height: 1.4;
+  }
+  .c-statement h2 br {
+    display: none;
+  }
+  .c-grid {
+    margin: 6px;
+    gap: 6px;
+  }
+  .c-three,
+  .c-two,
+  .c-feature,
+  .c-people {
+    grid-template-columns: 1fr;
+  }
+  .c-tile {
+    height: 76svh;
+    min-height: 460px;
+  }
+  .c-tile > div {
+    left: 20px;
+    right: 20px;
+    bottom: 24px;
+  }
+  .edition-c .c-tile h2,
+  .edition-c .c-tile p {
+    font-size: 23px;
+  }
+  .c-scenes {
+    margin: 6px;
+  }
+  .c-scene {
+    min-height: 600px;
+    height: 82svh;
+  }
+  .c-scene-copy {
+    top: 30px;
+    left: 20px;
+    right: 20px;
+  }
+  .c-scene-copy p {
+    max-width: 22em;
+    font-size: 14px;
+  }
+  .c-scene-tabs {
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .c-scene-tabs button {
+    padding: 20px 12px;
+    min-height: 76px;
+    text-align: center;
+  }
+  .c-scene-tabs span:first-child {
+    font-size: 21px;
+    margin: 0;
+  }
+  .c-scene-tabs span:last-child {
+    display: none;
+  }
+  .c-feature {
+    margin: 6px;
+    gap: 0;
+    min-height: 0;
+  }
+  .c-feature > .c-photo,
+  .c-feature-image {
+    min-height: 0;
+    height: 430px;
+  }
+  .c-feature > div {
+    padding: 42px 24px 48px;
+  }
+  .c-feature:nth-child(even) > .c-feature-image {
+    order: 0;
+  }
+  .c-page-title {
+    padding: 70px 24px 80px;
+  }
+  .edition-c .c-page-title h1 {
+    font-size: 38px;
+  }
+  .c-content {
+    padding: 55px 20px;
+  }
+  .c-content nav {
+    gap: 16px;
+    font-size: 13px;
+  }
+  .c-work-grid {
+    grid-template-columns: 1fr;
+  }
+  .c-work {
+    min-height: 260px;
+    padding: 30px 24px;
+  }
+  .c-product-feature {
+    min-height: 500px;
+  }
+  .c-people {
+    margin: 6px;
+    gap: 6px;
+  }
+  .c-people > a {
+    padding: 42px 24px;
+  }
+  .c-footer {
+    margin: 6px;
+    padding: 35px 20px 24px;
+  }
+  .c-footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 50px 20px;
+    padding-bottom: 70px;
+  }
+  .c-footer nav {
+    font-size: 20px;
+  }
+  .c-footer-contact {
+    grid-column: 1/-1;
+  }
+  .c-footer-contact p {
+    font-size: 28px;
+  }
+  .c-footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    font-size: 11px;
+  }
+  .c-footer-bottom > div {
+    gap: 20px;
+  }
+  .c-detail-photo {
+    min-height: 230px;
+    height: 34svh;
+    margin: 6px;
+  }
+  .c-detail .edition {
+    padding: 40px 6% 60px;
+  }
+  .c-detail .work-detail-opening,
+  .c-detail .member-opening {
+    grid-template-columns: 1fr;
+    gap: 35px;
+    padding-bottom: 40px;
+  }
+  .c-detail .work-detail-reading {
+    padding: 26px;
+    margin-inline: -6px;
+  }
+  .c-detail .essay-opening {
+    margin-bottom: 45px;
+  }
+  .c-detail .essay-body {
+    font-size: 16px;
+  }
+  .c-detail .knowledge-lab {
+    padding: 24px;
+    margin-inline: -6px;
+  }
+  .c-detail .artist-use {
+    padding: 26px;
+  }
+  .c-detail .artist-detail-spread {
+    gap: 30px;
+  }
+  .edition-c .artist-gallery {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .edition-c .artist-gallery-item figure {
+    height: 430px;
+  }
+  .edition-c .edition-section-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .c-detail .auth-page {
+    display: block;
+    margin: 6px;
+    min-height: 0;
+  }
+  .c-detail .auth-art {
+    display: none;
+  }
+  .c-detail .auth-panel {
+    padding: 50px 8%;
+  }
+  .c-detail .join-page {
+    padding: 45px 6% 70px;
+  }
+  .c-detail .account-page {
+    margin: 25px 6% 60px;
+    padding: 26px;
+  }
+  .c-detail .reading {
+    padding: 45px 6% 70px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .edition-c *,
+  .edition-c *::before,
+  .edition-c *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto;
+  }
+  .c-hero > img,
+  .c-tile .c-photo,
+  .c-tile > div,
+  .c-feature-image > img,
+  .c-product-feature img,
+  .c-footer nav a {
+    transform: none !important;
+  }
+}

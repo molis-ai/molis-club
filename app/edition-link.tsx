@@ -16,9 +16,11 @@ export function editionHref(href: string, prefix: string) {
 export function useEditionPath() {
   const pathname = usePathname();
   const prefix =
-    pathname === '/atelier' || pathname?.startsWith('/atelier/')
-      ? '/atelier'
-      : '';
+    pathname === '/edition-c' || pathname?.startsWith('/edition-c/')
+      ? '/edition-c'
+      : pathname === '/atelier' || pathname?.startsWith('/atelier/')
+        ? '/atelier'
+        : '';
   return (href: string) => editionHref(href, prefix);
 }
 export default function Link(props: ComponentProps<typeof NextLink>) {

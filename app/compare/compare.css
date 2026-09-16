@@ -23,12 +23,12 @@
 }
 .compare-editions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
 .compare-editions > a {
   min-height: 450px;
-  padding: 50px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
   justify-content: end;
@@ -96,7 +96,7 @@
   align-items: center;
   padding: 18px 0;
   border-bottom: 1px solid var(--line);
-  gap: 30px;
+  gap: 16px;
 }
 .compare-routes span {
   margin-right: auto;
