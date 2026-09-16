@@ -70,7 +70,17 @@ function Hero({
       </div>
       {home && (
         <div className="c-home-wordmark" aria-hidden="true">
-          MolisAI
+          <span className="c-wordmark-text">
+            {Array.from('MolisAI').map((letter, index) => (
+              <span
+                className="c-wordmark-letter"
+                key={index}
+                style={{ animationDelay: `${250 + index * 170}ms` }}
+              >
+                {letter}
+              </span>
+            ))}
+          </span>
         </div>
       )}
     </section>
