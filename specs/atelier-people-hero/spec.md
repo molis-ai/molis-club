@@ -29,4 +29,11 @@
 - 通过：指针横移反馈实际更新；减少动态后 transform 为 none，独立 translate 保持插画居中。浏览器临时尺寸与媒体偏好已恢复。
 - 通过：`npm run check`、`node tests/atelier-http.mjs`（38 条 B 路径与版本内导航等回归）、Sites 构建脚本、`git diff --check`。
 - 未运行：真实触屏硬件；已验证浏览器手机尺寸布局。
-- 发布待完成：复用原 owner-private 站点，不更改访问范围。
+- 通过：复用原 owner-private 站点发布，状态 succeeded，不更改访问范围。
+
+## 发布记录
+- 线上 B 首页：https://molis-club.yijunw0212.chatgpt.site/atelier
+- 源码：`8e791bf3f1f79049d29268669f02434daadba157`
+- Sites 版本 19：`appgprj_6a9d31d1aef481918325ac7afd64e641~appgver_8fcfc141e24881918f48aa7454c4921f`
+- 部署：`appgdep_6aaa1a91df248191860e3ce00d121279`，2026-09-16 succeeded。
+- 本记录为发布后文档更新，无后续产品代码改动。
