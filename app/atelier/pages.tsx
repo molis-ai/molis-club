@@ -29,8 +29,8 @@ export function RoomHero({
       data-photo-motion
     >
       <Photo
-        src={`/images/atelier/${home ? 'makers-conversation' : image}.jpg`}
-        alt={home ? '四位创作者围坐桌边，交流草图与想法的工作室插画' : ''}
+        src={`/images/atelier/${home ? 'makers-studio' : image}.jpg`}
+        alt={home ? '四位创作者在窗边工作室围桌讨论草图与作品' : ''}
         priority
       />
       <div className="atelier-room-copy">

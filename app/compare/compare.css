@@ -65,12 +65,15 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(transparent 35%, var(--paper) 90%);
+  background: linear-gradient(
+    transparent 35%,
+    color-mix(in srgb, var(--ink) 85%, transparent)
+  );
 }
 .compare-b > div {
   z-index: 1;
   position: relative;
-  color: var(--ink);
+  color: var(--paper);
 }
 .compare-b:hover img {
   transform: scale(1.025);

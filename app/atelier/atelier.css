@@ -15,21 +15,21 @@
   z-index: 10;
   background: #fff;
 }
-.atelier-header.on-art {
+.atelier-header.on-photo {
   position: absolute;
   inset: 0 0 auto;
   background: transparent;
-  color: var(--ink);
+  color: var(--paper);
 }
-.atelier-header.on-art::before {
+.atelier-header.on-photo::before {
   content: '';
   position: absolute;
   inset: 0 0 -70px;
   z-index: -1;
   pointer-events: none;
   background: linear-gradient(
-    var(--paper),
-    color-mix(in srgb, var(--paper) 60%, transparent) 45%,
+    color-mix(in srgb, var(--ink) 60%, transparent),
+    color-mix(in srgb, var(--ink) 24%, transparent) 45%,
     transparent
   );
 }
@@ -86,8 +86,8 @@
 .atelier-room-hero.home-room {
   height: 100svh;
   min-height: 740px;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
 }
 .atelier-room-hero > .atelier-photo {
   position: absolute;
@@ -156,23 +156,18 @@
 .atelier-action:hover {
   background: var(--atelier-sage);
 }
-.home-room > .atelier-photo {
-  inset: 44% auto auto 50%;
-  width: min(100%, 128svh);
-  height: auto;
-  translate: -50% -50%;
-  mix-blend-mode: multiply;
-  mask-image:
-    linear-gradient(transparent, black 16%, black 73%, transparent),
-    linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
-  mask-composite: intersect;
-}
-.home-room::before,
-.home-room::after {
-  display: none;
+.atelier-room-hero.home-room::after {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ink) 42%, transparent),
+    color-mix(in srgb, var(--ink) 28%, transparent) 24%,
+    transparent 44%,
+    transparent 60%,
+    color-mix(in srgb, var(--ink) 50%, transparent)
+  );
 }
 .home-room .atelier-room-copy {
-  top: 23%;
+  top: 18%;
   left: 6%;
   width: 88%;
   text-align: center;
@@ -193,6 +188,7 @@
   padding: 7px 0;
   min-height: 44px;
   background: transparent;
+  color: inherit;
 }
 .home-room .atelier-action:hover {
   text-decoration: underline;
@@ -962,12 +958,10 @@
     min-height: 680px;
   }
   .home-room > .atelier-photo {
-    inset: 50% auto auto 50%;
-    width: 176%;
-    max-width: none;
+    object-position: center;
   }
   .home-room .atelier-room-copy {
-    top: 23%;
+    top: 18%;
     left: 7%;
     width: 86%;
   }

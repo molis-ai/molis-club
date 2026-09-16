@@ -16,10 +16,10 @@ export function Photo({
       className={`atelier-photo ${className}`}
       src={src}
       alt={alt}
-      width={src.endsWith('/makers-conversation.jpg') ? 1920 : 1440}
+      width={src.endsWith('/makers-studio.jpg') ? 1672 : 1440}
       height={
-        src.endsWith('/makers-conversation.jpg')
-          ? 1080
+        src.endsWith('/makers-studio.jpg')
+          ? 941
           : src.endsWith('/threshold.jpg')
             ? 900
             : 960

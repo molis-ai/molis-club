@@ -46,10 +46,10 @@ export default function Compare() {
         </Link>
         <Link href="/atelier" className="compare-b">
           <img
-            src="/images/atelier/makers-conversation.jpg"
-            width="1920"
-            height="1080"
-            alt="围桌交流的四位创作者插画"
+            src="/images/atelier/makers-studio.jpg"
+            width="1672"
+            height="941"
+            alt="自然窗光下围桌交流的四位创作者"
           />
           <div>
             <span>B</span>
