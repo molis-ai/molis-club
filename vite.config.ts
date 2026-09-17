@@ -8,6 +8,27 @@ const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   '00000000-0000-4000-8000-000000000000';
 
 const { d1, r2 } = hostingConfig;
+const isCloudflareDeploy = process.env.CLOUDFLARE_DEPLOY === '1';
+
+function requireCloudflareDeployValue(name: string) {
+  const value = process.env[name]?.trim();
+  if (isCloudflareDeploy && !value) {
+    throw new Error(`${name} is required for a Cloudflare deployment build.`);
+  }
+  return value;
+}
+
+const cloudflareDatabaseId = requireCloudflareDeployValue(
+  'CLOUDFLARE_D1_DATABASE_ID',
+);
+const cloudflareDatabaseName = requireCloudflareDeployValue(
+  'CLOUDFLARE_D1_DATABASE_NAME',
+);
+const betterAuthUrl = requireCloudflareDeployValue('BETTER_AUTH_URL');
+const runtimeVars: Record<string, string> = {};
+if (isCloudflareDeploy) {
+  runtimeVars.BETTER_AUTH_URL = betterAuthUrl!;
+}
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
@@ -15,12 +36,14 @@ const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
 const localBindingConfig = {
   main: 'vinext/server/fetch-handler',
   compatibility_flags: ['nodejs_compat'],
+  vars: runtimeVars,
   d1_databases: d1
     ? [
         {
           binding: d1,
-          database_name: 'site-creator-d1',
-          database_id: SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
+          database_name: cloudflareDatabaseName ?? 'site-creator-d1',
+          database_id:
+            cloudflareDatabaseId ?? SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
         },
       ]
     : [],
@@ -51,7 +74,7 @@ export default defineConfig(async () => {
       : undefined,
     plugins: [
       vinext(),
-      sites(),
+      ...(isCloudflareDeploy ? [] : [sites()]),
       cloudflare({
         viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },
         config: localBindingConfig,
