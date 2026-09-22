@@ -1,6 +1,10 @@
 import Link from '../../edition-link';
 import { notFound } from 'next/navigation';
-import { knowledge } from '../../../content/knowledge';
+import {
+  isResourceEntry,
+  knowledge,
+  relatedKnowledge,
+} from '../../../content/knowledge';
 import { pageMetadata, siteUrl } from '../../../lib/site';
 import { EditorialPage, Trail } from '../../editorial';
 import { KnowledgeLab } from '../../knowledge-lab';
@@ -11,7 +15,7 @@ export async function generateMetadata({ params }: Props) {
   const entry = knowledge.find((item) => item.slug === slug);
   return entry
     ? pageMetadata(
-        `${entry.name} ${entry.english} · 演示与 Prompt`,
+        `${entry.name} ${entry.english} · ${isResourceEntry(entry) ? '来源与 Prompt' : '演示与 Prompt'}`,
         entry.description,
         `/wiki/${slug}`,
       )
@@ -21,23 +25,42 @@ export default async function Page({ params }: Props) {
   const { slug } = await params;
   const entry = knowledge.find((item) => item.slug === slug);
   if (!entry) notFound();
+  const resource = isResourceEntry(entry);
   return (
     <EditorialPage className="knowledge-detail">
       <StructuredData
-        json={JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'DefinedTerm',
-          '@id': `${siteUrl}/wiki/${slug}#term`,
-          name: entry.name,
-          alternateName: entry.english,
-          description: entry.description,
-          url: `${siteUrl}/wiki/${slug}`,
-          inDefinedTermSet: {
-            '@type': 'DefinedTermSet',
-            name: 'Molis Wikipedia',
-            url: `${siteUrl}/wiki`,
-          },
-        })}
+        json={JSON.stringify(
+          resource
+            ? {
+                '@context': 'https://schema.org',
+                '@type': 'CreativeWork',
+                '@id': `${siteUrl}/wiki/${slug}#resource`,
+                name: entry.name,
+                alternateName: entry.english,
+                description: entry.description,
+                url: `${siteUrl}/wiki/${slug}`,
+                sameAs: entry.source.url,
+                isPartOf: {
+                  '@type': 'DefinedTermSet',
+                  name: 'Molis Wikipedia',
+                  url: `${siteUrl}/wiki`,
+                },
+              }
+            : {
+                '@context': 'https://schema.org',
+                '@type': 'DefinedTerm',
+                '@id': `${siteUrl}/wiki/${slug}#term`,
+                name: entry.name,
+                alternateName: entry.english,
+                description: entry.description,
+                url: `${siteUrl}/wiki/${slug}`,
+                inDefinedTermSet: {
+                  '@type': 'DefinedTermSet',
+                  name: 'Molis Wikipedia',
+                  url: `${siteUrl}/wiki`,
+                },
+              },
+        )}
       />
       <Trail
         items={[
@@ -55,11 +78,11 @@ export default async function Page({ params }: Props) {
       <KnowledgeLab entry={entry} />
       <div className="knowledge-reading" id="usage">
         <section>
-          <h2>什么时候使用</h2>
+          <h2>{resource ? '可以重点看什么' : '什么时候使用'}</h2>
           <p>{entry.use}</p>
         </section>
         <section>
-          <h2>留意这些细节</h2>
+          <h2>{resource ? '使用时留意' : '留意这些细节'}</h2>
           <p>{entry.caution}</p>
         </section>
         <aside>
@@ -86,19 +109,14 @@ export default async function Page({ params }: Props) {
       <section className="knowledge-related">
         <h2>接着探索</h2>
         <div>
-          {knowledge
-            .filter(
-              (item) =>
-                item.category === entry.category && item.slug !== entry.slug,
-            )
-            .map((item) => (
-              <Link key={item.slug} href={`/wiki/${item.slug}`}>
-                <span>
-                  {item.name}
-                  <em>{item.english}</em>
-                </span>
-              </Link>
-            ))}
+          {relatedKnowledge(entry).map((item) => (
+            <Link key={item.slug} href={`/wiki/${item.slug}`}>
+              <span>
+                {item.name}
+                <em>{item.english}</em>
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
     </EditorialPage>

@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props) {
       'Molis AI 的工具与体验：牛来、Jelly、Elsewhere、GoalBoard，以及正在探索的产品。',
     solutions:
       '了解内容增长、软件 Agent 化与数据分析三个方向的方案、适用场景和当前阶段。',
-    wiki: '体验网页与动效，复制实现 Prompt，下载 Artist Skill，将创作方法带到本地使用。',
+    wiki: '体验网页与动效，查阅组件来源，复制 Prompt，下载 Artist Skill，将创作方法带到本地使用。',
     perspectives: '一骏关于 AI、产品、理想主义与人的尺度的观点。',
     login: '登录 Molis AI，记录对作品的想法。',
     join: '向 Molis AI 工作室介绍你的想法、作品与合作意向。',

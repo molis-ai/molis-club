@@ -6,8 +6,8 @@ import { EditorialPage, Opening, CollectionData } from '../editorial';
 import { ArtistSeries } from '../artist-series';
 import { KnowledgeDirectory, KnowledgeDemo } from '../knowledge-lab';
 export const metadata = pageMetadata(
-  '百科 · 艺术家 Skill、网页词典与动效',
-  'Molis Wikipedia 是 Molis AI 的创作知识库。探索艺术家 Skill 系列，体验网页布局与动效，带走可用于本地创作的 Skill 和 Prompt。',
+  '百科 · 艺术家 Skill、网页词典、动效与组件',
+  'Molis Wikipedia 是 Molis AI 的创作知识库。探索艺术家 Skill 系列，体验网页布局与动效，查阅可参考的微交互组件来源，带走可用于本地创作的 Skill 和 Prompt。',
   '/wiki',
 );
 export default function Page() {
@@ -55,8 +55,8 @@ export default function Page() {
       </section>
       <ArtistSeries />
       <div className="edition-section-head web-knowledge-heading">
-        <h2>网页与动效</h2>
-        <p>看懂一种表达，带走实现方法。</p>
+        <h2>网页、动效与组件</h2>
+        <p>看懂一种表达，或带走一份可参考的组件来源。</p>
       </div>
       <KnowledgeDirectory />
       <section className="wiki-note illustrated-note">
@@ -70,7 +70,7 @@ export default function Page() {
         <div>
           <h2>从看见，到做到。</h2>
           <p>
-            这里收录可以亲手尝试的知识与方法。每个条目都有用途、边界和参考资料；Prompt
+            这里收录可以亲手尝试的知识与方法，以及整理过的外部组件来源。每个条目都有用途、边界和参考资料；Prompt
             是起点，你的内容与判断决定最终的表达。
           </p>
           <Link className="edition-link" href="/join">

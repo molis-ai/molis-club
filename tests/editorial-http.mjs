@@ -1,3 +1,4 @@
+import { isResourceEntry, knowledge } from '../content/knowledge.ts';
 import assert from 'node:assert/strict';
 const origin = process.env.TEST_ORIGIN || 'http://localhost:3000';
 const canonicalOrigin = 'https://molis-club.yijunw0212.chatgpt.site';
@@ -36,27 +37,38 @@ for (const path of [
   ])
     assert(html.includes(`href="${target}"`), `${path}: navigation ${target}`);
 }
-for (const slug of [
-  'stagger',
-  'underline',
-  'accordion',
-  'scroll-snap',
-  'sticky',
-  'asymmetric-grid',
-]) {
-  const html = await page(`/wiki/${slug}`);
-  const term = schemas(html).find(
-    (schema) => schema['@type'] === 'DefinedTerm',
-  );
-  assert.equal(term.url, `${canonicalOrigin}/wiki/${slug}`);
+const wiki = await page('/wiki');
+assert.match(wiki, /组件资源/);
+assert.match(wiki, /Animata/);
+assert.match(wiki, /Sonner/);
+assert.match(wiki, /错落入场/);
+for (const entry of knowledge) {
+  const html = await page(`/wiki/${entry.slug}`);
   assert(
-    html.includes(term.description),
-    `${slug} definition is present in HTML`,
+    html.includes(entry.description),
+    `${entry.slug} definition is present in HTML`,
   );
-  assert.match(html, /什么时候使用/);
-  assert.match(html, /留意这些细节/);
-  assert.match(html, /实现 Prompt/);
-  assert.match(html, /developer.mozilla.org/);
+  assert(
+    html.includes(entry.source.url),
+    `${entry.slug} official source is present`,
+  );
+  const data = schemas(html);
+  if (isResourceEntry(entry)) {
+    const work = data.find((schema) => schema['@type'] === 'CreativeWork');
+    assert.equal(work.url, `${canonicalOrigin}/wiki/${entry.slug}`);
+    assert.equal(work.sameAs, entry.source.url);
+    assert.match(html, /可以重点看什么/);
+    assert.match(html, /使用时留意/);
+    assert.match(html, /参考 Prompt/);
+    assert.doesNotMatch(html, /实现 Prompt/);
+  } else {
+    const term = data.find((schema) => schema['@type'] === 'DefinedTerm');
+    assert.equal(term.url, `${canonicalOrigin}/wiki/${entry.slug}`);
+    assert.match(html, /什么时候使用/);
+    assert.match(html, /留意这些细节/);
+    assert.match(html, /实现 Prompt/);
+    assert.match(html, /developer.mozilla.org/);
+  }
 }
 for (const slug of [
   'monet-impressionism',
