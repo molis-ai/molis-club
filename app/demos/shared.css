@@ -1,0 +1,35 @@
+.molis-demo {
+  font-family: var(--font-geist), 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  isolation: isolate;
+}
+.molis-demo *,
+.molis-demo *::before,
+.molis-demo *::after {
+  box-sizing: border-box;
+}
+.molis-demo a {
+  color: inherit;
+  text-decoration: none;
+}
+.molis-demo button,
+.molis-demo input {
+  font: inherit;
+}
+.molis-demo svg {
+  flex-shrink: 0;
+}
+html:has(.molis-demo) {
+  scroll-padding-top: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  html:has(.molis-demo) {
+    scroll-behavior: auto;
+  }
+  .molis-demo *,
+  .molis-demo *::before,
+  .molis-demo *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
