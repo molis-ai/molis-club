@@ -337,7 +337,7 @@ export function AtelierWiki() {
       </section>
       <section className="atelier-content-section" id="entries">
         <header>
-          <h2>网页与动效</h2>
+          <h2>网页、动效与组件</h2>
           <p>可以体验，也可以带到本地使用。</p>
         </header>
         <KnowledgeDirectory />

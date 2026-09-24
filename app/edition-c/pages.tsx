@@ -399,7 +399,7 @@ export function CWiki() {
       <Statement href="/wiki/artists" action="探索 Artist Skill">
         工作室的创作方法，
         <br />
-        从网页、动效到艺术家 Skill。
+        从网页、动效、组件到艺术家 Skill。
         <br />
         带回你的下一次创作。
       </Statement>
@@ -408,8 +408,8 @@ export function CWiki() {
       </section>
       <section className="c-content c-knowledge" id="entries">
         <header>
-          <h2>网页与动效</h2>
-          <p>体验、选择、复制，在本地继续创作。</p>
+          <h2>网页、动效与组件</h2>
+          <p>体验、选择、查阅来源，在本地继续创作。</p>
         </header>
         <KnowledgeDirectory />
       </section>

@@ -13,9 +13,16 @@ import {
   Plus,
 } from 'lucide-react';
 import {
+  filterKnowledge,
+  isResourceEntry,
   knowledge,
+  knowledgeCategoryFilters,
   knowledgePrompt,
+  resourceGroupLabels,
+  resourceGuide,
   type KnowledgeEntry,
+  type ResourceEntry,
+  type ResourceGroup,
 } from '../content/knowledge';
 
 export function KnowledgeDemo({
@@ -31,6 +38,7 @@ export function KnowledgeDemo({
   const [single, setSingle] = useState(false);
   const [scrollEdge, setScrollEdge] = useState({ start: true, end: false });
   const rail = useRef<HTMLDivElement>(null);
+  if (isResourceEntry(entry)) return null;
   const motion = entry.category === '动效百科';
   function moveRail(direction: number) {
     const el = rail.current;
@@ -202,21 +210,80 @@ export function KnowledgeDemo({
     </div>
   );
 }
+function ResourcePreview({
+  entry,
+  compact = false,
+}: {
+  entry: ResourceEntry;
+  compact?: boolean;
+}) {
+  return (
+    <div
+      className={`knowledge-resource-preview group-${entry.group}${compact ? ' is-compact' : ''}`}
+    >
+      <span>{entry.english}</span>
+      {compact ? (
+        <span>{resourceGroupLabels[entry.group].short}</span>
+      ) : (
+        <>
+          <p>{entry.recipe}</p>
+          <a
+            className="edition-link"
+            href={entry.source.url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            打开官方页面 <ArrowUpRight size={16} />
+          </a>
+        </>
+      )}
+    </div>
+  );
+}
+function KnowledgeEntryCard({ entry }: { entry: KnowledgeEntry }) {
+  const resource = isResourceEntry(entry);
+  const body = (
+    <>
+      <div className="knowledge-entry-head">
+        <h2>{entry.name}</h2>
+        <span>{entry.category}</span>
+      </div>
+      <p>{entry.description}</p>
+      <span className="edition-link">
+        {resource ? '看来源，带走 Prompt' : '试一试，带走 Prompt'}{' '}
+        <ArrowUpRight size={16} />
+      </span>
+    </>
+  );
+  return (
+    <article className={`knowledge-entry${resource ? ' is-resource' : ''}`}>
+      {resource ? (
+        <Link href={`/wiki/${entry.slug}`}>
+          <ResourcePreview entry={entry} compact />
+          {body}
+        </Link>
+      ) : (
+        <>
+          <KnowledgeDemo entry={entry} compact />
+          <Link href={`/wiki/${entry.slug}`}>{body}</Link>
+        </>
+      )}
+    </article>
+  );
+}
+const resourceGroupOrder: ResourceGroup[] = ['micro', 'polish', 'inspiration'];
 export function KnowledgeDirectory() {
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('全部');
-  const matches = knowledge.filter(
-    (entry) =>
-      (category === '全部' || entry.category === category) &&
-      `${entry.name} ${entry.english} ${entry.description} ${entry.searchTerms}`
-        .toLowerCase()
-        .includes(query.trim().toLowerCase()),
-  );
+  const [category, setCategory] =
+    useState<(typeof knowledgeCategoryFilters)[number]>('全部');
+  const matches = filterKnowledge(knowledge, query, category);
+  const techniques = matches.filter((entry) => !isResourceEntry(entry));
+  const resources = matches.filter(isResourceEntry);
   return (
     <section id="entries" className="knowledge-directory">
       <div className="knowledge-tools">
         <div className="edition-filters" aria-label="百科分类">
-          {['全部', '动效百科', '网页词典'].map((item) => (
+          {knowledgeCategoryFilters.map((item) => (
             <button
               type="button"
               aria-pressed={category === item}
@@ -233,35 +300,52 @@ export function KnowledgeDirectory() {
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="试试「逐段浮现」或「布局」"
-            aria-label="搜索网页与动效条目"
+            placeholder="试试「逐段浮现」「toast」或「tabs」"
+            aria-label="搜索网页、动效与组件条目"
           />
         </label>
       </div>
       <output className="knowledge-count" aria-live="polite">
         {matches.length} 个条目{query && ` · 搜索「${query}」`}
       </output>
-      <div className="knowledge-grid">
-        {matches.map((entry) => (
-          <article className="knowledge-entry" key={entry.slug}>
-            <KnowledgeDemo entry={entry} compact />
-            <Link href={`/wiki/${entry.slug}`}>
-              <div>
-                <h2>{entry.name}</h2>
-                <span>{entry.category}</span>
-              </div>
-              <p>{entry.description}</p>
-              <span className="edition-link">
-                试一试，带走 Prompt <ArrowUpRight size={16} />
-              </span>
-            </Link>
-          </article>
-        ))}
-      </div>
+      {techniques.length > 0 && (
+        <div className="knowledge-grid">
+          {techniques.map((entry) => (
+            <KnowledgeEntryCard entry={entry} key={entry.slug} />
+          ))}
+        </div>
+      )}
+      {resources.length > 0 && (
+        <div className="knowledge-resources">
+          {!query.trim() && (
+            <div className="knowledge-guide">
+              <p>{resourceGuide.playful}</p>
+              <p>{resourceGuide.quiet}</p>
+              <p>{resourceGuide.caveat}</p>
+            </div>
+          )}
+          {resourceGroupOrder.map((group) => {
+            const items = resources.filter((entry) => entry.group === group);
+            if (items.length === 0) return null;
+            return (
+              <section className="knowledge-group" key={group}>
+                <p className="knowledge-group-title">
+                  {resourceGroupLabels[group].title}
+                </p>
+                <div className="knowledge-grid">
+                  {items.map((entry) => (
+                    <KnowledgeEntryCard entry={entry} key={entry.slug} />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+        </div>
+      )}
       {matches.length === 0 && (
         <div className="knowledge-empty">
           <h2>还没找到这个条目。</h2>
-          <p>换个说法，或看看已有的动效与布局。</p>
+          <p>换个说法，或看看已有的动效、布局与组件。</p>
           <button
             className="edition-button"
             type="button"
@@ -284,6 +368,7 @@ export function KnowledgeLab({ entry }: { entry: KnowledgeEntry }) {
   );
   const textarea = useRef<HTMLTextAreaElement>(null);
   const prompt = knowledgePrompt(entry, duration);
+  const resource = isResourceEntry(entry);
   async function copy() {
     try {
       await navigator.clipboard.writeText(prompt);
@@ -295,9 +380,16 @@ export function KnowledgeLab({ entry }: { entry: KnowledgeEntry }) {
     }
   }
   return (
-    <section className="knowledge-lab" aria-label={`${entry.name}交互实验`}>
+    <section
+      className="knowledge-lab"
+      aria-label={resource ? `${entry.name}组件资源` : `${entry.name}交互实验`}
+    >
       <div>
-        <KnowledgeDemo entry={entry} duration={duration} />
+        {resource ? (
+          <ResourcePreview entry={entry} />
+        ) : (
+          <KnowledgeDemo entry={entry} duration={duration} />
+        )}
         {entry.category === '动效百科' && (
           <label className="demo-duration">
             动效时长{' '}
@@ -316,15 +408,27 @@ export function KnowledgeLab({ entry }: { entry: KnowledgeEntry }) {
           </label>
         )}
         <p className="demo-help">
-          {entry.category === '动效百科'
-            ? '调整后重播或展开示例。系统开启减少动态时，直接展示最终状态。'
-            : '用上方控件或在示例内滚动，观察布局如何变化。'}
+          {resource
+            ? '这是外部来源，不是本站内置组件。打开官方页面查看真实交互，再决定要不要带进项目。'
+            : entry.category === '动效百科'
+              ? '调整后重播或展开示例。系统开启减少动态时，直接展示最终状态。'
+              : '用上方控件或在示例内滚动，观察布局如何变化。'}
         </p>
       </div>
       <div className="prompt-sheet">
-        <h2>把这个效果，带回你的项目。</h2>
-        <p>复制后补充页面位置与实际内容，交给你本地的 AI 编程工具。</p>
-        <label htmlFor="knowledge-prompt">实现 Prompt</label>
+        <h2>
+          {resource
+            ? '把这份参考，带回你的项目。'
+            : '把这个效果，带回你的项目。'}
+        </h2>
+        <p>
+          {resource
+            ? '复制后补充要改进的控件，交给你本地的 AI 编程工具。只引入真正需要的那一个交互。'
+            : '复制后补充页面位置与实际内容，交给你本地的 AI 编程工具。'}
+        </p>
+        <label htmlFor="knowledge-prompt">
+          {resource ? '参考 Prompt' : '实现 Prompt'}
+        </label>
         <textarea
           ref={textarea}
           id="knowledge-prompt"

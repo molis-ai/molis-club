@@ -1,3 +1,4 @@
+import { isResourceEntry, knowledge } from '../content/knowledge.ts';
 import assert from 'node:assert/strict';
 const origin = process.env.TEST_ORIGIN || 'http://localhost:3000';
 const site = 'https://molis-club.yijunw0212.chatgpt.site';
@@ -29,14 +30,7 @@ const works = [
   'evrik',
   'aether',
 ];
-const terms = [
-  'stagger',
-  'underline',
-  'accordion',
-  'scroll-snap',
-  'sticky',
-  'asymmetric-grid',
-];
+const terms = knowledge.map((entry) => entry.slug);
 const artists = [
   'monet-impressionism',
   'dali-surrealism',
@@ -87,7 +81,13 @@ for (const path of paths) {
       html.includes(`href="/downloads/artists/${path.split('/').at(-1)}.zip"`),
       'Download URL must stay unprefixed',
     );
-  if (terms.includes(path.split('/')[1])) assert.match(html, /实现 Prompt/);
+  if (terms.includes(path.split('/')[1])) {
+    const entry = knowledge.find((item) => item.slug === path.split('/')[1]);
+    assert.match(
+      html,
+      isResourceEntry(entry) ? /参考 Prompt/ : /实现 Prompt/,
+    );
+  }
 }
 const filtered = await (
   await fetch(`${origin}/edition-c/products?line=experience`)

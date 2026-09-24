@@ -733,7 +733,7 @@
   display: block;
   padding: 20px 0 0;
 }
-.knowledge-entry > a > div {
+.knowledge-entry-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -742,7 +742,7 @@
 .knowledge-entry h2 {
   font-size: 21px;
 }
-.knowledge-entry > a > div > span {
+.knowledge-entry-head > span {
   font-size: 11px;
   color: var(--muted);
 }
@@ -754,6 +754,77 @@
 }
 .knowledge-entry .edition-link {
   font-size: 12px;
+}
+.knowledge-entry.is-resource > a {
+  padding-top: 0;
+}
+.knowledge-entry.is-resource .knowledge-entry-head {
+  padding-top: 20px;
+}
+.knowledge-resources {
+  margin-top: 12px;
+}
+.knowledge-grid + .knowledge-resources {
+  margin-top: 56px;
+}
+.knowledge-guide {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.85;
+  max-width: 68ch;
+  margin: 4px 0 8px;
+}
+.knowledge-guide p + p {
+  margin-top: 10px;
+}
+.knowledge-group {
+  margin-top: 42px;
+}
+.knowledge-resources > .knowledge-group:first-of-type {
+  margin-top: 28px;
+}
+.knowledge-group-title {
+  font-size: 22px;
+  margin-bottom: 22px;
+  letter-spacing: -0.025em;
+}
+.knowledge-resource-preview {
+  padding: 22px 24px;
+  min-height: 128px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  border-radius: 2px;
+  background: var(--quiet-green);
+}
+.knowledge-resource-preview.group-polish {
+  background: #e5e8eb;
+}
+.knowledge-resource-preview.group-inspiration {
+  background: var(--quiet-lilac);
+}
+.knowledge-resource-preview > span:first-child {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.3;
+}
+.knowledge-resource-preview.is-compact > span:last-child {
+  font-size: 11px;
+  color: #526050;
+}
+.knowledge-resource-preview > p {
+  font-size: 13px;
+  color: #526050;
+  max-width: 42ch;
+}
+.knowledge-lab .knowledge-resource-preview {
+  min-height: 280px;
+  padding: 28px 30px;
+}
+.knowledge-lab .knowledge-resource-preview > span:first-child {
+  font-size: 28px;
 }
 .knowledge-empty {
   text-align: center;
@@ -1935,6 +2006,15 @@
   .knowledge-grid {
     grid-template-columns: 1fr;
     gap: 34px;
+  }
+  .knowledge-group {
+    margin-top: 34px;
+  }
+  .knowledge-resource-preview {
+    min-height: 112px;
+  }
+  .knowledge-lab .knowledge-resource-preview {
+    min-height: 220px;
   }
   .knowledge-search input {
     font-size: 16px;
