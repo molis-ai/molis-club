@@ -1011,10 +1011,13 @@ html:has(.nc-site) {
   align-items: center;
   gap: 8px;
   height: 34px;
-  opacity: 0.62;
+  color: rgb(243 237 228 / 0.66);
+}
+.nc-logo-item img {
+  opacity: 0.66;
   transition: opacity 0.4s ease;
 }
-.nc-logo-item:hover {
+.nc-logo-item:hover img {
   opacity: 1;
 }
 .nc-logo-item img {

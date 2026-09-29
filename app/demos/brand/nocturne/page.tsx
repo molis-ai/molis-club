@@ -73,7 +73,7 @@ void main() {
   col += vec3(0.45, 0.62, 1.0) * streak * 0.22;
 
   col *= smoothstep(1.35, 0.1, length(uv * vec2(0.85, 1.05)));
-  col *= uFade * mix(1.0, 0.8, portrait);
+  col *= uFade * mix(1.0, 0.6, portrait);
   col = 1.0 - exp(-col * 1.7);
   gl_FragColor = vec4(pow(col, vec3(0.92)), 1.0);
 }
