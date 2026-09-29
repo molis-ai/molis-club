@@ -1,42 +1,11 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { ArrowUpRight } from 'lucide-react';
 import './folio.css';
 
 const statement =
   '技术应该回到人的尺度。我们做产品，是为了让人更从容地好奇、判断与创造。';
-
-const contents = [
-  {
-    page: '02',
-    kicker: '卷首语',
-    title: '技术应该回到人的尺度',
-    href: '#letter',
-    shape: 'sun',
-  },
-  {
-    page: '04',
-    kicker: '专题',
-    title: '我们正在做什么：Molis Work、Life 与 Story',
-    href: '#features',
-    shape: 'arch',
-  },
-  {
-    page: '10',
-    kicker: '人物',
-    title: '一群真正做过，也真正交付过的人',
-    href: '#people',
-    shape: 'leaf',
-  },
-  {
-    page: '16',
-    kicker: '封底',
-    title: '你正在好奇什么？',
-    href: '#back',
-    shape: 'mark',
-  },
-];
 
 type Cut = React.CSSProperties & {
   '--i': number;
@@ -266,6 +235,7 @@ function Person({
         />
       </div>
       <div>
+        <small>这件事背后的人</small>
         <strong>{personRole}</strong>
         <p>{experience}</p>
         <em>{aside}</em>
@@ -274,18 +244,8 @@ function Person({
   );
 }
 
-const folios: Record<string, string> = {
-  cover: '封面',
-  contents: '目录',
-  letter: '卷首语',
-  features: '专题',
-  people: '人物',
-  back: '封底',
-};
-
 export default function FolioDirection() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [folio, setFolio] = useState('cover');
 
   useEffect(() => {
     const root = rootRef.current;
@@ -340,20 +300,6 @@ export default function FolioDirection() {
     };
     cover?.addEventListener('pointermove', onPointer);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setFolio((entry.target as HTMLElement).dataset.folio ?? 'cover');
-          }
-        }
-      },
-      { rootMargin: '-50% 0px -50% 0px' },
-    );
-    root
-      .querySelectorAll('[data-folio]')
-      .forEach((section) => observer.observe(section));
-
     const reveal = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -373,13 +319,11 @@ export default function FolioDirection() {
       window.removeEventListener('scroll', request);
       window.removeEventListener('resize', request);
       cover?.removeEventListener('pointermove', onPointer);
-      observer.disconnect();
       reveal.disconnect();
     };
   }, []);
 
   const characters = Array.from(statement);
-  const folioIndex = Object.keys(folios).indexOf(folio);
 
   return (
     <div className="fo-site" ref={rootRef}>
@@ -388,29 +332,18 @@ export default function FolioDirection() {
           <img src="/images/molis-logo.png" width="36" height="36" alt="" />
           <span>Molis AI</span>
         </Link>
-        <span className="fo-header-issue" aria-hidden="true">
-          第 01 期 · 好奇心特辑
-        </span>
         <nav className="fo-nav" aria-label="主导航">
           <Link href="/demos/community">社区</Link>
-          <a href="#people">关于我们</a>
+          <a href="#capabilities">关于我们</a>
           <Link href="/join" className="fo-nav-cta">
             聊一聊
           </Link>
         </nav>
       </header>
 
-      <div className="fo-folio" aria-hidden="true">
-        <span>
-          p.{['00', '01', '02', '04', '10', '16'][folioIndex] ?? '00'}
-        </span>
-        <b key={folio}>{folios[folio]}</b>
-      </div>
-
       <main id="main">
         <section
           className="fo-cover"
-          data-folio="cover"
           data-scene="leave"
           aria-labelledby="fo-title"
         >
@@ -421,11 +354,6 @@ export default function FolioDirection() {
               </span>
             ))}
             <sup>AI</sup>
-          </div>
-          <div className="fo-cover-meta" aria-hidden="true">
-            <span>第 01 期</span>
-            <span>2026 · 秋</span>
-            <span>好奇心特辑</span>
           </div>
           <div className="fo-cover-art">
             <CoverArt />
@@ -447,78 +375,21 @@ export default function FolioDirection() {
               target="_blank"
               rel="noreferrer"
             >
-              <small>封面故事 · 正在做</small>
+              <small>正在做</small>
               <strong>Molis Work</strong>
               <span>
                 换一个会话，工作也接得上 <ArrowUpRight size={16} />
               </span>
             </a>
           </div>
-          <svg className="fo-barcode" viewBox="0 0 120 40" aria-hidden="true">
-            {[
-              0, 4, 6, 11, 14, 16, 21, 25, 27, 30, 35, 37, 42, 45, 47, 52, 55,
-              60, 62, 66, 71, 73, 78, 81, 83, 88, 92, 94, 99, 102, 104, 109,
-              113, 116,
-            ].map((x, index) => (
-              <rect
-                key={x}
-                x={x}
-                y="0"
-                width={index % 3 === 0 ? 2.4 : 1.2}
-                height="30"
-              />
-            ))}
-          </svg>
         </section>
 
         <section
-          id="contents"
-          className="fo-contents"
-          data-folio="contents"
-          aria-labelledby="fo-contents-title"
-        >
-          <div className="fo-contents-head">
-            <h2 id="fo-contents-title">
-              本期<em>Contents</em>
-            </h2>
-            <p>
-              一期关于好奇心的特辑：我们相信什么，正在做什么，以及和谁一起做。
-            </p>
-          </div>
-          <ol className="fo-contents-list">
-            {contents.map((item, index) => (
-              <li
-                key={item.href}
-                data-reveal
-                style={{ '--i': index } as React.CSSProperties}
-              >
-                <a href={item.href}>
-                  <span className="fo-contents-page">{item.page}</span>
-                  <span className="fo-contents-kicker">{item.kicker}</span>
-                  <span className="fo-contents-title">{item.title}</span>
-                  <span
-                    className={`fo-contents-shape fo-shape-${item.shape}`}
-                    aria-hidden="true"
-                  />
-                  <ArrowDownRight className="fo-contents-arrow" size={26} />
-                </a>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        <section
-          id="letter"
           className="fo-letter"
-          data-folio="letter"
           data-scene="track"
-          aria-label="卷首语：我们的立场"
+          aria-label="我们的立场"
         >
           <div className="fo-letter-stage">
-            <div className="fo-letter-label">
-              <span>卷首语</span>
-              <em>Editor’s letter</em>
-            </div>
             <p className="fo-sr-only">{statement}</p>
             <p className="fo-letter-text" aria-hidden="true">
               {characters.map((character, index) => (
@@ -531,18 +402,16 @@ export default function FolioDirection() {
                 </span>
               ))}
             </p>
-            <p className="fo-letter-sign">— Molis AI</p>
           </div>
         </section>
 
         <section
-          id="features"
+          id="products"
           className="fo-features"
-          data-folio="features"
           aria-labelledby="fo-features-title"
         >
           <div className="fo-features-intro" data-reveal>
-            <span className="fo-kicker">专题 · 我们正在做什么</span>
+            <span className="fo-kicker">我们正在做什么</span>
             <h2 id="fo-features-title">
               把复杂的事一起做好，
               <br />
@@ -557,9 +426,9 @@ export default function FolioDirection() {
           <div className="fo-stack">
             <article className="fo-sheet fo-sheet-work" data-scene="enter">
               <div className="fo-sheet-inner">
-                <div className="fo-sheet-copy">
+                <Link href="/demos/product" className="fo-sheet-copy">
                   <span className="fo-sheet-number">01</span>
-                  <small>持续开发 · 工作</small>
+                  <small>持续开发</small>
                   <h3>Molis Work</h3>
                   <p>
                     做一件跨越几天、几周的复杂工作时，AI
@@ -567,10 +436,10 @@ export default function FolioDirection() {
                     把目标、决定、依赖和完成证据保存成共同账本，让人和不同 AI
                     随时接着做。
                   </p>
-                  <Link href="/demos/product" className="fo-sheet-link">
-                    看看产品 <ArrowUpRight size={18} />
-                  </Link>
-                </div>
+                  <span className="fo-sheet-more" aria-hidden="true">
+                    <ArrowUpRight size={22} />
+                  </span>
+                </Link>
                 <LedgerArt />
               </div>
             </article>
@@ -579,7 +448,7 @@ export default function FolioDirection() {
               <div className="fo-sheet-inner">
                 <div className="fo-sheet-copy">
                   <span className="fo-sheet-number">02</span>
-                  <small>原型探索 · 生活</small>
+                  <small>原型探索</small>
                   <h3>Molis Life</h3>
                   <p>
                     账单到期、活动安排、想读的书和临时起意，常常散落在不同地方。Molis
@@ -595,7 +464,7 @@ export default function FolioDirection() {
               <div className="fo-sheet-inner">
                 <div className="fo-sheet-copy">
                   <span className="fo-sheet-number">03</span>
-                  <small>概念设计 · 沉浸体验</small>
+                  <small>概念设计</small>
                   <h3>Molis Story</h3>
                   <p>
                     想放松或进入一段故事时，现有内容大多只能被动观看。Molis
@@ -610,13 +479,12 @@ export default function FolioDirection() {
         </section>
 
         <section
-          id="people"
+          id="capabilities"
           className="fo-people"
-          data-folio="people"
           aria-labelledby="fo-people-title"
         >
           <div className="fo-people-head" data-reveal>
-            <span className="fo-kicker">人物 · 谁在把这些事情做出来</span>
+            <span className="fo-kicker">谁在把这些事情做出来</span>
             <h2 id="fo-people-title">
               一群真正做过，
               <br />
@@ -701,10 +569,6 @@ export default function FolioDirection() {
               </div>
             </article>
 
-            <blockquote className="fo-pullquote" data-reveal>
-              <p>“首席 Token 官，也是一个幻想家。”</p>
-            </blockquote>
-
             <article className="fo-chapter" data-reveal>
               <div className="fo-chapter-copy">
                 <span className="fo-chapter-index">02</span>
@@ -754,20 +618,9 @@ export default function FolioDirection() {
             </article>
           </div>
         </section>
-
-        <div className="fo-ticker" aria-hidden="true">
-          <div>
-            {Array.from({ length: 2 }, (_, n) => (
-              <span key={n}>
-                始终好奇 <i>✳</i> 持续创造 <i>✳</i> <em>Always curious</em>{' '}
-                <i>✳</i> <em>Keep making</em> <i>✳</i>{' '}
-              </span>
-            ))}
-          </div>
-        </div>
       </main>
 
-      <footer id="back" className="fo-back" data-folio="back">
+      <footer className="fo-back">
         <div className="fo-back-head">
           <h2>
             你正在好奇
@@ -797,7 +650,7 @@ export default function FolioDirection() {
         <div className="fo-colophon">
           <span className="fo-colophon-mark">Molis</span>
           <div>
-            <span>Molis AI · 第 01 期 · 好奇心特辑</span>
+            <span>Molis AI</span>
             <Link
               href="https://github.com/molis-ai"
               target="_blank"
