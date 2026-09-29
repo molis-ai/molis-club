@@ -368,7 +368,7 @@ const capabilities = [
     text: '我们从真实工作现场出发，把模糊的“AI 提效”拆成具体流程、关键判断和可以验证的结果。',
     people: [
       {
-        image: '/images/daylight/team/zhuangshi.png',
+        image: '/images/daylight/team/zhuangshi.jpg',
         role: 'AI 数据产品与复杂业务设计',
         experience:
           '曾任字节、美团核心团队 AI 数据产品资深专家；参与抖音数据管理及功能建设，拥有相关软件著作权，并受邀在 DataFun、美团大学与 CSDI Summit 分享实践。',
@@ -381,7 +381,7 @@ const capabilities = [
     text: '从AI Agent、企业知识库到AI Native应用，我们把设想做成可以使用、维护和继续生长的产品。',
     people: [
       {
-        image: '/images/daylight/team/yijun.png',
+        image: '/images/daylight/team/yijun.jpg',
         role: '系统架构、产品与技术管理',
         experience:
           '曾在美团、字节、滴滴、LinkedIn 及多家硅谷创业公司的核心研发团队负责架构与管理，长期建设和演进高复杂度核心系统。',
