@@ -260,13 +260,16 @@ function WorkVisual() {
             <span>目标</span>做好第一版访谈指南
           </li>
           <li>
-            <span>决定</span>先访谈三位用户
+            <span>决定</span>
+            <i />
           </li>
           <li>
-            <span>依赖</span>等你确认问题顺序
+            <span>依赖</span>
+            <i />
           </li>
           <li className="nc-ledger-current">
-            <span>证据</span>两份访谈记录
+            <span>证据</span>
+            <i />
           </li>
         </ul>
         <em>示意</em>
@@ -339,7 +342,6 @@ const products = [
     index: '01',
     stage: '持续开发',
     name: 'Molis Work',
-    lead: '换一个会话，工作也接得上。',
     text: '做一件跨越几天、几周的复杂工作时，AI 一换会话就忘了目标和进度。Molis Work 把目标、决定、依赖和完成证据保存成共同账本，让人和不同 AI 随时接着做。',
     href: '/demos/product',
     Visual: WorkVisual,
@@ -348,7 +350,6 @@ const products = [
     index: '02',
     stage: '原型探索',
     name: 'Molis Life',
-    lead: '把散落的日常，接成下一步。',
     text: '账单到期、活动安排、想读的书和临时起意，常常散落在不同地方。Molis Life 在得到授权后理解你的偏好，汇总这些日常事项，并把下一步准备好。',
     Visual: LifeVisual,
   },
@@ -356,7 +357,6 @@ const products = [
     index: '03',
     stage: '概念设计',
     name: 'Molis Story',
-    lead: '以自己的身份，走进一段故事。',
     text: '想放松或进入一段故事时，现有内容大多只能被动观看。Molis Story 让你以自己的身份进入独立世界，通过阅读、交流、探索和行动参与其中，离开后还能继续这段经历。',
     Visual: StoryVisual,
   },
@@ -523,7 +523,6 @@ export default function NocturneDirection() {
           <span>Molis AI</span>
         </Link>
         <nav className="nc-nav" aria-label="主导航">
-          <a href="#products">作品</a>
           <Link href="/demos/community">社区</Link>
           <a href="#capabilities">关于我们</a>
           <Link href="/join" className="nc-nav-cta">
@@ -539,10 +538,6 @@ export default function NocturneDirection() {
           aria-labelledby="nc-title"
         >
           <LightField fade={fadeRef} />
-          <div className="nc-hero-frame" aria-hidden="true">
-            <span>Molis AI — 产品工作室</span>
-            <span>Scene 01 · 好奇</span>
-          </div>
           <div className="nc-hero-copy">
             <h1 id="nc-title">
               {title.map((line, l) => (
@@ -563,10 +558,10 @@ export default function NocturneDirection() {
               <br />
               我们和 AI 一起，把好奇心做成真正帮到人的作品。
             </p>
-            <a href="#statement" className="nc-scroll-cue">
-              <span>向下，进入</span>
+            <span className="nc-scroll-cue" aria-hidden="true">
+              <i />
               <ArrowDown size={16} />
-            </a>
+            </span>
           </div>
           <a
             className="nc-hero-card"
@@ -589,7 +584,6 @@ export default function NocturneDirection() {
         >
           <div className="nc-statement-stage">
             <span className="nc-flare" aria-hidden="true" />
-            <span className="nc-kicker">Scene 02 · 立场</span>
             <p className="nc-sr-only">{statement}</p>
             <p
               className="nc-statement-text"
@@ -614,7 +608,7 @@ export default function NocturneDirection() {
           aria-labelledby="nc-products-title"
         >
           <div className="nc-products-intro" data-reveal>
-            <span className="nc-kicker">Scene 03 · 我们正在做什么</span>
+            <span className="nc-kicker">我们正在做什么</span>
             <h2 id="nc-products-title">
               把复杂的事一起做好，
               <br />
@@ -636,26 +630,26 @@ export default function NocturneDirection() {
                   </li>
                 ))}
               </ol>
-              {products.map(
-                ({ index, stage, name, lead, text, href, Visual }) => (
-                  <article className="nc-product" key={name}>
-                    <Visual />
-                    <div className="nc-product-copy">
-                      <span className="nc-product-meta">
-                        {index} <i /> {stage}
-                      </span>
-                      <h3>{name}</h3>
-                      <p className="nc-product-lead">{lead}</p>
-                      <p>{text}</p>
-                      {href && (
-                        <Link href={href} className="nc-link">
-                          了解 {name} <ArrowUpRight size={17} />
+              {products.map(({ index, stage, name, text, href, Visual }) => (
+                <article className="nc-product" key={name}>
+                  <Visual />
+                  <div className="nc-product-copy">
+                    <span className="nc-product-meta">
+                      {index} <i /> {stage}
+                    </span>
+                    <h3>
+                      {href ? (
+                        <Link href={href} className="nc-product-link">
+                          {name} <ArrowUpRight size={30} />
                         </Link>
+                      ) : (
+                        name
                       )}
-                    </div>
-                  </article>
-                ),
-              )}
+                    </h3>
+                    <p>{text}</p>
+                  </div>
+                </article>
+              ))}
               <span className="nc-showcase-bar" aria-hidden="true" />
             </div>
           </div>
@@ -667,7 +661,7 @@ export default function NocturneDirection() {
           aria-labelledby="nc-capabilities-title"
         >
           <div className="nc-capabilities-intro" data-reveal>
-            <span className="nc-kicker">Scene 04 · 谁在把这些事情做出来</span>
+            <span className="nc-kicker">谁在把这些事情做出来</span>
             <h2 id="nc-capabilities-title">
               一群真正做过，
               <br />
@@ -740,7 +734,6 @@ export default function NocturneDirection() {
       <footer className="nc-footer" data-scene="view">
         <div className="nc-horizon" aria-hidden="true" />
         <div className="nc-footer-invite" data-reveal>
-          <span className="nc-kicker">Scene 05 · 相遇</span>
           <h2>你正在好奇什么？</h2>
           <p>
             从一个还没想清楚的念头，到一个已经卡了很久的具体问题，都可以成为相遇的开始。
