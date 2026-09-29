@@ -63,6 +63,42 @@ function LeafShadow() {
   );
 }
 
+type PersonNoteProps = {
+  image: string;
+  imagePosition?: string;
+  personRole: string;
+  experience: string;
+  aside: string;
+};
+
+function PersonNote({
+  image,
+  imagePosition,
+  personRole,
+  experience,
+  aside,
+}: PersonNoteProps) {
+  return (
+    <div className="dl-person">
+      <button type="button" aria-label={`认识这项能力背后的${personRole}`}>
+        <img
+          src={image}
+          width="96"
+          height="96"
+          alt=""
+          style={{ objectPosition: imagePosition }}
+        />
+      </button>
+      <div className="dl-person-note" role="tooltip">
+        <small>这件事背后的人</small>
+        <strong>{personRole}</strong>
+        <p>{experience}</p>
+        <em>{aside}</em>
+      </div>
+    </div>
+  );
+}
+
 export default function DaylightDirection() {
   const heroRef = useRef<HTMLElement>(null);
   const statementRef = useRef<HTMLElement>(null);
@@ -71,17 +107,6 @@ export default function DaylightDirection() {
     const hero = heroRef.current;
     const section = statementRef.current;
     if (!hero || !section) return;
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const box = section.getBoundingClientRect();
-      const travel = box.height - window.innerHeight;
-      const progress = Math.min(1, Math.max(0, -box.top / travel));
-      section.style.setProperty('--p', progress.toFixed(3));
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
     const onPointer = (event: PointerEvent) => {
       if (event.pointerType !== 'mouse') return;
       const x = event.clientX / window.innerWidth - 0.5;
@@ -89,14 +114,18 @@ export default function DaylightDirection() {
       hero.style.setProperty('--sun-x', (x * 28).toFixed(1) + 'px');
       hero.style.setProperty('--sun-y', (y * 18).toFixed(1) + 'px');
     };
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        section.classList.add('is-visible');
+        observer.unobserve(section);
+      },
+      { threshold: 0.42 },
+    );
+    observer.observe(section);
     hero.addEventListener('pointermove', onPointer);
     return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
+      observer.disconnect();
       hero.removeEventListener('pointermove', onPointer);
     };
   }, []);
@@ -111,14 +140,9 @@ export default function DaylightDirection() {
           <span>Molis AI</span>
         </Link>
         <nav className="dl-pill" aria-label="主导航">
-          <a href="#work">作品</a>
-          <a href="#letter">关于我们</a>
-          <Link
-            href="/join"
-            target="_blank"
-            rel="noreferrer"
-            className="dl-pill-cta"
-          >
+          <Link href="/demos/community">社区</Link>
+          <a href="#capabilities">关于我们</a>
+          <Link href="/join" className="dl-pill-cta">
             聊一聊
           </Link>
         </nav>
@@ -150,7 +174,9 @@ export default function DaylightDirection() {
           </div>
           <a
             className="dl-hero-card"
-            href="#work"
+            href="https://github.com/molis-ai/molis-work"
+            target="_blank"
+            rel="noreferrer"
             aria-label="正在做 Molis Work：换一个会话，工作也接得上"
           >
             <span className="dl-hero-card-screen" aria-hidden="true">
@@ -172,7 +198,6 @@ export default function DaylightDirection() {
           className="dl-statement"
           ref={statementRef}
           aria-label="我们的立场"
-          style={{ '--n': characters.length } as React.CSSProperties}
         >
           <div className="dl-statement-stage">
             <p className="dl-sr-only">{statement}</p>
@@ -189,136 +214,217 @@ export default function DaylightDirection() {
           </div>
         </section>
 
-        <section id="work" className="dl-work" aria-labelledby="dl-work-title">
-          <div className="dl-work-heading">
-            <h2 id="dl-work-title">我们正在做的</h2>
+        <section
+          id="products"
+          className="dl-products"
+          aria-labelledby="dl-products-title"
+        >
+          <div className="dl-products-intro">
+            <span>我们正在做什么</span>
+            <h2 id="dl-products-title">
+              把复杂的事一起做好，把珍贵的时间留给生活。
+            </h2>
             <p>
-              从工作中的具体问题，到生活里细微的感受。每件作品都标明它现在走到了哪一步。
+              Molis 从工作、生活和沉浸式体验三个方向，让 AI
+              接住复杂任务与日常琐事，也为人的兴趣、选择和想象留出空间。
             </p>
           </div>
 
-          <article className="dl-feature">
-            <div className="dl-feature-copy">
-              <span className="dl-stage">公开源码 · 本地优先</span>
-              <h3>Molis Work</h3>
-              <p>
-                把目标、进展与依据留在同一处。换一个 AI
-                会话，工作也能接着推进；需要你判断的事，会等你来决定。
-              </p>
-              <Link
-                href="https://github.com/molis-ai/molis-work"
-                target="_blank"
-                rel="noreferrer"
-                className="dl-link"
-              >
-                了解 Molis Work <ArrowUpRight size={18} />
-              </Link>
-            </div>
-            <figure className="dl-paper" aria-label="Molis Work 工作记录示意">
-              <LeafShadow />
-              <div className="dl-paper-sheet">
-                <div className="dl-paper-top">
-                  <span>Molis Work</span>
-                  <span>周四 · 上午</span>
-                </div>
-                <p className="dl-paper-label">目标</p>
-                <p className="dl-paper-goal">做好第一版用户访谈指南</p>
-                <ol>
-                  <li className="dl-done">
-                    <span>说清想得到的结果</span>
-                    <time>周一</time>
-                  </li>
-                  <li className="dl-done">
-                    <span>整理已有的三份访谈笔记</span>
-                    <time>周二</time>
-                  </li>
-                  <li className="dl-now">
-                    <span>等你判断：问题的顺序是否合适</span>
-                    <time>现在</time>
-                  </li>
-                </ol>
-                <p className="dl-paper-note">
-                  昨天的发现，也是今天的起点。
+          <div className="dl-product-list" aria-label="Molis 产品框架">
+            <Link href="/demos/product" className="dl-product-item">
+              <span className="dl-product-index">01</span>
+              <div>
+                <small>持续开发</small>
+                <h3>Molis Work</h3>
+                <p>
+                  做一件跨越几天、几周的复杂工作时，AI
+                  一换会话就忘了目标和进度。Molis Work
+                  把目标、决定、依赖和完成证据保存成共同账本，让人和不同 AI
+                  随时接着做。
                 </p>
               </div>
-              <figcaption>工作记录示意，不是真实用户数据</figcaption>
-            </figure>
-          </article>
+            </Link>
 
-          <div className="dl-pair">
-            <article className="dl-card dl-card-cow">
-              <Link
-                href="https://github.com/molis-ai/niul.ai"
-                target="_blank"
-                rel="noreferrer"
-                className="dl-card-image"
-                aria-label="niul.ai 公开源码"
-              >
-                <LeafShadow />
-                <img
-                  src="/images/products/niulai.png"
-                  width="192"
-                  height="192"
-                  alt="niul.ai 的黄色小牛"
-                  loading="lazy"
-                />
-              </Link>
-              <span className="dl-stage">公开源码</span>
-              <h3>niul.ai</h3>
-              <p>让一头小牛替你留意 AI 的进度。等待，也可以有一点温度。</p>
+            <article className="dl-product-item">
+              <span className="dl-product-index">02</span>
+              <div>
+                <small>原型探索</small>
+                <h3>Molis Life</h3>
+                <p>
+                  账单到期、活动安排、想读的书和临时起意，常常散落在不同地方。Molis
+                  Life 在得到授权后理解你的偏好，汇总这些日常事项，并把下一步准备好。
+                </p>
+              </div>
             </article>
-            <article className="dl-card">
-              <Link
-                href="/works/elsewhere"
-                target="_blank"
-                rel="noreferrer"
-                className="dl-card-image dl-card-photo"
-                aria-label="阅读 Elsewhere 的介绍"
-              >
-                <img
-                  src="/images/atelier/threshold.jpg"
-                  width="1440"
-                  height="900"
-                  alt=""
-                  loading="lazy"
-                />
-              </Link>
-              <span className="dl-stage">内部体验 · 尚未开放下载</span>
-              <h3>Elsewhere</h3>
-              <p>走一走未曾选择的人生，再带着一封归来信，回到当下。</p>
+
+            <article className="dl-product-item">
+              <span className="dl-product-index">03</span>
+              <div>
+                <small>概念设计</small>
+                <h3>Molis Story</h3>
+                <p>
+                  想放松或进入一段故事时，现有内容大多只能被动观看。Molis
+                  Story
+                  让你以自己的身份进入独立世界，通过阅读、交流、探索和行动参与其中，离开后还能继续这段经历。
+                </p>
+              </div>
             </article>
           </div>
         </section>
 
         <section
-          id="letter"
-          className="dl-letter"
-          aria-labelledby="dl-letter-title"
+          id="capabilities"
+          className="dl-capabilities"
+          aria-labelledby="dl-capabilities-title"
         >
-          <h2 id="dl-letter-title">做一家无限游戏的公司</h2>
-          <p>
-            我们不追求一次分出胜负，而是希望和愿意共同探索的人，把创造持续下去。
-          </p>
-          <p>
-            所以我们先把问题问具体：谁遇到了困难，卡在哪一步，现在怎样解决。再让原型进入自己的工作与日常，记录哪里有用、哪里别扭。
-          </p>
-          <p>
-            分享作品时，我们也留下方法、尝试的过程和还没解决的问题，让后来的人可以接着做。
-          </p>
-          <p className="dl-sign">始终好奇，持续创造。— Molis AI</p>
+          <div className="dl-capabilities-intro">
+            <span>谁在把这些事情做出来</span>
+            <h2 id="dl-capabilities-title">
+              一群真正做过，也真正交付过的人。
+            </h2>
+            <p>
+              我们负责过大型核心系统的架构与管理，也在硅谷创业公司和国内互联网核心团队里，反复经历从
+              0 到 1、从 1 到规模化。今天，我们把这些经验带进 Molis。
+            </p>
+          </div>
+
+          <div className="dl-proof" aria-label="团队成员的职业经历">
+            <p>团队成员的职业经历包括</p>
+            <div className="dl-company-logos">
+              <span className="dl-company-logo dl-company-logo-meituan">
+                <img
+                  src="/images/daylight/company_logo/美团/美团横式色彩标识.png"
+                  width="1896"
+                  height="687"
+                  alt="美团"
+                />
+              </span>
+              <span className="dl-company-logo dl-company-logo-douyin">
+                <img
+                  src="/images/daylight/company_logo/douyin-group.jpg"
+                  width="1749"
+                  height="800"
+                  alt="抖音集团"
+                />
+              </span>
+              <span className="dl-company-logo dl-company-logo-didi">
+                <img
+                  src="/images/daylight/company_logo/didi.jpg"
+                  width="823"
+                  height="800"
+                  alt="滴滴"
+                />
+              </span>
+              <span className="dl-company-logo dl-company-logo-linkedin">
+                <img
+                  src="/images/daylight/company_logo/linkedin-svgrepo-com.svg"
+                  width="382"
+                  height="382"
+                  alt="LinkedIn"
+                />
+                <b>LinkedIn</b>
+              </span>
+              <span className="dl-company-logo dl-company-logo-red">
+                <img
+                  src="/images/daylight/company_logo/red.jpeg"
+                  width="4804"
+                  height="3200"
+                  alt="小红书"
+                />
+              </span>
+            </div>
+          </div>
+
+          <div className="dl-capability-list">
+            <article className="dl-capability">
+              <span className="dl-capability-index">01</span>
+              <div className="dl-capability-copy">
+                <h3>把真正的问题看清</h3>
+                <p>
+                  我们从真实工作现场出发，把模糊的“AI
+                  提效”拆成具体流程、关键判断和可以验证的结果。
+                </p>
+              </div>
+              <div className="dl-people">
+                <PersonNote
+                  image="/images/daylight/team/zhuangshi.png"
+                  personRole="AI 数据产品与复杂业务设计"
+                  experience="曾任字节、美团核心团队 AI 数据产品资深专家；参与抖音数据管理及功能建设，拥有相关软件著作权，并受邀在 DataFun、美团大学与 CSDI Summit 分享实践。"
+                  aside="Molis 创始合伙人、首席布道人。Google 搜得到的女人。"
+                />
+              </div>
+            </article>
+
+            <article className="dl-capability">
+              <span className="dl-capability-index">02</span>
+              <div className="dl-capability-copy">
+                <h3>把复杂想法落地</h3>
+                <p>
+                  从AI Agent、企业知识库到AI
+                  Native应用，我们把设想做成可以使用、维护和继续生长的产品。
+                </p>
+              </div>
+              <div className="dl-people">
+                <PersonNote
+                  image="/images/daylight/team/yijun.png"
+                  personRole="系统架构、产品与技术管理"
+                  experience="曾在美团、字节、滴滴、LinkedIn 及多家硅谷创业公司的核心研发团队负责架构与管理，长期建设和演进高复杂度核心系统。"
+                  aside="Molis AI Founder。首席 Token 官，也是一个幻想家。"
+                />
+                <PersonNote
+                  image="/images/daylight/team/xiejun.jpeg"
+                  imagePosition="50% 48%"
+                  personRole="AI Native 与 Agent 工程"
+                  experience="8 年美团研发经验，较早参与企业知识库、RAG、Prompt Engineering 与 Agent 实践；长期深耕数据、计算、平台架构和复杂系统工程化，目前聚焦 AI Agent、AI Coding 与 AI Native 软件架构。"
+                  aside="从北京骑回南宁的工程师。叫我谢尊。"
+                />
+              </div>
+            </article>
+
+            <article className="dl-capability">
+              <span className="dl-capability-index">03</span>
+              <div className="dl-capability-copy">
+                <h3>带来可量化的价值</h3>
+                <p>
+                  我们不只交付原型，也和业务团队一起把产品带进真实流程，创造真正的业务指标增量。
+                </p>
+              </div>
+              <div className="dl-people">
+                <PersonNote
+                  image="/images/daylight/team/xinyi.jpg"
+                  imagePosition="50% 54%"
+                  personRole="业务增长与客户共创"
+                  experience="曾在美团、字节、小红书核心团队负责数据运营，对接 100+ 客户团队，参与共创月百万级业务增量，持续寻找 AI 能力真正进入业务的落点。"
+                  aside="Molis AI 下一任 CEO 候选人之一。"
+                />
+              </div>
+            </article>
+          </div>
         </section>
+
       </main>
 
       <footer className="dl-footer">
         <div className="dl-footer-invite">
           <h2>你正在好奇什么？</h2>
-          <Link
-            href="/join"
-            target="_blank"
-            rel="noreferrer"
-            className="dl-footer-cta"
-          >
-            和我们聊聊 <ArrowUpRight size={20} />
+          <p>
+            从一个还没想清楚的念头，到一个已经卡了很久的具体问题，都可以成为相遇的开始。
+          </p>
+        </div>
+        <div className="dl-footer-paths">
+          <Link href="/demos/community" className="dl-footer-path">
+            <small>如果你也在创造</small>
+            <h3>来看看一群人，怎样把新的可能一起做出来。</h3>
+            <span>
+              去社区看看 <ArrowUpRight size={19} />
+            </span>
+          </Link>
+          <Link href="/join" className="dl-footer-path">
+            <small>如果你来自企业或团队</small>
+            <h3>带着一个具体问题来，我们先一起把它看清。</h3>
+            <span>
+              和我们聊聊 <ArrowUpRight size={19} />
+            </span>
           </Link>
         </div>
         <div className="dl-footer-meta">
