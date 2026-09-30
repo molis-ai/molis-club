@@ -11,6 +11,19 @@ export const notes = sqliteTable(
   },
   (t) => [index('idx_notes_work_created').on(t.work, t.createdAt)],
 );
+export const designVotes = sqliteTable(
+  'design_votes',
+  {
+    id: text('id').primaryKey(),
+    choice: text('choice').notNull(),
+    name: text('name').notNull(),
+    reason: text('reason').notNull(),
+    borrow: text('borrow').notNull().default(''),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (t) => [index('idx_design_votes_updated').on(t.updatedAt)],
+);
 export const applications = sqliteTable('applications', {
   id: text('id').primaryKey(),
   email: text('email').notNull().unique(),
