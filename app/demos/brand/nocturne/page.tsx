@@ -343,7 +343,7 @@ const products = [
     stage: '持续开发',
     name: 'Molis Work',
     text: '做一件跨越几天、几周的复杂工作时，AI 一换会话就忘了目标和进度。Molis Work 把目标、决定、依赖和完成证据保存成共同账本，让人和不同 AI 随时接着做。',
-    href: '/demos/product',
+    href: '/demos/brand/nocturne/work',
     Visual: WorkVisual,
   },
   {
@@ -563,17 +563,12 @@ export default function NocturneDirection() {
               <ArrowDown size={16} />
             </span>
           </div>
-          <a
-            className="nc-hero-card"
-            href="https://github.com/molis-ai/molis-work"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link className="nc-hero-card" href="/demos/brand/nocturne/work">
             <small>正在做</small>
             <strong>Molis Work</strong>
             <span>换一个会话，工作也接得上</span>
             <ArrowUpRight size={18} />
-          </a>
+          </Link>
         </section>
 
         <section
