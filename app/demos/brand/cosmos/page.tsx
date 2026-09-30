@@ -21,7 +21,7 @@ const products: {
     status: '持续开发',
     name: 'Molis Work',
     body: '做一件跨越几天、几周的复杂工作时，AI 一换会话就忘了目标和进度。Molis Work 把目标、决定、依赖和完成证据保存成共同账本，让人和不同 AI 随时接着做。',
-    href: '/demos/product',
+    href: '/demos/brand/cosmos/work',
   },
   {
     planet: 'life',
@@ -186,11 +186,9 @@ export default function CosmosDirection() {
                 我们和 AI 一起，把好奇心做成真正帮到人的作品。
               </p>
             </div>
-            <a
+            <Link
               className="cs-hero-card"
-              href="https://github.com/molis-ai/molis-work"
-              target="_blank"
-              rel="noreferrer"
+              href="/demos/brand/cosmos/work"
               aria-label="正在做 Molis Work：换一个会话，工作也接得上"
             >
               <span className="cs-hero-card-screen" aria-hidden="true">
@@ -208,7 +206,7 @@ export default function CosmosDirection() {
                 <strong>Molis Work</strong>
                 <span>换一个会话，工作也接得上</span>
               </span>
-            </a>
+            </Link>
             <span className="cs-scroll-cue" aria-hidden="true" />
           </section>
 
