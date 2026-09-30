@@ -6,6 +6,8 @@ import {
   listNotes,
   saveNote as saveAuthenticatedNote,
   saveApplication,
+  listDesignVotes,
+  saveDesignVote,
 } from '../lib/community-api.mjs';
 function dbFixture() {
   const sql = new DatabaseSync(':memory:');
@@ -210,4 +212,105 @@ test('匿名不能留言，客户端不能冒名，另一账户不能复用同�
     409,
   );
   assert.equal(db.sql.prepare('SELECT count(*) AS n FROM notes').get().n, 1);
+});
+
+const choices = ['daylight', 'folio', 'nocturne', 'cosmos', 'edition-c'];
+const ballot = (extra = {}) => ({
+  id: crypto.randomUUID(),
+  choice: 'folio',
+  name: '阿言',
+  reason: '刊头和拼贴让人一眼记住。',
+  borrow: '深空的行星切换',
+  ...extra,
+});
+const listVotes = (db, voter) =>
+  listDesignVotes(
+    new Request(
+      `http://localhost:3000/api/design-votes${voter ? `?voter=${voter}` : ''}`,
+    ),
+    db,
+    choices,
+  );
+test('投票落库后计入票数，同一设备改票只保留一票', async () => {
+  const db = dbFixture(),
+    v = ballot();
+  let r = await saveDesignVote(req('design-votes', v), db, choices);
+  assert.equal(r.status, 201);
+  assert.equal((await r.json()).updated, false);
+  r = await saveDesignVote(
+    req('design-votes', {
+      ...v,
+      choice: 'nocturne',
+      reason: '改主意了，夜曲更有电影感。',
+    }),
+    db,
+    choices,
+  );
+  assert.equal(r.status, 200);
+  assert.equal((await r.json()).updated, true);
+  await saveDesignVote(
+    req('design-votes', ballot({ borrow: undefined })),
+    db,
+    choices,
+  );
+  const data = await (await listVotes(db, v.id)).json();
+  assert.equal(data.total, 2);
+  assert.equal(data.tally.nocturne, 1);
+  assert.equal(data.tally.folio, 1);
+  assert.equal(data.tally.daylight, 0);
+  assert.equal(data.mine.choice, 'nocturne');
+  assert.equal(data.mine.reason, '改主意了，夜曲更有电影感。');
+  assert.equal(data.votes.length, 2);
+  assert(data.votes.every((vote) => !('id' in vote)));
+  assert.equal(
+    db.sql.prepare('SELECT count(*) AS n FROM design_votes').get().n,
+    2,
+  );
+});
+test('未知方向、空理由、缺称呼、坏 id 与外站投票拒绝且不写库', async () => {
+  const db = dbFixture();
+  for (const d of [
+    ballot({ choice: 'playful' }),
+    ballot({ choice: 'toString' }),
+    ballot({ reason: '  ' }),
+    ballot({ reason: 'x'.repeat(1201) }),
+    ballot({ name: '' }),
+    ballot({ name: 'x'.repeat(41) }),
+    ballot({ borrow: 42 }),
+    ballot({ borrow: 'x'.repeat(1201) }),
+    ballot({ id: 'bad' }),
+  ])
+    assert.equal(
+      (await saveDesignVote(req('design-votes', d), db, choices)).status,
+      400,
+    );
+  assert.equal(
+    (
+      await saveDesignVote(
+        req('design-votes', ballot(), 'https://untrusted.example'),
+        db,
+        choices,
+      )
+    ).status,
+    400,
+  );
+  assert.equal(
+    db.sql.prepare('SELECT count(*) AS n FROM design_votes').get().n,
+    0,
+  );
+  const data = await (await listVotes(db, 'not-a-uuid')).json();
+  assert.equal(data.total, 0);
+  assert.equal(data.mine, null);
+});
+test('投票数据库失败返回可重试错误', async () => {
+  const db = {
+    prepare() {
+      throw new Error('offline');
+    },
+  };
+  assert.equal(
+    (await saveDesignVote(req('design-votes', ballot()), db, choices)).status,
+    503,
+  );
+  assert.equal((await listVotes(db)).status, 503);
 });
