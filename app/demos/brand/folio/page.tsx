@@ -369,18 +369,13 @@ export default function FolioDirection() {
               <br />
               我们和 AI 一起，把好奇心做成真正帮到人的作品。
             </p>
-            <a
-              className="fo-coverline"
-              href="https://github.com/molis-ai/molis-work"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <Link className="fo-coverline" href="/demos/brand/folio/work">
               <small>正在做</small>
               <strong>Molis Work</strong>
               <span>
                 换一个会话，工作也接得上 <ArrowUpRight size={16} />
               </span>
-            </a>
+            </Link>
           </div>
         </section>
 
@@ -426,7 +421,7 @@ export default function FolioDirection() {
           <div className="fo-stack">
             <article className="fo-sheet fo-sheet-work" data-scene="enter">
               <div className="fo-sheet-inner">
-                <Link href="/demos/product" className="fo-sheet-copy">
+                <Link href="/demos/brand/folio/work" className="fo-sheet-copy">
                   <span className="fo-sheet-number">01</span>
                   <small>持续开发</small>
                   <h3>Molis Work</h3>
