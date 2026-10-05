@@ -1,9 +1,21 @@
 import type { ComponentType } from 'react';
-import { ArrowDown, Blocks, Bot, Check, Lock, Search } from 'lucide-react';
-import type { FeatureVisual } from './content';
+import {
+  ArrowUp,
+  AtSign,
+  Blocks,
+  Check,
+  FileText,
+  ListChecks,
+  Search,
+  ShieldCheck,
+  Slash,
+  Terminal,
+  Undo2,
+} from 'lucide-react';
 import type { Vars } from '../shared';
+import { images } from './content';
 
-// 功能区块的画面：目标用真实界面截图，其余都是代码绘制的示意。
+// 场景画面：目标、Feed、首次使用用真实界面截图，其余都是代码绘制的示意。
 
 export function Window({
   src,
@@ -35,7 +47,15 @@ export function Window({
 }
 
 function GoalsVisual() {
-  return <Window src="/images/daylight/work/goals.jpg" label="Goals" />;
+  return <Window src={images.goals} label="Goals" />;
+}
+
+function FeedVisual() {
+  return <Window src={images.feed} label="Feed" />;
+}
+
+function StartVisual() {
+  return <Window src={images.onboarding} label="Molis Work" />;
 }
 
 function CapabilitiesVisual() {
@@ -71,6 +91,90 @@ function CapabilitiesVisual() {
             </b>
           </div>
         ))}
+      </div>
+      <div className="ew-card ew-cap-queue ew-in" style={{ '--r': 8 } as Vars}>
+        <div className="ew-card-head">
+          <ShieldCheck size={14} />
+          审查队列
+        </div>
+        <div className="ew-cap-task ew-in" style={{ '--r': 9 } as Vars}>
+          <Terminal size={13} />
+          <span>git push</span>
+          <em>待你确认</em>
+        </div>
+        <div className="ew-cap-task ew-in" style={{ '--r': 10 } as Vars}>
+          <ListChecks size={13} />
+          <span>已建 2 个待办</span>
+          <em className="is-undo">
+            <Undo2 size={11} />
+            撤销
+          </em>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AssistantVisual() {
+  return (
+    <div className="ew-mock ew-assist" aria-hidden="true">
+      <div className="ew-card ew-assist-page ew-in">
+        <div className="ew-card-head">
+          <FileText size={14} />
+          访谈计划
+          <small>Pages</small>
+        </div>
+        <div className="ew-assist-body">
+          <i />
+          <i />
+          <p>
+            <mark>周五前发出访谈提纲，下周二约一次评审。</mark>
+          </p>
+          <i />
+          <i />
+        </div>
+      </div>
+      <div
+        className="ew-card ew-assist-action ew-in"
+        style={{ '--r': 6 } as Vars}
+      >
+        <strong>建两个待办</strong>
+        <ul>
+          <li>
+            <b />
+            发出访谈提纲
+            <small>周五</small>
+          </li>
+          <li>
+            <b />
+            约访谈评审
+            <small>下周二</small>
+          </li>
+        </ul>
+        <div className="ew-assist-buttons">
+          <span className="is-primary">
+            <Check size={11} />
+            执行
+          </span>
+          <span>
+            <Undo2 size={11} />
+            撤销
+          </span>
+        </div>
+      </div>
+      <div className="ew-card ew-assist-bar ew-in" style={{ '--r': 3 } as Vars}>
+        <span className="ew-assist-chip">
+          <AtSign size={11} />
+          选中段落
+        </span>
+        <span className="ew-assist-chip">
+          <Slash size={11} />
+          建待办
+        </span>
+        <span className="ew-typing">拆成待办</span>
+        <b>
+          <ArrowUp size={12} />
+        </b>
       </div>
     </div>
   );
@@ -139,119 +243,16 @@ function CodingVisual() {
   );
 }
 
-function RuntimeVisual() {
-  return (
-    <div className="ew-mock ew-runtime" aria-hidden="true">
-      <div className="ew-runtime-col">
-        {['文字', '图片', '判断', 'Agent'].map((name, index) => (
-          <span className="ew-in" key={name} style={{ '--r': index } as Vars}>
-            {name}
-          </span>
-        ))}
-      </div>
-      <svg viewBox="0 0 100 200" preserveAspectRatio="none">
-        {[25, 75, 125, 175].map((y, index) => (
-          <path
-            key={y}
-            d={`M0 ${y} C 55 ${y}, 45 100, 100 100`}
-            style={{ '--r': index } as Vars}
-          />
-        ))}
-      </svg>
-      <div className="ew-runtime-core ew-in" style={{ '--r': 4 } as Vars}>
-        <strong>Prologue</strong>
-        <small>
-          <Lock size={11} />
-          密钥在本机
-        </small>
-      </div>
-      <svg viewBox="0 0 100 200" preserveAspectRatio="none">
-        {[50, 100, 150].map((y, index) => (
-          <path
-            key={y}
-            d={`M0 100 C 55 100, 45 ${y}, 100 ${y}`}
-            style={{ '--r': 5 + index } as Vars}
-          />
-        ))}
-      </svg>
-      <div className="ew-runtime-col">
-        {['OpenAI', 'Anthropic', '兼容服务'].map((name, index) => (
-          <span
-            className="ew-in"
-            key={name}
-            style={{ '--r': 6 + index } as Vars}
-          >
-            {name}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SearchVisual() {
-  const results = [
-    ['Pages', 'Q4 复盘'],
-    ['Dataset', 'Q4 预算'],
-    ['Feed', 'Q4 路线图'],
-  ];
-  return (
-    <div className="ew-mock ew-card ew-palette" aria-hidden="true">
-      <div className="ew-palette-input">
-        <Search size={15} />
-        <span className="ew-typing ew-typing-short">Q4</span>
-        <kbd>⌘K</kbd>
-      </div>
-      {results.map(([plugin, text], index) => (
-        <div
-          className="ew-palette-row ew-in"
-          key={plugin}
-          style={{ '--r': 2 + index } as Vars}
-        >
-          <small>{plugin}</small>
-          <span>
-            <mark>Q4</mark>
-            {text.slice(2)}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-export const featureVisuals: Record<FeatureVisual, ComponentType> = {
-  goals: GoalsVisual,
-  capabilities: CapabilitiesVisual,
-  studio: StudioVisual,
-  coding: CodingVisual,
-  runtime: RuntimeVisual,
-  search: SearchVisual,
+/** 按场景 id 取画面；shot 为 true 的是产品截图，其余是示意。 */
+export const sceneVisuals: Record<
+  string,
+  { Visual: ComponentType; shot: boolean }
+> = {
+  relay: { Visual: GoalsVisual, shot: true },
+  control: { Visual: CapabilitiesVisual, shot: false },
+  assistant: { Visual: AssistantVisual, shot: false },
+  feed: { Visual: FeedVisual, shot: true },
+  start: { Visual: StartVisual, shot: true },
+  studio: { Visual: StudioVisual, shot: false },
+  coding: { Visual: CodingVisual, shot: false },
 };
-
-export function AgentsVisual() {
-  return (
-    <div className="ew-mock ew-import" aria-hidden="true">
-      <div className="ew-import-list">
-        {['Codex', 'Claude Code', 'Cursor', 'OpenCode', 'Grok Build'].map(
-          (name, index) => (
-            <span className="ew-in" key={name} style={{ '--r': index } as Vars}>
-              {name}
-            </span>
-          ),
-        )}
-      </div>
-      <ArrowDown className="ew-in" size={16} style={{ '--r': 5 } as Vars} />
-      <div
-        className="ew-card ew-import-role ew-in"
-        style={{ '--r': 6 } as Vars}
-      >
-        <Bot size={17} />
-        <span>
-          <i />
-          <i />
-        </span>
-        <b>v1</b>
-      </div>
-    </div>
-  );
-}
