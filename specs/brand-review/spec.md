@@ -15,7 +15,7 @@
 - 称呼、选择和理由对所有访问者可见，页面已说明。匿名投票没有防刷能力，只适合内部评审；公开前需要改为登录投票或加限流。
 
 ## 截图来源
-`public/images/demos/directions/` 下 40 张 JPEG 于 2026-10-01 用 Playwright 从预览部署 `claude-project-thread-u25u2v-molis-club-production.sparkling-silence-0a49.workers.dev` 截取首屏：桌面 1440×900，缩至 1200 与 480 宽；手机 390×844 @2x，缩至 599 与 280 宽；由 macOS sips 压缩。Edition C 首页在加载后 3.4 秒截取，标题“Amplify Ideas”完整显示；其余在 4.5 秒后截取。方向改版后需要重截。
+`public/images/demos/directions/` 下 40 张 JPEG 于 2026-10-01 用 Playwright 从预览部署 `claude-project-thread-u25u2v-molis-club-production.sparkling-silence-0a49.workers.dev` 截取首屏：桌面 1440×900，缩至 1200 与 480 宽；手机 390×844 @2x，缩至 599 与 280 宽；由 macOS sips 压缩。Edition C 首页在加载后 3.4 秒截取，标题“Amplify Ideas”完整显示；其余在 4.5 秒后截取。2026-10-05 五个 Molis Work 页按产品介绍 V1 改版后，`*-work*.jpg` 共 20 张从本地开发服务按同样尺寸与等待时间重截，由 ImageMagick 缩放压缩（4:2:0，质量 92–93）；首页截图未变。方向改版后需要重截。
 
 ## 上线
 Sites 部署会自动应用 `drizzle/`。Cloudflare 自有账号部署需要对该 Worker 绑定的 D1 执行一次：
