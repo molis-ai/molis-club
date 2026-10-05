@@ -4,308 +4,100 @@ import { useEffect, useRef, useState } from 'react';
 import type {
   CSSProperties,
   ComponentType,
+  ReactNode,
   PointerEvent as ReactPointerEvent,
 } from 'react';
 import {
-  ArrowDown,
+  ArrowUp,
   ArrowUpRight,
   Blocks,
   Bot,
   Check,
   Command,
+  Cpu,
   Download,
   FileText,
   HardDrive,
   LayoutPanelTop,
-  Lock,
   Search,
   ShieldCheck,
+  Sparkles,
   Undo2,
+  UserCheck,
   Workflow,
 } from 'lucide-react';
+import {
+  GITHUB_URL,
+  MAC_DOWNLOAD_URL,
+  agentLine,
+  architecture,
+  closing,
+  compareIntro,
+  comparisons,
+  differences,
+  differencesIntro,
+  featureGroups,
+  featuresIntro,
+  hero,
+  localFirst,
+  moreIntro,
+  moreScenarios,
+  nav,
+  scenarios,
+  scenariosIntro,
+  tagsOf,
+} from '../../../../../content/molis-work';
+import type {
+  Point,
+  Scenario,
+  Status,
+  Tag,
+} from '../../../../../content/molis-work';
 import '../daylight.css';
 import './work.css';
 
 type Vars = CSSProperties & Record<`--${string}`, string | number>;
 
-/*
- * 页面先于下一次发版上线：v0.2.0 只含 Goals、Work、Feed、Artifacts，
- * 其余能力都标「下一版」。新版发布后把它改成 false，标签整体消失。
- */
-const SHOW_NEXT_RELEASE = true;
-/* 已签名并公证的 macOS 安装包发布后填入下载地址；为空时只显示「在 GitHub 查看」。 */
-const MAC_DOWNLOAD_URL: string | null = null;
-const GITHUB_URL = 'https://github.com/molis-ai/molis-work';
-
-type TagKind = 'next' | 'preview' | 'soon' | 'planned';
-const tagLabels: Record<TagKind, string> = {
-  next: '下一版',
-  preview: '预览',
-  soon: '即将推出',
-  planned: '规划中',
+/* 标签文字来自 tagsOf()，这里只决定用哪种颜色。 */
+const tagKind: Record<Tag, string> = {
+  下一版: 'next',
+  预览: 'preview',
+  规划中: 'planned',
 };
 
-function Tag({ kind }: { kind: TagKind }) {
-  if (kind === 'next' && !SHOW_NEXT_RELEASE) return null;
-  return <span className={`dw-tag dw-tag-${kind}`}>{tagLabels[kind]}</span>;
-}
-
-function Tags({ kinds }: { kinds?: TagKind[] }) {
-  if (!kinds?.length) return null;
+function Tags({ status }: { status?: Status }) {
+  const tags = tagsOf(status);
+  if (!tags.length) return null;
   return (
     <>
-      {kinds.map((kind) => (
-        <Tag kind={kind} key={kind} />
+      {tags.map((tag) => (
+        <span className={`dw-tag dw-tag-${tagKind[tag]}`} key={tag}>
+          {tag}
+        </span>
       ))}
     </>
   );
 }
 
-const heroLines = ['让工作，', '在人、工具与 Agent 之间继续。'];
+/* 标题按逗号断行，拼起来仍是原文；窄屏再按顿号分词组换行，不把词拆开。 */
+const lines = (text: string) => text.split(/(?<=，)/);
+const phrases = (text: string) => text.split(/(?<=[，、])/);
 /* 中文逐字、英文按词拆开，窄屏换行时不会把 Agent 断开。 */
 const tokens = (line: string) =>
   (line.match(/[A-Za-z]+|./gu) ?? []).map((t) => (t === ' ' ? '\u00a0' : t));
+const pad2 = (n: number) => String(n).padStart(2, '0');
+const index2 = (index: number) => pad2(index + 1);
 
-const pillars: { title: string; text: string; tags?: TagKind[] }[] = [
-  {
-    title: '目标可核对',
-    text: '所有 Agent 推进同一份 Goal。重要改动由你确认，“完成”要过显式收尾。',
-  },
-  {
-    title: '能力注册一次，到处可用',
-    text: '插件的每项能力，页面、助理、工作流和外部 Agent 都能调用，权限逐个授予。',
-    tags: ['next'],
-  },
-  {
-    title: '工具可以自己做',
-    text: '缺什么工具，描述出来，让 Agent 写成插件，装进你的项目。',
-    tags: ['next'],
-  },
+const heroLines = lines(hero.title);
+
+const entryIcons: ComponentType<{ size?: number }>[] = [
+  LayoutPanelTop,
+  Bot,
+  Workflow,
+  Command,
 ];
 
-const entries: {
-  label: string;
-  note?: string;
-  icon: ComponentType<{ size?: number }>;
-  tags?: TagKind[];
-}[] = [
-  { label: '页面与搜索', icon: LayoutPanelTop },
-  { label: '个人助理', icon: Bot, tags: ['soon'] },
-  { label: '工作流程与定时', icon: Workflow },
-  { label: '外部 Agent', note: 'MCP', icon: Command },
-];
-
-type Feature = {
-  id: string;
-  name: string;
-  title: string;
-  points: string[];
-  tags?: TagKind[];
-  photo: string;
-  size: [number, number];
-  caption: string;
-};
-
-const features: Feature[] = [
-  {
-    id: 'goals',
-    name: '目标',
-    title: '目标只有一份，“完成”可以核对。',
-    points: [
-      'Codex、Claude Code 和内置助理推进的是同一个 Goal；打开就能看到要达成什么、做完了什么、下一步是什么。',
-      'Agent 可以提议，不能悄悄改掉你认可的目标；完成要核对约定、依据和阻塞。',
-      '依赖画布、决定中心、绑定在 Goal 上的终端、macOS 菜单栏。',
-    ],
-    photo: '/images/atelier/studio-desk.jpg',
-    size: [1440, 960],
-    caption: '产品截图 · 演示数据',
-  },
-  {
-    id: 'capabilities',
-    name: '能力',
-    title: '能力注册一次，到处可用。',
-    points: [
-      '插件把查询和操作登记到同一个能力目录，页面、助理、工作流和外部 Agent 都从这里调用。',
-      '在 Claude Code、Codex 等客户端连上 Molis Work 的 MCP，就能在授权范围内查询、判断、写入。',
-      '权限逐个授予、随时撤回；每次调用留记录，被取消或撤权的调用不再写入。',
-    ],
-    tags: ['next'],
-    photo: '/images/atelier/shared-studio.jpg',
-    size: [1440, 960],
-    caption: '界面示意',
-  },
-  {
-    id: 'studio',
-    name: '插件创作台',
-    title: '缺的工具，描述出来，让它长出来。',
-    points: [
-      '说清楚要什么，Agent 先给方案，再在沙箱里写真实代码，通过检查后装进项目。',
-      '安装前经过宿主检查和无头浏览器验收；试用时的写入不碰正式数据。',
-      '做好的插件自动成为能力，助理、Coding 和外部 Agent 都能调用。',
-    ],
-    tags: ['preview', 'next'],
-    photo: '/images/atelier/makers-studio.jpg',
-    size: [1672, 941],
-    caption: '界面示意',
-  },
-  {
-    id: 'coding',
-    name: 'Coding',
-    title: '编码 Agent，住在你的项目里。',
-    points: [
-      '计划与任务板、子代理并行、停下后从断点继续。',
-      '多个会话可以认领任务、互相发信，等到答复再自动继续。',
-      '写文件、跑命令、push、开 PR 都先经你审查。我们用它改过 Molis Work 自己的代码。',
-    ],
-    tags: ['next'],
-    photo: '/images/edition-c/making-study.jpg',
-    size: [1536, 1024],
-    caption: '界面示意',
-  },
-  {
-    id: 'runtime',
-    name: 'AI 运行时',
-    title: '模型只配一次，所有 AI 走同一条路。',
-    points: [
-      '文字、图片、判断和 Agent 都经同一个 Prologue 运行时；接 OpenAI 或 Anthropic 接口及兼容服务。',
-      '密钥加密存在本机，插件只拿到引用；Agent 要改东西先进审查队列。',
-      '系统和插件的提示词、角色登记在一处，可见可改。',
-    ],
-    tags: ['next'],
-    photo: '/images/atelier/threshold.jpg',
-    size: [1440, 900],
-    caption: '结构示意',
-  },
-  {
-    id: 'search',
-    name: '搜索',
-    title: '按一下 ⌘K，找到所有东西。',
-    points: [
-      '搜本项目和个人空间里所有插件的内容，包括还没打开过的；点开定位到那段文字。',
-      '两个字的中文、Q4 这样的短词、中英混排都能搜；只返回你有权看的内容。',
-    ],
-    tags: ['next'],
-    photo: '/images/atelier/reading-room.jpg',
-    size: [1440, 960],
-    caption: '界面示意',
-  },
-];
-
-const cards: {
-  title: string;
-  text: string;
-  tags?: TagKind[];
-  image?: string;
-  caption: string;
-}[] = [
-  {
-    title: '信息进来，只把要你处理的送到面前',
-    text: 'RSS、网页、YouTube、GitHub、Gmail 的内容进 Feed，需要你介入的进 Inbox，选中的材料交给 Pages 写成带来源的文稿。',
-    tags: ['next'],
-    image: '/images/daylight/work/feed.jpg',
-    caption: 'Feed · 产品截图',
-  },
-  {
-    title: '第一次打开，项目就有内容',
-    text: '勾选来源、完成授权，AI 整理出带来源的工作总结和项目建议，确认后生成项目。',
-    tags: ['next'],
-    image: '/images/daylight/work/onboarding.jpg',
-    caption: '首次使用 · 产品截图',
-  },
-  {
-    title: '把你调好的 Agent 带进来',
-    text: '从 Codex、Claude Code、Cursor、OpenCode、Grok Build 导入规则和 Skills，发布成固定版本的角色。',
-    tags: ['next'],
-    caption: '界面示意',
-  },
-];
-
-const RELEASED = new Set(['Goals', 'Work', 'Feed', 'Artifacts']);
-
-const pluginGroups: { name: string; plugins: [string, string][] }[] = [
-  {
-    name: '目标与工作',
-    plugins: [
-      ['Goals', '确定目标，推进工作，留下结果。'],
-      ['Work', '回到你的会话，继续正在做的事。'],
-      ['Inbox', '只看需要你介入的事项。'],
-      ['Feed', '查看来源消息和完整流水。'],
-      ['Schedule', '到点跑自己的对话任务，也叫醒其他插件的闹钟。'],
-      ['Artifacts', '打开项目成果，查看保留下来的版本。'],
-    ],
-  },
-  {
-    name: '编码',
-    plugins: [
-      ['Coding', '围绕代码讨论、执行和审查，保留连续的任务记录。'],
-      ['Files', '查看工作区文件与保留的内容。'],
-      ['Git', '查看工作区的版本与变更。'],
-      ['Diff', '比较固定版本，逐项阅读差异。'],
-      ['Text stats', '查看材料与成果的文本统计。'],
-    ],
-  },
-  {
-    name: '写作与数据',
-    plugins: [
-      ['Pages', '写文档，用块和格式，保存在这台电脑。'],
-      ['Form', '建问卷，预览填写，看结果。'],
-      ['Dataset', '改表格，导入 CSV，留下版本。'],
-      ['PPT', '写幻灯片大纲，预览并导出 JSON。'],
-      ['Images', '连接生图服务，描述图片，预览并保存生成结果。'],
-    ],
-  },
-  {
-    name: '想法与知识',
-    plugins: [
-      ['灵光', '先记下还没想清楚的想法，再决定留下或丢掉。'],
-      ['Jelly', '安排事项、写笔记、收集灵感，把想法放进每天。'],
-      ['Cognia', '导入本地知识，保留来源，整理为可追溯的知识。'],
-      ['Shelf', '把文件放到置物架，处理副本，原件不动。'],
-      ['Alchemist', '写下方向，炼成可比较的卡，再决定做不做。'],
-    ],
-  },
-  {
-    name: '自动化与 AI',
-    plugins: [
-      ['Workflows', '把已有插件按顺序串成一件可以做完的事。'],
-      ['Characters', '编辑角色的做事方式，发布固定版本供 AI 任务选择。'],
-      ['Experiments', '同一任务，独立比较模型的判断、耗时与成本。'],
-      ['插件创作台', '用自然语言设计、构建并使用自己的插件。'],
-    ],
-  },
-];
-
-const localPoints = [
-  {
-    icon: HardDrive,
-    text: '所有数据在本机的 Molis Work Home，浏览器和 macOS App 打开同一个工作台。',
-  },
-  {
-    icon: ShieldCheck,
-    text: '安装不改你的项目和 Agent 配置；接入先预览，确认才写入，失败自动回滚。',
-  },
-  { icon: Undo2, text: '卸载只撤销它自己写入的部分，你的项目和数据保留。' },
-  { icon: FileText, text: '外部内容始终当作资料，不会变成给 AI 的指令。' },
-];
-
-const upcoming: { name: string; text: string; tag: TagKind }[] = [
-  {
-    name: '个人助理',
-    text: '在任何页面叫它，用 @ 引用内容、用 / 选能力，读 PDF 和图片；可撤销的操作直接做，该跟进的事提醒你。',
-    tag: 'soon',
-  },
-  {
-    name: '项目讨论',
-    text: '项目主群和公开话题，在工作区旁边分屏打开。',
-    tag: 'preview',
-  },
-  {
-    name: '面向团队',
-    text: '团队空间、成员权限与多设备同步。',
-    tag: 'planned',
-  },
-  { name: '分享插件', text: '把你做的插件分享给别人使用。', tag: 'planned' },
-];
+const localIcons = [HardDrive, ShieldCheck, FileText, Cpu, UserCheck];
 
 function random(seed: number) {
   const value = Math.sin(seed * 9301 + 49297) * 233280;
@@ -368,10 +160,68 @@ function MaskLines({ lines }: { lines: string[] }) {
     <>
       {lines.map((line, index) => (
         <span className="dl-mask" key={line}>
-          <span style={{ '--d': index } as Vars}>{line}</span>
+          <span style={{ '--d': index } as Vars}>
+            <Phrases text={line} />
+          </span>
         </span>
       ))}
     </>
+  );
+}
+
+function Phrases({ text }: { text: string }) {
+  return (
+    <>
+      {phrases(text).map((phrase) => (
+        <span className="dl-phrase" key={phrase}>
+          {phrase}
+        </span>
+      ))}
+    </>
+  );
+}
+
+function SectionHead({
+  id,
+  kicker,
+  title,
+  lead,
+  children,
+}: {
+  id: string;
+  kicker?: string;
+  title: string;
+  lead?: string;
+  children?: ReactNode;
+}) {
+  return (
+    <div className="dw-head dl-reveal">
+      <div className="dw-head-title">
+        {kicker ? <span className="dl-eyebrow">{kicker}</span> : null}
+        <h2 id={id}>
+          <MaskLines lines={lines(title)} />
+        </h2>
+      </div>
+      {lead || children ? (
+        <p>
+          {lead}
+          {children}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function Points({ points }: { points: Point[] }) {
+  return (
+    <ul className="dw-points">
+      {points.map((point) => (
+        <li key={point.text}>
+          {point.text}
+          <Tags status={point.status} />
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -402,14 +252,12 @@ function Window({
   width,
   height,
   label,
-  priority,
   className = '',
 }: {
   src: string;
   width: number;
   height: number;
   label: string;
-  priority?: boolean;
   className?: string;
 }) {
   return (
@@ -420,19 +268,12 @@ function Window({
         <i />
         <span>{label}</span>
       </div>
-      <img
-        src={src}
-        width={width}
-        height={height}
-        alt=""
-        loading={priority ? undefined : 'lazy'}
-        fetchPriority={priority ? 'high' : undefined}
-      />
+      <img src={src} width={width} height={height} alt="" loading="lazy" />
     </div>
   );
 }
 
-/* ---------- 六个区块的画面：除目标用真实截图外都是示意 ---------- */
+/* ---------- 场景画面：目标用真实截图，其余是示意 ---------- */
 
 function GoalsVisual() {
   return (
@@ -446,7 +287,7 @@ function GoalsVisual() {
   );
 }
 
-function CapabilitiesVisual() {
+function ControlVisual() {
   const rows = [
     ['查询', true],
     ['判断', true],
@@ -465,6 +306,10 @@ function CapabilitiesVisual() {
         <div className="dw-cap-head">
           <Blocks size={15} />
           能力目录
+          <em>
+            <ShieldCheck size={12} />
+            审查队列
+          </em>
         </div>
         {rows.map(([label, on], index) => (
           <div
@@ -484,6 +329,71 @@ function CapabilitiesVisual() {
           <i />
           <i />
         </div>
+      </div>
+      <div className="dw-cap-toast">
+        <Check size={13} />
+        <i />
+        <span>
+          <Undo2 size={12} />
+          撤销
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function AssistantVisual() {
+  return (
+    <div className="dw-mock dw-assist" aria-hidden="true">
+      <div className="dw-assist-page">
+        <div className="dw-assist-title">
+          <FileText size={14} />
+          <i />
+        </div>
+        <div className="dw-assist-text">
+          <i />
+          <span className="dw-assist-sel">
+            <i />
+            <i />
+          </span>
+          <i />
+          <i />
+          <i />
+        </div>
+      </div>
+      <div className="dw-assist-card">
+        <div className="dw-assist-card-head">
+          <Sparkles size={14} />
+          建两个待办
+        </div>
+        <ul>
+          <li>
+            <b />
+            <i />
+          </li>
+          <li>
+            <b />
+            <i />
+          </li>
+        </ul>
+        <div className="dw-assist-buttons">
+          <span className="is-primary">
+            <Check size={13} />
+            执行
+          </span>
+          <span>
+            <Undo2 size={13} />
+            撤销
+          </span>
+        </div>
+      </div>
+      <div className="dw-assist-bar">
+        <span className="dw-assist-chip">@ 选区</span>
+        <span className="dw-assist-chip">/ 待办</span>
+        <span className="dw-assist-caret" />
+        <b>
+          <ArrowUp size={14} />
+        </b>
       </div>
     </div>
   );
@@ -545,124 +455,90 @@ function CodingVisual() {
   );
 }
 
-function RuntimeVisual() {
-  return (
-    <div className="dw-mock dw-runtime" aria-hidden="true">
-      <div className="dw-runtime-col">
-        {['文字', '图片', '判断', 'Agent'].map((name) => (
-          <span key={name}>{name}</span>
-        ))}
-      </div>
-      <svg viewBox="0 0 100 200" preserveAspectRatio="none">
-        {[25, 75, 125, 175].map((y) => (
-          <path key={y} d={`M0 ${y} C 55 ${y}, 45 100, 100 100`} />
-        ))}
-      </svg>
-      <div className="dw-runtime-core">
-        <strong>Prologue</strong>
-        <small>
-          <Lock size={11} />
-          密钥在本机
-        </small>
-      </div>
-      <svg viewBox="0 0 100 200" preserveAspectRatio="none">
-        {[50, 100, 150].map((y) => (
-          <path key={y} d={`M0 100 C 55 100, 45 ${y}, 100 ${y}`} />
-        ))}
-      </svg>
-      <div className="dw-runtime-col">
-        {['OpenAI', 'Anthropic', '兼容服务'].map((name) => (
-          <span key={name}>{name}</span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SearchVisual() {
-  const results = [
-    ['Pages', 'Q4 复盘'],
-    ['Dataset', 'Q4 预算'],
-    ['Feed', 'Q4 路线图'],
-  ];
-  return (
-    <div className="dw-mock dw-palette" aria-hidden="true">
-      <div className="dw-palette-input">
-        <Search size={16} />
-        <span>Q4</span>
-        <kbd>⌘K</kbd>
-      </div>
-      {results.map(([plugin, text], index) => (
-        <div
-          className="dw-palette-row"
-          key={plugin}
-          style={{ '--r': index } as Vars}
-        >
-          <small>{plugin}</small>
-          <span>
-            <mark>Q4</mark>
-            {text.slice(2)}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-const visuals: Record<string, ComponentType> = {
-  goals: GoalsVisual,
-  capabilities: CapabilitiesVisual,
-  studio: StudioVisual,
-  coding: CodingVisual,
-  runtime: RuntimeVisual,
-  search: SearchVisual,
+const scenarioArt: Record<
+  string,
+  {
+    Visual: ComponentType;
+    photo: string;
+    size: [number, number];
+    caption: string;
+  }
+> = {
+  relay: {
+    Visual: GoalsVisual,
+    photo: '/images/atelier/studio-desk.jpg',
+    size: [1440, 960],
+    caption: '产品截图 · 演示数据',
+  },
+  control: {
+    Visual: ControlVisual,
+    photo: '/images/atelier/shared-studio.jpg',
+    size: [1440, 960],
+    caption: '界面示意',
+  },
+  assistant: {
+    Visual: AssistantVisual,
+    photo: '/images/atelier/reading-room.jpg',
+    size: [1440, 960],
+    caption: '界面示意',
+  },
 };
 
-function FeatureCopy({ feature }: { feature: Feature }) {
+const moreArt: Record<
+  string,
+  {
+    image?: string;
+    photo?: { src: string; size: [number, number] };
+    Visual?: ComponentType;
+    caption: string;
+  }
+> = {
+  feed: { image: '/images/daylight/work/feed.jpg', caption: 'Feed · 产品截图' },
+  start: {
+    image: '/images/daylight/work/onboarding.jpg',
+    caption: '首次使用 · 产品截图',
+  },
+  studio: {
+    photo: { src: '/images/atelier/makers-studio.jpg', size: [1672, 941] },
+    Visual: StudioVisual,
+    caption: '插件创作台 · 界面示意',
+  },
+  coding: {
+    photo: { src: '/images/edition-c/making-study.jpg', size: [1536, 1024] },
+    Visual: CodingVisual,
+    caption: 'Coding · 界面示意',
+  },
+};
+
+function ScenarioCopy({
+  scenario,
+  index,
+  inRail,
+}: {
+  scenario: Scenario;
+  index: number;
+  inRail?: boolean;
+}) {
+  const tags = tagsOf(scenario.status);
   return (
     <>
-      <div className="dw-feature-meta">
-        <span>{feature.name}</span>
-        <Tags kinds={feature.tags} />
-      </div>
-      <h3>
-        {feature.title.split(/(?<=，)/).map((phrase) => (
-          <span className="dl-phrase" key={phrase}>
-            {phrase}
-          </span>
-        ))}
-      </h3>
-      <ul>
-        {feature.points.map((point) => (
-          <li key={point}>{point}</li>
-        ))}
-      </ul>
-    </>
-  );
-}
-
-function ImportVisual() {
-  return (
-    <div className="dw-import" aria-hidden="true">
-      <div className="dw-import-list">
-        {['Codex', 'Claude Code', 'Cursor', 'OpenCode', 'Grok Build'].map(
-          (name, index) => (
-            <span key={name} style={{ '--r': index } as Vars}>
-              {name}
+      {!inRail || tags.length ? (
+        <div className="dw-feature-meta">
+          {inRail ? null : (
+            <span>
+              <em>{index2(index)}</em>
+              {scenario.label}
             </span>
-          ),
-        )}
-      </div>
-      <ArrowDown className="dw-import-arrow" size={18} />
-      <div className="dw-import-role">
-        <Bot size={18} />
-        <span>
-          <i />
-          <i />
-        </span>
-        <b>v1</b>
-      </div>
-    </div>
+          )}
+          <Tags status={scenario.status} />
+        </div>
+      ) : null}
+      <h3>
+        <Phrases text={scenario.title} />
+      </h3>
+      <p className="dw-problem">{scenario.problem}</p>
+      <Points points={scenario.points} />
+    </>
   );
 }
 
@@ -673,6 +549,35 @@ function trackSpotlight(event: ReactPointerEvent<HTMLElement>) {
   target.style.setProperty('--my', `${event.clientY - box.top}px`);
 }
 
+/* 功能全景按组流进多栏瀑布流：组可以跨栏接着排，组名总跟着它的第一张卡。 */
+function FeatureGroup({ group }: { group: (typeof featureGroups)[number] }) {
+  return (
+    <div className="dw-group">
+      <h3 className="dl-reveal">
+        {group.name}
+        <small aria-hidden="true">{pad2(group.features.length)}</small>
+      </h3>
+      <ul>
+        {group.features.map((feature) => (
+          <li
+            key={feature.name}
+            className="dw-plugin dl-reveal"
+            onPointerMove={trackSpotlight}
+          >
+            <div className="dw-plugin-head">
+              <strong>{feature.name}</strong>
+              <span className="dw-plugin-tags">
+                <Tags status={feature.status} />
+              </span>
+            </div>
+            <p>{feature.line}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export default function WorkPage() {
   const siteRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -681,7 +586,7 @@ export default function WorkPage() {
     const site = siteRef.current;
     if (!site) return;
     const header = site.querySelector<HTMLElement>('.dl-header');
-    const hero = site.querySelector<HTMLElement>('.dw-hero');
+    const heroNode = site.querySelector<HTMLElement>('.dw-hero');
     const scenes = Array.from(
       site.querySelectorAll<HTMLElement>('[data-scene]'),
     );
@@ -713,6 +618,7 @@ export default function WorkPage() {
       if (!frame) frame = requestAnimationFrame(update);
     };
 
+    /* 观察器加的类只放在 className 固定的元素上，React 重渲染时不会被抹掉。 */
     const revealer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -727,6 +633,10 @@ export default function WorkPage() {
       .querySelectorAll('.dl-reveal')
       .forEach((node) => revealer.observe(node));
 
+    /*
+     * 三个场景面板按顺序对应导航轨的三项（active 0–2）。
+     * is-seen 加在 className 固定的 .dw-panel-frame 上，active 变化引起的重渲染不会把它抹掉。
+     */
     const panels = Array.from(site.querySelectorAll<HTMLElement>('.dw-panel'));
     const spotter = new IntersectionObserver(
       (entries) => {
@@ -735,7 +645,8 @@ export default function WorkPage() {
           entry.target
             .querySelector('.dw-panel-frame')
             ?.classList.add('is-seen');
-          setActive(panels.indexOf(entry.target as HTMLElement));
+          const index = panels.indexOf(entry.target as HTMLElement);
+          if (index >= 0) setActive(index);
         }
       },
       { rootMargin: '-45% 0px -45% 0px' },
@@ -743,27 +654,29 @@ export default function WorkPage() {
     panels.forEach((panel) => spotter.observe(panel));
 
     const onPointer = (event: PointerEvent) => {
-      if (event.pointerType !== 'mouse' || !hero) return;
+      if (event.pointerType !== 'mouse' || !heroNode) return;
       const x = event.clientX / window.innerWidth - 0.5;
       const y = event.clientY / window.innerHeight - 0.5;
-      hero.style.setProperty('--sun-x', (x * 28).toFixed(1) + 'px');
-      hero.style.setProperty('--sun-y', (y * 18).toFixed(1) + 'px');
+      heroNode.style.setProperty('--sun-x', (x * 28).toFixed(1) + 'px');
+      heroNode.style.setProperty('--sun-y', (y * 18).toFixed(1) + 'px');
     };
 
     site.classList.add('is-ready');
     update();
     window.addEventListener('scroll', request, { passive: true });
     window.addEventListener('resize', request);
-    hero?.addEventListener('pointermove', onPointer);
+    heroNode?.addEventListener('pointermove', onPointer);
     return () => {
       cancelAnimationFrame(frame);
       revealer.disconnect();
       spotter.disconnect();
       window.removeEventListener('scroll', request);
       window.removeEventListener('resize', request);
-      hero?.removeEventListener('pointermove', onPointer);
+      heroNode?.removeEventListener('pointermove', onPointer);
     };
   }, []);
+
+  const labels = compareIntro.labels;
 
   return (
     <div className="dl-site dw-site" ref={siteRef}>
@@ -773,9 +686,11 @@ export default function WorkPage() {
           <span>Molis AI</span>
         </Link>
         <nav className="dl-pill" aria-label="页面导航">
-          <a href="#features">功能</a>
-          <a href="#plugins">插件</a>
-          <a href="#local">本地优先</a>
+          {nav.map((item) => (
+            <a href={item.href} key={item.href}>
+              {item.label}
+            </a>
+          ))}
           <a
             href={MAC_DOWNLOAD_URL ?? GITHUB_URL}
             className="dl-pill-cta"
@@ -809,10 +724,8 @@ export default function WorkPage() {
               <LeafShadow className="dl-leaves dw-hero-leaves" />
 
               <div className="dw-hero-copy">
-                <span className="dw-kicker">
-                  MOLIS WORK · 本地优先的 AI 工作台
-                </span>
-                <h1 id="dw-title" aria-label={heroLines.join('')}>
+                <span className="dw-kicker">{hero.kicker}</span>
+                <h1 id="dw-title" aria-label={hero.title}>
                   {heroLines.map((line, lineIndex) => (
                     <span className="dw-line" key={line} aria-hidden="true">
                       {tokens(line).map((token, index) => (
@@ -827,15 +740,18 @@ export default function WorkPage() {
                   ))}
                 </h1>
                 <div className="dw-hero-lower">
-                  <p>
-                    目标、成果和能力放在同一个地方。换工具、换
-                    Agent、隔几天回来，都从上次停下的地方接着做。
-                  </p>
+                  <p>{hero.lead}</p>
                   <Actions tone="light" />
-                  <small>
-                    数据在你的电脑上。内置接入 Codex、Claude Code、OpenCode、Pi
-                    Agent、Grok Build。
-                  </small>
+                  <p className="dl-sr-only">{agentLine}</p>
+                  <div className="dw-agents" aria-hidden="true">
+                    <span className="dw-agents-label">{hero.agentsLabel}</span>
+                    {hero.agents.map((agent) => (
+                      <span className="dw-agent" key={agent}>
+                        {agent}
+                      </span>
+                    ))}
+                    <span className="dw-agents-more">{hero.agentsMore}</span>
+                  </div>
                 </div>
               </div>
 
@@ -869,66 +785,147 @@ export default function WorkPage() {
           </div>
         </section>
 
-        <section className="dw-pillars" aria-label="三个支柱">
-          <ol>
-            {pillars.map((pillar, index) => (
+        {/* 三个主场景 · 上午 */}
+        <section
+          id="scenarios"
+          className="dw-scenarios"
+          aria-labelledby="dw-scenarios-title"
+        >
+          <SectionHead
+            id="dw-scenarios-title"
+            kicker={scenariosIntro.kicker}
+            title={scenariosIntro.title}
+          />
+          <div className="dw-features">
+            <div className="dw-rail">
+              <ol className="dw-rail-nav">
+                {scenarios.map((scenario, index) => (
+                  <li key={scenario.id}>
+                    <a
+                      href={`#scenario-${scenario.id}`}
+                      aria-current={active === index ? 'true' : undefined}
+                    >
+                      <span>{index2(index)}</span>
+                      {scenario.label}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+              <div className="dw-rail-copy">
+                {scenarios.map((scenario, index) => (
+                  <div
+                    key={scenario.id}
+                    className={`dw-feature-copy${active === index ? ' is-active' : ''}`}
+                    aria-hidden={active === index ? undefined : 'true'}
+                  >
+                    <ScenarioCopy scenario={scenario} index={index} inRail />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="dw-panels">
+              {scenarios.map((scenario, index) => {
+                const { Visual, photo, size, caption } =
+                  scenarioArt[scenario.id];
+                return (
+                  <article
+                    key={scenario.id}
+                    id={`scenario-${scenario.id}`}
+                    className={`dw-panel dw-panel-${scenario.id}`}
+                    data-scene="pass"
+                    aria-label={scenario.label}
+                  >
+                    <figure className="dw-panel-frame">
+                      <img
+                        className="dw-panel-photo"
+                        src={photo}
+                        width={size[0]}
+                        height={size[1]}
+                        alt=""
+                        loading="lazy"
+                      />
+                      <div className="dw-panel-shade" />
+                      <Visual />
+                      <figcaption>
+                        <span>{index2(index)}</span>
+                        {caption}
+                      </figcaption>
+                    </figure>
+                    <div className="dw-panel-copy">
+                      <ScenarioCopy scenario={scenario} index={index} />
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* 四点不同 */}
+        <section id="why" className="dw-why" aria-labelledby="dw-why-title">
+          <SectionHead
+            id="dw-why-title"
+            kicker={differencesIntro.kicker}
+            title={differencesIntro.title}
+            lead={differencesIntro.lead}
+          />
+          <ol className="dw-pillars">
+            {differences.map((difference, index) => (
               <li
                 className="dw-pillar dl-reveal"
-                key={pillar.title}
-                style={{ '--r': index } as Vars}
+                key={difference.title}
+                style={{ '--r': index % 2 } as Vars}
               >
-                <span className="dw-pillar-index">0{index + 1}</span>
-                <h2>
-                  {pillar.title}
-                  <Tags kinds={pillar.tags} />
-                </h2>
-                <p>{pillar.text}</p>
+                <div className="dw-pillar-meta">
+                  <span className="dw-pillar-index">{index2(index)}</span>
+                  <Tags status={difference.status} />
+                </div>
+                <h3>
+                  <Phrases text={difference.title} />
+                </h3>
+                <p>{difference.body}</p>
               </li>
             ))}
           </ol>
         </section>
 
+        {/* 结构图 */}
         <section className="dw-arch" aria-labelledby="dw-arch-title">
-          <div className="dw-arch-head dl-reveal">
-            <h2 id="dw-arch-title">
-              <MaskLines
-                lines={['四个入口，', '一个能力目录，', '一个 AI 运行时。']}
-              />
-            </h2>
-            <p>
-              你在页面里操作，助理替你执行，工作流按顺序跑，外部 Agent 经 MCP
-              调用。它们用的是同一批插件、同一套权限、同一份记录。
-              <Tag kind="next" />
-            </p>
-          </div>
+          <SectionHead id="dw-arch-title" title={architecture.title}>
+            {architecture.body}
+            <Tags status={architecture.status} />
+          </SectionHead>
 
           <figure className="dw-arch-figure dl-reveal" data-scene="pass">
             <div className="dw-arch-sun" aria-hidden="true" />
             <LeafShadow className="dl-leaves dw-arch-leaves" />
             <div className="dw-arch-diagram">
               <ul className="dw-arch-entries">
-                {entries.map(({ label, note, icon: Icon, tags }, index) => (
-                  <li
-                    className="dw-node dw-node-entry"
-                    key={label}
-                    style={{ '--r': index } as Vars}
-                  >
-                    <span className="dw-node-icon">
-                      <Icon size={17} />
-                    </span>
-                    <strong>{label}</strong>
-                    {note ? <small>{note}</small> : null}
-                    <Tags kinds={tags} />
-                    <i className="dw-wire" aria-hidden="true" />
-                  </li>
-                ))}
+                {architecture.entries.map((entry, index) => {
+                  const Icon = entryIcons[index] ?? Blocks;
+                  return (
+                    <li
+                      className="dw-node dw-node-entry"
+                      key={entry.name}
+                      style={{ '--r': index } as Vars}
+                    >
+                      <span className="dw-node-icon" aria-hidden="true">
+                        <Icon size={17} />
+                      </span>
+                      <strong>{entry.name}</strong>
+                      {entry.detail ? <small>{entry.detail}</small> : null}
+                      <i className="dw-wire" aria-hidden="true" />
+                    </li>
+                  );
+                })}
               </ul>
               <div
                 className="dw-node dw-node-catalog"
                 style={{ '--r': 4 } as Vars}
               >
                 <Blocks size={20} aria-hidden="true" />
-                <strong>统一能力目录</strong>
+                <strong>{architecture.catalog}</strong>
               </div>
               <div className="dw-arch-row">
                 <div
@@ -937,7 +934,7 @@ export default function WorkPage() {
                 >
                   <i className="dw-wire dw-wire-up" aria-hidden="true" />
                   <i className="dw-wire" aria-hidden="true" />
-                  <strong>插件：内置 25 个，加上你做的</strong>
+                  <strong>{architecture.plugins}</strong>
                 </div>
                 <div
                   className="dw-node dw-node-lower"
@@ -945,7 +942,7 @@ export default function WorkPage() {
                 >
                   <i className="dw-wire dw-wire-up" aria-hidden="true" />
                   <i className="dw-wire" aria-hidden="true" />
-                  <strong>Prologue 运行时</strong>
+                  <strong>{architecture.runtime}</strong>
                 </div>
               </div>
               <div
@@ -953,70 +950,64 @@ export default function WorkPage() {
                 style={{ '--r': 7 } as Vars}
               >
                 <HardDrive size={18} aria-hidden="true" />
-                <strong>一个 Home，数据存在本机</strong>
+                <strong>{architecture.home}</strong>
               </div>
             </div>
             <figcaption>结构示意</figcaption>
           </figure>
         </section>
 
-        <section id="features" className="dw-features" aria-label="主要功能">
-          <div className="dw-rail">
-            <ol className="dw-rail-nav">
-              {features.map((feature, index) => (
-                <li key={feature.id}>
-                  <a
-                    href={`#feature-${feature.id}`}
-                    aria-current={active === index ? 'true' : undefined}
-                  >
-                    <span>0{index + 1}</span>
-                    {feature.name}
-                  </a>
-                </li>
-              ))}
-            </ol>
-            <div className="dw-rail-copy">
-              {features.map((feature, index) => (
-                <div
-                  key={feature.id}
-                  className={`dw-feature-copy${active === index ? ' is-active' : ''}`}
-                  aria-hidden={active === index ? undefined : 'true'}
-                >
-                  <FeatureCopy feature={feature} />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="dw-panels">
-            {features.map((feature, index) => {
-              const Visual = visuals[feature.id];
+        {/* 更多场景 */}
+        <section id="more" className="dw-more" aria-labelledby="dw-more-title">
+          <SectionHead
+            id="dw-more-title"
+            kicker={moreIntro.kicker}
+            title={moreIntro.title}
+          />
+          <div className="dw-cards">
+            {moreScenarios.map((scenario, index) => {
+              const { image, photo, Visual, caption } = moreArt[scenario.id];
               return (
                 <article
-                  key={feature.id}
-                  id={`feature-${feature.id}`}
-                  className={`dw-panel dw-panel-${feature.id}${active === index ? ' is-active' : ''}`}
-                  data-scene="pass"
-                  aria-label={feature.name}
+                  className="dw-card dl-reveal"
+                  key={scenario.id}
+                  style={{ '--r': index % 2 } as Vars}
+                  aria-labelledby={`dw-more-${scenario.id}`}
                 >
-                  <figure className="dw-panel-frame">
-                    <img
-                      className="dw-panel-photo"
-                      src={feature.photo}
-                      width={feature.size[0]}
-                      height={feature.size[1]}
-                      alt=""
-                      loading="lazy"
-                    />
-                    <div className="dw-panel-shade" />
-                    <Visual />
-                    <figcaption>
-                      <span>0{index + 1}</span>
-                      {feature.caption}
-                    </figcaption>
+                  <figure className={photo ? 'is-photo' : undefined}>
+                    {image ? (
+                      <img
+                        className="dw-card-shot"
+                        src={image}
+                        width="1440"
+                        height="1000"
+                        alt=""
+                        loading="lazy"
+                      />
+                    ) : null}
+                    {photo ? (
+                      <img
+                        className="dw-card-photo"
+                        src={photo.src}
+                        width={photo.size[0]}
+                        height={photo.size[1]}
+                        alt=""
+                        loading="lazy"
+                      />
+                    ) : null}
+                    {Visual ? <Visual /> : null}
+                    <figcaption>{caption}</figcaption>
                   </figure>
-                  <div className="dw-panel-copy">
-                    <FeatureCopy feature={feature} />
+                  <div className="dw-card-copy">
+                    <div className="dw-card-meta">
+                      <span>{scenario.label}</span>
+                      <Tags status={scenario.status} />
+                    </div>
+                    <h3 id={`dw-more-${scenario.id}`}>
+                      <Phrases text={scenario.title} />
+                    </h3>
+                    <p className="dw-problem">{scenario.problem}</p>
+                    <Points points={scenario.points} />
                   </div>
                 </article>
               );
@@ -1024,147 +1015,127 @@ export default function WorkPage() {
           </div>
         </section>
 
-        <section className="dw-cards" aria-label="更多能力">
-          {cards.map((card, index) => (
-            <article
-              className="dw-card dl-reveal"
-              key={card.title}
-              style={{ '--r': index } as Vars}
-            >
-              <figure>
-                {card.image ? (
-                  <img
-                    src={card.image}
-                    width="1440"
-                    height="1000"
-                    alt=""
-                    loading="lazy"
-                  />
-                ) : (
-                  <ImportVisual />
-                )}
-                <figcaption>{card.caption}</figcaption>
-              </figure>
-              <div className="dw-card-copy">
-                <Tags kinds={card.tags} />
-                <h3>{card.title}</h3>
-                <p>{card.text}</p>
-              </div>
-            </article>
-          ))}
-        </section>
-
+        {/* 功能全景 */}
         <section
-          id="plugins"
+          id="features"
           className="dw-plugins"
-          aria-labelledby="dw-plugins-title"
+          aria-labelledby="dw-features-title"
         >
-          <div className="dw-plugins-head dl-reveal">
-            <h2 id="dw-plugins-title">
-              <MaskLines lines={['25 个内置插件，', '开箱即用。']} />
-            </h2>
-            <p>每个插件做好一件事，它们的能力都在同一个目录里。</p>
-          </div>
-          <div className="dw-plugin-groups">
-            {pluginGroups.map((group) => (
-              <div className="dw-plugin-group dl-reveal" key={group.name}>
-                <h3>{group.name}</h3>
-                <ul>
-                  {group.plugins.map(([name, text], index) => (
-                    <li
-                      key={name}
-                      className="dw-plugin"
-                      style={{ '--r': index } as Vars}
-                      onPointerMove={trackSpotlight}
-                    >
-                      <strong>{name}</strong>
-                      <p>{text}</p>
-                      <span className="dw-plugin-tags">
-                        {name === '插件创作台' ? <Tag kind="preview" /> : null}
-                        {RELEASED.has(name) ? null : <Tag kind="next" />}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          <SectionHead
+            id="dw-features-title"
+            kicker={featuresIntro.kicker}
+            title={featuresIntro.title}
+            lead={featuresIntro.lead}
+          />
+          <div className="dw-groups">
+            {featureGroups.map((group) => (
+              <FeatureGroup group={group} key={group.name} />
             ))}
           </div>
         </section>
 
+        {/* 对比 · 午后 */}
+        <section
+          id="compare"
+          className="dw-compare"
+          aria-labelledby="dw-compare-title"
+        >
+          <SectionHead
+            id="dw-compare-title"
+            kicker={compareIntro.kicker}
+            title={compareIntro.title}
+            lead={compareIntro.lead}
+          />
+          <div className="dw-compare-table">
+            <div className="dw-compare-cols" aria-hidden="true">
+              <span>{labels.now}</span>
+              <span>{labels.here}</span>
+              <span>{labels.gap}</span>
+            </div>
+            {comparisons.map((row, index) => (
+              <dl
+                className="dw-compare-row dl-reveal"
+                key={row.now}
+                style={{ '--r': index } as Vars}
+              >
+                <div className="dw-compare-now">
+                  <dt>{labels.now}</dt>
+                  <dd>{row.now}</dd>
+                </div>
+                <div className="dw-compare-here">
+                  <dt>{labels.here}</dt>
+                  <dd>{row.here}</dd>
+                </div>
+                <div className="dw-compare-gap">
+                  <dt>{labels.gap}</dt>
+                  <dd>{row.gap}</dd>
+                </div>
+              </dl>
+            ))}
+          </div>
+        </section>
+
+        {/* 本地优先与边界 · 傍晚 */}
         <section
           id="local"
           className="dw-local"
+          data-scene="pass"
           aria-labelledby="dw-local-title"
         >
-          <figure className="dw-local-figure dl-reveal" data-scene="pass">
-            <img
-              className="dw-local-photo"
-              src="/images/atelier/studio-desk.jpg"
-              width="1440"
-              height="960"
-              alt=""
-              loading="lazy"
-            />
-            <LeafShadow className="dl-leaves dw-local-leaves" />
-            <Window
-              className="dw-local-browser"
-              src="/images/daylight/work/home.jpg"
-              width={1440}
-              height={1000}
-              label="浏览器"
-            />
-            <Window
-              className="dw-local-app"
-              src="/images/daylight/work/home-dark.jpg"
-              width={1440}
-              height={1000}
-              label="macOS App"
-            />
-            <figcaption>产品截图 · 场景示意</figcaption>
-          </figure>
-          <div className="dw-local-copy">
-            <h2 id="dw-local-title" className="dl-reveal">
-              <MaskLines lines={['数据在你的电脑上，', '边界说得清楚。']} />
-            </h2>
-            <ul>
-              {localPoints.map(({ icon: Icon, text }, index) => (
-                <li
-                  className="dl-reveal"
-                  key={text}
-                  style={{ '--r': index } as Vars}
-                >
-                  <span>
-                    <Icon size={18} aria-hidden="true" />
-                  </span>
-                  <p>{text}</p>
-                </li>
-              ))}
-            </ul>
+          <div className="dw-local-sun" aria-hidden="true" />
+          <div className="dw-local-inner">
+            <figure className="dw-local-figure dl-reveal" data-scene="pass">
+              <img
+                className="dw-local-photo"
+                src="/images/atelier/threshold.jpg"
+                width="1440"
+                height="900"
+                alt=""
+                loading="lazy"
+              />
+              <LeafShadow className="dl-leaves dw-local-leaves" />
+              <Window
+                className="dw-local-browser"
+                src="/images/daylight/work/home.jpg"
+                width={1440}
+                height={1000}
+                label="浏览器"
+              />
+              <Window
+                className="dw-local-app"
+                src="/images/daylight/work/home-dark.jpg"
+                width={1440}
+                height={1000}
+                label="macOS App"
+              />
+              <figcaption>产品截图 · 场景示意</figcaption>
+            </figure>
+            <div className="dw-local-copy">
+              <div className="dl-reveal">
+                <span className="dl-eyebrow">{localFirst.kicker}</span>
+                <h2 id="dw-local-title">
+                  <MaskLines lines={lines(localFirst.title)} />
+                </h2>
+              </div>
+              <ul>
+                {localFirst.points.map((text, index) => {
+                  const Icon = localIcons[index] ?? HardDrive;
+                  return (
+                    <li
+                      className="dl-reveal"
+                      key={text}
+                      style={{ '--r': index } as Vars}
+                    >
+                      <span>
+                        <Icon size={18} aria-hidden="true" />
+                      </span>
+                      <p>{text}</p>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
-        </section>
-
-        <section
-          className="dw-next"
-          data-scene="pass"
-          aria-labelledby="dw-next-title"
-        >
-          <div className="dw-next-sun" aria-hidden="true" />
-          <h2 id="dw-next-title" className="dl-reveal">
-            <MaskLines lines={['接下来']} />
-          </h2>
-          <ol>
-            {upcoming.map((item, index) => (
-              <li
-                className="dw-next-item dl-reveal"
-                key={item.name}
-                style={{ '--r': index } as Vars}
-              >
-                <Tag kind={item.tag} />
-                <h3>{item.name}</h3>
-                <p>{item.text}</p>
-              </li>
-            ))}
-          </ol>
         </section>
       </main>
 
@@ -1172,9 +1143,7 @@ export default function WorkPage() {
         <div className="dl-dusk-glow" aria-hidden="true" />
         <div className="dw-dusk-invite dl-reveal">
           <h2>
-            <MaskLines
-              lines={['工具可以不断长出来，', '工作不必一次次重来。']}
-            />
+            <MaskLines lines={closing.title} />
           </h2>
           <Actions tone="dusk" />
         </div>
