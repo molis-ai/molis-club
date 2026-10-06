@@ -2473,6 +2473,9 @@ section[id] {
   .site-header .brand > img { width: 32px; height: 32px; }
   .site-header nav { margin-right: 0; }
   .site-header .header-account { margin-left: 22px; }
+  .site-header .nav-menu { position: static; }
+  .site-header .nav-menu-panel { top: 100%; left: 0; right: 0; width: auto; padding-block: 8px 20px; border-top: 1px solid var(--line); }
+  .site-header .nav-menu-panel a { padding-inline: 6%; }
   .site-footer { padding-top: 45px; }
 }
 
