@@ -128,8 +128,8 @@ html:has(.dl-site) {
   display: flex;
   align-items: center;
   background: rgb(247 241 234 / 0.78);
-  backdrop-filter: blur(18px) saturate(1.3);
   -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  backdrop-filter: blur(18px) saturate(1.3);
   border: 1px solid rgb(255 255 255 / 0.5);
   border-radius: 16px;
   box-shadow:
@@ -396,8 +396,8 @@ html:has(.dl-site) {
   gap: 16px;
   padding: 10px 22px 10px 10px;
   background: rgb(247 241 234 / 0.84);
-  backdrop-filter: blur(18px) saturate(1.2);
   -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  backdrop-filter: blur(18px) saturate(1.2);
   border: 1px solid rgb(255 255 255 / 0.55);
   border-radius: 20px;
   box-shadow:
@@ -915,8 +915,8 @@ html:has(.dl-site) {
   padding: 7px 13px;
   border-radius: 999px;
   background: rgb(251 247 241 / 0.72);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   font-size: 12px;
   letter-spacing: 0.06em;
   color: var(--dl-text);
@@ -953,8 +953,8 @@ html:has(.dl-site) {
   border: 1px solid rgb(255 255 255 / 0.6);
   border-radius: 20px;
   background: rgb(251 247 241 / 0.84);
-  backdrop-filter: blur(22px) saturate(1.3);
   -webkit-backdrop-filter: blur(22px) saturate(1.3);
+  backdrop-filter: blur(22px) saturate(1.3);
   box-shadow:
     0 1px 0 rgb(255 255 255 / 0.7) inset,
     0 44px 80px -40px rgb(30 20 10 / 0.6);
@@ -1079,8 +1079,8 @@ html:has(.dl-site) {
   border: 1px solid rgb(255 255 255 / 0.6);
   border-radius: 18px;
   background: rgb(251 247 241 / 0.86);
-  backdrop-filter: blur(18px) saturate(1.3);
   -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  backdrop-filter: blur(18px) saturate(1.3);
   box-shadow: 0 30px 60px -34px rgb(30 20 10 / 0.6);
   opacity: 0;
   transform: translateY(22px);
@@ -1146,8 +1146,8 @@ html:has(.dl-site) {
   border: 1px solid rgb(255 255 255 / 0.6);
   border-radius: 20px;
   background: rgb(251 247 241 / 0.84);
-  backdrop-filter: blur(20px) saturate(1.3);
   -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  backdrop-filter: blur(20px) saturate(1.3);
   box-shadow: 0 40px 80px -40px rgb(20 30 20 / 0.6);
 }
 .dl-story small {
@@ -1714,6 +1714,25 @@ html:has(.dl-site) {
     top: 14px;
     left: 14px;
     right: 14px;
+  }
+  /* On phones the text column runs under the floating pills; a soft
+     blurred veil keeps it from colliding with them once past the hero. */
+  .dl-header::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -14px -14px -30px;
+    pointer-events: none;
+    background: linear-gradient(rgb(251 247 241 / 0.7), rgb(251 247 241 / 0));
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    -webkit-mask-image: linear-gradient(#000 45%, transparent);
+    mask-image: linear-gradient(#000 45%, transparent);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .dl-header.is-solid::before {
+    opacity: 1;
   }
   .dl-pill a:not(.dl-pill-cta) {
     display: none;

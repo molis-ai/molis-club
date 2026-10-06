@@ -97,8 +97,8 @@
 .dl-site .dw-button-ghost {
   border: 1px solid rgb(251 247 241 / 0.45);
   color: var(--dl-paper);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 /* window chrome around product screenshots */
@@ -285,8 +285,8 @@
   border: 1px solid rgb(251 247 241 / 0.26);
   border-radius: 999px;
   background: rgb(251 247 241 / 0.1);
-  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   color: var(--dl-paper);
   white-space: nowrap;
 }
@@ -318,8 +318,8 @@
   padding: 5px 12px;
   border-radius: 999px;
   background: rgb(251 247 241 / 0.78);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   font-size: 12px;
   letter-spacing: 0.06em;
   color: var(--dl-text);
@@ -606,8 +606,8 @@
   padding: 7px 13px;
   border-radius: 999px;
   background: rgb(251 247 241 / 0.74);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   font-size: 12px;
   letter-spacing: 0.06em;
   color: var(--dl-text);
@@ -674,8 +674,8 @@
   border: 1px solid rgb(255 255 255 / 0.7);
   border-radius: 18px;
   background: var(--dw-card);
-  backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   box-shadow: 0 34px 70px -34px rgb(30 20 10 / 0.6);
 }
 .dw-cap-head {
@@ -913,8 +913,8 @@
   border: 1px solid rgb(255 255 255 / 0.85);
   border-radius: 16px;
   background: rgb(251 247 241 / 0.94);
-  backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   box-shadow:
     0 0 0 1px rgb(25 40 79 / 0.07),
     0 24px 50px -24px rgb(30 20 10 / 0.55);
@@ -1049,8 +1049,8 @@
   border: 1px solid rgb(255 255 255 / 0.7);
   border-radius: 20px;
   background: var(--dw-card);
-  backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   box-shadow: 0 34px 70px -34px rgb(30 20 10 / 0.6);
 }
 .dw-studio-prompt {
@@ -1163,8 +1163,8 @@
   border: 1px solid rgb(255 255 255 / 0.7);
   border-radius: 16px;
   background: var(--dw-card);
-  backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   box-shadow: 0 30px 60px -34px rgb(30 20 10 / 0.6);
 }
 .dw-board-col small {
@@ -1356,8 +1356,8 @@
   border: 1px solid rgb(255 255 255 / 0.85);
   border-radius: 18px;
   background: rgb(255 253 249 / 0.82);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   box-shadow:
     0 1px 0 #fff inset,
     0 18px 40px -26px rgb(60 40 20 / 0.45);
@@ -1555,8 +1555,8 @@
   padding: 5px 11px;
   border-radius: 999px;
   background: rgb(251 247 241 / 0.82);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   font-size: 11px;
   letter-spacing: 0.06em;
   color: var(--dl-text);
