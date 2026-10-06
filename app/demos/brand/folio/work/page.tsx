@@ -3,47 +3,80 @@ import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import {
   ArrowDown,
+  ArrowUp,
   ArrowUpRight,
   Check,
   Download,
-  KeyRound,
-  Search,
   ShieldCheck,
+  Undo2,
 } from 'lucide-react';
 import '../folio.css';
 import './work.css';
 import {
   GITHUB_URL,
   MAC_DOWNLOAD_URL,
-  SHOW_NEXT_RELEASE,
   architecture,
   closing,
-  extras,
-  features,
+  compareIntro,
+  comparisons,
+  differences,
+  differencesIntro,
+  featureGroups,
+  featuresIntro,
   hero,
   localFirst,
-  pillars,
-  pluginWall,
-  releasedPlugins,
-  upcoming,
-  type Stage,
-} from './content';
+  moreIntro,
+  moreScenarios,
+  nav,
+  scenarios,
+  scenariosIntro,
+  tagsOf,
+  type Point,
+  type Status,
+  type Tag,
+} from '../../../../../content/molis-work';
+import { shots, type Shot as ShotData } from './content';
 
 type Vars = React.CSSProperties & Record<`--${string}`, string | number>;
 
-const stageTone: Record<Stage, string> = {
+const tagTone: Record<Tag, string> = {
+  下一版: 'next',
   预览: 'preview',
-  即将推出: 'soon',
   规划中: 'planned',
 };
 
-function StageTag({ stage }: { stage: Stage }) {
-  return <span className={`fw-tag fw-tag-${stageTone[stage]}`}>{stage}</span>;
+const pad = (n: number) => String(n).padStart(2, '0');
+
+/** 标题在逗号后换行；拼起来仍是 hero.title。 */
+const titleCut = hero.title.indexOf('，') + 1;
+const titleHead = hero.title.slice(0, titleCut);
+const titleTail = hero.title.slice(titleCut);
+
+function Tags({ status }: { status?: Status }) {
+  const tags = tagsOf(status);
+  if (!tags.length) return null;
+  return (
+    <span className="fw-tags">
+      {tags.map((tag) => (
+        <span key={tag} className={`fw-tag fw-tag-${tagTone[tag]}`}>
+          {tag}
+        </span>
+      ))}
+    </span>
+  );
 }
 
-function NextTag({ show = true }: { show?: boolean }) {
-  if (!SHOW_NEXT_RELEASE || !show) return null;
-  return <span className="fw-tag fw-tag-next">下一版</span>;
+function Points({ points }: { points: Point[] }) {
+  return (
+    <ul className="fw-points">
+      {points.map((point) => (
+        <li key={point.text}>
+          {point.text}
+          <Tags status={point.status} />
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 function Actions({ tone = 'light' }: { tone?: 'light' | 'dark' }) {
@@ -66,25 +99,13 @@ function Actions({ tone = 'light' }: { tone?: 'light' | 'dark' }) {
   );
 }
 
-function Shot({
-  src,
-  alt,
-  width = 1440,
-  height = 1000,
-  eager = false,
-}: {
-  src: string;
-  alt: string;
-  width?: number;
-  height?: number;
-  eager?: boolean;
-}) {
+function Shot({ shot, eager = false }: { shot: ShotData; eager?: boolean }) {
   return (
     <img
-      src={src}
-      width={width}
-      height={height}
-      alt={alt}
+      src={shot.src}
+      width={shot.width}
+      height={shot.height}
+      alt={shot.alt}
       loading={eager ? undefined : 'lazy'}
       decoding="async"
     />
@@ -116,20 +137,10 @@ function HeroArt() {
       <div className="fw-hero-shot">
         <span className="fw-tape fw-tape-a" aria-hidden="true" />
         <span className="fw-tape fw-tape-b" aria-hidden="true" />
-        <Shot
-          src="/images/demos/folio-work/home-zh.jpg"
-          alt="Molis Work 项目首页：正在推进的目标、当天的事件和回到手边的内容"
-          eager
-        />
+        <Shot shot={shots.home} eager />
       </div>
       <div className="fw-hero-phone">
-        <Shot
-          src="/images/demos/folio-work/phone-zh.jpg"
-          alt="Molis Work 在手机宽度下的界面"
-          width={390}
-          height={844}
-          eager
-        />
+        <Shot shot={shots.phone} eager />
       </div>
       <ul className="fw-hero-chips" aria-hidden="true">
         <li style={{ '--i': 0 } as Vars}>人</li>
@@ -151,7 +162,7 @@ function Diagram() {
         {architecture.entries.map((entry, index) => (
           <li key={entry.name} style={{ '--i': index } as Vars}>
             <span>{entry.name}</span>
-            {entry.stage ? <StageTag stage={entry.stage} /> : null}
+            {entry.detail ? <small>{entry.detail}</small> : null}
           </li>
         ))}
       </ol>
@@ -165,14 +176,14 @@ function Diagram() {
         <div className="fw-diagram-plugins">
           <span>{architecture.plugins}</span>
           <i aria-hidden="true">
-            {Array.from({ length: 25 }, (_, index) => (
-              <b key={index} style={{ '--i': index } as Vars} />
+            {Array.from({ length: 26 }, (_, index) => (
+              <b key={index} />
             ))}
           </i>
         </div>
         <div className="fw-diagram-runtime">{architecture.runtime}</div>
       </div>
-      <div className="fw-diagram-base">{architecture.base}</div>
+      <div className="fw-diagram-base">{architecture.home}</div>
       <figcaption>示意</figcaption>
     </figure>
   );
@@ -183,10 +194,7 @@ function GoalsArt() {
     <figure className="fw-art fw-art-goals">
       <div className="fw-art-shot">
         <span className="fw-tape fw-tape-a" aria-hidden="true" />
-        <Shot
-          src="/images/demos/folio-work/goals-zh.jpg"
-          alt="Goals 界面：目标树、完成要求和时间线"
-        />
+        <Shot shot={shots.goals} />
       </div>
       <span className="fw-stamp" aria-hidden="true">
         <Check size={22} strokeWidth={3} />
@@ -198,16 +206,19 @@ function GoalsArt() {
 }
 
 const callers = ['页面', '助理', '工作流', '外部 Agent'];
-const capabilityRows = [
-  ['Goals', '查询'],
-  ['Pages', '写入'],
-  ['Feed', '查询'],
-  ['Dataset', '写入'],
+const capabilityRows: { name: string; verb: string; state: string }[] = [
+  { name: 'Goals', verb: '查询', state: 'on' },
+  { name: 'Pages', verb: '写入', state: 'on' },
+  { name: 'Git', verb: '推送', state: 'review' },
+  { name: 'Dataset', verb: '写入', state: 'off' },
 ];
 
 function CapabilityArt() {
   return (
-    <figure className="fw-art fw-art-cap" aria-label="能力目录的示意">
+    <figure
+      className="fw-art fw-art-cap"
+      aria-label="能力目录、审查队列与撤销的示意"
+    >
       <ul className="fw-cap-callers" aria-hidden="true">
         {callers.map((caller, index) => (
           <li key={caller} style={{ '--i': index } as Vars}>
@@ -217,20 +228,80 @@ function CapabilityArt() {
       </ul>
       <div className="fw-cap-card" aria-hidden="true">
         <strong>能力目录</strong>
-        {capabilityRows.map(([name, verb], index) => (
+        {capabilityRows.map((row, index) => (
           <div
             className="fw-cap-row"
-            key={name}
+            key={row.name}
             style={{ '--i': index } as Vars}
           >
-            <span>{name}</span>
-            <small>{verb}</small>
-            <i className={index === 3 ? 'is-off' : undefined} />
+            <span>{row.name}</span>
+            <small>{row.verb}</small>
+            {row.state === 'review' ? (
+              <b className="fw-cap-review">待审查</b>
+            ) : (
+              <i className={row.state === 'off' ? 'is-off' : undefined} />
+            )}
           </div>
         ))}
         <p>
           <ShieldCheck size={15} /> 每次调用留记录
         </p>
+        <div className="fw-cap-undo">
+          <span>已写入 Pages</span>
+          <b>
+            <Undo2 size={14} strokeWidth={2.5} /> 撤销
+          </b>
+        </div>
+      </div>
+      <figcaption>示意</figcaption>
+    </figure>
+  );
+}
+
+function AssistantArt() {
+  return (
+    <figure className="fw-art fw-art-assist" aria-label="底栏助理的示意">
+      <div className="fw-assist-page" aria-hidden="true">
+        <div className="fw-assist-top">
+          <span>Pages</span>
+          <i />
+          <i />
+        </div>
+        <b className="fw-assist-line" />
+        <b className="fw-assist-line fw-assist-line-short" />
+        <p>
+          <mark>周五前把访谈纪要发给设计组，下周约一次评审。</mark>
+        </p>
+        <b className="fw-assist-line" />
+        <b className="fw-assist-line fw-assist-line-mid" />
+      </div>
+      <div className="fw-assist-card" aria-hidden="true">
+        <strong>建两个待办</strong>
+        <ul>
+          <li>
+            <i />
+            把访谈纪要发给设计组
+            <small>周五</small>
+          </li>
+          <li>
+            <i />
+            约下周评审
+          </li>
+        </ul>
+        <div className="fw-assist-buttons">
+          <span className="fw-assist-run">执行</span>
+          <span className="fw-assist-undo">
+            <Undo2 size={13} strokeWidth={2.5} /> 撤销
+          </span>
+        </div>
+      </div>
+      <div className="fw-assist-input" aria-hidden="true">
+        <span className="fw-assist-chip">@ 选中段落</span>
+        <span className="fw-assist-chip fw-assist-chip-cmd">/ 待办</span>
+        <span className="fw-assist-typing">拆成待办</span>
+        <b>
+          <ArrowUp size={16} strokeWidth={2.5} />
+        </b>
       </div>
       <figcaption>示意</figcaption>
     </figure>
@@ -299,99 +370,6 @@ function CodingArt() {
   );
 }
 
-const runtimeInputs = ['文字', '图片', '判断', 'Agent'];
-
-function RuntimeArt() {
-  return (
-    <figure className="fw-art fw-art-runtime" aria-label="AI 运行时的示意">
-      <svg viewBox="0 0 600 600" aria-hidden="true">
-        {runtimeInputs.map((_, index) => (
-          <path
-            key={index}
-            className="fw-ribbon"
-            style={{ '--i': index } as Vars}
-            d={`M${60 + index * 160} 150C${60 + index * 160} 260 300 230 300 330`}
-            pathLength={1}
-          />
-        ))}
-        <path
-          className="fw-ribbon fw-ribbon-out"
-          d="M300 420V540"
-          pathLength={1}
-        />
-      </svg>
-      <ul className="fw-runtime-inputs" aria-hidden="true">
-        {runtimeInputs.map((input) => (
-          <li key={input}>{input}</li>
-        ))}
-      </ul>
-      <div className="fw-runtime-gate" aria-hidden="true">
-        Prologue
-      </div>
-      <div className="fw-runtime-key" aria-hidden="true">
-        <KeyRound size={16} /> 密钥存在本机
-      </div>
-      <figcaption>示意</figcaption>
-    </figure>
-  );
-}
-
-const searchResults = [
-  { source: 'Pages', before: '', after: ' 复盘草稿的第三段' },
-  { source: 'Dataset', before: '', after: ' 渠道数据' },
-  { source: '灵光', before: '关于 ', after: ' 的一个想法' },
-];
-
-function SearchArt() {
-  return (
-    <figure className="fw-art fw-art-search" aria-label="⌘K 搜索的示意">
-      <div className="fw-search" aria-hidden="true">
-        <div className="fw-search-input">
-          <Search size={18} />
-          <span className="fw-search-query">Q4</span>
-          <kbd>⌘K</kbd>
-        </div>
-        <ul>
-          {searchResults.map((result, index) => (
-            <li key={result.source} style={{ '--i': index } as Vars}>
-              <small>{result.source}</small>
-              <span>
-                {result.before}
-                <mark>Q4</mark>
-                {result.after}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <figcaption>示意</figcaption>
-    </figure>
-  );
-}
-
-const featureArt: Record<string, () => React.JSX.Element> = {
-  goals: GoalsArt,
-  capabilities: CapabilityArt,
-  studio: StudioArt,
-  coding: CodingArt,
-  runtime: RuntimeArt,
-  search: SearchArt,
-};
-
-function AgentsArt() {
-  const sources = ['Codex', 'Claude Code', 'Cursor', 'OpenCode', 'Grok Build'];
-  return (
-    <div className="fw-extra-agents" aria-hidden="true">
-      {sources.map((source, index) => (
-        <span key={source} style={{ '--i': index } as Vars}>
-          {source}
-        </span>
-      ))}
-      <b>角色 v1</b>
-    </div>
-  );
-}
-
 function LocalArt() {
   return (
     <figure className="fw-local-art" aria-label="本机数据边界的示意">
@@ -423,6 +401,31 @@ function LocalArt() {
   );
 }
 
+const scenarioArt: Record<string, () => React.JSX.Element> = {
+  relay: GoalsArt,
+  control: CapabilityArt,
+  assistant: AssistantArt,
+};
+
+function ShotCard({ shot }: { shot: ShotData }) {
+  return (
+    <figure className="fw-card-shot">
+      <div className="fw-card-frame">
+        <span className="fw-tape fw-tape-a" aria-hidden="true" />
+        <Shot shot={shot} />
+      </div>
+      <figcaption>界面截图</figcaption>
+    </figure>
+  );
+}
+
+const moreVisual: Record<string, () => React.JSX.Element> = {
+  feed: () => <ShotCard shot={shots.feed} />,
+  start: () => <ShotCard shot={shots.onboarding} />,
+  studio: StudioArt,
+  coding: CodingArt,
+};
+
 export default function FolioWorkPage() {
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -435,6 +438,23 @@ export default function FolioWorkPage() {
       root.querySelectorAll<HTMLElement>('[data-scene]'),
     );
     const sheets = Array.from(root.querySelectorAll<HTMLElement>('.fw-sheet'));
+
+    // 内容高过一屏的页不再粘住，免得下半截被下一张盖住。
+    const fit = () => {
+      const vh = window.innerHeight;
+      for (const sheet of sheets) {
+        const inner = sheet.firstElementChild as HTMLElement | null;
+        if (!inner) continue;
+        const style = getComputedStyle(inner);
+        let need = 0;
+        for (const child of Array.from(inner.children)) {
+          need = Math.max(need, (child as HTMLElement).offsetHeight);
+        }
+        need += parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+        sheet.classList.toggle('is-loose', need > vh);
+      }
+    };
+
     let frame = 0;
     const update = () => {
       frame = 0;
@@ -459,9 +479,15 @@ export default function FolioWorkPage() {
     const request = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
+    const resize = () => {
+      fit();
+      request();
+    };
+    fit();
     update();
+    void document.fonts?.ready.then(resize);
     window.addEventListener('scroll', request, { passive: true });
-    window.addEventListener('resize', request);
+    window.addEventListener('resize', resize);
 
     const reveal = new IntersectionObserver(
       (entries) => {
@@ -471,7 +497,7 @@ export default function FolioWorkPage() {
           reveal.unobserve(entry.target);
         }
       },
-      { threshold: 0.2 },
+      { threshold: 0.12 },
     );
     root
       .querySelectorAll('[data-reveal]')
@@ -480,10 +506,12 @@ export default function FolioWorkPage() {
     return () => {
       if (frame) cancelAnimationFrame(frame);
       window.removeEventListener('scroll', request);
-      window.removeEventListener('resize', request);
+      window.removeEventListener('resize', resize);
       reveal.disconnect();
     };
   }, []);
+
+  const { labels } = compareIntro;
 
   return (
     <div className="fo-site fw-site" ref={rootRef}>
@@ -492,12 +520,26 @@ export default function FolioWorkPage() {
           <img src="/images/molis-logo.png" width="36" height="36" alt="" />
           <span>Molis AI</span>
         </Link>
-        <nav className="fo-nav" aria-label="主导航">
-          <Link href="/demos/community">社区</Link>
-          <Link href="/demos/brand/folio#capabilities">关于我们</Link>
-          <Link href="/join" className="fo-nav-cta">
-            聊一聊
-          </Link>
+        <nav className="fo-nav fw-nav" aria-label="Molis Work 页面导航">
+          {nav.map((item) => (
+            <a key={item.href} href={item.href}>
+              {item.label}
+            </a>
+          ))}
+          {MAC_DOWNLOAD_URL ? (
+            <a href={MAC_DOWNLOAD_URL} className="fo-nav-cta">
+              下载<span className="fw-nav-long"> macOS 版</span>
+            </a>
+          ) : (
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="fo-nav-cta"
+            >
+              GitHub
+            </a>
+          )}
         </nav>
       </header>
 
@@ -517,41 +559,98 @@ export default function FolioWorkPage() {
           <div className="fw-hero-copy">
             <span className="fo-kicker">{hero.kicker}</span>
             <h1 id="fw-title">
-              {hero.title[0]}
+              {titleHead}
               <br />
-              {hero.title[1]}
+              {titleTail}
             </h1>
-            <p>{hero.subtitle}</p>
+            <p>{hero.lead}</p>
             <Actions />
-            <small className="fw-hero-note">{hero.note}</small>
+            <div className="fw-hero-agents">
+              <small>{hero.agentsLabel}</small>
+              <ul>
+                {hero.agents.map((agent, index) => (
+                  <li key={agent} style={{ '--i': index } as Vars}>
+                    {agent}
+                  </li>
+                ))}
+              </ul>
+              <span className="fw-hero-more">{hero.agentsMore}</span>
+            </div>
           </div>
           <HeroArt />
         </section>
 
-        <section className="fw-pillars" aria-label="三个支柱">
-          {pillars.map((pillar, index) => (
-            <article
-              key={pillar.title}
-              className={`fw-pillar fw-pillar-${index + 1}`}
-              data-reveal
-              style={{ '--i': index } as Vars}
-            >
-              <span className="fw-pillar-number">{index + 1}</span>
-              <h2>
-                {pillar.title}
-                <NextTag show={pillar.next} />
-              </h2>
-              <p>{pillar.body}</p>
-            </article>
-          ))}
+        <section
+          id="scenarios"
+          className="fw-scenarios"
+          aria-labelledby="fw-scenarios-title"
+        >
+          <header className="fw-section-head" data-reveal>
+            <span className="fo-kicker">{scenariosIntro.kicker}</span>
+            <h2 id="fw-scenarios-title">{scenariosIntro.title}</h2>
+          </header>
+          <div className="fw-stack">
+            {scenarios.map((scenario, index) => {
+              const Art = scenarioArt[scenario.id];
+              return (
+                <article
+                  key={scenario.id}
+                  className={`fw-sheet fw-sheet-${scenario.id}`}
+                  data-scene="enter"
+                  aria-labelledby={`fw-${scenario.id}`}
+                >
+                  <div className="fw-sheet-inner">
+                    <div className="fw-sheet-copy">
+                      <span className="fw-sheet-number">{pad(index + 1)}</span>
+                      <div className="fw-sheet-label">
+                        <small>{scenario.label}</small>
+                        <Tags status={scenario.status} />
+                      </div>
+                      <h3 id={`fw-${scenario.id}`}>{scenario.title}</h3>
+                      <p className="fw-problem">{scenario.problem}</p>
+                      <Points points={scenario.points} />
+                    </div>
+                    <Art />
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section id="why" className="fw-why" aria-labelledby="fw-why-title">
+          <header className="fw-section-head fw-split-head" data-reveal>
+            <div>
+              <span className="fo-kicker">{differencesIntro.kicker}</span>
+              <h2 id="fw-why-title">{differencesIntro.title}</h2>
+            </div>
+            <p>{differencesIntro.lead}</p>
+          </header>
+          <ol className="fw-pillars">
+            {differences.map((difference, index) => (
+              <li
+                key={difference.title}
+                className={`fw-pillar fw-pillar-${index + 1}`}
+                data-reveal
+                style={{ '--i': index } as Vars}
+              >
+                <div className="fw-pillar-top">
+                  <span className="fw-pillar-number" aria-hidden="true">
+                    {index + 1}
+                  </span>
+                  <Tags status={difference.status} />
+                </div>
+                <h3>{difference.title}</h3>
+                <p>{difference.body}</p>
+              </li>
+            ))}
+          </ol>
         </section>
 
         <section className="fw-arch" aria-labelledby="fw-arch-title">
           <div className="fw-arch-copy" data-reveal>
-            <h2 id="fw-arch-title">
-              {architecture.title}
-              <NextTag />
-            </h2>
+            <h2 id="fw-arch-title">{architecture.title}</h2>
+            <Tags status={architecture.status} />
             <p>{architecture.body}</p>
           </div>
           <div className="fw-arch-figure" data-reveal>
@@ -559,100 +658,71 @@ export default function FolioWorkPage() {
           </div>
         </section>
 
-        <section className="fw-features" aria-label="主要功能">
-          {features.map((feature, index) => {
-            const Art = featureArt[feature.id];
-            return (
-              <article
-                key={feature.id}
-                id={feature.id}
-                className={`fw-sheet fw-sheet-${feature.id}`}
-                data-scene="enter"
-                aria-labelledby={`fw-${feature.id}`}
-              >
-                <div className="fw-sheet-inner">
-                  <div className="fw-sheet-copy">
-                    <span className="fw-sheet-number">
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <div className="fw-sheet-label">
-                      <small>{feature.label}</small>
-                      {feature.stage ? (
-                        <StageTag stage={feature.stage} />
-                      ) : null}
-                      <NextTag show={feature.next} />
-                    </div>
-                    <h3 id={`fw-${feature.id}`}>{feature.title}</h3>
-                    <ul>
-                      {feature.points.map((point) => (
-                        <li key={point}>{point}</li>
-                      ))}
-                    </ul>
+        <section id="more" className="fw-more" aria-labelledby="fw-more-title">
+          <header className="fw-section-head" data-reveal>
+            <span className="fo-kicker">{moreIntro.kicker}</span>
+            <h2 id="fw-more-title">{moreIntro.title}</h2>
+          </header>
+          <div className="fw-cards">
+            {moreScenarios.map((scenario, index) => {
+              const Visual = moreVisual[scenario.id];
+              return (
+                <article
+                  key={scenario.id}
+                  className={`fw-card fw-card-${scenario.id}`}
+                  data-reveal
+                  style={{ '--i': index } as Vars}
+                  aria-labelledby={`fw-${scenario.id}`}
+                >
+                  <div className="fw-card-visual" data-scene="enter">
+                    <Visual />
                   </div>
-                  <Art />
-                </div>
-              </article>
-            );
-          })}
-        </section>
-
-        <section className="fw-extras" aria-label="更多能力">
-          {extras.map((extra, index) => (
-            <article
-              key={extra.title}
-              className={`fw-extra fw-extra-${index + 1}`}
-              data-reveal
-              style={{ '--i': index } as Vars}
-            >
-              <div className="fw-extra-visual">
-                {extra.image ? (
-                  <figure>
-                    <span className="fw-tape fw-tape-a" aria-hidden="true" />
-                    <Shot src={extra.image} alt="" />
-                    <figcaption>界面截图</figcaption>
-                  </figure>
-                ) : (
-                  <figure>
-                    <AgentsArt />
-                    <figcaption>示意</figcaption>
-                  </figure>
-                )}
-              </div>
-              <h3>
-                {extra.title}
-                <NextTag show={extra.next} />
-              </h3>
-              <p>{extra.body}</p>
-            </article>
-          ))}
-        </section>
-
-        <section className="fw-wall" aria-labelledby="fw-wall-title">
-          <div className="fw-wall-head" data-reveal>
-            <h2 id="fw-wall-title">{pluginWall.title}</h2>
-            <p>{pluginWall.subtitle}</p>
+                  <div className="fw-card-label">
+                    <small>{scenario.label}</small>
+                    <Tags status={scenario.status} />
+                  </div>
+                  <h3 id={`fw-${scenario.id}`}>{scenario.title}</h3>
+                  <p className="fw-problem">{scenario.problem}</p>
+                  <Points points={scenario.points} />
+                </article>
+              );
+            })}
           </div>
+        </section>
+
+        <section
+          id="features"
+          className="fw-wall"
+          aria-labelledby="fw-wall-title"
+        >
+          <header className="fw-section-head fw-split-head" data-reveal>
+            <div>
+              <span className="fo-kicker">{featuresIntro.kicker}</span>
+              <h2 id="fw-wall-title">{featuresIntro.title}</h2>
+            </div>
+            <p>{featuresIntro.lead}</p>
+          </header>
           <div className="fw-wall-groups">
-            {pluginWall.groups.map((group, groupIndex) => (
+            {featureGroups.map((group, groupIndex) => (
               <div
                 key={group.name}
                 className={`fw-wall-group fw-wall-group-${groupIndex + 1}`}
-                data-reveal
               >
-                <h3>{group.name}</h3>
+                <h3>
+                  <span aria-hidden="true">{pad(groupIndex + 1)}</span>
+                  {group.name}
+                </h3>
                 <ul>
-                  {group.plugins.map((plugin, index) => (
-                    <li key={plugin.name} style={{ '--i': index } as Vars}>
-                      <strong>{plugin.name}</strong>
-                      <span>{plugin.line}</span>
-                      {plugin.stage || !releasedPlugins.has(plugin.name) ? (
-                        <em>
-                          {plugin.stage ? (
-                            <StageTag stage={plugin.stage} />
-                          ) : null}
-                          <NextTag show={!releasedPlugins.has(plugin.name)} />
-                        </em>
-                      ) : null}
+                  {group.features.map((feature) => (
+                    <li
+                      key={feature.name}
+                      className={
+                        feature.status === 'planned' ? 'is-planned' : undefined
+                      }
+                    >
+                      <strong>{feature.name}</strong>
+                      <span>{feature.line}</span>
+                      <Tags status={feature.status} />
                     </li>
                   ))}
                 </ul>
@@ -661,9 +731,65 @@ export default function FolioWorkPage() {
           </div>
         </section>
 
-        <section className="fw-local" aria-labelledby="fw-local-title">
+        <section
+          id="compare"
+          className="fw-compare"
+          aria-labelledby="fw-compare-title"
+        >
+          <header className="fw-section-head fw-split-head" data-reveal>
+            <div>
+              <span className="fo-kicker">{compareIntro.kicker}</span>
+              <h2 id="fw-compare-title">{compareIntro.title}</h2>
+            </div>
+            <p>{compareIntro.lead}</p>
+          </header>
+          <div className="fw-compare-table">
+            <div className="fw-compare-cols" aria-hidden="true">
+              <span />
+              <div>
+                <span>{labels.now}</span>
+                <span>{labels.here}</span>
+                <span>{labels.gap}</span>
+              </div>
+            </div>
+            <ol className="fw-compare-rows">
+              {comparisons.map((row, index) => (
+                <li
+                  key={row.now}
+                  className="fw-compare-row"
+                  data-reveal
+                  style={{ '--i': index } as Vars}
+                >
+                  <span className="fw-compare-num" aria-hidden="true">
+                    {pad(index + 1)}
+                  </span>
+                  <dl>
+                    <div className="fw-compare-now">
+                      <dt>{labels.now}</dt>
+                      <dd>{row.now}</dd>
+                    </div>
+                    <div className="fw-compare-here">
+                      <dt>{labels.here}</dt>
+                      <dd>{row.here}</dd>
+                    </div>
+                    <div className="fw-compare-gap">
+                      <dt>{labels.gap}</dt>
+                      <dd>{row.gap}</dd>
+                    </div>
+                  </dl>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section
+          id="local"
+          className="fw-local"
+          aria-labelledby="fw-local-title"
+        >
           <div className="fw-local-copy" data-reveal>
-            <span className="fo-kicker">本地优先</span>
+            <span className="fo-kicker">{localFirst.kicker}</span>
             <h2 id="fw-local-title">{localFirst.title}</h2>
             <ol>
               {localFirst.points.map((point) => (
@@ -674,27 +800,6 @@ export default function FolioWorkPage() {
           <div data-reveal>
             <LocalArt />
           </div>
-        </section>
-
-        <section className="fw-next" aria-labelledby="fw-next-title">
-          <div className="fw-next-head" data-reveal>
-            <span className="fo-kicker">接下来</span>
-            <h2 id="fw-next-title">还在路上的几件事。</h2>
-          </div>
-          <ul className="fw-next-list">
-            {upcoming.map((item, index) => (
-              <li
-                key={item.name}
-                className={`fw-slip fw-slip-${stageTone[item.stage]}`}
-                data-reveal
-                style={{ '--i': index } as Vars}
-              >
-                <StageTag stage={item.stage} />
-                <h3>{item.name}</h3>
-                <p>{item.body}</p>
-              </li>
-            ))}
-          </ul>
         </section>
       </main>
 

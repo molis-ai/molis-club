@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 
 // Scroll and pointer effects for the server-rendered page: reveals, the `--p`
-// scene progress, the active chapter in the side rail, and the plugin wall
+// scene progress, the active scenario in the side rail, and the feature wall
 // spotlight. Everything degrades to a static page without it.
 export function NocturneWorkMotion() {
   useEffect(() => {

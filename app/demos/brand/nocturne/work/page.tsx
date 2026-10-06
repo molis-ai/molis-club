@@ -5,52 +5,102 @@ import './work.css';
 import {
   GITHUB_URL,
   MAC_DOWNLOAD_URL,
-  NEXT_RELEASE_PENDING,
-  RELEASED_PLUGINS,
+  SHOW_NEXT_RELEASE,
   architecture,
-  cards,
   closing,
-  features,
+  compareIntro,
+  comparisons,
+  differences,
+  differencesIntro,
+  featureGroups,
+  featuresIntro,
   hero,
   localFirst,
-  pillars,
-  pluginWall,
-  tagLabels,
-  upcoming,
-  type TagKind,
-} from './content';
+  moreIntro,
+  moreScenarios,
+  nav,
+  scenarios,
+  scenariosIntro,
+  tagsOf,
+  type Point,
+  type Status,
+  type Tag,
+} from '../../../../../content/molis-work';
 import {
-  AgentImportVisual,
+  AssistantVisual,
   CapabilityVisual,
   CodingVisual,
-  RuntimeVisual,
-  SearchVisual,
   StudioVisual,
 } from './visuals';
 import { NocturneWorkMotion } from './motion';
 
 export const metadata = {
   title: { absolute: 'Molis Work · 让工作，在人、工具与 Agent 之间继续' },
-  description: hero.subtitle,
+  description: hero.lead,
 };
 
-function Tag({ kind }: { kind: TagKind }) {
-  if (kind === 'next' && !NEXT_RELEASE_PENDING) return null;
-  return (
-    <span className="nw-tag" data-kind={kind}>
-      {tagLabels[kind]}
+const tagKinds: Record<Tag, string> = {
+  下一版: 'next',
+  预览: 'preview',
+  规划中: 'planned',
+};
+
+function Tags({ status }: { status?: Status }) {
+  const tags = tagsOf(status);
+  if (tags.length === 0) return null;
+  return tags.map((tag) => (
+    <span className="nw-tag" data-kind={tagKinds[tag]} key={tag}>
+      {tag}
     </span>
-  );
+  ));
 }
 
-// Keeps each clause of a Chinese title on one line, so titles break at commas.
+// Keeps each clause of a Chinese title on one line, so titles break at
+// commas and list marks rather than inside a word.
 function Phrases({ text }: { text: string }) {
-  const parts = text.split(/(?<=[，；])/);
-  return parts.map((part) => (
-    <span className="nw-phrase" key={part}>
+  return text.split(/(?<=[，；、])/).map((part, i) => (
+    <span className="nw-phrase" key={i}>
       {part}
     </span>
   ));
+}
+
+function Points({ points }: { points: Point[] }) {
+  return (
+    <ul className="nw-points">
+      {points.map((point) => (
+        <li key={point.text}>
+          {point.text}
+          <Tags status={point.status} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function SectionHead({
+  id,
+  kicker,
+  title,
+  lead,
+  children,
+}: {
+  id: string;
+  kicker?: string;
+  title: string;
+  lead?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="nw-section-head" data-reveal>
+      {kicker && <span className="nc-kicker">{kicker}</span>}
+      <h2 id={id}>
+        <Phrases text={title} />
+      </h2>
+      {lead && <p>{lead}</p>}
+      {children}
+    </div>
+  );
 }
 
 function Actions() {
@@ -94,8 +144,15 @@ function Shot({
   );
 }
 
-const chapterVisuals: Record<string, React.ReactNode> = {
-  goals: (
+// The h1 breaks after the first comma; the two lines join back to hero.title.
+const titleBreak = hero.title.indexOf('，') + 1;
+const heroLines = [
+  hero.title.slice(0, titleBreak),
+  hero.title.slice(titleBreak),
+];
+
+const scenarioVisuals: Record<string, React.ReactNode> = {
+  relay: (
     <div className="nw-vis nw-vis-shot">
       <Shot
         src="goals-zh.jpg"
@@ -103,12 +160,53 @@ const chapterVisuals: Record<string, React.ReactNode> = {
       />
     </div>
   ),
-  capabilities: <CapabilityVisual />,
-  studio: <StudioVisual />,
-  coding: <CodingVisual />,
-  runtime: <RuntimeVisual />,
-  search: <SearchVisual />,
+  control: <CapabilityVisual />,
+  assistant: <AssistantVisual />,
 };
+
+const moreArt: Record<string, React.ReactNode> = {
+  feed: (
+    <div className="nw-card-art">
+      <Shot
+        src="feed-zh.jpg"
+        alt="Molis Work 的 Feed 页面：来源消息列表和一条消息的详情"
+      />
+    </div>
+  ),
+  start: (
+    <div className="nw-card-art">
+      <Shot
+        src="onboarding-zh.jpg"
+        alt="Molis Work 首次使用：勾选想带入的内容来源"
+      />
+    </div>
+  ),
+  studio: (
+    <div className="nw-card-art nw-card-art-vis">
+      <StudioVisual />
+    </div>
+  ),
+  coding: (
+    <div className="nw-card-art nw-card-art-vis">
+      <CodingVisual />
+    </div>
+  ),
+};
+
+// Five columns on wide screens: the four large groups each get one, and the
+// three small ones (编码, 自己做, 协作) share the last.
+const wallColumns = [
+  ...featureGroups.slice(0, 4).map((group) => [group]),
+  featureGroups.slice(4),
+];
+
+const archCaption = `上排四个入口：${architecture.entries
+  .map((entry) =>
+    entry.detail ? `${entry.name}（${entry.detail}）` : entry.name,
+  )
+  .join(
+    '、',
+  )}，都连到中间的${architecture.catalog}；下面是${architecture.plugins}，和${architecture.runtime}；底座是${architecture.home}。`;
 
 export default function NocturneWorkPage() {
   return (
@@ -121,15 +219,11 @@ export default function NocturneWorkPage() {
           <span>Molis AI</span>
         </Link>
         <nav className="nc-nav" aria-label="Molis Work 页面导航">
-          <a href="#features" className="nw-nav-anchor">
-            功能
-          </a>
-          <a href="#plugins" className="nw-nav-anchor">
-            插件
-          </a>
-          <a href="#local" className="nw-nav-anchor">
-            本地优先
-          </a>
+          {nav.map((item) => (
+            <a href={item.href} className="nw-nav-anchor" key={item.href}>
+              {item.label}
+            </a>
+          ))}
           <a
             href={GITHUB_URL}
             className="nc-nav-cta"
@@ -148,7 +242,7 @@ export default function NocturneWorkPage() {
           <div className="nw-hero-copy">
             <span className="nc-kicker nw-rise">{hero.kicker}</span>
             <h1 id="nw-title">
-              {hero.title.map((line, l) => (
+              {heroLines.map((line, l) => (
                 <span
                   className="nw-rise"
                   key={line}
@@ -159,14 +253,22 @@ export default function NocturneWorkPage() {
               ))}
             </h1>
             <p className="nw-rise" style={{ '--d': 3 } as React.CSSProperties}>
-              {hero.subtitle}
+              {hero.lead}
             </p>
             <div
               className="nw-rise"
               style={{ '--d': 4 } as React.CSSProperties}
             >
               <Actions />
-              <small className="nw-hero-note">{hero.note}</small>
+              <div className="nw-hero-agents">
+                <small>{hero.agentsLabel}</small>
+                <ul>
+                  {hero.agents.map((agent) => (
+                    <li key={agent}>{agent}</li>
+                  ))}
+                </ul>
+                <small>{hero.agentsMore}</small>
+              </div>
             </div>
           </div>
           <div className="nw-screen-wrap" data-scene="enter">
@@ -191,44 +293,104 @@ export default function NocturneWorkPage() {
           </div>
         </section>
 
-        {/* three pillars */}
-        <section className="nw-pillars" aria-label="三个支柱">
-          {pillars.map((pillar, i) => (
-            <article
-              className="nw-pillar"
-              key={pillar.title}
-              data-reveal
-              style={{ '--i': i } as React.CSSProperties}
-            >
-              <span className="nw-pillar-index">0{i + 1}</span>
-              <h2>
-                <Phrases text={pillar.title} />
-              </h2>
-              <p>{pillar.text}</p>
-              {pillar.next && <Tag kind="next" />}
-            </article>
-          ))}
+        {/* three scenes, each a chapter with the side rail */}
+        <section
+          id="scenarios"
+          className="nw-scenarios"
+          aria-labelledby="nw-scenarios-title"
+        >
+          <SectionHead
+            id="nw-scenarios-title"
+            kicker={scenariosIntro.kicker}
+            title={scenariosIntro.title}
+          />
+          <div className="nw-features">
+            <ol className="nw-rail" aria-hidden="true" data-active="0">
+              {scenarios.map((scenario, i) => (
+                <li key={scenario.id}>
+                  <span>0{i + 1}</span>
+                  {scenario.label}
+                </li>
+              ))}
+            </ol>
+            <div className="nw-chapters">
+              {scenarios.map((scenario, i) => (
+                <article
+                  className="nw-chapter"
+                  id={scenario.id}
+                  key={scenario.id}
+                  aria-labelledby={`nw-${scenario.id}-title`}
+                >
+                  <div className="nw-chapter-copy" data-reveal>
+                    <span className="nw-chapter-label">
+                      <b>0{i + 1}</b>
+                      {scenario.label}
+                      <Tags status={scenario.status} />
+                    </span>
+                    <h3 id={`nw-${scenario.id}-title`}>
+                      <Phrases text={scenario.title} />
+                    </h3>
+                    <p className="nw-problem">{scenario.problem}</p>
+                    <Points points={scenario.points} />
+                  </div>
+                  <div className="nw-chapter-visual" data-reveal>
+                    {scenarioVisuals[scenario.id]}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* four differences */}
+        <section id="why" className="nw-why" aria-labelledby="nw-why-title">
+          <SectionHead
+            id="nw-why-title"
+            kicker={differencesIntro.kicker}
+            title={differencesIntro.title}
+            lead={differencesIntro.lead}
+          />
+          <div className="nw-pillars">
+            {differences.map((item, i) => (
+              <article
+                className="nw-pillar"
+                key={item.title}
+                data-reveal
+                style={{ '--i': i } as React.CSSProperties}
+              >
+                <span className="nw-pillar-index" aria-hidden="true">
+                  0{i + 1}
+                </span>
+                <h3>
+                  <Phrases text={item.title} />
+                </h3>
+                <p>{item.body}</p>
+                <div className="nw-tags">
+                  <Tags status={item.status} />
+                </div>
+              </article>
+            ))}
+          </div>
         </section>
 
         {/* structure diagram */}
         <section className="nw-arch-section" aria-labelledby="nw-arch-title">
-          <div className="nw-section-head" data-reveal>
-            <h2 id="nw-arch-title">
-              <Phrases text={architecture.title} />
-            </h2>
-            <p>{architecture.text}</p>
-            <Tag kind="next" />
-          </div>
+          <SectionHead id="nw-arch-title" title={architecture.title}>
+            <p className="nw-arch-body">{architecture.body}</p>
+            <div className="nw-tags">
+              <Tags status={architecture.status} />
+            </div>
+          </SectionHead>
           <figure className="nw-arch" data-reveal>
             <div className="nw-arch-entries">
               {architecture.entries.map((entry, i) => (
                 <div
                   className="nw-arch-node"
-                  key={entry.label}
+                  key={entry.name}
                   style={{ '--i': i } as React.CSSProperties}
                 >
-                  <span>{entry.label}</span>
-                  {entry.tag && <Tag kind={entry.tag} />}
+                  <span>{entry.name}</span>
+                  {entry.detail && <small>{entry.detail}</small>}
                 </div>
               ))}
             </div>
@@ -254,139 +416,126 @@ export default function NocturneWorkPage() {
             </svg>
             <span className="nw-arch-stem" aria-hidden="true" />
             <div className="nw-arch-core">
-              <span>{architecture.core}</span>
+              <span>{architecture.catalog}</span>
             </div>
             <span className="nw-arch-stem" aria-hidden="true" />
             <div className="nw-arch-lower">
-              {architecture.lower.map((label) => (
-                <div className="nw-arch-block" key={label}>
-                  {label}
-                </div>
-              ))}
+              <div className="nw-arch-block">{architecture.plugins}</div>
+              <div className="nw-arch-block">{architecture.runtime}</div>
             </div>
-            <div className="nw-arch-base">{architecture.base}</div>
-            <figcaption className="nc-sr-only">
-              上排四个入口：页面与搜索、个人助理、工作流程与定时、外部
-              Agent，都连到中间的统一能力目录；能力目录下面是插件和 Prologue
-              运行时，底座是本机的 Home。
-            </figcaption>
+            <div className="nw-arch-base">{architecture.home}</div>
+            <figcaption className="nc-sr-only">{archCaption}</figcaption>
           </figure>
         </section>
 
-        {/* six feature chapters */}
-        <section id="features" className="nw-features" aria-label="主要功能">
-          <ol className="nw-rail" aria-hidden="true" data-active="0">
-            {features.map((feature, i) => (
-              <li key={feature.id}>
-                <span>0{i + 1}</span>
-                {feature.label}
-              </li>
-            ))}
-          </ol>
-          <div className="nw-chapters">
-            {features.map((feature, i) => (
+        {/* four more scenes as cards */}
+        <section id="more" className="nw-more" aria-labelledby="nw-more-title">
+          <SectionHead
+            id="nw-more-title"
+            kicker={moreIntro.kicker}
+            title={moreIntro.title}
+          />
+          <div className="nw-cards">
+            {moreScenarios.map((scenario, i) => (
               <article
-                className="nw-chapter"
-                id={feature.id}
-                key={feature.id}
-                aria-labelledby={`nw-${feature.id}-title`}
+                className="nw-card"
+                key={scenario.id}
+                id={scenario.id}
+                data-reveal
+                style={{ '--i': i % 2 } as React.CSSProperties}
               >
-                <div className="nw-chapter-copy" data-reveal>
+                {moreArt[scenario.id]}
+                <div className="nw-card-copy">
                   <span className="nw-chapter-label">
-                    <b>0{i + 1}</b>
-                    {feature.label}
-                    {feature.tags.map((tag) => (
-                      <Tag kind={tag} key={tag} />
-                    ))}
+                    {scenario.label}
+                    <Tags status={scenario.status} />
                   </span>
-                  <h3 id={`nw-${feature.id}-title`}>
-                    <Phrases text={feature.title} />
+                  <h3>
+                    <Phrases text={scenario.title} />
                   </h3>
-                  <ul>
-                    {feature.points.map((point) => (
-                      <li key={point}>{point}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="nw-chapter-visual" data-reveal>
-                  {chapterVisuals[feature.id]}
+                  <p className="nw-problem">{scenario.problem}</p>
+                  <Points points={scenario.points} />
                 </div>
               </article>
             ))}
           </div>
         </section>
 
-        {/* three secondary cards */}
-        <section className="nw-cards" aria-label="更多功能">
-          {cards.map((card, i) => (
-            <article
-              className="nw-card"
-              key={card.title}
-              data-reveal
-              style={{ '--i': i } as React.CSSProperties}
-            >
-              {i === 0 && (
-                <div className="nw-card-art">
-                  <Shot
-                    src="feed-zh.jpg"
-                    alt="Molis Work 的 Feed 页面：来源消息列表和一条消息的详情"
-                  />
-                </div>
-              )}
-              {i === 1 && (
-                <div className="nw-card-art">
-                  <Shot
-                    src="onboarding-zh.jpg"
-                    alt="Molis Work 首次使用：勾选想带入的内容来源"
-                  />
-                </div>
-              )}
-              {i === 2 && <AgentImportVisual />}
-              <div className="nw-card-copy">
-                <Tag kind="next" />
-                <h3>
-                  <Phrases text={card.title} />
-                </h3>
-                <p>{card.text}</p>
-              </div>
-            </article>
-          ))}
-        </section>
-
-        {/* plugin wall */}
+        {/* feature wall */}
         <section
-          id="plugins"
+          id="features"
           className="nw-plugins"
-          aria-labelledby="nw-plugins-title"
+          aria-labelledby="nw-features-title"
         >
-          <div className="nw-section-head" data-reveal>
-            <h2 id="nw-plugins-title">
-              <Phrases text={pluginWall.title} />
-            </h2>
-            <p>{pluginWall.subtitle}</p>
-          </div>
+          <SectionHead
+            id="nw-features-title"
+            kicker={featuresIntro.kicker}
+            title={featuresIntro.title}
+            lead={featuresIntro.lead}
+          />
           <div className="nw-wall">
-            {pluginWall.groups.map((group) => (
-              <div className="nw-group" key={group.name} data-reveal>
-                <h3>{group.name}</h3>
-                <ul>
-                  {group.plugins.map(([name, text]) => (
-                    <li
-                      key={name}
-                      data-live={RELEASED_PLUGINS.has(name) || undefined}
-                    >
-                      <strong>
-                        {name}
-                        {name === '插件创作台' && <Tag kind="preview" />}
-                        {!RELEASED_PLUGINS.has(name) && <Tag kind="next" />}
-                      </strong>
-                      <span>{text}</span>
-                    </li>
-                  ))}
-                </ul>
+            {wallColumns.map((column) => (
+              <div className="nw-wall-col" key={column[0].name}>
+                {column.map((group) => (
+                  <div className="nw-group" key={group.name} data-reveal>
+                    <h3>{group.name}</h3>
+                    <ul>
+                      {group.features.map((feature) => (
+                        <li
+                          key={feature.name}
+                          data-live={
+                            (SHOW_NEXT_RELEASE &&
+                              feature.status === 'released') ||
+                            undefined
+                          }
+                        >
+                          <div className="nw-feature-name">
+                            <strong>{feature.name}</strong>
+                            <Tags status={feature.status} />
+                          </div>
+                          <span>{feature.line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
+        </section>
+
+        {/* comparison, set like closing credits */}
+        <section
+          id="compare"
+          className="nw-compare"
+          aria-labelledby="nw-compare-title"
+        >
+          <SectionHead
+            id="nw-compare-title"
+            kicker={compareIntro.kicker}
+            title={compareIntro.title}
+            lead={compareIntro.lead}
+          />
+          <ol className="nw-roll">
+            {comparisons.map((row) => (
+              <li key={row.now} data-reveal>
+                <dl className="nw-credit">
+                  <div className="nw-credit-now">
+                    <dt>{compareIntro.labels.now}</dt>
+                    <dd>{row.now}</dd>
+                  </div>
+                  <div className="nw-credit-here">
+                    <dt>{compareIntro.labels.here}</dt>
+                    <dd>{row.here}</dd>
+                  </div>
+                  <div className="nw-credit-gap">
+                    <dt>{compareIntro.labels.gap}</dt>
+                    <dd>{row.gap}</dd>
+                  </div>
+                </dl>
+              </li>
+            ))}
+          </ol>
         </section>
 
         {/* local first */}
@@ -402,6 +551,7 @@ export default function NocturneWorkPage() {
             <b>Home</b>
           </div>
           <div className="nw-local-copy" data-reveal>
+            <span className="nc-kicker">{localFirst.kicker}</span>
             <h2 id="nw-local-title">
               <Phrases text={localFirst.title} />
             </h2>
@@ -414,22 +564,6 @@ export default function NocturneWorkPage() {
               ))}
             </ol>
           </div>
-        </section>
-
-        {/* upcoming */}
-        <section className="nw-next" aria-labelledby="nw-next-title">
-          <h2 id="nw-next-title" data-reveal>
-            接下来
-          </h2>
-          <ul>
-            {upcoming.map((item) => (
-              <li key={item.name} data-reveal>
-                <strong>{item.name}</strong>
-                <p>{item.text}</p>
-                <Tag kind={item.tag} />
-              </li>
-            ))}
-          </ul>
         </section>
       </main>
 

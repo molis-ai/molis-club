@@ -6,44 +6,94 @@ import Galaxy from '../galaxy';
 import Planet from '../planet';
 import {
   GITHUB_URL,
-  MACOS_DOWNLOAD_URL,
+  MAC_DOWNLOAD_URL,
   SHOW_NEXT_RELEASE,
+  agentLine,
   architecture,
-  cards,
   closing,
-  features,
+  compareIntro,
+  comparisons,
+  differences,
+  differencesIntro,
+  featureGroups,
+  featuresIntro,
   hero,
   localFirst,
-  pillars,
-  pluginGroups,
-  pluginWall,
-  upcoming,
-  type Tag,
-} from './content';
-import { AgentsArt, FeatureArt } from './visuals';
+  moreIntro,
+  moreScenarios,
+  nav,
+  scenarios,
+  scenariosIntro,
+  tagsOf,
+  type Point,
+  type Status,
+} from '../../../../../content/molis-work';
+import { CardArt, SceneArt, type SceneVisual } from './visuals';
 import '../cosmos.css';
 import './work.css';
 
-function Badge({ tag }: { tag: Tag }) {
-  return <span className={`cw-tag cw-tag-${tag}`}>{tag}</span>;
+// 首屏标题在深空版里的断行；两行拼起来就是 hero.title
+const heroLines = ['让工作，在人、工具', '与 Agent 之间继续。'];
+
+const cardImages: Record<string, string> = {
+  feed: '/images/cosmos/work/feed-zh.jpg',
+  start: '/images/cosmos/work/onboarding-zh.jpg',
+};
+
+// 标题按逗号、顿号拆成不断开的短语，窄屏换行时落在标点后面
+function Phrases({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(/(?<=[，、])/).map((phrase) => (
+        <span key={phrase} className="cw-phrase">
+          {phrase}
+        </span>
+      ))}
+    </>
+  );
 }
 
-function NextBadge({ show }: { show: boolean }) {
-  if (!SHOW_NEXT_RELEASE || !show) return null;
-  return <span className="cw-tag cw-tag-next">下一版</span>;
+function Tags({ status }: { status?: Status }) {
+  return (
+    <>
+      {tagsOf(status).map((tag) => (
+        <span key={tag} className={`cw-tag cw-tag-${tag}`}>
+          {tag}
+        </span>
+      ))}
+    </>
+  );
+}
+
+function Points({ points }: { points: Point[] }) {
+  return (
+    <ul>
+      {points.map((point) => (
+        <li key={point.text}>
+          {point.text}
+          {tagsOf(point.status).length ? (
+            <>
+              {' '}
+              <Tags status={point.status} />
+            </>
+          ) : null}
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 function Actions({ className = '' }: { className?: string }) {
   return (
     <div className={`cw-actions ${className}`}>
-      {MACOS_DOWNLOAD_URL ? (
-        <a className="cw-button cw-button-primary" href={MACOS_DOWNLOAD_URL}>
+      {MAC_DOWNLOAD_URL ? (
+        <a className="cw-button cw-button-primary" href={MAC_DOWNLOAD_URL}>
           <Download size={18} aria-hidden="true" />
           下载 macOS 版
         </a>
       ) : null}
       <a
-        className={`cw-button ${MACOS_DOWNLOAD_URL ? '' : 'cw-button-primary'}`}
+        className={`cw-button ${MAC_DOWNLOAD_URL ? '' : 'cw-button-primary'}`}
         href={GITHUB_URL}
         target="_blank"
         rel="noreferrer"
@@ -119,7 +169,10 @@ function Architecture() {
       >
         {entryX.map((x, i) => (
           <g key={x}>
-            <path className="cw-arch-path" d={`M${x} 64 C${x} 150 500 130 500 212`} />
+            <path
+              className="cw-arch-path"
+              d={`M${x} 64 C${x} 150 500 130 500 212`}
+            />
             <path
               className="cw-arch-pulse"
               d={`M${x} 64 C${x} 150 500 130 500 212`}
@@ -129,7 +182,10 @@ function Architecture() {
         ))}
         {[300, 700].map((x, i) => (
           <g key={x}>
-            <path className="cw-arch-path" d={`M500 300 C500 350 ${x} 340 ${x} 392`} />
+            <path
+              className="cw-arch-path"
+              d={`M500 300 C500 350 ${x} 340 ${x} 392`}
+            />
             <path
               className="cw-arch-pulse cw-arch-pulse-down"
               d={`M500 300 C500 350 ${x} 340 ${x} 392`}
@@ -146,7 +202,6 @@ function Architecture() {
               {entry.name}
               {entry.detail ? <small>{entry.detail}</small> : null}
             </span>
-            {entry.tag ? <Badge tag={entry.tag} /> : null}
           </li>
         ))}
       </ul>
@@ -173,7 +228,7 @@ function Architecture() {
   );
 }
 
-function Features() {
+function Scenarios() {
   const [active, setActive] = useState(0);
   const itemRefs = useRef<(HTMLElement | null)[]>([]);
 
@@ -195,63 +250,69 @@ function Features() {
 
   return (
     <section
-      id="features"
-      className="cw-features"
-      aria-label="Molis Work 的六个主要功能"
+      id="scenarios"
+      className="cw-scenarios"
+      aria-labelledby="cw-scenarios-title"
     >
-      <div className="cw-features-stage" aria-hidden="true">
-        <div className="cw-features-sticky">
-          <ol className="cw-features-rail">
-            {features.map((feature, index) => (
-              <li
-                key={feature.label}
-                className={active === index ? 'is-active' : ''}
-              >
-                <span>0{index + 1}</span>
-                {feature.label}
-              </li>
-            ))}
-          </ol>
-          <div className="cw-features-view">
-            {features.map((feature, index) => (
-              <div
-                key={feature.visual}
-                className={`cw-features-layer${active === index ? ' is-active' : ''}`}
-              >
-                <FeatureArt kind={feature.visual} />
-              </div>
-            ))}
+      <div className="cw-intro cw-scenarios-intro">
+        <span className="cs-eyebrow">{scenariosIntro.kicker}</span>
+        <h2 id="cw-scenarios-title">
+          <Phrases text={scenariosIntro.title} />
+        </h2>
+      </div>
+      <div className="cw-features">
+        <div className="cw-features-stage" aria-hidden="true">
+          <div className="cw-features-sticky">
+            <ol className="cw-features-rail">
+              {scenarios.map((scenario, index) => (
+                <li
+                  key={scenario.id}
+                  className={active === index ? 'is-active' : ''}
+                >
+                  <span>0{index + 1}</span>
+                  {scenario.label}
+                </li>
+              ))}
+            </ol>
+            <div className="cw-features-view">
+              {scenarios.map((scenario, index) => (
+                <div
+                  key={scenario.id}
+                  className={`cw-features-layer${active === index ? ' is-active' : ''}`}
+                >
+                  <SceneArt kind={scenario.id as SceneVisual} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="cw-features-list">
-        {features.map((feature, index) => (
-          <article
-            key={feature.label}
-            ref={(node) => {
-              itemRefs.current[index] = node;
-            }}
-            data-index={index}
-            className={`cw-feature${active === index ? ' is-active' : ''}`}
-          >
-            <div className="cw-feature-inline">
-              <FeatureArt kind={feature.visual} />
-            </div>
-            <div className="cw-feature-meta">
-              <span className="cw-feature-index">0{index + 1}</span>
-              <span className="cw-feature-label">{feature.label}</span>
-              {feature.tag ? <Badge tag={feature.tag} /> : null}
-              <NextBadge show={feature.next} />
-            </div>
-            <h3>{feature.title}</h3>
-            <ul>
-              {feature.points.map((point) => (
-                <li key={point}>{point}</li>
-              ))}
-            </ul>
-          </article>
-        ))}
+        <div className="cw-features-list">
+          {scenarios.map((scenario, index) => (
+            <article
+              key={scenario.id}
+              ref={(node) => {
+                itemRefs.current[index] = node;
+              }}
+              data-index={index}
+              className={`cw-feature${active === index ? ' is-active' : ''}`}
+            >
+              <div className="cw-feature-inline">
+                <SceneArt kind={scenario.id as SceneVisual} />
+              </div>
+              <div className="cw-feature-meta">
+                <span className="cw-feature-index">0{index + 1}</span>
+                <span className="cw-feature-label">{scenario.label}</span>
+                <Tags status={scenario.status} />
+              </div>
+              <h3>
+                <Phrases text={scenario.title} />
+              </h3>
+              <p className="cw-problem">{scenario.problem}</p>
+              <Points points={scenario.points} />
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -259,9 +320,9 @@ function Features() {
 
 export default function CosmosWorkPage() {
   const screenRef = useScrollProgress<HTMLDivElement>();
-  const pillarsRef = useReveal<HTMLDivElement>(0.3);
+  const pillarsRef = useReveal<HTMLDivElement>(0.2);
+  const compareRef = useReveal<HTMLOListElement>(0.1);
   const localRef = useReveal<HTMLElement>(0.3);
-  const upcomingRef = useReveal<HTMLOListElement>(0.25);
   const footerRef = useReveal<HTMLElement>(0.25);
 
   return (
@@ -272,8 +333,11 @@ export default function CosmosWorkPage() {
           <span>Molis AI</span>
         </Link>
         <nav className="cs-pill" aria-label="Molis Work 页面导航">
-          <a href="#features">功能</a>
-          <a href="#plugins">插件</a>
+          {nav.map((item) => (
+            <a key={item.href} href={item.href} className="cw-nav-link">
+              {item.label}
+            </a>
+          ))}
           <a
             href={GITHUB_URL}
             target="_blank"
@@ -297,15 +361,15 @@ export default function CosmosWorkPage() {
               <i />
             </div>
             <div className="cs-hero-copy cw-hero-copy">
-              <span className="cs-eyebrow cw-hero-eyebrow">{hero.eyebrow}</span>
-              <h1 id="cw-title">
-                <span>{hero.title[0]}</span>
+              <span className="cs-eyebrow cw-hero-eyebrow">{hero.kicker}</span>
+              <h1 id="cw-title" aria-label={hero.title}>
+                <span aria-hidden="true">{heroLines[0]}</span>
                 <br />
-                <span>{hero.title[1]}</span>
+                <span aria-hidden="true">{heroLines[1]}</span>
               </h1>
               <p className="cw-hero-lead">{hero.lead}</p>
               <Actions className="cw-hero-actions" />
-              <p className="cw-hero-note">{hero.note}</p>
+              <p className="cw-hero-note">{agentLine}</p>
             </div>
           </section>
 
@@ -328,7 +392,20 @@ export default function CosmosWorkPage() {
           </div>
         </div>
 
-        <section className="cw-pillars" aria-label="三个支柱">
+        <Scenarios />
+
+        <section
+          id="why"
+          className="cw-section cw-pillars"
+          aria-labelledby="cw-why-title"
+        >
+          <div className="cw-intro cw-intro-center">
+            <span className="cs-eyebrow">{differencesIntro.kicker}</span>
+            <h2 id="cw-why-title">
+              <Phrases text={differencesIntro.title} />
+            </h2>
+            <p>{differencesIntro.lead}</p>
+          </div>
           <div className="cw-pillar-list" ref={pillarsRef}>
             <svg
               className="cw-pillar-line"
@@ -336,18 +413,23 @@ export default function CosmosWorkPage() {
               preserveAspectRatio="none"
               aria-hidden="true"
             >
-              <path d="M200 20 L600 20 L1000 20" />
+              <path d="M150 20 L1050 20" />
             </svg>
-            {pillars.map((pillar, index) => (
+            {differences.map((item, index) => (
               <article
-                key={pillar.title}
+                key={item.title}
                 className="cw-pillar"
                 style={{ '--i': index } as React.CSSProperties}
               >
                 <span className="cw-pillar-star" aria-hidden="true" />
-                <h2>{pillar.title}</h2>
-                <p>{pillar.body}</p>
-                <NextBadge show={pillar.next} />
+                <span className="cw-pillar-index">0{index + 1}</span>
+                <h3>
+                  <Phrases text={item.title} />
+                </h3>
+                <p>{item.body}</p>
+                <span className="cw-pillar-tags">
+                  <Tags status={item.status} />
+                </span>
               </article>
             ))}
           </div>
@@ -358,49 +440,69 @@ export default function CosmosWorkPage() {
           aria-labelledby="cw-arch-title"
         >
           <div className="cw-intro cw-intro-center">
-            <h2 id="cw-arch-title">{architecture.title}</h2>
+            <h2 id="cw-arch-title">
+              <Phrases text={architecture.title} />
+            </h2>
             <p>{architecture.body}</p>
-            <NextBadge show />
+            <Tags status={architecture.status} />
           </div>
           <Architecture />
         </section>
 
-        <Features />
-
-        <section className="cw-section cw-cards" aria-label="更多能力">
-          {cards.map((card) => (
-            <article key={card.title} className="cw-card">
-              <div className="cw-card-visual">
-                {card.image ? (
-                  <img
-                    src={card.image}
-                    width="1440"
-                    height="1000"
-                    alt=""
-                    loading="lazy"
-                  />
-                ) : (
-                  <AgentsArt />
-                )}
-              </div>
-              <div className="cw-card-copy">
-                <NextBadge show={card.next} />
-                <h3>{card.title}</h3>
-                <p>{card.body}</p>
-              </div>
-            </article>
-          ))}
+        <section
+          id="more"
+          className="cw-section"
+          aria-labelledby="cw-more-title"
+        >
+          <div className="cw-intro">
+            <span className="cs-eyebrow">{moreIntro.kicker}</span>
+            <h2 id="cw-more-title">
+              <Phrases text={moreIntro.title} />
+            </h2>
+          </div>
+          <div className="cw-cards">
+            {moreScenarios.map((card) => (
+              <article key={card.id} className="cw-card">
+                <div className="cw-card-visual">
+                  {cardImages[card.id] ? (
+                    <img
+                      src={cardImages[card.id]}
+                      width="1440"
+                      height="1000"
+                      alt=""
+                      loading="lazy"
+                    />
+                  ) : (
+                    <CardArt kind={card.id as SceneVisual} />
+                  )}
+                </div>
+                <div className="cw-card-copy">
+                  <div className="cw-feature-meta">
+                    <span className="cw-feature-label">{card.label}</span>
+                    <Tags status={card.status} />
+                  </div>
+                  <h3>
+                    <Phrases text={card.title} />
+                  </h3>
+                  <p className="cw-problem">{card.problem}</p>
+                  <Points points={card.points} />
+                </div>
+              </article>
+            ))}
+          </div>
         </section>
 
         <section
-          id="plugins"
+          id="features"
           className="cw-section cw-plugins"
-          aria-labelledby="cw-plugins-title"
+          aria-labelledby="cw-features-title"
         >
           <div className="cw-intro">
-            <span className="cs-eyebrow">插件</span>
-            <h2 id="cw-plugins-title">{pluginWall.title}</h2>
-            <p>{pluginWall.lead}</p>
+            <span className="cs-eyebrow">{featuresIntro.kicker}</span>
+            <h2 id="cw-features-title">
+              <Phrases text={featuresIntro.title} />
+            </h2>
+            <p>{featuresIntro.lead}</p>
             {SHOW_NEXT_RELEASE ? (
               <p className="cw-legend">
                 <span>
@@ -412,34 +514,31 @@ export default function CosmosWorkPage() {
               </p>
             ) : null}
           </div>
-          <div className="cw-plugin-map">
-            {pluginGroups.map((group) => (
-              <div key={group.name} className="cw-plugin-group">
+          <div className="cw-catalog">
+            {featureGroups.map((group) => (
+              <div key={group.name} className="cw-catalog-group">
                 <h3>
                   {group.name}
-                  <small>{group.plugins.length}</small>
+                  <small>{group.features.length}</small>
                 </h3>
                 <ul>
-                  {group.plugins.map((plugin) => (
-                    <li
-                      key={plugin.name}
-                      className={
-                        plugin.released || !SHOW_NEXT_RELEASE
-                          ? 'is-released'
-                          : ''
-                      }
-                    >
-                      <i className="cw-star" aria-hidden="true" />
-                      <strong>
-                        {plugin.name}
-                        {plugin.tag ? <Badge tag={plugin.tag} /> : null}
-                        {SHOW_NEXT_RELEASE && !plugin.released ? (
-                          <span className="cs-sr-only">（下一版）</span>
-                        ) : null}
-                      </strong>
-                      <span>{plugin.line}</span>
-                    </li>
-                  ))}
+                  {group.features.map((feature) => {
+                    const lit =
+                      feature.status === 'released' || !SHOW_NEXT_RELEASE;
+                    return (
+                      <li
+                        key={feature.name}
+                        className={lit ? 'is-released' : ''}
+                      >
+                        <i className="cw-star" aria-hidden="true" />
+                        <strong>
+                          {feature.name}
+                          <Tags status={feature.status} />
+                        </strong>
+                        <span>{feature.line}</span>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}
@@ -447,6 +546,46 @@ export default function CosmosWorkPage() {
         </section>
 
         <section
+          id="compare"
+          className="cw-section cw-compare"
+          aria-labelledby="cw-compare-title"
+        >
+          <div className="cw-intro">
+            <span className="cs-eyebrow">{compareIntro.kicker}</span>
+            <h2 id="cw-compare-title">
+              <Phrases text={compareIntro.title} />
+            </h2>
+            <p>{compareIntro.lead}</p>
+          </div>
+          <div className="cw-compare-head" aria-hidden="true">
+            <span>{compareIntro.labels.now}</span>
+            <span>{compareIntro.labels.here}</span>
+            <span>{compareIntro.labels.gap}</span>
+          </div>
+          <ol className="cw-compare-list" ref={compareRef}>
+            {comparisons.map((row, index) => (
+              <li key={row.now} style={{ '--i': index } as React.CSSProperties}>
+                <dl>
+                  <div className="cw-compare-now">
+                    <dt>{compareIntro.labels.now}</dt>
+                    <dd>{row.now}</dd>
+                  </div>
+                  <div className="cw-compare-here">
+                    <dt>{compareIntro.labels.here}</dt>
+                    <dd>{row.here}</dd>
+                  </div>
+                  <div className="cw-compare-gap">
+                    <dt>{compareIntro.labels.gap}</dt>
+                    <dd>{row.gap}</dd>
+                  </div>
+                </dl>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section
+          id="local"
           className="cw-section cw-local"
           ref={localRef}
           aria-labelledby="cw-local-title"
@@ -458,8 +597,10 @@ export default function CosmosWorkPage() {
             <span className="cw-local-probe" />
           </div>
           <div className="cw-local-copy">
-            <span className="cs-eyebrow">本地优先</span>
-            <h2 id="cw-local-title">{localFirst.title}</h2>
+            <span className="cs-eyebrow">{localFirst.kicker}</span>
+            <h2 id="cw-local-title">
+              <Phrases text={localFirst.title} />
+            </h2>
             <ol>
               {localFirst.points.map((point, index) => (
                 <li
@@ -472,26 +613,6 @@ export default function CosmosWorkPage() {
             </ol>
           </div>
         </section>
-
-        <section
-          className="cw-section cw-upcoming"
-          aria-labelledby="cw-upcoming-title"
-        >
-          <div className="cw-intro">
-            <span className="cs-eyebrow">接下来</span>
-            <h2 id="cw-upcoming-title">还在路上的几件事。</h2>
-          </div>
-          <ol className="cw-trajectory" ref={upcomingRef}>
-            {upcoming.map((item, index) => (
-              <li key={item.name} style={{ '--i': index } as React.CSSProperties}>
-                <span className="cw-trajectory-body" aria-hidden="true" />
-                <Badge tag={item.tag} />
-                <h3>{item.name}</h3>
-                <p>{item.body}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
       </main>
 
       <footer className="cs-footer cw-footer" ref={footerRef}>
@@ -501,9 +622,11 @@ export default function CosmosWorkPage() {
         </div>
         <div className="cs-footer-invite cw-footer-invite">
           <h2>
-            {closing.title[0]}
-            <br />
-            {closing.title[1]}
+            {closing.title.map((line) => (
+              <span key={line} className="cw-phrase">
+                {line}
+              </span>
+            ))}
           </h2>
           <Actions className="cw-footer-actions" />
         </div>
