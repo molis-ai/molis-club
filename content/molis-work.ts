@@ -489,3 +489,192 @@ export const localFirst = {
 export const closing = {
   title: ['工具可以不断长出来，', '工作不必一次次重来。'],
 };
+
+// ---------- 短版产品页（2026-10-06 第二轮方案 B） ----------
+// 只讲 v0.2.0 现在能做的事，下一版集中到「即将到来」一个区块。先在 Edition C 上用，
+// 其余四个方向确认后再切过来；上面的长版导出保持不动，供它们继续使用。
+
+export const RELEASES_URL = 'https://github.com/molis-ai/molis-work/releases';
+export const INSTALL_URL =
+  'https://github.com/molis-ai/molis-work/blob/v0.2.0/docs/installation.md';
+
+export const short = {
+  hero: {
+    kicker: 'Molis Work · v0.2.0',
+    title: '换一个 AI，工作也接得上。',
+    lead: 'Molis Work 是 AI 原生的工作台：目标、资料和 Agent 在同一处，换工具、换会话，工作都接得上，做没做完可以核对。',
+    status: ['免费', 'MIT 开源', 'macOS'],
+    start: '三步开始',
+  },
+  audience: {
+    kicker: '给谁用',
+    text: '先给同时用好几个 AI 编码工具的开发者和技术负责人：今天用 Claude Code，明天换 Codex，一个项目跨几十个会话。',
+  },
+  howto: {
+    kicker: '看它怎么用',
+    title: '一个目标，换着 AI 做完。',
+    steps: [
+      {
+        title: '建一个目标',
+        text: '写下要做成什么、怎样算完成。',
+      },
+      {
+        title: '换着 AI 接着做',
+        text: '在 Claude Code 里接着做；隔天换 Codex，也从同一个目标继续。',
+      },
+      {
+        title: '收尾时核对',
+        text: '对照要求和依据，确认真的做完了。',
+      },
+    ],
+  },
+  highlights: {
+    kicker: '三个亮点',
+    title: '目标、接力、核对。',
+    items: [
+      {
+        title: '目标只有一份',
+        text: '要做成什么、做到哪、还差什么，记在同一个目标（Goal）里，不散在某个工具的聊天记录里。',
+      },
+      {
+        title: '换一个 AI 也接得上',
+        text: '内置接入 Codex、Claude Code、OpenCode、Pi Agent、Grok Build；其他 Agent 通过 MCP（让 AI 工具读写外部数据的通用接口）读写同一份目标。接入前先预览，失败会回滚。',
+      },
+      {
+        title: '完成要核对',
+        text: '「做完了」要过一次收尾，核对当前要求、依据和阻塞。Agent 可以提新需求，不能悄悄改掉你认可的目标。',
+      },
+    ],
+    note: '还有：RSS、网页、YouTube、GitHub、Gmail 的新内容进同一个 Feed；从目标打开的终端一直属于这个目标。',
+  },
+  start: {
+    kicker: '三步开始',
+    title: '今天就能用起来。',
+    steps: [
+      {
+        title: '安装',
+        text: '目前支持 macOS。签名安装包完成公证后提供；现在需要 Node.js 24+ 和 pnpm 从源码安装，步骤见 GitHub。',
+        action: '看安装步骤',
+      },
+      {
+        title: '建第一个目标',
+        text: '先写一句要做成什么，之后再补完成标准。',
+      },
+      {
+        title: '接上你的 Agent',
+        text: '确认接入后新开一个 Claude Code 或 Codex 会话，接着做；收尾时回到 Molis Work 核对。',
+      },
+    ],
+  },
+  compare: {
+    kicker: '和你现在的做法比',
+    title: '少重讲一遍，多核对一次。',
+    labels: { now: '你现在', pain: '麻烦', here: '用 Molis Work' },
+    rows: [
+      {
+        now: '每次新会话都重讲背景',
+        pain: '换工具、隔几天就要重新交代',
+        here: '目标和进度记在一处，哪个 Agent 都能接着做',
+      },
+      {
+        now: '用项目管理工具记进度',
+        pain: 'AI 读不到，也写不回',
+        here: 'Agent 直接读写同一份目标',
+      },
+      {
+        now: '相信 AI 说「做完了」',
+        pain: '没有依据可查',
+        here: '收尾时核对要求、依据和阻塞',
+      },
+    ],
+  },
+  upcoming: {
+    kicker: '即将到来',
+    title: '下一版会带来的。',
+    lead: '这些已经在主干上开发，随下一次发版提供；发版之后，它们会移到上面的正文里。',
+    items: [
+      {
+        title: '个人助理',
+        text: '在任何页面叫出来，看得见你在做什么，建议是点一下就执行的操作卡。',
+      },
+      {
+        title: '放心让 AI 动手',
+        text: '权限在一处管，写文件、跑命令先审查，能撤销。',
+      },
+      {
+        title: '信息到行动',
+        text: 'Feed 里要你处理的送进收件箱，写文稿时带着出处。',
+      },
+      {
+        title: '写代码的会话住在项目里',
+        text: '断了从断点继续，副作用先审查。',
+      },
+      {
+        title: '插件创作台',
+        text: '描述一个需求，Agent 做出插件装进项目。',
+        tag: '预览',
+      },
+      {
+        title: '团队空间与多设备同步',
+        text: '成员、权限、共享项目、多设备。',
+        tag: '规划中',
+      },
+    ] as { title: string; text: string; tag?: string }[],
+    action: '关注下一版',
+  },
+  features: {
+    kicker: '全部功能',
+    title: '每一项，现在在哪一步。',
+    groups: { released: '现在能用', next: '下一版', planned: '规划中' },
+  },
+  faq: {
+    kicker: '常见问题',
+    title: '你可能想先知道的。',
+    teamAction: '聊聊解决方案',
+    items: [
+      { q: '多少钱？', a: '免费，MIT 开源。' },
+      { q: '支持什么系统？', a: '目前只支持 macOS。' },
+      { q: '数据存在哪？', a: '在你自己的电脑上。' },
+      {
+        q: '要不要自己的模型密钥？',
+        a: 'v0.2.0 不托管模型，执行留在你已经在用的 Agent 里。',
+      },
+      {
+        q: '团队能一起用吗？',
+        a: '团队空间还在规划，现在适合个人，或小团队里牵头的人。想让团队用起来，可以找我们聊解决方案。',
+        team: true,
+      },
+    ] as { q: string; a: string; team?: boolean }[],
+  },
+  closing: {
+    title: ['让工作，在人、', '工具与 Agent 之间继续。'],
+    paths: {
+      start: {
+        title: '开始使用',
+        text: 'macOS · 从源码安装，三步接上你的 Agent',
+      },
+      follow: {
+        title: '关注下一版',
+        text: '在 GitHub 订阅 Release，发版时收到提醒',
+      },
+      team: {
+        title: '和团队一起用',
+        text: '带一个具体的业务场景来，我们一起落地',
+      },
+    },
+  },
+};
+
+/** 「全部功能」清单：按用户现在能不能用到分三组，预览项随下一版一起 */
+export function featuresByAvailability() {
+  const all = featureGroups.flatMap((group) =>
+    group.features.map((feature) => ({ ...feature, group: group.name })),
+  );
+  return {
+    released: all.filter((feature) => feature.status === 'released'),
+    next: all.filter(
+      (feature) => feature.status === 'next' || feature.status === 'preview',
+    ),
+    planned: all.filter((feature) => feature.status === 'planned'),
+  };
+}

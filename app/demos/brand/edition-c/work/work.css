@@ -1,1330 +1,323 @@
-/* Molis Work 产品页的 Edition C 版本：沿用 ../edition-c.css 的底色、字体与间隙，前缀 ew-。 */
+/* Molis Work 短版产品页的 Edition C 版本：通用部件在 ../kit.css，这里只放本页的区块，前缀 ew-。 */
 
-.ew-index {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-.ew-tags {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  vertical-align: middle;
-}
-.ew-tag {
-  display: inline-flex;
-  align-items: center;
-  height: 22px;
-  padding: 0 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0;
-  line-height: 1;
-  white-space: nowrap;
-  background: var(--paper-deep);
-  color: var(--ink);
-}
-.ew-tag[data-tag='下一版'] {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--line);
-  color: var(--muted);
-}
-.ew-tag[data-tag='预览'] {
-  background: #e3ebe2;
-  color: #2f5a36;
-}
-.ew-tag[data-tag='规划中'] {
-  background: #e4e6ec;
-  color: #3f4760;
-}
-.ew-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-}
-
-/* ---------- 首屏 ---------- */
-.ew-hero .ec-hero-copy {
-  top: 38%;
-}
-.ew-hero-eyebrow {
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: color-mix(in srgb, var(--white) 80%, transparent);
-  animation: ec-rise 900ms var(--ease) 100ms backwards;
-}
-.ec-hero-copy.ew-hero-copy h1 {
-  margin-top: 20px;
-  font-size: clamp(32px, 3.296vw, 60px);
-  line-height: 1.22;
-  letter-spacing: -0.03em;
-  animation: none;
-}
-.ew-hero-line {
-  display: block;
-  animation: ec-rise 1s var(--ease) calc(0.18s + var(--r) * 0.12s) backwards;
-}
-.ew-hero-copy p {
-  margin-top: 20px;
-  max-width: 32em;
-}
-.ew-hero-copy .ew-actions {
-  margin-top: 30px;
-  animation: ec-rise 900ms var(--ease) 460ms backwards;
-}
-.ew-hero-copy .ew-hero-agents {
-  margin-top: 18px;
-  max-width: 46em;
-  text-wrap: balance;
-  font-size: 12px;
-  line-height: 1.6;
-  color: color-mix(in srgb, var(--white) 76%, transparent);
-  animation: ec-rise 900ms var(--ease) 560ms backwards;
-}
-.ew-hero-agents span {
-  color: var(--white);
-  font-weight: 550;
-}
-.ew-hero .ec-wordmark {
-  font-size: min(16vw, 24svh, 270px);
-}
-
-/* ---------- 窗口框：截图与示意共用 ---------- */
-.ew-window {
-  overflow: hidden;
-  border-radius: 6px;
-  background: var(--white);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent),
-    0 40px 80px -40px rgb(0 0 0 / 0.35);
-}
-.ew-window-bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  height: 30px;
-  padding: 0 12px;
-  border-bottom: 1px solid var(--paper-deep);
-  font-size: 11px;
-  color: var(--muted);
-}
-.ew-window-bar i {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--line);
-}
-.ew-window-bar span {
-  margin-left: 8px;
-}
-.ew-window img {
-  width: 100%;
-  height: auto;
-}
-
-/* ---------- 产品截图：滚动时从灰面中放大 ---------- */
-.ew-screen {
-  margin: var(--gap);
-  padding: 80px 6% 40px;
-  border-radius: 4px;
-  background: var(--surface);
-}
-.ew-screen figure {
-  max-width: 1180px;
+/* ---------- 给谁用：一句大字 ---------- */
+.ew-audience {
+  max-width: 1100px;
   margin: 0 auto;
-  transform: scale(calc(0.88 + var(--p, 1) * 0.12));
-  transform-origin: 50% 0;
-}
-.ew-screen figcaption,
-.ew-feature-visual figcaption,
-.ew-more-visual figcaption,
-.ew-arch figcaption {
-  margin-top: 16px;
-  font-size: 12px;
-  color: var(--muted);
+  padding: 120px 24px 40px;
   text-align: center;
 }
-
-/* ---------- 区块标题：白底居中 ---------- */
-.ew-head {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 110px 24px 70px;
-  text-align: center;
-}
-.ew-head h2 {
-  margin-top: 16px;
-  font-size: clamp(30px, 3.2vw, 54px);
-  line-height: 1.2;
-}
-.ew-head p {
-  margin-top: 24px;
-  max-width: 36em;
-  color: var(--muted);
-  text-wrap: balance;
-}
-
-/* ---------- 主场景：图文双联面板 ---------- */
-.ew-features {
-  display: grid;
-  gap: var(--gap);
-  margin: var(--gap);
-}
-.ew-feature {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  min-height: 680px;
-  overflow: hidden;
-  border-radius: 4px;
-  background: var(--surface);
-}
-.ew-feature:nth-child(even) .ew-feature-visual {
-  order: 1;
-}
-.ew-feature-visual {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 56px 7%;
-  background: var(--paper-deep);
-}
-.ew-feature-visual > :first-child {
-  width: 100%;
-  max-width: 560px;
-}
-.ew-feature-copy {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 64px 8%;
-}
-.ew-feature-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  font-weight: 500;
-}
-.ew-feature-copy h3 {
-  margin-top: 26px;
-  font-size: clamp(26px, 2.5vw, 42px);
-  line-height: 1.28;
-}
-.ew-problem {
-  max-width: 540px;
-  color: var(--muted);
-}
-.ew-feature-copy .ew-problem {
+.ew-audience p {
   margin-top: 22px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--line);
-  font-size: 16px;
-}
-.ew-points {
-  display: grid;
-  gap: 14px;
-  max-width: 540px;
-}
-.ew-feature-copy .ew-points {
-  margin-top: 24px;
-}
-.ew-points li {
-  position: relative;
-  padding-left: 22px;
-}
-.ew-points li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.8em;
-  width: 10px;
-  height: 1px;
-  background: var(--ink);
-}
-.ew-points .ew-tags {
-  margin-left: 8px;
-  vertical-align: 1px;
-}
-.ew-points .ew-tag {
-  height: 20px;
-  padding: 0 7px;
-}
-
-/* 示意：进入视口后按 --r 顺序出现 */
-.ew-mock {
-  font-size: 13px;
-  color: var(--ink);
-}
-.ec-site.is-ready .ew-in {
-  opacity: 0;
-  transform: translateY(10px);
-  transition:
-    opacity 0.6s var(--ease) calc(0.25s + var(--r, 0) * 0.1s),
-    transform 0.7s var(--ease) calc(0.25s + var(--r, 0) * 0.1s);
-}
-.ec-site.is-ready .is-in .ew-in {
-  opacity: 1;
-  transform: none;
-}
-.ew-card {
-  border-radius: 6px;
-  background: var(--white);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent),
-    0 24px 50px -30px rgb(0 0 0 / 0.3);
-}
-.ew-card-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--paper-deep);
-  font-weight: 550;
-}
-.ew-card-head small {
-  margin-left: auto;
-  font-size: 11px;
+  font-size: clamp(24px, 2.5vw, 42px);
   font-weight: 500;
-  color: var(--muted);
-}
-
-/* 权限：能力目录与审查队列 */
-.ew-cap-callers {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  margin-bottom: 14px;
-}
-.ew-cap-callers span {
-  padding: 10px 4px;
-  border-radius: 4px;
-  background: var(--surface);
-  text-align: center;
-  font-weight: 500;
-  white-space: nowrap;
-}
-.ew-cap-row {
-  display: grid;
-  grid-template-columns: 1fr auto 34px;
-  align-items: center;
-  gap: 12px;
-  padding: 13px 16px;
-  border-bottom: 1px solid var(--paper-deep);
-}
-.ew-cap-row:last-child {
-  border-bottom: 0;
-}
-.ew-cap-row small {
-  font-size: 12px;
-  color: var(--muted);
-}
-.ew-cap-row b {
-  position: relative;
-  height: 20px;
-  border-radius: 10px;
-  background: var(--line);
-}
-.ew-cap-row b i {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--white);
-  transition: transform 0.4s var(--ease) 0.9s;
-}
-.ew-cap-row b.is-on {
-  background: var(--ink);
-}
-.is-in .ew-cap-row b.is-on i {
-  transform: translateX(14px);
-}
-.ew-cap-queue {
-  margin-top: 10px;
-}
-.ew-cap-task {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-}
-.ew-cap-task + .ew-cap-task {
-  border-top: 1px solid var(--paper-deep);
-}
-.ew-cap-task svg {
-  color: var(--muted);
-}
-.ew-cap-task em {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: #efe6d6;
-  color: #6b4d1c;
-  font-size: 11px;
-  font-style: normal;
-  font-weight: 500;
-}
-.ew-cap-task em.is-undo {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--line);
-  color: var(--ink);
-}
-
-/* 助理：页面底部叫出的输入条、选中文字、操作卡 */
-.ew-assist {
-  position: relative;
-  padding-bottom: 28px;
-}
-.ew-assist-page {
-  overflow: hidden;
-}
-.ew-assist-body {
-  display: grid;
-  gap: 12px;
-  padding: 22px 20px 124px;
-}
-.ew-assist-body i {
-  display: block;
-  height: 7px;
-  border-radius: 4px;
-  background: var(--paper-deep);
-}
-.ew-assist-body i:nth-of-type(2) {
-  width: 82%;
-}
-.ew-assist-body i:last-of-type {
-  width: 64%;
-}
-.ew-assist-body p {
-  font-size: 13px;
-  line-height: 1.7;
-}
-.ew-assist-body mark {
-  padding: 1px 0;
-  color: inherit;
-  background: linear-gradient(#e5ddc6, #e5ddc6) no-repeat 0 0 / 100% 100%;
-  box-decoration-break: clone;
-}
-.ec-site.is-ready .ew-assist-body mark {
-  background-size: 0% 100%;
-  transition: background-size 0.9s var(--ease) 0.5s;
-}
-.ec-site.is-ready .is-in .ew-assist-body mark {
-  background-size: 100% 100%;
-}
-.ew-assist-action {
-  position: absolute;
-  right: 16px;
-  bottom: 86px;
-  width: min(250px, 72%);
-  padding: 14px;
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent),
-    0 30px 50px -24px rgb(0 0 0 / 0.38);
-}
-.ew-assist-action strong {
-  display: block;
-  font-weight: 550;
-}
-.ew-assist-action ul {
-  display: grid;
-  gap: 2px;
-  margin: 10px 0 12px;
-}
-.ew-assist-action li {
-  display: grid;
-  grid-template-columns: 14px 1fr auto;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 0;
-  border-top: 1px solid var(--paper-deep);
-}
-.ew-assist-action li b {
-  width: 13px;
-  height: 13px;
-  border: 1px solid var(--line);
-  border-radius: 3px;
-}
-.ew-assist-action li small {
-  font-size: 11px;
-  color: var(--muted);
-}
-.ew-assist-buttons {
-  display: flex;
-  gap: 6px;
-}
-.ew-assist-buttons span {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 5px 10px;
-  border-radius: 4px;
-  box-shadow: inset 0 0 0 1px var(--line);
-  font-size: 12px;
-  font-weight: 500;
-}
-.ew-assist-buttons .is-primary {
-  background: var(--ink);
-  color: var(--white);
-  box-shadow: none;
-}
-.ew-assist-bar {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  padding: 10px 10px 10px 12px;
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent),
-    0 20px 40px -20px rgb(0 0 0 / 0.35);
-}
-.ew-assist-chip {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 3px;
-  padding: 3px 7px;
-  border-radius: 4px;
-  background: var(--surface);
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-.ew-assist-chip svg {
-  color: var(--muted);
-}
-.ew-assist-bar .ew-typing {
-  min-width: 0;
-  margin-left: 2px;
-}
-.ew-assist-bar b {
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  margin-left: auto;
-  border-radius: 4px;
-  background: var(--ink);
-  color: var(--white);
-}
-
-/* 打字：插件创作台与助理输入条 */
-.ew-typing {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  border-right: 1px solid var(--ink);
-  padding-right: 2px;
-  max-width: 0;
-}
-.is-in .ew-typing {
-  animation:
-    ew-type 1.4s steps(12, end) 0.4s forwards,
-    ew-caret 1s step-end 1.8s 3;
-}
-.is-in .ew-assist-bar .ew-typing {
-  animation:
-    ew-type 0.6s steps(4, end) 0.9s forwards,
-    ew-caret 1s step-end 1.5s 3;
-}
-@keyframes ew-type {
-  to {
-    max-width: 16em;
-  }
-}
-/* 只让光标闪，打出来的字不跟着闪 */
-@keyframes ew-caret {
-  50% {
-    border-color: transparent;
-  }
-}
-
-/* 插件创作台 */
-.ew-studio-prompt {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
-}
-.ew-studio ol {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-  margin: 14px 0;
-}
-.ew-studio li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 0;
-  border-radius: 4px;
-  background: var(--surface);
-  font-weight: 500;
-}
-.ew-studio li b {
-  display: grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--ink);
-  color: var(--white);
-}
-.ew-studio-plugin {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto auto;
-  align-items: center;
-  gap: 8px 14px;
-  padding: 16px;
-}
-.ew-studio-plugin span {
-  grid-row: span 2;
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 6px;
-  background: var(--ink);
-  color: var(--white);
-}
-.ew-studio-plugin i,
-.ew-board .ew-card i {
-  display: block;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--paper-deep);
-}
-.ew-studio-plugin i:last-child,
-.ew-board .ew-card i:last-child {
-  width: 60%;
-}
-
-/* Coding 任务板 */
-.ew-board {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-.ew-board-col {
-  display: grid;
-  align-content: start;
-  gap: 8px;
-  min-height: 250px;
-  padding: 12px;
-  border-radius: 6px;
-  background: var(--surface);
-}
-.ew-board-col small {
-  margin-bottom: 4px;
-  font-size: 12px;
-  font-weight: 550;
-}
-.ew-board .ew-card {
-  display: grid;
-  gap: 8px;
-  padding: 14px 12px;
-}
-.ew-board .ew-card.is-live {
-  box-shadow:
-    inset 3px 0 0 #5aa36b,
-    0 24px 50px -30px rgb(0 0 0 / 0.3);
-}
-.ew-board .ew-card.is-review {
-  box-shadow:
-    inset 3px 0 0 #c49a4a,
-    0 24px 50px -30px rgb(0 0 0 / 0.3);
-}
-
-/* ---------- 四点不同 ---------- */
-.ew-pillars {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--gap);
-  margin: var(--gap);
-}
-.ew-pillar {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-height: 420px;
-  padding: 30px 24px 28px;
-  border-radius: 4px;
-  background: var(--surface);
-  transition: background 0.4s;
-}
-.ew-pillar:hover {
-  background: var(--paper-deep);
-}
-.ew-pillar h3 {
-  margin-top: auto;
-  padding-top: 64px;
-  font-size: clamp(22px, 1.75vw, 30px);
-  line-height: 1.3;
-}
-.ew-pillar p {
-  margin-top: 16px;
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--muted);
-}
-
-/* ---------- 架构 ---------- */
-.ew-architecture {
-  padding: 110px 6% 60px;
-  gap: 70px;
-}
-.ew-intro {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 880px;
-}
-.ew-intro h2 {
-  font-size: clamp(28px, 3vw, 50px);
-  line-height: 1.3;
-}
-.ew-intro p {
-  margin: 24px 0 20px;
-  max-width: 38em;
-  color: var(--muted);
+  line-height: 1.4;
+  letter-spacing: -0.03em;
   text-wrap: balance;
 }
-.ew-arch {
-  width: 100%;
-  max-width: 980px;
-}
-.ew-arch-entries,
-.ew-arch-base {
+
+/* ---------- 看它怎么用：三步，各配一张截图 ---------- */
+.ew-steps {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap);
 }
-.ew-arch-entries li {
+.ew-step {
   display: flex;
-}
-.ew-arch-entries li > span,
-.ew-arch-base span {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  padding: 16px 10px;
+  flex-direction: column;
+  padding: 18px 18px 28px;
   border-radius: 4px;
-  background: var(--white);
-  font-weight: 500;
+  background: var(--surface);
 }
-.ew-arch-entries small {
-  font-size: 11px;
+.ew-step-shot {
+  margin-bottom: 28px;
+}
+.ew-step h3 {
+  margin-top: 10px;
+  font-size: clamp(22px, 1.8vw, 30px);
+  line-height: 1.25;
+}
+.ew-step p {
+  margin-top: 12px;
   color: var(--muted);
 }
-.ew-arch-wires {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  height: 46px;
-}
-.ew-arch-wires-two {
-  grid-template-columns: repeat(2, 1fr);
-}
-.ew-arch-wires i {
-  position: relative;
-  justify-self: center;
-  width: 1px;
-  height: 100%;
-  background: var(--line);
-  overflow: hidden;
-}
-.ew-arch-wires i::after {
-  content: '';
-  position: absolute;
-  left: -1px;
-  width: 3px;
-  height: 14px;
-  border-radius: 2px;
-  background: var(--ink);
-  animation: ew-flow 2.4s var(--ease) calc(var(--r) * 0.3s) infinite;
-}
-@keyframes ew-flow {
-  from {
-    transform: translateY(-16px);
-  }
-  to {
-    transform: translateY(48px);
-  }
-}
-.ew-arch-catalog,
-.ew-arch-home {
-  padding: 20px;
-  border-radius: 4px;
-  background: var(--ink);
+
+/* ---------- 三步开始：深色色带 ---------- */
+.ew-start .ep-head h2 {
   color: var(--white);
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
 }
-.ew-arch-base {
-  grid-template-columns: 1fr 1fr;
+.ew-start-steps {
+  display: grid;
 }
-.ew-arch-home {
+.ew-start-steps li {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 16px;
+  padding: 28px 0;
+  border-top: 1px solid color-mix(in srgb, var(--white) 16%, transparent);
+}
+.ew-start-steps li:first-child {
+  padding-top: 4px;
+  border-top: 0;
+}
+.ew-start-index {
+  font-size: 40px;
+  font-weight: 450;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: color-mix(in srgb, var(--white) 50%, transparent);
+}
+.ew-start-steps h3 {
+  font-size: 22px;
+  line-height: 1.3;
+}
+.ew-start-steps p {
   margin-top: 8px;
-  background: var(--paper-deep);
-  color: var(--ink);
-  font-size: 15px;
+  max-width: 32em;
+  color: color-mix(in srgb, var(--white) 76%, transparent);
+}
+.ec-site .ew-start-steps a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 550;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, var(--white) 40%, transparent);
 }
 
-/* ---------- 更多场景：2×2 卡片 ---------- */
-.ew-cards {
+/* ---------- 即将到来：唯一出现「下一版」的地方 ---------- */
+.ew-upcoming .ep-head .ec-button {
+  margin-top: 30px;
+}
+.ew-upcoming-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--gap);
-  margin: var(--gap);
 }
-.ew-more {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+.ew-upcoming-list li {
+  min-height: 150px;
+  padding: 22px 22px 24px;
   border-radius: 4px;
-  background: var(--surface);
+  background: var(--white);
 }
-.ew-more-visual {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 500px;
-  padding: 44px 8% 24px;
-  background: var(--paper-deep);
-}
-.ew-more-visual > :first-child {
-  width: 100%;
-  max-width: 540px;
-}
-.ew-more-copy {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 32px 7% 40px;
-}
-.ew-more-copy h3 {
-  margin-top: 20px;
-  font-size: clamp(22px, 1.8vw, 30px);
-  line-height: 1.32;
-}
-.ew-more-copy .ew-problem,
-.ew-more-copy .ew-points {
-  width: 100%;
-  max-width: 600px;
-}
-.ew-more-copy .ew-problem {
-  margin-top: 14px;
-}
-.ew-more-copy .ew-points {
-  margin-top: 22px;
-  padding-top: 22px;
-  border-top: 1px solid var(--line);
-  font-size: 14px;
-}
-
-/* ---------- 功能全景：四栏分组，小组共用一行 ---------- */
-.ew-plugins {
-  display: grid;
-  gap: 64px;
-  margin: var(--gap);
-  padding: 70px 24px;
-  border-radius: 4px;
-  background: var(--surface);
-}
-.ew-plugins-intro {
-  max-width: 640px;
-}
-.ew-plugins-intro h2 {
-  margin-top: 18px;
-  font-size: clamp(28px, 2.6vw, 44px);
-  line-height: 1.25;
-}
-.ew-plugins-intro > p {
-  margin-top: 20px;
-  color: var(--muted);
-}
-.ew-feature-groups {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  align-items: start;
-  gap: 44px 28px;
-}
-.ew-feature-band {
-  display: grid;
-  grid-template-columns: var(--band);
-  align-items: start;
-  gap: 44px 28px;
-}
-.ew-feature-group h3 {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--ink);
-  font-size: 17px;
-  letter-spacing: -0.02em;
-}
-.ew-feature-group h3 small {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-.ew-feature-group ul {
-  display: grid;
-}
-.ew-feature-band ul {
-  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
-  column-gap: 28px;
-}
-.ew-feature-group li {
-  display: grid;
-  align-content: start;
-  gap: 4px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--line);
-}
-.ew-feature-group strong {
+.ew-upcoming-list strong {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 8px;
+  gap: 8px;
+  font-size: 17px;
   font-weight: 550;
-  line-height: 1.45;
+  letter-spacing: -0.02em;
 }
-.ew-feature-group li > span {
-  font-size: 13px;
-  line-height: 1.6;
+.ew-upcoming-list p {
+  margin-top: 10px;
+  font-size: 14px;
   color: var(--muted);
 }
 
-/* ---------- 对比：紧凑的规格表 ---------- */
-.ew-compare {
-  margin: var(--gap);
-  padding: 70px 24px 56px;
-  border-radius: 4px;
-  background: var(--surface);
+/* ---------- 全部功能：可展开清单 ---------- */
+.ew-groups {
+  max-width: 1100px;
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
 }
-.ew-compare-intro {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-items: end;
-  gap: 24px 64px;
-  padding-bottom: 64px;
-}
-.ew-compare-intro h2 {
-  margin-top: 18px;
-  font-size: clamp(28px, 2.6vw, 44px);
-  line-height: 1.25;
-}
-.ew-compare-intro p {
-  max-width: 34em;
-  color: var(--muted);
-}
-.ew-compare-head,
-.ew-compare-rows li {
-  display: grid;
-  grid-template-columns: 56px minmax(0, 1fr);
-}
-.ew-compare-head > div,
-.ew-compare-rows dl {
-  display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.45fr) minmax(0, 1fr);
-  column-gap: 40px;
-}
-.ew-compare-head {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  padding: 14px 0 12px;
-  border-bottom: 1px solid var(--ink);
-  background: var(--surface);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-}
-.ew-compare-head > div > :nth-child(2) {
-  color: var(--ink);
-}
-.ew-compare-rows li {
-  padding: 26px 0;
+.ew-group {
   border-bottom: 1px solid var(--line);
 }
-.ew-compare-rows .ew-index {
-  padding-top: 2px;
+.ew-group summary {
+  display: grid;
+  grid-template-columns: 1fr auto 20px;
+  align-items: center;
+  gap: 16px;
+  min-height: 76px;
+  padding: 0 8px;
+  cursor: pointer;
+  list-style: none;
 }
-.ew-compare-rows dt {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+.ew-group summary::-webkit-details-marker {
+  display: none;
 }
-.ew-compare-rows dd {
-  margin: 0;
-}
-.ew-compare-now dd {
-  font-size: 17px;
+.ew-group summary span {
+  font-size: clamp(20px, 1.6vw, 26px);
   font-weight: 500;
-  line-height: 1.5;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.025em;
 }
-.ew-compare-here dd {
-  line-height: 1.7;
-}
-.ew-compare-gap dd {
+.ew-group summary small {
   font-size: 13px;
-  line-height: 1.7;
   color: var(--muted);
 }
-
-/* ---------- 本地优先 ---------- */
-.ew-local {
+.ew-group summary svg {
+  transition: transform 0.3s var(--ease);
+}
+.ew-group[open] summary svg {
+  transform: rotate(45deg);
+}
+.ew-group ul {
+  padding: 0 8px 22px;
+}
+.ew-group li {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 2.4fr) minmax(0, 0.8fr);
+  gap: 6px 24px;
+  padding: 14px 0;
+  border-top: 1px solid var(--paper-deep);
+  font-size: 14px;
+}
+.ew-group li strong {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-weight: 550;
+}
+.ew-group li span {
+  color: var(--muted);
+}
+.ew-group li small {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ---------- 常见问题 ---------- */
+.ew-faq {
+  padding: 120px clamp(0px, 4vw, 56px) 40px;
+}
+.ew-faq dl {
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+.ew-faq dl > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 8px 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+.ew-faq dt {
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.ew-faq dd {
+  margin: 0;
+  color: var(--muted);
+}
+.ec-site .ew-faq dd a {
+  color: var(--ink);
+  font-weight: 550;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--line);
+}
+
+/* ---------- 结尾：三条路 ---------- */
+.ew-paths {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--gap);
   margin: var(--gap);
 }
-.ew-local-visual {
-  position: relative;
-  min-height: 720px;
-  overflow: hidden;
-  border-radius: 4px;
-  background: var(--ink);
-}
-.ew-local-photo {
-  position: absolute;
-  inset: -6% 0;
-  width: 100%;
-  height: 112%;
-  object-fit: cover;
-  transform: translateY(calc((var(--p, 0.5) - 0.5) * -8%));
-}
-.ew-local-window {
-  position: absolute;
-  left: 9%;
-  right: 9%;
-  bottom: 12%;
-  transform: translateY(calc((var(--p, 0.5) - 0.5) * 40px));
-}
-.ew-local-visual figcaption {
-  position: absolute;
-  right: 20px;
-  bottom: 16px;
-  font-size: 12px;
-  color: color-mix(in srgb, var(--white) 82%, transparent);
-}
-.ew-local-copy {
+.ec-site .ew-path {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 56px 8%;
+  min-height: 240px;
+  padding: 24px;
   border-radius: 4px;
-  background: var(--surface);
+  background: var(--ink);
+  color: var(--white);
+  transition: background 0.3s;
 }
-.ew-local-copy h2 {
-  margin-top: 20px;
-  font-size: clamp(28px, 2.6vw, 44px);
-  line-height: 1.28;
+.ec-site .ew-path:hover {
+  background: color-mix(in srgb, var(--ink) 84%, var(--white));
 }
-.ew-local-copy ol {
-  display: grid;
-  margin-top: 34px;
+.ew-path small {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--white) 60%, transparent);
 }
-.ew-local-copy li {
-  display: grid;
-  grid-template-columns: 40px 1fr;
-  padding: 16px 0;
-  border-top: 1px solid var(--line);
+.ew-path strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  font-size: clamp(24px, 2vw, 32px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+.ew-path span {
+  margin-top: 10px;
+  font-size: 14px;
+  color: color-mix(in srgb, var(--white) 72%, transparent);
 }
 
-/* ---------- 收尾 ---------- */
-.ew-closing h2 {
-  font-size: clamp(30px, 3.6vw, 60px);
-  line-height: 1.25;
-}
-.ew-closing .ew-actions {
-  margin-top: 40px;
-}
-
-@media (max-width: 1180px) {
-  .ew-pillars {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .ew-pillar {
-    min-height: 300px;
-  }
-  .ew-feature-groups {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .ew-feature-band {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .ew-feature-band [data-wide] {
-    grid-column: 1 / -1;
-  }
-}
+/* ---------- 窄屏 ---------- */
 @media (max-width: 1000px) {
-  .ew-feature,
-  .ew-local {
+  .ew-steps,
+  .ew-paths {
     grid-template-columns: 1fr;
   }
-  .ew-feature {
-    min-height: 0;
+  .ew-step {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    gap: 0 24px;
   }
-  .ew-feature:nth-child(even) .ew-feature-visual {
-    order: 0;
+  .ew-step-shot {
+    grid-row: span 3;
+    margin-bottom: 0;
   }
-  .ew-cards {
-    grid-template-columns: 1fr;
-  }
-  .ew-compare-intro {
-    grid-template-columns: 1fr;
-  }
-  .ew-compare-head > div,
-  .ew-compare-rows dl {
-    column-gap: 24px;
+  .ec-site .ew-path {
+    min-height: 160px;
   }
 }
 @media (max-width: 760px) {
-  .ew-compare-head {
-    display: none;
+  .ew-step {
+    display: flex;
   }
-  .ew-compare-rows {
-    border-top: 1px solid var(--ink);
+  .ew-step-shot {
+    margin-bottom: 22px;
   }
-  .ew-compare-rows li {
-    position: relative;
+  .ew-upcoming-list {
     grid-template-columns: 1fr;
   }
-  .ew-compare-rows .ew-index {
-    position: absolute;
-    top: 26px;
-    right: 0;
-    padding-top: 0;
-    font-size: 12px;
+  .ew-upcoming-list li {
+    min-height: 0;
   }
-  .ew-compare-rows dl {
+  .ew-group li {
     grid-template-columns: 1fr;
-    gap: 16px;
   }
-  .ew-compare-rows dt {
-    position: static;
-    width: auto;
-    height: auto;
-    overflow: visible;
-    clip-path: none;
-    margin-bottom: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--muted);
+  .ew-group li small {
+    text-align: left;
   }
-  .ew-compare-gap {
-    padding-top: 14px;
-    border-top: 1px dashed var(--line);
+  .ew-faq dl > div {
+    grid-template-columns: 1fr;
   }
 }
 @media (max-width: 640px) {
-  .ew-hero .ec-hero-copy {
-    top: 41%;
+  .ew-audience {
+    padding: 72px 12px 8px;
   }
-  .ec-hero-copy.ew-hero-copy h1 {
-    margin-top: 14px;
-    font-size: 27px;
-  }
-  .ew-hero-copy p {
-    margin-top: 14px;
-  }
-  .ew-hero-copy .ew-actions {
-    margin-top: 22px;
-  }
-  .ew-hero-copy .ew-hero-agents {
-    margin-top: 14px;
-    max-width: 26em;
-    font-size: 11px;
-  }
-  .ew-hero .ec-wordmark {
-    font-size: min(17vw, 22svh);
-  }
-  .ew-screen {
-    padding: 40px 12px 24px;
-  }
-  .ew-head {
-    padding: 72px 16px 44px;
-  }
-  .ew-head h2 {
-    font-size: 29px;
-  }
-  .ew-head p {
-    margin-top: 18px;
-    font-size: 14px;
-  }
-  .ew-pillars {
-    grid-template-columns: 1fr;
-  }
-  .ew-pillar {
-    min-height: 0;
-    padding: 26px 20px;
-  }
-  .ew-pillar h3 {
-    padding-top: 40px;
-  }
-  .ew-architecture {
-    padding: 64px 16px 36px;
-    gap: 44px;
-  }
-  .ew-arch-entries {
-    grid-template-columns: 1fr 1fr;
-  }
-  .ew-arch-wires {
-    display: none;
-  }
-  .ew-arch-catalog {
-    margin: 8px 0;
-  }
-  .ew-arch-catalog,
-  .ew-arch-home {
-    padding: 16px;
-    font-size: 15px;
-  }
-  .ew-arch-base {
-    grid-template-columns: 1fr;
-  }
-  .ew-feature-visual {
-    padding: 36px 16px 20px;
-  }
-  .ew-feature-copy {
-    padding: 34px 20px 42px;
-  }
-  .ew-feature-copy h3 {
-    margin-top: 18px;
-    font-size: 25px;
-  }
-  .ew-feature-copy .ew-problem {
-    font-size: 15px;
-  }
-  .ew-points {
-    font-size: 14px;
-  }
-  .ew-cap-callers span {
-    font-size: 11px;
-  }
-  .ew-assist-body {
-    padding: 18px 16px 236px;
-  }
-  .ew-assist-action {
-    right: 10px;
-    width: min(230px, 80%);
-  }
-  .ew-assist-bar {
-    left: 10px;
-    right: 10px;
-  }
-  .ew-studio li {
-    font-size: 11px;
-  }
-  .ew-board-col {
-    min-height: 200px;
-    padding: 8px;
-  }
-  .ew-more-visual {
-    min-height: 0;
-    padding: 32px 16px 20px;
-  }
-  .ew-more-copy {
-    padding: 28px 20px 36px;
-  }
-  .ew-more-copy h3 {
+  .ew-audience p {
     font-size: 23px;
   }
-  .ew-plugins {
-    gap: 40px;
-    padding: 48px 20px;
+  .ew-faq {
+    padding: 72px 12px 24px;
   }
-  .ew-feature-groups,
-  .ew-feature-band,
-  .ew-feature-band ul {
-    grid-template-columns: 1fr;
+  .ew-start-steps li {
+    grid-template-columns: 40px 1fr;
   }
-  .ew-feature-groups,
-  .ew-feature-band {
-    gap: 36px;
-  }
-  .ew-compare {
-    padding: 48px 20px 36px;
-  }
-  .ew-compare-intro {
-    padding-bottom: 36px;
-  }
-  .ew-compare-intro p {
-    font-size: 14px;
-  }
-  .ew-compare-rows li {
-    padding: 22px 0;
-  }
-  .ew-compare-rows .ew-index {
-    top: 22px;
-  }
-  .ew-compare-now dd {
-    font-size: 16px;
-  }
-  .ew-compare-here dd {
-    font-size: 14px;
-  }
-  .ew-local-visual {
-    min-height: 420px;
-  }
-  .ew-local-window {
-    left: 6%;
-    right: 6%;
-  }
-  .ew-local-copy {
-    padding: 42px 20px;
+  .ew-start-index {
+    font-size: 30px;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .ew-screen figure,
-  .ew-local-photo,
-  .ew-local-window {
-    transform: none !important;
-  }
-  .ec-site.is-ready .ew-in {
-    opacity: 1;
-    transform: none;
-  }
-  .ew-typing {
-    max-width: none;
-  }
-  .ec-site.is-ready .ew-assist-body mark {
-    background-size: 100% 100%;
-    transition: none;
-  }
-  .ew-arch-wires i::after {
-    animation: none;
-    opacity: 0;
-  }
+
+/* 三步的截图统一裁成同样比例，从左上角取景 */
+.ew-step-shot .ep-frame img {
+  aspect-ratio: 16 / 11;
+  object-fit: cover;
+  object-position: 0 0;
 }

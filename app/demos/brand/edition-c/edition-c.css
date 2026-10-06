@@ -116,6 +116,81 @@
 .ec-site .ec-header a:hover {
   opacity: 0.66;
 }
+.ec-header[data-tone='paper'] {
+  color: var(--ink);
+}
+.ec-header[data-tone='paper']::before {
+  display: none;
+}
+.ec-menu {
+  position: relative;
+  display: flex;
+}
+.ec-menu > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  transition: opacity 180ms;
+}
+.ec-menu > button:hover {
+  opacity: 0.66;
+}
+.ec-menu > button svg {
+  transition: transform 0.3s var(--ease);
+}
+.ec-menu[data-open='true'] > button svg {
+  transform: rotate(180deg);
+}
+.ec-menu-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 50%;
+  width: 340px;
+  padding: 6px;
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent),
+    0 30px 60px -24px rgb(0 0 0 / 0.35);
+  transform: translateX(-50%);
+  animation: ec-rise 0.35s var(--ease);
+}
+.ec-menu-panel[hidden] {
+  display: none;
+}
+.ec-site .ec-menu-panel a {
+  display: grid;
+  gap: 2px;
+  min-height: 0;
+  padding: 12px 14px;
+  border-radius: 4px;
+  white-space: normal;
+  transition: background 0.2s;
+}
+.ec-site .ec-menu-panel a:hover,
+.ec-site .ec-menu-panel a[aria-current='page'] {
+  background: var(--surface);
+  opacity: 1;
+}
+.ec-menu-panel strong {
+  font-size: 15px;
+  font-weight: 550;
+  letter-spacing: -0.02em;
+}
+.ec-menu-panel small {
+  font-size: 12px;
+  color: var(--muted);
+}
 
 /* ---------- 按钮：12px 小字、4px 圆角 ---------- */
 .ec-site .ec-button {
@@ -151,6 +226,7 @@
 .ec-site .ec-button-glass {
   background: color-mix(in srgb, var(--ink) 55%, transparent);
   color: var(--white);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
 }
 .ec-site .ec-button-glass:hover {
@@ -234,23 +310,65 @@
   color: color-mix(in srgb, var(--white) 86%, transparent);
   animation: ec-rise 900ms var(--ease) 320ms backwards;
 }
+/* 首页首屏：英文打字只是一行小字，中文愿景做主标题 */
+.ec-hero-home .ec-hero-copy {
+  top: 41%;
+}
+.ec-hero-home .ec-ai-headline {
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  color: color-mix(in srgb, var(--white) 78%, transparent);
+}
+.ec-hero-home .ec-hero-copy h1 {
+  margin-top: 14px;
+  font-size: clamp(36px, 4.2vw, 76px);
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+}
+.ec-hero-home .ec-hero-copy p {
+  margin-top: 22px;
+  max-width: 36em;
+  font-size: 16px;
+  text-wrap: balance;
+}
+.ec-hero-copy .ep-actions {
+  margin-top: 28px;
+  animation: ec-rise 900ms var(--ease) 400ms backwards;
+}
 .ec-site .ec-now {
-  display: inline-flex;
+  display: inline-grid;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  margin-top: 30px;
-  padding: 10px 16px;
+  gap: 14px;
+  min-height: 64px;
+  margin-top: 18px;
+  padding: 12px 18px;
   border-radius: 4px;
   background: color-mix(in srgb, var(--ink) 55%, transparent);
-  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   color: var(--white);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.3;
+  text-align: left;
   transition: background 0.25s;
-  animation: ec-rise 900ms var(--ease) 440ms backwards;
+  animation: ec-rise 900ms var(--ease) 500ms backwards;
+}
+.ec-now-main {
+  display: grid;
+  gap: 2px;
+}
+.ec-now-main strong {
+  font-size: 16px;
+}
+.ec-now-status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--white) 16%, transparent);
+  font-size: 11px;
+  white-space: nowrap;
 }
 .ec-site .ec-now:hover {
   background: color-mix(in srgb, var(--ink) 74%, transparent);
@@ -271,6 +389,10 @@
 }
 .ec-now strong {
   font-weight: 550;
+}
+.ec-now-label {
+  align-self: start;
+  padding-top: 3px;
 }
 .ec-now-text {
   color: color-mix(in srgb, var(--white) 80%, transparent);
@@ -341,390 +463,327 @@
   }
 }
 
-/* ---------- 灰面陈述：滚动时逐字落墨 ---------- */
-.ec-statement {
-  margin: var(--gap);
-  padding: 28px 7% 24px;
-  border-radius: 4px;
-  background: var(--surface);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-.ec-belief {
-  min-height: 78svh;
-  justify-content: space-between;
-  gap: 70px;
-}
-.ec-belief-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 1150px;
-  font-size: clamp(29px, 3.296vw, 56px);
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: -0.03em;
-}
-.ec-belief-line {
-  display: block;
-}
-.ec-char {
-  --reveal: calc(var(--p, 1) * (var(--n) + 14) - var(--i));
-  opacity: clamp(0.16, calc(var(--reveal) / 10), 1);
-  transition: opacity 0.2s linear;
-}
-.ec-site:not(.is-ready) .ec-char {
-  opacity: 1;
-}
-
-/* ---------- 过渡画面：满幅照片从内缩展开 ---------- */
-.ec-bridge {
-  margin: var(--gap);
-}
-.ec-bridge-frame {
-  position: relative;
-  height: 90svh;
-  min-height: 620px;
-  color: var(--white);
-}
-.ec-bridge-media {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border-radius: 4px;
-  background: var(--ink);
-  clip-path: inset(
-    calc((1 - var(--p, 1)) * 7%) calc((1 - var(--p, 1)) * 9%) round 4px
-  );
-}
-.ec-bridge-media img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(calc(1 + (1 - var(--p, 1)) * 0.12));
-}
-.ec-bridge-media::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--ink) 62%, transparent),
-    transparent 85%
-  );
-}
-.ec-bridge-copy {
-  position: absolute;
-  z-index: 1;
-  left: 24px;
-  top: 30px;
-  max-width: 620px;
-  opacity: clamp(0, calc((var(--p, 1) - 0.55) * 4), 1);
-  transform: translateY(calc((1 - var(--p, 1)) * 30px));
-}
-.ec-bridge-copy .ec-eyebrow {
-  color: color-mix(in srgb, var(--white) 78%, transparent);
-}
-.ec-bridge-copy h2 {
-  margin-top: 18px;
-  font-size: clamp(30px, 3.296vw, 56px);
-  line-height: 1.22;
-}
-
-/* ---------- 产品：Everyday 的场景切换，一张大画面加三个切换面 ---------- */
-.ec-products {
-  margin: var(--gap);
-}
-.ec-products-lede {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 110px 24px 100px;
-  text-align: center;
-  font-size: clamp(22px, 2.2vw, 36px);
-  font-weight: 500;
-  line-height: 1.45;
-  letter-spacing: -0.025em;
-  text-wrap: balance;
-}
-.ec-product {
-  position: relative;
-  height: 90svh;
-  min-height: 640px;
-  overflow: hidden;
-  border-radius: 4px;
-  background: var(--ink);
-  color: var(--white);
-}
-.ec-product[hidden] {
-  display: none;
-}
-.ec-product-photo {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  animation: ec-image-in 0.7s ease-out;
-}
-.ec-product::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--ink) 66%, transparent),
-    color-mix(in srgb, var(--ink) 18%, transparent) 70%
-  );
-  pointer-events: none;
-}
-@keyframes ec-image-in {
-  from {
-    opacity: 0.4;
-    transform: scale(1.03);
-  }
-}
-.ec-product-copy {
-  position: absolute;
-  z-index: 1;
-  left: 24px;
-  top: 30px;
-  max-width: 460px;
-  animation: ec-rise 0.7s var(--ease) 0.08s backwards;
-}
-.ec-product-meta {
-  display: flex;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 500;
-}
-.ec-product-meta span {
-  padding: 4px 9px;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--white) 16%, transparent);
-  backdrop-filter: blur(6px);
-}
-.ec-product-copy h3 {
-  margin-top: 22px;
-  font-size: clamp(34px, 3.8vw, 64px);
-  line-height: 1.08;
-}
-.ec-product-copy p {
-  margin: 22px 0 28px;
-  font-size: 16px;
-  line-height: 1.7;
-  color: color-mix(in srgb, var(--white) 88%, transparent);
-}
-.ec-product-mock {
-  position: absolute;
-  z-index: 1;
-  right: 5%;
-  bottom: 12%;
-  width: min(420px, 38%);
-}
-.ec-product-note {
-  position: absolute;
-  z-index: 1;
-  right: 24px;
-  bottom: 20px;
-  font-size: 12px;
-  color: color-mix(in srgb, var(--white) 76%, transparent);
-}
-.ec-product-tabs {
+/* ---------- 核心产品：Molis Work 占一整屏，左文右图 ---------- */
+.ec-core {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
   gap: var(--gap);
-  margin-top: var(--gap);
+  margin: var(--gap);
 }
-.ec-product-tabs button {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: baseline;
-  gap: 4px 12px;
-  min-height: 144px;
-  padding: 26px 24px;
-  border: 0;
+.ec-core-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 64px clamp(24px, 4vw, 64px);
   border-radius: 4px;
   background: var(--surface);
-  color: var(--ink);
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.3s;
 }
-.ec-product-tabs button:hover,
-.ec-product-tabs button[aria-selected='true'] {
-  background: var(--paper-deep);
+.ec-core-copy h2 {
+  margin-top: 18px;
+  font-size: clamp(44px, 5vw, 88px);
+  line-height: 1;
+  letter-spacing: -0.045em;
 }
-.ec-product-tabs small {
+.ec-core-line {
+  margin-top: 24px;
+  max-width: 26em;
+  font-size: clamp(17px, 1.3vw, 20px);
+  line-height: 1.6;
+  letter-spacing: -0.015em;
+}
+.ec-core-points {
+  display: grid;
+  gap: 0;
+  width: 100%;
+  margin: 34px 0 28px;
+  border-top: 1px solid var(--line);
+}
+.ec-core-points li {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 2px 10px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.ec-core-index {
+  grid-row: span 2;
   font-size: 12px;
   color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  padding-top: 3px;
 }
-.ec-product-tabs span {
-  font-size: 24px;
-  font-weight: 500;
-  letter-spacing: -0.03em;
+.ec-core-points strong {
+  font-size: 16px;
+  font-weight: 550;
+  letter-spacing: -0.02em;
 }
-.ec-product-tabs em {
-  grid-column: 2;
-  font-style: normal;
+.ec-core-points p {
   font-size: 14px;
   color: var(--muted);
 }
-
-/* 产品示意：白色小面板，从下往上逐行出现 */
-.ec-mock {
-  color: var(--ink);
-  font-size: 13px;
-  animation: ec-rise 0.8s var(--ease) 0.2s backwards;
+.ec-core-copy .ep-status {
+  margin-bottom: 22px;
 }
-.ec-mock > * {
-  animation: ec-rise 0.7s var(--ease) calc(0.3s + var(--r, 0) * 0.09s) backwards;
-}
-.ec-ledger {
-  padding: 18px;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--white) 94%, transparent);
-  box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.45);
-}
-.ec-mock-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--line);
-  font-weight: 550;
-}
-.ec-mock-head em {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-style: normal;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--muted);
-}
-.ec-mock-head em i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #5aa36b;
-}
-.ec-ledger-row {
-  display: grid;
-  grid-template-columns: 64px 1fr 18px;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--paper-deep);
-}
-.ec-ledger-row small {
-  color: var(--muted);
-  font-size: 12px;
-}
-.ec-ledger-row b {
-  display: grid;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-}
-.ec-ledger-row b.is-done {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--white);
-}
-.ec-ledger-foot {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-top: 14px;
-}
-.ec-ledger-foot span {
-  flex: 1;
-  height: 3px;
-  border-radius: 3px;
-  background: var(--paper-deep);
+.ec-core-visual {
+  position: relative;
+  min-height: 760px;
   overflow: hidden;
-}
-.ec-ledger-foot i {
-  display: block;
-  width: 75%;
-  height: 100%;
+  border-radius: 4px;
   background: var(--ink);
-  transform-origin: left;
-  animation: ec-grow 1.2s var(--ease) 0.7s backwards;
 }
-.ec-ledger-foot small {
-  font-size: 11px;
+.ec-core-photo {
+  position: absolute;
+  inset: -6% 0;
+  width: 100%;
+  height: 112%;
+  object-fit: cover;
+  transform: translateY(calc((var(--p, 0.5) - 0.5) * -8%));
+}
+.ec-core-window {
+  position: absolute;
+  left: 8%;
+  right: -6%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ec-core-visual figcaption {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  font-size: 12px;
+  color: color-mix(in srgb, var(--white) 82%, transparent);
+}
+
+/* ---------- 另外三条产品线：三张同等的卡 ---------- */
+.ec-lines {
+  margin: var(--gap);
+}
+.ec-lines-intro {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 120px 24px 72px;
+  text-align: center;
+}
+.ec-lines-intro h2 {
+  font-size: clamp(30px, 3.3vw, 56px);
+  line-height: 1.2;
+}
+.ec-lines-intro p {
+  margin-top: 22px;
+  font-size: 16px;
   color: var(--muted);
 }
-@keyframes ec-grow {
-  from {
-    transform: scaleX(0);
-  }
-}
-.ec-life {
+.ec-line-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap);
 }
-.ec-life-card {
-  display: grid;
-  gap: 4px;
-  padding: 16px;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--white) 94%, transparent);
-  box-shadow: 0 24px 50px -28px rgb(0 0 0 / 0.45);
-}
-.ec-life-card span {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  margin-bottom: 10px;
+.ec-line {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   border-radius: 4px;
   background: var(--surface);
 }
-.ec-life-card strong {
-  font-weight: 550;
+.ec-site .ec-line-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--paper-deep);
 }
-.ec-life-card small {
+.ec-line-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.9s var(--ease);
+}
+.ec-line:hover .ec-line-media img {
+  transform: scale(1.04);
+}
+.ec-line-media span {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--ink) 55%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: var(--white);
+  font-size: 11px;
+}
+.ec-line-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 26px 24px 24px;
+}
+.ec-line-meta {
+  display: flex;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.ec-line-meta span {
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--white);
+}
+.ec-line-meta span + span {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--muted);
+}
+.ec-line h3 {
+  margin-top: 22px;
+  font-size: clamp(26px, 2.2vw, 36px);
+  line-height: 1.1;
+}
+.ec-site .ec-line h3 a:hover {
+  opacity: 0.7;
+}
+.ec-line-line {
+  margin-top: 14px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+}
+.ec-line-text {
+  margin-top: 12px;
+  color: var(--muted);
+}
+.ec-line-merged {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+.ec-line-merged small {
+  display: block;
+  margin-bottom: 4px;
   font-size: 12px;
   color: var(--muted);
 }
-.ec-story {
-  padding: 20px;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--ink) 40%, transparent);
-  backdrop-filter: blur(10px);
-  color: var(--white);
+.ec-line-merged a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--line);
 }
-.ec-story small {
-  font-size: 12px;
-  color: color-mix(in srgb, var(--white) 80%, transparent);
+.ec-line-merged em {
+  font-style: normal;
+  color: var(--muted);
 }
-.ec-story div {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+.ec-site .ec-line-more {
+  display: inline-flex;
+  align-items: center;
   gap: 6px;
-  margin-top: 14px;
+  min-height: 44px;
+  margin-top: auto;
+  padding-top: 18px;
+  font-size: 13px;
+  font-weight: 550;
 }
-.ec-story span {
-  padding: 16px 0;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--white) 14%, transparent);
-  text-align: center;
-  font-size: 15px;
-  font-weight: 500;
-  animation: ec-rise 0.7s var(--ease) calc(0.35s + var(--r) * 0.1s) backwards;
+.ec-site .ec-line-more:hover {
+  opacity: 0.66;
 }
 
-/* ---------- 团队：图文双联、履历、三项能力 ---------- */
+/* ---------- 解决方案：三步加方案方向 ---------- */
+.ec-solutions {
+  margin: var(--gap);
+  padding-top: 72px;
+}
+.ec-solutions-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 48px 24px 72px;
+  text-align: center;
+}
+.ec-solutions-head h2 {
+  margin-top: 18px;
+  font-size: clamp(30px, 3.3vw, 56px);
+  line-height: 1.2;
+}
+.ec-solutions-head p {
+  margin-top: 24px;
+  max-width: 36em;
+  color: var(--muted);
+  text-wrap: balance;
+}
+.ec-solutions .ec-capabilities {
+  margin: 0;
+}
+.ec-solutions .ec-capability {
+  min-height: 340px;
+}
+.ec-directions {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) minmax(0, 3fr);
+  align-items: start;
+  gap: 24px 40px;
+  margin-top: var(--gap);
+  padding: 34px 24px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--white);
+}
+.ec-directions h3 {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: color-mix(in srgb, var(--white) 70%, transparent);
+}
+.ec-directions ul {
+  display: grid;
+}
+.ec-directions li {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 2fr) 112px;
+  align-items: baseline;
+  gap: 6px 24px;
+  padding: 16px 0;
+  border-top: 1px solid color-mix(in srgb, var(--white) 16%, transparent);
+}
+.ec-directions li:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.ec-directions strong {
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.ec-directions span {
+  font-size: 14px;
+  color: color-mix(in srgb, var(--white) 74%, transparent);
+}
+.ec-directions em {
+  justify-self: end;
+  font-style: normal;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--white) 12%, transparent);
+  white-space: nowrap;
+}
+.ec-directions .ep-actions {
+  grid-column: 2;
+  justify-content: flex-start;
+}
+.ec-directions .ec-button {
+  background: var(--white);
+  color: var(--ink);
+}
+.ec-directions .ec-button:hover {
+  background: var(--paper-deep);
+}
+
+/* ---------- 团队：图文双联、成员、履历；能力卡样式也给解决方案用 ---------- */
 .ec-split {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -861,8 +920,7 @@
 .ec-people {
   display: flex;
   gap: 10px;
-  margin-top: auto;
-  padding-top: 36px;
+  margin-top: 34px;
 }
 .ec-person {
   position: relative;
@@ -1051,40 +1109,93 @@
   white-space: nowrap;
 }
 .ec-footer-meta {
-  display: flex;
-  align-items: center;
-  gap: 28px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 40px 24px;
   margin: calc(var(--gap) * -1) var(--gap) var(--gap);
-  padding: 24px;
+  padding: 44px 24px 24px;
   border-radius: 0 0 4px 4px;
   background: var(--surface);
-  font-size: 12px;
+  font-size: 13px;
+}
+.ec-footer-lead p {
+  margin-top: 14px;
+  color: var(--muted);
 }
 .ec-footer-brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin-right: auto;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 550;
 }
 .ec-footer-brand img {
   width: 28px;
   height: 28px;
 }
+.ec-footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+.ec-footer-links h2 {
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--muted);
+}
+.ec-footer-links li a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+}
+.ec-footer-base {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--muted);
+}
 .ec-site .ec-footer-meta a:hover {
   opacity: 0.6;
 }
 
 /* ---------- 窄屏 ---------- */
-@media (max-width: 900px) {
-  .ec-product-mock {
-    width: min(380px, 46%);
+@media (max-width: 1100px) {
+  .ec-core {
+    grid-template-columns: 1fr;
   }
+  .ec-core-visual {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+  .ec-core-window {
+    left: 6%;
+    right: 6%;
+  }
+  .ec-line-cards {
+    grid-template-columns: 1fr;
+  }
+  .ec-line {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .ec-site .ec-line-media {
+    aspect-ratio: auto;
+    min-height: 100%;
+  }
+}
+@media (max-width: 900px) {
   .ec-capabilities {
     grid-template-columns: 1fr;
   }
-  .ec-capability {
+  .ec-capability,
+  .ec-solutions .ec-capability {
     min-height: 0;
   }
   .ec-capability h3 {
@@ -1096,6 +1207,15 @@
   }
   .ec-logos {
     justify-content: flex-start;
+  }
+  .ec-directions {
+    grid-template-columns: 1fr;
+  }
+  .ec-directions .ep-actions {
+    grid-column: auto;
+  }
+  .ec-footer-meta {
+    grid-template-columns: 1fr;
   }
 }
 @media (max-width: 640px) {
@@ -1118,6 +1238,16 @@
     grid-row: 2;
     justify-content: space-between;
   }
+  .ec-menu {
+    position: static;
+  }
+  .ec-menu-panel {
+    top: 100px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    transform: none;
+  }
   .ec-site .ec-header-action {
     grid-column: 2;
     grid-row: 1;
@@ -1127,104 +1257,94 @@
     inset: 0 0 -48px;
   }
   .ec-hero {
-    min-height: 620px;
+    min-height: 680px;
   }
   .ec-hero-copy {
     top: 42%;
     width: 94%;
   }
+  .ec-hero-home .ec-hero-copy {
+    top: 46%;
+  }
   .ec-ai-headline {
     font-size: clamp(20px, 6.5vw, 31px);
+  }
+  .ec-hero-home .ec-ai-headline {
+    font-size: 13px;
   }
   .ec-hero-copy h1 {
     margin-top: 16px;
     font-size: 19px;
   }
-  .ec-hero-copy p {
-    font-size: 13px;
+  .ec-hero-home .ec-hero-copy h1 {
+    margin-top: 12px;
+    font-size: 34px;
+  }
+  .ec-hero-copy p,
+  .ec-hero-home .ec-hero-copy p {
+    margin-top: 16px;
+    font-size: 14px;
   }
   .ec-hero-copy p br {
     display: none;
   }
-  .ec-site .ec-now {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 4px 8px;
+  .ec-hero-copy .ep-actions {
     margin-top: 22px;
   }
-  .ec-now-text {
+  .ec-site .ec-now {
+    grid-template-columns: 1fr auto;
+    gap: 6px 12px;
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px 14px;
+  }
+  .ec-now-label {
+    grid-column: 1 / -1;
+    padding-top: 0;
+  }
+  .ec-now-status {
     display: none;
   }
   .ec-wordmark {
     font-size: min(22vw, 24svh);
   }
-  .ec-belief {
-    min-height: 560px;
-    padding: 28px 20px 20px;
+  .ec-core-copy {
+    padding: 44px 20px 40px;
   }
-  .ec-belief-text {
-    font-size: 27px;
-    line-height: 1.42;
+  .ec-core-visual {
+    aspect-ratio: 5 / 6;
   }
-  .ec-bridge-frame {
-    height: 76svh;
-    min-height: 520px;
+  .ec-core-window {
+    left: 5%;
+    right: -30%;
   }
-  .ec-bridge-copy {
-    left: 20px;
-    right: 20px;
+  .ec-lines-intro {
+    padding: 80px 12px 48px;
   }
-  .ec-bridge-copy h2 {
-    font-size: 29px;
-  }
-  .ec-products-lede {
-    padding: 72px 12px 64px;
-    font-size: 21px;
-  }
-  .ec-product {
-    height: auto;
-    min-height: 680px;
+  .ec-line {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 28px;
-    padding: 28px 20px 48px;
   }
-  .ec-product::after {
-    background: color-mix(in srgb, var(--ink) 48%, transparent);
+  .ec-site .ec-line-media {
+    aspect-ratio: 4 / 3;
   }
-  .ec-product-copy,
-  .ec-product-mock {
-    position: relative;
-    inset: auto;
-    width: auto;
-    max-width: none;
+  .ec-line-body {
+    padding: 22px 20px 20px;
   }
-  .ec-product-copy h3 {
-    margin-top: 18px;
-    font-size: 36px;
+  .ec-solutions {
+    padding-top: 24px;
   }
-  .ec-product-copy p {
-    margin: 16px 0 22px;
-    font-size: 14px;
+  .ec-solutions-head {
+    padding: 48px 12px 44px;
   }
-  .ec-product-note {
-    right: 20px;
-    bottom: 16px;
+  .ec-directions {
+    padding: 28px 20px;
   }
-  .ec-product-tabs button {
-    min-height: 84px;
-    padding: 16px 12px;
-    grid-template-columns: 1fr;
-    text-align: center;
-    justify-items: center;
+  .ec-directions li {
+    grid-template-columns: 1fr auto;
   }
-  .ec-product-tabs span {
-    font-size: 16px;
-  }
-  .ec-product-tabs em {
-    grid-column: auto;
-    font-size: 12px;
+  .ec-directions span {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
   .ec-split,
   .ec-paths {
@@ -1285,8 +1405,11 @@
     padding-top: 40px;
   }
   .ec-footer-meta {
-    gap: 18px;
-    padding: 20px;
+    gap: 28px;
+    padding: 28px 20px 20px;
+  }
+  .ec-footer-links {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -1295,18 +1418,9 @@
   .ec-tile > img,
   .ec-tile > div,
   .ec-split-image img,
-  .ec-bridge-media img {
+  .ec-core-photo,
+  .ec-line-media img {
     transform: none !important;
-  }
-  .ec-bridge-media {
-    clip-path: inset(0 round 4px);
-  }
-  .ec-bridge-copy {
-    opacity: 1;
-    transform: none;
-  }
-  .ec-char {
-    opacity: 1;
   }
   .ec-site.is-ready .ec-reveal {
     opacity: 1;

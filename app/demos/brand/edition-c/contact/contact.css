@@ -1,0 +1,258 @@
+/* 联系页的 Edition C 版本：左边一句话和一张图，右边表单，下面是隐私说明。前缀 ek-。 */
+
+.ek-main {
+  padding-top: 88px;
+}
+.ek-contact {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: var(--gap);
+  margin: var(--gap);
+}
+.ek-intro {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(40px, 5vw, 80px) clamp(24px, 4vw, 64px) 0;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--surface);
+}
+.ek-intro h1 {
+  margin-top: 16px;
+  font-size: clamp(36px, 4vw, 64px);
+  line-height: 1.14;
+  letter-spacing: -0.04em;
+}
+.ek-intro p {
+  margin: 22px 0 48px;
+  max-width: 28em;
+  color: var(--muted);
+}
+.ek-intro img {
+  width: calc(100% + 2 * clamp(24px, 4vw, 64px));
+  height: auto;
+  margin: auto calc(-1 * clamp(24px, 4vw, 64px)) 0;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+.ek-panel {
+  padding: clamp(32px, 5vw, 72px) clamp(24px, 5vw, 80px);
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+/* 表单 */
+.ek-form {
+  display: grid;
+  gap: 26px;
+}
+.ek-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.ek-roles legend {
+  margin-bottom: 12px;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.ek-roles label {
+  position: relative;
+  display: inline-flex;
+}
+.ek-roles input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.ek-roles span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: 15px;
+  font-weight: 500;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.ek-roles input:checked + span {
+  background: var(--ink);
+  box-shadow: none;
+  color: var(--white);
+}
+.ek-roles input:focus-visible + span {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.ek-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.ek-field {
+  display: grid;
+  gap: 8px;
+}
+.ek-field span {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.ek-field input,
+.ek-field textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  transition: box-shadow 0.2s;
+}
+.ek-field textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+.ek-field input:focus,
+.ek-field textarea:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+.ek-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.ek-consent input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--ink);
+}
+.ec-site .ek-submit {
+  justify-self: start;
+  min-width: 160px;
+  min-height: 48px;
+  font-size: 14px;
+}
+.ec-site .ek-submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.ek-error:empty {
+  display: none;
+}
+.ec-site .ek-error {
+  margin-top: -10px;
+  font-size: 14px;
+  color: #a33a2b;
+}
+.ek-note {
+  font-size: 13px;
+  color: var(--muted);
+}
+.ec-site .ek-note a {
+  margin-left: 6px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--line);
+}
+
+/* 提交成功 */
+.ek-success {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 100%;
+  justify-content: center;
+}
+.ek-success h2 {
+  margin-top: 20px;
+  font-size: clamp(30px, 3vw, 48px);
+}
+.ek-success p {
+  margin-top: 16px;
+  max-width: 30em;
+  color: var(--muted);
+}
+.ek-success .ep-actions {
+  margin-top: 30px;
+}
+
+/* 隐私说明 */
+.ek-privacy {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: var(--gap);
+  margin: var(--gap);
+  padding: clamp(48px, 6vw, 96px) clamp(24px, 4vw, 64px);
+  scroll-margin-top: 24px;
+}
+.ek-privacy h2 {
+  font-size: clamp(26px, 2.4vw, 38px);
+}
+.ek-privacy ul {
+  border-top: 1px solid var(--line);
+}
+.ek-privacy li {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
+
+@media (max-width: 1000px) {
+  .ek-contact,
+  .ek-privacy {
+    grid-template-columns: 1fr;
+  }
+  .ek-intro img {
+    aspect-ratio: 16 / 7;
+  }
+  .ek-privacy {
+    gap: 24px;
+  }
+}
+@media (max-width: 640px) {
+  .ek-main {
+    padding-top: 108px;
+  }
+  .ek-intro {
+    padding: 36px 20px 0;
+  }
+  .ek-intro h1 {
+    font-size: 34px;
+  }
+  .ek-intro img {
+    width: calc(100% + 40px);
+    margin: auto -20px 0;
+    aspect-ratio: 16 / 9;
+  }
+  .ek-panel {
+    padding: 32px 20px;
+  }
+  .ek-row {
+    grid-template-columns: 1fr;
+  }
+  .ec-site .ek-submit {
+    justify-self: stretch;
+  }
+  .ek-privacy {
+    padding: 48px 20px;
+  }
+}

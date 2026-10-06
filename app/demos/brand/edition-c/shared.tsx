@@ -1,12 +1,46 @@
 'use client';
 import Link from 'next/link';
+import { ChevronDown } from 'lucide-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
+import {
+  footer,
+  lineNames,
+  lines,
+  navLabels,
+  now,
+  signature,
+  type LineId,
+} from '../../../../content/studio';
 
 export type Vars = CSSProperties & Record<`--${string}`, string | number>;
 
 export const HOME = '/demos/brand/edition-c';
-export const WORK = '/demos/brand/edition-c/work';
+export const WORK = `${HOME}/work`;
+export const LIFE = `${HOME}/life`;
+export const TOOL = `${HOME}/tool`;
+export const STORY = `${HOME}/story`;
+export const CONTACT = `${HOME}/contact`;
+export const COMMUNITY = '/demos/community';
+
+export const lineHref: Record<LineId, string> = {
+  work: WORK,
+  life: LIFE,
+  tool: TOOL,
+  story: STORY,
+};
+const lineIds: LineId[] = ['work', 'life', 'tool', 'story'];
+const lineLine: Record<LineId, string> = {
+  work: now.line,
+  ...(Object.fromEntries(lines.map((line) => [line.id, line.line])) as Record<
+    Exclude<LineId, 'work'>,
+    string
+  >),
+};
+
+/** 联系页；topic 预选「企业合作」或预填关注哪条产品线 */
+export const contactHref = (topic?: string) =>
+  topic ? `${CONTACT}?topic=${topic}` : CONTACT;
 
 // 与 /edition-c 首页同一组词、同一套打字节奏：A、I 常驻，后缀逐字打出再退格。
 const phrases = [
@@ -187,19 +221,75 @@ export function TypedWordmark({ text }: { text: string }) {
   );
 }
 
+/** 「产品」下拉：四条产品线各一句话，当前页高亮 */
+function ProductsMenu({ current }: { current?: LineId }) {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const outside = (event: PointerEvent) => {
+      if (!root.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setOpen(false);
+      root.current?.querySelector('button')?.focus();
+    };
+    document.addEventListener('pointerdown', outside);
+    document.addEventListener('keydown', escape);
+    return () => {
+      document.removeEventListener('pointerdown', outside);
+      document.removeEventListener('keydown', escape);
+    };
+  }, [open]);
+  return (
+    <div className="ec-menu" ref={root} data-open={open}>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls="ec-products-menu"
+        onClick={() => setOpen((value) => !value)}
+      >
+        {navLabels.products}
+        <ChevronDown size={14} aria-hidden="true" />
+      </button>
+      <div className="ec-menu-panel" id="ec-products-menu" hidden={!open}>
+        {lineIds.map((id) => (
+          <Link
+            key={id}
+            href={lineHref[id]}
+            aria-current={current === id ? 'page' : undefined}
+            onClick={() => setOpen(false)}
+          >
+            <strong>{lineNames[id]}</strong>
+            <small>{lineLine[id]}</small>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function Header({
   items,
   action,
+  current,
+  tone = 'photo',
 }: {
   items: { label: string; href: string }[];
   action: { label: string; href: string; external?: boolean };
+  /** 当前所在的产品线，菜单里高亮 */
+  current?: LineId;
+  /** photo：压在深色首屏上；paper：浅底页面 */
+  tone?: 'photo' | 'paper';
 }) {
   return (
-    <header className="ec-header">
+    <header className="ec-header" data-tone={tone}>
       <Link className="ec-brand" href={HOME} aria-label="Molis AI 首页">
         Molis AI
       </Link>
       <nav className="ec-nav" aria-label="主导航">
+        <ProductsMenu current={current} />
         {items.map((item) => (
           <Link key={item.href} href={item.href}>
             {item.label}
@@ -224,6 +314,28 @@ export function Header({
   );
 }
 
+/** 所有 Edition C 页面共用的顶栏：产品 · 解决方案 · 社区 · 关于 · 聊一聊 */
+export function SiteHeader({
+  current,
+  tone,
+}: {
+  current?: LineId;
+  tone?: 'photo' | 'paper';
+}) {
+  return (
+    <Header
+      current={current}
+      tone={tone}
+      items={[
+        { label: navLabels.solutions, href: `${HOME}#solutions` },
+        { label: navLabels.community, href: COMMUNITY },
+        { label: navLabels.about, href: `${HOME}#about` },
+      ]}
+      action={{ label: navLabels.contact, href: CONTACT }}
+    />
+  );
+}
+
 export function Footer({ children }: { children?: ReactNode }) {
   return (
     <footer className="ec-footer">
@@ -232,20 +344,64 @@ export function Footer({ children }: { children?: ReactNode }) {
         Molis AI
       </div>
       <div className="ec-footer-meta">
-        <span className="ec-footer-brand">
-          <img
-            src="/images/molis-logo.png"
-            width="28"
-            height="28"
-            alt=""
-            loading="lazy"
-          />
-          Molis AI
-        </span>
-        <a href="https://github.com/molis-ai" target="_blank" rel="noreferrer">
-          GitHub
-        </a>
-        <span>© 2026</span>
+        <div className="ec-footer-lead">
+          <span className="ec-footer-brand">
+            <img
+              src="/images/molis-logo.png"
+              width="28"
+              height="28"
+              alt=""
+              loading="lazy"
+            />
+            Molis AI
+          </span>
+          <p>{signature}</p>
+        </div>
+        <nav className="ec-footer-links" aria-label="页尾导航">
+          <div>
+            <h2>{footer.productsLabel}</h2>
+            <ul>
+              {lineIds.map((id) => (
+                <li key={id}>
+                  <Link href={lineHref[id]}>{lineNames[id]}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2>{footer.studioLabel}</h2>
+            <ul>
+              <li>
+                <Link href={`${HOME}#solutions`}>
+                  {footer.studio.solutions}
+                </Link>
+              </li>
+              <li>
+                <Link href={COMMUNITY}>{footer.studio.community}</Link>
+              </li>
+              <li>
+                <Link href={`${HOME}#about`}>{footer.studio.about}</Link>
+              </li>
+              <li>
+                <Link href={CONTACT}>{footer.studio.contact}</Link>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h2>GitHub</h2>
+            <ul>
+              <li>
+                <a href={footer.github} target="_blank" rel="noreferrer">
+                  github.com/molis-ai
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <div className="ec-footer-base">
+          <span>{footer.copyright}</span>
+          <Link href={`${CONTACT}#privacy`}>{footer.privacy}</Link>
+        </div>
       </div>
     </footer>
   );
