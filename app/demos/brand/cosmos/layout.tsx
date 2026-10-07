@@ -1,4 +1,5 @@
 import { IBM_Plex_Mono, Noto_Sans_SC } from 'next/font/google';
+import { positioning, vision } from '../../../../content/studio';
 
 const sans = Noto_Sans_SC({
   weight: ['300', '400', '500'],
@@ -17,9 +18,8 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata = {
-  title: { absolute: 'Molis AI · 始终好奇，持续创造' },
-  description:
-    'Molis AI 是一间产品工作室。我们和 AI 一起，把好奇心做成真正帮到人的作品。',
+  title: { absolute: `Molis AI · ${vision.replace(/。$/, '')}` },
+  description: positioning,
 };
 
 export default function CosmosLayout({

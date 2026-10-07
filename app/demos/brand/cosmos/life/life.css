@@ -1,0 +1,363 @@
+/* 深空版 Molis Life：一颗青色的宜居行星和它的小月亮。共用部件在 ../kit.css。 */
+
+/* ─── 首屏：行星 ─── */
+.cs-site .cs-life-hero {
+  background:
+    radial-gradient(
+      46% 56% at 74% 50%,
+      rgb(30 110 130 / 0.22),
+      transparent 70%
+    ),
+    radial-gradient(
+      40% 40% at 10% 90%,
+      rgb(233 170 100 / 0.06),
+      transparent 70%
+    ),
+    var(--cs-void);
+}
+.cs-life-world {
+  position: relative;
+  container-type: inline-size;
+  justify-self: center;
+  width: min(100%, 620px);
+  aspect-ratio: 1;
+  animation: cs-rise 2s 0.3s var(--cs-ease) both;
+}
+.cs-life-world::before,
+.cs-life-world::after {
+  content: '';
+  position: absolute;
+  left: 1%;
+  right: 1%;
+  top: 50%;
+  height: 24%;
+  border: 1px solid rgb(159 227 217 / 0.32);
+  border-radius: 50%;
+  translate: 0 -50%;
+  rotate: -16deg;
+}
+.cs-life-world::before {
+  z-index: 0;
+}
+/* 轨道前半圈压在行星前面 */
+.cs-life-world::after {
+  z-index: 2;
+  border-color: rgb(159 227 217 / 0.5);
+  -webkit-mask: linear-gradient(180deg, transparent 50%, #000 50%);
+  mask: linear-gradient(180deg, transparent 50%, #000 50%);
+}
+.cs-life-atmos {
+  position: absolute;
+  inset: 14%;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(80 200 210 / 0.22) 78%,
+    rgb(80 200 210 / 0.08) 88%,
+    transparent
+  );
+  box-shadow:
+    0 0 120px 30px rgb(80 200 210 / 0.12),
+    inset 18px 14px 40px rgb(190 245 240 / 0.12);
+}
+.cs-site .cs-life-planet {
+  --size: 64cqi;
+  position: absolute;
+  z-index: 1;
+  top: 18cqi;
+  left: 18cqi;
+}
+.cs-life-planet .cs-planet-body {
+  box-shadow:
+    0 0 60px rgb(80 200 210 / 0.35),
+    inset 10px 8px 30px rgb(190 245 240 / 0.25);
+}
+.cs-life-planet .cs-planet-surface {
+  animation-duration: 90s;
+}
+/* 月亮：横向和纵向两段缓动错开四分之一周期，走出一个椭圆；在前半圈时更大、压在行星前 */
+.cs-life-orbit {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  rotate: -16deg;
+  animation: cs-moon-z 26s steps(1) infinite;
+}
+.cs-life-orbit i {
+  position: absolute;
+  left: 82%;
+  top: 59%;
+  animation:
+    cs-moon-x 13s ease-in-out infinite alternate,
+    cs-moon-y 13s ease-in-out -6.5s infinite alternate;
+}
+.cs-life-orbit i::before {
+  content: '';
+  position: absolute;
+  width: 6cqi;
+  height: 6cqi;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 34% 30%,
+    #fbf6ea,
+    #b7ab94 46%,
+    #3a352c 90%
+  );
+  box-shadow: 0 0 24px rgb(255 240 214 / 0.35);
+  translate: -50% -50%;
+}
+@keyframes cs-moon-x {
+  from {
+    left: 1%;
+  }
+  to {
+    left: 99%;
+  }
+}
+@keyframes cs-moon-y {
+  from {
+    top: 38%;
+    scale: 0.72;
+  }
+  to {
+    top: 62%;
+    scale: 1.12;
+  }
+}
+@keyframes cs-moon-z {
+  0% {
+    z-index: 3;
+  }
+  50% {
+    z-index: 0;
+  }
+}
+
+/* ─── 两端的概念稿 ─── */
+.cs-life-screen {
+  --p: 0;
+  position: relative;
+  z-index: 1;
+  padding: clamp(30px, 6vh, 70px) clamp(20px, 5vw, 80px) 0;
+}
+.cs-site .cs-life-devices {
+  position: relative;
+  width: min(100%, 1120px);
+  margin: 0 auto;
+  padding-right: 13%;
+  translate: 0 calc((1 - var(--p)) * 50px);
+}
+.cs-site .cs-life-devices .cs-phone,
+.cs-site .cs-life-moments .cs-phone {
+  position: absolute;
+  z-index: 3;
+  right: 0;
+  bottom: 9%;
+  width: 22%;
+}
+.cs-life-devices figcaption,
+.cs-life-moments figcaption {
+  margin-right: -13%;
+}
+
+/* ─── 怎么交代给它 ─── */
+.cs-life-handoff-body h3 {
+  margin: 0 0 14px;
+  font-family: var(--cs-mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  color: var(--cs-gold);
+}
+.cs-life-entries {
+  margin: 0 0 44px;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--cs-line);
+}
+.cs-life-entries li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: baseline;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--cs-line);
+}
+.cs-life-entries strong {
+  font-size: clamp(18px, 1.5vw, 21px);
+  font-weight: 400;
+  line-height: 1.55;
+}
+.cs-life-entries li[data-planned] strong {
+  color: var(--cs-text);
+}
+.cs-life-intents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cs-life-intents li {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 0 24px 0 18px;
+  border: 1px solid rgb(159 227 217 / 0.32);
+  border-radius: 999px;
+  background: rgb(159 227 217 / 0.05);
+  font-size: 17px;
+}
+.cs-life-intents li::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cs-teal);
+  box-shadow: 0 0 12px var(--cs-teal);
+  animation: cs-blink 3s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.6s);
+}
+
+/* ─── 八个场景：一张星图 ─── */
+.cs-life-scenes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: clamp(48px, 8vh, 80px) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--cs-line);
+  border-left: 1px solid var(--cs-line);
+}
+.cs-site .cs-life-scenes li {
+  position: relative;
+  display: grid;
+  align-content: space-between;
+  gap: 40px;
+  min-height: 170px;
+  padding: 24px 26px 26px;
+  border-right: 1px solid var(--cs-line);
+  border-bottom: 1px solid var(--cs-line);
+  transition:
+    opacity 1s var(--cs-ease) calc(var(--r, 0) * 0.1s),
+    translate 1.2s var(--cs-ease) calc(var(--r, 0) * 0.1s),
+    background-color 0.5s;
+}
+.cs-site .cs-life-scenes li:hover {
+  background: rgb(159 227 217 / 0.04);
+}
+.cs-life-scene-star {
+  position: absolute;
+  top: 26px;
+  right: 26px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #eafcf8;
+  box-shadow:
+    0 0 0 4px rgb(159 227 217 / 0.12),
+    0 0 18px 3px rgb(159 227 217 / 0.6);
+}
+.cs-life-scenes li:nth-child(3n + 2) .cs-life-scene-star {
+  top: auto;
+  bottom: 30px;
+  background: #fff4e0;
+  box-shadow:
+    0 0 0 4px rgb(233 196 140 / 0.12),
+    0 0 18px 3px rgb(233 196 140 / 0.6);
+}
+.cs-life-scenes strong {
+  font-size: clamp(19px, 1.6vw, 23px);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+
+/* ─── 手机和电脑 ─── */
+.cs-site .cs-life-moments {
+  position: relative;
+  padding-right: 13%;
+}
+.cs-life-devices-copy {
+  display: grid;
+  gap: 36px;
+}
+.cs-life-device-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--cs-line);
+}
+.cs-life-device-list li {
+  display: grid;
+  gap: 6px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--cs-line);
+}
+.cs-life-device-list strong {
+  font-size: 19px;
+  font-weight: 400;
+}
+.cs-life-device-list p {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: var(--cs-text);
+}
+.cs-life-merged {
+  padding-bottom: clamp(40px, 6vh, 80px);
+}
+
+/* ─── 响应式 ─── */
+@media (max-width: 1080px) {
+  .cs-life-world {
+    width: min(78%, 480px);
+    margin-top: 20px;
+  }
+}
+@media (max-width: 900px) {
+  .cs-life-scenes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cs-site .cs-life-scenes li {
+    min-height: 130px;
+    padding: 20px;
+  }
+  .cs-life-scene-star {
+    top: 22px;
+    right: 20px;
+  }
+}
+@media (max-width: 640px) {
+  /* 标题第二句有 11 个字，手机上按一行排下，避免拆开「喜欢」 */
+  .cs-site .cs-life-hero h1 {
+    font-size: min(40px, calc((100vw - 44px) / 10.6));
+  }
+  .cs-life-world {
+    width: 88%;
+  }
+  .cs-life-intents li {
+    min-height: 46px;
+    padding: 0 18px 0 14px;
+    font-size: 15px;
+  }
+  .cs-site .cs-life-devices,
+  .cs-site .cs-life-moments {
+    padding-right: 16%;
+  }
+  .cs-site .cs-life-devices .cs-phone,
+  .cs-site .cs-life-moments .cs-phone {
+    width: 30%;
+    bottom: 14%;
+  }
+  .cs-life-devices figcaption,
+  .cs-life-moments figcaption {
+    margin-right: -19%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-site .cs-life-devices {
+    translate: none;
+  }
+}
