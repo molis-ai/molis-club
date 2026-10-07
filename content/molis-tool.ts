@@ -79,7 +79,11 @@ export const moments = {
     {
       title: '海报变日程',
       text: '框住一张活动海报，时间和地点整理成日程草稿，核对后再加进日历。',
-      image: { src: '/images/edition-c/tool/moment-poster.jpg', w: 665, h: 718 },
+      image: {
+        src: '/images/edition-c/tool/moment-poster.jpg',
+        w: 665,
+        h: 718,
+      },
     },
     {
       title: '盯着一个网页',

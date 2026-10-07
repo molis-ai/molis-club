@@ -56,7 +56,10 @@ function Pointer({ className }: { className: string }) {
 /** 首屏动画：选中一句英文 → 句尾出现动作签 → 点「翻译」→ 小卡带着来源出现。一轮约 9 秒。 */
 function CursorDemo() {
   return (
-    <figure className="et-demo" aria-label="Molis Tool 界面示意：选中网页上的一句英文，光标旁出现翻译、解释、记下三个动作，翻译结果带着来源出现在旁边。">
+    <figure
+      className="et-demo"
+      aria-label="Molis Tool 界面示意：选中网页上的一句英文，光标旁出现翻译、解释、记下三个动作，翻译结果带着来源出现在旁边。"
+    >
       <div className="et-browser" aria-hidden="true">
         <div className="et-browser-bar">
           <i />
@@ -82,10 +85,16 @@ function CursorDemo() {
               {demo.actions.map((action, index) => {
                 const Icon = actionIcons[index];
                 return (
-                  <span className="et-chip" key={action} data-first={index === 0 || undefined}>
+                  <span
+                    className="et-chip"
+                    key={action}
+                    data-first={index === 0 || undefined}
+                  >
                     <Icon size={13} />
                     {action}
-                    {index === 0 ? <Pointer className="et-cursor et-cursor-click" /> : null}
+                    {index === 0 ? (
+                      <Pointer className="et-cursor et-cursor-click" />
+                    ) : null}
                   </span>
                 );
               })}
@@ -126,7 +135,11 @@ export default function EditionCToolPage() {
           lead={hero.lead}
           status={hero.status}
           actions={[
-            { label: hero.actions.follow, href: contactHref('tool'), tone: 'light' },
+            {
+              label: hero.actions.follow,
+              href: contactHref('tool'),
+              tone: 'light',
+            },
             {
               label: hero.actions.try,
               href: DROPAGENT_URL,
@@ -139,7 +152,11 @@ export default function EditionCToolPage() {
         />
 
         <section className="ep-section" aria-labelledby="et-shift-title">
-          <SectionHead id="et-shift-title" kicker={shift.kicker} title={shift.title} />
+          <SectionHead
+            id="et-shift-title"
+            kicker={shift.kicker}
+            title={shift.title}
+          />
           <Compare
             labels={['', shift.labels.before, shift.labels.after]}
             rows={shift.rows.map((row) => [row.aspect, row.before, row.after])}
@@ -147,7 +164,11 @@ export default function EditionCToolPage() {
         </section>
 
         <section className="ep-section" aria-labelledby="et-layers-title">
-          <SectionHead id="et-layers-title" kicker={layers.kicker} title={layers.title} />
+          <SectionHead
+            id="et-layers-title"
+            kicker={layers.kicker}
+            title={layers.title}
+          />
           <ol className="et-layers">
             {layers.items.map((layer, index) => (
               <li
@@ -170,14 +191,20 @@ export default function EditionCToolPage() {
               </li>
             ))}
           </ol>
-          <p className="ep-note">概念图 · 来自 Molis Tool v6 设计图板，示例数据</p>
+          <p className="ep-note">
+            概念图 · 来自 Molis Tool v6 设计图板，示例数据
+          </p>
         </section>
 
         <section
           className="ep-section ep-panel et-moments"
           aria-labelledby="et-moments-title"
         >
-          <SectionHead id="et-moments-title" kicker={moments.kicker} title={moments.title} />
+          <SectionHead
+            id="et-moments-title"
+            kicker={moments.kicker}
+            title={moments.title}
+          />
           <ul className="et-moment-grid">
             {moments.items.map((moment, index) => (
               <li
@@ -199,13 +226,23 @@ export default function EditionCToolPage() {
               </li>
             ))}
           </ul>
-          <p className="ep-note">概念图 · 来自 Molis Tool v6 设计图板，示例数据</p>
+          <p className="ep-note">
+            概念图 · 来自 Molis Tool v6 设计图板，示例数据
+          </p>
         </section>
 
         <section className="ep-section" aria-labelledby="et-compare-title">
-          <SectionHead id="et-compare-title" kicker={compare.kicker} title={compare.title} />
+          <SectionHead
+            id="et-compare-title"
+            kicker={compare.kicker}
+            title={compare.title}
+          />
           <Compare
-            labels={[compare.labels.now, compare.labels.does, compare.labels.here]}
+            labels={[
+              compare.labels.now,
+              compare.labels.does,
+              compare.labels.here,
+            ]}
             rows={compare.rows.map((row) => [row.now, row.does, row.here])}
           />
         </section>
@@ -222,7 +259,11 @@ export default function EditionCToolPage() {
           </div>
           <ol className="ep-promises">
             {promises.items.map((item, index) => (
-              <li key={item.title} className="ec-reveal" style={{ '--r': index % 2 } as Vars}>
+              <li
+                key={item.title}
+                className="ec-reveal"
+                style={{ '--r': index % 2 } as Vars}
+              >
                 <span className="ep-index">{pad(index)}</span>
                 <strong>{item.title}</strong>
                 <p>{item.text}</p>
@@ -232,7 +273,11 @@ export default function EditionCToolPage() {
         </section>
 
         <section className="ep-section" aria-labelledby="et-merged-title">
-          <SectionHead id="et-merged-title" kicker={merged.kicker} title={merged.title} />
+          <SectionHead
+            id="et-merged-title"
+            kicker={merged.kicker}
+            title={merged.title}
+          />
           <ul className="et-tools">
             {merged.items.map((item, index) => (
               <li
@@ -293,7 +338,11 @@ export default function EditionCToolPage() {
           </h2>
           <ul>
             {notThis.items.map((item, index) => (
-              <li key={item} className="ec-reveal" style={{ '--r': index } as Vars}>
+              <li
+                key={item}
+                className="ec-reveal"
+                style={{ '--r': index } as Vars}
+              >
                 {item}
               </li>
             ))}
@@ -307,7 +356,12 @@ export default function EditionCToolPage() {
           title={closing.title}
           actions={[
             { label: closing.follow, href: contactHref('tool') },
-            { label: closing.try, href: DROPAGENT_URL, external: true, tone: 'light' },
+            {
+              label: closing.try,
+              href: DROPAGENT_URL,
+              external: true,
+              tone: 'light',
+            },
             { label: closing.home, href: HOME, tone: 'light' },
           ]}
         />

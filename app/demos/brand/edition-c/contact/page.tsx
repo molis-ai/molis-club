@@ -121,7 +121,12 @@ export default function EditionCContactPage() {
                 <div className="ek-row">
                   <label className="ek-field">
                     <span>{contact.fields.name}</span>
-                    <input name="name" required maxLength={40} autoComplete="name" />
+                    <input
+                      name="name"
+                      required
+                      maxLength={40}
+                      autoComplete="name"
+                    />
                   </label>
                   <label className="ek-field">
                     <span>{contact.fields.email}</span>
@@ -167,7 +172,11 @@ export default function EditionCContactPage() {
           </div>
         </section>
 
-        <section id="privacy" className="ek-privacy" aria-labelledby="ek-privacy-title">
+        <section
+          id="privacy"
+          className="ek-privacy"
+          aria-labelledby="ek-privacy-title"
+        >
           <h2 id="ek-privacy-title">
             <Phrases text={contact.privacyTitle} />
           </h2>

@@ -104,7 +104,11 @@ export const devices = {
   items: [
     { title: '手机', text: '拍下来、说一句、出门时看一眼。' },
     { title: '电脑', text: '慢慢比较方案、整理来源、管理场景。' },
-    { title: '两端接着做', text: '同一件事，在手机和电脑上接着做。', tag: '规划中' },
+    {
+      title: '两端接着做',
+      text: '同一件事，在手机和电脑上接着做。',
+      tag: '规划中',
+    },
   ] as { title: string; text: string; tag?: string }[],
 };
 

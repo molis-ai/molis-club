@@ -36,7 +36,11 @@ function Windows() {
     <figure className="es-windows">
       <ul>
         {worlds.map((world, index) => (
-          <li key={world.id} data-world={world.id} style={{ '--r': index } as Vars}>
+          <li
+            key={world.id}
+            data-world={world.id}
+            style={{ '--r': index } as Vars}
+          >
             <a href={`#${world.id}`}>
               <span className="es-window">
                 <img
@@ -103,7 +107,11 @@ export default function EditionCStoryPage() {
         />
 
         <section className="ep-section" aria-labelledby="es-journey-title">
-          <SectionHead id="es-journey-title" kicker={journey.kicker} title={journey.title} />
+          <SectionHead
+            id="es-journey-title"
+            kicker={journey.kicker}
+            title={journey.title}
+          />
           <ol className="es-journey">
             {journey.steps.map((step, index) => {
               const shot = journeyShots[index];
@@ -136,11 +144,24 @@ export default function EditionCStoryPage() {
           <p className="ep-note">概念画面</p>
         </section>
 
-        <section id="worlds" className="ep-section es-worlds" aria-labelledby="es-worlds-title">
-          <SectionHead id="es-worlds-title" kicker={worldsIntro.kicker} title={worldsIntro.title} />
+        <section
+          id="worlds"
+          className="ep-section es-worlds"
+          aria-labelledby="es-worlds-title"
+        >
+          <SectionHead
+            id="es-worlds-title"
+            kicker={worldsIntro.kicker}
+            title={worldsIntro.title}
+          />
           <ol>
             {worlds.map((world, index) => (
-              <li key={world.id} id={world.id} className="es-world" data-world={world.id}>
+              <li
+                key={world.id}
+                id={world.id}
+                className="es-world"
+                data-world={world.id}
+              >
                 <figure className="es-world-shot ec-reveal">
                   <img
                     src={world.image.src}
@@ -152,13 +173,18 @@ export default function EditionCStoryPage() {
                   />
                   <figcaption>{world.imageNote}</figcaption>
                 </figure>
-                <div className="es-world-copy ec-reveal" style={{ '--r': 1 } as Vars}>
+                <div
+                  className="es-world-copy ec-reveal"
+                  style={{ '--r': 1 } as Vars}
+                >
                   <span className="ec-eyebrow">
                     {pad(index)} · {world.relation}
                   </span>
                   <h3>
                     {world.name}
-                    {world.english ? <small lang="en">{world.english}</small> : null}
+                    {world.english ? (
+                      <small lang="en">{world.english}</small>
+                    ) : null}
                     {world.tag ? <Tag>{world.tag}</Tag> : null}
                   </h3>
                   <blockquote>{world.quote}</blockquote>
@@ -174,7 +200,11 @@ export default function EditionCStoryPage() {
         </section>
 
         <section className="ep-section" aria-labelledby="es-different-title">
-          <SectionHead id="es-different-title" kicker={different.kicker} title={different.title} />
+          <SectionHead
+            id="es-different-title"
+            kicker={different.kicker}
+            title={different.title}
+          />
           <ol className="ep-cards es-different" style={{ '--cols': 2 } as Vars}>
             {different.items.map((item, index) => (
               <li
@@ -201,9 +231,16 @@ export default function EditionCStoryPage() {
                 <Phrases text={boundaries.title} />
               </h2>
             </div>
-            <ol className="ep-promises es-boundaries" style={{ '--cols': 1 } as Vars}>
+            <ol
+              className="ep-promises es-boundaries"
+              style={{ '--cols': 1 } as Vars}
+            >
               {boundaries.items.map((item, index) => (
-                <li key={item} className="ec-reveal" style={{ '--r': index } as Vars}>
+                <li
+                  key={item}
+                  className="ec-reveal"
+                  style={{ '--r': index } as Vars}
+                >
                   <span className="ep-index">{pad(index)}</span>
                   <strong>{item}</strong>
                 </li>

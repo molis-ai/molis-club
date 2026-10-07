@@ -41,9 +41,19 @@ const stepShots = [workShots.create, workShots.runtime, workShots.check];
 
 const heroActions: Action[] = [
   ...(MAC_DOWNLOAD_URL
-    ? [{ label: '下载 macOS 版', href: MAC_DOWNLOAD_URL, tone: 'light' as const }]
+    ? [
+        {
+          label: '下载 macOS 版',
+          href: MAC_DOWNLOAD_URL,
+          tone: 'light' as const,
+        },
+      ]
     : []),
-  { label: hero.start, href: '#start', tone: MAC_DOWNLOAD_URL ? 'glass' : 'light' },
+  {
+    label: hero.start,
+    href: '#start',
+    tone: MAC_DOWNLOAD_URL ? 'glass' : 'light',
+  },
   { label: '在 GitHub 查看', href: GITHUB_URL, external: true, tone: 'glass' },
 ];
 
@@ -121,7 +131,11 @@ export default function EditionCWorkPage() {
         </section>
 
         <section className="ep-section" aria-labelledby="ew-howto-title">
-          <SectionHead id="ew-howto-title" kicker={howto.kicker} title={howto.title} />
+          <SectionHead
+            id="ew-howto-title"
+            kicker={howto.kicker}
+            title={howto.title}
+          />
           <ol className="ew-steps">
             {howto.steps.map((step, index) => {
               const shot = stepShots[index];
@@ -132,7 +146,12 @@ export default function EditionCWorkPage() {
                   style={{ '--r': index } as Vars}
                 >
                   <div className="ew-step-shot">
-                    <Frame src={shot.src} w={shot.w} h={shot.h} label={shot.label} />
+                    <Frame
+                      src={shot.src}
+                      w={shot.w}
+                      h={shot.h}
+                      label={shot.label}
+                    />
                   </div>
                   <span className="ep-index">{pad(index)}</span>
                   <h3>{step.title}</h3>
@@ -141,7 +160,9 @@ export default function EditionCWorkPage() {
               );
             })}
           </ol>
-          <p className="ep-note">产品截图 · v0.2.0 · 演示数据。完整的操作录屏还在制作。</p>
+          <p className="ep-note">
+            产品截图 · v0.2.0 · 演示数据。完整的操作录屏还在制作。
+          </p>
         </section>
 
         <section className="ep-section" aria-labelledby="ew-highlights-title">
@@ -203,9 +224,17 @@ export default function EditionCWorkPage() {
         </section>
 
         <section className="ep-section" aria-labelledby="ew-compare-title">
-          <SectionHead id="ew-compare-title" kicker={compare.kicker} title={compare.title} />
+          <SectionHead
+            id="ew-compare-title"
+            kicker={compare.kicker}
+            title={compare.title}
+          />
           <Compare
-            labels={[compare.labels.now, compare.labels.pain, compare.labels.here]}
+            labels={[
+              compare.labels.now,
+              compare.labels.pain,
+              compare.labels.here,
+            ]}
             rows={compare.rows.map((row) => [row.now, row.pain, row.here])}
           />
         </section>
@@ -265,7 +294,10 @@ export default function EditionCWorkPage() {
               items={features.released}
               open
             />
-            <FeatureList title={short.features.groups.next} items={features.next} />
+            <FeatureList
+              title={short.features.groups.next}
+              items={features.next}
+            />
             <FeatureList
               title={short.features.groups.planned}
               items={features.planned}

@@ -68,7 +68,11 @@ export default function EditionCLifePage() {
           lead={hero.lead}
           status={hero.status}
           actions={[
-            { label: hero.actions.follow, href: contactHref('life'), tone: 'light' },
+            {
+              label: hero.actions.follow,
+              href: contactHref('life'),
+              tone: 'light',
+            },
             { label: hero.actions.more, href: '#jobs', tone: 'glass' },
           ]}
           image={{ src: '/images/atelier/reading-room.jpg', w: 1440, h: 960 }}
@@ -94,8 +98,16 @@ export default function EditionCLifePage() {
           </figure>
         </section>
 
-        <section id="jobs" className="ep-section" aria-labelledby="el-jobs-title">
-          <SectionHead id="el-jobs-title" kicker={jobs.kicker} title={jobs.title} />
+        <section
+          id="jobs"
+          className="ep-section"
+          aria-labelledby="el-jobs-title"
+        >
+          <SectionHead
+            id="el-jobs-title"
+            kicker={jobs.kicker}
+            title={jobs.title}
+          />
           <ol className="ep-cards el-jobs">
             {jobs.items.map((item, index) => (
               <li
@@ -146,9 +158,17 @@ export default function EditionCLifePage() {
         </section>
 
         <section className="ep-section" aria-labelledby="el-compare-title">
-          <SectionHead id="el-compare-title" kicker={compare.kicker} title={compare.title} />
+          <SectionHead
+            id="el-compare-title"
+            kicker={compare.kicker}
+            title={compare.title}
+          />
           <Compare
-            labels={[compare.labels.now, compare.labels.does, compare.labels.here]}
+            labels={[
+              compare.labels.now,
+              compare.labels.does,
+              compare.labels.here,
+            ]}
             rows={compare.rows.map((row) => [row.now, row.does, row.here])}
           />
         </section>
@@ -186,9 +206,16 @@ export default function EditionCLifePage() {
                 <Phrases text={control.title} />
               </h2>
             </div>
-            <ol className="ep-promises el-control" style={{ '--cols': 1 } as Vars}>
+            <ol
+              className="ep-promises el-control"
+              style={{ '--cols': 1 } as Vars}
+            >
               {control.items.map((item, index) => (
-                <li key={item} className="ec-reveal" style={{ '--r': index } as Vars}>
+                <li
+                  key={item}
+                  className="ec-reveal"
+                  style={{ '--r': index } as Vars}
+                >
                   <span className="ep-index">{pad(index)}</span>
                   <strong>{item}</strong>
                 </li>
@@ -235,7 +262,11 @@ export default function EditionCLifePage() {
         </section>
 
         <section className="ep-section" aria-labelledby="el-merged-title">
-          <SectionHead id="el-merged-title" kicker={merged.kicker} title={merged.title} />
+          <SectionHead
+            id="el-merged-title"
+            kicker={merged.kicker}
+            title={merged.title}
+          />
           <ol className="ep-cards">
             {merged.items.map((item, index) => (
               <li

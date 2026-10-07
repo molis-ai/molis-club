@@ -9,7 +9,6 @@ import {
   heroActions,
   lines,
   linesIntro,
-  now,
   positioning,
   solutions,
   team,
@@ -177,10 +176,9 @@ function CoreProduct() {
         <p className="ec-core-line">{coreProduct.line}</p>
         <ol className="ec-core-points">
           {coreProduct.highlights.map((item, index) => (
-            <li key={item.title}>
+            <li key={item}>
               <span className="ec-core-index">{pad(index)}</span>
-              <strong>{item.title}</strong>
-              <p>{item.text}</p>
+              <strong>{item}</strong>
             </li>
           ))}
         </ol>
@@ -217,12 +215,11 @@ function CoreProduct() {
 
 function Lines() {
   return (
-    <section className="ec-lines" aria-labelledby="ec-lines-title">
+    <section id="lines" className="ec-lines" aria-labelledby="ec-lines-title">
       <div className="ec-lines-intro ec-reveal">
         <h2 id="ec-lines-title">
           <Phrases text={linesIntro.title} />
         </h2>
-        <p>{linesIntro.lede}</p>
       </div>
       <div className="ec-line-cards">
         {lines.map((line, index) => {
@@ -259,23 +256,6 @@ function Lines() {
                   <Link href={lineHref[line.id]}>{line.name}</Link>
                 </h3>
                 <p className="ec-line-line">{line.line}</p>
-                <p className="ec-line-text">{line.text}</p>
-                <p className="ec-line-merged">
-                  <small>会合进来的</small>
-                  {line.merged.map((item, itemIndex) => (
-                    <span key={item.name}>
-                      {itemIndex > 0 ? '、' : null}
-                      {item.href ? (
-                        <a href={item.href} target="_blank" rel="noreferrer">
-                          {item.name}
-                        </a>
-                      ) : (
-                        item.name
-                      )}
-                      {item.note ? <em>（{item.note}）</em> : null}
-                    </span>
-                  ))}
-                </p>
                 <Link className="ec-line-more" href={lineHref[line.id]}>
                   {line.more}
                   <ArrowUpRight size={14} aria-hidden="true" />
@@ -301,18 +281,19 @@ function Solutions() {
         <h2 id="ec-solutions-title">
           <Phrases text={solutions.title} />
         </h2>
-        <p>{solutions.lede}</p>
+        <p>
+          <Phrases text={solutions.lede} />
+        </p>
       </div>
       <ol className="ec-capabilities">
         {solutions.steps.map((step, index) => (
           <li
             className="ec-capability ec-reveal"
-            key={step.title}
+            key={step}
             style={{ '--r': index } as Vars}
           >
             <span className="ec-capability-index">{pad(index)}</span>
-            <h3>{step.title}</h3>
-            <p>{step.text}</p>
+            <h3>{step}</h3>
           </li>
         ))}
       </ol>
@@ -322,15 +303,12 @@ function Solutions() {
           {solutions.directions.map((direction) => (
             <li key={direction.title}>
               <strong>{direction.title}</strong>
-              <span>{direction.text}</span>
               <em>{direction.status}</em>
             </li>
           ))}
         </ul>
         <Actions
-          items={[
-            { label: solutions.action, href: contactHref('enterprise') },
-          ]}
+          items={[{ label: solutions.action, href: contactHref('enterprise') }]}
         />
       </div>
     </section>
@@ -414,32 +392,16 @@ export default function EditionCDirection() {
             <Actions
               items={[
                 { label: heroActions.primary, href: WORK, tone: 'light' },
-                { label: heroActions.secondary, href: '#products', tone: 'glass' },
+                { label: heroActions.secondary, href: '#lines', tone: 'glass' },
               ]}
             />
-            <Link
-              className="ec-now"
-              href={WORK}
-              aria-label={`${now.label} ${now.name}：${now.line}${now.status}`}
-            >
-              <span className="ec-now-label">
-                <i aria-hidden="true" />
-                {now.label}
-              </span>
-              <span className="ec-now-main">
-                <strong>{now.name}</strong>
-                <span className="ec-now-text">{now.line}</span>
-              </span>
-              <span className="ec-now-status">{now.status}</span>
-              <ArrowUpRight size={16} aria-hidden="true" />
-            </Link>
           </div>
           <TypedWordmark text="MolisAI" />
         </section>
 
         <CoreProduct />
-        <Lines />
         <Solutions />
+        <Lines />
         <Team />
       </main>
 
@@ -449,7 +411,6 @@ export default function EditionCDirection() {
           aria-labelledby="ec-invite-title"
         >
           <h2 id="ec-invite-title">{ending.title}</h2>
-          <p>{ending.lede}</p>
         </section>
         <div className="ec-paths">
           <Link href={COMMUNITY} className="ec-tile" data-image-curtain>

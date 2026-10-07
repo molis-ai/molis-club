@@ -8,7 +8,7 @@ import {
   lineNames,
   lines,
   navLabels,
-  now,
+  workLine,
   signature,
   type LineId,
 } from '../../../../content/studio';
@@ -31,7 +31,7 @@ export const lineHref: Record<LineId, string> = {
 };
 const lineIds: LineId[] = ['work', 'life', 'tool', 'story'];
 const lineLine: Record<LineId, string> = {
-  work: now.line,
+  work: workLine,
   ...(Object.fromEntries(lines.map((line) => [line.id, line.line])) as Record<
     Exclude<LineId, 'work'>,
     string
