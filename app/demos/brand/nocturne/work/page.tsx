@@ -1,590 +1,376 @@
+'use client';
 import Link from 'next/link';
-import { ArrowUpRight, Download } from 'lucide-react';
-import '../nocturne.css';
-import './work.css';
+import { ArrowUpRight, Plus } from 'lucide-react';
 import {
   GITHUB_URL,
+  INSTALL_URL,
   MAC_DOWNLOAD_URL,
-  SHOW_NEXT_RELEASE,
-  architecture,
-  closing,
-  compareIntro,
-  comparisons,
-  differences,
-  differencesIntro,
-  featureGroups,
-  featuresIntro,
-  hero,
-  localFirst,
-  moreIntro,
-  moreScenarios,
-  nav,
-  scenarios,
-  scenariosIntro,
+  RELEASES_URL,
+  featuresByAvailability,
+  hero as longHero,
+  screenshotNote,
+  screenshots,
+  short,
   tagsOf,
-  type Point,
-  type Status,
-  type Tag,
 } from '../../../../../content/molis-work';
+import { coreProduct } from '../../../../../content/studio';
 import {
-  AssistantVisual,
-  CapabilityVisual,
-  CodingVisual,
-  StudioVisual,
-} from './visuals';
-import { NocturneWorkMotion } from './motion';
+  Actions,
+  Closing,
+  Frame,
+  ProductHero,
+  Screen,
+  SectionHead,
+  Phrases,
+  Tag,
+  pad,
+  type Action,
+} from '../kit';
+import {
+  Footer,
+  SiteHeader,
+  contactHref,
+  useNocturneMotion,
+  type Vars,
+} from '../shared';
+import { WorkVisual } from '../visuals';
+import '../nocturne.css';
+import '../kit.css';
+import './work.css';
 
-export const metadata = {
-  title: { absolute: 'Molis Work · 让工作，在人、工具与 Agent 之间继续' },
-  description: hero.lead,
-};
+// 短版：只讲 v0.2.0 现在能做的事，下一版集中在「即将到来」。文案全部来自 content/molis-work.ts 的 short；
+// 视觉沿用夜曲长版的词汇：亮起的屏、侧栏章节、描边大号数字、片尾字幕。
 
-const tagKinds: Record<Tag, string> = {
-  下一版: 'next',
-  预览: 'preview',
-  规划中: 'planned',
-};
+const { hero, audience, howto, highlights, start, upcoming, faq } = short;
+const features = featuresByAvailability();
+const stepShots = [screenshots.create, screenshots.runtime, screenshots.check];
 
-function Tags({ status }: { status?: Status }) {
-  const tags = tagsOf(status);
-  if (tags.length === 0) return null;
-  return tags.map((tag) => (
-    <span className="nw-tag" data-kind={tagKinds[tag]} key={tag}>
-      {tag}
-    </span>
-  ));
-}
+const heroActions: Action[] = [
+  ...(MAC_DOWNLOAD_URL
+    ? [
+        {
+          label: '下载 macOS 版',
+          href: MAC_DOWNLOAD_URL,
+          external: true,
+          tone: 'primary' as const,
+        },
+      ]
+    : []),
+  {
+    label: hero.start,
+    href: '#start',
+    tone: MAC_DOWNLOAD_URL ? 'ghost' : 'primary',
+  },
+  { label: coreProduct.actions.github, href: GITHUB_URL, external: true },
+];
 
-// Keeps each clause of a Chinese title on one line, so titles break at
-// commas and list marks rather than inside a word.
-function Phrases({ text }: { text: string }) {
-  return text.split(/(?<=[，；、])/).map((part, i) => (
-    <span className="nw-phrase" key={i}>
-      {part}
-    </span>
-  ));
-}
-
-function Points({ points }: { points: Point[] }) {
-  return (
-    <ul className="nw-points">
-      {points.map((point) => (
-        <li key={point.text}>
-          {point.text}
-          <Tags status={point.status} />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function SectionHead({
-  id,
-  kicker,
+function FeatureList({
   title,
-  lead,
-  children,
+  items,
 }: {
-  id: string;
-  kicker?: string;
   title: string;
-  lead?: string;
-  children?: React.ReactNode;
+  items: ReturnType<typeof featuresByAvailability>['released'];
 }) {
   return (
-    <div className="nw-section-head" data-reveal>
-      {kicker && <span className="nc-kicker">{kicker}</span>}
-      <h2 id={id}>
-        <Phrases text={title} />
-      </h2>
-      {lead && <p>{lead}</p>}
-      {children}
-    </div>
+    <details className="nc-group">
+      <summary>
+        <span>{title}</span>
+        <small>{items.length} 项</small>
+        <Plus size={18} aria-hidden="true" />
+      </summary>
+      <ul>
+        {items.map((feature) => (
+          <li key={feature.name}>
+            <strong>
+              {feature.name}
+              {feature.status === 'preview' ? (
+                <Tag>{tagsOf('preview')[0]}</Tag>
+              ) : null}
+            </strong>
+            <span>{feature.line}</span>
+            <small>{feature.group}</small>
+          </li>
+        ))}
+      </ul>
+    </details>
   );
 }
-
-function Actions() {
-  return (
-    <div className="nw-actions">
-      {MAC_DOWNLOAD_URL && (
-        <a className="nw-btn nw-btn-primary" href={MAC_DOWNLOAD_URL}>
-          <Download size={17} /> 下载 macOS 版
-        </a>
-      )}
-      <a
-        className={`nw-btn ${MAC_DOWNLOAD_URL ? 'nw-btn-ghost' : 'nw-btn-primary'}`}
-        href={GITHUB_URL}
-        target="_blank"
-        rel="noreferrer"
-      >
-        在 GitHub 查看 <ArrowUpRight size={17} />
-      </a>
-    </div>
-  );
-}
-
-function Shot({
-  src,
-  alt,
-  eager,
-}: {
-  src: string;
-  alt: string;
-  eager?: boolean;
-}) {
-  return (
-    <img
-      src={`/images/nocturne-work/${src}`}
-      width="1440"
-      height="1000"
-      alt={alt}
-      loading={eager ? undefined : 'lazy'}
-      decoding="async"
-    />
-  );
-}
-
-// The h1 breaks after the first comma; the two lines join back to hero.title.
-const titleBreak = hero.title.indexOf('，') + 1;
-const heroLines = [
-  hero.title.slice(0, titleBreak),
-  hero.title.slice(titleBreak),
-];
-
-const scenarioVisuals: Record<string, React.ReactNode> = {
-  relay: (
-    <div className="nw-vis nw-vis-shot">
-      <Shot
-        src="goals-zh.jpg"
-        alt="Molis Work 的 Goals 页面：左侧是目标树，右侧是当前目标的完成要求与时间线"
-      />
-    </div>
-  ),
-  control: <CapabilityVisual />,
-  assistant: <AssistantVisual />,
-};
-
-const moreArt: Record<string, React.ReactNode> = {
-  feed: (
-    <div className="nw-card-art">
-      <Shot
-        src="feed-zh.jpg"
-        alt="Molis Work 的 Feed 页面：来源消息列表和一条消息的详情"
-      />
-    </div>
-  ),
-  start: (
-    <div className="nw-card-art">
-      <Shot
-        src="onboarding-zh.jpg"
-        alt="Molis Work 首次使用：勾选想带入的内容来源"
-      />
-    </div>
-  ),
-  studio: (
-    <div className="nw-card-art nw-card-art-vis">
-      <StudioVisual />
-    </div>
-  ),
-  coding: (
-    <div className="nw-card-art nw-card-art-vis">
-      <CodingVisual />
-    </div>
-  ),
-};
-
-// Five columns on wide screens: the four large groups each get one, and the
-// three small ones (编码, 自己做, 协作) share the last.
-const wallColumns = [
-  ...featureGroups.slice(0, 4).map((group) => [group]),
-  featureGroups.slice(4),
-];
-
-const archCaption = `上排四个入口：${architecture.entries
-  .map((entry) =>
-    entry.detail ? `${entry.name}（${entry.detail}）` : entry.name,
-  )
-  .join(
-    '、',
-  )}，都连到中间的${architecture.catalog}；下面是${architecture.plugins}，和${architecture.runtime}；底座是${architecture.home}。`;
 
 export default function NocturneWorkPage() {
+  const rootRef = useNocturneMotion();
+  const paths = short.closing.paths;
+
   return (
-    <div className="nc-site nw-page">
-      <NocturneWorkMotion />
+    <div className="nc-site nc-work" ref={rootRef}>
       <div className="nc-grain" aria-hidden="true" />
-      <header className="nc-header">
-        <Link href="/demos/brand/nocturne" className="nc-logo">
-          <img src="/images/molis-logo.png" width="36" height="36" alt="" />
-          <span>Molis AI</span>
-        </Link>
-        <nav className="nc-nav" aria-label="Molis Work 页面导航">
-          {nav.map((item) => (
-            <a href={item.href} className="nw-nav-anchor" key={item.href}>
-              {item.label}
-            </a>
-          ))}
-          <a
-            href={GITHUB_URL}
-            className="nc-nav-cta"
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub
-          </a>
-        </nav>
-      </header>
+      <SiteHeader current="work" />
 
       <main id="main">
-        {/* hero: the product appears like a lit screen in a dark room */}
-        <section className="nw-hero" aria-labelledby="nw-title">
-          <div className="nw-beam" aria-hidden="true" />
-          <div className="nw-hero-copy">
-            <span className="nc-kicker nw-rise">{hero.kicker}</span>
-            <h1 id="nw-title">
-              {heroLines.map((line, l) => (
-                <span
-                  className="nw-rise"
-                  key={line}
-                  style={{ '--d': l + 1 } as React.CSSProperties}
-                >
-                  {line}
-                </span>
-              ))}
-            </h1>
-            <p className="nw-rise" style={{ '--d': 3 } as React.CSSProperties}>
-              {hero.lead}
+        <ProductHero
+          id="nc-work-title"
+          layout="center"
+          kicker={hero.kicker}
+          title={hero.title}
+          lead={hero.lead}
+          status={hero.status}
+          actions={heroActions}
+        />
+
+        <section className="nc-work-screen" aria-label="Molis Work 界面">
+          <Screen note={screenshotNote}>
+            <Frame
+              src={screenshots.goal.src}
+              w={screenshots.goal.w}
+              h={screenshots.goal.h}
+              label={screenshots.goal.label}
+            />
+          </Screen>
+        </section>
+
+        <section className="nc-audience" aria-label={audience.kicker}>
+          <div className="nc-audience-copy" data-reveal>
+            <span className="nc-kicker">{audience.kicker}</span>
+            <p>
+              <Phrases text={audience.text} />
             </p>
-            <div
-              className="nw-rise"
-              style={{ '--d': 4 } as React.CSSProperties}
-            >
-              <Actions />
-              <div className="nw-hero-agents">
-                <small>{hero.agentsLabel}</small>
-                <ul>
-                  {hero.agents.map((agent) => (
-                    <li key={agent}>{agent}</li>
-                  ))}
-                </ul>
-                <small>{hero.agentsMore}</small>
-              </div>
-            </div>
           </div>
-          <div className="nw-screen-wrap" data-scene="enter">
-            <div className="nw-screen">
-              <Shot
-                src="home-dark-zh.jpg"
-                alt="Molis Work 深色模式的项目首页：今天的工作、正在推进的目标和当天事件"
-                eager
-              />
-            </div>
-            <div className="nw-phone">
-              <img
-                src="/images/nocturne-work/phone-zh.jpg"
-                width="390"
-                height="844"
-                alt="Molis Work 在手机宽度下的项目首页"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <div className="nw-screen-floor" aria-hidden="true" />
+          <div data-reveal style={{ '--r': 1 } as Vars}>
+            <WorkVisual agents={longHero.agents} />
           </div>
         </section>
 
-        {/* three scenes, each a chapter with the side rail */}
-        <section
-          id="scenarios"
-          className="nw-scenarios"
-          aria-labelledby="nw-scenarios-title"
-        >
+        <section className="nc-section" aria-labelledby="nc-howto-title">
           <SectionHead
-            id="nw-scenarios-title"
-            kicker={scenariosIntro.kicker}
-            title={scenariosIntro.title}
+            id="nc-howto-title"
+            kicker={howto.kicker}
+            title={howto.title}
           />
-          <div className="nw-features">
-            <ol className="nw-rail" aria-hidden="true" data-active="0">
-              {scenarios.map((scenario, i) => (
-                <li key={scenario.id}>
-                  <span>0{i + 1}</span>
-                  {scenario.label}
-                </li>
+          <div className="nc-chapters" data-rail data-active="0">
+            <ol className="nc-rail" aria-hidden="true">
+              {howto.steps.map((step, index) => (
+                <li key={step.title}>{pad(index)}</li>
               ))}
             </ol>
-            <div className="nw-chapters">
-              {scenarios.map((scenario, i) => (
-                <article
-                  className="nw-chapter"
-                  id={scenario.id}
-                  key={scenario.id}
-                  aria-labelledby={`nw-${scenario.id}-title`}
-                >
-                  <div className="nw-chapter-copy" data-reveal>
-                    <span className="nw-chapter-label">
-                      <b>0{i + 1}</b>
-                      {scenario.label}
-                      <Tags status={scenario.status} />
-                    </span>
-                    <h3 id={`nw-${scenario.id}-title`}>
-                      <Phrases text={scenario.title} />
-                    </h3>
-                    <p className="nw-problem">{scenario.problem}</p>
-                    <Points points={scenario.points} />
-                  </div>
-                  <div className="nw-chapter-visual" data-reveal>
-                    {scenarioVisuals[scenario.id]}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* four differences */}
-        <section id="why" className="nw-why" aria-labelledby="nw-why-title">
-          <SectionHead
-            id="nw-why-title"
-            kicker={differencesIntro.kicker}
-            title={differencesIntro.title}
-            lead={differencesIntro.lead}
-          />
-          <div className="nw-pillars">
-            {differences.map((item, i) => (
-              <article
-                className="nw-pillar"
-                key={item.title}
-                data-reveal
-                style={{ '--i': i } as React.CSSProperties}
-              >
-                <span className="nw-pillar-index" aria-hidden="true">
-                  0{i + 1}
-                </span>
-                <h3>
-                  <Phrases text={item.title} />
-                </h3>
-                <p>{item.body}</p>
-                <div className="nw-tags">
-                  <Tags status={item.status} />
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* structure diagram */}
-        <section className="nw-arch-section" aria-labelledby="nw-arch-title">
-          <SectionHead id="nw-arch-title" title={architecture.title}>
-            <p className="nw-arch-body">{architecture.body}</p>
-            <div className="nw-tags">
-              <Tags status={architecture.status} />
-            </div>
-          </SectionHead>
-          <figure className="nw-arch" data-reveal>
-            <div className="nw-arch-entries">
-              {architecture.entries.map((entry, i) => (
-                <div
-                  className="nw-arch-node"
-                  key={entry.name}
-                  style={{ '--i': i } as React.CSSProperties}
-                >
-                  <span>{entry.name}</span>
-                  {entry.detail && <small>{entry.detail}</small>}
-                </div>
-              ))}
-            </div>
-            <svg
-              className="nw-arch-wires"
-              viewBox="0 0 1000 120"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              {[125, 375, 625, 875].map((x, i) => {
-                const d = `M${x} 0 C ${x} 70, 500 50, 500 120`;
+            <ol className="nc-chapter-list">
+              {howto.steps.map((step, index) => {
+                const shot = stepShots[index];
                 return (
-                  <g key={x}>
-                    <path d={d} className="nw-wire" />
-                    <path
-                      d={d}
-                      className="nw-wire-flow"
-                      style={{ '--i': i } as React.CSSProperties}
-                    />
-                  </g>
+                  <li
+                    key={step.title}
+                    className="nc-chapter"
+                    data-chapter={index}
+                  >
+                    <div className="nc-chapter-copy" data-reveal>
+                      <span className="nc-index">{pad(index)}</span>
+                      <h3>{step.title}</h3>
+                      <p>{step.text}</p>
+                    </div>
+                    <div
+                      className="nc-chapter-shot"
+                      data-reveal
+                      style={{ '--r': 1 } as Vars}
+                    >
+                      <Frame
+                        src={shot.src}
+                        w={shot.w}
+                        h={shot.h}
+                        label={shot.label}
+                      />
+                    </div>
+                  </li>
                 );
               })}
-            </svg>
-            <span className="nw-arch-stem" aria-hidden="true" />
-            <div className="nw-arch-core">
-              <span>{architecture.catalog}</span>
-            </div>
-            <span className="nw-arch-stem" aria-hidden="true" />
-            <div className="nw-arch-lower">
-              <div className="nw-arch-block">{architecture.plugins}</div>
-              <div className="nw-arch-block">{architecture.runtime}</div>
-            </div>
-            <div className="nw-arch-base">{architecture.home}</div>
-            <figcaption className="nc-sr-only">{archCaption}</figcaption>
-          </figure>
+            </ol>
+          </div>
+          <p className="nc-note">{screenshotNote}</p>
         </section>
 
-        {/* four more scenes as cards */}
-        <section id="more" className="nw-more" aria-labelledby="nw-more-title">
+        <section className="nc-section" aria-labelledby="nc-highlights-title">
           <SectionHead
-            id="nw-more-title"
-            kicker={moreIntro.kicker}
-            title={moreIntro.title}
+            id="nc-highlights-title"
+            kicker={highlights.kicker}
+            title={highlights.title}
           />
-          <div className="nw-cards">
-            {moreScenarios.map((scenario, i) => (
-              <article
-                className="nw-card"
-                key={scenario.id}
-                id={scenario.id}
+          <ol className="nc-pillars">
+            {highlights.items.map((item, index) => (
+              <li
+                key={item.title}
+                className="nc-pillar"
                 data-reveal
-                style={{ '--i': i % 2 } as React.CSSProperties}
+                style={{ '--r': index } as Vars}
               >
-                {moreArt[scenario.id]}
-                <div className="nw-card-copy">
-                  <span className="nw-chapter-label">
-                    {scenario.label}
-                    <Tags status={scenario.status} />
-                  </span>
-                  <h3>
-                    <Phrases text={scenario.title} />
-                  </h3>
-                  <p className="nw-problem">{scenario.problem}</p>
-                  <Points points={scenario.points} />
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* feature wall */}
-        <section
-          id="features"
-          className="nw-plugins"
-          aria-labelledby="nw-features-title"
-        >
-          <SectionHead
-            id="nw-features-title"
-            kicker={featuresIntro.kicker}
-            title={featuresIntro.title}
-            lead={featuresIntro.lead}
-          />
-          <div className="nw-wall">
-            {wallColumns.map((column) => (
-              <div className="nw-wall-col" key={column[0].name}>
-                {column.map((group) => (
-                  <div className="nw-group" key={group.name} data-reveal>
-                    <h3>{group.name}</h3>
-                    <ul>
-                      {group.features.map((feature) => (
-                        <li
-                          key={feature.name}
-                          data-live={
-                            (SHOW_NEXT_RELEASE &&
-                              feature.status === 'released') ||
-                            undefined
-                          }
-                        >
-                          <div className="nw-feature-name">
-                            <strong>{feature.name}</strong>
-                            <Tags status={feature.status} />
-                          </div>
-                          <span>{feature.line}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* comparison, set like closing credits */}
-        <section
-          id="compare"
-          className="nw-compare"
-          aria-labelledby="nw-compare-title"
-        >
-          <SectionHead
-            id="nw-compare-title"
-            kicker={compareIntro.kicker}
-            title={compareIntro.title}
-            lead={compareIntro.lead}
-          />
-          <ol className="nw-roll">
-            {comparisons.map((row) => (
-              <li key={row.now} data-reveal>
-                <dl className="nw-credit">
-                  <div className="nw-credit-now">
-                    <dt>{compareIntro.labels.now}</dt>
-                    <dd>{row.now}</dd>
-                  </div>
-                  <div className="nw-credit-here">
-                    <dt>{compareIntro.labels.here}</dt>
-                    <dd>{row.here}</dd>
-                  </div>
-                  <div className="nw-credit-gap">
-                    <dt>{compareIntro.labels.gap}</dt>
-                    <dd>{row.gap}</dd>
-                  </div>
-                </dl>
+                <span className="nc-pillar-index">{pad(index)}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
               </li>
             ))}
           </ol>
         </section>
 
-        {/* local first */}
         <section
-          id="local"
-          className="nw-local"
-          aria-labelledby="nw-local-title"
+          id="start"
+          className="nc-section nc-band"
+          aria-labelledby="nc-start-title"
         >
-          <div className="nw-home" aria-hidden="true">
-            {[0, 1, 2, 3].map((ring) => (
-              <i key={ring} style={{ '--r': ring } as React.CSSProperties} />
-            ))}
-            <b>Home</b>
-          </div>
-          <div className="nw-local-copy" data-reveal>
-            <span className="nc-kicker">{localFirst.kicker}</span>
-            <h2 id="nw-local-title">
-              <Phrases text={localFirst.title} />
-            </h2>
-            <ol>
-              {localFirst.points.map((point, i) => (
-                <li key={point}>
-                  <span>0{i + 1}</span>
-                  {point}
+          <div className="nc-split">
+            <SectionHead
+              id="nc-start-title"
+              kicker={start.kicker}
+              title={start.title}
+              align="start"
+            />
+            <ol className="nc-start-steps">
+              {start.steps.map((step, index) => (
+                <li
+                  key={step.title}
+                  data-reveal
+                  style={{ '--r': index } as Vars}
+                >
+                  <span className="nc-start-index">{index + 1}</span>
+                  <div>
+                    <h3>{step.title}</h3>
+                    <p>{step.text}</p>
+                    {step.action ? (
+                      <a
+                        className="nc-more"
+                        href={INSTALL_URL}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {step.action}
+                        <ArrowUpRight size={15} aria-hidden="true" />
+                      </a>
+                    ) : null}
+                  </div>
                 </li>
               ))}
             </ol>
           </div>
         </section>
+
+        <section
+          id="next"
+          className="nc-section"
+          aria-labelledby="nc-upcoming-title"
+        >
+          <div className="nc-split">
+            <SectionHead
+              id="nc-upcoming-title"
+              kicker={upcoming.kicker}
+              title={upcoming.title}
+              lead={upcoming.lead}
+              align="start"
+            >
+              <Actions
+                items={[
+                  {
+                    label: upcoming.action,
+                    href: RELEASES_URL,
+                    external: true,
+                  },
+                ]}
+              />
+            </SectionHead>
+            <ul className="nc-upcoming">
+              {upcoming.items.map((item, index) => (
+                <li
+                  key={item.title}
+                  data-reveal
+                  data-tagged={item.tag ? '' : undefined}
+                  style={{ '--r': index % 2 } as Vars}
+                >
+                  <strong>
+                    {item.title}
+                    {item.tag ? <Tag>{item.tag}</Tag> : null}
+                  </strong>
+                  <p>{item.text}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section className="nc-section" aria-labelledby="nc-features-title">
+          <SectionHead
+            id="nc-features-title"
+            kicker={short.features.kicker}
+            title={short.features.title}
+          />
+          <div className="nc-groups" data-reveal>
+            <FeatureList
+              title={short.features.groups.released}
+              items={features.released}
+            />
+            <FeatureList
+              title={short.features.groups.next}
+              items={features.next}
+            />
+            <FeatureList
+              title={short.features.groups.planned}
+              items={features.planned}
+            />
+          </div>
+        </section>
+
+        <section className="nc-section nc-panel" aria-labelledby="nc-faq-title">
+          <div className="nc-split">
+            <SectionHead
+              id="nc-faq-title"
+              kicker={faq.kicker}
+              title={faq.title}
+              align="start"
+            />
+            <dl className="nc-faq">
+              {faq.items.map((item, index) => (
+                <div key={item.q} data-reveal style={{ '--r': index } as Vars}>
+                  <dt>{item.q}</dt>
+                  <dd>
+                    {item.a}
+                    {item.team ? (
+                      <>
+                        {' '}
+                        <Link href={contactHref('enterprise')}>
+                          {faq.teamAction}
+                        </Link>
+                      </>
+                    ) : null}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
       </main>
 
-      <footer className="nc-footer nw-footer" data-scene="view">
-        <div className="nc-horizon" aria-hidden="true" />
-        <div className="nc-footer-invite" data-reveal>
-          <h2>
-            {closing.title.map((line) => (
-              <span key={line}>{line}</span>
-            ))}
-          </h2>
-          <Actions />
-        </div>
-        <div className="nc-footer-meta">
-          <Link href="/demos/brand/nocturne">Molis AI</Link>
-          <a href={GITHUB_URL} target="_blank" rel="noreferrer">
-            GitHub
-          </a>
-          <span>© 2026</span>
-        </div>
-      </footer>
+      <Footer>
+        <Closing id="nc-work-closing" title={short.closing.title}>
+          <div className="nc-paths" data-reveal>
+            <a className="nc-path" href="#start">
+              <small>01</small>
+              <h3>{paths.start.title}</h3>
+              <span>{paths.start.text}</span>
+            </a>
+            <a
+              className="nc-path"
+              href={RELEASES_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <small>02</small>
+              <h3>
+                {paths.follow.title}
+                <ArrowUpRight size={18} aria-hidden="true" />
+              </h3>
+              <span>{paths.follow.text}</span>
+            </a>
+            <Link className="nc-path" href={contactHref('enterprise')}>
+              <small>03</small>
+              <h3>{paths.team.title}</h3>
+              <span>{paths.team.text}</span>
+            </Link>
+          </div>
+        </Closing>
+      </Footer>
     </div>
   );
 }

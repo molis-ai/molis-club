@@ -1,0 +1,219 @@
+/* Molis Life，夜曲风格：通用部件在 ../kit.css。 */
+.nc-life .nc-phero .nc-visual {
+  width: min(100%, 600px, 68vh);
+}
+
+@media (min-width: 1081px) {
+  .nc-life .nc-phero {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+  .nc-life .nc-phero-copy {
+    max-width: 760px;
+  }
+  .nc-life .nc-phero h1 {
+    font-size: clamp(38px, 4.3vw, 70px);
+  }
+  .nc-devices .nc-split {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  }
+}
+
+/* 三件事：引句像一句旁白 */
+.nc-jobs blockquote {
+  min-height: 3em;
+  font-family: var(--nc-serif);
+  font-size: clamp(19px, 1.7vw, 24px);
+  font-weight: 300;
+  line-height: 1.55;
+  color: #ffe0c0;
+  text-shadow: 0 0 30px rgb(255 160 90 / 0.3);
+}
+.nc-jobs h3 {
+  margin-top: 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--nc-line);
+  font-size: clamp(18px, 1.5vw, 21px);
+}
+
+/* 怎么交代：四个入口，三种意图 */
+.nc-handoff {
+  display: grid;
+  gap: 22px;
+}
+.nc-entries {
+  display: grid;
+  margin: 0 0 30px;
+  padding: 0;
+  list-style: none;
+}
+.nc-entries li {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  align-items: baseline;
+  padding: 22px 0;
+  border-top: 1px solid var(--nc-line);
+}
+.nc-entries li:last-child {
+  border-bottom: 1px solid var(--nc-line);
+}
+.nc-entries strong {
+  font-family: var(--nc-serif);
+  font-size: clamp(19px, 1.7vw, 24px);
+  font-weight: 300;
+}
+.nc-entries li[data-planned] strong {
+  color: var(--nc-soft);
+}
+.nc-intents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nc-intents li {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border: 1px solid rgb(255 180 107 / 0.3);
+  border-radius: 999px;
+  background: rgb(255 180 107 / 0.05);
+  font-size: 15px;
+  color: #ffe0c0;
+  box-shadow: 0 0 30px -10px rgb(255 160 90 / 0.5);
+}
+.nc-intents li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--nc-amber);
+  box-shadow: 0 0 10px var(--nc-amber);
+}
+
+/* 八个场景：一片星图，悬停时亮起 */
+.nc-scenes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: var(--nc-head-gap) auto 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--nc-line);
+  border-left: 1px solid var(--nc-line);
+}
+.nc-scenes li {
+  position: relative;
+  display: grid;
+  align-content: space-between;
+  gap: 40px;
+  min-height: 170px;
+  padding: 24px 26px 28px;
+  border-right: 1px solid var(--nc-line);
+  border-bottom: 1px solid var(--nc-line);
+  overflow: hidden;
+}
+.nc-scenes li::before {
+  content: '';
+  position: absolute;
+  right: 24px;
+  top: 28px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgb(255 200 150 / 0.5);
+  box-shadow: 0 0 0 0 rgb(255 180 107 / 0);
+  transition:
+    background 0.5s ease,
+    box-shadow 0.8s var(--nc-ease);
+}
+.nc-scenes li::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    80% 80% at 100% 0%,
+    rgb(255 160 90 / 0.14),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+.nc-scenes li:hover::before {
+  background: var(--nc-amber);
+  box-shadow: 0 0 16px 4px rgb(255 170 100 / 0.6);
+}
+.nc-scenes li:hover::after {
+  opacity: 1;
+}
+.nc-scenes strong {
+  font-family: var(--nc-serif);
+  font-size: clamp(20px, 1.8vw, 26px);
+  font-weight: 300;
+}
+
+/* 手机和电脑：概念稿叠在一起 */
+.nc-devices .nc-split {
+  align-items: center;
+}
+.nc-duo {
+  position: relative;
+  padding-right: 9%;
+  padding-bottom: 30px;
+}
+.nc-duo .nc-phone {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 25%;
+}
+.nc-duo figcaption {
+  margin-top: 26px;
+}
+.nc-devices-copy {
+  display: grid;
+  gap: 40px;
+}
+.nc-device-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nc-device-list li {
+  display: grid;
+  gap: 8px;
+  padding: 22px 0;
+  border-top: 1px solid var(--nc-line);
+}
+.nc-device-list strong {
+  font-family: var(--nc-serif);
+  font-size: clamp(20px, 1.8vw, 25px);
+  font-weight: 300;
+}
+.nc-device-list p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--nc-soft);
+}
+
+@media (max-width: 1080px) {
+  .nc-scenes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .nc-scenes li {
+    min-height: 120px;
+    gap: 26px;
+    padding: 20px 18px 22px;
+  }
+  .nc-scenes strong {
+    font-size: 19px;
+  }
+  .nc-life .nc-phero .nc-visual {
+    width: min(100%, 340px);
+  }
+}
