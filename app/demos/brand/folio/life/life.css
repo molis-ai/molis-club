@@ -1,0 +1,159 @@
+/* Folio · Molis Life：通用部件在 ../kit.css，前缀 fl- */
+
+/* 首屏插画 */
+.fl-hero .fo-art {
+  width: min(100%, 620px, calc(100svh - 180px));
+}
+
+/* 概念稿：电脑一张，手机斜压在右下角 */
+.fo-site .fl-screen {
+  padding-inline: clamp(18px, 6vw, 120px);
+}
+.fl-screen .fo-collage {
+  max-width: 1180px;
+  margin-inline: auto;
+}
+.fl-devices {
+  position: relative;
+  padding-right: 12%;
+}
+.fl-phone {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: -8%;
+  width: 22%;
+  rotate: 5deg;
+}
+.fl-phone img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 18px;
+  box-shadow:
+    0 0 0 6px var(--fo-ink),
+    0 30px 50px -24px rgb(40 24 10 / 0.6);
+}
+
+/* 三件事：引号先行 */
+.fl-jobs blockquote {
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.6;
+}
+.fo-site .fl-jobs h3 {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 2px solid currentColor;
+}
+.fo-site .fl-jobs .fo-index {
+  margin-bottom: 0;
+  padding-bottom: 8px;
+}
+
+/* 怎么交代 */
+.fl-handoff-body {
+  display: grid;
+  gap: 18px;
+}
+.fl-handoff-body h3 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.fl-handoff-body .fo-list + h3 {
+  margin-top: 26px;
+}
+.fo-site .fl-handoff .fo-list li {
+  border-color: rgb(18 24 38 / 0.2);
+}
+
+/* 八个场景：八张小色卡 */
+.fl-scenes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.fl-scenes li {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 36px;
+  min-height: 170px;
+  padding: 22px 24px;
+  border-radius: 22px;
+  background: var(--fo-paper);
+}
+.fl-scenes li:nth-child(8n + 2),
+.fl-scenes li:nth-child(8n + 7) {
+  background: var(--fo-yellow);
+}
+.fl-scenes li:nth-child(8n + 4),
+.fl-scenes li:nth-child(8n + 5) {
+  background: var(--fo-pink);
+}
+.fl-scenes li:nth-child(8n + 3) {
+  background: var(--fo-sage);
+}
+.fl-scenes li:nth-child(8n + 8) {
+  background: var(--fo-blue);
+  color: var(--fo-white);
+}
+.fl-scenes li:nth-child(8n + 8) .fo-index {
+  color: var(--fo-yellow);
+}
+.fl-scenes li.is-in:nth-child(odd) {
+  rotate: -0.8deg;
+}
+.fl-scenes li.is-in:nth-child(even) {
+  rotate: 0.9deg;
+}
+.fl-scenes .fo-index {
+  font-size: 40px;
+}
+.fl-scenes strong {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(20px, 1.8vw, 26px);
+  line-height: 1.3;
+}
+
+/* 手机和电脑 */
+.fl-moments {
+  padding: 8% 6% 4%;
+  border-radius: 28px;
+  background: var(--fo-sage);
+}
+.fl-moments .fl-devices {
+  rotate: -1.5deg;
+}
+.fl-moments .fo-note {
+  margin-top: 40px;
+  color: var(--fo-ink);
+}
+.fl-devices-copy {
+  display: grid;
+  gap: 40px;
+}
+
+@media (max-width: 900px) {
+  .fl-scenes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .fl-scenes li {
+    min-height: 130px;
+  }
+}
+@media (max-width: 640px) {
+  .fl-phone {
+    width: 26%;
+    bottom: -12%;
+  }
+  .fl-phone img {
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 4px var(--fo-ink),
+      0 20px 30px -18px rgb(40 24 10 / 0.6);
+  }
+}
