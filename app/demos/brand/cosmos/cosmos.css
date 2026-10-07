@@ -1,19 +1,22 @@
 /* Cosmos · 深空观测站
-   Generative WebGL galaxy, feTurbulence planets, orbital scroll. */
+   各页共用：色板、顶栏与产品菜单、按钮、WebGL 星系、feTurbulence 行星、页尾地平线、进场动效。 */
 
 .cs-site {
   --cs-void: #04050a;
+  --cs-deep-blue: #070912;
   --cs-ink: #ece7dc;
   --cs-text: rgb(236 231 220 / 0.72);
-  --cs-muted: rgb(236 231 220 / 0.46);
+  --cs-muted: rgb(236 231 220 / 0.48);
   --cs-line: rgb(236 231 220 / 0.12);
   --cs-gold: #e9c48c;
   --cs-blue: #8fb1ff;
   --cs-violet: #b596ff;
+  --cs-teal: #9fe3d9;
   --cs-glass: rgb(14 17 30 / 0.56);
   --cs-sans: var(--font-cs-sans), 'PingFang SC', 'Hiragino Sans GB', sans-serif;
   --cs-mono: var(--font-cs-mono), ui-monospace, 'SFMono-Regular', monospace;
   --cs-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --cs-wide: min(100% - clamp(40px, 10vw, 160px), 1240px);
   position: relative;
   min-height: 100vh;
   overflow-x: clip;
@@ -30,28 +33,49 @@
   text-decoration: none;
 }
 .cs-site a:focus-visible,
-.cs-site button:focus-visible {
+.cs-site button:focus-visible,
+.cs-site summary:focus-visible,
+.cs-site input:focus-visible,
+.cs-site textarea:focus-visible {
   outline: 2px solid var(--cs-gold);
   outline-offset: 4px;
 }
-.cs-sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+/* 中文标题按短语换行（Phrases），短语放不下时按字换行，标点不落到行首 */
+.cs-site h1,
+.cs-site h2,
+.cs-site h3 {
+  word-break: normal;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.cs-site p {
+  text-wrap: pretty;
+}
+/* 全站的 em 默认是衬线体，这里沿用深空版的字体 */
+.cs-site em {
+  font-family: inherit;
+}
+.cs-site blockquote {
+  margin: 0;
+}
+.cs-phrase {
+  display: inline-block;
+  text-wrap: balance;
 }
 .cs-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  margin: 0;
   font-size: 14px;
+  font-weight: 400;
   letter-spacing: 0.18em;
   color: var(--cs-gold);
 }
 .cs-eyebrow::before {
   content: '';
+  flex: none;
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -60,47 +84,65 @@
     0 0 0 4px rgb(233 196 140 / 0.14),
     0 0 18px 2px rgb(233 196 140 / 0.7);
 }
-
-/* static starfield used below the galaxy */
-.cs-products,
-.cs-capabilities,
-.cs-footer {
-  background-image:
-    radial-gradient(1px 1px at 23px 41px, rgb(255 255 255 / 0.7), transparent),
-    radial-gradient(1px 1px at 131px 97px, rgb(200 214 255 / 0.55), transparent),
-    radial-gradient(1.5px 1.5px at 201px 12px, rgb(255 240 214 / 0.7), transparent),
-    radial-gradient(1px 1px at 77px 181px, rgb(255 255 255 / 0.4), transparent),
-    radial-gradient(1px 1px at 163px 223px, rgb(255 255 255 / 0.55), transparent),
-    radial-gradient(1px 1px at 311px 150px, rgb(190 205 255 / 0.5), transparent),
-    radial-gradient(1.5px 1.5px at 283px 271px, rgb(255 255 255 / 0.6), transparent);
-  background-size:
-    340px 300px,
-    340px 300px,
-    340px 300px,
-    340px 300px,
-    340px 300px,
-    340px 300px,
-    340px 300px;
+.cs-index {
+  font-family: var(--cs-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--cs-gold);
 }
 
-/* ─── header ─── */
+/* 深空背景上铺一层静态星点 */
+.cs-starfield {
+  background-image:
+    radial-gradient(1px 1px at 23px 41px, rgb(255 255 255 / 0.7), transparent),
+    radial-gradient(
+      1px 1px at 131px 97px,
+      rgb(200 214 255 / 0.55),
+      transparent
+    ),
+    radial-gradient(
+      1.5px 1.5px at 201px 12px,
+      rgb(255 240 214 / 0.7),
+      transparent
+    ),
+    radial-gradient(1px 1px at 77px 181px, rgb(255 255 255 / 0.4), transparent),
+    radial-gradient(
+      1px 1px at 163px 223px,
+      rgb(255 255 255 / 0.55),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 311px 150px,
+      rgb(190 205 255 / 0.5),
+      transparent
+    ),
+    radial-gradient(
+      1.5px 1.5px at 283px 271px,
+      rgb(255 255 255 / 0.6),
+      transparent
+    );
+  background-size: 340px 300px;
+}
+
+/* ─── 顶栏 ─── */
 .cs-header {
   position: fixed;
   z-index: 50;
   inset: 0 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   padding: 22px clamp(20px, 4vw, 56px);
   pointer-events: none;
 }
 .cs-header > * {
   pointer-events: auto;
 }
-.cs-logo {
+.cs-site .cs-logo {
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  margin-right: auto;
   font-size: 19px;
   font-weight: 500;
   letter-spacing: -0.01em;
@@ -109,42 +151,197 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.14), 0 0 28px rgb(143 177 255 / 0.25);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.14),
+    0 0 28px rgb(143 177 255 / 0.25);
 }
 .cs-pill {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   padding: 5px;
   border: 1px solid var(--cs-line);
   border-radius: 999px;
-  background: rgb(10 12 22 / 0.5);
+  background: rgb(10 12 22 / 0.55);
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
   backdrop-filter: blur(18px) saturate(1.4);
 }
-.cs-pill a {
-  padding: 9px 18px;
+.cs-site .cs-pill > a,
+.cs-menu > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 38px;
+  padding: 0 17px;
+  border: 0;
   border-radius: 999px;
+  background: transparent;
+  font: inherit;
   font-size: 15px;
+  white-space: nowrap;
   color: var(--cs-text);
+  cursor: pointer;
   transition:
     color 0.3s,
     background-color 0.3s;
 }
-.cs-pill a:hover {
+.cs-site .cs-pill > a:hover,
+.cs-menu > button:hover,
+.cs-menu[data-open='true'] > button {
   color: var(--cs-ink);
-  background: rgb(255 255 255 / 0.06);
+  background: rgb(255 255 255 / 0.07);
 }
-.cs-site .cs-pill-cta {
+.cs-menu > button svg {
+  transition: transform 0.4s var(--cs-ease);
+}
+.cs-menu[data-open='true'] > button svg {
+  transform: rotate(180deg);
+}
+.cs-site .cs-header-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 50px;
+  padding: 0 22px;
+  border-radius: 999px;
   background: var(--cs-ink);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
   color: #0a0b12;
+  box-shadow: 0 0 30px rgb(233 196 140 / 0.18);
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
 }
-.cs-site .cs-pill-cta:hover {
+.cs-site .cs-header-cta:hover {
   background: #fff;
-  color: #0a0b12;
+  box-shadow: 0 0 40px rgb(233 196 140 / 0.35);
 }
 
-/* ─── galaxy ─── */
+/* 产品菜单：四颗星球 */
+.cs-menu {
+  position: relative;
+}
+.cs-menu-panel {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 14px);
+  left: -6px;
+  display: grid;
+  gap: 2px;
+  width: 400px;
+  padding: 8px;
+  border: 1px solid rgb(236 231 220 / 0.14);
+  border-radius: 22px;
+  background: rgb(10 12 24 / 0.9);
+  -webkit-backdrop-filter: blur(26px) saturate(1.4);
+  backdrop-filter: blur(26px) saturate(1.4);
+  box-shadow:
+    0 40px 80px -30px rgb(0 0 0 / 0.9),
+    0 0 60px rgb(143 177 255 / 0.08);
+  animation: cs-menu-in 0.45s var(--cs-ease);
+}
+.cs-menu-panel[hidden] {
+  display: none;
+}
+@keyframes cs-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+.cs-site .cs-menu-panel a {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px;
+  border-radius: 15px;
+  transition: background-color 0.3s;
+}
+.cs-site .cs-menu-panel a:hover,
+.cs-site .cs-menu-panel a[aria-current='page'] {
+  background: rgb(255 255 255 / 0.06);
+}
+.cs-site .cs-menu-planet {
+  --size: 28px;
+  justify-self: center;
+}
+.cs-menu-panel span {
+  display: grid;
+  gap: 3px;
+}
+.cs-menu-panel strong {
+  font-size: 16px;
+  font-weight: 500;
+}
+.cs-menu-panel small {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cs-muted);
+}
+.cs-menu-panel em {
+  font-family: var(--cs-mono);
+  font-size: 11px;
+  font-style: normal;
+  color: var(--cs-muted);
+}
+.cs-menu-panel a[aria-current='page'] em {
+  color: var(--cs-gold);
+}
+
+/* ─── 按钮 ─── */
+.cs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.cs-site .cs-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 26px;
+  border: 1px solid rgb(236 231 220 / 0.22);
+  border-radius: 999px;
+  background: rgb(14 17 30 / 0.5);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  font-size: 16px;
+  white-space: nowrap;
+  color: var(--cs-ink);
+  transition:
+    transform 0.4s var(--cs-ease),
+    border-color 0.4s,
+    box-shadow 0.4s;
+}
+.cs-site .cs-button:hover {
+  transform: translateY(-2px);
+  border-color: rgb(236 231 220 / 0.45);
+}
+.cs-site .cs-button-primary {
+  border-color: transparent;
+  background: linear-gradient(180deg, #fff6e6, #e9c48c);
+  color: #1b1408;
+  font-weight: 500;
+  box-shadow:
+    0 0 0 1px rgb(255 240 214 / 0.3),
+    0 10px 40px rgb(233 196 140 / 0.28);
+}
+.cs-site .cs-button-primary:hover {
+  border-color: transparent;
+  box-shadow:
+    0 0 0 1px rgb(255 240 214 / 0.5),
+    0 14px 56px rgb(233 196 140 / 0.45);
+}
+.cs-site .cs-button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+  transform: none;
+}
+
+/* ─── 星系 ─── */
 .cs-deep {
   position: relative;
 }
@@ -176,24 +373,7 @@
     radial-gradient(60% 50% at 70% 50%, #1a1830 0%, var(--cs-void) 100%);
 }
 
-/* ─── hero ─── */
-.cs-hero {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  min-height: 100vh;
-  min-height: 100svh;
-  padding: 140px clamp(20px, 5vw, 80px) clamp(40px, 7vh, 80px);
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: 40px;
-  background: linear-gradient(
-    90deg,
-    rgb(4 5 10 / 0.7) 0%,
-    rgb(4 5 10 / 0.2) 42%,
-    transparent 60%
-  );
-}
+/* 首屏四角的取景框 */
 .cs-hud {
   position: absolute;
   inset: 0;
@@ -203,18 +383,16 @@
   position: absolute;
   width: 22px;
   height: 22px;
-  border-color: rgb(236 231 220 / 0.28);
-  border-style: solid;
-  border-width: 0;
+  border: 0 solid rgb(236 231 220 / 0.28);
 }
 .cs-hud i:nth-child(1) {
-  top: 92px;
+  top: 96px;
   left: clamp(20px, 3vw, 40px);
   border-top-width: 1px;
   border-left-width: 1px;
 }
 .cs-hud i:nth-child(2) {
-  top: 92px;
+  top: 96px;
   right: clamp(20px, 3vw, 40px);
   border-top-width: 1px;
   border-right-width: 1px;
@@ -231,41 +409,6 @@
   border-bottom-width: 1px;
   border-right-width: 1px;
 }
-.cs-hero-copy {
-  max-width: 900px;
-}
-.cs-hero h1 {
-  margin: 0;
-  font-size: clamp(60px, 9.4vw, 156px);
-  font-weight: 300;
-  line-height: 1.02;
-  letter-spacing: -0.045em;
-}
-.cs-hero h1 span {
-  display: inline-block;
-  background: linear-gradient(
-    176deg,
-    #fffaf0 0%,
-    #efe4cf 42%,
-    #a9b7e0 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: cs-rise 1.6s var(--cs-ease) both;
-  filter: drop-shadow(0 0 30px rgb(170 190 255 / 0.18));
-}
-.cs-hero h1 span:last-of-type {
-  animation-delay: 0.14s;
-}
-.cs-hero-copy p {
-  margin: clamp(22px, 3vh, 36px) 0 0;
-  max-width: 560px;
-  font-size: clamp(17px, 1.45vw, 21px);
-  line-height: 1.85;
-  color: var(--cs-text);
-  animation: cs-rise 1.6s 0.3s var(--cs-ease) both;
-}
 @keyframes cs-rise {
   from {
     opacity: 0;
@@ -273,436 +416,17 @@
     filter: blur(10px);
   }
 }
-
-.cs-hero-card {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  width: 372px;
-  padding: 14px 20px 14px 14px;
-  border: 1px solid var(--cs-line);
-  border-radius: 20px;
-  background: var(--cs-glass);
-  -webkit-backdrop-filter: blur(22px) saturate(1.5);
-  backdrop-filter: blur(22px) saturate(1.5);
-  animation: cs-rise 1.6s 0.5s var(--cs-ease) both;
-  transition:
-    transform 0.5s var(--cs-ease),
-    border-color 0.5s;
-}
-.cs-hero-card::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: conic-gradient(
-    from var(--cs-angle, 0deg),
-    transparent 0 70%,
-    rgb(233 196 140 / 0.9) 82%,
-    transparent 92%
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: cs-sweep 6s linear infinite;
-}
-@property --cs-angle {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
-@keyframes cs-sweep {
-  to {
-    --cs-angle: 360deg;
-  }
-}
-.cs-hero-card:hover {
-  transform: translateY(-4px);
-  border-color: rgb(236 231 220 / 0.24);
-}
-.cs-hero-card-screen {
-  display: grid;
-  gap: 6px;
-  flex: none;
-  width: 124px;
-  padding: 12px;
-  border-radius: 12px;
-  background: linear-gradient(160deg, #111629, #070911);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07);
-}
-.cs-hero-card-top {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  color: var(--cs-muted);
-}
-.cs-hero-card-top em {
-  font-family: inherit;
-  font-style: normal;
-  color: var(--cs-gold);
-}
-.cs-hero-card-screen strong {
-  margin-bottom: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.4;
-}
-.cs-hero-card-screen i {
-  display: block;
-  height: 5px;
-  border-radius: 3px;
-  background: rgb(143 177 255 / 0.45);
-}
-.cs-hero-card-screen i:nth-of-type(2) {
-  width: 78%;
-}
-.cs-hero-card-screen .cs-current {
-  width: 56%;
-  background: var(--cs-gold);
-  box-shadow: 0 0 12px rgb(233 196 140 / 0.8);
-  animation: cs-blink 2.4s ease-in-out infinite;
-}
 @keyframes cs-blink {
   50% {
     opacity: 0.35;
   }
 }
-.cs-hero-card-text {
-  display: grid;
-  gap: 3px;
-}
-.cs-hero-card-text small {
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  color: var(--cs-gold);
-}
-.cs-hero-card-text strong {
-  font-size: 20px;
-  font-weight: 500;
-}
-.cs-hero-card-text > span {
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--cs-text);
-}
-.cs-scroll-cue {
-  position: absolute;
-  left: 50%;
-  bottom: 26px;
-  width: 1px;
-  height: 56px;
-  overflow: hidden;
-  background: rgb(236 231 220 / 0.14);
-}
-.cs-scroll-cue::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(transparent, var(--cs-ink));
-  animation: cs-fall 2.2s var(--cs-ease) infinite;
-}
-@keyframes cs-fall {
-  from {
-    transform: translateY(-100%);
-  }
-  to {
-    transform: translateY(100%);
-  }
-}
 
-/* ─── statement: characters ignite like stars ─── */
-.cs-statement {
-  --p: 0;
-  position: relative;
-  z-index: 1;
-  height: 260vh;
-}
-.cs-statement-stage {
-  position: sticky;
-  top: 0;
-  display: grid;
-  place-items: center;
-  height: 100vh;
-  height: 100svh;
-  padding: 0 clamp(20px, 7vw, 120px);
-  background: radial-gradient(
-    closest-side,
-    rgb(4 5 10 / 0.72),
-    rgb(4 5 10 / 0.3) 70%,
-    transparent
-  );
-}
-.cs-statement-stage p[aria-hidden] {
-  max-width: 1120px;
-  margin: 0;
-  font-size: clamp(32px, 5.1vw, 84px);
-  font-weight: 300;
-  line-height: 1.42;
-  letter-spacing: -0.02em;
-  text-align: center;
-}
-.cs-statement-stage span {
-  display: inline-block;
-  opacity: clamp(
-    0.1,
-    calc((var(--p) * (var(--n) + 10) * 1.15 - var(--i)) / 5),
-    1
-  );
-  text-shadow:
-    0 0 18px rgb(255 236 204 / 0.55),
-    0 0 44px rgb(143 177 255 / 0.35);
-  transform: translateY(
-    calc(
-      (1 - clamp(0, calc((var(--p) * (var(--n) + 10) * 1.15 - var(--i)) / 5), 1)) *
-        0.18em
-    )
-  );
-}
-
-/* ─── products: an orrery ─── */
-.cs-products {
-  position: relative;
-  z-index: 2;
-  padding: clamp(110px, 16vh, 180px) clamp(20px, 5vw, 80px) clamp(80px, 12vh, 140px);
-  background-color: var(--cs-void);
-  box-shadow: 0 -120px 120px 20px var(--cs-void);
-}
-.cs-products::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(40% 30% at 18% 40%, rgb(92 70 180 / 0.16), transparent 70%),
-    radial-gradient(36% 28% at 86% 70%, rgb(30 110 130 / 0.14), transparent 70%);
-}
-.cs-products-intro,
-.cs-capabilities-intro {
-  position: relative;
-  max-width: 880px;
-}
-.cs-products-intro h2,
-.cs-capabilities-intro h2 {
-  margin: 26px 0 22px;
-  font-size: clamp(34px, 4.4vw, 68px);
-  font-weight: 300;
-  line-height: 1.2;
-  letter-spacing: -0.03em;
-}
-.cs-products-intro p,
-.cs-capabilities-intro p {
-  max-width: 660px;
-  margin: 0;
-  font-size: clamp(16px, 1.3vw, 19px);
-  line-height: 1.9;
-  color: var(--cs-text);
-}
-.cs-products-body {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  gap: clamp(32px, 5vw, 90px);
-  margin-top: clamp(40px, 8vh, 90px);
-}
-
-.cs-orrery {
-  --size: min(46vw, 640px, 76vh);
-  position: sticky;
-  top: calc(50vh - var(--size) / 2 + 20px);
-  width: var(--size);
-  height: var(--size);
-  align-self: start;
-  perspective: 1400px;
-}
-.cs-orrery-sun {
-  position: absolute;
-  inset: 43%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 42% 40%, #fff9ec, #ffd79a 40%, #e88a3c 78%);
-  box-shadow:
-    0 0 40px 10px rgb(255 206 140 / 0.55),
-    0 0 120px 40px rgb(233 150 80 / 0.22),
-    0 0 260px 80px rgb(143 177 255 / 0.1);
-  animation: cs-pulse 6s ease-in-out infinite;
-}
-@keyframes cs-pulse {
-  50% {
-    box-shadow:
-      0 0 52px 14px rgb(255 206 140 / 0.62),
-      0 0 150px 50px rgb(233 150 80 / 0.26),
-      0 0 280px 90px rgb(143 177 255 / 0.12);
-  }
-}
-.cs-orbit {
-  --tilt: 66deg;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: var(--r);
-  height: var(--r);
-  margin: calc(var(--r) / -2) 0 0 calc(var(--r) / -2);
-  border: 1px solid rgb(236 231 220 / 0.14);
-  border-radius: 50%;
-  transform-style: preserve-3d;
-  animation: cs-orbit var(--period) linear infinite;
-  animation-delay: var(--phase);
-  transition: border-color 0.8s;
-}
-.cs-orbit.is-active {
-  border-color: rgb(233 196 140 / 0.5);
-}
-.cs-orbit-0 {
-  --r: 46%;
-  --period: 44s;
-  --phase: -8s;
-  --planet: calc(var(--size) * 0.1);
-}
-.cs-orbit-1 {
-  --r: 70%;
-  --period: 70s;
-  --phase: -46s;
-  --planet: calc(var(--size) * 0.085);
-}
-.cs-orbit-2 {
-  --r: 96%;
-  --period: 104s;
-  --phase: -20s;
-  --planet: calc(var(--size) * 0.095);
-}
-.cs-orbit-carrier {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  display: grid;
-  justify-items: center;
-  transform-style: preserve-3d;
-  animation: cs-counter var(--period) linear infinite;
-  animation-delay: var(--phase);
-}
-.cs-orbit .cs-planet {
-  --size: var(--planet);
-  transition:
-    transform 0.9s var(--cs-ease),
-    filter 0.9s;
-  filter: saturate(0.6) brightness(0.7);
-}
-.cs-orbit.is-active .cs-planet {
-  transform: scale(1.55);
-  filter: none;
-}
-.cs-orbit-label {
-  margin-top: 10px;
-  font-family: var(--cs-mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  white-space: nowrap;
-  color: var(--cs-muted);
-  transition:
-    color 0.6s,
-    transform 0.9s var(--cs-ease);
-}
-.cs-orbit.is-active .cs-orbit-label {
-  color: var(--cs-gold);
-  transform: translateY(calc(var(--planet) * 0.3));
-}
-@keyframes cs-orbit {
-  from {
-    transform: rotateX(var(--tilt)) rotateZ(0deg);
-  }
-  to {
-    transform: rotateX(var(--tilt)) rotateZ(360deg);
-  }
-}
-@keyframes cs-counter {
-  from {
-    transform: translate(-50%, -50%) rotateZ(0deg) rotateX(calc(var(--tilt) * -1));
-  }
-  to {
-    transform: translate(-50%, -50%) rotateZ(-360deg) rotateX(calc(var(--tilt) * -1));
-  }
-}
-
-.cs-product-list {
-  position: relative;
-  display: grid;
-}
-.cs-product-item {
-  position: relative;
-  display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
-  gap: 20px;
-  align-content: center;
-  min-height: 78vh;
-  opacity: 0.32;
-  transition: opacity 0.8s var(--cs-ease);
-}
-.cs-product-item.is-active {
-  opacity: 1;
-}
-.cs-product-planet {
-  display: none !important;
-}
-.cs-product-index {
-  display: grid;
-  justify-items: start;
-  gap: 14px;
-  padding-top: 8px;
-  font-family: var(--cs-mono);
-  font-size: 14px;
-  color: var(--cs-gold);
-}
-.cs-product-index i {
-  width: 1px;
-  height: 84px;
-  background: linear-gradient(var(--cs-gold), transparent);
-  transform-origin: top;
-  transform: scaleY(0);
-  transition: transform 1.1s var(--cs-ease);
-}
-.cs-product-item.is-active .cs-product-index i {
-  transform: scaleY(1);
-}
-.cs-product-item small {
-  display: inline-block;
-  padding: 5px 12px;
-  border: 1px solid rgb(233 196 140 / 0.35);
-  border-radius: 999px;
-  font-size: 13px;
-  color: var(--cs-gold);
-}
-.cs-product-item h3 {
-  margin: 20px 0 18px;
-  font-size: clamp(36px, 3.8vw, 58px);
-  font-weight: 300;
-  letter-spacing: -0.035em;
-}
-.cs-product-item p {
-  max-width: 520px;
-  margin: 0;
-  font-size: 17px;
-  line-height: 1.95;
-  color: var(--cs-text);
-}
-.cs-product-arrow {
-  margin-top: 26px;
-  color: var(--cs-gold);
-  transition: transform 0.4s var(--cs-ease);
-}
-a.cs-product-item:hover .cs-product-arrow {
-  transform: translate(4px, -4px);
-}
-a.cs-product-item:hover h3 {
-  color: #fff;
-}
-
-/* ─── planets ─── */
+/* ─── 行星 ─── */
 .cs-planet {
   position: relative;
   display: block;
+  flex: none;
   width: var(--size, 80px);
   height: var(--size, 80px);
 }
@@ -720,7 +444,11 @@ a.cs-product-item:hover h3 {
   inset: 0;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 30% 28%, rgb(255 255 255 / 0.28), transparent 42%),
+    radial-gradient(
+      circle at 30% 28%,
+      rgb(255 255 255 / 0.28),
+      transparent 42%
+    ),
     radial-gradient(circle at 68% 72%, transparent 34%, rgb(2 3 8 / 0.9) 74%);
   box-shadow: inset 0 0 calc(var(--size, 80px) * 0.08) rgb(255 255 255 / 0.25);
 }
@@ -746,6 +474,10 @@ a.cs-product-item:hover h3 {
   --base: radial-gradient(circle at 40% 40%, #1c6770, #0a2a33);
   --glow: rgb(80 200 210 / 0.3);
 }
+.cs-planet-tool {
+  --base: radial-gradient(circle at 40% 40%, #7f8fb4, #1b2236);
+  --glow: rgb(160 196 255 / 0.36);
+}
 .cs-planet-story {
   --base: radial-gradient(circle at 40% 40%, #5a45b5, #1d1442);
   --glow: rgb(170 140 255 / 0.4);
@@ -762,8 +494,6 @@ a.cs-product-item:hover h3 {
     0 0 0 calc(var(--size, 80px) * 0.05) rgb(236 214 170 / 0.12),
     inset 0 0 0 calc(var(--size, 80px) * 0.03) rgb(236 214 170 / 0.18);
   transform: translate(-50%, -50%) rotate(-16deg);
-  -webkit-mask: linear-gradient(180deg, #000 0 44%, transparent 44% 56%, #000 56%);
-  mask: linear-gradient(180deg, #000 0 44%, transparent 44% 56%, #000 56%);
 }
 .cs-planet-work > .cs-planet-body {
   z-index: 1;
@@ -785,292 +515,118 @@ a.cs-product-item:hover h3 {
   border: calc(var(--size, 80px) * 0.035) solid rgb(236 214 170 / 0.4);
   transform: translate(-50%, -50%) rotate(-16deg);
 }
+/* Tool：一颗探针沿着倾斜的轨道绕着小卫星转，像总在光标旁边；后半圈藏在星体后面 */
+.cs-planet-tool > .cs-planet-body {
+  z-index: 1;
+}
+.cs-planet-tool::before,
+.cs-planet-probe i {
+  position: absolute;
+  inset: -34%;
+  border: 1px solid rgb(190 214 255 / 0.34);
+  border-radius: 50%;
+  transform: rotate(-14deg) rotateX(72deg);
+}
+.cs-planet-tool::before {
+  content: '';
+  z-index: 0;
+}
+.cs-planet-probe {
+  position: absolute;
+  z-index: 2;
+  inset: -34%;
+  -webkit-mask: linear-gradient(166deg, transparent 50%, #000 50%);
+  mask: linear-gradient(166deg, transparent 50%, #000 50%);
+}
+.cs-planet-probe i {
+  inset: 0;
+  animation: cs-probe 7s linear infinite;
+}
+.cs-planet-probe i::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: max(6px, calc(var(--size, 80px) * 0.08));
+  height: max(6px, calc(var(--size, 80px) * 0.08));
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 8px 2px rgb(190 214 255 / 0.9),
+    0 0 18px 4px rgb(143 177 255 / 0.5);
+  transform: translate(-50%, -50%);
+}
+@keyframes cs-probe {
+  from {
+    transform: rotate(-14deg) rotateX(72deg) rotate(0deg);
+  }
+  to {
+    transform: rotate(-14deg) rotateX(72deg) rotate(-360deg);
+  }
+}
 
-/* ─── capabilities ─── */
-.cs-capabilities {
+/* ─── 页尾：结尾内容 → 落款 → 行星地平线上的栏目 ─── */
+.cs-footer {
   position: relative;
   z-index: 2;
-  padding: clamp(110px, 16vh, 180px) clamp(20px, 5vw, 80px);
-  background-color: #05060d;
-  border-top: 1px solid rgb(236 231 220 / 0.06);
+  overflow: hidden;
+  background-color: var(--cs-void);
+  border-top: 1px solid rgb(236 231 220 / 0.05);
 }
-.cs-capabilities::before {
+.cs-footer::before {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(50% 40% at 80% 10%, rgb(233 170 100 / 0.08), transparent 70%);
+  background: radial-gradient(
+    50% 40% at 50% 0%,
+    rgb(92 70 180 / 0.12),
+    transparent 70%
+  );
 }
-.cs-proof {
+.cs-footer-top {
   position: relative;
-  margin-top: clamp(56px, 9vh, 96px);
-}
-.cs-proof > p {
-  margin: 0;
-  font-size: 14px;
-  letter-spacing: 0.1em;
-  color: var(--cs-muted);
-}
-.cs-company-logos {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 22px;
-}
-.cs-company-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  height: 84px;
-  padding: 0 18px;
-  border-radius: 16px;
-  background: linear-gradient(160deg, #f4efe5, #e2dccf);
-  box-shadow:
-    inset 0 1px 0 #fff,
-    0 22px 40px -26px rgb(233 196 140 / 0.45);
-  transition: transform 0.5s var(--cs-ease);
-}
-.cs-company-logo:hover {
-  transform: translateY(-4px);
-}
-.cs-company-logo img {
-  display: block;
-  max-height: 46px;
-  object-fit: contain;
-  mix-blend-mode: multiply;
-}
-.cs-company-logo-meituan img {
-  width: 124px;
-}
-.cs-company-logo-douyin img {
-  width: 132px;
-  height: 46px;
-  object-fit: cover;
-}
-.cs-company-logo-didi img {
-  width: 110px;
-  height: 46px;
-  object-fit: cover;
-}
-.cs-company-logo-linkedin img {
-  width: 28px;
-  height: 28px;
-}
-.cs-company-logo-linkedin b {
-  font-size: 20px;
-  color: #0a66c2;
-  letter-spacing: -0.04em;
-}
-.cs-company-logo-red img {
-  width: 86px;
-  height: 46px;
-  object-fit: cover;
-  mix-blend-mode: normal;
-  border-radius: 6px;
-}
-
-.cs-capability-list {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-  margin-top: clamp(80px, 12vh, 130px);
-  padding-top: 40px;
-}
-.cs-constellation {
-  position: absolute;
-  top: -70px;
-  left: 0;
-  width: 100%;
-  height: 120px;
-  overflow: visible;
-}
-.cs-constellation path {
-  fill: none;
-  stroke: rgb(233 196 140 / 0.5);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-  stroke-dasharray: 1600;
-  stroke-dashoffset: 1600;
-  transition: stroke-dashoffset 2.6s var(--cs-ease);
-}
-.cs-capability-list.is-in .cs-constellation path {
-  stroke-dashoffset: 0;
-}
-.cs-capability {
-  position: relative;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 22px;
-  padding: 32px 30px 30px;
-  border: 1px solid rgb(236 231 220 / 0.09);
-  border-radius: 24px;
-  background: linear-gradient(170deg, rgb(255 255 255 / 0.045), rgb(255 255 255 / 0.01));
-  opacity: 0;
-  transform: translateY(40px);
-  transition:
-    opacity 1s var(--cs-ease),
-    transform 1.2s var(--cs-ease),
-    border-color 0.5s;
-}
-.cs-capability:nth-of-type(2) {
-  transition-delay: 0.12s;
-}
-.cs-capability:nth-of-type(3) {
-  transition-delay: 0.24s;
-}
-.cs-capability-list.is-in .cs-capability {
-  opacity: 1;
-  transform: none;
-}
-.cs-capability:hover {
-  border-color: rgb(233 196 140 / 0.3);
-}
-.cs-capability-index {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  font-family: var(--cs-mono);
-  font-size: 13px;
-  color: var(--cs-gold);
-}
-.cs-capability-index::before {
-  content: '';
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #fff4e0;
-  box-shadow:
-    0 0 0 4px rgb(233 196 140 / 0.15),
-    0 0 20px 4px rgb(233 196 140 / 0.7);
-}
-.cs-capability h3 {
-  margin: 0 0 14px;
-  font-size: clamp(24px, 2vw, 30px);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-}
-.cs-capability p {
-  margin: 0;
-  font-size: 15.5px;
-  line-height: 1.9;
-  color: var(--cs-text);
-}
-.cs-people {
-  display: flex;
-  padding-top: 20px;
-  border-top: 1px solid rgb(236 231 220 / 0.08);
-}
-.cs-person {
-  position: relative;
-  z-index: 4;
-}
-.cs-person + .cs-person {
-  margin-left: -8px;
-}
-.cs-person:hover,
-.cs-person:focus-within {
-  z-index: 8;
-}
-.cs-person button {
-  display: block;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-}
-.cs-person button img {
-  display: block;
-  width: 56px;
-  height: 56px;
-  border: 2px solid #0b0d18;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow:
-    0 0 0 1px rgb(233 196 140 / 0.5),
-    0 0 24px rgb(233 196 140 / 0.25);
-  transition:
-    transform 0.4s var(--cs-ease),
-    box-shadow 0.4s;
-}
-.cs-person:hover button img,
-.cs-person:focus-within button img {
-  transform: translateY(-5px) scale(1.06);
-  box-shadow:
-    0 0 0 1px rgb(233 196 140 / 0.9),
-    0 0 36px rgb(233 196 140 / 0.5);
-}
-.cs-person-note {
-  position: absolute;
-  left: 0;
-  bottom: 76px;
-  width: min(340px, 78vw);
-  padding: 22px 24px;
-  border: 1px solid rgb(236 231 220 / 0.14);
-  border-radius: 20px;
-  background: rgb(12 14 26 / 0.86);
-  -webkit-backdrop-filter: blur(24px);
-  backdrop-filter: blur(24px);
-  box-shadow: 0 40px 80px -30px rgb(0 0 0 / 0.9);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);
-  transition:
-    opacity 0.35s var(--cs-ease),
-    transform 0.45s var(--cs-ease),
-    visibility 0.35s;
-}
-.cs-person:hover .cs-person-note,
-.cs-person:focus-within .cs-person-note {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-}
-.cs-person-note small,
-.cs-person-note strong,
-.cs-person-note p,
-.cs-person-note em {
-  display: block;
-}
-.cs-person-note small {
-  margin-bottom: 10px;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  color: var(--cs-gold);
-}
-.cs-person-note strong {
-  margin-bottom: 12px;
-  font-size: 20px;
-  font-weight: 500;
-}
-.cs-person-note p {
-  margin: 0 0 16px;
-  font-size: 14px;
-  line-height: 1.75;
-}
-.cs-person-note em {
-  padding-top: 14px;
-  border-top: 1px dashed rgb(236 231 220 / 0.18);
-  font-family: inherit;
-  font-size: 14px;
-  font-style: normal;
-  line-height: 1.7;
-  color: var(--cs-muted);
-}
-
-/* ─── footer: dawn over a planet ─── */
-.cs-footer {
-  position: relative;
-  z-index: 2;
+  z-index: 1;
   display: grid;
   gap: clamp(40px, 7vh, 72px);
-  min-height: 118vh;
-  padding: clamp(110px, 16vh, 170px) clamp(20px, 5vw, 80px) 36px;
-  overflow: hidden;
-  background-color: var(--cs-void);
-  align-content: start;
+  width: var(--cs-wide);
+  margin: 0 auto;
+  padding: clamp(110px, 16vh, 170px) 0 0;
+}
+.cs-footer-meta {
+  position: relative;
+  display: grid;
+  padding-top: clamp(110px, 18vh, 200px);
+}
+.cs-footer-signature {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto clamp(56px, 9vh, 96px);
+  padding: 0 20px;
+  font-size: clamp(30px, 4vw, 60px);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  text-align: center;
+  background: linear-gradient(180deg, #fffaf0 20%, #c3cdf0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 30px rgb(255 226 180 / 0.25));
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 2s var(--cs-ease) 0.4s,
+    transform 2.4s var(--cs-ease) 0.4s;
+}
+.cs-footer-meta.is-in .cs-footer-signature {
+  opacity: 1;
+  transform: none;
+}
+.cs-footer-ground {
+  position: relative;
+  display: grid;
+  gap: 48px;
+  padding: clamp(120px, 14vw, 220px) clamp(20px, 5vw, 80px) 34px;
 }
 .cs-horizon {
   position: absolute;
@@ -1080,31 +636,31 @@ a.cs-product-item:hover h3 {
 .cs-horizon-dawn {
   position: absolute;
   left: 50%;
-  top: 56%;
+  top: 0;
   width: 150vw;
-  height: 60vh;
+  height: 70vh;
   border-radius: 50%;
   background: radial-gradient(
     50% 50% at 50% 50%,
-    rgb(255 226 180 / 0.55),
-    rgb(233 150 90 / 0.22) 30%,
-    rgb(120 140 255 / 0.1) 55%,
+    rgb(255 226 180 / 0.5),
+    rgb(233 150 90 / 0.2) 30%,
+    rgb(120 140 255 / 0.09) 55%,
     transparent 72%
   );
-  transform: translate(-50%, -30%) scale(0.6);
+  transform: translate(-50%, -40%) scale(0.6);
   opacity: 0;
   transition:
     opacity 2.6s ease,
     transform 3.2s var(--cs-ease);
 }
 .cs-site .cs-horizon-planet {
-  --size: max(210vw, 1500px);
-  --base: radial-gradient(circle at 50% 0%, #1a2a58, #070a18 40%);
+  --size: max(260vw, 1900px);
+  --base: radial-gradient(circle at 50% 0%, #1a2a58, #070a18 30%);
   --glow: rgb(140 170 255 / 0.3);
   position: absolute;
   left: 50%;
-  top: 64%;
-  transform: translate(-50%, 16vh);
+  top: 0;
+  transform: translate(-50%, 18vh);
   transition: transform 3.2s var(--cs-ease);
 }
 .cs-horizon-planet .cs-planet-body {
@@ -1114,117 +670,113 @@ a.cs-product-item:hover h3 {
     inset 0 16px 40px rgb(190 210 255 / 0.4);
 }
 .cs-horizon-planet .cs-planet-body::after {
-  background: linear-gradient(180deg, transparent 0, rgb(4 5 10 / 0.5) 6%, var(--cs-void) 22%);
+  background: linear-gradient(
+    180deg,
+    transparent 0,
+    rgb(4 5 10 / 0.55) 3%,
+    var(--cs-void) 12%
+  );
   box-shadow: none;
 }
 .cs-horizon-planet .cs-planet-surface {
   opacity: 0.6;
   animation-duration: 160s;
 }
-.cs-footer.is-in .cs-horizon-planet {
+.cs-footer-meta.is-in .cs-horizon-planet {
   transform: translate(-50%, 0);
 }
-.cs-footer.is-in .cs-horizon-dawn {
+.cs-footer-meta.is-in .cs-horizon-dawn {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
-.cs-footer-invite,
-.cs-footer-paths,
-.cs-footer-meta {
+.cs-footer-grid,
+.cs-footer-base {
   position: relative;
-}
-.cs-footer-invite {
-  text-align: center;
-}
-.cs-footer-invite h2 {
-  margin: 0;
-  font-size: clamp(48px, 7.6vw, 124px);
-  font-weight: 300;
-  letter-spacing: -0.05em;
-  line-height: 1.05;
-  background: linear-gradient(180deg, #fffaf0 30%, #c3cdf0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.cs-footer-invite p {
-  max-width: 580px;
-  margin: 26px auto 0;
-  font-size: clamp(16px, 1.3vw, 19px);
-  line-height: 1.9;
-  color: var(--cs-text);
-}
-.cs-footer-paths {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  width: min(100%, 1060px);
+  z-index: 1;
+  width: min(100%, 1240px);
   margin: 0 auto;
 }
-.cs-footer-path {
+.cs-footer-grid {
   display: grid;
-  gap: 16px;
-  padding: 30px 32px;
-  border: 1px solid rgb(236 231 220 / 0.14);
-  border-radius: 24px;
-  background: rgb(10 13 26 / 0.5);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  transition:
-    transform 0.5s var(--cs-ease),
-    border-color 0.5s,
-    background-color 0.5s;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 40px;
 }
-.cs-footer-path:hover {
-  transform: translateY(-6px);
-  border-color: rgb(233 196 140 / 0.45);
-  background: rgb(18 20 36 / 0.6);
-}
-.cs-footer-path small {
-  font-size: 13px;
-  letter-spacing: 0.1em;
-  color: var(--cs-gold);
-}
-.cs-footer-path h3 {
-  margin: 0;
-  font-size: clamp(20px, 1.7vw, 25px);
-  font-weight: 400;
-  line-height: 1.5;
-}
-.cs-footer-path span {
+.cs-site .cs-footer-brand {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 12px;
+  align-self: start;
+  width: fit-content;
+  font-size: 19px;
+  font-weight: 500;
+}
+.cs-footer-brand img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  box-shadow: 0 0 22px rgb(143 177 255 / 0.3);
+}
+.cs-footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+.cs-footer-links h2 {
+  margin: 0 0 18px;
+  font-family: var(--cs-mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  color: var(--cs-gold);
+}
+.cs-footer-links ul {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cs-footer-links a {
   font-size: 15px;
   color: var(--cs-text);
+  transition: color 0.3s;
 }
-.cs-footer-meta {
+.cs-footer-links a:hover {
+  color: var(--cs-ink);
+}
+.cs-footer-base {
   display: flex;
-  justify-content: center;
-  gap: 28px;
-  align-self: end;
-  margin-top: clamp(120px, 26vh, 300px);
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 28px;
+  padding-top: 22px;
+  border-top: 1px solid rgb(236 231 220 / 0.08);
   font-family: var(--cs-mono);
-  font-size: 13px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
   color: var(--cs-muted);
 }
-.cs-footer-meta a:hover {
+.cs-footer-base a:hover {
   color: var(--cs-ink);
 }
 
-/* ─── responsive ─── */
-@media (max-width: 1080px) {
-  .cs-hero {
-    grid-template-columns: 1fr;
-    align-items: end;
-  }
+/* ─── 进场：元素进入视口时浮上来 ─── */
+.cs-site.is-ready .cs-reveal {
+  transition:
+    opacity 1s var(--cs-ease) calc(var(--r, 0) * 0.1s),
+    translate 1.2s var(--cs-ease) calc(var(--r, 0) * 0.1s);
 }
+.cs-site.is-ready .cs-reveal:not(.is-in) {
+  opacity: 0;
+  translate: 0 28px;
+}
+
+/* ─── 响应式 ─── */
 @media (max-width: 900px) {
-  .cs-orrery {
+  .cs-logo span {
     display: none;
   }
-  /* On phones the text column runs under the floating pills; a soft
-     blurred veil keeps it from colliding with them. */
+  /* 窄屏上内容会滑到浮动顶栏下面，加一层渐隐的磨砂 */
   .cs-header::before {
     content: '';
     position: absolute;
@@ -1237,101 +789,77 @@ a.cs-product-item:hover h3 {
     -webkit-mask-image: linear-gradient(#000 45%, transparent);
     mask-image: linear-gradient(#000 45%, transparent);
   }
-  .cs-products-body {
-    grid-template-columns: 1fr;
-    margin-top: 40px;
-  }
-  .cs-product-item {
-    grid-template-columns: 1fr;
-    min-height: 0;
-    padding: 44px 0;
-    border-top: 1px solid var(--cs-line);
-    opacity: 1;
-  }
-  .cs-product-planet {
-    display: block !important;
-    --size: 92px;
-    margin-bottom: 8px;
-  }
-  .cs-product-planet.cs-planet-work {
-    margin-left: 40px;
-  }
-  .cs-product-index {
-    display: none;
-  }
-  .cs-capability-list {
-    grid-template-columns: 1fr;
-  }
-  .cs-constellation {
-    display: none;
-  }
-  .cs-company-logos {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .cs-company-logo:last-child {
-    grid-column: 1 / -1;
-  }
-  .cs-footer-paths {
+  .cs-footer-grid {
     grid-template-columns: 1fr;
   }
 }
 @media (max-width: 640px) {
-  .cs-header {
-    padding: 16px;
+  .cs-site {
+    --cs-wide: calc(100% - 40px);
   }
-  .cs-logo span {
+  /* 手机上两行：标志和「聊一聊」一行，栏目一行；顶栏随页面滚走 */
+  .cs-header {
+    position: absolute;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 16px;
+  }
+  .cs-header::before {
     display: none;
   }
-  .cs-pill a {
-    padding: 8px 13px;
+  .cs-site .cs-logo {
+    order: 1;
+  }
+  .cs-logo img {
+    width: 36px;
+    height: 36px;
+  }
+  .cs-site .cs-header-cta {
+    order: 2;
+    min-height: 40px;
+    padding: 0 18px;
     font-size: 14px;
   }
-  .cs-hero {
-    padding: 120px 20px 44px;
-    align-content: end;
-    gap: 36px;
-    background: linear-gradient(0deg, rgb(4 5 10 / 0.85) 0%, rgb(4 5 10 / 0.3) 50%, transparent 70%);
-  }
-  .cs-hud i:nth-child(1),
-  .cs-hud i:nth-child(2) {
-    top: 76px;
-  }
-  .cs-hero-card {
+  .cs-pill {
+    order: 3;
+    justify-content: space-between;
     width: 100%;
   }
-  .cs-hero-copy p {
-    font-size: 16px;
+  .cs-site .cs-pill > a,
+  .cs-menu > button {
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 14px;
   }
-  .cs-scroll-cue {
-    display: none;
+  .cs-menu {
+    position: static;
   }
-  .cs-statement {
-    height: 220vh;
+  .cs-menu-panel {
+    left: 0;
+    right: 0;
+    width: auto;
+    top: calc(100% + 10px);
   }
-  .cs-statement-stage p[aria-hidden] {
-    text-align: left;
-    line-height: 1.5;
-  }
-  .cs-company-logo {
-    height: 72px;
-  }
-  .cs-capability {
-    padding: 26px 22px;
-  }
-  .cs-footer {
-    min-height: 0;
-  }
-  .cs-footer-path {
-    padding: 24px;
+  .cs-site .cs-menu-panel a {
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 11px 10px;
   }
   .cs-footer-meta {
-    margin-top: 180px;
+    padding-top: 90px;
+  }
+  .cs-footer-ground {
+    padding-top: 110px;
   }
   .cs-site .cs-horizon-planet {
-    top: 72%;
+    --size: 1400px;
   }
-  .cs-horizon-dawn {
-    top: 70%;
+  .cs-footer-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px 20px;
+  }
+  .cs-footer-links > div:last-child {
+    grid-column: 1 / -1;
   }
 }
 
@@ -1341,22 +869,21 @@ a.cs-product-item:hover h3 {
   .cs-site *::after {
     animation: none !important;
     transition-duration: 0.01s !important;
+    transition-delay: 0s !important;
   }
-  .cs-statement {
-    height: auto;
+  .cs-site.is-ready .cs-reveal:not(.is-in) {
+    opacity: 1;
+    translate: none;
   }
-  .cs-statement-stage {
-    position: relative;
-    min-height: 100vh;
-  }
-  .cs-statement-stage span {
+  .cs-footer-signature {
     opacity: 1;
     transform: none;
   }
-  .cs-orbit {
-    transform: rotateX(var(--tilt));
+  .cs-site .cs-horizon-planet {
+    transform: translate(-50%, 0);
   }
-  .cs-orbit-carrier {
-    transform: translate(-50%, -50%) rotateX(calc(var(--tilt) * -1));
+  .cs-horizon-dawn {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
