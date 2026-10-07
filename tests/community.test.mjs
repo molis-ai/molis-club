@@ -146,6 +146,21 @@ test('申请邮箱归一化且重复不覆盖，不在返回值暴露私人资�
   assert.equal(rows[0].email, 'maker@example.com');
   assert.equal(rows[0].idea, d.idea);
 });
+test('联系页的「企业合作」也收进同一个申请收件箱', async () => {
+  const db = dbFixture(),
+    d = {
+      name: '一位业务负责人',
+      email: 'lead@example.com',
+      role: '企业合作',
+      idea: '想聊聊怎么把 AI 用进内容团队的周报流程。',
+      consent: true,
+    };
+  assert.equal((await saveApplication(req('join', d), db)).status, 201);
+  assert.equal(
+    db.sql.prepare('SELECT role FROM applications').get().role,
+    '企业合作',
+  );
+});
 test('未同意使用资料、坏邮箱或无效角色不会创建申请', async () => {
   const db = dbFixture(),
     d = {

@@ -1,533 +1,365 @@
 'use client';
-import { ArrowUpRight, Download } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowUpRight, Plus } from 'lucide-react';
+import {
+  GITHUB_URL,
+  INSTALL_URL,
+  MAC_DOWNLOAD_URL,
+  RELEASES_URL,
+  featuresByAvailability,
+  short,
+} from '../../../../../content/molis-work';
+import {
+  Closing,
+  Compare,
+  Frame,
+  SectionHead,
+  Phrases,
+  ProductHero,
+  Tag,
+  pad,
+  type Action,
+} from '../kit';
+import { workShots } from '../shots';
 import {
   Footer,
-  Header,
-  TypedWordmark,
+  SiteHeader,
+  contactHref,
   useEditionMotion,
   type Vars,
 } from '../shared';
-import {
-  GITHUB_URL,
-  MAC_DOWNLOAD_URL,
-  agentLine,
-  architecture,
-  closing,
-  compareIntro,
-  comparisons,
-  differences,
-  differencesIntro,
-  featureGroups,
-  featuresIntro,
-  hero,
-  localFirst,
-  moreIntro,
-  moreScenarios,
-  nav,
-  scenarios,
-  scenariosIntro,
-  tagsOf,
-  type Point,
-  type Scenario,
-  type Status,
-} from '../../../../../content/molis-work';
-import { images } from './content';
-import { Window, sceneVisuals } from './visuals';
 import '../edition-c.css';
+import '../kit.css';
 import './work.css';
 
-// 文案全部来自 content/molis-work.ts，五个方向共用；这里只换成 Edition C 的视觉。
+// 短版：只讲 v0.2.0 现在能做的事，下一版集中在「即将到来」。文案全部来自 content/molis-work.ts 的 short。
 
-// 首屏标题在「与 Agent」前断成两行，拼起来仍是 hero.title
-const heroBreak = hero.title.indexOf('与');
-const heroLines =
-  heroBreak > 0
-    ? [hero.title.slice(0, heroBreak), hero.title.slice(heroBreak)]
-    : [hero.title];
+const { hero, audience, howto, highlights, start, compare, upcoming, faq } =
+  short;
+const features = featuresByAvailability();
+const stepShots = [workShots.create, workShots.runtime, workShots.check];
 
-// 功能全景：项目多的组排成四栏，只有一两项的小组共用最后一行
-const wideGroups = featureGroups.filter((group) => group.features.length >= 4);
-const bandGroups = featureGroups.filter((group) => group.features.length < 4);
+const heroActions: Action[] = [
+  ...(MAC_DOWNLOAD_URL
+    ? [
+        {
+          label: '下载 macOS 版',
+          href: MAC_DOWNLOAD_URL,
+          tone: 'light' as const,
+        },
+      ]
+    : []),
+  {
+    label: hero.start,
+    href: '#start',
+    tone: MAC_DOWNLOAD_URL ? 'glass' : 'light',
+  },
+  { label: '在 GitHub 查看', href: GITHUB_URL, external: true, tone: 'glass' },
+];
 
-// 在逗号、顿号后断行，避免中文标题在词中间折开
-function Phrases({ text }: { text: string }) {
-  return (
-    <>
-      {text.split(/(?<=[，、])/).map((phrase) => (
-        <span className="ec-phrase" key={phrase}>
-          {phrase}
-        </span>
-      ))}
-    </>
-  );
-}
-
-const pad = (index: number) => String(index + 1).padStart(2, '0');
-
-function Tags({ status }: { status?: Status }) {
-  const tags = tagsOf(status);
-  if (tags.length === 0) return null;
-  return (
-    <span className="ew-tags">
-      {tags.map((tag) => (
-        <span className="ew-tag" data-tag={tag} key={tag}>
-          {tag}
-        </span>
-      ))}
-    </span>
-  );
-}
-
-function Points({ points }: { points: Point[] }) {
-  return (
-    <ul className="ew-points">
-      {points.map((point) => (
-        <li key={point.text}>
-          {point.text}
-          <Tags status={point.status} />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function Actions({ glass = false }: { glass?: boolean }) {
-  return (
-    <div className="ew-actions">
-      {MAC_DOWNLOAD_URL ? (
-        <a
-          className={`ec-button ${glass ? 'ec-button-light' : ''}`}
-          href={MAC_DOWNLOAD_URL}
-        >
-          <Download size={14} aria-hidden="true" />
-          下载 macOS 版
-        </a>
-      ) : null}
-      <a
-        className={`ec-button ${glass ? (MAC_DOWNLOAD_URL ? 'ec-button-glass' : 'ec-button-light') : ''}`}
-        href={GITHUB_URL}
-        target="_blank"
-        rel="noreferrer"
-      >
-        在 GitHub 查看
-        <ArrowUpRight size={14} aria-hidden="true" />
-      </a>
-    </div>
-  );
-}
-
-function SectionHead({
-  id,
-  kicker,
+function FeatureList({
   title,
-  lead,
+  items,
+  open = false,
 }: {
-  id: string;
-  kicker: string;
   title: string;
-  lead?: string;
+  items: ReturnType<typeof featuresByAvailability>['released'];
+  open?: boolean;
 }) {
   return (
-    <div className="ew-head ec-reveal">
-      <span className="ec-eyebrow">{kicker}</span>
-      <h2 id={id}>
-        <Phrases text={title} />
-      </h2>
-      {lead ? <p>{lead}</p> : null}
-    </div>
-  );
-}
-
-function SceneVisual({ id, className }: { id: string; className: string }) {
-  const { Visual, shot } = sceneVisuals[id];
-  return (
-    <figure className={className}>
-      <Visual />
-      <figcaption>{shot ? '产品截图 · 演示数据' : '界面示意'}</figcaption>
-    </figure>
-  );
-}
-
-function ScenarioPanel({
-  scenario,
-  index,
-}: {
-  scenario: Scenario;
-  index: number;
-}) {
-  const titleId = `ew-scene-${scenario.id}`;
-  return (
-    <article className="ew-feature" aria-labelledby={titleId}>
-      <SceneVisual id={scenario.id} className="ew-feature-visual ec-reveal" />
-      <div className="ew-feature-copy ec-reveal">
-        <div className="ew-feature-meta">
-          <span className="ew-index">{pad(index)}</span>
-          <span>{scenario.label}</span>
-          <Tags status={scenario.status} />
-        </div>
-        <h3 id={titleId}>
-          <Phrases text={scenario.title} />
-        </h3>
-        <p className="ew-problem">{scenario.problem}</p>
-        <Points points={scenario.points} />
-      </div>
-    </article>
-  );
-}
-
-function Architecture() {
-  return (
-    <figure className="ew-arch ec-reveal">
-      <ul className="ew-arch-entries">
-        {architecture.entries.map((entry, index) => (
-          <li key={entry.name} style={{ '--r': index } as Vars}>
-            <span>
-              {entry.name}
-              {entry.detail ? <small>{entry.detail}</small> : null}
-            </span>
-          </li>
-        ))}
-      </ul>
-      <div className="ew-arch-wires" aria-hidden="true">
-        {[0, 1, 2, 3].map((index) => (
-          <i key={index} style={{ '--r': index } as Vars} />
-        ))}
-      </div>
-      <div className="ew-arch-catalog">{architecture.catalog}</div>
-      <div className="ew-arch-wires ew-arch-wires-two" aria-hidden="true">
-        {[0, 1].map((index) => (
-          <i key={index} style={{ '--r': index + 4 } as Vars} />
-        ))}
-      </div>
-      <div className="ew-arch-base">
-        <span>{architecture.plugins}</span>
-        <span>{architecture.runtime}</span>
-      </div>
-      <div className="ew-arch-home">{architecture.home}</div>
-      <figcaption>结构示意</figcaption>
-    </figure>
-  );
-}
-
-function FeatureGroup({
-  group,
-  index,
-}: {
-  group: (typeof featureGroups)[number];
-  index: number;
-}) {
-  const count = group.features.length;
-  return (
-    <div
-      className="ew-feature-group ec-reveal"
-      data-wide={count > 1 ? '' : undefined}
-      style={{ '--r': index, '--n': count } as Vars}
-    >
-      <h3>
-        {group.name}
-        <small>{count}</small>
-      </h3>
+    <details className="ew-group" open={open}>
+      <summary>
+        <span>{title}</span>
+        <small>{items.length} 项</small>
+        <Plus size={16} aria-hidden="true" />
+      </summary>
       <ul>
-        {group.features.map((feature) => (
+        {items.map((feature) => (
           <li key={feature.name}>
             <strong>
               {feature.name}
-              <Tags status={feature.status} />
+              {feature.status === 'preview' ? <Tag>预览</Tag> : null}
             </strong>
             <span>{feature.line}</span>
+            <small>{feature.group}</small>
           </li>
         ))}
       </ul>
-    </div>
+    </details>
   );
 }
 
 export default function EditionCWorkPage() {
   const siteRef = useEditionMotion();
-  const { labels } = compareIntro;
+  const paths = short.closing.paths;
 
   return (
     <div className="ec-site ew-site" ref={siteRef}>
-      <Header
-        items={nav}
-        action={{ label: 'GitHub', href: GITHUB_URL, external: true }}
-      />
+      <SiteHeader current="work" />
 
       <main id="main">
-        <section className="ec-hero ew-hero" aria-labelledby="ew-title">
-          <img
-            className="ec-hero-photo"
-            src={images.hero}
-            width="1440"
-            height="960"
-            alt=""
-            fetchPriority="high"
-          />
-          <div className="ec-hero-copy ew-hero-copy">
-            <span className="ew-hero-eyebrow">{hero.kicker}</span>
-            <h1 id="ew-title">
-              {heroLines.map((line, index) => (
-                <span
-                  className="ew-hero-line"
-                  key={line}
-                  style={{ '--r': index } as Vars}
-                >
-                  {line}
-                </span>
-              ))}
-            </h1>
-            <p>{hero.lead}</p>
-            <Actions glass />
-            <p className="ew-hero-agents">
-              <span>{hero.agentsLabel}</span>
-              {agentLine.slice(hero.agentsLabel.length)}
-            </p>
-          </div>
-          <TypedWordmark text="Molis Work" />
-        </section>
+        <ProductHero
+          id="ew-title"
+          kicker={hero.kicker}
+          title={hero.title}
+          lead={hero.lead}
+          status={hero.status}
+          actions={heroActions}
+          image={{ src: '/images/atelier/studio-desk.jpg', w: 1440, h: 960 }}
+          wordmark="Molis Work"
+        />
 
         <section
-          className="ew-screen"
+          className="ep-screen"
           data-scroll="enter"
           aria-label="Molis Work 界面"
         >
           <figure>
-            <Window src={images.home} label="Molis Work" />
-            <figcaption>产品截图 · 演示数据</figcaption>
+            <Frame
+              src={workShots.goal.src}
+              w={workShots.goal.w}
+              h={workShots.goal.h}
+              label={workShots.goal.label}
+            />
+            <figcaption>产品截图 · v0.2.0 · 演示数据</figcaption>
           </figure>
         </section>
 
-        <section
-          id="scenarios"
-          className="ew-scenarios"
-          aria-labelledby="ew-scenarios-title"
-        >
-          <SectionHead
-            id="ew-scenarios-title"
-            kicker={scenariosIntro.kicker}
-            title={scenariosIntro.title}
-          />
-          <div className="ew-features">
-            {scenarios.map((scenario, index) => (
-              <ScenarioPanel
-                key={scenario.id}
-                scenario={scenario}
-                index={index}
-              />
-            ))}
-          </div>
+        <section className="ew-audience ec-reveal" aria-label={audience.kicker}>
+          <span className="ec-eyebrow">{audience.kicker}</span>
+          <p>{audience.text}</p>
         </section>
 
-        <section id="why" className="ew-why" aria-labelledby="ew-why-title">
+        <section className="ep-section" aria-labelledby="ew-howto-title">
           <SectionHead
-            id="ew-why-title"
-            kicker={differencesIntro.kicker}
-            title={differencesIntro.title}
-            lead={differencesIntro.lead}
+            id="ew-howto-title"
+            kicker={howto.kicker}
+            title={howto.title}
           />
-          <ol className="ew-pillars">
-            {differences.map((item, index) => (
+          <ol className="ew-steps">
+            {howto.steps.map((step, index) => {
+              const shot = stepShots[index];
+              return (
+                <li
+                  key={step.title}
+                  className="ew-step ec-reveal"
+                  style={{ '--r': index } as Vars}
+                >
+                  <div className="ew-step-shot">
+                    <Frame
+                      src={shot.src}
+                      w={shot.w}
+                      h={shot.h}
+                      label={shot.label}
+                    />
+                  </div>
+                  <span className="ep-index">{pad(index)}</span>
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
+                </li>
+              );
+            })}
+          </ol>
+          <p className="ep-note">
+            产品截图 · v0.2.0 · 演示数据。完整的操作录屏还在制作。
+          </p>
+        </section>
+
+        <section className="ep-section" aria-labelledby="ew-highlights-title">
+          <SectionHead
+            id="ew-highlights-title"
+            kicker={highlights.kicker}
+            title={highlights.title}
+          />
+          <ol className="ep-cards">
+            {highlights.items.map((item, index) => (
               <li
                 key={item.title}
-                className="ew-pillar ec-reveal"
+                className="ep-card ec-reveal"
                 style={{ '--r': index } as Vars}
               >
-                <div className="ew-feature-meta">
-                  <span className="ew-index">{pad(index)}</span>
-                  <Tags status={item.status} />
-                </div>
-                <h3>
-                  <Phrases text={item.title} />
-                </h3>
-                <p>{item.body}</p>
+                <span className="ep-index">{pad(index)}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
               </li>
             ))}
           </ol>
+          <p className="ep-note">{highlights.note}</p>
         </section>
 
         <section
-          className="ec-statement ew-architecture"
-          aria-labelledby="ew-arch-title"
+          id="start"
+          className="ep-section ep-band ew-start"
+          aria-labelledby="ew-start-title"
         >
-          <div className="ew-intro ec-reveal">
-            <h2 id="ew-arch-title">
-              <Phrases text={architecture.title} />
-            </h2>
-            <p>{architecture.body}</p>
-            <Tags status={architecture.status} />
-          </div>
-          <Architecture />
-        </section>
-
-        <section
-          id="more"
-          className="ew-more-section"
-          aria-labelledby="ew-more-title"
-        >
-          <SectionHead
-            id="ew-more-title"
-            kicker={moreIntro.kicker}
-            title={moreIntro.title}
-          />
-          <div className="ew-cards">
-            {moreScenarios.map((scenario, index) => (
-              <article
-                key={scenario.id}
-                className="ew-more ec-reveal"
-                style={{ '--r': index % 2 } as Vars}
-                aria-labelledby={`ew-more-${scenario.id}`}
-              >
-                <SceneVisual id={scenario.id} className="ew-more-visual" />
-                <div className="ew-more-copy">
-                  <div className="ew-feature-meta">
-                    <span>{scenario.label}</span>
-                    <Tags status={scenario.status} />
-                  </div>
-                  <h3 id={`ew-more-${scenario.id}`}>
-                    <Phrases text={scenario.title} />
-                  </h3>
-                  <p className="ew-problem">{scenario.problem}</p>
-                  <Points points={scenario.points} />
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section
-          id="features"
-          className="ew-plugins"
-          aria-labelledby="ew-features-title"
-        >
-          <div className="ew-plugins-intro ec-reveal">
-            <span className="ec-eyebrow">{featuresIntro.kicker}</span>
-            <h2 id="ew-features-title">
-              <Phrases text={featuresIntro.title} />
-            </h2>
-            <p>{featuresIntro.lead}</p>
-          </div>
-          <div className="ew-feature-groups">
-            {wideGroups.map((group, index) => (
-              <FeatureGroup key={group.name} group={group} index={index} />
-            ))}
-          </div>
-          <div
-            className="ew-feature-band"
-            style={
-              {
-                '--band': bandGroups
-                  .map((group) => `minmax(0, ${group.features.length}fr)`)
-                  .join(' '),
-              } as Vars
-            }
-          >
-            {bandGroups.map((group, index) => (
-              <FeatureGroup key={group.name} group={group} index={index} />
-            ))}
-          </div>
-        </section>
-
-        <section
-          id="compare"
-          className="ew-compare"
-          aria-labelledby="ew-compare-title"
-        >
-          <div className="ew-compare-intro ec-reveal">
-            <div>
-              <span className="ec-eyebrow">{compareIntro.kicker}</span>
-              <h2 id="ew-compare-title">
-                <Phrases text={compareIntro.title} />
+          <div className="ep-split">
+            <div className="ep-head ec-reveal" data-align="start">
+              <span className="ec-eyebrow">{start.kicker}</span>
+              <h2 id="ew-start-title">
+                <Phrases text={start.title} />
               </h2>
             </div>
-            <p>{compareIntro.lead}</p>
-          </div>
-          <div className="ew-compare-sheet">
-            <div className="ew-compare-head" aria-hidden="true">
-              <span />
-              <div>
-                <span>{labels.now}</span>
-                <span>{labels.here}</span>
-                <span>{labels.gap}</span>
-              </div>
-            </div>
-            <ol className="ew-compare-rows">
-              {comparisons.map((row, index) => (
+            <ol className="ew-start-steps">
+              {start.steps.map((step, index) => (
                 <li
-                  key={row.now}
+                  key={step.title}
                   className="ec-reveal"
-                  style={{ '--r': index % 3 } as Vars}
+                  style={{ '--r': index } as Vars}
                 >
-                  <span className="ew-index" aria-hidden="true">
-                    {pad(index)}
-                  </span>
-                  <dl>
-                    <div className="ew-compare-now">
-                      <dt>{labels.now}</dt>
-                      <dd>{row.now}</dd>
-                    </div>
-                    <div className="ew-compare-here">
-                      <dt>{labels.here}</dt>
-                      <dd>{row.here}</dd>
-                    </div>
-                    <div className="ew-compare-gap">
-                      <dt>{labels.gap}</dt>
-                      <dd>{row.gap}</dd>
-                    </div>
-                  </dl>
+                  <span className="ew-start-index">{index + 1}</span>
+                  <div>
+                    <h3>{step.title}</h3>
+                    <p>{step.text}</p>
+                    {step.action ? (
+                      <a href={INSTALL_URL} target="_blank" rel="noreferrer">
+                        {step.action}
+                        <ArrowUpRight size={14} aria-hidden="true" />
+                      </a>
+                    ) : null}
+                  </div>
                 </li>
               ))}
             </ol>
           </div>
         </section>
 
+        <section className="ep-section" aria-labelledby="ew-compare-title">
+          <SectionHead
+            id="ew-compare-title"
+            kicker={compare.kicker}
+            title={compare.title}
+          />
+          <Compare
+            labels={[
+              compare.labels.now,
+              compare.labels.pain,
+              compare.labels.here,
+            ]}
+            rows={compare.rows.map((row) => [row.now, row.pain, row.here])}
+          />
+        </section>
+
         <section
-          id="local"
-          className="ew-local"
-          aria-labelledby="ew-local-title"
+          id="next"
+          className="ep-section ep-panel ew-upcoming"
+          aria-labelledby="ew-upcoming-title"
         >
-          <figure className="ew-local-visual" data-scroll="pass">
-            <img
-              className="ew-local-photo"
-              src={images.local}
-              width="1440"
-              height="960"
-              alt=""
-              loading="lazy"
-            />
-            <div className="ew-local-window">
-              <Window src={images.home} label="Molis Work Home" />
+          <div className="ep-split">
+            <div className="ep-head ec-reveal" data-align="start">
+              <span className="ec-eyebrow">{upcoming.kicker}</span>
+              <h2 id="ew-upcoming-title">
+                <Phrases text={upcoming.title} />
+              </h2>
+              <p>{upcoming.lead}</p>
+              <a
+                className="ec-button"
+                href={RELEASES_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {upcoming.action}
+                <ArrowUpRight size={14} aria-hidden="true" />
+              </a>
             </div>
-            <figcaption>产品截图 · 场景示意</figcaption>
-          </figure>
-          <div className="ew-local-copy ec-reveal">
-            <span className="ec-eyebrow">{localFirst.kicker}</span>
-            <h2 id="ew-local-title">
-              <Phrases text={localFirst.title} />
-            </h2>
-            <ol>
-              {localFirst.points.map((point, index) => (
-                <li key={point}>
-                  <span className="ew-index">{pad(index)}</span>
-                  {point}
+            <ul className="ew-upcoming-list">
+              {upcoming.items.map((item, index) => (
+                <li
+                  key={item.title}
+                  className="ec-reveal"
+                  style={{ '--r': index % 2 } as Vars}
+                >
+                  <strong>
+                    {item.title}
+                    {item.tag ? <Tag>{item.tag}</Tag> : null}
+                  </strong>
+                  <p>{item.text}</p>
                 </li>
               ))}
-            </ol>
+            </ul>
+          </div>
+        </section>
+
+        <section
+          className="ep-section ew-features"
+          aria-labelledby="ew-features-title"
+        >
+          <SectionHead
+            id="ew-features-title"
+            kicker={short.features.kicker}
+            title={short.features.title}
+          />
+          <div className="ew-groups">
+            <FeatureList
+              title={short.features.groups.released}
+              items={features.released}
+              open
+            />
+            <FeatureList
+              title={short.features.groups.next}
+              items={features.next}
+            />
+            <FeatureList
+              title={short.features.groups.planned}
+              items={features.planned}
+            />
+          </div>
+        </section>
+
+        <section className="ep-section ew-faq" aria-labelledby="ew-faq-title">
+          <div className="ep-split">
+            <div className="ep-head ec-reveal" data-align="start">
+              <span className="ec-eyebrow">{faq.kicker}</span>
+              <h2 id="ew-faq-title">{faq.title}</h2>
+            </div>
+            <dl>
+              {faq.items.map((item) => (
+                <div key={item.q} className="ec-reveal">
+                  <dt>{item.q}</dt>
+                  <dd>
+                    {item.a}
+                    {item.team ? (
+                      <>
+                        {' '}
+                        <Link href={contactHref('enterprise')}>
+                          {faq.teamAction}
+                        </Link>
+                      </>
+                    ) : null}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </section>
       </main>
 
       <Footer>
-        <section
-          className="ec-invite ew-closing ec-reveal"
-          aria-labelledby="ew-closing-title"
-        >
-          <h2 id="ew-closing-title">
-            {closing.title[0]}
-            <br />
-            {closing.title[1]}
-          </h2>
-          <Actions />
-        </section>
+        <Closing id="ew-closing-title" title={short.closing.title} />
+        <div className="ew-paths">
+          <a className="ew-path" href="#start">
+            <small>01</small>
+            <strong>{paths.start.title}</strong>
+            <span>{paths.start.text}</span>
+          </a>
+          <a
+            className="ew-path"
+            href={RELEASES_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <small>02</small>
+            <strong>
+              {paths.follow.title}
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </strong>
+            <span>{paths.follow.text}</span>
+          </a>
+          <Link className="ew-path" href={contactHref('enterprise')}>
+            <small>03</small>
+            <strong>{paths.team.title}</strong>
+            <span>{paths.team.text}</span>
+          </Link>
+        </div>
       </Footer>
     </div>
   );

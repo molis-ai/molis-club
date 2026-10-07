@@ -1,0 +1,675 @@
+/* Molis Tool 产品页的 Edition C 版本：通用部件在 ../kit.css，前缀 et-。 */
+
+/* ---------- 首屏：文字在上，界面动画在中，字标压底 ---------- */
+.et-hero .ec-hero-copy {
+  order: 1;
+}
+.et-hero .et-demo {
+  order: 2;
+}
+.et-hero .ec-wordmark {
+  order: 3;
+}
+.ec-site .et-demo {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 880px);
+  margin: 64px auto 0;
+  animation: ec-rise 1100ms var(--ease) 560ms backwards;
+}
+.et-demo figcaption {
+  margin-top: 14px;
+  font-size: 12px;
+  color: color-mix(in srgb, var(--white) 62%, transparent);
+  text-align: center;
+}
+
+/* 浏览器窗口 */
+.et-browser {
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  text-align: left;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--white) 14%, transparent),
+    0 60px 120px -50px rgb(0 0 0 / 0.7);
+}
+.et-browser-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+.et-browser-bar i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--line);
+}
+.et-browser-bar span {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 4px 14px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--white);
+  font-size: 11px;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.et-page {
+  padding: 40px clamp(20px, 7%, 72px) 52px;
+}
+.et-page h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(22px, 2.6vw, 32px);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.et-page > p {
+  max-width: 34em;
+  margin-top: 16px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 1.7;
+  color: #3c3c38;
+}
+.et-page mark {
+  position: relative;
+  padding: 2px 0;
+  background: linear-gradient(#cfe0f5, #cfe0f5) no-repeat 0 0 / 0% 100%;
+  color: inherit;
+  animation: et-select 9s var(--ease) infinite;
+}
+.et-line {
+  display: block;
+  height: 9px;
+  margin-top: 14px;
+  border-radius: 9px;
+  background: var(--paper-deep);
+}
+.et-pop + .et-line {
+  margin-top: 26px;
+}
+.et-line-short {
+  width: 58%;
+}
+
+/* 光标 */
+.et-cursor {
+  position: absolute;
+  z-index: 3;
+  display: block;
+  width: 20px;
+  height: 20px;
+  color: var(--ink);
+  pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.25));
+}
+.et-cursor svg {
+  stroke: var(--white);
+}
+.et-cursor-select {
+  right: -12px;
+  bottom: -14px;
+  animation: et-cursor-select 9s var(--ease) infinite;
+}
+.et-cursor-click {
+  left: 58%;
+  top: 56%;
+  animation: et-cursor-click 9s var(--ease) infinite;
+}
+
+/* 句尾出现的动作签 */
+.et-pop {
+  position: relative;
+  margin-top: 14px;
+}
+.et-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.et-chip-mark,
+.et-chip {
+  opacity: 0;
+  animation: et-chip 9s var(--ease) infinite;
+}
+.et-chip-mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.et-chip-mark i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--white);
+}
+.et-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 13px;
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    0 8px 18px -12px rgb(0 0 0 / 0.4);
+  font-size: 13px;
+  font-weight: 500;
+}
+.et-chip:nth-child(2) {
+  animation-delay: 0.08s;
+}
+.et-chip:nth-child(3) {
+  animation-delay: 0.16s;
+}
+.et-chip:nth-child(4) {
+  animation-delay: 0.24s;
+}
+.et-chip[data-first] {
+  animation-name: et-chip, et-press;
+  animation-delay: 0.08s, 0s;
+}
+
+/* 结果小卡：带着来源出现，盖在下面几行字上 */
+.et-card {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + 10px);
+  left: 0;
+  width: min(100%, 380px);
+  padding: 16px 18px 14px;
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent),
+    0 24px 50px -24px rgb(0 0 0 / 0.45);
+  opacity: 0;
+  animation: et-card 9s var(--ease) infinite;
+}
+.et-card small {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.et-card p {
+  margin-top: 6px;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.et-card span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--paper-deep);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* 一轮 9 秒：选中 → 动作签 → 移到「翻译」→ 按下 → 小卡 → 停一会儿 → 收起 */
+@keyframes et-select {
+  0%,
+  6% {
+    background-size: 0% 100%;
+  }
+  24%,
+  90% {
+    background-size: 100% 100%;
+  }
+  97%,
+  100% {
+    background-size: 0% 100%;
+  }
+}
+@keyframes et-cursor-select {
+  0%,
+  4% {
+    opacity: 0;
+    transform: translate(-10px, -6px);
+  }
+  10%,
+  32% {
+    opacity: 1;
+    transform: none;
+  }
+  38%,
+  100% {
+    opacity: 0;
+    transform: translate(-14px, 30px);
+  }
+}
+@keyframes et-chip {
+  0%,
+  27% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  32%,
+  90% {
+    opacity: 1;
+    transform: none;
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+@keyframes et-cursor-click {
+  0%,
+  34% {
+    opacity: 0;
+    transform: translate(40px, -46px);
+  }
+  42% {
+    opacity: 1;
+    transform: none;
+  }
+  45% {
+    transform: scale(0.86);
+  }
+  48%,
+  82% {
+    opacity: 1;
+    transform: none;
+  }
+  88%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+@keyframes et-press {
+  0%,
+  44% {
+    background: var(--white);
+    color: var(--ink);
+  }
+  46%,
+  90% {
+    background: var(--ink);
+    color: var(--white);
+  }
+  96%,
+  100% {
+    background: var(--white);
+    color: var(--ink);
+  }
+}
+@keyframes et-card {
+  0%,
+  49% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  55%,
+  90% {
+    opacity: 1;
+    transform: none;
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+/* ---------- 三层：图板加说明 ---------- */
+.et-layers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap);
+}
+.et-layers li {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 10px 28px;
+  border-radius: 4px;
+  background: var(--surface);
+}
+.et-board {
+  overflow: hidden;
+  margin-bottom: 26px;
+  border-radius: 3px;
+  background: var(--paper-deep);
+}
+.et-board img {
+  width: 100%;
+  height: auto;
+  transition: transform 1.2s var(--ease);
+}
+.et-layers li:hover .et-board img {
+  transform: scale(1.03);
+}
+.et-layers .ep-index,
+.et-layers h3,
+.et-layers p {
+  padding: 0 14px;
+}
+.et-layers h3 {
+  margin-top: 10px;
+  font-size: clamp(22px, 1.8vw, 30px);
+  line-height: 1.25;
+}
+.et-layers p {
+  margin-top: 10px;
+  color: var(--muted);
+}
+
+/* ---------- 一天里的几个时刻 ---------- */
+.et-moments .ep-head {
+  padding-top: 0;
+}
+.et-moment-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px var(--gap);
+}
+.et-moment-shot {
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--white);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent);
+}
+.et-moment-shot img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 665 / 714;
+  object-fit: cover;
+  object-position: 50% 0;
+}
+.et-moment-grid h3 {
+  margin-top: 18px;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.et-moment-grid p {
+  margin-top: 6px;
+  max-width: 26em;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------- 合进来的工具 ---------- */
+.ec-site .et-tools {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 1200px;
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
+}
+.et-tools li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 170px;
+  padding: 26px 24px 28px;
+  border-bottom: 1px solid var(--line);
+}
+.et-tools li:not(:nth-child(3n + 1)) {
+  border-left: 1px solid var(--line);
+}
+.et-tools strong {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.et-tools small {
+  align-self: flex-start;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--ink);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--white);
+}
+.et-tools p {
+  margin-top: auto;
+  padding-top: 18px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.ec-site .et-available {
+  margin-top: 28px;
+  font-size: 14px;
+  color: var(--muted);
+  text-align: center;
+}
+.ec-site .et-available a {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 44px;
+  color: var(--ink);
+  font-weight: 550;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--line);
+}
+
+/* ---------- 插件就是能力：一个能力连到四个入口 ---------- */
+.et-plugins .ep-split {
+  align-items: center;
+}
+.et-surfaces {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap);
+  padding: 96px 0;
+}
+.et-core {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 15px;
+  font-weight: 500;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 10px var(--surface);
+}
+.et-surface {
+  display: flex;
+  align-items: center;
+  min-height: 120px;
+  padding: 20px 24px;
+  border-radius: 4px;
+  background: var(--white);
+  font-size: clamp(18px, 1.5vw, 22px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.et-surface:nth-of-type(odd) {
+  justify-content: flex-end;
+  text-align: right;
+}
+.ec-reveal.is-in .et-surface {
+  animation: et-surface 4.8s var(--ease) calc(var(--r, 0) * 1.2s) infinite;
+}
+@keyframes et-surface {
+  0%,
+  30%,
+  100% {
+    background: var(--white);
+  }
+  10%,
+  20% {
+    background: var(--paper-deep);
+  }
+}
+
+/* ---------- 它不是什么 ---------- */
+.ec-site .et-not {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 120px 24px 40px;
+  text-align: center;
+}
+.et-not ul {
+  margin-top: 28px;
+}
+.et-not li {
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+  font-size: clamp(20px, 2vw, 30px);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.03em;
+  color: var(--muted);
+}
+.et-not li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1000px) {
+  .et-layers {
+    grid-template-columns: 1fr;
+  }
+  .et-layers li {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    gap: 0 12px;
+    padding-bottom: 10px;
+  }
+  .et-board {
+    grid-row: span 3;
+    margin-bottom: 0;
+  }
+  .et-layers .ep-index {
+    padding-top: 18px;
+  }
+  .et-moment-grid,
+  .ec-site .et-tools {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .et-tools li:not(:nth-child(3n + 1)) {
+    border-left: 0;
+  }
+  .et-tools li:nth-child(2n) {
+    border-left: 1px solid var(--line);
+  }
+}
+@media (max-width: 760px) {
+  .et-layers li {
+    display: flex;
+    padding-bottom: 26px;
+  }
+  .et-board {
+    margin-bottom: 22px;
+  }
+  .et-layers .ep-index {
+    padding-top: 0;
+  }
+  .et-surfaces {
+    padding: 72px 0;
+  }
+  .et-core {
+    width: 104px;
+    height: 104px;
+    font-size: 14px;
+  }
+  .et-surface {
+    min-height: 96px;
+  }
+}
+@media (max-width: 640px) {
+  .ec-site .et-demo {
+    margin-top: 44px;
+  }
+  .et-page {
+    padding: 26px 18px 64px;
+  }
+  .et-page > p {
+    font-size: 15px;
+  }
+  .et-chip {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+  .et-chip-mark {
+    width: 28px;
+    height: 28px;
+  }
+  .et-card {
+    padding: 14px 14px 12px;
+  }
+  .et-card p {
+    font-size: 14px;
+  }
+  .et-moment-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .ec-site .et-tools {
+    grid-template-columns: 1fr;
+  }
+  .et-tools li,
+  .et-tools li:nth-child(2n) {
+    min-height: 0;
+    padding: 22px 4px;
+    border-left: 0;
+  }
+  .ec-site .et-not {
+    padding: 72px 12px 24px;
+  }
+  .et-surface {
+    padding: 16px;
+    font-size: 16px;
+  }
+}
+
+/* 少动效：直接停在最后一帧 */
+@media (prefers-reduced-motion: reduce) {
+  .et-demo,
+  .et-page mark,
+  .et-chip-mark,
+  .et-chip,
+  .et-card,
+  .et-cursor,
+  .ec-reveal.is-in .et-surface {
+    animation: none;
+  }
+  .et-page mark {
+    background-size: 100% 100%;
+  }
+  .et-chip-mark,
+  .et-chip,
+  .et-card {
+    opacity: 1;
+  }
+  .et-chip[data-first] {
+    background: var(--ink);
+    color: var(--white);
+  }
+  .et-cursor-select {
+    display: none;
+  }
+}

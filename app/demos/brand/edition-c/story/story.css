@@ -1,0 +1,387 @@
+/* Molis Story 产品页的 Edition C 版本：通用部件在 ../kit.css，前缀 es-。
+   首屏用纸面而不是深色照片：外壳只用纸与墨，把颜色留给世界。 */
+
+/* ---------- 首屏：纸面、标题、四扇窗 ---------- */
+.ec-hero.es-hero {
+  background: var(--paper);
+  color: var(--ink);
+}
+.es-hero .ec-hero-copy {
+  order: 1;
+}
+.es-hero .es-windows {
+  order: 2;
+}
+.es-hero .ec-wordmark {
+  order: 3;
+}
+.es-hero .ep-hero-kicker,
+.es-hero .ec-hero-copy.ep-hero-copy p {
+  color: var(--muted);
+}
+.es-hero .ep-status[data-tone='glass'] li {
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ink);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.es-hero .ep-status[data-tone='glass'] li:first-child {
+  background: var(--ink);
+  color: var(--white);
+  box-shadow: none;
+}
+.ec-site .es-hero .ec-button-light {
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.ec-site .es-windows {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 1180px);
+  margin: 72px auto 0;
+  animation: ec-rise 1100ms var(--ease) 560ms backwards;
+}
+.es-windows ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(12px, 2vw, 28px);
+}
+.es-windows li:nth-child(even) {
+  margin-top: 48px;
+}
+.es-windows a {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+.es-window {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  border-radius: 999px 999px 6px 6px;
+  background: var(--paper-deep);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent);
+  transition:
+    transform 0.6s var(--ease),
+    box-shadow 0.6s var(--ease);
+}
+.es-window img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 2.4s var(--ease);
+}
+.es-window::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s var(--ease);
+}
+.es-windows small {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.es-windows strong {
+  margin-top: 2px;
+  font-size: clamp(16px, 1.4vw, 21px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.es-windows figcaption {
+  margin-top: 28px;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* 每扇窗各有一点自己的光 */
+.es-windows a:hover .es-window,
+.es-windows a:focus-visible .es-window {
+  transform: translateY(-6px);
+}
+[data-world='astralo'] .es-window::after {
+  background: radial-gradient(
+    circle at 50% 55%,
+    rgb(255 190 110 / 0.55),
+    transparent 55%
+  );
+  mix-blend-mode: screen;
+}
+[data-world='elsewhere'] .es-window::after {
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgb(255 236 200 / 0.4) 48%,
+    transparent 66%
+  );
+  transform: translateX(-80%);
+  transition:
+    opacity 0.4s,
+    transform 1.6s var(--ease);
+}
+.es-windows a:hover .es-window::after,
+.es-windows a:focus-visible .es-window::after {
+  opacity: 1;
+}
+.es-windows [data-world='elsewhere'] a:hover .es-window::after,
+.es-windows [data-world='elsewhere'] a:focus-visible .es-window::after {
+  transform: translateX(80%);
+}
+.es-windows [data-world='museum'] a:hover .es-window img,
+.es-windows [data-world='museum'] a:focus-visible .es-window img {
+  transform: scale(1.08);
+}
+.es-windows [data-world='fog-harbor'] a:hover .es-window,
+.es-windows [data-world='fog-harbor'] a:focus-visible .es-window {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent),
+    -7px 7px 0 #e07a5f;
+}
+
+/* ---------- 此处 → 彼处 → 归来 ---------- */
+.es-journey {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap);
+}
+.es-journey li {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 10px 30px;
+  border-radius: 4px;
+  background: var(--surface);
+}
+.es-journey-shot {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  margin-bottom: 26px;
+  border-radius: 3px;
+  background: var(--paper-deep);
+}
+.es-journey-shot > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.es-journey .ep-index,
+.es-journey h3,
+.es-journey p {
+  padding: 0 14px;
+}
+.es-journey h3 {
+  margin-top: 10px;
+  font-size: clamp(26px, 2.2vw, 36px);
+  line-height: 1.2;
+}
+.es-journey p {
+  margin-top: 10px;
+  color: var(--muted);
+}
+.es-here {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: 6%;
+  padding: 0 12%;
+  background: var(--paper);
+}
+.es-here i {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  border-radius: 999px 999px 3px 3px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.es-here img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- 四个世界 ---------- */
+.es-worlds > ol {
+  display: grid;
+  gap: var(--gap);
+}
+.es-world {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 80px);
+  padding: 10px clamp(10px, 4vw, 64px) 10px 10px;
+  border-radius: 4px;
+  background: var(--surface);
+  scroll-margin-top: 24px;
+}
+.es-world:nth-child(even) {
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  padding: 10px 10px 10px clamp(10px, 4vw, 64px);
+}
+.es-world:nth-child(even) .es-world-shot {
+  order: 2;
+}
+.es-world-shot {
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+}
+.es-world-shot img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 11;
+  object-fit: cover;
+}
+.es-world-shot figcaption {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--ink) 55%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  font-size: 11px;
+  color: var(--white);
+}
+.es-world-copy {
+  padding: 32px 0;
+}
+.es-world-copy h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  margin-top: 14px;
+  font-size: clamp(30px, 3vw, 48px);
+  line-height: 1.15;
+}
+.es-world-copy h3 small {
+  font-size: 15px;
+  font-weight: 450;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.es-world-copy h3 .ep-tag {
+  align-self: center;
+}
+.es-world-copy blockquote {
+  margin: 22px 0 0;
+  font-size: clamp(18px, 1.5vw, 22px);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+}
+.es-world-copy p {
+  margin-top: 14px;
+  max-width: 30em;
+  color: var(--muted);
+}
+.es-world-copy .es-souvenir {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--ink);
+  font-weight: 500;
+}
+.es-souvenir span {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* ---------- 进门前 ---------- */
+.es-boundaries strong {
+  font-size: clamp(17px, 1.4vw, 21px);
+  line-height: 1.5;
+}
+.es-boundaries li {
+  grid-template-columns: 34px 1fr;
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1000px) {
+  .es-journey {
+    grid-template-columns: 1fr;
+  }
+  .es-journey li {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    gap: 0 12px;
+    padding-bottom: 10px;
+  }
+  .es-journey-shot {
+    grid-row: span 3;
+    margin-bottom: 0;
+  }
+  .es-journey .ep-index {
+    padding-top: 18px;
+  }
+  .es-world,
+  .es-world:nth-child(even) {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 10px 10px 8px;
+  }
+  .es-world:nth-child(even) .es-world-shot {
+    order: 0;
+  }
+  .es-world-copy {
+    padding: 28px 14px 22px;
+  }
+}
+@media (max-width: 760px) {
+  .es-windows ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 28px;
+  }
+  .es-windows li:nth-child(even) {
+    margin-top: 36px;
+  }
+  .es-windows li:nth-child(3) {
+    margin-top: -36px;
+  }
+  .es-journey li {
+    display: flex;
+    padding-bottom: 26px;
+  }
+  .es-journey-shot {
+    margin-bottom: 22px;
+  }
+  .es-journey .ep-index {
+    padding-top: 0;
+  }
+}
+@media (max-width: 640px) {
+  .ec-site .es-windows {
+    margin-top: 48px;
+  }
+  .es-windows ul {
+    gap: 24px 12px;
+  }
+  .es-world-copy {
+    padding: 22px 8px 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .es-windows,
+  .es-window,
+  .es-window img,
+  .es-window::after {
+    animation: none;
+    transition: none;
+  }
+}

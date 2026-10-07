@@ -1,0 +1,494 @@
+/* 四个产品页和首页共用的 Edition C 部件：状态条、标签、按钮组、产品页首屏、区块标题、
+   对比表、窗口框、卡片、深色色带、结尾。沿用 edition-c.css 的变量，前缀 ep-。 */
+
+/* ---------- 状态条与标签 ---------- */
+.ep-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+}
+.ep-status li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 4px;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--line);
+  white-space: nowrap;
+}
+.ep-status li:first-child {
+  background: var(--ink);
+  color: var(--white);
+  box-shadow: none;
+}
+.ep-status i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #9fd9a8;
+}
+.ep-status[data-tone='glass'] {
+  justify-content: center;
+}
+.ep-status[data-tone='glass'] li {
+  background: color-mix(in srgb, var(--ink) 45%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--white) 22%, transparent);
+  color: var(--white);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.ep-status[data-tone='glass'] li:first-child {
+  background: var(--white);
+  color: var(--ink);
+}
+.ep-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 4px;
+  background: var(--paper-deep);
+  font-size: 11px;
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.ep-tag[data-tag='预览'] {
+  background: #e3ebe2;
+  color: #2f5a36;
+}
+.ep-tag[data-tag='规划中'] {
+  background: #e4e6ec;
+  color: #3f4760;
+}
+.ep-tag[data-tag='示例世界'],
+.ep-tag[data-tag='示意'] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--muted);
+}
+.ep-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ep-actions .ec-button {
+  min-width: 120px;
+}
+
+/* ---------- 产品页首屏 ---------- */
+.ep-hero .ec-hero-copy {
+  top: 42%;
+}
+.ep-hero-kicker {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: color-mix(in srgb, var(--white) 82%, transparent);
+  animation: ec-rise 900ms var(--ease) 100ms backwards;
+}
+.ec-hero-copy.ep-hero-copy h1 {
+  margin-top: 18px;
+  font-size: clamp(34px, 3.9vw, 70px);
+  line-height: 1.14;
+  letter-spacing: -0.04em;
+}
+.ec-hero-copy.ep-hero-copy p {
+  margin-top: 22px;
+  max-width: 36em;
+  font-size: 16px;
+  text-wrap: balance;
+}
+.ep-hero-copy .ep-status {
+  margin-top: 26px;
+  animation: ec-rise 900ms var(--ease) 380ms backwards;
+}
+.ep-hero-copy .ep-actions {
+  justify-content: center;
+  margin-top: 22px;
+  animation: ec-rise 900ms var(--ease) 460ms backwards;
+}
+.ep-hero .ec-wordmark {
+  font-size: min(15.5vw, 22svh, 260px);
+}
+.ep-hero-note {
+  position: absolute;
+  z-index: 2;
+  right: 20px;
+  top: 92px;
+  font-size: 12px;
+  color: color-mix(in srgb, var(--white) 76%, transparent);
+}
+
+/* 自带画面的首屏：文字、画面、字标顺序排下来，不再叠在照片上 */
+.ec-hero.ep-hero[data-visual] {
+  height: auto;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 150px 24px 0;
+}
+.ep-hero[data-visual]::after {
+  display: none;
+}
+.ep-hero[data-visual] .ec-hero-copy {
+  position: relative;
+  z-index: 2;
+  top: auto;
+  left: auto;
+  width: min(100%, 900px);
+  transform: none;
+}
+.ep-hero[data-visual] .ec-wordmark {
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  margin-top: 56px;
+  padding-bottom: 3vw;
+}
+
+/* ---------- 区块 ---------- */
+.ep-section {
+  margin: var(--gap);
+}
+.ep-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 120px 24px 64px;
+  text-align: center;
+}
+.ep-head[data-align='start'] {
+  align-items: flex-start;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+.ep-head h2 {
+  margin-top: 16px;
+  font-size: clamp(30px, 3.2vw, 54px);
+  line-height: 1.2;
+}
+.ep-head p {
+  margin-top: 22px;
+  max-width: 36em;
+  color: var(--muted);
+  text-wrap: balance;
+}
+.ep-panel {
+  padding: clamp(40px, 6vw, 96px) clamp(24px, 5vw, 80px);
+  border-radius: 4px;
+  background: var(--surface);
+}
+.ep-band {
+  padding: clamp(48px, 6vw, 96px) clamp(24px, 5vw, 80px);
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--white);
+}
+.ep-band .ec-eyebrow,
+.ep-band .ep-head p {
+  color: color-mix(in srgb, var(--white) 70%, transparent);
+}
+.ep-split {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: start;
+}
+.ep-index {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.ep-note {
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* 一排卡片：编号、标题、说明 */
+.ep-cards {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  gap: var(--gap);
+}
+.ep-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  padding: 28px 24px 26px;
+  border-radius: 4px;
+  background: var(--surface);
+  transition: background 0.4s;
+}
+.ep-card:hover {
+  background: var(--paper-deep);
+}
+.ep-card h3 {
+  margin-top: auto;
+  padding-top: 48px;
+  font-size: clamp(22px, 1.8vw, 30px);
+  line-height: 1.25;
+}
+.ep-card p {
+  margin-top: 14px;
+  max-width: 28em;
+  color: var(--muted);
+}
+.ep-card blockquote {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+/* 深色色带里的一组短句 */
+.ep-promises {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr));
+  gap: 0 40px;
+  margin-top: 48px;
+}
+.ep-promises li {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 4px 10px;
+  padding: 22px 0;
+  border-top: 1px solid color-mix(in srgb, var(--white) 16%, transparent);
+}
+.ep-promises .ep-index {
+  grid-row: span 2;
+  color: color-mix(in srgb, var(--white) 60%, transparent);
+  padding-top: 4px;
+}
+.ep-promises strong {
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.ep-promises p {
+  color: color-mix(in srgb, var(--white) 74%, transparent);
+}
+
+/* ---------- 对比表：真表格，按网格排 ---------- */
+.ep-compare {
+  display: block;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+.ep-compare thead,
+.ep-compare tbody {
+  display: block;
+}
+.ep-compare-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 24px;
+  padding: 22px 24px;
+  border-top: 1px solid var(--line);
+}
+.ep-compare-row > * {
+  display: block;
+  padding: 0;
+  font-weight: 400;
+  text-align: left;
+  color: var(--muted);
+}
+.ep-compare-row > :first-child {
+  color: var(--ink);
+  font-weight: 500;
+}
+.ep-compare-row > :last-child {
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+.ep-compare-labels {
+  border-top: 0;
+  padding-bottom: 14px;
+}
+.ep-compare-labels > *,
+.ep-compare-labels > :first-child,
+.ep-compare-labels > :last-child {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.ep-compare-row:not(.ep-compare-labels) {
+  border-radius: 0;
+  transition: background 0.3s;
+}
+.ep-compare-row:not(.ep-compare-labels):hover {
+  background: var(--surface);
+}
+
+/* ---------- 窗口框 ---------- */
+.ep-frame {
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent),
+    0 40px 80px -40px rgb(0 0 0 / 0.35);
+}
+.ep-frame-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--paper-deep);
+  font-size: 11px;
+  color: var(--muted);
+}
+.ep-frame-bar i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line);
+}
+.ep-frame-bar span {
+  margin-left: 8px;
+}
+.ep-frame img {
+  width: 100%;
+  height: auto;
+}
+
+/* 截图从灰面中放大 */
+.ep-screen {
+  margin: var(--gap);
+  padding: 80px 6% 36px;
+  border-radius: 4px;
+  background: var(--surface);
+}
+.ep-screen figure {
+  max-width: 1180px;
+  margin: 0 auto;
+  transform: scale(calc(0.88 + var(--p, 1) * 0.12));
+  transform-origin: 50% 0;
+}
+.ep-screen figcaption,
+.ep-caption {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------- 结尾 ---------- */
+.ep-closing h2 {
+  max-width: 14em;
+  margin: 0 auto;
+}
+.ep-closing .ep-actions {
+  justify-content: center;
+  margin-top: 36px;
+}
+.ep-closing > p {
+  max-width: 30em;
+  margin: 24px auto 0;
+  color: var(--muted);
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1000px) {
+  .ep-split {
+    grid-template-columns: 1fr;
+  }
+  .ep-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .ep-cards,
+  .ep-promises {
+    grid-template-columns: 1fr;
+  }
+  .ep-card {
+    min-height: 0;
+  }
+  .ep-card h3 {
+    padding-top: 28px;
+  }
+  .ep-compare-labels {
+    display: none;
+  }
+  .ep-compare-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 20px 4px;
+  }
+  .ep-compare-row > ::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .ep-compare-row > :first-child::before {
+    content: none;
+  }
+  .ep-compare-row > :first-child {
+    font-size: 17px;
+  }
+}
+@media (max-width: 640px) {
+  .ep-hero .ec-hero-copy {
+    top: 46%;
+  }
+  .ec-hero-copy.ep-hero-copy h1 {
+    font-size: 32px;
+  }
+  .ec-hero-copy.ep-hero-copy p {
+    margin-top: 16px;
+    font-size: 14px;
+  }
+  .ep-hero-copy .ep-status {
+    margin-top: 20px;
+  }
+  .ep-hero-note {
+    top: auto;
+    bottom: calc(min(22vw, 24svh) + 24px);
+  }
+  .ec-hero.ep-hero[data-visual] {
+    padding: 140px 16px 0;
+  }
+  .ep-head {
+    padding: 80px 12px 44px;
+  }
+  .ep-panel,
+  .ep-band {
+    padding: 44px 20px;
+  }
+  .ep-screen {
+    padding: 36px 12px 24px;
+  }
+  .ep-actions .ec-button {
+    flex: 1 1 auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ep-screen figure {
+    transform: none;
+  }
+}
