@@ -1,0 +1,395 @@
+/* Folio · Molis Story：通用部件在 ../kit.css，前缀 fs- */
+
+/* 每个世界一种纸色 */
+.fo-site [data-world='astralo'] {
+  --world: var(--fo-navy);
+  --world-soft: var(--fo-periwinkle);
+}
+.fo-site [data-world='elsewhere'] {
+  --world: var(--fo-red);
+  --world-soft: var(--fo-yellow);
+}
+.fo-site [data-world='museum'] {
+  --world: var(--fo-sage);
+  --world-soft: var(--fo-sage);
+}
+.fo-site [data-world='fog-harbor'] {
+  --world: var(--fo-yellow);
+  --world-soft: var(--fo-pink);
+}
+
+/* ---------- 首屏：标题在上，四扇拱窗排成一行 ---------- */
+.fo-site .fs-hero {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  min-height: 0;
+}
+.fo-site .fs-hero .fo-hero-copy {
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: end;
+  column-gap: clamp(32px, 5vw, 90px);
+  padding-top: clamp(40px, 8vw, 150px);
+}
+.fs-hero .fo-hero-copy > .fo-kicker {
+  grid-column: 1;
+}
+.fs-hero .fo-hero-copy > h1 {
+  grid-column: 1;
+  grid-row: 2 / span 3;
+  align-self: start;
+  max-width: 12em;
+}
+.fs-hero .fo-hero-copy > p,
+.fs-hero .fo-hero-copy > .fo-status,
+.fs-hero .fo-hero-copy > .fo-actions {
+  grid-column: 2;
+}
+.fs-hero .fo-hero-copy > p {
+  grid-row: 2;
+}
+.fs-hero .fo-hero-copy > .fo-status {
+  grid-row: 3;
+}
+.fs-hero .fo-hero-copy > .fo-actions {
+  grid-row: 4;
+}
+.fo-site .fs-hero .fo-hero-art {
+  display: block;
+  margin-top: clamp(40px, 5vw, 80px);
+}
+.fs-windows {
+  position: relative;
+}
+.fs-stars {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: -2%;
+  fill: var(--fo-ink);
+}
+.fs-windows ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 30px);
+}
+.fs-windows li {
+  opacity: 0;
+  translate: 0 60px;
+  transition:
+    opacity 1s var(--fo-ease),
+    translate 1.2s var(--fo-ease);
+  transition-delay: calc(0.5s + var(--i) * 0.12s);
+}
+.is-ready .fs-windows li {
+  opacity: 1;
+  translate: none;
+}
+.fs-windows li:nth-child(even) {
+  margin-top: clamp(20px, 4vw, 60px);
+}
+.fs-windows a {
+  display: grid;
+  gap: 6px;
+}
+.fs-window {
+  display: block;
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 999px 999px 22px 22px;
+  background: var(--world);
+  box-shadow: var(--fo-shadow);
+  rotate: calc((var(--i) - 1.5) * 1.4deg);
+  transition:
+    rotate 0.6s var(--fo-ease),
+    translate 0.6s var(--fo-ease);
+}
+.fs-windows a:hover .fs-window {
+  rotate: 0deg;
+  translate: 0 -8px;
+}
+.fs-window img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 999px 999px 14px 14px;
+}
+.fs-windows small {
+  font-size: 13px;
+  color: var(--fo-muted);
+}
+.fs-windows strong {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(18px, 1.7vw, 26px);
+  line-height: 1.3;
+}
+.fs-windows a:hover strong {
+  color: var(--fo-red);
+}
+.fs-windows > figcaption {
+  margin-top: 28px;
+  font-size: 12px;
+  color: var(--fo-muted);
+}
+
+/* ---------- 此处 → 彼处 → 归来 ---------- */
+.fs-journey {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 2.6vw, 40px);
+}
+.fs-journey li {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 10px;
+}
+.fs-journey-shot {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  margin-bottom: 18px;
+  overflow: hidden;
+  border-radius: 22px;
+  background: var(--fo-paper);
+}
+.fs-journey-shot > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.fs-journey li:nth-child(1) .fs-journey-shot {
+  background: var(--fo-yellow);
+}
+.fs-here {
+  display: flex;
+  gap: 8%;
+  width: 70%;
+}
+.fs-here i {
+  flex: 1;
+  padding: 4px;
+  border-radius: 999px 999px 8px 8px;
+  background: var(--world);
+  box-shadow: 0 10px 16px -10px rgb(40 24 10 / 0.5);
+}
+.fs-here i:nth-child(even) {
+  translate: 0 12%;
+}
+.fs-here img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 999px 999px 5px 5px;
+}
+.fs-journey .fo-index {
+  font-size: 44px;
+}
+.fs-journey h3 {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(26px, 2.4vw, 38px);
+}
+.fs-journey p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--fo-text);
+}
+
+/* ---------- 四个世界：一张世界一页 ---------- */
+.fs-worlds > ol {
+  display: grid;
+  gap: clamp(20px, 2.4vw, 32px);
+}
+.fs-world {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 72px);
+  padding: clamp(20px, 2.6vw, 40px);
+  border-radius: 32px;
+  background: var(--world-soft);
+  scroll-margin-top: calc(var(--fo-head) + 16px);
+}
+.fs-world:nth-child(even) .fs-world-shot {
+  order: 2;
+}
+.fs-world[data-world='astralo'],
+.fs-world[data-world='museum'] {
+  color: var(--fo-ink);
+}
+.fs-world-shot {
+  position: relative;
+}
+.fs-world-shot > span {
+  display: block;
+  overflow: hidden;
+  border-radius: 999px 999px 22px 22px;
+  border: 10px solid var(--fo-white);
+  background: var(--fo-white);
+  box-shadow: var(--fo-shadow);
+}
+.fs-world-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+.fs-world-shot figcaption {
+  position: absolute;
+  left: 22px;
+  bottom: 22px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.fs-world-copy {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+  padding-block: 12px;
+}
+.fs-world-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+.fs-world-eyebrow b {
+  font-family: var(--fo-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 30px;
+  color: var(--fo-red);
+}
+.fs-world[data-world='elsewhere'] .fs-world-eyebrow b {
+  color: var(--fo-ink);
+}
+.fs-world-copy h3 {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(34px, 3.8vw, 60px);
+  line-height: 1.15;
+}
+.fs-world-copy h3 small {
+  margin-left: 12px;
+  font-family: var(--fo-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.5em;
+  letter-spacing: -0.01em;
+}
+.fs-world-copy blockquote {
+  max-width: 22em;
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: clamp(18px, 1.6vw, 23px);
+  line-height: 1.65;
+}
+.fs-world-copy blockquote::before {
+  content: '“';
+  margin-right: 2px;
+  font-family: var(--fo-display);
+  font-size: 1.8em;
+  line-height: 0;
+  vertical-align: -0.35em;
+  color: var(--fo-red);
+}
+.fs-world-copy > p {
+  max-width: 26em;
+  font-size: 16px;
+  line-height: 1.8;
+}
+.fs-souvenir {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 2px solid currentColor;
+  font-weight: 600;
+}
+.fs-souvenir span {
+  padding: 3px 11px;
+  border-radius: 999px;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+/* 四点不同：四张一排 */
+.fo-site .fs-different {
+  --cols: 4;
+}
+.fo-site .fs-different > li {
+  min-height: 260px;
+}
+.fo-site .fs-different h3 {
+  font-size: clamp(20px, 1.6vw, 26px);
+}
+
+@media (max-width: 1100px) {
+  .fo-site .fs-different {
+    --cols: 2;
+  }
+}
+@media (max-width: 900px) {
+  .fo-site .fs-hero .fo-hero-copy {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 22vw;
+  }
+  .fo-site .fs-hero .fo-hero-copy > * {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .fs-windows ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 28px;
+  }
+  .fs-journey {
+    grid-template-columns: 1fr;
+  }
+  .fs-world {
+    grid-template-columns: 1fr;
+  }
+  .fs-world:nth-child(even) .fs-world-shot {
+    order: 0;
+  }
+}
+@media (max-width: 640px) {
+  .fo-site .fs-different {
+    --cols: 1;
+  }
+  .fo-site .fs-different > li {
+    min-height: 0;
+  }
+  .fs-world {
+    padding: 14px 14px 22px;
+    border-radius: 24px;
+  }
+  .fs-world-copy {
+    padding-inline: 6px;
+  }
+  .fs-world-shot > span {
+    border-width: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fs-windows li {
+    opacity: 1;
+    translate: none;
+  }
+}
