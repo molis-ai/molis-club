@@ -1,0 +1,205 @@
+/*
+ * Daylight · Molis Life 产品页：阅读角的清晨首屏，展台上的生活空间概念稿，
+ * 白天的三件事、交代方式、八个场景与决定权，傍晚把已有的小产品合进来。
+ * 通用部件在 ../kit.css；本文件只放 dl-life 页面自己的样式。
+ */
+
+/* 怎么交代给它：四个入口一行一个，三种意图是三颗签 */
+.dl-life-handoff h3 {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--dl-muted);
+}
+.dl-life-handoff h3:nth-of-type(2) {
+  margin-top: 40px;
+}
+.dl-site .dl-life-handoff .dl-rows,
+.dl-site .dl-life-handoff .dl-rows li {
+  border-color: rgb(122 70 30 / 0.16);
+}
+.dl-life-intents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dl-life-intents li {
+  padding: 10px 22px;
+  border: 1px solid rgb(233 143 92 / 0.5);
+  border-radius: 999px;
+  background: rgb(255 250 243 / 0.7);
+  font-family: var(--dl-serif);
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 16px 30px -24px rgb(90 50 20 / 0.6);
+}
+
+/* 八个场景：一格格晒着太阳的小卡 */
+.dl-life-scenes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dl-life-scenes li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: clamp(150px, 13vw, 200px);
+  padding: 22px 24px 24px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgb(25 40 79 / 0.06);
+  border-radius: 22px;
+  background: linear-gradient(160deg, #fcf6ee 0%, #f3e6d6 100%);
+  transition: box-shadow 0.5s ease;
+}
+.dl-life-scenes li::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: -40%;
+  right: -30%;
+  width: 90%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(255 214 170 / 0.75),
+    transparent
+  );
+  transition: transform 1s var(--dl-ease);
+}
+.dl-life-scenes li::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    240px circle at var(--mx, 50%) var(--my, 0%),
+    rgb(255 236 210 / 0.9),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.dl-life-scenes li:hover {
+  box-shadow: 0 26px 46px -32px rgb(90 50 20 / 0.6);
+}
+.dl-life-scenes li:hover::before {
+  transform: translate(-12%, 12%) scale(1.15);
+}
+.dl-life-scenes li:hover::after {
+  opacity: 1;
+}
+.dl-life-scenes strong {
+  font-family: var(--dl-serif);
+  font-weight: 300;
+  font-size: clamp(22px, 1.9vw, 30px);
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+/* 手机和电脑：左边展台，右边三行 */
+.dl-site .dl-life-devices {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  align-items: center;
+}
+.dl-life-moments {
+  --p: 0.5;
+  position: relative;
+  margin: 0;
+  padding: clamp(64px, 6vw, 96px) clamp(18px, 4vw, 64px) clamp(56px, 6vw, 88px);
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 28px;
+  background: var(--dl-sunlit);
+  box-shadow: inset 0 0 0 1px rgb(25 40 79 / 0.06);
+}
+.dl-life-moments .dl-devices {
+  position: relative;
+  z-index: 1;
+}
+.dl-life-moments figcaption {
+  position: absolute;
+  z-index: 4;
+  top: 20px;
+  left: 20px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  background: rgb(251 247 241 / 0.8);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--dl-text);
+}
+.dl-life-device-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--dl-line);
+}
+.dl-life-device-list li {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--dl-line);
+}
+.dl-life-device-list strong {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  font-family: var(--dl-serif);
+  font-weight: 500;
+  font-size: clamp(20px, 1.7vw, 24px);
+  letter-spacing: -0.015em;
+}
+.dl-life-device-list p {
+  margin: 8px 0 0;
+  font-size: 15.5px;
+  line-height: 1.85;
+  color: var(--dl-text);
+}
+
+@media (max-width: 980px) {
+  .dl-life-scenes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dl-site .dl-life-devices {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .dl-life-scenes {
+    gap: 10px;
+  }
+  .dl-life-scenes li {
+    min-height: 128px;
+    padding: 18px;
+    border-radius: 18px;
+  }
+  .dl-life-scenes strong {
+    font-size: 20px;
+  }
+  .dl-life-intents li {
+    padding: 8px 18px;
+    font-size: 16px;
+  }
+  .dl-life-moments {
+    padding: 64px 14px 40px;
+    border-radius: 22px;
+  }
+  .dl-life-moments figcaption {
+    top: 16px;
+    left: 16px;
+    font-size: 11px;
+  }
+}
