@@ -89,7 +89,7 @@
 .el-scenes li {
   display: flex;
   flex-direction: column;
-  min-height: 200px;
+  min-height: 150px;
   padding: 22px 22px 24px;
   border-radius: 4px;
   background: var(--surface);
@@ -103,11 +103,6 @@
   font-size: 20px;
   font-weight: 500;
   letter-spacing: -0.025em;
-}
-.el-scenes p {
-  margin-top: 6px;
-  font-size: 14px;
-  color: var(--muted);
 }
 
 /* 决定权在你 */
@@ -177,7 +172,7 @@
     border-radius: 12px;
   }
   .el-scenes li {
-    min-height: 150px;
+    min-height: 112px;
     padding: 18px 16px 20px;
   }
   .el-scenes strong {

@@ -2,11 +2,16 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { ImageCurtain } from '../../../image-curtain';
-import { GITHUB_URL } from '../../../../content/molis-work';
+import {
+  GITHUB_URL,
+  screenshotNote,
+  screenshots,
+} from '../../../../content/molis-work';
 import {
   coreProduct,
   ending,
   heroActions,
+  lineImages,
   lines,
   linesIntro,
   positioning,
@@ -15,7 +20,6 @@ import {
   vision,
 } from '../../../../content/studio';
 import { Actions, Frame, Phrases, Status, pad } from './kit';
-import { workShots } from './shots';
 import {
   COMMUNITY,
   Footer,
@@ -32,30 +36,6 @@ import './edition-c.css';
 import './kit.css';
 
 // 文案来自 content/studio.ts，五个方向共用；这里只换成 Edition C 的视觉。
-
-const lineImages = {
-  life: {
-    src: '/images/edition-c/life/desktop.jpg',
-    w: 1600,
-    h: 1111,
-    note: '概念稿',
-    position: '30% 30%',
-  },
-  tool: {
-    src: '/images/edition-c/tool/near-cursor.jpg',
-    w: 866,
-    h: 631,
-    note: '概念图',
-    position: '50% 50%',
-  },
-  story: {
-    src: '/images/edition-c/story/departure.jpg',
-    w: 1600,
-    h: 900,
-    note: '概念画面',
-    position: '60% 50%',
-  },
-};
 
 const companies = [
   {
@@ -167,7 +147,7 @@ function PersonNote({
 }
 
 function CoreProduct() {
-  const shot = workShots.goal;
+  const shot = screenshots.goal;
   return (
     <section id="products" className="ec-core" aria-labelledby="ec-core-title">
       <div className="ec-core-copy ec-reveal">
@@ -207,7 +187,7 @@ function CoreProduct() {
         <div className="ec-core-window">
           <Frame src={shot.src} w={shot.w} h={shot.h} label={shot.label} />
         </div>
-        <figcaption>产品截图 · v0.2.0 · 演示数据</figcaption>
+        <figcaption>{screenshotNote}</figcaption>
       </figure>
     </section>
   );

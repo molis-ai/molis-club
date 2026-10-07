@@ -28,6 +28,31 @@ export const coreProduct = {
   actions: { more: '了解 Molis Work', github: '在 GitHub 查看' },
 };
 
+/** 三条产品线卡片的画面，都是概念图，按各自的说法标注 */
+export const lineImages = {
+  life: {
+    src: '/images/edition-c/life/desktop.jpg',
+    w: 1600,
+    h: 1111,
+    note: '概念稿',
+    position: '30% 30%',
+  },
+  tool: {
+    src: '/images/edition-c/tool/near-cursor.jpg',
+    w: 866,
+    h: 631,
+    note: '概念图',
+    position: '50% 50%',
+  },
+  story: {
+    src: '/images/edition-c/story/departure.jpg',
+    w: 1600,
+    h: 900,
+    note: '概念画面',
+    position: '60% 50%',
+  },
+};
+
 export type Line = {
   id: Exclude<LineId, 'work'>;
   name: string;
@@ -139,7 +164,7 @@ export const footer = {
 export const contact = {
   kicker: '联系我们',
   title: ['有个想法，', '或一个具体问题？'],
-  lede: '告诉我们你在做什么、卡在哪里，或者想关注哪条产品线。我们会从这里开始认识你。',
+  lede: '告诉我们你在做什么、卡在哪里，或者想关注哪条产品线。',
   roles: ['企业合作', '早期体验者', '创造者', '开发者'] as const,
   roleLabel: '想聊的方向',
   fields: {
@@ -151,16 +176,18 @@ export const contact = {
   consent: '同意 Molis AI 用这些信息联系我。邮箱和内容不会公开展示。',
   submit: '发给我们',
   sending: '正在发送…',
+  successActions: { home: '回到 Molis AI', work: '看看 Molis Work' },
+  errorFallback: '这次没能发出去，请稍后再试。',
   success: {
     title: '收到了。',
-    text: '你的信息已经存进 Molis AI 的私密收件箱，我们会从这里开始认识你。目前不会自动发送邮件；如果这个邮箱之前提交过，我们保留的是先前那一份。',
+    text: '已经存进 Molis AI 的私密收件箱。目前不会自动发邮件；同一个邮箱重复提交时，保留先前那一份。',
   },
   note: '这是早期阶段的联系方式，不会自动开通任何账号或产品。',
   privacyTitle: '隐私说明',
   privacy: [
-    '这张表只收你填写的称呼、邮箱、方向和内容，保存在 Molis AI 团队的私密收件箱里。',
-    '它们只用来了解你的想法并联系你，不会公开展示，也不会用于广告。',
-    '需要修改或删除，在我们联系你时告诉我们即可。',
+    '这张表只收你填写的称呼、邮箱、方向和内容，存在 Molis AI 团队的私密收件箱里。',
+    '只用来了解你的想法并联系你，不公开展示，也不用于广告。',
+    '需要修改或删除，联系时告诉我们即可。',
   ],
   /** ?topic= 预填：企业合作，或关注某条产品线的进展 */
   topics: {
