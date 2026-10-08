@@ -8,6 +8,8 @@
 
 用户没有要求修改的部分保留原样。沿用原版纸面、衬线、巨型刊头、彩色剪纸、滚动叠页与成员交互；不以内容优化为由另换视觉方向。内容调整放在 Folio 专属内容或复用权威内容，不改写其他品牌方向的产品事实。
 
+合入 `main` 时一并包含这套设计基线：此前 `main` 停留在 `ac3376f`，尚未包含 [PR #15](https://github.com/molis-ai/molis-club/pull/15) 的原版更新。该前置更新包含五个品牌方向的产品与联系页、共用产品文案和预览缩略图。本轮 Folio 优化以 `c8c7893` 为对照边界；合入完整依赖链后，应用代码与已验收的团队预览一致。
+
 ## 各页最终实现
 
 | 页面 | 保留与恢复 | 已完成的调整 |
@@ -36,7 +38,7 @@ Work 的内容依据 `molis-work/docs/product-intro/v1-2026-10-05.md` 和 10 月
 - [Folio 团队预览](https://molis-folio-team-preview.guodawang33.chatgpt.site/demos/brand/folio/)：使用 ChatGPT Sites，按用户要求公开，拿到链接的人可以访问。
 - [社区](https://molis-folio-team-preview.guodawang33.chatgpt.site/demos/community/)：与 Folio 在同一站点。
 - [原五套品牌方向预览台](https://claude-project-thread-tzu07o-molis-club-production.sparkling-silence-0a49.workers.dev/demos/brand/compare)与[投票页](https://claude-project-thread-tzu07o-molis-club-production.sparkling-silence-0a49.workers.dev/demos/brand/vote)：属于原应用，未迁入静态团队预览；本次找回了入口，当前环境无法核验旧站在线状态。
-- [PR #16](https://github.com/molis-ai/molis-club/pull/16)：源分支 `codex/folio-content-motion`，目标分支 `claude/project-thread-tzu07o`，保持草稿，未合并。
+- [PR #16](https://github.com/molis-ai/molis-club/pull/16)：源分支 `codex/folio-content-motion`，集成目标为 `main`；包含上述 Claude 设计基线、Folio 优化与新版社区。
 
 团队预览版本 5 对应应用代码提交 `f36d281e24f571aaa9c63ede23bbbb6872ff411a`。通过 `npm run build:folio-preview` 构建并导出到忽略目录 `outputs/folio-deploy/`：包含首页、Tool、Work、解决方案、Life、Story、社区七页，另将站点 `/` 映射为 Folio 首页。保留原路径、图片及下载资源；联系、知识和其他依赖服务端的页面链接原应用，包内不含数据库、用户数据或凭据。
 
