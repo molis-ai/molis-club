@@ -1,0 +1,43 @@
+{
+  "framework": null,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/demos/brand/folio",
+      "destination": "/demos/brand/folio/index.html"
+    },
+    {
+      "source": "/demos/brand/folio/tool",
+      "destination": "/demos/brand/folio/tool/index.html"
+    },
+    {
+      "source": "/demos/brand/folio/work",
+      "destination": "/demos/brand/folio/work/index.html"
+    },
+    {
+      "source": "/demos/brand/folio/solutions",
+      "destination": "/demos/brand/folio/solutions/index.html"
+    },
+    {
+      "source": "/demos/brand/folio/life",
+      "destination": "/demos/brand/folio/life/index.html"
+    },
+    {
+      "source": "/demos/brand/folio/story",
+      "destination": "/demos/brand/folio/story/index.html"
+    }
+  ],
+  "buildCommand": null,
+  "installCommand": null,
+  "outputDirectory": "."
+}
