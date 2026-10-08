@@ -153,7 +153,7 @@ try {
     .getByRole('link', { name: '解决方案', exact: true })
     .click();
   await page.waitForURL(`${folio}/solutions`);
-  assert.match(await page.locator('h1').innerText(), /把 AI 用进一段具体业务/);
+  assert.match(await page.locator('h1').innerText(), /把 AI 用进\s*一段具体业务/);
   assert.equal(await page.locator('.fs-direction').count(), 3);
   console.log(
     'PASS: four secondary Work scenes, feature disclosure, product links and dedicated solutions route.',
