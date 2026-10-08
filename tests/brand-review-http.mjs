@@ -24,6 +24,15 @@ for (const slug of slugs)
     for (const size of ['', '-480', '-mobile', '-mobile-280'])
       assert(existsSync(`${shot}${size}.jpg`), `${shot}${size}.jpg`);
   }
+// 工作室版的产品页与联系页：五个方向都有，内容来自 content/
+for (const slug of slugs)
+  for (const suffix of ['/life', '/tool', '/story', '/contact']) {
+    const page = await html(`/demos/brand/${slug}${suffix}`);
+    assert(
+      !page.includes('href="/demos/brand/edition-c') || slug === 'edition-c',
+      `${slug}${suffix} 链到了 Edition C`,
+    );
+  }
 const results = await fetch(`${origin}/api/design-votes`);
 assert.equal(results.status, 200);
 assert.equal(results.headers.get('cache-control'), 'no-store');

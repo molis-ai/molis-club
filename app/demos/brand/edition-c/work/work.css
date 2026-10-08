@@ -4,15 +4,17 @@
 .ew-audience {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 120px 24px 40px;
+  padding: clamp(112px, 12vw, 184px) 24px 24px;
   text-align: center;
 }
 .ew-audience p {
-  margin-top: 22px;
-  font-size: clamp(24px, 2.5vw, 42px);
-  font-weight: 500;
-  line-height: 1.4;
-  letter-spacing: -0.03em;
+  margin-top: 28px;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(26px, 2.8vw, 46px);
+  font-weight: 300;
+  line-height: 1.5;
+  font-feature-settings: 'halt';
   text-wrap: balance;
 }
 
@@ -20,17 +22,31 @@
 .ew-steps {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--gap);
+  gap: clamp(8px, 1.4vw, 24px);
 }
 .ew-step {
   display: flex;
   flex-direction: column;
-  padding: 18px 18px 28px;
-  border-radius: 4px;
-  background: var(--surface);
+  padding: 0 4px 8px;
 }
+/* 截图放在一块暖色画框里 */
 .ew-step-shot {
-  margin-bottom: 28px;
+  margin: 0 -4px 26px;
+  padding: 10% 8%;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(
+      90% 70% at 20% 10%,
+      rgb(255 250 240 / 0.75),
+      transparent 60%
+    ),
+    var(--surface);
+}
+.ew-step-shot .ep-frame {
+  transition: transform 1s var(--ease);
+}
+.ew-step:hover .ew-step-shot .ep-frame {
+  transform: translateY(-6px);
 }
 .ew-step h3 {
   margin-top: 10px;
@@ -61,11 +77,12 @@
   border-top: 0;
 }
 .ew-start-index {
-  font-size: 40px;
-  font-weight: 450;
+  font-family: var(--latin);
+  font-size: 44px;
+  font-style: italic;
+  font-weight: 300;
   line-height: 1;
-  letter-spacing: -0.04em;
-  color: color-mix(in srgb, var(--white) 50%, transparent);
+  color: rgb(var(--glow));
 }
 .ew-start-steps h3 {
   font-size: 22px;
@@ -96,16 +113,27 @@
 .ew-upcoming-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--gap);
+  gap: clamp(8px, 1vw, 14px);
 }
 .ew-upcoming-list li {
   min-height: 150px;
-  padding: 22px 22px 24px;
-  border-radius: 4px;
-  background: var(--white);
+  padding: 24px 24px 26px;
+  border-radius: var(--radius);
+  background: var(--paper-soft);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  transition:
+    transform 0.7s var(--ease),
+    box-shadow 0.7s var(--ease);
+}
+.ew-upcoming-list li:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 0 0 1px var(--hair),
+    0 26px 50px -34px rgb(60 40 20 / 0.4);
 }
 .ew-upcoming-list strong {
   display: flex;
+  color: var(--ink);
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
@@ -142,9 +170,10 @@
   display: none;
 }
 .ew-group summary span {
-  font-size: clamp(20px, 1.6vw, 26px);
-  font-weight: 500;
-  letter-spacing: -0.025em;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(21px, 1.8vw, 28px);
+  font-weight: 300;
 }
 .ew-group summary small {
   font-size: 13px;
@@ -168,6 +197,7 @@
   font-size: 14px;
 }
 .ew-group li strong {
+  color: var(--ink);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -185,7 +215,7 @@
 
 /* ---------- 常见问题 ---------- */
 .ew-faq {
-  padding: 120px clamp(0px, 4vw, 56px) 40px;
+  padding: clamp(112px, 12vw, 184px) clamp(0px, 4vw, 56px) 40px;
 }
 .ew-faq dl {
   margin: 0;
@@ -199,9 +229,10 @@
   border-bottom: 1px solid var(--line);
 }
 .ew-faq dt {
+  color: var(--ink);
   font-size: 17px;
   font-weight: 500;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 .ew-faq dd {
   margin: 0;
@@ -223,21 +254,51 @@
   margin: var(--gap);
 }
 .ec-site .ew-path {
+  position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 240px;
-  padding: 24px;
-  border-radius: 4px;
-  background: var(--ink);
-  color: var(--white);
-  transition: background 0.3s;
+  min-height: 260px;
+  padding: 28px 28px 30px;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--paper-soft);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  color: var(--ink);
+  transition:
+    transform 0.7s var(--ease),
+    box-shadow 0.7s var(--ease);
+}
+/* 悬停时从底部升起一层暖光 */
+.ec-site .ew-path::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: radial-gradient(
+    120% 90% at 50% 120%,
+    rgb(var(--glow) / 0.28),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.7s var(--ease);
+}
+.ec-site .ew-path > * {
+  position: relative;
 }
 .ec-site .ew-path:hover {
-  background: color-mix(in srgb, var(--ink) 84%, var(--white));
+  transform: translateY(-4px);
+  box-shadow:
+    inset 0 0 0 1px var(--hair),
+    0 30px 60px -36px rgb(60 40 20 / 0.45);
+}
+.ec-site .ew-path:hover::before {
+  opacity: 1;
 }
 .ew-path small {
-  font-size: 12px;
-  color: color-mix(in srgb, var(--white) 60%, transparent);
+  font-family: var(--latin);
+  font-size: 17px;
+  font-style: italic;
+  color: var(--accent);
 }
 .ew-path strong {
   display: inline-flex;
@@ -251,7 +312,7 @@
 .ew-path span {
   margin-top: 10px;
   font-size: 14px;
-  color: color-mix(in srgb, var(--white) 72%, transparent);
+  color: var(--muted);
 }
 
 /* ---------- 窄屏 ---------- */

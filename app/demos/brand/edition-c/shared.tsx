@@ -221,6 +221,73 @@ export function TypedWordmark({ text }: { text: string }) {
   );
 }
 
+const branches = [
+  { x: -40, y: 60, dx: 540, dy: 170, leaves: 10, seed: 3 },
+  { x: 40, y: -20, dx: 330, dy: 340, leaves: 8, seed: 11 },
+  { x: 220, y: 120, dx: 420, dy: -40, leaves: 7, seed: 23 },
+];
+
+function random(seed: number) {
+  const value = Math.sin(seed * 9301 + 49297) * 233280;
+  return value - Math.floor(value);
+}
+
+/** 窗外枝叶投下的影子，三根枝条各自慢慢摇 */
+export function LightLeaves({ className }: { className: string }) {
+  return (
+    <svg
+      className={`ec-leaves ${className}`}
+      viewBox="0 0 640 460"
+      preserveAspectRatio="xMinYMin slice"
+      aria-hidden="true"
+    >
+      {branches.map((branch, b) => (
+        <g className={`ec-branch ec-branch-${b}`} key={b}>
+          <path
+            d={`M${branch.x} ${branch.y} q ${branch.dx * 0.5} ${branch.dy * 0.2} ${branch.dx} ${branch.dy}`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
+          {Array.from({ length: branch.leaves }, (_, i) => {
+            const t = (i + 1) / (branch.leaves + 1);
+            const r = random(branch.seed + i);
+            const x = branch.x + branch.dx * t;
+            const y = branch.y + branch.dy * (0.4 * t * (1 - t) + t * t);
+            const side = i % 2 === 0 ? 1 : -1;
+            const angle =
+              (Math.atan2(branch.dy, branch.dx) * 180) / Math.PI +
+              side * (38 + r * 30);
+            const length = 22 + r * 18;
+            return (
+              <ellipse
+                key={i}
+                cx={x + side * 6}
+                cy={y + side * 10}
+                rx={length}
+                ry={length * 0.34}
+                transform={`rotate(${angle} ${x} ${y})`}
+                fill="currentColor"
+              />
+            );
+          })}
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+/** 照片首屏上的一层光：暖色日光慢慢呼吸，树影在墙上轻轻摇 */
+export function HeroLight() {
+  return (
+    <div className="ec-light" aria-hidden="true">
+      <span className="ec-light-sun" />
+      <LightLeaves className="ec-light-leaves" />
+    </div>
+  );
+}
+
 /** 「产品」下拉：四条产品线各一句话，当前页高亮 */
 function ProductsMenu({ current }: { current?: LineId }) {
   const [open, setOpen] = useState(false);
@@ -340,67 +407,69 @@ export function Footer({ children }: { children?: ReactNode }) {
   return (
     <footer className="ec-footer">
       {children}
-      <div className="ec-footer-mark" aria-hidden="true">
-        Molis AI
-      </div>
-      <div className="ec-footer-meta">
-        <div className="ec-footer-lead">
-          <span className="ec-footer-brand">
-            <img
-              src="/images/molis-logo.png"
-              width="28"
-              height="28"
-              alt=""
-              loading="lazy"
-            />
-            Molis AI
-          </span>
-          <p>{signature}</p>
+      <div className="ec-footer-panel">
+        <div className="ec-footer-mark ec-reveal" aria-hidden="true">
+          Molis AI
         </div>
-        <nav className="ec-footer-links" aria-label="页尾导航">
-          <div>
-            <h2>{footer.productsLabel}</h2>
-            <ul>
-              {lineIds.map((id) => (
-                <li key={id}>
-                  <Link href={lineHref[id]}>{lineNames[id]}</Link>
+        <div className="ec-footer-meta">
+          <div className="ec-footer-lead">
+            <span className="ec-footer-brand">
+              <img
+                src="/images/molis-logo.png"
+                width="28"
+                height="28"
+                alt=""
+                loading="lazy"
+              />
+              Molis AI
+            </span>
+            <p>{signature}</p>
+          </div>
+          <nav className="ec-footer-links" aria-label="页尾导航">
+            <div>
+              <h2>{footer.productsLabel}</h2>
+              <ul>
+                {lineIds.map((id) => (
+                  <li key={id}>
+                    <Link href={lineHref[id]}>{lineNames[id]}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h2>{footer.studioLabel}</h2>
+              <ul>
+                <li>
+                  <Link href={`${HOME}#solutions`}>
+                    {footer.studio.solutions}
+                  </Link>
                 </li>
-              ))}
-            </ul>
+                <li>
+                  <Link href={COMMUNITY}>{footer.studio.community}</Link>
+                </li>
+                <li>
+                  <Link href={`${HOME}#about`}>{footer.studio.about}</Link>
+                </li>
+                <li>
+                  <Link href={CONTACT}>{footer.studio.contact}</Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h2>GitHub</h2>
+              <ul>
+                <li>
+                  <a href={footer.github} target="_blank" rel="noreferrer">
+                    github.com/molis-ai
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+          <div className="ec-footer-base">
+            <span>{footer.copyright}</span>
+            <Link href={`${CONTACT}#privacy`}>{footer.privacy}</Link>
           </div>
-          <div>
-            <h2>{footer.studioLabel}</h2>
-            <ul>
-              <li>
-                <Link href={`${HOME}#solutions`}>
-                  {footer.studio.solutions}
-                </Link>
-              </li>
-              <li>
-                <Link href={COMMUNITY}>{footer.studio.community}</Link>
-              </li>
-              <li>
-                <Link href={`${HOME}#about`}>{footer.studio.about}</Link>
-              </li>
-              <li>
-                <Link href={CONTACT}>{footer.studio.contact}</Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h2>GitHub</h2>
-            <ul>
-              <li>
-                <a href={footer.github} target="_blank" rel="noreferrer">
-                  github.com/molis-ai
-                </a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-        <div className="ec-footer-base">
-          <span>{footer.copyright}</span>
-          <Link href={`${CONTACT}#privacy`}>{footer.privacy}</Link>
         </div>
       </div>
     </footer>
@@ -409,7 +478,8 @@ export function Footer({ children }: { children?: ReactNode }) {
 
 /**
  * 页面级动效：鼠标微移首屏照片、元素进入视口时加 is-in、
- * 带 data-scroll 的区块写入 0–1 的滚动进度 --p。
+ * 带 data-scroll 的区块写入 0–1 的滚动进度 --p；
+ * 顶栏离开首屏后变成磨砂纸面，往下读时收起，往回滚时出现。
  */
 export function useEditionMotion() {
   const ref = useRef<HTMLDivElement>(null);
@@ -418,14 +488,25 @@ export function useEditionMotion() {
     if (!site) return;
     const media = matchMedia('(prefers-reduced-motion: reduce)');
     const hero = site.querySelector<HTMLElement>('.ec-hero');
+    const header = site.querySelector<HTMLElement>('.ec-header');
     const scenes = Array.from(
       site.querySelectorAll<HTMLElement>('[data-scroll]'),
     );
 
     let frame = 0;
+    let lastY = window.scrollY;
     const update = () => {
       frame = 0;
       const vh = window.innerHeight;
+      const y = window.scrollY;
+      if (header) {
+        const menuOpen = header.querySelector('[data-open="true"]');
+        header.dataset.scrolled = String(y > 24);
+        if (y < 160 || y < lastY - 6 || menuOpen)
+          header.dataset.hidden = 'false';
+        else if (y > lastY + 6) header.dataset.hidden = 'true';
+        if (Math.abs(y - lastY) > 6) lastY = y;
+      }
       for (const scene of scenes) {
         const box = scene.getBoundingClientRect();
         if (box.bottom < -vh * 0.5 || box.top > vh * 1.5) continue;
@@ -455,7 +536,7 @@ export function useEditionMotion() {
       { rootMargin: '0px 0px -12% 0px' },
     );
     site
-      .querySelectorAll('.ec-reveal')
+      .querySelectorAll('.ec-reveal, .ec-media')
       .forEach((node) => revealer.observe(node));
 
     const pan = (event: PointerEvent) => {

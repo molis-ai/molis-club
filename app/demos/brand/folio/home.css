@@ -1,0 +1,30 @@
+/* The original Folio layout lives in folio.css. Only the requested additions belong here. */
+.fo-core > .wd-demo {
+  justify-self: center;
+}
+.fo-person.fo-tone-blue .fo-person-note {
+  background: var(--fo-pink);
+}
+.fo-person.fo-tone-red .fo-person-note {
+  background: var(--fo-yellow);
+}
+.fo-back-cooperation > p {
+  max-width: 34em;
+  font-size: 16px;
+  line-height: 1.85;
+}
+.fo-back-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin-top: 8px;
+}
+.fo-back-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.fo-back-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}

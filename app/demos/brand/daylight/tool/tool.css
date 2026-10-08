@@ -1,0 +1,790 @@
+/*
+ * Daylight · Molis Tool 产品页：首屏是一扇浮在清晨桌面上的浏览器窗，光标选中一句话，
+ * 句尾冒出三个动作，再带着来源给出结果；往下是对比、三层、几个时刻、承诺、合进来的工具、
+ * 插件与「它不是什么」。通用部件在 ../kit.css；本文件只放 dl-tool 页面自己的样式。
+ */
+
+/* ---------- 首屏界面动画 ---------- */
+.dl-site .dl-demo {
+  position: relative;
+  margin: 0;
+  justify-self: end;
+  width: min(100%, 640px);
+  animation: dl-rise 1.4s 1.5s var(--dl-ease) both;
+}
+.dl-demo figcaption {
+  display: inline-block;
+  margin: 0 0 12px 4px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: rgb(251 247 241 / 0.8);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--dl-text);
+}
+.dl-demo-window {
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.6);
+  border-radius: 18px;
+  background: rgb(251 247 241 / 0.94);
+  color: var(--dl-ink);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.7) inset,
+    0 60px 110px -50px rgb(20 12 4 / 0.75);
+}
+.dl-demo-window .dl-window-bar {
+  height: 34px;
+  background: rgb(236 230 220 / 0.9);
+}
+.dl-demo-window .dl-window-bar span {
+  margin: 0 auto;
+  padding: 3px 14px;
+  border-radius: 7px;
+  background: rgb(255 255 255 / 0.7);
+}
+.dl-demo-page {
+  padding: 32px clamp(20px, 6%, 48px) 40px;
+}
+.dl-demo-page h3 {
+  margin: 0;
+  font-family: var(--dl-latin);
+  font-weight: 400;
+  font-size: clamp(22px, 2.1vw, 30px);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+.dl-demo-page > p {
+  margin: 14px 0 0;
+  font-family: var(--dl-latin);
+  font-size: clamp(16px, 1.35vw, 19px);
+  line-height: 1.7;
+  color: var(--dl-text);
+}
+.dl-demo-page mark {
+  position: relative;
+  padding: 2px 0;
+  background: linear-gradient(rgb(233 143 92 / 0.3), rgb(233 143 92 / 0.3))
+    no-repeat 0 0 / 0% 100%;
+  color: inherit;
+  animation: dl-demo-select 9s var(--dl-ease) infinite;
+}
+.dl-demo-line {
+  display: block;
+  height: 8px;
+  margin-top: 14px;
+  border-radius: 8px;
+  background: rgb(25 40 79 / 0.08);
+}
+.dl-demo-line-short {
+  width: 58%;
+}
+.dl-cursor {
+  position: absolute;
+  z-index: 3;
+  display: block;
+  width: 20px;
+  height: 20px;
+  color: var(--dl-ink);
+  pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.25));
+}
+.dl-cursor svg {
+  stroke: var(--dl-paper);
+}
+.dl-cursor-select {
+  right: -12px;
+  bottom: -14px;
+  animation: dl-demo-cursor-select 9s var(--dl-ease) infinite;
+}
+.dl-cursor-click {
+  left: 58%;
+  top: 56%;
+  animation: dl-demo-cursor-click 9s var(--dl-ease) infinite;
+}
+/* 动作签在上；下面几行字和结果小卡叠在同一格里，小卡出现时盖住它们 */
+.dl-demo-pop {
+  display: grid;
+  margin-top: 14px;
+}
+.dl-demo-rest,
+.dl-demo-card {
+  grid-area: 2 / 1;
+  margin-top: 12px;
+}
+.dl-demo-rest {
+  padding-top: 10px;
+}
+.dl-demo-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.dl-demo-mark,
+.dl-demo-chip {
+  opacity: 0;
+  animation: dl-demo-chip 9s var(--dl-ease) infinite;
+}
+.dl-demo-mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--dl-ink);
+}
+.dl-demo-mark i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--dl-paper);
+}
+.dl-demo-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 13px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow:
+    inset 0 0 0 1px rgb(25 40 79 / 0.1),
+    0 10px 20px -14px rgb(30 20 10 / 0.5);
+  font-size: 13px;
+  font-weight: 500;
+}
+.dl-demo-chip:nth-child(2) {
+  animation-delay: 0.08s;
+}
+.dl-demo-chip:nth-child(3) {
+  animation-delay: 0.16s;
+}
+.dl-demo-chip:nth-child(4) {
+  animation-delay: 0.24s;
+}
+.dl-demo-chip[data-first] {
+  animation-name: dl-demo-chip, dl-demo-press;
+  animation-delay: 0.08s, 0s;
+}
+/* 结果小卡：带着来源出现 */
+.dl-demo-card {
+  position: relative;
+  z-index: 2;
+  align-self: start;
+  width: min(100%, 380px);
+  padding: 16px 18px 14px;
+  border: 1px solid rgb(233 143 92 / 0.3);
+  border-radius: 14px;
+  background: #fffaf3;
+  box-shadow: 0 26px 50px -24px rgb(30 20 10 / 0.5);
+  opacity: 0;
+  animation: dl-demo-card 9s var(--dl-ease) infinite;
+}
+.dl-demo-card small {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--dl-copper);
+}
+.dl-demo-card p {
+  margin: 6px 0 0;
+  font-family: var(--dl-serif);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.dl-demo-card span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgb(25 40 79 / 0.14);
+  font-size: 11px;
+  color: var(--dl-muted);
+}
+
+/* 一轮 9 秒：选中 → 动作签 → 移到「翻译」→ 按下 → 小卡 → 停一会儿 → 收起 */
+@keyframes dl-demo-select {
+  0%,
+  6% {
+    background-size: 0% 100%;
+  }
+  24%,
+  90% {
+    background-size: 100% 100%;
+  }
+  97%,
+  100% {
+    background-size: 0% 100%;
+  }
+}
+@keyframes dl-demo-cursor-select {
+  0%,
+  4% {
+    opacity: 0;
+    transform: translate(-10px, -6px);
+  }
+  10%,
+  32% {
+    opacity: 1;
+    transform: none;
+  }
+  38%,
+  100% {
+    opacity: 0;
+    transform: translate(-14px, 30px);
+  }
+}
+@keyframes dl-demo-chip {
+  0%,
+  27% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  32%,
+  90% {
+    opacity: 1;
+    transform: none;
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+@keyframes dl-demo-cursor-click {
+  0%,
+  34% {
+    opacity: 0;
+    transform: translate(40px, -46px);
+  }
+  42% {
+    opacity: 1;
+    transform: none;
+  }
+  45% {
+    transform: scale(0.86);
+  }
+  48%,
+  82% {
+    opacity: 1;
+    transform: none;
+  }
+  88%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+@keyframes dl-demo-press {
+  0%,
+  44% {
+    background: #fff;
+    color: var(--dl-ink);
+  }
+  46%,
+  90% {
+    background: var(--dl-ink);
+    color: var(--dl-paper);
+  }
+  96%,
+  100% {
+    background: #fff;
+    color: var(--dl-ink);
+  }
+}
+@keyframes dl-demo-card {
+  0%,
+  49% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  55%,
+  90% {
+    opacity: 1;
+    transform: none;
+  }
+  96%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+/* ---------- 对比：以前 / Molis Tool ---------- */
+.dl-tool-compare {
+  position: relative;
+  padding: clamp(14px, 2vw, 28px) clamp(22px, 3.4vw, 56px);
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 28px;
+  background: linear-gradient(160deg, #fdf8f1 0%, #f6ecdf 60%, #f1e2cf 100%);
+  box-shadow: inset 0 0 0 1px rgb(25 40 79 / 0.06);
+}
+.dl-tool-compare::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: -40%;
+  right: -10%;
+  width: 52%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(255 222 176 / 0.75),
+    rgb(255 222 176 / 0.2) 60%,
+    transparent
+  );
+}
+.dl-tool-compare table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.dl-tool-compare thead th {
+  padding: 14px 0 16px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--dl-muted);
+}
+.dl-tool-compare thead th:last-child {
+  color: var(--dl-copper);
+}
+.dl-tool-compare thead th:last-child::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 1px;
+  margin-right: 10px;
+  vertical-align: middle;
+  background: var(--dl-apricot);
+}
+.dl-tool-compare tbody tr {
+  border-top: 1px solid var(--dl-line);
+}
+.dl-tool-compare tbody th,
+.dl-tool-compare tbody td {
+  padding: 26px 24px 26px 0;
+  vertical-align: baseline;
+}
+.dl-tool-compare tbody th {
+  width: 18%;
+  font-family: var(--dl-serif);
+  font-weight: 500;
+  font-size: clamp(19px, 1.6vw, 23px);
+}
+.dl-tool-compare tbody td {
+  width: 41%;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--dl-muted);
+}
+.dl-tool-compare tbody td:last-child {
+  font-family: var(--dl-serif);
+  font-size: clamp(18px, 1.5vw, 21px);
+  line-height: 1.6;
+  color: var(--dl-ink);
+}
+
+/* ---------- 三层：概念图板放在暖色卡里，整张都看得到 ---------- */
+.dl-site .dl-tool-layers .dl-shot {
+  aspect-ratio: auto;
+  padding: 9% 8%;
+}
+.dl-site .dl-tool-layers .dl-shot > img {
+  position: static;
+  width: 100%;
+  height: auto;
+}
+.dl-site .dl-tool-layers li:hover .dl-shot > img {
+  transform: translateY(-2%);
+}
+
+/* ---------- 一天里的几个时刻 ---------- */
+.dl-tool-moments {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(36px, 4vw, 56px) clamp(16px, 2vw, 28px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dl-tool-moment-shot {
+  margin-bottom: 22px;
+  padding: 6%;
+  overflow: hidden;
+  border-radius: 22px;
+  background:
+    radial-gradient(
+      80% 70% at 85% 0%,
+      rgb(255 222 176 / 0.85),
+      transparent 70%
+    ),
+    linear-gradient(160deg, #f3e9dc, #e8d8c3);
+}
+.dl-tool-moment-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 665 / 714;
+  object-fit: cover;
+  object-position: 50% 0;
+  border-radius: 14px;
+  box-shadow: 0 24px 50px -30px rgb(30 20 10 / 0.5);
+  transition: transform 1.2s var(--dl-ease);
+}
+.dl-tool-moments li:hover img {
+  transform: translateY(-2%) scale(1.01);
+}
+.dl-tool-moments h3 {
+  margin: 10px 0 6px;
+  font-family: var(--dl-serif);
+  font-weight: 500;
+  font-size: clamp(20px, 1.6vw, 24px);
+  letter-spacing: -0.015em;
+}
+.dl-tool-moments p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--dl-muted);
+}
+
+/* ---------- 合进来的工具 ---------- */
+.dl-tool-tools {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dl-tool-tools li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 168px;
+  padding: 24px 24px 22px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgb(25 40 79 / 0.07);
+  border-radius: 20px;
+  background: rgb(251 247 241 / 0.7);
+  transition:
+    background-color 0.4s ease,
+    box-shadow 0.5s ease;
+}
+.dl-tool-tools li::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    280px circle at var(--mx, 50%) var(--my, 0%),
+    rgb(255 214 170 / 0.55),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.dl-tool-tools li:hover {
+  background: var(--dl-paper);
+  box-shadow: 0 22px 40px -28px rgb(60 40 20 / 0.5);
+}
+.dl-tool-tools li:hover::before {
+  opacity: 1;
+}
+.dl-tool-tools strong {
+  font-family: var(--dl-serif);
+  font-weight: 500;
+  font-size: clamp(20px, 1.6vw, 24px);
+  letter-spacing: -0.015em;
+}
+.dl-tool-tools small {
+  margin-top: 4px;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  color: var(--dl-copper);
+}
+.dl-tool-tools p {
+  margin: auto 0 0;
+  padding-top: 18px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--dl-muted);
+}
+.dl-tool-available {
+  margin: 26px 0 0;
+  font-size: 15px;
+  color: var(--dl-text);
+}
+.dl-tool-available a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  border-bottom: 1px solid currentColor;
+  font-weight: 600;
+  color: var(--dl-copper);
+}
+
+/* ---------- 插件就是能力：一颗太阳，四个去处绕着它 ---------- */
+.dl-site .dl-tool-plugins {
+  align-items: center;
+}
+.dl-tool-surfaces {
+  --radius: clamp(130px, 14vw, 200px);
+  position: relative;
+  aspect-ratio: 1;
+  width: min(100%, 520px);
+  margin: 0 auto;
+}
+.dl-tool-orbit {
+  position: absolute;
+  inset: calc(50% - var(--radius));
+  border: 1px dashed rgb(184 104 58 / 0.45);
+  border-radius: 50%;
+}
+.dl-tool-surfaces::before {
+  content: '';
+  position: absolute;
+  inset: 4%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(255 214 170 / 0.7),
+    rgb(255 214 170 / 0.18) 60%,
+    transparent
+  );
+  animation: dl-sun-breathe 6s ease-in-out infinite alternate;
+}
+@keyframes dl-sun-breathe {
+  to {
+    transform: scale(1.06);
+    opacity: 0.75;
+  }
+}
+.dl-tool-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 38%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff3e2, #f6c79f 70%, #ec9f6c);
+  box-shadow:
+    0 0 0 10px rgb(255 236 214 / 0.55),
+    0 30px 60px -24px rgb(184 104 58 / 0.6);
+  font-family: var(--dl-serif);
+  font-size: clamp(18px, 1.6vw, 24px);
+  color: var(--dl-ink);
+  translate: -50% -50%;
+}
+.dl-tool-surface {
+  --a: calc(var(--r) * 90deg - 45deg);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform: rotate(var(--a)) translateX(var(--radius))
+    rotate(calc(var(--a) * -1));
+}
+.dl-tool-surface span {
+  position: absolute;
+  translate: -50% -50%;
+  padding: 10px 20px;
+  border: 1px solid rgb(255 255 255 / 0.7);
+  border-radius: 999px;
+  background: rgb(251 247 241 / 0.92);
+  box-shadow: 0 18px 36px -22px rgb(60 40 20 / 0.6);
+  font-family: var(--dl-serif);
+  font-size: 16px;
+  white-space: nowrap;
+}
+.dl-site.is-ready .dl-tool-surfaces.dl-reveal .dl-tool-surface span {
+  opacity: 0;
+  transform: scale(0.9);
+  transition:
+    opacity 0.8s ease,
+    transform 1s var(--dl-ease);
+  transition-delay: calc(0.5s + var(--r) * 0.14s);
+}
+.dl-site.is-ready .dl-tool-surfaces.dl-reveal.is-in .dl-tool-surface span {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- 它不是什么：傍晚里几句划掉的话 ---------- */
+.dl-tool-not h2 {
+  margin: 0 0 clamp(28px, 4vw, 48px);
+}
+.dl-tool-not ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgb(122 70 30 / 0.18);
+}
+.dl-tool-not li {
+  display: flex;
+  align-items: baseline;
+  gap: 22px;
+  padding: clamp(18px, 2vw, 28px) 0;
+  border-bottom: 1px solid rgb(122 70 30 / 0.18);
+  font-family: var(--dl-serif);
+  font-weight: 300;
+  font-size: clamp(22px, 2.6vw, 40px);
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  text-wrap: pretty;
+}
+.dl-tool-not li i {
+  position: relative;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  translate: 0 0.1em;
+}
+.dl-tool-not li i::before,
+.dl-tool-not li i::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: var(--dl-copper);
+  translate: -50% -50%;
+  rotate: 45deg;
+}
+.dl-tool-not li i::after {
+  rotate: -45deg;
+}
+
+@media (max-width: 980px) {
+  .dl-tool-moments,
+  .dl-tool-tools {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dl-site .dl-tool-layers {
+    grid-template-columns: 1fr;
+    max-width: 620px;
+  }
+}
+
+@media (max-width: 760px) {
+  .dl-site .dl-demo {
+    justify-self: stretch;
+    width: 100%;
+  }
+  .dl-demo-page {
+    padding: 22px 18px 30px;
+  }
+  .dl-demo-card {
+    width: 100%;
+  }
+  .dl-tool-compare {
+    padding: 4px 20px;
+    border-radius: 22px;
+  }
+  .dl-tool-compare thead {
+    display: none;
+  }
+  .dl-tool-compare tbody tr {
+    display: block;
+    padding: 22px 0;
+  }
+  .dl-tool-compare tbody tr:first-child {
+    border-top: 0;
+  }
+  .dl-tool-compare tbody th,
+  .dl-tool-compare tbody td {
+    display: block;
+    width: auto;
+    padding: 0;
+  }
+  .dl-tool-compare tbody td {
+    margin-top: 10px;
+  }
+  .dl-tool-compare tbody td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-family: var(--dl-sans);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--dl-muted);
+  }
+  .dl-tool-compare tbody td:last-child::before {
+    color: var(--dl-copper);
+  }
+  .dl-tool-moments {
+    gap: 28px 12px;
+  }
+  .dl-tool-moment-shot {
+    margin-bottom: 14px;
+    border-radius: 16px;
+  }
+  .dl-tool-moments h3 {
+    font-size: 18px;
+  }
+  .dl-tool-moments p {
+    font-size: 14px;
+  }
+  .dl-tool-tools {
+    grid-template-columns: 1fr;
+  }
+  .dl-tool-tools li {
+    min-height: 0;
+  }
+  .dl-tool-surfaces {
+    --radius: min(34vw, 140px);
+  }
+  .dl-tool-surface span {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+  .dl-tool-not li {
+    gap: 14px;
+    font-size: 21px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dl-site .dl-demo,
+  .dl-demo-page mark,
+  .dl-demo-mark,
+  .dl-demo-chip,
+  .dl-demo-card,
+  .dl-cursor,
+  .dl-tool-surfaces::before {
+    animation: none;
+  }
+  .dl-demo-page mark {
+    background-size: 100% 100%;
+  }
+  .dl-demo-mark,
+  .dl-demo-chip,
+  .dl-demo-card {
+    opacity: 1;
+  }
+  .dl-demo-chip[data-first] {
+    background: var(--dl-ink);
+    color: var(--dl-paper);
+  }
+  .dl-cursor-select {
+    display: none;
+  }
+  .dl-site.is-ready .dl-tool-surfaces.dl-reveal .dl-tool-surface span {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,18 +1,19 @@
 'use client';
 import {
   closing,
-  compare,
   control,
   devices,
   handoff,
   hero,
   jobs,
   merged,
+  momentsNote,
   scenes,
+  shotLabels,
+  shots,
 } from '../../../../../content/molis-life';
 import {
   Closing,
-  Compare,
   Frame,
   SectionHead,
   Phrases,
@@ -33,17 +34,6 @@ import '../kit.css';
 import './life.css';
 
 // 文案来自 content/molis-life.ts，五个方向共用；画面用 molis-life 的生活空间概念稿，始终标「概念稿」。
-
-const shots = {
-  desktop: { src: '/images/edition-c/life/desktop.jpg', w: 1600, h: 1111 },
-  mobile: { src: '/images/edition-c/life/mobile.jpg', w: 640, h: 1385 },
-  moments: { src: '/images/edition-c/life/moments.jpg', w: 1600, h: 1111 },
-  onboarding: {
-    src: '/images/edition-c/life/onboarding-mobile.jpg',
-    w: 640,
-    h: 1385,
-  },
-};
 
 function Phone({ src, w, h }: { src: string; w: number; h: number }) {
   return (
@@ -90,7 +80,7 @@ export default function EditionCLifePage() {
                 src={shots.desktop.src}
                 w={shots.desktop.w}
                 h={shots.desktop.h}
-                label="Molis Life"
+                label={shotLabels.desktop}
               />
               <Phone {...shots.mobile} />
             </div>
@@ -157,22 +147,6 @@ export default function EditionCLifePage() {
           </div>
         </section>
 
-        <section className="ep-section" aria-labelledby="el-compare-title">
-          <SectionHead
-            id="el-compare-title"
-            kicker={compare.kicker}
-            title={compare.title}
-          />
-          <Compare
-            labels={[
-              compare.labels.now,
-              compare.labels.does,
-              compare.labels.here,
-            ]}
-            rows={compare.rows.map((row) => [row.now, row.does, row.here])}
-          />
-        </section>
-
         <section className="ep-section" aria-labelledby="el-scenes-title">
           <SectionHead
             id="el-scenes-title"
@@ -183,13 +157,12 @@ export default function EditionCLifePage() {
           <ul className="el-scenes">
             {scenes.items.map((scene, index) => (
               <li
-                key={scene.title}
+                key={scene}
                 className="ec-reveal"
                 style={{ '--r': index % 4 } as Vars}
               >
                 <span className="ep-index">{pad(index)}</span>
-                <strong>{scene.title}</strong>
-                <p>{scene.text}</p>
+                <strong>{scene}</strong>
               </li>
             ))}
           </ul>
@@ -234,10 +207,10 @@ export default function EditionCLifePage() {
                 src={shots.moments.src}
                 w={shots.moments.w}
                 h={shots.moments.h}
-                label="片刻"
+                label={shotLabels.moments}
               />
               <Phone {...shots.onboarding} />
-              <figcaption className="ep-caption">概念稿 · 示例生活</figcaption>
+              <figcaption className="ep-caption">{momentsNote}</figcaption>
             </figure>
             <div className="el-devices-copy">
               <div className="ep-head ec-reveal" data-align="start">

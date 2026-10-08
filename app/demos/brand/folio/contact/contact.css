@@ -1,0 +1,263 @@
+/* Folio · 联系页：左边一页信，右边一张贴上去的表格。前缀 fc- */
+
+.fc-contact {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  align-items: start;
+  gap: clamp(32px, 5vw, 90px);
+  padding: calc(var(--fo-head) + clamp(40px, 6vw, 90px)) var(--fo-gutter)
+    clamp(100px, 10vw, 150px);
+}
+.fc-intro {
+  display: grid;
+  justify-items: start;
+  gap: 22px;
+}
+.fc-intro h1 {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(38px, 4.4vw, 76px);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+.fc-intro > p {
+  max-width: 24em;
+  font-size: clamp(16px, 1.3vw, 19px);
+  line-height: 1.8;
+  color: var(--fo-text);
+}
+.fc-photo {
+  --p: 1;
+  position: relative;
+  width: 100%;
+  margin-top: 20px;
+  padding: 8% 10% 10% 6%;
+}
+.fc-photo .fo-frame {
+  position: relative;
+  z-index: 1;
+  rotate: -2.5deg;
+}
+
+/* 表格：一张白纸，角上一条胶带 */
+.fc-panel {
+  position: relative;
+  padding: clamp(24px, 3.4vw, 48px);
+  border-radius: 28px;
+  background: var(--fo-white);
+  box-shadow: 0 40px 80px -40px rgb(40 24 10 / 0.5);
+  rotate: 0.8deg;
+}
+.fc-panel::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  right: 18%;
+  width: 110px;
+  height: 30px;
+  background: rgb(246 196 69 / 0.75);
+  rotate: 6deg;
+}
+.fc-form {
+  display: grid;
+  gap: 26px;
+}
+.fc-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.fc-roles legend {
+  margin-bottom: 14px;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--fo-red);
+}
+.fc-roles label {
+  position: relative;
+  cursor: pointer;
+}
+.fc-roles input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.fc-roles span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 2px var(--fo-ink);
+  font-size: 15px;
+  font-weight: 600;
+  transition:
+    background 0.25s,
+    color 0.25s,
+    rotate 0.4s var(--fo-ease);
+}
+.fc-roles label:hover span {
+  background: var(--fo-paper);
+}
+.fc-roles input:checked + span {
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  rotate: -2deg;
+}
+.fc-roles input:focus-visible + span {
+  outline: 2px solid var(--fo-red);
+  outline-offset: 3px;
+}
+.fc-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+.fc-field {
+  display: grid;
+  gap: 8px;
+}
+.fc-field span {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.fc-field input,
+.fc-field textarea {
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 2px solid var(--fo-ink);
+  border-radius: 0;
+  background: transparent;
+  color: var(--fo-ink);
+  font: inherit;
+  font-size: 17px;
+  transition: border-color 0.25s;
+}
+.fc-field textarea {
+  min-height: 160px;
+  padding: 14px 16px;
+  border: 2px solid var(--fo-ink);
+  border-radius: 16px;
+  background: var(--fo-paper);
+  line-height: 1.7;
+  resize: vertical;
+}
+.fo-site .fc-field :is(input, textarea):focus-visible {
+  outline: none;
+  border-color: var(--fo-red);
+}
+.fc-field ::placeholder {
+  color: var(--fo-muted);
+  opacity: 0.8;
+}
+.fc-consent {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--fo-text);
+  cursor: pointer;
+}
+.fc-consent input {
+  width: 20px;
+  height: 20px;
+  margin: 3px 0 0;
+  accent-color: var(--fo-red);
+}
+.fo-site .fc-submit {
+  justify-self: start;
+  border: 0;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fo-site .fc-submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.fc-error {
+  min-height: 1px;
+  color: var(--fo-red);
+  font-size: 14px;
+  font-weight: 600;
+}
+.fc-note {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--fo-muted);
+}
+.fc-note a {
+  margin-left: 6px;
+  color: var(--fo-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* 发送成功 */
+.fc-success {
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+  padding-block: 20px;
+}
+.fc-success-mark {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--fo-red);
+  color: var(--fo-white);
+  rotate: -8deg;
+}
+.fc-success h2 {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(36px, 4vw, 60px);
+}
+.fc-success p {
+  max-width: 28em;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--fo-text);
+}
+
+/* 隐私说明 */
+.fc-privacy h2 {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(32px, 4vw, 60px);
+}
+.fo-site .fc-privacy .fo-list strong {
+  font-weight: 500;
+  font-size: clamp(17px, 1.4vw, 20px);
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .fc-contact {
+    grid-template-columns: 1fr;
+  }
+  .fc-photo {
+    max-width: 560px;
+  }
+}
+@media (max-width: 560px) {
+  .fc-row {
+    grid-template-columns: 1fr;
+  }
+  .fc-panel {
+    rotate: 0deg;
+  }
+}

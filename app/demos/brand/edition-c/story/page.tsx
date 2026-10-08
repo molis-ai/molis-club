@@ -4,7 +4,10 @@ import {
   closing,
   different,
   hero,
+  imageNote,
   journey,
+  journeyImages,
+  windowsNote,
   worlds,
   worldsIntro,
 } from '../../../../../content/molis-story';
@@ -23,12 +26,6 @@ import './story.css';
 
 // 文案来自 content/molis-story.ts，五个方向共用。首屏是纸面上的四扇窗，每扇窗后面是一个世界；
 // 生成的氛围画标「概念画面」，袖珍博物馆用仓库里 Unsplash 授权的示例照片。
-
-const journeyShots = [
-  null,
-  { src: '/images/edition-c/story/elsewhere.jpg', w: 1600, h: 900 },
-  { src: '/images/edition-c/story/homecoming.jpg', w: 1600, h: 900 },
-];
 
 /** 首屏：四扇窗，悬停时各自有一点世界里的光 */
 function Windows() {
@@ -58,7 +55,7 @@ function Windows() {
           </li>
         ))}
       </ul>
-      <figcaption>概念画面；袖珍博物馆为示例照片（Unsplash）</figcaption>
+      <figcaption>{windowsNote}</figcaption>
     </figure>
   );
 }
@@ -114,7 +111,7 @@ export default function EditionCStoryPage() {
           />
           <ol className="es-journey">
             {journey.steps.map((step, index) => {
-              const shot = journeyShots[index];
+              const shot = journeyImages[index];
               return (
                 <li
                   key={step.title}
@@ -141,7 +138,7 @@ export default function EditionCStoryPage() {
               );
             })}
           </ol>
-          <p className="ep-note">概念画面</p>
+          <p className="ep-note">{imageNote}</p>
         </section>
 
         <section

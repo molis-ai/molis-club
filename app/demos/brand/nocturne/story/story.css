@@ -1,0 +1,398 @@
+/* Molis Story，夜曲风格：通用部件在 ../kit.css。每个世界带一点自己的光。 */
+.nc-story [data-world='astralo'] {
+  --tint: 120 190 230;
+}
+.nc-story [data-world='elsewhere'] {
+  --tint: 120 140 240;
+}
+.nc-story [data-world='museum'] {
+  --tint: 110 200 170;
+}
+.nc-story [data-world='fog-harbor'] {
+  --tint: 255 130 100;
+}
+
+/* ---------- 首屏：四道发光的拱门 ---------- */
+.nc-story .nc-phero h1 {
+  font-size: clamp(36px, 4.6vw, 76px);
+}
+.nc-portals {
+  width: min(100%, 1080px);
+  margin: clamp(44px, 7vh, 72px) auto 0;
+}
+.nc-portals ul {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 2.2vw, 32px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nc-portals li {
+  position: relative;
+  container-type: inline-size;
+}
+.nc-portals li::after {
+  content: '';
+  position: absolute;
+  left: -14%;
+  right: -14%;
+  top: 125cqi;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 200 150 / 0.6),
+    transparent
+  );
+  box-shadow: 0 0 24px 4px rgb(255 160 90 / 0.16);
+  pointer-events: none;
+}
+.nc-site .nc-portals a {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.nc-gate {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  margin-bottom: 18px;
+  overflow: hidden;
+  border: 1px solid rgb(255 200 150 / 0.32);
+  border-bottom: 0;
+  border-radius: 999px 999px 4px 4px;
+  box-shadow:
+    0 0 0 6px rgb(255 180 107 / 0.025),
+    0 -10px 60px -14px rgb(var(--tint, 255 160 90) / 0.45);
+  transition:
+    border-color 0.6s ease,
+    box-shadow 0.8s ease;
+}
+.nc-gate img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.78) saturate(0.95);
+  transform: scale(1.06);
+  transition:
+    transform 1.6s var(--nc-ease),
+    filter 0.8s ease;
+}
+.nc-gate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgb(5 6 10 / 0.7), transparent 45%),
+    radial-gradient(70% 40% at 50% 0%, rgb(255 220 180 / 0.18), transparent 70%);
+  pointer-events: none;
+}
+.nc-gate i {
+  position: absolute;
+  z-index: 1;
+  left: calc(28% + var(--m) * 20%);
+  bottom: 8%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffe2c4;
+  box-shadow: 0 0 8px #ffb46b;
+  opacity: 0;
+}
+.nc-portals a:hover .nc-gate,
+.nc-portals a:focus-visible .nc-gate {
+  border-color: rgb(255 200 150 / 0.75);
+  box-shadow:
+    0 0 0 6px rgb(255 180 107 / 0.05),
+    0 -10px 80px -10px rgb(var(--tint, 255 160 90) / 0.7);
+}
+.nc-portals a:hover .nc-gate img,
+.nc-portals a:focus-visible .nc-gate img {
+  transform: scale(1.12);
+  filter: none;
+}
+.nc-portals small {
+  font-size: 12.5px;
+  color: var(--nc-muted);
+}
+.nc-portals strong {
+  font-family: var(--nc-serif);
+  font-size: clamp(18px, 1.6vw, 22px);
+  font-weight: 300;
+}
+.nc-portals figcaption {
+  margin-top: 30px;
+  font-family: var(--nc-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-align: center;
+  color: var(--nc-muted);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .nc-gate i {
+    animation: nc-gate-mote 7s linear infinite;
+    animation-delay: calc(var(--r) * -1.3s + var(--m) * -2.4s);
+  }
+}
+@keyframes nc-gate-mote {
+  from {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  to {
+    transform: translate(10px, -220px);
+    opacity: 0;
+  }
+}
+
+/* ---------- 此处 → 彼处 → 归来 ---------- */
+.nc-journey {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin: var(--nc-head-gap) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.nc-journey li {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 12px;
+}
+.nc-journey-shot {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  margin-bottom: 16px;
+  overflow: hidden;
+  border: 1px solid var(--nc-panel-line);
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      70% 60% at 50% 100%,
+      rgb(255 160 90 / 0.16),
+      transparent 70%
+    ),
+    #0a0b10;
+  box-shadow: 0 40px 90px -40px #000;
+}
+.nc-journey-shot > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.86);
+  transition: filter 0.8s ease;
+}
+.nc-journey li:hover .nc-journey-shot > img {
+  filter: none;
+}
+.nc-here {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: end;
+  gap: 5%;
+  height: 100%;
+  padding: 14% 9% 0;
+  background:
+    radial-gradient(
+      60% 46% at 50% 100%,
+      rgb(255 160 90 / 0.2),
+      transparent 72%
+    ),
+    radial-gradient(1px 1px at 22% 24%, rgb(255 230 200 / 0.7), transparent),
+    radial-gradient(1px 1px at 68% 16%, rgb(255 230 200 / 0.5), transparent),
+    radial-gradient(
+      1.5px 1.5px at 84% 38%,
+      rgb(255 230 200 / 0.6),
+      transparent
+    ),
+    radial-gradient(1px 1px at 40% 34%, rgb(255 230 200 / 0.4), transparent);
+  box-shadow: inset 0 -1px 0 rgb(255 200 150 / 0.35);
+}
+.nc-here i {
+  display: block;
+  aspect-ratio: 3 / 4.4;
+  overflow: hidden;
+  border: 1px solid rgb(255 200 150 / 0.4);
+  border-bottom: 0;
+  border-radius: 999px 999px 2px 2px;
+  box-shadow: 0 -6px 24px -8px rgb(255 160 90 / 0.6);
+}
+.nc-here img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.85);
+}
+.nc-journey h3 {
+  font-family: var(--nc-serif);
+  font-size: clamp(26px, 2.4vw, 36px);
+}
+.nc-journey p {
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: var(--nc-soft);
+}
+
+/* ---------- 四个世界：一幕一幕 ---------- */
+.nc-worlds > ol {
+  display: grid;
+  gap: clamp(100px, 16vh, 170px);
+  margin-top: var(--nc-head-gap);
+  padding: 0;
+  list-style: none;
+}
+.nc-world {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  gap: 5vw;
+  align-items: center;
+}
+.nc-world:nth-child(even) {
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+}
+.nc-world:nth-child(even) .nc-world-shot {
+  order: 2;
+}
+.nc-world-shot {
+  --p: 0.5;
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow:
+    0 0 0 1px var(--nc-panel-line),
+    0 60px 120px -50px rgb(var(--tint, 255 160 90) / 0.45),
+    0 40px 80px -40px #000;
+}
+.nc-world-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(calc(1.14 - var(--p) * 0.1));
+  will-change: transform;
+}
+.nc-world-shot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgb(5 6 10 / 0.5), transparent 35%),
+    radial-gradient(120% 90% at 50% 50%, transparent 60%, rgb(5 6 10 / 0.45));
+  pointer-events: none;
+}
+.nc-world-shot figcaption {
+  position: absolute;
+  z-index: 1;
+  right: 18px;
+  bottom: 14px;
+  font-family: var(--nc-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: rgb(255 255 255 / 0.72);
+}
+.nc-world-copy {
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+}
+.nc-world-copy h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 16px;
+  font-family: var(--nc-serif);
+  font-size: clamp(32px, 3.4vw, 52px);
+  line-height: 1.2;
+}
+.nc-world-copy h3 small {
+  font-family: var(--nc-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--nc-muted);
+}
+.nc-world-copy h3 .nc-tag {
+  margin-left: 0;
+  align-self: center;
+}
+.nc-world-copy blockquote {
+  padding-left: 20px;
+  border-left: 1px solid rgb(var(--tint, 255 180 107) / 0.7);
+  font-family: var(--nc-serif);
+  font-size: clamp(18px, 1.6vw, 23px);
+  font-weight: 300;
+  line-height: 1.65;
+  color: #ffe6cc;
+}
+.nc-world-copy > p {
+  font-size: 15.5px;
+  line-height: 1.85;
+  color: var(--nc-soft);
+}
+.nc-world-copy .nc-souvenir {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 20px 11px 16px;
+  border: 1px solid rgb(255 180 107 / 0.3);
+  border-radius: 999px;
+  background: rgb(255 180 107 / 0.05);
+  font-size: 14.5px;
+  color: var(--nc-ink);
+}
+.nc-souvenir span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--nc-amber);
+}
+.nc-souvenir span::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--nc-amber);
+  box-shadow: 0 0 10px var(--nc-amber);
+}
+
+@media (max-width: 1080px) {
+  .nc-world,
+  .nc-world:nth-child(even) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+  .nc-world:nth-child(even) .nc-world-shot {
+    order: 0;
+  }
+}
+@media (max-width: 900px) {
+  .nc-portals ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 28px;
+  }
+  .nc-site .nc-portals a {
+    justify-items: start;
+    text-align: left;
+  }
+  .nc-portals figcaption {
+    text-align: left;
+  }
+  .nc-journey {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+  }
+}

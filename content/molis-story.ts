@@ -5,7 +5,7 @@
 export const hero = {
   kicker: 'Molis Story · 开发中',
   title: '走进另一个世界，经历另一种生活，然后回来。',
-  lead: 'Molis Story 是 Mac 上的一组世界。每个世界有自己的画面、规则和时间；你可以进去待一会儿，再带一样东西回来。',
+  lead: 'Mac 上的一组世界。进去待一会儿，再带一样东西回来。',
   status: ['开发中', 'macOS', '还不能下载'],
   actions: { follow: '关注进展', worlds: '看看四个世界' },
 };
@@ -16,15 +16,15 @@ export const journey = {
   steps: [
     {
       title: '此处',
-      text: '一个安静的地方。现在几点、有什么在等你、去过哪里、带回了什么。',
+      text: '一个安静的地方，记得你去过哪里。',
     },
     {
       title: '彼处',
-      text: '每扇窗后面是一个世界。进去之后它占满画面，只留一个「归来」。',
+      text: '每扇窗后面是一个世界。',
     },
     {
       title: '归来',
-      text: '世界先替你保存，再放你回来。你看到停在哪里、那边记得什么、带回了什么。',
+      text: '世界替你保存，再放你回来。',
     },
   ],
 };
@@ -55,7 +55,7 @@ export const worlds: World[] = [
     name: '云海来客',
     english: 'Astralo',
     quote: '另一端，也有谁在试着理解你。',
-    text: '一条来自气态巨行星云层的信号接上了你。没有译文，能用的词是你们一起试出来的；告别再回来，它会引用你们真正说过的话。',
+    text: '一条来自云层的信号，能用的词是你们一起试出来的。',
     souvenir: '一段未译的信号',
     image: { src: '/images/edition-c/story/astralo.jpg', w: 1600, h: 900 },
     imageNote: '概念画面',
@@ -66,7 +66,7 @@ export const worlds: World[] = [
     name: '彼处',
     english: 'Elsewhere',
     quote: '把一个一直留在心里的如果，认真走完一次，然后回到这里。',
-    text: '讲出一个真实的岔路口，核对哪些是事实，划定虚构能走多远，再读一本只写给你的书。它不预测，也不比较两条路的高下。',
+    text: '讲出一个真实的岔路口，读一本只写给你的书。',
     souvenir: '补完的一句',
     image: { src: '/images/edition-c/story/departure.jpg', w: 1600, h: 900 },
     imageNote: '概念画面',
@@ -76,7 +76,7 @@ export const worlds: World[] = [
     relation: '回到自己的一段时光',
     name: '袖珍博物馆',
     quote: '把一段经历里的照片与文字，变成可以走近、探索和重访的私人展览。',
-    text: '自己排列展品、写下展签，然后开幕；可以慢慢走近每一件，也可以关灯看影院。',
+    text: '自己排列展品、写下展签，然后开幕。',
     souvenir: '一本离线纪念册',
     image: { src: '/images/edition-c/story/museum-lake.jpg', w: 1200, h: 800 },
     imageNote: '示例照片 · Unsplash',
@@ -86,7 +86,7 @@ export const worlds: World[] = [
     relation: '成为另一个人',
     name: '雾港失物招领处',
     quote: '有些东西，在被弄丢之前，就先送到了这里。',
-    text: '雾港每晚十点起雾，这里收下的失物，标签上的日期都是明天。以你自己，或一位你设定的人物接下夜班。',
+    text: '雾港每晚十点起雾，失物标签上的日期都是明天。',
     souvenir: '第十三号钥匙牌',
     tag: '示例世界',
     image: {
@@ -105,19 +105,19 @@ export const different = {
   items: [
     {
       title: '不是游戏',
-      text: '没有分数、胜负、成就和连续打卡，也没有「回答正确」。',
+      text: '没有分数、胜负和打卡。',
     },
     {
       title: '不是无尽的聊天',
-      text: '有限的旅程会真正结束，离开也是体验的一部分。',
+      text: '旅程会真正结束。',
     },
     {
       title: '世界有自己的时间',
-      text: '它会回信、会去睡、展厅会熄灯；但绝不催你，不回来也不会失去什么。',
+      text: '它会回信、会去睡，但绝不催你。',
     },
     {
       title: '每个世界有自己的样子',
-      text: '外壳只用纸与墨，把颜色和声音留给世界。',
+      text: '外壳只用纸与墨。',
     },
   ],
 };
@@ -126,9 +126,9 @@ export const boundaries = {
   kicker: '碰到你真实生活的地方',
   title: '进门前，先说清楚。',
   items: [
-    '进门前，每个世界都写清楚它会用到什么、存在哪里、AI 能看到什么。',
-    '你的照片和文字只存在这台设备上，可以逐段忘掉。',
-    '只有允许虚构的世界，才能带一位人物进入。',
+    '进门前，每个世界都写清楚会用到什么。',
+    '照片和文字只存在这台设备上。',
+    '只有允许虚构的世界，才能带人物进入。',
   ],
 };
 
@@ -137,3 +137,12 @@ export const closing = {
   follow: '关注 Molis Story 的进展',
   home: '回到 Molis AI',
 };
+
+/** 「此处 → 彼处 → 归来」的画面：第一步用四扇小窗，后两步是概念画面 */
+export const journeyImages = [
+  null,
+  { src: '/images/edition-c/story/elsewhere.jpg', w: 1600, h: 900 },
+  { src: '/images/edition-c/story/homecoming.jpg', w: 1600, h: 900 },
+];
+export const imageNote = '概念画面';
+export const windowsNote = '概念画面；袖珍博物馆为示例照片（Unsplash）';

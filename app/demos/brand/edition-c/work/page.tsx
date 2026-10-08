@@ -7,11 +7,12 @@ import {
   MAC_DOWNLOAD_URL,
   RELEASES_URL,
   featuresByAvailability,
+  screenshotNote,
+  screenshots,
   short,
 } from '../../../../../content/molis-work';
 import {
   Closing,
-  Compare,
   Frame,
   SectionHead,
   Phrases,
@@ -20,7 +21,6 @@ import {
   pad,
   type Action,
 } from '../kit';
-import { workShots } from '../shots';
 import {
   Footer,
   SiteHeader,
@@ -34,10 +34,9 @@ import './work.css';
 
 // 短版：只讲 v0.2.0 现在能做的事，下一版集中在「即将到来」。文案全部来自 content/molis-work.ts 的 short。
 
-const { hero, audience, howto, highlights, start, compare, upcoming, faq } =
-  short;
+const { hero, audience, howto, highlights, start, upcoming, faq } = short;
 const features = featuresByAvailability();
-const stepShots = [workShots.create, workShots.runtime, workShots.check];
+const stepShots = [screenshots.create, screenshots.runtime, screenshots.check];
 
 const heroActions: Action[] = [
   ...(MAC_DOWNLOAD_URL
@@ -116,12 +115,12 @@ export default function EditionCWorkPage() {
         >
           <figure>
             <Frame
-              src={workShots.goal.src}
-              w={workShots.goal.w}
-              h={workShots.goal.h}
-              label={workShots.goal.label}
+              src={screenshots.goal.src}
+              w={screenshots.goal.w}
+              h={screenshots.goal.h}
+              label={screenshots.goal.label}
             />
-            <figcaption>产品截图 · v0.2.0 · 演示数据</figcaption>
+            <figcaption>{screenshotNote}</figcaption>
           </figure>
         </section>
 
@@ -160,9 +159,7 @@ export default function EditionCWorkPage() {
               );
             })}
           </ol>
-          <p className="ep-note">
-            产品截图 · v0.2.0 · 演示数据。完整的操作录屏还在制作。
-          </p>
+          <p className="ep-note">{screenshotNote}</p>
         </section>
 
         <section className="ep-section" aria-labelledby="ew-highlights-title">
@@ -184,7 +181,6 @@ export default function EditionCWorkPage() {
               </li>
             ))}
           </ol>
-          <p className="ep-note">{highlights.note}</p>
         </section>
 
         <section
@@ -221,22 +217,6 @@ export default function EditionCWorkPage() {
               ))}
             </ol>
           </div>
-        </section>
-
-        <section className="ep-section" aria-labelledby="ew-compare-title">
-          <SectionHead
-            id="ew-compare-title"
-            kicker={compare.kicker}
-            title={compare.title}
-          />
-          <Compare
-            labels={[
-              compare.labels.now,
-              compare.labels.pain,
-              compare.labels.here,
-            ]}
-            rows={compare.rows.map((row) => [row.now, row.pain, row.here])}
-          />
         </section>
 
         <section
@@ -292,7 +272,6 @@ export default function EditionCWorkPage() {
             <FeatureList
               title={short.features.groups.released}
               items={features.released}
-              open
             />
             <FeatureList
               title={short.features.groups.next}

@@ -1,68 +1,31 @@
 'use client';
 import Link from 'next/link';
 import { Check } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { contact } from '../../../../../content/studio';
+import { useContactForm } from '../../use-contact-form';
 import { Phrases } from '../kit';
-import { Footer, HOME, SiteHeader, WORK } from '../shared';
+import {
+  Footer,
+  HOME,
+  SiteHeader,
+  WORK,
+  useEditionMotion,
+  type Vars,
+} from '../shared';
 import '../edition-c.css';
 import '../kit.css';
 import './contact.css';
 
-// 联系页：表单沿用 /api/join，存进团队的私密收件箱；「企业合作」是新增的方向。
-// 地址栏的 ?topic= 预填方向和内容，产品页的「关注进展」都指到这里。目前不发邮件，也不开通账号。
+// 联系页：表单逻辑在 ../../use-contact-form.ts，五个方向共用；产品页的「关注进展」都指到这里。
+// 目前不发邮件，也不开通账号。
 
 export default function EditionCContactPage() {
-  const [role, setRole] = useState<string>(contact.roles[0]);
-  const [idea, setIdea] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState(false);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const topic = new URLSearchParams(window.location.search).get('topic');
-    const preset = topic ? contact.topics[topic] : undefined;
-    if (!preset) return;
-    queueMicrotask(() => {
-      setRole(preset.role);
-      setIdea(preset.idea);
-    });
-  }, []);
-
-  async function submit(event: React.SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (busy) return;
-    const data = new FormData(event.currentTarget);
-    setBusy(true);
-    setError('');
-    try {
-      const response = await fetch('/api/join', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: data.get('name'),
-          email: data.get('email'),
-          role,
-          idea,
-          consent: data.get('consent') === 'on',
-        }),
-      });
-      const result = (await response.json()) as { error?: string };
-      if (!response.ok) throw new Error(result.error);
-      setDone(true);
-    } catch (caught) {
-      setError(
-        caught instanceof Error && caught.message
-          ? caught.message
-          : '这次没能发出去，请稍后再试。',
-      );
-    } finally {
-      setBusy(false);
-    }
-  }
+  const { role, setRole, idea, setIdea, busy, done, error, submit } =
+    useContactForm();
+  const siteRef = useEditionMotion();
 
   return (
-    <div className="ec-site ek-site">
+    <div className="ec-site ek-site" ref={siteRef}>
       <SiteHeader tone="paper" />
 
       <main id="main" className="ek-main">
@@ -70,8 +33,12 @@ export default function EditionCContactPage() {
           <div className="ek-intro">
             <span className="ec-eyebrow">{contact.kicker}</span>
             <h1 id="ek-title">
-              {contact.title.map((line) => (
-                <span className="ec-phrase" key={line}>
+              {contact.title.map((line, index) => (
+                <span
+                  className="ec-phrase"
+                  key={line}
+                  style={{ '--i': index } as Vars}
+                >
                   {line}
                 </span>
               ))}
@@ -94,10 +61,10 @@ export default function EditionCContactPage() {
                 <p>{contact.success.text}</p>
                 <div className="ep-actions">
                   <Link className="ec-button" href={HOME}>
-                    回到 Molis AI
+                    {contact.successActions.home}
                   </Link>
                   <Link className="ec-button ec-button-light" href={WORK}>
-                    看看 Molis Work
+                    {contact.successActions.work}
                   </Link>
                 </div>
               </div>

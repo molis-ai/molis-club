@@ -1,6 +1,6 @@
 import { useId } from 'react';
 
-export type PlanetKind = 'work' | 'life' | 'story' | 'horizon';
+export type PlanetKind = 'work' | 'life' | 'tool' | 'story' | 'horizon';
 
 const textures: Record<
   PlanetKind,
@@ -19,6 +19,13 @@ const textures: Record<
     octaves: 5,
     seed: 11,
     matrix: '0 0 0 0 0.93  0 0 0 0 0.62  0 0 0 0 0.38  0 0 0 5 -2.4',
+  },
+  // 银蓝色的小卫星，表面是细碎的环形坑；外面绕着一颗探针，像跟在光标旁边
+  tool: {
+    frequency: '0.028 0.026',
+    octaves: 4,
+    seed: 31,
+    matrix: '0 0 0 0 0.86  0 0 0 0 0.92  0 0 0 0 1  2.6 0 0 0 -1.05',
   },
   // violet ice world with long swirls
   story: {
@@ -45,7 +52,10 @@ export default function Planet({
   const id = useId().replace(/:/g, '');
   const texture = textures[kind];
   return (
-    <span className={`cs-planet cs-planet-${kind} ${className}`} aria-hidden="true">
+    <span
+      className={`cs-planet cs-planet-${kind} ${className}`}
+      aria-hidden="true"
+    >
       <span className="cs-planet-body">
         <svg
           className="cs-planet-surface"
@@ -66,6 +76,11 @@ export default function Planet({
         </svg>
       </span>
       {kind === 'work' ? <span className="cs-planet-ring" /> : null}
+      {kind === 'tool' ? (
+        <span className="cs-planet-probe">
+          <i />
+        </span>
+      ) : null}
     </span>
   );
 }

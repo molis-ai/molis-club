@@ -1,8 +1,8 @@
-import { hero } from '../../../../../content/molis-work';
+import { folioWork } from '../../../../../content/folio';
 
 export const metadata = {
-  title: { absolute: 'Molis Work · 本地优先的 AI 工作台' },
-  description: hero.lead,
+  title: { absolute: 'Molis Work · 让工作，在人、工具与 Agent 之间继续' },
+  description: folioWork.lead,
 };
 
 export default function FolioWorkLayout({

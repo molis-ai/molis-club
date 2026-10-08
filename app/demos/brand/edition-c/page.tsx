@@ -2,11 +2,16 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { ImageCurtain } from '../../../image-curtain';
-import { GITHUB_URL } from '../../../../content/molis-work';
+import {
+  GITHUB_URL,
+  screenshotNote,
+  screenshots,
+} from '../../../../content/molis-work';
 import {
   coreProduct,
   ending,
   heroActions,
+  lineImages,
   lines,
   linesIntro,
   positioning,
@@ -15,10 +20,11 @@ import {
   vision,
 } from '../../../../content/studio';
 import { Actions, Frame, Phrases, Status, pad } from './kit';
-import { workShots } from './shots';
 import {
   COMMUNITY,
   Footer,
+  HeroLight,
+  LightLeaves,
   SiteHeader,
   TypedWordmark,
   WORK,
@@ -32,30 +38,6 @@ import './edition-c.css';
 import './kit.css';
 
 // 文案来自 content/studio.ts，五个方向共用；这里只换成 Edition C 的视觉。
-
-const lineImages = {
-  life: {
-    src: '/images/edition-c/life/desktop.jpg',
-    w: 1600,
-    h: 1111,
-    note: '概念稿',
-    position: '30% 30%',
-  },
-  tool: {
-    src: '/images/edition-c/tool/near-cursor.jpg',
-    w: 866,
-    h: 631,
-    note: '概念图',
-    position: '50% 50%',
-  },
-  story: {
-    src: '/images/edition-c/story/departure.jpg',
-    w: 1600,
-    h: 900,
-    note: '概念画面',
-    position: '60% 50%',
-  },
-};
 
 const companies = [
   {
@@ -167,7 +149,7 @@ function PersonNote({
 }
 
 function CoreProduct() {
-  const shot = workShots.goal;
+  const shot = screenshots.goal;
   return (
     <section id="products" className="ec-core" aria-labelledby="ec-core-title">
       <div className="ec-core-copy ec-reveal">
@@ -195,7 +177,7 @@ function CoreProduct() {
           ]}
         />
       </div>
-      <figure className="ec-core-visual" data-scroll="pass">
+      <figure className="ec-core-visual ec-media" data-scroll="pass">
         <img
           className="ec-core-photo"
           src="/images/atelier/studio-desk.jpg"
@@ -207,7 +189,7 @@ function CoreProduct() {
         <div className="ec-core-window">
           <Frame src={shot.src} w={shot.w} h={shot.h} label={shot.label} />
         </div>
-        <figcaption>产品截图 · v0.2.0 · 演示数据</figcaption>
+        <figcaption>{screenshotNote}</figcaption>
       </figure>
     </section>
   );
@@ -298,6 +280,7 @@ function Solutions() {
         ))}
       </ol>
       <div className="ec-directions ec-reveal">
+        <LightLeaves className="ec-directions-leaves" />
         <h3>{solutions.directionsLabel}</h3>
         <ul>
           {solutions.directions.map((direction) => (
@@ -333,7 +316,7 @@ function Team() {
             ))}
           </div>
         </div>
-        <figure className="ec-split-image" data-scroll="pass">
+        <figure className="ec-split-image ec-media" data-scroll="pass">
           <img
             src="/images/atelier/shared-studio.jpg"
             width="1440"
@@ -377,17 +360,22 @@ export default function EditionCDirection() {
 
       <main id="main">
         <section className="ec-hero ec-hero-home" aria-labelledby="ec-title">
-          <img
-            className="ec-hero-photo"
-            src="/images/edition-c/studio-light.jpg"
-            width="1672"
-            height="941"
-            alt=""
-            fetchPriority="high"
-          />
+          <div className="ec-hero-media">
+            <img
+              className="ec-hero-photo"
+              src="/images/edition-c/studio-light.jpg"
+              width="1672"
+              height="941"
+              alt=""
+              fetchPriority="high"
+            />
+          </div>
+          <HeroLight />
           <div className="ec-hero-copy">
             <WordCycle />
-            <h1 id="ec-title">{vision}</h1>
+            <h1 id="ec-title">
+              <Phrases text={vision} />
+            </h1>
             <p>{positioning}</p>
             <Actions
               items={[
@@ -413,7 +401,11 @@ export default function EditionCDirection() {
           <h2 id="ec-invite-title">{ending.title}</h2>
         </section>
         <div className="ec-paths">
-          <Link href={COMMUNITY} className="ec-tile" data-image-curtain>
+          <Link
+            href={COMMUNITY}
+            className="ec-tile ec-media"
+            data-image-curtain
+          >
             <img
               src="/images/edition-c/making-study.jpg"
               width="1536"
@@ -439,7 +431,7 @@ export default function EditionCDirection() {
           </Link>
           <Link
             href={contactHref('enterprise')}
-            className="ec-tile"
+            className="ec-tile ec-media"
             data-image-curtain
           >
             <img

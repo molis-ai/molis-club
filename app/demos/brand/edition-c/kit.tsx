@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { TypedWordmark, type Vars } from './shared';
+import { HeroLight, TypedWordmark, type Vars } from './shared';
 
 // 四个产品页（Work、Life、Tool、Story）共用的骨架：首屏、区块标题、状态条、对比表、窗口框、结尾。
 // 和首页同一套 Edition C 视觉，前缀 ep-，样式在 kit.css。
@@ -12,7 +12,11 @@ export function Phrases({ text }: { text: string }) {
   return (
     <>
       {text.split(/(?<=[，、。：])/).map((phrase, index) => (
-        <span className="ec-phrase" key={index}>
+        <span
+          className="ec-phrase"
+          key={index}
+          style={{ '--i': index } as Vars}
+        >
           {phrase}
         </span>
       ))}
@@ -115,16 +119,19 @@ export function ProductHero({
       data-visual={visual ? '' : undefined}
     >
       {image ? (
-        <img
-          className="ec-hero-photo"
-          src={image.src}
-          width={image.w}
-          height={image.h}
-          alt=""
-          fetchPriority="high"
-          style={{ objectPosition: image.position }}
-        />
+        <div className="ec-hero-media">
+          <img
+            className="ec-hero-photo"
+            src={image.src}
+            width={image.w}
+            height={image.h}
+            alt=""
+            fetchPriority="high"
+            style={{ objectPosition: image.position }}
+          />
+        </div>
       ) : null}
+      {image ? <HeroLight /> : null}
       {visual}
       <div className="ec-hero-copy ep-hero-copy">
         <span className="ep-hero-kicker">{kicker}</span>

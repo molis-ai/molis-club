@@ -8,8 +8,8 @@ import {
 } from 'lucide-react';
 import {
   DROPAGENT_URL,
+  boardNote,
   closing,
-  compare,
   demo,
   hero,
   layers,
@@ -56,10 +56,7 @@ function Pointer({ className }: { className: string }) {
 /** 首屏动画：选中一句英文 → 句尾出现动作签 → 点「翻译」→ 小卡带着来源出现。一轮约 9 秒。 */
 function CursorDemo() {
   return (
-    <figure
-      className="et-demo"
-      aria-label="Molis Tool 界面示意：选中网页上的一句英文，光标旁出现翻译、解释、记下三个动作，翻译结果带着来源出现在旁边。"
-    >
+    <figure className="et-demo" aria-label={demo.label}>
       <div className="et-browser" aria-hidden="true">
         <div className="et-browser-bar">
           <i />
@@ -191,9 +188,7 @@ export default function EditionCToolPage() {
               </li>
             ))}
           </ol>
-          <p className="ep-note">
-            概念图 · 来自 Molis Tool v6 设计图板，示例数据
-          </p>
+          <p className="ep-note">{boardNote}</p>
         </section>
 
         <section
@@ -226,25 +221,7 @@ export default function EditionCToolPage() {
               </li>
             ))}
           </ul>
-          <p className="ep-note">
-            概念图 · 来自 Molis Tool v6 设计图板，示例数据
-          </p>
-        </section>
-
-        <section className="ep-section" aria-labelledby="et-compare-title">
-          <SectionHead
-            id="et-compare-title"
-            kicker={compare.kicker}
-            title={compare.title}
-          />
-          <Compare
-            labels={[
-              compare.labels.now,
-              compare.labels.does,
-              compare.labels.here,
-            ]}
-            rows={compare.rows.map((row) => [row.now, row.does, row.here])}
-          />
+          <p className="ep-note">{boardNote}</p>
         </section>
 
         <section
@@ -318,7 +295,7 @@ export default function EditionCToolPage() {
               <p>{plugins.text}</p>
             </div>
             <div className="et-surfaces ec-reveal" aria-hidden="true">
-              <span className="et-core">一个能力</span>
+              <span className="et-core">{plugins.core}</span>
               {plugins.surfaces.map((surface, index) => (
                 <span
                   className="et-surface"

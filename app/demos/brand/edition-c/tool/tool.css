@@ -1,6 +1,20 @@
 /* Molis Tool 产品页的 Edition C 版本：通用部件在 ../kit.css，前缀 et-。 */
 
-/* ---------- 首屏：文字在上，界面动画在中，字标压底 ---------- */
+/* ---------- 首屏：傍晚色的桌面，文字在上，界面动画在中，字标压底 ---------- */
+.ec-hero.et-hero {
+  background:
+    radial-gradient(
+      70% 46% at 50% 52%,
+      rgb(var(--glow) / 0.2),
+      transparent 70%
+    ),
+    radial-gradient(
+      50% 40% at 85% 0%,
+      rgb(var(--glow) / 0.16),
+      transparent 70%
+    ),
+    linear-gradient(180deg, var(--dusk-2), var(--dusk));
+}
 .et-hero .ec-hero-copy {
   order: 1;
 }
@@ -32,8 +46,9 @@
   color: var(--ink);
   text-align: left;
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--white) 14%, transparent),
-    0 60px 120px -50px rgb(0 0 0 / 0.7);
+    0 0 0 1px rgb(255 253 248 / 0.14),
+    0 60px 120px -50px rgb(0 0 0 / 0.75),
+    0 0 120px -40px rgb(var(--glow) / 0.45);
 }
 .et-browser-bar {
   display: flex;
@@ -335,20 +350,18 @@
 .et-layers {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--gap);
+  gap: clamp(8px, 1.4vw, 24px);
 }
 .et-layers li {
   display: flex;
   flex-direction: column;
-  padding: 10px 10px 28px;
-  border-radius: 4px;
-  background: var(--surface);
+  padding: 0 0 8px;
 }
 .et-board {
   overflow: hidden;
   margin-bottom: 26px;
-  border-radius: 3px;
-  background: var(--paper-deep);
+  border-radius: var(--radius);
+  background: var(--surface);
 }
 .et-board img {
   width: 100%;
@@ -361,7 +374,7 @@
 .et-layers .ep-index,
 .et-layers h3,
 .et-layers p {
-  padding: 0 14px;
+  padding: 0 4px;
 }
 .et-layers h3 {
   margin-top: 10px;
@@ -384,9 +397,15 @@
 }
 .et-moment-shot {
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: var(--radius);
   background: var(--white);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent);
+  box-shadow:
+    0 0 0 1px rgb(33 30 26 / 0.07),
+    0 30px 60px -40px rgb(60 40 20 / 0.4);
+  transition: transform 0.9s var(--ease);
+}
+.et-moment-grid li:hover .et-moment-shot {
+  transform: translateY(-4px);
 }
 .et-moment-shot img {
   width: 100%;
@@ -396,10 +415,10 @@
   object-position: 50% 0;
 }
 .et-moment-grid h3 {
-  margin-top: 18px;
+  margin-top: 20px;
   font-size: 20px;
   font-weight: 500;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 .et-moment-grid p {
   margin-top: 6px;
@@ -414,32 +433,37 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   max-width: 1200px;
   margin: 0 auto;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--hair);
 }
 .et-tools li {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   min-height: 170px;
-  padding: 26px 24px 28px;
-  border-bottom: 1px solid var(--line);
+  padding: 28px 28px 30px;
+  border-bottom: 1px solid var(--hair);
+  transition: background-color 0.5s;
+}
+.et-tools li:hover {
+  background: rgb(255 253 248 / 0.6);
 }
 .et-tools li:not(:nth-child(3n + 1)) {
-  border-left: 1px solid var(--line);
+  border-left: 1px solid var(--hair);
 }
 .et-tools strong {
+  color: var(--ink);
   font-size: 22px;
   font-weight: 500;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 .et-tools small {
   align-self: flex-start;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: var(--ink);
+  padding: 3px 10px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(169 87 47 / 0.35);
   font-size: 11px;
   font-weight: 500;
-  color: var(--white);
+  color: var(--accent);
 }
 .et-tools p {
   margin-top: auto;
@@ -486,23 +510,29 @@
   width: 128px;
   height: 128px;
   border-radius: 50%;
-  background: var(--ink);
+  background:
+    radial-gradient(circle at 50% 0%, rgb(var(--glow) / 0.45), transparent 70%),
+    var(--dusk);
   color: var(--white);
   font-size: 15px;
   font-weight: 500;
   transform: translate(-50%, -50%);
-  box-shadow: 0 0 0 10px var(--surface);
+  box-shadow:
+    0 0 0 10px var(--surface),
+    0 0 60px 6px rgb(var(--glow) / 0.35);
 }
 .et-surface {
   display: flex;
   align-items: center;
   min-height: 120px;
-  padding: 20px 24px;
-  border-radius: 4px;
+  padding: 20px 26px;
+  border-radius: 12px;
   background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  color: var(--ink);
   font-size: clamp(18px, 1.5vw, 22px);
   font-weight: 500;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 .et-surface:nth-of-type(odd) {
   justify-content: flex-end;
@@ -519,7 +549,7 @@
   }
   10%,
   20% {
-    background: var(--paper-deep);
+    background: #f6e6d4;
   }
 }
 
@@ -527,23 +557,28 @@
 .ec-site .et-not {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 120px 24px 40px;
+  padding: clamp(112px, 12vw, 184px) 24px 40px;
   text-align: center;
 }
 .et-not ul {
-  margin-top: 28px;
+  margin-top: 32px;
 }
 .et-not li {
-  padding: 18px 0;
-  border-top: 1px solid var(--line);
-  font-size: clamp(20px, 2vw, 30px);
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: -0.03em;
+  padding: 22px 0;
+  border-top: 1px solid var(--hair);
+  font-family: var(--serif);
+  font-size: clamp(21px, 2.1vw, 32px);
+  font-weight: 300;
+  line-height: 1.4;
+  font-feature-settings: 'halt';
   color: var(--muted);
+  transition: color 0.4s;
+}
+.et-not li:hover {
+  color: var(--ink);
 }
 .et-not li:last-child {
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--hair);
 }
 
 /* ---------- 窄屏 ---------- */
@@ -573,7 +608,7 @@
     border-left: 0;
   }
   .et-tools li:nth-child(2n) {
-    border-left: 1px solid var(--line);
+    border-left: 1px solid var(--hair);
   }
 }
 @media (max-width: 760px) {
