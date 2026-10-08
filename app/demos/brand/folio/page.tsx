@@ -1,168 +1,192 @@
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
-import { ArrowUpRight, BookOpen, MessageSquare, Sparkles } from 'lucide-react';
-import { folioStudio } from '../../../../content/folio';
-import { lineImages, team, type LineId } from '../../../../content/studio';
-import { Actions, SectionHead } from './kit';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowUpRight } from 'lucide-react';
+import { GITHUB_URL } from '../../../../content/molis-work';
+import {
+  coreProduct,
+  ending,
+  lineImages,
+  lines,
+  linesIntro,
+  team,
+  type Line,
+} from '../../../../content/studio';
+import { CoverArt, LifeArt, StoryArt } from './art';
+import { Actions, Phrases, Status, pad } from './kit';
 import {
   COMMUNITY,
   Footer,
   SiteHeader,
+  WORK,
   SOLUTIONS,
   contactHref,
   lineHref,
   useFolioMotion,
   type Vars,
 } from './shared';
-import { people, companies } from './team';
-import { WorkDemo } from './work/demos';
-import { CursorDemo } from './tool/demos';
 import './folio.css';
 import './kit.css';
 import './tool/tool.css';
 import './home.css';
+import { people, companies } from './team';
+import { folioStudio } from '../../../../content/folio';
+import { WorkDemo } from './work/demos';
+import { CursorDemo } from './tool/cursor-demo';
 
-function ProductStage() {
-  const [active, setActive] = useState<LineId>('work');
-  const product = folioStudio.products.find((p) => p.id === active)!;
+// 保留 Claude 原版构图、叠页与成员交互；仅调整用户指定的产品说明和合作入口。
+
+type Person = (typeof people)[number];
+
+/** 一位成员：照片垫着色纸，悬停、键盘聚焦或点按照片时，旁边翻出写着经历的便笺 */
+function PersonCard({
+  index,
+  image,
+  imagePosition,
+  personRole,
+  experience,
+  aside,
+  tone,
+}: Person & { index: number }) {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const noteId = `fo-person-note-${index}`;
+  useEffect(() => {
+    if (!open) return;
+    const outside = (event: PointerEvent) => {
+      if (!root.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('pointerdown', outside);
+    document.addEventListener('keydown', escape);
+    return () => {
+      document.removeEventListener('pointerdown', outside);
+      document.removeEventListener('keydown', escape);
+    };
+  }, [open]);
   return (
-    <div className="fh-showcase">
-      <div className="fh-showcase-decoration" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </div>
-      <fieldset
-        className="fh-product-selector"
-
-        aria-label="看看我们正在做的产品"
+    <div
+      className={`fo-person fo-tone-${tone}`}
+      ref={root}
+      data-open={open}
+      data-reveal
+      style={{ '--i': index } as Vars}
+    >
+      <button
+        type="button"
+        className="fo-person-photo"
+        aria-expanded={open}
+        aria-controls={noteId}
+        aria-label={`认识团队里负责${personRole}的成员`}
+        onClick={() => setOpen((value) => !value)}
       >
-        {folioStudio.products.map((p) => (
-          <button
-            type="button"
-            key={p.id}
-            aria-pressed={active === p.id}
-            onClick={() => setActive(p.id)}
-          >
-            {p.title.replace('Molis ', '')}
-            <span>{p.category}</span>
-          </button>
-        ))}
-      </fieldset>
-      <div className="fh-stage" key={active}>
-        {active === 'work' ? (
-          <WorkDemo compact />
-        ) : active === 'tool' ? (
-          <CursorDemo />
-        ) : (
-          <figure className="fh-concept">
-            <img
-              src={lineImages[active].src}
-              width={lineImages[active].w}
-              height={lineImages[active].h}
-              alt={`${product.title} ${lineImages[active].note}`}
-            />
-            <figcaption>
-              {lineImages[active].note} · {product.status}
-            </figcaption>
-          </figure>
-        )}
-      </div>
-      <Link className="fh-stage-link" href={lineHref[active]}>
-        <span>
-          <strong>{product.title}</strong>
-          {product.line}
-        </span>
-        <ArrowUpRight size={21} />
-      </Link>
+        <span aria-hidden="true" />
+        <img
+          src={image}
+          width="160"
+          height="160"
+          alt=""
+          loading="lazy"
+          style={{ objectPosition: imagePosition }}
+        />
+      </button>
+      <strong>{personRole}</strong>
+      <em>{aside}</em>
+      <p className="fo-person-note" id={noteId}>
+        {experience}
+      </p>
     </div>
   );
 }
 
-function Products() {
+function CoreProduct() {
+  const product = folioStudio.products[0];
   return (
-    <section
-      className="fh-products"
-      id="products"
-      aria-labelledby="fh-products-title"
-    >
-      <div className="fh-section-intro">
-        <SectionHead
-          id="fh-products-title"
-          kicker="我们正在做的产品"
-          title="持续的工作，眼前的小事。"
-          lead="从一次顺手的操作，到跨越几天的工作。找到适合你的那个入口。"
-          layout="split"
+    <section id="products" className="fo-core" aria-labelledby="fo-core-title">
+      <div className="fo-core-copy" data-reveal>
+        <span className="fo-kicker">{coreProduct.kicker}</span>
+        <h2 id="fo-core-title">{coreProduct.name}</h2>
+        <p className="fo-core-line">{product.line}</p>
+        <ol className="fo-core-points">
+          {coreProduct.highlights.map((item, index) => (
+            <li key={item}>
+              <span aria-hidden="true">{pad(index)}</span>
+              {item}
+            </li>
+          ))}
+        </ol>
+        <Status items={coreProduct.status} />
+        <Actions
+          items={[
+            { label: coreProduct.actions.more, href: WORK },
+            {
+              label: coreProduct.actions.github,
+              href: GITHUB_URL,
+              external: true,
+              tone: 'ghost',
+            },
+          ]}
         />
       </div>
+      <WorkDemo compact />
+    </section>
+  );
+}
+
+const lineArt: Record<
+  Line['id'],
+  (props: { note?: string }) => React.JSX.Element
+> = { life: LifeArt, tool: CursorDemo, story: StoryArt };
+
+function Lines() {
+  return (
+    <section id="lines" className="fo-lines" aria-labelledby="fo-lines-title">
+      <header className="fo-lines-intro" data-reveal>
+        <h2 id="fo-lines-title">
+          <Phrases text={linesIntro.title} />
+        </h2>
+      </header>
       <div className="fo-stack">
-        {folioStudio.products.slice(0, 2).map((p, i) => (
-          <article
-            className={`fo-sheet fh-product fh-product-${p.id}`}
-            key={p.id}
-            data-scene="enter"
-            aria-labelledby={`fh-${p.id}-title`}
-          >
-            <div className="fo-sheet-inner">
-              <div className="fh-product-copy">
-                <span className="fh-product-number">0{i + 1}</span>
-                <small>{p.category}</small>
-                <h3 id={`fh-${p.id}-title`}>{p.title}</h3>
-                <p className="fh-product-line">{p.line}</p>
-                <p>{p.detail}</p>
-                <ul>
-                  {(p.id === 'work'
-                    ? ['跨 Agent 继续', '资料就地处理', '工具按需扩展']
-                    : ['在原处处理', '只展开眼前需要', '结果带着出处']
-                  ).map((t) => (
-                    <li key={t}>{t}</li>
-                  ))}
-                </ul>
-                <span className="fh-stage-label">{p.status}</span>
-                <Actions
-                  items={[
-                    {
-                      label: `了解 ${p.title}`,
-                      href: lineHref[p.id],
-                      tone: p.id === 'work' ? 'light' : 'ink',
-                    },
-                  ]}
-                />
-              </div>
-              <div className="fh-product-demo">
-                {p.id === 'work' ? <WorkDemo mode="relay" /> : <CursorDemo />}
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-      <div className="fh-explorations" id="lines">
-        {folioStudio.products.slice(2).map((p) => {
-          const id = p.id as 'life' | 'story';
-          const img = lineImages[id];
+        {lines.map((line, index) => {
+          const Art = lineArt[line.id];
+          const product = folioStudio.products.find(
+            (item) => item.id === line.id,
+          )!;
           return (
-            <article className={`fh-exploration fh-exploration-${id}`} key={id}>
-              <div data-reveal>
-                <small>
-                  {p.category} / {p.status}
-                </small>
-                <h3>{p.title}</h3>
-                <p>{p.line}</p>
-                <Link href={lineHref[id]}>
-                  了解 {p.title} <ArrowUpRight size={17} />
-                </Link>
+            <article
+              key={line.id}
+              className={`fo-sheet fo-sheet-${line.id}`}
+              data-scene="enter"
+              aria-labelledby={`fo-line-${line.id}`}
+            >
+              <div className="fo-sheet-inner">
+                <div className="fo-sheet-copy">
+                  <span className="fo-sheet-number" aria-hidden="true">
+                    {pad(index)}
+                  </span>
+                  <div className="fo-sheet-meta">
+                    <span>{line.area}</span>
+                    <span>{line.status}</span>
+                  </div>
+                  <h3 id={`fo-line-${line.id}`}>
+                    <Link href={lineHref[line.id]}>{line.name}</Link>
+                  </h3>
+                  <p>{product.line}</p>
+                  <Link className="fo-sheet-more" href={lineHref[line.id]}>
+                    {line.more}
+                    <span aria-hidden="true">
+                      <ArrowUpRight size={20} />
+                    </span>
+                  </Link>
+                </div>
+                {line.id === 'tool' ? (
+                  <CursorDemo />
+                ) : (
+                  <Art note={lineImages[line.id].note} />
+                )}
               </div>
-              <figure data-scene="enter">
-                <img
-                  src={img.src}
-                  width={img.w}
-                  height={img.h}
-                  alt={`${p.title} 的${img.note}`}
-                  loading="lazy"
-                />
-                <figcaption>{img.note} · 示例内容</figcaption>
-              </figure>
             </article>
           );
         })}
@@ -173,57 +197,36 @@ function Products() {
 
 function Team() {
   return (
-    <section
-      className="fh-team fo-section"
-      id="about"
-      data-bg="paper"
-      aria-labelledby="fh-team-title"
-    >
-      <SectionHead
-        id="fh-team-title"
-        kicker="认识做产品的人"
-        title="有经验，也始终好奇。"
-        lead={team.text}
-        layout="split"
-      />
-      <div className="fh-team-grid">
-        {people.map((p, i) => (
-          <article
-            className={`fh-person fh-person-${p.tone}`}
-            key={p.image}
-            data-reveal
-            style={{ '--i': i % 2 } as Vars}
-          >
-            <div className="fh-person-image">
-              <img
-                src={p.image}
-                width="200"
-                height="200"
-                alt={`负责${p.personRole}的 Molis 团队成员`}
-                loading="lazy"
-                style={{ objectPosition: p.imagePosition }}
-              />
-              <span aria-hidden="true">0{i + 1}</span>
-            </div>
-            <h3>{p.personRole}</h3>
-            <p>{p.experience}</p>
-            <em>{p.aside}</em>
-          </article>
+    <section id="about" className="fo-people" aria-labelledby="fo-people-title">
+      <div className="fo-people-head" data-reveal>
+        <span className="fo-kicker">{team.kicker}</span>
+        <h2 id="fo-people-title">
+          {team.title[0]}
+          <br />
+          {team.title[1]}
+        </h2>
+        <p>{team.text}</p>
+      </div>
+
+      <div className="fo-people-grid">
+        {people.map((person, index) => (
+          <PersonCard key={person.image} index={index} {...person} />
         ))}
       </div>
-      <div className="fo-proof">
+
+      <div className="fo-proof" aria-label="团队成员的职业经历">
         <p>{team.proof}</p>
         <div className="fo-logos">
-          {companies.map((c) => (
-            <span key={c.name} className={`fo-logo-${c.kind}`}>
+          {companies.map((company) => (
+            <span key={company.name} className={`fo-logo-${company.kind}`}>
               <img
-                src={c.src}
-                width={c.width}
-                height={c.height}
-                alt={c.name}
+                src={company.src}
+                width={company.width}
+                height={company.height}
+                alt={company.name}
                 loading="lazy"
               />
-              {c.kind === 'linkedin' && <b>LinkedIn</b>}
+              {company.kind === 'linkedin' ? <b>LinkedIn</b> : null}
             </span>
           ))}
         </div>
@@ -233,37 +236,40 @@ function Team() {
 }
 
 export default function FolioDirection() {
-  const ref = useFolioMotion();
+  const rootRef = useFolioMotion();
+  const { community, contact } = ending.paths;
+  const mark = ending.title.slice(-1);
+
   return (
-    <div className="fo-site fh-site" ref={ref}>
+    <div className="fo-site" ref={rootRef}>
       <SiteHeader />
+
       <main id="main">
         <section
-          className="fh-cover"
+          className="fo-cover"
           data-scene="leave"
           data-parallax
           aria-labelledby="fo-title"
         >
-          <div className="fh-masthead" aria-hidden="true">
-            {Array.from('Molis').map((letter, i) => (
-              <span key={i} style={{ '--i': i } as Vars}>
+          <div className="fo-masthead" aria-hidden="true" lang="en">
+            {Array.from('Molis').map((letter, index) => (
+              <span key={index} style={{ '--i': index } as Vars}>
                 {letter}
               </span>
             ))}
             <sup>AI</sup>
           </div>
-          <div className="fh-cover-copy">
-            <span className="fo-kicker">Molis AI · 产品工作室</span>
+          <div className="fo-cover-art">
+            <CoverArt />
+          </div>
+          <div className="fo-cover-copy">
             <h1 id="fo-title">
-              我们做 AI 工作台，
-              <br />
-              和顺手的桌面工具。
+              <span className="fo-phrase">AI 工作台，</span>
+              <span className="fo-phrase">和桌面小工具。</span>
             </h1>
             <p>
-              也探索生活助手与互动世界。
-              <br />让 AI 接住复杂的工作、眼前的小事，
-              <br className="fh-desktop-break" />
-              给生活与想象留出空间。
+              我们是 Molis AI，一个做产品的团队。
+              <br />让 AI 接住持续的工作、眼前的小事，也探索生活与故事。
             </p>
             <Actions
               items={[
@@ -271,83 +277,54 @@ export default function FolioDirection() {
                 { label: '认识团队', href: '#about', tone: 'ghost' },
               ]}
             />
-            <div className="fh-cover-index">
-              <span>01 — 工作</span>
-              <span>02 — 桌面</span>
-              <span>03 — 生活</span>
-              <span>04 — 故事</span>
-            </div>
           </div>
-          <ProductStage />
         </section>
-        <Products />
+
+        <CoreProduct />
+        <Lines />
         <Team />
-        <section
-          className="fo-section fh-community"
-          data-bg="white"
-          aria-labelledby="fh-community-title"
-        >
-          <SectionHead
-            id="fh-community-title"
-            kicker="一起试，一起创造"
-            title="产品之外，还有做它们的方法。"
-          />
-          <div className="fh-community-links">
-            {[
-              {
-                title: '来社区看看',
-                text: '试试作品，看看创作过程，告诉我们可以怎样更好。',
-                href: COMMUNITY,
-                Icon: MessageSquare,
-              },
-              {
-                title: '带走一个方法',
-                text: '网页、动效、Prompt 和艺术家 Skill，边看边试。',
-                href: '/wiki',
-                Icon: Sparkles,
-              },
-              {
-                title: '读一点我们的想法',
-                text: '关于想法如何落地，以及技术与人的关系。',
-                href: '/perspectives',
-                Icon: BookOpen,
-              },
-            ].map(({ title, text, href, Icon }) => (
-              <Link href={href} key={href} data-reveal>
-                <Icon size={24} />
-                <h3>{title}</h3>
-                <p>{text}</p>
-                <ArrowUpRight size={22} />
-              </Link>
-            ))}
-          </div>
-        </section>
       </main>
+
       <Footer>
-        <section
-          className="fh-enterprise"
-          aria-labelledby="fh-enterprise-title"
-        >
-          <div>
-            <span className="fh-enterprise-kicker">如果你来自企业或团队</span>
-            <h2 id="fh-enterprise-title">
-              带一个具体问题来，
-              <br />
-              我们一起把它做清楚。
-            </h2>
-          </div>
-          <div>
-            <p>{folioStudio.enterprise}</p>
-            <Actions
-              items={[
-                { label: '了解解决方案', href: SOLUTIONS },
-                {
-                  label: '和我们聊聊',
-                  href: contactHref('enterprise'),
-                  tone: 'light',
-                },
-              ]}
-            />
+        <section className="fo-ending" aria-labelledby="fo-ending-title">
+          <h2 id="fo-ending-title" data-reveal>
+            {ending.title.slice(0, -1)}
+            <span className="fo-back-mark">{mark}</span>
+          </h2>
+          <div className="fo-back-paths">
+            <Link href={COMMUNITY} className="fo-back-path">
+              <small>{community.label}</small>
+              <h3>
+                {community.title.map((line) => (
+                  <span className="fo-phrase" key={line}>
+                    {line}
+                  </span>
+                ))}
+              </h3>
+              <span>
+                {community.action}
+                <ArrowUpRight size={19} aria-hidden="true" />
+              </span>
+            </Link>
+            <div className="fo-back-path fo-back-cooperation">
+              <small>{contact.label}</small>
+              <h3>
+                {contact.title.map((line) => (
+                  <span className="fo-phrase" key={line}>
+                    {line}
+                  </span>
+                ))}
+              </h3>
+              <p>{folioStudio.enterprise}</p>
+              <div className="fo-back-links">
+                <Link href={SOLUTIONS}>
+                  了解解决方案 <ArrowUpRight size={19} aria-hidden="true" />
+                </Link>
+                <Link href={contactHref('enterprise')}>
+                  {contact.action} <ArrowUpRight size={19} aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
       </Footer>

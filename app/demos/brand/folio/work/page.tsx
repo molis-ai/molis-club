@@ -16,7 +16,7 @@ import {
   type Status as Availability,
 } from '../../../../../content/molis-work';
 import { folioWork } from '../../../../../content/folio';
-import { Actions, Closing, ProductHero, SectionHead } from '../kit';
+import { Actions, Closing, Phrases, ProductHero, SectionHead } from '../kit';
 import {
   Footer,
   SiteHeader,
@@ -58,7 +58,9 @@ function MoreWork() {
       <div className="fd-editorial">
         <div className="fd-copy">
           <Phase status={scene.status === 'released' ? 'next' : scene.status} />
-          <h3 className="fw-secondary-title">{scene.title}</h3>
+          <h3 className="fw-secondary-title">
+            <Phrases text={scene.title} />
+          </h3>
           <p>{scene.problem}</p>
           <ul className="fd-copy-list">
             {scene.points.map((p) => (

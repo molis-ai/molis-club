@@ -1,8 +1,7 @@
 'use client';
-import { Pause, Play, RotateCcw, Sparkles } from 'lucide-react';
+import { Pause, Play, Sparkles } from 'lucide-react';
 import {
   useEffect,
-  useId,
   useRef,
   useState,
   type RefObject,
@@ -20,6 +19,7 @@ export function useDemoClock(
   const [step, setStep] = useState(0);
   const [paused, setPaused] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [entered, setEntered] = useState(false);
   const [reduced, setReduced] = useState(true);
   const [revision, setRevision] = useState(0);
   useEffect(() => {
@@ -30,11 +30,15 @@ export function useDemoClock(
     };
     const syncMotion = () => {
       setReduced(media.matches);
-      if (media.matches) setStep(count - 1);
+      if (media.matches) {
+        setStep(count - 1);
+        setEntered(true);
+      }
     };
     const observer = new IntersectionObserver(
       ([entry]) => {
         inView = entry.isIntersecting;
+        if (inView) setEntered(true);
         syncVisibility();
       },
       { threshold: 0.3 },
@@ -54,7 +58,7 @@ export function useDemoClock(
     if (!playing) return;
     const timer = window.setTimeout(() => {
       if (step < count - 1) setStep(step + 1);
-      else setPaused(true);
+      else setStep(0);
     }, duration);
     return () => clearTimeout(timer);
   }, [playing, step, count, duration, revision]);
@@ -62,6 +66,7 @@ export function useDemoClock(
     step,
     paused,
     playing,
+    entered,
     reduced,
     revision,
     select: (next: number) => {
@@ -102,68 +107,54 @@ export function DemoPlayer({
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const clock = useDemoClock(steps.length, duration, rootRef);
-  const id = useId();
   return (
     <div
       ref={rootRef}
       className={`fd-player ${className}`}
       data-tone={tone}
       data-playing={clock.playing}
+      data-entered={clock.entered}
+      data-step={clock.step}
       style={{ '--fd-duration': `${duration}ms` } as Vars}
     >
-      <div className="fd-paper-shadow" aria-hidden="true" />
       <figure aria-label={label}>
         <div className="fd-scene" key={clock.revision}>
           {children(clock.step)}
         </div>
         <figcaption className="fd-caption">
-          <span>{note}</span>
-          <span className="fd-count">
-            {String(clock.step + 1).padStart(2, '0')} /{' '}
-            {String(steps.length).padStart(2, '0')}
-          </span>
-        </figcaption>
-      </figure>
-      <fieldset className="fd-controls" aria-label={`${label}播放控制`}>
-        <ol className="fd-steps" aria-label="演示步骤">
-          {steps.map((name, i) => (
-            <li key={name}>
+          {note && <span className="fd-note">{note}</span>}
+          <fieldset
+            className="fd-controls"
+            aria-label={`${label}播放控制`}
+          >
+            <div className="fd-dots">
+              {steps.map((name, index) => (
+                <button
+                  key={name}
+                  type="button"
+                  aria-label={`查看步骤 ${index + 1}：${name}`}
+                  aria-pressed={clock.step === index}
+                  onClick={() => clock.select(index)}
+                  title={name}
+                >
+                  <i aria-hidden="true" />
+                </button>
+              ))}
+            </div>
+            {!clock.reduced && (
               <button
                 type="button"
-                aria-label={`查看步骤 ${i + 1}：${name}`}
-                aria-pressed={clock.step === i}
-                onClick={() => clock.select(i)}
+                className="fd-pause"
+                onClick={clock.toggle}
+                aria-label={clock.paused ? '播放演示' : '暂停演示'}
+                title={clock.paused ? '播放' : '暂停'}
               >
-                <span>{name}</span>
-                <i
-                  key={`${id}-${clock.revision}-${clock.step}`}
-                  aria-hidden="true"
-                />
+                {clock.paused ? <Play size={12} /> : <Pause size={12} />}
               </button>
-            </li>
-          ))}
-        </ol>
-        <div className="fd-play-buttons">
-          {!clock.reduced && (
-            <button
-              type="button"
-              onClick={clock.toggle}
-              aria-label={clock.paused ? '播放演示' : '暂停演示'}
-              title={clock.paused ? '播放' : '暂停'}
-            >
-              {clock.paused ? <Play size={15} /> : <Pause size={15} />}
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={clock.replay}
-            aria-label="重播演示"
-            title="重播"
-          >
-            <RotateCcw size={15} />
-          </button>
-        </div>
-      </fieldset>
+            )}
+          </fieldset>
+        </figcaption>
+      </figure>
     </div>
   );
 }
