@@ -48,20 +48,20 @@ export type Person = {
 // 保留已确认的团队资料，Folio 首页直接展示。
 export const people: Person[] = [
   {
-    image: '/images/daylight/team/zhuangshi.jpg',
-    personRole: 'AI 数据产品与复杂业务设计',
-    experience:
-      '曾任字节、美团核心团队 AI 数据产品资深专家；参与抖音数据管理及功能建设，拥有相关软件著作权，并受邀在 DataFun、美团大学与 CSDI Summit 分享实践。',
-    aside: 'Molis 创始合伙人、首席布道人。Google 搜得到的女人。',
-    tone: 'red',
-  },
-  {
     image: '/images/daylight/team/yijun.jpg',
     personRole: '系统架构、产品与技术管理',
     experience:
       '曾在美团、字节、滴滴、LinkedIn 及多家硅谷创业公司的核心研发团队负责架构与管理，长期建设和演进高复杂度核心系统。',
     aside: 'Molis AI Founder。首席 Token 官，也是一个幻想家。',
     tone: 'blue',
+  },
+  {
+    image: '/images/daylight/team/zhuangshi.jpg',
+    personRole: 'AI 数据产品与复杂业务设计',
+    experience:
+      '曾任字节、美团核心团队 AI 数据产品资深专家；参与抖音数据管理及功能建设，拥有相关软件著作权，并受邀在 DataFun、美团大学与 CSDI Summit 分享实践。',
+    aside: 'Molis 创始合伙人、首席布道人。Google 搜得到的女人。',
+    tone: 'red',
   },
   {
     image: '/images/daylight/team/xiejun.jpeg',
