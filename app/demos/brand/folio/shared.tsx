@@ -23,6 +23,7 @@ export const LIFE = `${HOME}/life`;
 export const TOOL = `${HOME}/tool`;
 export const STORY = `${HOME}/story`;
 export const CONTACT = `${HOME}/contact`;
+export const SOLUTIONS = `${HOME}/solutions`;
 export const COMMUNITY = '/demos/community';
 
 export const lineIds: LineId[] = ['work', 'life', 'tool', 'story'];
@@ -113,7 +114,7 @@ function ProductsMenu({ current }: { current?: LineId }) {
 }
 
 /** 所有 Folio 页面共用的顶栏：产品 · 解决方案 · 社区 · 关于 · 聊一聊 */
-export function SiteHeader({ current }: { current?: LineId }) {
+export function SiteHeader({ current }: { current?: LineId | 'solutions' }) {
   return (
     <header className="fo-header">
       <Link href={HOME} className="fo-logo" aria-label="Molis AI 首页">
@@ -121,8 +122,13 @@ export function SiteHeader({ current }: { current?: LineId }) {
         <span>Molis AI</span>
       </Link>
       <nav className="fo-nav" aria-label="主导航">
-        <ProductsMenu current={current} />
-        <Link href={`${HOME}#solutions`}>{navLabels.solutions}</Link>
+        <ProductsMenu current={current === 'solutions' ? undefined : current} />
+        <Link
+          href={SOLUTIONS}
+          aria-current={current === 'solutions' ? 'page' : undefined}
+        >
+          {navLabels.solutions}
+        </Link>
         <Link href={COMMUNITY}>{navLabels.community}</Link>
         <Link href={`${HOME}#about`}>{navLabels.about}</Link>
       </nav>
@@ -177,9 +183,7 @@ export function Footer({
               <h2>{footer.studioLabel}</h2>
               <ul>
                 <li>
-                  <Link href={`${HOME}#solutions`}>
-                    {footer.studio.solutions}
-                  </Link>
+                  <Link href={SOLUTIONS}>{footer.studio.solutions}</Link>
                 </li>
                 <li>
                   <Link href={COMMUNITY}>{footer.studio.community}</Link>
