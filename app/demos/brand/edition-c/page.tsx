@@ -23,6 +23,8 @@ import { Actions, Frame, Phrases, Status, pad } from './kit';
 import {
   COMMUNITY,
   Footer,
+  HeroLight,
+  LightLeaves,
   SiteHeader,
   TypedWordmark,
   WORK,
@@ -175,7 +177,7 @@ function CoreProduct() {
           ]}
         />
       </div>
-      <figure className="ec-core-visual" data-scroll="pass">
+      <figure className="ec-core-visual ec-media" data-scroll="pass">
         <img
           className="ec-core-photo"
           src="/images/atelier/studio-desk.jpg"
@@ -278,6 +280,7 @@ function Solutions() {
         ))}
       </ol>
       <div className="ec-directions ec-reveal">
+        <LightLeaves className="ec-directions-leaves" />
         <h3>{solutions.directionsLabel}</h3>
         <ul>
           {solutions.directions.map((direction) => (
@@ -313,7 +316,7 @@ function Team() {
             ))}
           </div>
         </div>
-        <figure className="ec-split-image" data-scroll="pass">
+        <figure className="ec-split-image ec-media" data-scroll="pass">
           <img
             src="/images/atelier/shared-studio.jpg"
             width="1440"
@@ -357,17 +360,22 @@ export default function EditionCDirection() {
 
       <main id="main">
         <section className="ec-hero ec-hero-home" aria-labelledby="ec-title">
-          <img
-            className="ec-hero-photo"
-            src="/images/edition-c/studio-light.jpg"
-            width="1672"
-            height="941"
-            alt=""
-            fetchPriority="high"
-          />
+          <div className="ec-hero-media">
+            <img
+              className="ec-hero-photo"
+              src="/images/edition-c/studio-light.jpg"
+              width="1672"
+              height="941"
+              alt=""
+              fetchPriority="high"
+            />
+          </div>
+          <HeroLight />
           <div className="ec-hero-copy">
             <WordCycle />
-            <h1 id="ec-title">{vision}</h1>
+            <h1 id="ec-title">
+              <Phrases text={vision} />
+            </h1>
             <p>{positioning}</p>
             <Actions
               items={[
@@ -393,7 +401,11 @@ export default function EditionCDirection() {
           <h2 id="ec-invite-title">{ending.title}</h2>
         </section>
         <div className="ec-paths">
-          <Link href={COMMUNITY} className="ec-tile" data-image-curtain>
+          <Link
+            href={COMMUNITY}
+            className="ec-tile ec-media"
+            data-image-curtain
+          >
             <img
               src="/images/edition-c/making-study.jpg"
               width="1536"
@@ -419,7 +431,7 @@ export default function EditionCDirection() {
           </Link>
           <Link
             href={contactHref('enterprise')}
-            className="ec-tile"
+            className="ec-tile ec-media"
             data-image-curtain
           >
             <img

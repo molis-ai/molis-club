@@ -11,10 +11,10 @@
   bottom: -6%;
   width: 22%;
   overflow: hidden;
-  border: 7px solid var(--ink);
+  border: 7px solid var(--dusk);
   border-radius: 30px;
-  background: var(--ink);
-  box-shadow: 0 40px 70px -30px rgb(0 0 0 / 0.45);
+  background: var(--dusk);
+  box-shadow: 0 50px 80px -34px rgb(60 40 20 / 0.55);
 }
 .el-phone img {
   width: 100%;
@@ -28,10 +28,8 @@
 /* 三件事：引一句话 */
 .ec-site .el-jobs blockquote {
   margin-top: 40px;
-  font-size: clamp(19px, 1.5vw, 24px);
-  font-weight: 500;
-  line-height: 1.45;
-  letter-spacing: -0.02em;
+  font-size: clamp(20px, 1.6vw, 26px);
+  line-height: 1.55;
 }
 .ec-site .el-jobs h3 {
   padding-top: 32px;
@@ -43,23 +41,24 @@
 /* 怎么交代 */
 .el-handoff-body h3 {
   margin: 0 0 14px;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
+  letter-spacing: 0.12em;
   color: var(--muted);
 }
 .el-handoff-body h3 + ul + h3 {
   margin-top: 40px;
 }
 .el-entries {
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--hair);
 }
 .el-entries li {
   display: grid;
   grid-template-columns: 34px 1fr auto;
   align-items: center;
   gap: 10px;
-  min-height: 60px;
-  border-bottom: 1px solid var(--line);
+  min-height: 62px;
+  border-bottom: 1px solid var(--hair);
 }
 .el-entries strong {
   font-size: 17px;
@@ -72,37 +71,47 @@
   gap: 8px;
 }
 .el-intents li {
-  padding: 10px 18px;
+  padding: 10px 20px;
   border-radius: 999px;
   background: var(--white);
-  box-shadow: inset 0 0 0 1px var(--line);
-  font-size: 15px;
-  font-weight: 500;
+  box-shadow:
+    inset 0 0 0 1px var(--hair),
+    0 10px 24px -18px rgb(60 40 20 / 0.4);
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink);
 }
 
 /* 八个场景 */
 .el-scenes {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--gap);
+  gap: clamp(8px, 1vw, 16px);
 }
 .el-scenes li {
   display: flex;
   flex-direction: column;
-  min-height: 150px;
-  padding: 22px 22px 24px;
-  border-radius: 4px;
-  background: var(--surface);
-  transition: background 0.4s;
+  min-height: 168px;
+  padding: 24px 24px 26px;
+  border-radius: var(--radius);
+  background: var(--paper-soft);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  transition:
+    transform 0.7s var(--ease),
+    box-shadow 0.7s var(--ease);
 }
 .el-scenes li:hover {
-  background: var(--paper-deep);
+  transform: translateY(-4px);
+  box-shadow:
+    inset 0 0 0 1px var(--hair),
+    0 30px 60px -36px rgb(60 40 20 / 0.4);
 }
 .el-scenes strong {
   margin-top: auto;
+  color: var(--ink);
   font-size: 20px;
   font-weight: 500;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 
 /* 决定权在你 */
@@ -134,15 +143,16 @@
   text-align: left;
 }
 .ec-site .el-device-list {
-  margin-top: 36px;
-  border-top: 1px solid var(--line);
+  margin-top: 40px;
+  border-top: 1px solid var(--hair);
 }
 .el-device-list li {
-  padding: 20px 0;
-  border-bottom: 1px solid var(--line);
+  padding: 22px 0;
+  border-bottom: 1px solid var(--hair);
 }
 .el-device-list strong {
   display: flex;
+  color: var(--ink);
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;

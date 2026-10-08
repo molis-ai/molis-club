@@ -4,7 +4,14 @@ import { Check } from 'lucide-react';
 import { contact } from '../../../../../content/studio';
 import { useContactForm } from '../../use-contact-form';
 import { Phrases } from '../kit';
-import { Footer, HOME, SiteHeader, WORK } from '../shared';
+import {
+  Footer,
+  HOME,
+  SiteHeader,
+  WORK,
+  useEditionMotion,
+  type Vars,
+} from '../shared';
 import '../edition-c.css';
 import '../kit.css';
 import './contact.css';
@@ -15,9 +22,10 @@ import './contact.css';
 export default function EditionCContactPage() {
   const { role, setRole, idea, setIdea, busy, done, error, submit } =
     useContactForm();
+  const siteRef = useEditionMotion();
 
   return (
-    <div className="ec-site ek-site">
+    <div className="ec-site ek-site" ref={siteRef}>
       <SiteHeader tone="paper" />
 
       <main id="main" className="ek-main">
@@ -25,8 +33,12 @@ export default function EditionCContactPage() {
           <div className="ek-intro">
             <span className="ec-eyebrow">{contact.kicker}</span>
             <h1 id="ek-title">
-              {contact.title.map((line) => (
-                <span className="ec-phrase" key={line}>
+              {contact.title.map((line, index) => (
+                <span
+                  className="ec-phrase"
+                  key={line}
+                  style={{ '--i': index } as Vars}
+                >
                   {line}
                 </span>
               ))}

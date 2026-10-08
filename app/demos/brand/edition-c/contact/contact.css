@@ -1,7 +1,7 @@
 /* 联系页的 Edition C 版本：左边一句话和一张图，右边表单，下面是隐私说明。前缀 ek-。 */
 
 .ek-main {
-  padding-top: 88px;
+  padding-top: 84px;
 }
 .ek-contact {
   display: grid;
@@ -14,14 +14,28 @@
   flex-direction: column;
   padding: clamp(40px, 5vw, 80px) clamp(24px, 4vw, 64px) 0;
   overflow: hidden;
-  border-radius: 4px;
-  background: var(--surface);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(
+      80% 60% at 15% 0%,
+      rgb(255 250 240 / 0.75),
+      transparent 60%
+    ),
+    var(--surface);
 }
 .ek-intro h1 {
-  margin-top: 16px;
-  font-size: clamp(36px, 4vw, 64px);
-  line-height: 1.14;
-  letter-spacing: -0.04em;
+  margin-top: 22px;
+  font-size: clamp(38px, 4.2vw, 68px);
+  line-height: 1.22;
+}
+.ek-intro h1 .ec-phrase {
+  animation: ec-mask 1.4s var(--ease) backwards;
+  animation-delay: calc(0.15s + var(--i, 0) * 0.14s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ek-intro h1 .ec-phrase {
+    animation: none;
+  }
 }
 .ek-intro p {
   margin: 22px 0 48px;
@@ -37,8 +51,9 @@
 }
 .ek-panel {
   padding: clamp(32px, 5vw, 72px) clamp(24px, 5vw, 80px);
-  border-radius: 4px;
-  background: var(--surface);
+  border-radius: var(--radius);
+  background: var(--paper-soft);
+  box-shadow: inset 0 0 0 1px var(--hair);
 }
 
 /* 表单 */
@@ -55,10 +70,11 @@
   border: 0;
 }
 .ek-roles legend {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   padding: 0;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
+  letter-spacing: 0.1em;
   color: var(--muted);
 }
 .ek-roles label {
@@ -78,12 +94,17 @@
   padding: 0 18px;
   border-radius: 999px;
   background: var(--white);
-  box-shadow: inset 0 0 0 1px var(--line);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  color: var(--ink);
   font-size: 15px;
   font-weight: 500;
   transition:
-    background 0.2s,
-    color 0.2s;
+    background-color 0.3s,
+    color 0.3s,
+    box-shadow 0.3s;
+}
+.ek-roles label:hover input:not(:checked) + span {
+  box-shadow: inset 0 0 0 1px var(--faint);
 }
 .ek-roles input:checked + span {
   background: var(--ink);
@@ -91,8 +112,8 @@
   color: var(--white);
 }
 .ek-roles input:focus-visible + span {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 .ek-row {
   display: grid;
@@ -104,8 +125,9 @@
   gap: 8px;
 }
 .ek-field span {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
+  letter-spacing: 0.1em;
   color: var(--muted);
 }
 .ek-field input,
@@ -114,13 +136,19 @@
   min-height: 48px;
   padding: 12px 14px;
   border: 0;
-  border-radius: 4px;
-  background: var(--white);
-  box-shadow: inset 0 0 0 1px var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--hair);
   color: var(--ink);
   font: inherit;
   font-size: 16px;
-  transition: box-shadow 0.2s;
+  transition:
+    box-shadow 0.3s,
+    background-color 0.3s;
+}
+.ek-field input::placeholder,
+.ek-field textarea::placeholder {
+  color: var(--faint);
 }
 .ek-field textarea {
   resize: vertical;
@@ -129,7 +157,10 @@
 .ek-field input:focus,
 .ek-field textarea:focus {
   outline: none;
-  box-shadow: inset 0 0 0 2px var(--ink);
+  background: var(--white);
+  box-shadow:
+    inset 0 0 0 1.5px var(--ink),
+    0 0 0 5px rgb(var(--glow) / 0.18);
 }
 .ek-consent {
   display: flex;
@@ -205,14 +236,14 @@
   scroll-margin-top: 24px;
 }
 .ek-privacy h2 {
-  font-size: clamp(26px, 2.4vw, 38px);
+  font-size: clamp(28px, 2.6vw, 42px);
 }
 .ek-privacy ul {
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--hair);
 }
 .ek-privacy li {
-  padding: 18px 0;
-  border-bottom: 1px solid var(--line);
+  padding: 20px 0;
+  border-bottom: 1px solid var(--hair);
   color: var(--muted);
 }
 
