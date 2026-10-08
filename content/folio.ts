@@ -69,6 +69,8 @@ export const folioSolutions = {
       id: 'content',
       name: '内容增长',
       title: '从资料与判断，到值得发布的内容。',
+      headline: ['让研究变成', '有依据的内容。'],
+      outcomes: ['带来源的研究材料', '能回查的选题依据', '供人审阅的内容草稿'],
       problem: '研究、选题、创作散在不同工具里，做过的判断留不下来。',
       process: ['整理研究资料', '比较选题依据', '形成内容草稿', '由人审阅发布'],
       output: '带来源的研究材料、选题依据与内容草稿。',
@@ -80,6 +82,12 @@ export const folioSolutions = {
       id: 'software',
       name: '已有软件接入 Agent',
       title: '让现有系统的能力，接得住一个目标。',
+      headline: ['让 Agent 用上', '已有业务能力。'],
+      outcomes: [
+        '选定场景中的业务能力',
+        '沿用已有的权限与规则',
+        '可核对的执行记录',
+      ],
       problem: '业务规则已经在系统里，AI 却只能在外面给建议。',
       process: [
         '明确业务目标',
@@ -96,6 +104,12 @@ export const folioSolutions = {
       id: 'data',
       name: '数据分析与判断',
       title: '让一份报告，找得到每个结论的来处。',
+      headline: ['每一个结论，', '都能找到依据。'],
+      outcomes: [
+        '可追溯的数据出处',
+        '清楚呈现的分析过程',
+        '待人确认的报告草稿',
+      ],
       problem: '取数、解释指标和写报告反复搬运，结论的依据难以追溯。',
       process: [
         '确认数据与口径',
