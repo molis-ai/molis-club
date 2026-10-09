@@ -1,354 +1,516 @@
 'use client';
-import { useState } from 'react';
-import { Check, ChevronDown, FileText, Layers, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import {
   GITHUB_URL,
   INSTALL_URL,
-  MAC_DOWNLOAD_URL,
   RELEASES_URL,
-  agentLine,
-  comparisons,
+  access,
+  bounds,
+  closing,
+  compare,
   differences,
-  featureGroups,
-  localFirst,
-  moreScenarios,
-  scenarios,
-  type Status as Availability,
-} from '../../../../../content/molis-work';
-import { folioWork } from '../../../../../content/folio';
-import { Actions, Closing, Phrases, ProductHero, SectionHead } from '../kit';
+  everywhere,
+  features,
+  hero,
+  more,
+  phaseLabel,
+  platform,
+  scenes,
+  scenesIntro,
+  type Phase as PhaseId,
+  type Scene,
+} from '../../../../../content/folio-work';
+import { Actions, Closing, ProductHero, SectionHead, pad } from '../kit';
 import {
   Footer,
-  SiteHeader,
+  HOME,
   SOLUTIONS,
+  SiteHeader,
   contactHref,
   useFolioMotion,
   type Vars,
 } from '../shared';
-import { WorkDemo, type WorkMode } from './demos';
+import { WorkDesk } from './desk';
+import { ComposeDemo, ControlDemo, RelayDemo } from './scenes';
 import '../folio.css';
 import '../kit.css';
 import './work.css';
 
-function Phase({ status }: { status: Availability }) {
+// 首屏与 Tool 同一规格：左边说清是什么、给谁、解决什么，右边是贴着真实产品的动作。
+// 正文顺序照产品介绍 V2 的建议：亮点 → 平台和插件 → 三个主场景 → 五点不同 → 更多场景 → 功能 → 比较与边界。
+
+function Phase({ phase, note }: { phase: PhaseId; note?: string }) {
   return (
-    <span className="fw-phase" data-status={status}>
-      {folioWork.status[status]}
+    <span className="fw-phase" data-phase={phase}>
+      {note ?? phaseLabel[phase]}
     </span>
   );
 }
 
-function MoreWork() {
-  const [active, setActive] = useState(0);
-  const scene = moreScenarios[active];
+const sceneDemo: Record<Scene['id'], () => React.JSX.Element> = {
+  compose: ComposeDemo,
+  relay: RelayDemo,
+  control: ControlDemo,
+};
+
+/** 亮点：AI 出现在工作流程里需要的那一环，而不是一个聊天框 */
+function Everywhere() {
   return (
-    <>
-      <fieldset className="fd-tabs" aria-label="选择更多 Work 场景">
-        {moreScenarios.map((s, i) => (
-          <button
-            type="button"
-            key={s.id}
-            aria-pressed={active === i}
-            onClick={() => setActive(i)}
-          >
-            {s.label}
-          </button>
-        ))}
-      </fieldset>
-      <div className="fd-editorial">
-        <div className="fd-copy">
-          <Phase status={scene.status === 'released' ? 'next' : scene.status} />
-          <h3 className="fw-secondary-title">
-            <Phrases text={scene.title} />
-          </h3>
-          <p>{scene.problem}</p>
-          <ul className="fd-copy-list">
-            {scene.points.map((p) => (
-              <li key={p.text}>{p.text}</li>
+    <section
+      id="how"
+      className="fo-section fw-everywhere"
+      data-bg="white"
+      aria-labelledby="fw-everywhere-title"
+    >
+      <header className="fo-head" data-layout="split" data-reveal>
+        <div>
+          <span className="fo-kicker">{everywhere.kicker}</span>
+          <h2 id="fw-everywhere-title">
+            {everywhere.title.map((line) => (
+              <span className="fo-phrase" key={line}>
+                {line}
+              </span>
             ))}
-          </ul>
+          </h2>
         </div>
-        <WorkDemo key={scene.id} mode={scene.id as WorkMode} />
+        <div className="fo-head-side">
+          <p>{everywhere.lead}</p>
+          <Phase phase={everywhere.phase} />
+        </div>
+      </header>
+
+      <ul className="fw-modes">
+        {everywhere.modes.map((mode, index) => (
+          <li key={mode.verb} data-reveal style={{ '--i': index } as Vars}>
+            <strong>{mode.verb}</strong>
+            <p>{mode.text}</p>
+          </li>
+        ))}
+      </ul>
+
+      <div className="fw-flow" data-scene="enter">
+        <span className="fw-flow-lane" data-lane="ai" aria-hidden="true">
+          <Sparkles size={14} />
+          AI
+        </span>
+        <span className="fw-flow-lane" data-lane="you" aria-hidden="true">
+          {everywhere.youLabel}
+        </span>
+        <ol>
+          {everywhere.flow.map((step, index) => (
+            <li key={step.plugin} style={{ '--i': index } as Vars}>
+              {step.ai ? (
+                <span className="fw-flow-ai">
+                  <b>{step.ai.verb}</b>
+                  {step.ai.text}
+                </span>
+              ) : (
+                <span className="fw-flow-gap" aria-hidden="true" />
+              )}
+              <span className="fw-flow-tile">
+                <strong>{step.plugin}</strong>
+                <small>{step.task}</small>
+              </span>
+              {step.you ? (
+                <span className="fw-flow-you">
+                  {everywhere.youLabel} · {step.you}
+                </span>
+              ) : (
+                <span className="fw-flow-gap" aria-hidden="true" />
+              )}
+            </li>
+          ))}
+        </ol>
       </div>
-    </>
+      <p className="fw-aside" data-reveal>
+        {everywhere.aside}
+      </p>
+    </section>
+  );
+}
+
+/** 平台在下，插件在上，四个入口从同一个目录调用 */
+function Platform() {
+  const released = new Set(platform.released);
+  return (
+    <section
+      className="fo-section fw-platform"
+      data-bg="paper"
+      aria-labelledby="fw-platform-title"
+    >
+      <div className="fo-split">
+        <div className="fw-platform-copy">
+          <header className="fo-head" data-reveal>
+            <div>
+              <span className="fo-kicker">{platform.kicker}</span>
+              <h2 id="fw-platform-title">
+                {platform.title.map((line) => (
+                  <span className="fo-phrase" key={line}>
+                    {line}
+                  </span>
+                ))}
+              </h2>
+            </div>
+            <div className="fo-head-side">
+              <p>{platform.lead}</p>
+            </div>
+          </header>
+          <ol className="fo-list fw-principles">
+            {platform.principles.map((item, index) => (
+              <li key={item.title} data-reveal style={{ '--i': index } as Vars}>
+                <span className="fo-index">{pad(index)}</span>
+                <strong>{item.title}</strong>
+                <p>{item.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <figure
+          className="fw-arch"
+          data-reveal
+          aria-label="Molis Work 的组成：页面、助理、工作流和外部 Agent 从同一个能力目录调用；中间是项目插件和个人插件；下面是平台和本机的 Home。"
+        >
+          <div className="fw-arch-callers">
+            {platform.callers.map((caller, index) => (
+              <span key={caller} style={{ '--i': index } as Vars}>
+                {caller}
+              </span>
+            ))}
+            <small>{platform.callersNote}</small>
+          </div>
+          <div className="fw-arch-catalog">{platform.catalog}</div>
+          <div className="fw-arch-plugins">
+            <div>
+              <small>{platform.projectLabel}</small>
+              <ul>
+                {platform.project.map((name, index) => (
+                  <li
+                    key={name}
+                    data-released={released.has(name) || undefined}
+                    style={{ '--i': index } as Vars}
+                  >
+                    {name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <small>{platform.personalLabel}</small>
+              <ul>
+                {platform.personal.map((name, index) => (
+                  <li
+                    key={name}
+                    data-released={released.has(name) || undefined}
+                    style={{ '--i': index + 11 } as Vars}
+                  >
+                    {name}
+                  </li>
+                ))}
+                <li className="fw-arch-yours" style={{ '--i': 26 } as Vars}>
+                  + {platform.yours}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="fw-arch-layers">
+            {platform.layers.map((layer) => (
+              <span key={layer}>{layer}</span>
+            ))}
+          </div>
+          <div className="fw-arch-base">{platform.base}</div>
+          <figcaption>{platform.count}</figcaption>
+        </figure>
+      </div>
+    </section>
+  );
+}
+
+function SceneBlock({ scene, index }: { scene: Scene; index: number }) {
+  const Demo = sceneDemo[scene.id];
+  return (
+    <article
+      id={scene.id}
+      className="fw-scene"
+      data-side={index % 2 ? 'right' : 'left'}
+      aria-labelledby={`fw-scene-${scene.id}`}
+    >
+      <div className="fw-scene-copy" data-reveal>
+        <span className="fw-scene-number" aria-hidden="true">
+          {pad(index)}
+        </span>
+        <Phase phase={scene.phase} note={scene.phaseNote} />
+        <h3 id={`fw-scene-${scene.id}`}>
+          {scene.title.map((line) => (
+            <span className="fo-phrase" key={line}>
+              {line}
+            </span>
+          ))}
+        </h3>
+        <blockquote>{scene.pain}</blockquote>
+        <ul>
+          {scene.points.map((point) => (
+            <li key={point}>{point}</li>
+          ))}
+        </ul>
+      </div>
+      <Demo />
+    </article>
   );
 }
 
 export default function FolioWorkPage() {
-  const ref = useFolioMotion();
+  const rootRef = useFolioMotion();
   return (
-    <div className="fo-site fw-site" ref={ref}>
+    <div className="fo-site fw-site" ref={rootRef}>
       <SiteHeader current="work" />
+
       <main id="main">
         <ProductHero
           id="fw-title"
           className="fw-hero"
-          kicker="Molis Work · 本地优先的 AI 工作台"
-          title={folioWork.title}
-          lead={folioWork.lead}
-          status={['macOS', 'MIT 开源', '新版开发中']}
-          masthead="Work"
-          art={<WorkDemo compact />}
+          kicker={hero.kicker}
+          title={hero.title}
+          lead={hero.lead}
+          extra={
+            <p className="fw-agents">
+              <span>{hero.agentsLabel}</span>
+              {hero.agents.map((agent) => (
+                <b key={agent}>{agent}</b>
+              ))}
+              <span>{hero.agentsMore}</span>
+            </p>
+          }
+          status={hero.status}
           actions={[
-            { label: '看它如何工作', href: '#scenarios' },
+            { label: hero.actions.how, href: '#how' },
             {
-              label: MAC_DOWNLOAD_URL ? '下载 macOS 版' : '查看开源版本',
-              href: MAC_DOWNLOAD_URL ?? GITHUB_URL,
+              label: hero.actions.github,
+              href: GITHUB_URL,
               external: true,
               tone: 'ghost',
             },
           ]}
+          masthead="Work"
+          art={<WorkDesk />}
         />
+
+        <Everywhere />
+        <Platform />
+
         <section
-          className="fo-section fw-platform"
+          className="fo-section fw-scenes"
           data-bg="white"
-          aria-labelledby="fw-platform-title"
+          aria-labelledby="fw-scenes-title"
         >
           <SectionHead
-            id="fw-platform-title"
-            kicker="工作台，而后是每一种可能"
-            title={folioWork.platform}
-            lead={folioWork.platformLead}
-            layout="split"
+            id="fw-scenes-title"
+            kicker={scenesIntro.kicker}
+            title={scenesIntro.title}
           />
-          <div className="fw-platform-strip" data-reveal>
-            {[
-              { icon: Layers, title: 'Goals', text: '要做成什么，有据可查' },
-              {
-                icon: FileText,
-                title: '内容与工具',
-                text: '资料、文稿、待办、代码',
-              },
-              {
-                icon: Sparkles,
-                title: '人与 AI',
-                text: '使用同一份内容与能力',
-              },
-            ].map(({ icon: Icon, title, text }, i) => (
-              <div key={title}>
-                <span>0{i + 1}</span>
-                <Icon size={23} />
-                <strong>{title}</strong>
-                <p>{text}</p>
-              </div>
-            ))}
-          </div>
-          <p className="fw-agent-line">{agentLine}</p>
-          <p className="fw-release-note">{folioWork.availability}</p>
-        </section>
-        <div id="scenarios">
-          {scenarios.map((scene, i) => (
-            <section
-              key={scene.id}
-              className="fo-section fw-main-scene"
-              data-bg={['paper', 'yellow', 'white'][i]}
-              aria-labelledby={`fw-${scene.id}-title`}
-            >
-              <div className="fd-editorial">
-                <div className="fd-copy" data-reveal>
-                  <span className="fw-chapter">
-                    0{i + 1} / {scene.label}
-                  </span>
-                  <SectionHead
-                    id={`fw-${scene.id}-title`}
-                    kicker={
-                      ['跨工具接续', '共同的能力与授权', '就在工作旁边'][i]
-                    }
-                    title={scene.title}
-                  />
-                  <Phase status={scene.status} />
-                  <p className="fw-problem">{scene.problem}</p>
-                  <ul className="fd-copy-list">
-                    {scene.points.map((p) => (
-                      <li key={p.text}>
-                        <span>
-                          {p.text}
-                          {p.status && <Phase status={p.status} />}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <WorkDemo mode={scene.id as WorkMode} />
-              </div>
-            </section>
+          {scenes.map((scene, index) => (
+            <SceneBlock key={scene.id} scene={scene} index={index} />
           ))}
-        </div>
-        <section
-          className="fo-section fw-differences"
-          data-bg="navy"
-          aria-labelledby="fw-differences-title"
-        >
-          <SectionHead
-            id="fw-differences-title"
-            kicker="四件事，守同一套规则"
-            title="工具可以长出来，工作不用重来。"
-          />
-          <div className="fw-difference-grid">
-            {differences.map((d, i) => (
-              <article
-                key={d.title}
-                data-reveal
-                style={{ '--i': i % 2 } as Vars}
-              >
-                <span className="fw-difference-number">0{i + 1}</span>
-                <Phase status={d.status} />
-                <h3>{d.title}</h3>
-                <p>{d.body}</p>
-                <div className="fw-proof-line">
-                  <Check size={14} />
-                  {
-                    [
-                      '按要求核对结果，留下收尾依据',
-                      '一处授权，每次调用有记录',
-                      '做好的插件，进入你的现有工作',
-                      '提示词、角色与记忆可查看和修改',
-                    ][i]
-                  }
-                </div>
-              </article>
-            ))}
-          </div>
         </section>
+
         <section
           className="fo-section"
+          data-bg="navy"
+          aria-labelledby="fw-diff-title"
+        >
+          <div className="fo-split">
+            <SectionHead
+              id="fw-diff-title"
+              kicker={differences.kicker}
+              title={differences.title}
+            />
+            <ol className="fo-list fw-diff">
+              {differences.items.map((item, index) => (
+                <li
+                  key={item.title}
+                  data-reveal
+                  style={{ '--i': index } as Vars}
+                >
+                  <span className="fo-index">{pad(index)}</span>
+                  <strong>
+                    {item.title}
+                    {item.phase ? <Phase phase={item.phase} /> : null}
+                  </strong>
+                  <p>{item.text}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section
+          className="fo-section fw-more"
           data-bg="paper"
           aria-labelledby="fw-more-title"
         >
           <SectionHead
             id="fw-more-title"
-            kicker="再多做一点"
-            title="从收到信息，到做出自己的工具。"
+            kicker={more.kicker}
+            title={more.title}
           />
-          <div className="fw-more">
-            <MoreWork />
-          </div>
+          <ul className="fw-more-cards">
+            {more.items.map((item, index) => (
+              <li
+                key={item.title}
+                data-reveal
+                style={{ '--i': index % 3 } as Vars}
+              >
+                <span className="fo-index">{pad(index + 3)}</span>
+                <h3>{item.title}</h3>
+                <p className="fw-more-pain">{item.pain}</p>
+                <p>{item.text}</p>
+                <Phase phase={item.phase} note={item.phaseNote} />
+              </li>
+            ))}
+          </ul>
         </section>
+
         <section
           className="fo-section fw-features"
           data-bg="white"
-          id="features"
           aria-labelledby="fw-features-title"
         >
           <SectionHead
             id="fw-features-title"
-            kicker="功能全景"
-            title="找到你需要的那一种能力。"
-            lead="按你要做的事查看。每项能力的阶段都写在旁边。"
+            kicker={features.kicker}
+            title={features.title}
+            lead={features.lead}
             layout="split"
-          />
+          >
+            <ul className="fw-legend" aria-label="状态说明">
+              {(['released', 'next', 'preview', 'planned'] as const).map(
+                (phase) => (
+                  <li key={phase} data-phase={phase}>
+                    {phaseLabel[phase]}
+                  </li>
+                ),
+              )}
+            </ul>
+          </SectionHead>
           <div className="fw-feature-groups">
-            {featureGroups.map((group, i) => (
-              <details key={group.name} open={i === 0}>
-                <summary>
-                  <span>0{i + 1}</span>
-                  <h3>{group.name}</h3>
-                  <small>{group.features.length} 项能力</small>
-                  <ChevronDown size={20} />
-                </summary>
+            {features.groups.map((group) => (
+              <section key={group.name} aria-label={group.name}>
+                <h3>
+                  {group.name}
+                  <small>{group.items.length}</small>
+                </h3>
                 <ul>
-                  {group.features.map((f) => (
-                    <li key={f.name}>
-                      <strong>{f.name}</strong>
-                      <p>{f.line}</p>
-                      <Phase status={f.status} />
+                  {group.items.map(([name, line, phase]) => (
+                    <li key={name} data-phase={phase}>
+                      <strong>{name}</strong>
+                      <span>{line}</span>
                     </li>
                   ))}
                 </ul>
-              </details>
+              </section>
             ))}
           </div>
         </section>
+
         <section
-          className="fo-section fw-comparisons"
+          className="fo-section fw-compare"
           data-bg="paper"
           aria-labelledby="fw-compare-title"
         >
           <SectionHead
             id="fw-compare-title"
-            kicker="和你现在的做法放在一起看"
-            title="保留顺手的工具，把工作接起来。"
+            kicker={compare.kicker}
+            title={compare.title}
           />
-          <div className="fw-compare-list">
-            {comparisons.map((c) => (
-              <details key={c.now}>
-                <summary>
-                  <span>{c.now}</span>
-                  <ChevronDown size={18} />
-                </summary>
-                <div>
-                  <p>{c.here}</p>
-                  <p className="fw-gap">目前的边界：{c.gap}</p>
-                </div>
-              </details>
-            ))}
-          </div>
+          <table className="fw-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">{compare.labels.now}</th>
+                <th scope="col">{compare.labels.here}</th>
+                <th scope="col">{compare.labels.gap}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {compare.rows.map((row, index) => (
+                <tr key={row.now} data-reveal style={{ '--i': index } as Vars}>
+                  <th scope="row">{row.now}</th>
+                  <td data-label={compare.labels.here}>{row.here}</td>
+                  <td data-label={compare.labels.gap}>{row.gap}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </section>
+
         <section
-          className="fo-section fw-local"
+          className="fo-section fw-bounds"
           data-bg="sage"
-          id="local"
-          aria-labelledby="fw-local-title"
+          aria-labelledby="fw-bounds-title"
         >
           <div className="fo-split">
             <SectionHead
-              id="fw-local-title"
-              kicker={localFirst.kicker}
-              title={localFirst.title}
+              id="fw-bounds-title"
+              kicker={bounds.kicker}
+              title={bounds.title}
             />
-            <ul>
-              {localFirst.points.map((p) => (
-                <li key={p}>
-                  <Check size={17} />
-                  <p>{p}</p>
+            <ul className="fw-bounds-list">
+              {bounds.items.map((item, index) => (
+                <li key={item} data-reveal style={{ '--i': index } as Vars}>
+                  {item}
                 </li>
               ))}
             </ul>
           </div>
         </section>
+
         <section
-          className="fo-section fw-start"
+          id="get"
+          className="fo-section fw-access"
           data-bg="white"
-          id="start"
-          aria-labelledby="fw-start-title"
+          aria-labelledby="fw-access-title"
         >
           <SectionHead
-            id="fw-start-title"
-            kicker="找到合适的开始"
-            title="现在使用，或一起等下一版。"
+            id="fw-access-title"
+            kicker={access.kicker}
+            title={access.title}
           />
-          <div className="fw-start-paths">
-            <article>
-              <small>当前公开版本 / v0.2.0</small>
-              <h3>从开源版本开始</h3>
-              <p>
-                Goals、Work、Feed
-                与基础成果能力。当前需要从源码安装；签名安装包就绪后会提供下载。
-              </p>
-              <Actions
-                items={[
-                  { label: '查看安装步骤', href: INSTALL_URL, external: true },
-                ]}
-              />
-            </article>
-            <article>
-              <small>新版 / 开发中</small>
-              <h3>关注完整工作台</h3>
-              <p>
-                助理、统一能力、插件创作和新版成果库等能力尚未发布。查看更新，或留下你最关心的使用场景。
-              </p>
+          <div className="fw-access-cards">
+            <article data-reveal>
+              <small>{access.now.label}</small>
+              <h3>{access.now.title}</h3>
+              <p>{access.now.text}</p>
               <Actions
                 items={[
                   {
-                    label: '查看版本更新',
-                    href: RELEASES_URL,
+                    label: access.now.install,
+                    href: INSTALL_URL,
+                    external: true,
+                  },
+                  {
+                    label: access.now.github,
+                    href: GITHUB_URL,
                     external: true,
                     tone: 'ghost',
                   },
+                ]}
+              />
+            </article>
+            <article data-reveal style={{ '--i': 1 } as Vars}>
+              <small>{access.next.label}</small>
+              <h3>{access.next.title}</h3>
+              <p>{access.next.text}</p>
+              <Actions
+                items={[
                   {
-                    label: '关注进展',
+                    label: access.next.follow,
                     href: contactHref('work'),
-                    tone: 'ghost',
+                    tone: 'light',
+                  },
+                  {
+                    label: access.next.releases,
+                    href: RELEASES_URL,
+                    external: true,
+                    tone: 'light',
                   },
                 ]}
               />
@@ -356,18 +518,17 @@ export default function FolioWorkPage() {
           </div>
         </section>
       </main>
+
       <Footer>
         <Closing
           id="fw-closing-title"
-          title={['工具可以不断长出来，', '工作不必一次次重来。']}
+          title={closing.title}
           actions={[
-            { label: '查看开源项目', href: GITHUB_URL, external: true },
-            { label: '了解团队解决方案', href: SOLUTIONS, tone: 'light' },
+            { label: hero.actions.github, href: GITHUB_URL, external: true },
+            { label: closing.solutions, href: SOLUTIONS, tone: 'light' },
+            { label: closing.home, href: HOME, tone: 'light' },
           ]}
         />
-        <p className="fw-footer-note">
-          当前面向个人与小团队里牵头的人。团队空间与多设备同步仍在规划。
-        </p>
       </Footer>
     </div>
   );

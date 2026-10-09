@@ -104,9 +104,20 @@ export default function FolioSolutionsPage() {
                       <span>{direction.headline[0]}</span>
                       <em>{direction.headline[1]}</em>
                     </h3>
-                    <p className="fs-card-problem">{direction.problem}</p>
+                    <p className="fs-card-problem">
+                      <small>现在卡在</small>
+                      {direction.problem}
+                    </p>
                   </div>
                   <div className="fs-card-body">
+                    <div className="fs-process">
+                      <h4>我们一起做</h4>
+                      <ol>
+                        {direction.process.map((step) => (
+                          <li key={step}>{step}</li>
+                        ))}
+                      </ol>
+                    </div>
                     <div className="fs-outcomes">
                       <h4>让这段工作留下</h4>
                       <ul>

@@ -1,64 +1,139 @@
-// Folio's 2026-10-08 editorial pass. Other brand directions keep their own copy.
-// Work: product-intro V1 (2026-10-05) + PRODUCT platform definition (2026-10-07).
+// Folio 官网的文案，其他品牌方向各有自己的一份。
+// 首页依据 2026-10-08 一骏给出的工作室定位与愿景；Work 详情在 content/folio-work.ts。
+// Life、Story 的详情页本轮不改，首页只用一句话说清方向，不写尚未开放的能力。
+
+export type FolioProductId = 'work' | 'tool' | 'life' | 'story';
+
 export const folioStudio = {
-  title: '我们做 AI 工作台和桌面工具，也探索生活助手与互动世界。',
-  lead: 'Molis AI 是一个做产品的团队。让 AI 接住复杂的工作、眼前的小事，也给生活与想象留出空间。',
-  products: [
+  /** 首屏：愿景先行，下面一句说清我们是谁 */
+  title: ['把工作做轻，', '把时间还给生活。'],
+  lead: 'Molis AI 是一个做 AI 产品的小团队。我们想让工作更快、更好、更舒服，把省下来的时间，留给生活、体验和创造。',
+  description:
+    'Molis AI 是一个围绕工作、生活和体验场景研发 AI 产品的小团队：Molis Work 是可扩展的 AI 工作平台，Molis Tool 让能力来到你选中的文字和文件旁边；同时探索结合硬件与个人 Agent 的 Molis Life，和沉浸式世界 Molis Story。',
+  /** 首屏的目录：愿景的两半，各由两个产品承担 */
+  how: '怎么做到？',
+  groups: [
     {
-      id: 'work',
-      category: '持续的工作',
-      title: 'Molis Work',
-      line: '目标、资料和工具在一处，让人和不同 Agent 接着做。',
-      detail:
-        '装在电脑上的 AI 工作台。用插件处理资料、推进目标、留下成果，助理就在当前工作旁。',
-      status: '已有开源版本 · 新版开发中',
+      label: '现在',
+      goal: '把工作做轻',
+      items: [
+        { id: 'work', name: 'Molis Work', hint: '可扩展的 AI 工作平台' },
+        { id: 'tool', name: 'Molis Tool', hint: '能力来到选中的东西旁' },
+      ],
     },
     {
+      label: '接下来',
+      goal: '把时间还给生活',
+      items: [
+        { id: 'life', name: 'Molis Life', hint: '硬件与个人 Agent' },
+        { id: 'story', name: 'Molis Story', hint: '可以走进去的世界' },
+      ],
+    },
+  ] as {
+    label: string;
+    goal: string;
+    items: { id: FolioProductId; name: string; hint: string }[];
+  }[],
+
+  /** 首屏之后：一天里的时间，被工作的缝隙占走，又一段段还回来。画面是示意，不是统计。 */
+  day: {
+    kicker: '怎么做到',
+    title: ['时间花在工作上，', '却不全花在工作本身。'],
+    lead: '交代背景、搬运资料、来回切换、盯着 AI 有没有做完。我们先把这些缝隙收起来。',
+    note: '示意',
+    marks: ['早上', '中午', '傍晚', '夜里'],
+    labels: {
+      core: '工作本身',
+      context: '重新交代背景',
+      carry: '在应用间搬运',
+      wait: '盯着 AI 做没做完',
+      switch: '来回切换',
+      check: '核对“做完了”',
+      life: '自己的时间',
+      lifeAfter: '生活',
+      storyAfter: '体验与创造',
+    },
+    steps: [
+      {
+        id: 'work',
+        name: 'Molis Work',
+        title: '交代、等待和核对，交给同一套流程。',
+        text: '目标、资料和工具放在一起。你直接用工具，AI 和 Agent 在需要的环节动手，做没做完可以核对。',
+        more: '看看 Molis Work',
+      },
+      {
+        id: 'tool',
+        name: 'Molis Tool',
+        title: '搬运和切换，留在原处解决。',
+        text: '选中文字、拖入文件，合适的能力就在旁边，结果带着出处回来。',
+        more: '看看 Molis Tool',
+      },
+      {
+        id: 'life',
+        name: 'Molis Life · Molis Story',
+        title: '省下来的，留给生活和创造。',
+        text: 'Life 探索硬件与个人 Agent，把琐事接过去；Story 做可以走进去的世界。',
+        more: '看看生活与故事',
+      },
+    ] as {
+      id: FolioProductId;
+      name: string;
+      title: string;
+      text: string;
+      more: string;
+    }[],
+  },
+
+  work: {
+    kicker: '现在重点推进',
+    name: 'Molis Work',
+    line: '一个可扩展的 AI 工作平台。你直接用工具，AI 在需要的环节动手。',
+    highlights: [
+      '到处有 AI，但不是到处是对话',
+      '一个平台，按需加插件',
+      '换一个 Agent，工作也接得上',
+    ],
+    status: ['v0.2.0 已开源', '0.3.0 开发中', 'macOS'],
+    actions: { more: '了解 Molis Work', github: '在 GitHub 查看' },
+  },
+
+  /** 三张色纸前的过渡句 */
+  linesTitle: '一件件小事做轻，时间才真的回来。',
+  lines: [
+    {
       id: 'tool',
-      category: '眼前的动作',
-      title: 'Molis Tool',
-      line: '选中文字、拖入文件，合适的动作就在旁边。',
-      detail:
-        'Mac 菜单栏里的轻工具。内容留在原处，结果带着出处回来，做完就收起。',
-      status: '开发中 · 暂无公开安装包',
+      area: '工作 · 桌面',
+      status: '开发中',
+      line: '围绕你眼前选中的文字和文件，就近给出合适的能力。',
+      value: '少一点跨应用的搬运和打断。',
+      more: '了解 Molis Tool',
     },
     {
       id: 'life',
-      category: '日常生活',
-      title: 'Molis Life',
-      line: '帮你跟进琐事，也记住那些想做的事。',
-      detail:
-        '随口交代一句，或分享一张截图。把事情记下来，在合适的时候一起往前走。',
+      area: '生活 · 探索中',
       status: '原型探索',
+      line: '结合硬件与个人 Agent，把琐事接过去，把想做的事记住。',
+      value: '让日子里多出一点属于自己的时间。',
+      more: '了解 Molis Life',
     },
     {
       id: 'story',
-      category: '互动世界',
-      title: 'Molis Story',
-      line: '走进一个世界，参与其中，离开后还能回来。',
-      detail:
-        '每个世界有自己的画面、规则和时间。进去待一会儿，再带一样东西回来。',
+      area: '体验 · 探索中',
       status: '开发中',
+      line: '走进一个沉浸式的世界，和 AI 一起经历一段故事。',
+      value: '待一会儿，再带一样东西回来。',
+      more: '了解 Molis Story',
     },
-  ] as const,
+  ] as {
+    id: Exclude<FolioProductId, 'work'>;
+    area: string;
+    status: string;
+    line: string;
+    value: string;
+    more: string;
+  }[],
   enterprise:
     '从梳理业务流程、连接现有数据和工具，到用 Molis Work 试运行具体方案，我们可以和你一起找到值得做的一步。',
-};
-
-export const folioWork = {
-  title: '让工作，在人、工具与 Agent 之间继续。',
-  lead: '装在你电脑上的 AI 工作台。目标、资料和工具放在一处，内置助理与 Claude Code、Codex 接着做，成果留下来，做没做完可以核对。',
-  platform: '一个工作台，工具按需长出来。',
-  platformLead:
-    'Goals 管目标，Pages 写文稿，Feed 接住资料，Coding 处理代码。每个插件做好自己的事，你和 AI 使用同一份内容、同一套能力与授权。',
-  availability:
-    '当前公开版本是 v0.2.0。下方演示包含尚未发布的新版能力，各段单独标明状态。',
-  status: {
-    released: '已发布',
-    next: '开发版 · 未发布',
-    preview: '预览 · 未发布',
-    planned: '规划中',
-  } as const,
 };
 
 export const folioSolutions = {
@@ -140,4 +215,83 @@ export const folioSolutions = {
       result: '验证记录与下一步建议',
     },
   ],
+};
+
+// Tool 详情页（Folio）新增的两段演示。首屏与其余文案仍用 content/molis-tool.ts。
+// 插件一段依据 molis-ai/molis-tool docs/能力插件协议-v6.md（10/2 更新）：插件声明能力而不是界面，
+// 宿主决定它出现在光标旁、右键、拖放、⌘K 等入口；结果也是对象，可以接着交给下一个能力；
+// 停用时各入口一起消失，已产生的结果保留。「生成字幕 → 翻译」是协议里的例子，页面标示意。
+export const folioTool = {
+  layers: {
+    note: '界面示意 · 示例活动',
+    label:
+      '同一场展览在三层里接着处理：光标旁划出日期，点「加入日程」；框住海报，旁边展开日程草稿，逐项填好；过一会儿按 ⌥Space，命令条找回草稿，回到离开的地方。',
+    near: {
+      eyebrow: '正在读一篇活动介绍',
+      before: '周六',
+      mark: '10 月 12 日下午两点',
+      after: '，城市设计展在河岸艺术中心开幕。',
+      chips: ['加入日程', '翻译'],
+      result: '已记下 · 10/12 14:00',
+      undo: '撤回',
+    },
+    beside: {
+      eyebrow: '框住一张海报',
+      day: '12',
+      month: 'OCT',
+      title: ['城市', '设计展'],
+      card: '日程草稿',
+      fields: [
+        ['标题', '城市设计展'],
+        ['时间', '周六 14:00 — 17:00'],
+        ['地点', '河岸艺术中心'],
+      ],
+      source: '来自海报的这一块',
+      actions: ['确认', '改一下'],
+    },
+    later: {
+      eyebrow: '过了一会儿，在别处',
+      keys: ['⌥', 'Space'],
+      query: '设计展',
+      row: '城市设计展 · 日程草稿',
+      meta: '刚才 · 等你确认',
+      back: '回到你离开的地方',
+    },
+  },
+  plugins: {
+    facts: [
+      {
+        title: '插件写下能做什么，不画界面',
+        text: '接受什么、产出什么、在本机还是联网跑。参数面板和结果样式由 Molis Tool 统一生成。',
+      },
+      {
+        title: '登记一次，各处都在',
+        text: '光标旁、右键、拖放和 ⌘K 命令条同时出现；停用时一处生效，处处消失。',
+      },
+      {
+        title: '结果也是对象',
+        text: '生成的字幕可以直接交给翻译，两个插件不需要知道彼此；停用之后，做好的结果还在。',
+      },
+    ],
+    name: '生成字幕',
+    kind: '插件',
+    spec: [
+      ['接受', '音频、视频'],
+      ['产出', '带时间的文字'],
+      ['运行', '本机 · 不用 AI'],
+    ],
+    on: '已启用',
+    surfaces: {
+      near: { label: '光标旁', others: ['翻译'] },
+      menu: { label: '右键', others: ['打开方式', '共享'] },
+      drop: { label: '拖放', hint: '拖到这里' },
+      bar: { label: '⌘K 命令条', query: '字幕' },
+    },
+    chain: ['访谈.m4a', '字幕.srt', '字幕 · 英文.srt'],
+    next: '翻译',
+    kept: '停用后，入口一起收起；做好的字幕还在。',
+    note: '界面示意 · 协议里的例子',
+    label:
+      '插件示意：「生成字幕」插件只声明接受音频视频、产出带时间的文字。启用后，它同时出现在光标旁、右键、拖放和 ⌘K 命令条；生成的字幕可以直接交给已有的翻译；停用后各处入口一起消失，做好的字幕保留。',
+  },
 };

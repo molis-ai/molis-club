@@ -21,9 +21,6 @@ const visit = async (suffix = '') => {
   });
   assert.equal(response.status(), 200, suffix);
 };
-const sceneStep = (player) => player.getAttribute('data-step');
-const choose = (player, n) =>
-  player.getByRole('button', { name: new RegExp(`^查看步骤 ${n}：`) });
 
 try {
   await visit();
@@ -66,12 +63,35 @@ try {
     await originalArt.evaluate((el) => getComputedStyle(el).animationName),
     /fo-sway/,
   );
+  // 首屏目录指向四个产品的位置，「怎么做到」指向一天的纸带
+  const targets = await page
+    .locator('.fo-cover-index a')
+    .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+  assert.deepEqual(targets, ['#how', '#work', '#tool', '#life', '#story']);
+  for (const target of targets) {
+    assert.equal(await page.locator(target).count(), 1, target);
+  }
+  const day = page.locator('#how');
+  const progress = () =>
+    day.evaluate((el) => Number(el.style.getPropertyValue('--p') || 0));
+  const workGap = page.locator('.fo-seg[data-by="work"]').first();
+  const gapWidth = () => workGap.evaluate((el) => el.offsetWidth);
+  await day.evaluate((el) => window.scrollTo(0, el.offsetTop));
+  await page.waitForTimeout(300);
+  const before = await gapWidth();
+  await day.evaluate((el) =>
+    window.scrollTo(0, el.offsetTop + el.offsetHeight - innerHeight),
+  );
+  await page.waitForTimeout(400);
+  assert.ok((await progress()) > 0.95, 'day story reaches the end');
+  assert.ok((await gapWidth()) < before / 3, 'Work folds the gaps away');
   console.log(
-    'PASS: restored member hover, click, keyboard note; original cover animation and three product sheets.',
+    'PASS: restored members, original cover animation, three product sheets, cover index anchors and the scrolling day story.',
   );
 
+  const running = (selector) =>
+    page.locator(selector).getAttribute('data-running');
   await visit('/tool');
-  assert.equal(await page.locator('.ft-hero .fd-player').count(), 0);
   const mark = page.locator('.ft-hero .ft-page mark');
   assert.match(
     await mark.evaluate((el) => getComputedStyle(el).animationName),
@@ -83,93 +103,63 @@ try {
       .evaluate((el) => getComputedStyle(el).animationName),
     /ft-cursor-click/,
   );
-  assert.equal(await page.locator('.ft-layers > li').count(), 3);
+  assert.equal(await page.locator('.ftl-panel').count(), 3);
   assert.equal(await page.locator('.ft-moment-grid > li').count(), 6);
-  assert.equal(
-    await page.locator('.fd-steps, .fd-window-bar, .fd-count').count(),
-    0,
-  );
-  const layer = page.locator('.ft-layers .fd-player').first();
-  await layer.scrollIntoViewIfNeeded();
-  await layer.getByRole('button', { name: '暂停演示', exact: true }).click();
-  const stopped = await sceneStep(layer);
-  await page.waitForTimeout(3200);
-  assert.equal(await sceneStep(layer), stopped);
-  await choose(layer, 1).click();
-  await layer.getByRole('button', { name: '播放演示', exact: true }).click();
-  await page.waitForFunction(
-    () => document.querySelector('.ft-layers .fd-player')?.dataset.step !== '0',
-    undefined,
-    { timeout: 7000 },
-  );
-  await page.waitForFunction(
-    () => document.querySelector('.ft-layers .fd-player')?.dataset.step === '2',
-    undefined,
-    { timeout: 7000 },
-  );
-  await page.waitForFunction(
-    () => document.querySelector('.ft-layers .fd-player')?.dataset.step === '0',
-    undefined,
-    { timeout: 5000 },
-  );
+  assert.equal(await page.locator('.ftp-surface').count(), 4);
+  assert.equal(await page.locator('.fd-player, .fd-steps').count(), 0);
+  const layers = page.locator('.ftl');
+  await layers.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(300);
+  assert.equal(await running('.ftl'), 'true');
+  await layers.getByRole('button', { name: '暂停演示', exact: true }).click();
+  assert.equal(await running('.ftl'), 'false');
+  await layers
+    .getByRole('button', { name: '继续播放演示', exact: true })
+    .click();
+  assert.equal(await running('.ftl'), 'true');
   await page.locator('footer').scrollIntoViewIfNeeded();
-  await page.waitForTimeout(200);
-  const offscreen = await sceneStep(layer);
-  await page.waitForTimeout(3200);
-  assert.equal(await sceneStep(layer), offscreen);
+  await page.waitForTimeout(300);
+  assert.equal(await running('.ftl'), 'false');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await visit('/tool');
-  const plugin = page.locator('.ft-plugin-live');
-  await plugin.scrollIntoViewIfNeeded();
-  for (const entrance of ['光标旁', '右键', '拖放', '命令条']) {
-    const button = plugin.getByRole('button', { name: entrance, exact: true });
-    await button.click();
-    assert.equal(await button.getAttribute('aria-pressed'), 'true');
-    assert.match(
-      await plugin.locator('.ft-plugin-result').innerText(),
-      /把好奇心，做成作品/,
+  for (const selector of [
+    '.ftl-near-result',
+    '.ftl-card',
+    '.ftl-back',
+    '.ftp-surface .ftp-new',
+    '.ftp-out-b',
+  ]) {
+    assert.equal(
+      await page
+        .locator(selector)
+        .first()
+        .evaluate((el) => getComputedStyle(el).opacity),
+      '1',
+      selector,
     );
   }
-  const toggle = plugin.getByRole('switch');
-  await toggle.click();
-  assert.equal(await toggle.getAttribute('aria-checked'), 'false');
-  assert.match(await plugin.innerText(), /上次的结果仍然保留/);
-  await toggle.focus();
-  await page.keyboard.press('Space');
-  assert.equal(await toggle.getAttribute('aria-checked'), 'true');
-  const staticLayer = page.locator('.ft-layers .fd-player').first();
-  assert.equal(await sceneStep(staticLayer), '2');
-  await choose(staticLayer, 1).click();
-  await page.waitForTimeout(3200);
-  assert.equal(await sceneStep(staticLayer), '0');
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
   console.log(
-    'PASS: original Tool hero CSS motion, automatic scene playback, pause, offscreen suspension, reduced motion, plugin entrances and keyboard switch.',
+    'PASS: original Tool hero motion; layer relay, six moments and plugin stage play in view, pause, stop offscreen and rest on results with reduced motion.',
   );
 
   await visit('/work');
+  assert.equal(await page.locator('.fw-hero .fw-desk').count(), 1);
+  assert.equal(await page.locator('.fw-flow li').count(), 5);
+  assert.equal(
+    await page.locator('.fws-compose, .fws-relay, .fws-control').count(),
+    3,
+  );
+  assert.equal(await page.locator('.fw-feature-groups > section').count(), 4);
   assert.equal(
     await page.locator('.wd-dock, .wd-surface, .fd-window-bar').count(),
     0,
   );
-  for (const scene of ['信息', '新项目', '插件创作台', 'Coding']) {
-    await page.getByRole('button', { name: scene, exact: true }).click();
-    assert.equal(await page.locator('.fw-more .fd-player').count(), 1);
-    assert.equal(
-      await page.locator('.fw-more .fd-player').getAttribute('data-step'),
-      '3',
-    );
-  }
-  await page.locator('.fw-feature-groups summary').nth(1).click();
-  assert.equal(
-    await page
-      .locator('.fw-feature-groups details')
-      .nth(1)
-      .getAttribute('open'),
-    '',
-  );
+  assert.match(await page.locator('main').innerText(), /到处有 AI/);
   await visit('/solutions');
   assert.equal(await page.locator('.fd-player').count(), 0);
   assert.equal(await page.locator('.fs-scenario').count(), 3);
+  assert.equal(await page.locator('.fs-process').count(), 3);
   const sectionOrder = await page
     .locator('#cooperation, #directions, #fs-closing-title')
     .evaluateAll((nodes) => nodes.map((node) => node.id));
@@ -179,7 +169,7 @@ try {
     'fs-closing-title',
   ]);
   console.log(
-    'PASS: Work scenarios and ability disclosure; requested solution cards and section order.',
+    'PASS: Work hero, workflow strip, three scene demos and feature groups; solution cards with process and section order.',
   );
 
   for (const width of [1440, 1024, 768, 390, 360]) {

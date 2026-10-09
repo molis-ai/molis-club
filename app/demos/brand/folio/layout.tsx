@@ -10,8 +10,8 @@ const serif = Noto_Serif_SC({
 });
 
 export const metadata = {
-  title: { absolute: 'Molis AI · AI 工作台、桌面工具与互动世界' },
-  description: folioStudio.lead,
+  title: { absolute: 'Molis AI · 把工作做轻，把时间还给生活' },
+  description: folioStudio.description,
 };
 
 export default function FolioLayout({

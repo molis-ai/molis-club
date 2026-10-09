@@ -1,16 +1,13 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
 import { GITHUB_URL } from '../../../../content/molis-work';
 import {
-  coreProduct,
   ending,
   lineImages,
-  lines,
-  linesIntro,
+  lineNames,
   team,
-  type Line,
 } from '../../../../content/studio';
 import { CoverArt, LifeArt, StoryArt } from './art';
 import { Actions, Phrases, Status, pad } from './kit';
@@ -31,10 +28,12 @@ import './tool/tool.css';
 import './home.css';
 import { people, companies } from './team';
 import { folioStudio } from '../../../../content/folio';
-import { WorkDemo } from './work/demos';
+import { WorkDesk } from './work/desk';
 import { CursorDemo } from './tool/cursor-demo';
+import { DayStory } from './day';
 
-// 保留 Claude 原版构图、叠页与成员交互；仅调整用户指定的产品说明和合作入口。
+// 保留 Claude 原版的刊头、剪纸封面、白纸叠压、三张色纸与成员交互。
+// 首屏改成愿景与四个产品的目录；之后用「一天」的纸带讲怎么做到，再进入各产品。
 
 type Person = (typeof people)[number];
 
@@ -102,27 +101,29 @@ function PersonCard({
 }
 
 function CoreProduct() {
-  const product = folioStudio.products[0];
+  const work = folioStudio.work;
   return (
-    <section id="products" className="fo-core" aria-labelledby="fo-core-title">
+    <section id="work" className="fo-core" aria-labelledby="fo-core-title">
       <div className="fo-core-copy" data-reveal>
-        <span className="fo-kicker">{coreProduct.kicker}</span>
-        <h2 id="fo-core-title">{coreProduct.name}</h2>
-        <p className="fo-core-line">{product.line}</p>
+        <span className="fo-kicker">
+          {pad(0)} · {work.kicker}
+        </span>
+        <h2 id="fo-core-title">{work.name}</h2>
+        <p className="fo-core-line">{work.line}</p>
         <ol className="fo-core-points">
-          {coreProduct.highlights.map((item, index) => (
+          {work.highlights.map((item, index) => (
             <li key={item}>
               <span aria-hidden="true">{pad(index)}</span>
               {item}
             </li>
           ))}
         </ol>
-        <Status items={coreProduct.status} />
+        <Status items={work.status} />
         <Actions
           items={[
-            { label: coreProduct.actions.more, href: WORK },
+            { label: work.actions.more, href: WORK },
             {
-              label: coreProduct.actions.github,
+              label: work.actions.github,
               href: GITHUB_URL,
               external: true,
               tone: 'ghost',
@@ -130,66 +131,60 @@ function CoreProduct() {
           ]}
         />
       </div>
-      <WorkDemo compact />
+      <WorkDesk />
     </section>
   );
 }
 
-const lineArt: Record<
-  Line['id'],
-  (props: { note?: string }) => React.JSX.Element
-> = { life: LifeArt, tool: CursorDemo, story: StoryArt };
+/** Tool 用首屏那段光标动画，Life、Story 沿用原版剪纸 */
+function LineArt({ id }: { id: 'tool' | 'life' | 'story' }) {
+  if (id === 'tool') return <CursorDemo />;
+  const Art = id === 'life' ? LifeArt : StoryArt;
+  return <Art note={lineImages[id].note} />;
+}
 
 function Lines() {
   return (
     <section id="lines" className="fo-lines" aria-labelledby="fo-lines-title">
       <header className="fo-lines-intro" data-reveal>
         <h2 id="fo-lines-title">
-          <Phrases text={linesIntro.title} />
+          <Phrases text={folioStudio.linesTitle} />
         </h2>
       </header>
       <div className="fo-stack">
-        {lines.map((line, index) => {
-          const Art = lineArt[line.id];
-          const product = folioStudio.products.find(
-            (item) => item.id === line.id,
-          )!;
-          return (
-            <article
-              key={line.id}
-              className={`fo-sheet fo-sheet-${line.id}`}
-              data-scene="enter"
-              aria-labelledby={`fo-line-${line.id}`}
-            >
-              <div className="fo-sheet-inner">
-                <div className="fo-sheet-copy">
-                  <span className="fo-sheet-number" aria-hidden="true">
-                    {pad(index)}
-                  </span>
-                  <div className="fo-sheet-meta">
-                    <span>{line.area}</span>
-                    <span>{line.status}</span>
-                  </div>
-                  <h3 id={`fo-line-${line.id}`}>
-                    <Link href={lineHref[line.id]}>{line.name}</Link>
-                  </h3>
-                  <p>{product.line}</p>
-                  <Link className="fo-sheet-more" href={lineHref[line.id]}>
-                    {line.more}
-                    <span aria-hidden="true">
-                      <ArrowUpRight size={20} />
-                    </span>
-                  </Link>
+        {folioStudio.lines.map((line, index) => (
+          <article
+            key={line.id}
+            id={line.id}
+            className={`fo-sheet fo-sheet-${line.id}`}
+            data-scene="enter"
+            aria-labelledby={`fo-line-${line.id}`}
+          >
+            <div className="fo-sheet-inner">
+              <div className="fo-sheet-copy">
+                <span className="fo-sheet-number" aria-hidden="true">
+                  {pad(index + 1)}
+                </span>
+                <div className="fo-sheet-meta">
+                  <span>{line.area}</span>
+                  <span>{line.status}</span>
                 </div>
-                {line.id === 'tool' ? (
-                  <CursorDemo />
-                ) : (
-                  <Art note={lineImages[line.id].note} />
-                )}
+                <h3 id={`fo-line-${line.id}`}>
+                  <Link href={lineHref[line.id]}>{lineNames[line.id]}</Link>
+                </h3>
+                <p>{line.line}</p>
+                <p className="fo-sheet-value">{line.value}</p>
+                <Link className="fo-sheet-more" href={lineHref[line.id]}>
+                  {line.more}
+                  <span aria-hidden="true">
+                    <ArrowUpRight size={20} />
+                  </span>
+                </Link>
               </div>
-            </article>
-          );
-        })}
+              <LineArt id={line.id} />
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );
@@ -264,22 +259,43 @@ export default function FolioDirection() {
           </div>
           <div className="fo-cover-copy">
             <h1 id="fo-title">
-              <span className="fo-phrase">AI 工作台，</span>
-              <span className="fo-phrase">和桌面小工具。</span>
+              {folioStudio.title.map((line) => (
+                <span className="fo-phrase" key={line}>
+                  {line}
+                </span>
+              ))}
             </h1>
-            <p>
-              我们是 Molis AI，一个做产品的团队。
-              <br />让 AI 接住持续的工作、眼前的小事，也探索生活与故事。
-            </p>
-            <Actions
-              items={[
-                { label: '看看我们的产品', href: '#products' },
-                { label: '认识团队', href: '#about', tone: 'ghost' },
-              ]}
-            />
+            <p>{folioStudio.lead}</p>
+            <nav className="fo-cover-index" aria-label="Molis AI 的四个产品">
+              <span className="fo-tape fo-tape-a" aria-hidden="true" />
+              <a className="fo-cover-how" href="#how">
+                {folioStudio.how}
+                <ArrowDownRight size={20} aria-hidden="true" />
+              </a>
+              {folioStudio.groups.map((group, groupIndex) => (
+                <div className="fo-cover-group" key={group.label}>
+                  <p>
+                    <b>{group.label}</b>
+                    {group.goal}
+                  </p>
+                  <ul>
+                    {group.items.map((item, index) => (
+                      <li key={item.id}>
+                        <a href={`#${item.id}`} data-tone={item.id}>
+                          <i>{pad(groupIndex * 2 + index)}</i>
+                          <strong>{item.name}</strong>
+                          <span>{item.hint}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </nav>
           </div>
         </section>
 
+        <DayStory />
         <CoreProduct />
         <Lines />
         <Team />

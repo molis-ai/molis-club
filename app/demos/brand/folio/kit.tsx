@@ -193,12 +193,15 @@ export function ProductHero({
   actions,
   masthead,
   art,
+  extra,
   className = '',
 }: {
   id: string;
   kicker: string;
   title: string;
   lead: string;
+  /** 导语下面的一行补充，例如接入名单 */
+  extra?: ReactNode;
   status: string[];
   actions: Action[];
   masthead: string;
@@ -225,6 +228,7 @@ export function ProductHero({
           <Phrases text={title} />
         </h1>
         <p>{lead}</p>
+        {extra}
         <Status items={status} />
         <Actions items={actions} />
       </div>

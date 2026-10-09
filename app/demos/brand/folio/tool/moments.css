@@ -1,0 +1,794 @@
+/* 一天里的六个时刻。每张卡 10 秒一轮，用 --off 错开；基础样式就是播完的样子。 */
+.ftm {
+  padding-bottom: 52px;
+}
+.ftm .fo-loop-note,
+.ftm .fo-loop-toggle {
+  bottom: 0;
+}
+.ftm .fo-loop-note {
+  left: 0;
+}
+.ftm .ftm-paper {
+  position: relative;
+  min-height: 268px;
+  margin-bottom: 14px;
+  padding: 18px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--fo-white);
+  color: var(--fo-ink);
+  box-shadow: var(--fo-shadow);
+  rotate: -1deg;
+}
+.ftm .ft-moment-grid li:nth-child(even) .ftm-paper {
+  rotate: 1.2deg;
+}
+.ftm .ftm-scene {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 232px;
+}
+.ftm .ftm-scene p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.ftm .ftm-tag {
+  justify-self: start;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--fo-yellow);
+  font-size: 12px;
+  font-weight: 700;
+}
+.ftm .ftm-tag-late {
+  animation: ftm-late 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-tag-early {
+  animation: ftm-early 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+
+/* 1 海报变日程 */
+.ftm .ftm-poster-scene {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+}
+.ftm .ftm-poster-scene .ftm-tag {
+  grid-column: 1 / -1;
+}
+.ftm .ftm-poster {
+  position: relative;
+  display: grid;
+  align-content: start;
+  min-height: 168px;
+  padding: 12px 10px;
+  border-radius: 8px;
+  background: var(--fo-navy);
+  color: var(--fo-white);
+}
+.ftm .ftm-poster::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  bottom: 16px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--fo-red);
+}
+.ftm .ftm-poster b {
+  font-family: var(--fo-display);
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 0.9;
+  color: var(--fo-yellow);
+}
+.ftm .ftm-poster i {
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--fo-yellow);
+}
+.ftm .ftm-poster strong {
+  margin-top: 10px;
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 1.2;
+}
+.ftm .ftm-frame {
+  position: absolute;
+  inset: -6px;
+  border: 2px dashed var(--fo-red);
+  border-radius: 11px;
+  animation: ftm-frame 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-draft {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 4px 12px 12px 12px;
+  background: var(--fo-paper);
+  box-shadow: 0 16px 26px -18px rgb(40 24 10 / 0.6);
+  rotate: 2deg;
+  animation: ftm-draft 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-draft em {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--fo-red);
+}
+.ftm .ftm-draft p {
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.ftm .ftm-type {
+  display: inline-block;
+  max-width: 12em;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.ftm .ftm-type-1 {
+  animation: ftm-type-1 10s linear var(--off, 0s) infinite;
+}
+.ftm .ftm-type-2 {
+  animation: ftm-type-2 10s linear var(--off, 0s) infinite;
+}
+.ftm .ftm-type-3 {
+  animation: ftm-type-3 10s linear var(--off, 0s) infinite;
+}
+
+/* 2 盯着一个网页 */
+.ftm .ftm-page {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--fo-line);
+}
+.ftm .ftm-page small {
+  font-size: 11px;
+  color: var(--fo-muted);
+}
+.ftm .ftm-page > i {
+  height: 8px;
+  border-radius: 8px;
+  background: rgb(18 24 38 / 0.08);
+}
+.ftm .ftm-page > i:last-child {
+  width: 60%;
+}
+.ftm .ftm-seat {
+  position: relative;
+  justify-self: start;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 4px 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.ftm .ftm-count {
+  position: relative;
+  display: inline-grid;
+  height: 44px;
+  overflow: hidden;
+  font-family: var(--fo-display);
+  font-size: 44px;
+  line-height: 1;
+}
+.ftm .ftm-count b {
+  grid-area: 1 / 1;
+  font-weight: 500;
+}
+.ftm .ftm-count-old {
+  transform: translateY(-110%);
+  animation: ftm-count-old 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-count-new {
+  color: var(--fo-red);
+  animation: ftm-count-new 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-region {
+  position: absolute;
+  inset: -4px -6px;
+  border: 2px dashed var(--fo-blue);
+  border-radius: 10px;
+  animation: ftm-early 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-watch .ftm-tag {
+  background: rgb(45 83 227 / 0.14);
+  color: var(--fo-blue);
+}
+.ftm .ftm-toast {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  font-weight: 700;
+  animation: ftm-late 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-toast svg {
+  color: var(--fo-yellow);
+}
+
+/* 3 讨论变待办 */
+.ftm .ftm-chat {
+  gap: 8px;
+}
+.ftm .ftm-bubble {
+  justify-self: start;
+  max-width: 88%;
+  padding: 8px 12px;
+  border-radius: 4px 14px 14px 14px;
+  background: var(--fo-paper);
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  animation: ftm-bubble-1 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-bubble small {
+  display: block;
+  font-family: var(--fo-sans);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--fo-muted);
+}
+.ftm .ftm-bubble-me {
+  justify-self: end;
+  border-radius: 14px 4px 14px 14px;
+  background: rgb(143 182 155 / 0.45);
+  animation-name: ftm-bubble-2;
+}
+.ftm .ftm-select {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  height: 104px;
+  border: 2px dashed var(--fo-red);
+  border-radius: 14px;
+  animation: ftm-select 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-todo {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  background: var(--fo-yellow);
+  rotate: -1.5deg;
+  animation: ftm-late 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-todo div {
+  display: grid;
+}
+.ftm .ftm-todo strong {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: 15px;
+}
+.ftm .ftm-todo small {
+  font-size: 11.5px;
+}
+.ftm .ftm-todo > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgb(255 252 246 / 0.7);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* 4 批量处理 */
+.ftm .ftm-batch {
+  gap: 8px;
+}
+.ftm .ftm-file {
+  display: grid;
+  grid-template-columns: auto auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: var(--fo-paper);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.ftm .ftm-file svg:first-child {
+  color: var(--fo-blue);
+}
+.ftm .ftm-old {
+  color: var(--fo-muted);
+  text-decoration: line-through;
+  animation: ftm-old 10s var(--fo-ease) calc(var(--off, 0s) + var(--n) * 0.2s)
+    infinite;
+}
+.ftm .ftm-arrow,
+.ftm .ftm-new {
+  animation: ftm-new 10s var(--fo-ease) calc(var(--off, 0s) + var(--n) * 0.2s)
+    infinite;
+}
+.ftm .ftm-new {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+}
+.ftm .ftm-batch-foot {
+  display: grid;
+  margin-top: 6px;
+}
+.ftm .ftm-batch-foot > span {
+  grid-area: 1 / 1;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.ftm .ftm-preview {
+  box-shadow: inset 0 0 0 1.5px var(--fo-ink);
+  opacity: 0;
+  animation: ftm-preview 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-done {
+  background: rgb(61 138 90 / 0.16);
+  animation: ftm-late 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+
+/* 5 等 Agent 干活 */
+.ftm .ftm-menubar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  font-weight: 700;
+}
+.ftm .ftm-status {
+  display: grid;
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+}
+.ftm .ftm-status small {
+  grid-area: 1 / 1;
+  justify-self: end;
+}
+.ftm .ftm-busy {
+  opacity: 0;
+  animation: ftm-busy 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-wait {
+  color: var(--fo-yellow);
+  animation: ftm-wait 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--fo-yellow);
+  animation: ftm-dot 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-mywork {
+  display: grid;
+  gap: 9px;
+  padding: 12px 4px;
+}
+.ftm .ftm-mywork small {
+  font-size: 11px;
+  color: var(--fo-muted);
+}
+.ftm .ftm-mywork i {
+  height: 8px;
+  border-radius: 8px;
+  background: rgb(18 24 38 / 0.12);
+  animation: ftm-write 10s linear var(--off, 0s) infinite;
+}
+.ftm .ftm-mywork i:nth-of-type(2) {
+  width: 84%;
+}
+.ftm .ftm-mywork i:nth-of-type(3) {
+  width: 56%;
+}
+.ftm .ftm-ping {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--fo-yellow);
+  font-weight: 700;
+  rotate: 1.5deg;
+  animation: ftm-late 10s var(--fo-ease) var(--off, 0s) infinite;
+}
+.ftm .ftm-ping u {
+  margin-left: auto;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--fo-white);
+  font-size: 11.5px;
+  text-decoration: none;
+}
+
+/* 6 研究对比 */
+.ftm .ftm-docs {
+  display: flex;
+  gap: 6px;
+}
+.ftm .ftm-docs span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: var(--fo-paper);
+  font-size: 12px;
+  font-weight: 700;
+}
+.ftm .ftm-table {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 2px solid var(--fo-ink);
+  font-size: 12.5px;
+}
+.ftm .ftm-table > span {
+  padding: 7px 4px;
+  font-size: 11px;
+  color: var(--fo-muted);
+}
+.ftm .ftm-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  border-top: 1px solid var(--fo-line);
+  animation: ftm-row 10s var(--fo-ease) calc(var(--off, 0s) + var(--n) * 0.9s)
+    infinite;
+}
+.ftm .ftm-row > * {
+  padding: 8px 4px;
+}
+.ftm .ftm-row strong {
+  position: relative;
+  font-family: var(--fo-serif);
+  font-weight: 900;
+}
+.ftm .ftm-row strong::after {
+  content: '↗';
+  margin-left: 3px;
+  font-family: var(--fo-sans);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--fo-red);
+}
+
+@keyframes ftm-early {
+  0%,
+  8% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  13%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftm-late {
+  0%,
+  58% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  63%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftm-frame {
+  0%,
+  6% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+  12%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftm-draft {
+  0%,
+  18% {
+    opacity: 0;
+    transform: translateX(-24px) rotate(-4deg);
+  }
+  24%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftm-type-1 {
+  0%,
+  26% {
+    max-width: 0;
+    animation-timing-function: steps(5, end);
+  }
+  33%,
+  95% {
+    max-width: 12em;
+  }
+  99%,
+  100% {
+    max-width: 0;
+  }
+}
+@keyframes ftm-type-2 {
+  0%,
+  34% {
+    max-width: 0;
+    animation-timing-function: steps(8, end);
+  }
+  44%,
+  95% {
+    max-width: 12em;
+  }
+  99%,
+  100% {
+    max-width: 0;
+  }
+}
+@keyframes ftm-type-3 {
+  0%,
+  45% {
+    max-width: 0;
+    animation-timing-function: steps(6, end);
+  }
+  53%,
+  95% {
+    max-width: 12em;
+  }
+  99%,
+  100% {
+    max-width: 0;
+  }
+}
+@keyframes ftm-count-old {
+  0%,
+  50% {
+    transform: none;
+  }
+  55%,
+  97% {
+    transform: translateY(-110%);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes ftm-count-new {
+  0%,
+  50% {
+    transform: translateY(110%);
+  }
+  55%,
+  97% {
+    transform: none;
+  }
+  100% {
+    transform: translateY(110%);
+  }
+}
+@keyframes ftm-bubble-1 {
+  0%,
+  4% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  9%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftm-bubble-2 {
+  0%,
+  15% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  20%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftm-select {
+  0%,
+  28% {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  34%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftm-old {
+  0%,
+  57% {
+    text-decoration-color: transparent;
+    color: var(--fo-ink);
+  }
+  61%,
+  95% {
+    text-decoration-color: currentColor;
+    color: var(--fo-muted);
+  }
+  99%,
+  100% {
+    text-decoration-color: transparent;
+    color: var(--fo-ink);
+  }
+}
+@keyframes ftm-new {
+  0%,
+  20% {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  26%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftm-preview {
+  0%,
+  22% {
+    opacity: 0;
+  }
+  26%,
+  56% {
+    opacity: 1;
+  }
+  59%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftm-dot {
+  0%,
+  55% {
+    background: #59c27d;
+    box-shadow: 0 0 0 0 rgb(89 194 125 / 0.6);
+  }
+  20%,
+  40% {
+    box-shadow: 0 0 0 5px rgb(89 194 125 / 0);
+  }
+  58%,
+  100% {
+    background: var(--fo-yellow);
+    box-shadow: 0 0 0 3px rgb(246 196 69 / 0.35);
+  }
+}
+@keyframes ftm-busy {
+  0%,
+  55% {
+    opacity: 0.75;
+  }
+  58%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftm-wait {
+  0%,
+  55% {
+    opacity: 0;
+  }
+  58%,
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes ftm-write {
+  0%,
+  6% {
+    clip-path: inset(0 100% 0 0);
+  }
+  50%,
+  96% {
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+@keyframes ftm-row {
+  0%,
+  22% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  27%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  .ftm .ft-moment-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .ftm .ft-moment-grid {
+    grid-template-columns: 1fr;
+  }
+  .ftm .ftm-paper,
+  .ftm .ftm-scene {
+    min-height: 0;
+  }
+}

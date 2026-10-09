@@ -259,7 +259,8 @@ export function useFolioMotion() {
       for (const scene of scenes) {
         const rect = scene.getBoundingClientRect();
         if (rect.bottom < -vh || rect.top > vh * 2) continue;
-        // leave：离开首屏的程度；pass：整段穿过视口；enter：顶部从视口底部走到顶部
+        // leave：离开首屏的程度；pass：整段穿过视口；enter：顶部从视口底部走到顶部；
+        // pin：高于一屏的区块里，粘住的画面从开始到结束的进度
         const mode = scene.dataset.scene;
         // 减少动态时直接停在拼好的样子
         const p = reduce.matches
@@ -270,7 +271,9 @@ export function useFolioMotion() {
             ? -rect.top / vh
             : mode === 'pass'
               ? (vh - rect.top) / (vh + rect.height)
-              : (vh - rect.top) / vh;
+              : mode === 'pin'
+                ? -rect.top / Math.max(1, rect.height - vh)
+                : (vh - rect.top) / vh;
         scene.style.setProperty('--p', Math.min(1, Math.max(0, p)).toFixed(4));
       }
       sheets.forEach((sheet, index) => {

@@ -1,373 +1,906 @@
-/* Folio Work: editorial chapters around the continuous work surface. */
+/* Folio · Molis Work：通用部件在 ../kit.css，首屏演示在 desk.css，三个场景在 scenes.css，前缀 fw- */
+
+/* ---------- 首屏 ---------- */
 .fw-hero .fo-hero-art {
   align-self: end;
-  margin-bottom: 20px;
 }
-.fw-hero .fo-hero-copy h1 {
-  font-size: clamp(34px, 3.8vw, 62px);
+.fo-hero-copy > :nth-child(6) {
+  --d: 0.5s;
 }
+.fo-hero-copy > .fw-agents {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  max-width: 40em;
+  margin-top: -4px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--fo-muted);
+}
+.fw-agents b {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--fo-white);
+  box-shadow: inset 0 0 0 1px var(--fo-line);
+  font-weight: 600;
+  color: var(--fo-ink);
+}
+.fw-agents span:first-child {
+  margin-right: 2px;
+  font-weight: 600;
+  color: var(--fo-ink);
+}
+
+/* ---------- 状态签 ---------- */
 .fw-phase {
   display: inline-flex;
   align-items: center;
-  padding: 4px 9px;
+  height: 24px;
+  padding: 0 10px;
   border-radius: 999px;
-  background: #eee9e0;
-  color: #746652;
-  font-size: 12px;
   font-family: var(--fo-sans);
-  line-height: 1.5;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
   white-space: nowrap;
-  vertical-align: middle;
+  box-shadow: inset 0 0 0 1.5px currentColor;
 }
-.fw-phase[data-status='released'] {
-  background: #e3eddf;
-  color: #4c7046;
+.fw-phase[data-phase='released'] {
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  box-shadow: none;
 }
-.fw-phase[data-status='preview'] {
-  background: #fbebbc;
-  color: #83611a;
+.fw-phase[data-phase='preview'] {
+  background: var(--fo-yellow);
+  color: var(--fo-ink);
+  box-shadow: none;
 }
-.fw-phase[data-status='planned'] {
-  border: 1px dashed #aca193;
-  background: transparent;
+.fw-phase[data-phase='planned'] {
+  box-shadow: none;
+  border: 1.5px dashed currentColor;
 }
-.fw-platform-strip {
+.fo-section[data-bg='navy'] .fw-phase[data-phase='released'] {
+  background: var(--fo-white);
+  color: var(--fo-ink);
+}
+
+/* ---------- 亮点：AI 在流程里需要的那一环 ---------- */
+.fw-everywhere .fo-head h2 {
+  font-size: clamp(36px, 5.4vw, 92px);
+  line-height: 1.1;
+}
+.fw-modes {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 55px;
-  border-top: 1px solid var(--fo-line);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 3vw, 48px);
+  margin-top: clamp(48px, 6vw, 84px);
 }
-.fw-platform-strip > div {
+.fw-modes li {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 15px;
-  padding: 30px 10px 25px;
+  align-content: start;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 2px solid var(--fo-ink);
 }
-.fw-platform-strip > div > span {
-  font: italic 30px var(--fo-display);
+.fw-modes strong {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(40px, 4.6vw, 76px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.fw-modes li:nth-child(1) strong {
+  color: var(--fo-blue);
+}
+.fw-modes li:nth-child(2) strong {
   color: var(--fo-red);
 }
-.fw-platform-strip > div > svg {
-  color: #82796b;
+.fw-modes li:nth-child(3) strong {
+  background: linear-gradient(transparent 62%, var(--fo-yellow) 62%);
+  justify-self: start;
 }
-.fw-platform-strip strong {
-  font: 500 25px var(--fo-serif);
-  grid-column: 1/-1;
-}
-.fw-platform-strip p {
+.fw-modes p {
+  max-width: 20em;
   font-size: 16px;
-  color: var(--fo-muted);
-  grid-column: 1/-1;
+  line-height: 1.75;
+  color: var(--fo-text);
 }
-.fw-agent-line {
+.fw-flow {
+  --p: 0;
+  position: relative;
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  margin-top: clamp(56px, 7vw, 100px);
+  padding: clamp(24px, 3vw, 40px) clamp(18px, 2.4vw, 34px);
+  border-radius: 32px;
+  background: var(--fo-paper);
+}
+.fw-flow-lane {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 96px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+.fw-flow-lane[data-lane='ai'] {
+  grid-row: 1;
+  align-items: flex-end;
+  padding-bottom: 14px;
+  color: var(--fo-red);
+}
+.fw-flow-lane[data-lane='you'] {
+  grid-row: 1;
+  align-self: end;
+  height: 52px;
+  color: var(--fo-ink);
+}
+.fw-flow ol {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(10px, 1.4vw, 20px);
+}
+/* 一根线穿过五个插件，随滚动画过去 */
+.fw-flow ol::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  top: calc(96px + 46px);
+  width: calc(clamp(0, (var(--p) - 0.15) / 0.55, 1) * 100%);
+  height: 0;
+  border-top: 2.5px dashed var(--fo-ink);
+}
+.fw-flow li {
+  --a: clamp(0, calc((var(--p) - 0.24 - var(--i) * 0.08) * 8), 1);
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: 96px auto 52px;
+  gap: 0;
+}
+.fw-flow-ai {
+  position: relative;
+  align-self: end;
+  display: grid;
+  gap: 2px;
+  margin: 0 4px 14px;
+  padding: 9px 12px;
+  border-radius: 12px 12px 12px 4px;
+  background: var(--fo-white);
+  box-shadow: 0 16px 30px -18px rgb(40 24 10 / 0.5);
+  font-size: 12.5px;
+  line-height: 1.45;
+  opacity: var(--a);
+  transform: translateY(calc((1 - var(--a)) * 14px)) rotate(-1.5deg);
+}
+.fw-flow li:nth-child(even) .fw-flow-ai {
+  rotate: 2.5deg;
+}
+.fw-flow-ai b {
+  font-family: var(--fo-serif);
+  font-weight: 900;
   font-size: 16px;
-  line-height: 1.9;
-  margin-top: 32px !important;
-  padding-top: 25px;
-  border-top: 1px solid var(--fo-line);
+  color: var(--fo-red);
 }
-.fw-release-note {
-  max-width: 70em;
+.fw-flow-ai::after {
+  content: '';
+  position: absolute;
+  left: 22px;
+  bottom: -14px;
+  height: 14px;
+  border-left: 2px dotted var(--fo-red);
+}
+.fw-flow-tile {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  min-height: 92px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--fo-white);
+  box-shadow:
+    0 0 0 1.5px var(--fo-ink),
+    0 18px 30px -22px rgb(40 24 10 / 0.6);
+  rotate: -0.8deg;
+}
+.fw-flow li:nth-child(even) .fw-flow-tile {
+  rotate: 0.9deg;
+}
+.fw-flow-tile strong {
+  font-family: var(--fo-display);
+  font-weight: 500;
+  font-size: clamp(20px, 1.9vw, 28px);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.fw-flow-tile small {
   font-size: 13px;
-  line-height: 1.9;
   color: var(--fo-muted);
-  margin-top: 14px !important;
 }
-.fw-main-scene .fd-editorial {
-  grid-template-columns: minmax(0, 0.83fr) minmax(0, 1.17fr);
+.fw-flow-you {
+  align-self: end;
+  justify-self: start;
+  margin-left: 4px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1.5px var(--fo-ink);
+  font-size: 12.5px;
+  font-weight: 600;
 }
-.fw-chapter {
+.fw-aside {
+  max-width: 40em;
+  margin-top: clamp(32px, 4vw, 48px);
+  padding-left: 18px;
+  border-left: 3px solid var(--fo-yellow);
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: clamp(16px, 1.4vw, 20px);
+  line-height: 1.7;
+}
+
+/* ---------- 平台和插件 ---------- */
+.fw-platform .fo-split {
+  align-items: center;
+}
+.fw-platform-copy {
+  display: grid;
+  gap: clamp(32px, 4vw, 52px);
+}
+.fw-platform-copy .fo-head h2 {
+  font-size: clamp(36px, 4.6vw, 76px);
+}
+.fw-principles strong {
+  font-size: clamp(18px, 1.5vw, 23px);
+}
+.fw-principles p {
+  font-size: 15px;
+}
+.fw-arch {
+  display: grid;
+  gap: 12px;
+  padding: clamp(18px, 2.4vw, 30px);
+  border-radius: 30px;
+  background: var(--fo-white);
+  box-shadow: var(--fo-shadow);
+  rotate: 0.6deg;
+}
+.fw-arch-callers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.fw-arch-callers span {
+  position: relative;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  font-size: 13px;
+  font-weight: 600;
+}
+.fw-arch-callers span:nth-child(4) {
+  background: var(--fo-blue);
+}
+.fw-arch-callers small {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--fo-muted);
+}
+.fw-arch-catalog {
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: var(--fo-yellow);
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(16px, 1.4vw, 20px);
+  text-align: center;
+  rotate: -0.8deg;
+}
+.fw-arch-plugins {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 14px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--fo-paper);
+}
+.fw-arch-plugins small {
   display: block;
-  margin-bottom: 30px;
-  font: italic 18px var(--fo-display);
+  margin-bottom: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--fo-muted);
 }
-.fw-main-scene .fo-head h2 {
-  font-size: clamp(30px, 3.4vw, 53px);
-}
-.fw-main-scene .fw-phase {
-  margin: 0 0 18px;
-}
-.fw-main-scene .fd-copy-list .fw-phase {
-  margin: 8px 0 0 7px;
-}
-.fw-main-scene .fd-copy-list {
-  gap: 16px;
-}
-.fw-main-scene .fd-copy-list li {
-  font-size: 16px;
-  color: var(--fo-text);
-}
-.fw-main-scene .fw-problem {
-  color: var(--fo-muted);
-  font-size: 16px;
-}
-.fw-difference-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 40px 60px;
-  margin-top: 60px;
-}
-.fw-difference-grid article {
-  border-top: 1px solid rgb(255 255 255 / 0.22);
-  padding: 30px 0;
-}
-.fw-difference-number {
-  font: italic 55px var(--fo-display);
-  color: var(--fo-yellow);
-  margin-right: 20px;
-}
-.fw-difference-grid h3 {
-  font: 500 28px/1.5 var(--fo-serif);
-  margin: 20px 0 18px;
-}
-.fw-difference-grid p {
-  font-size: 16px;
-  color: #bec6da;
-  line-height: 1.9;
-  max-width: 35em;
-}
-.fw-difference-grid .fw-phase {
-  background: rgb(255 255 255 / 0.1);
-  color: #ddd8c9;
-}
-.fw-proof-line {
+.fw-arch-plugins ul {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.fw-arch-plugins li {
+  position: relative;
+  padding: 5px 9px;
+  border-radius: 8px;
+  background: rgb(244 180 192 / 0.6);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  transition:
+    opacity 0.6s var(--fo-ease),
+    transform 0.7s var(--fo-ease);
+  transition-delay: calc(0.2s + var(--i) * 28ms);
+}
+.fw-arch-plugins > div:last-child li {
+  background: rgb(143 182 155 / 0.5);
+}
+.fw-arch-plugins li[data-released]::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--fo-red);
+  box-shadow: 0 0 0 2px var(--fo-paper);
+}
+.fw-site .fw-arch-plugins .fw-arch-yours {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--fo-ink);
+  border-radius: 8px;
+  outline: 1.5px dashed transparent;
+}
+.fw-site.is-ready .fw-arch:not(.is-in) .fw-arch-plugins li {
+  opacity: 0;
+  transform: translateY(-18px) rotate(-6deg);
+}
+.fw-arch-layers {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+.fw-arch-layers span {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  padding: 6px 8px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1.5px var(--fo-ink);
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.3;
+}
+.fw-arch-base {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--fo-navy);
+  color: var(--fo-white);
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(15px, 1.3vw, 18px);
+  text-align: center;
+}
+.fw-arch figcaption {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--fo-muted);
+}
+
+/* ---------- 三个主场景：每个一张色垫，演示压在上面 ---------- */
+.fw-scene {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   align-items: center;
-  padding-top: 24px;
-  font-size: 12px;
-  color: #eacfa0;
+  gap: clamp(32px, 5vw, 90px);
+  padding: clamp(56px, 7vw, 110px) 0;
 }
-.fw-secondary-title {
-  font: 500 clamp(27px, 3vw, 43px)/1.4 var(--fo-serif);
-  margin: 22px 0 !important;
-}
-.fw-more .fd-tabs {
-  margin-bottom: 50px;
-}
-.fw-more .fd-copy-list {
-  font-size: 16px;
-}
-.fw-feature-groups {
-  margin-top: 55px;
-}
-.fw-feature-groups > details {
+.fw-scene + .fw-scene {
   border-top: 1px solid var(--fo-line);
 }
-.fw-feature-groups > details:last-child {
-  border-bottom: 1px solid var(--fo-line);
+.fw-scenes > .fo-head + .fw-scene {
+  margin-top: clamp(16px, 2vw, 24px);
+  padding-top: clamp(32px, 4vw, 56px);
 }
-.fw-feature-groups summary {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  min-height: 88px;
-  cursor: pointer;
-  list-style: none;
+.fw-scene[data-side='right'] {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
 }
-.fw-feature-groups summary::-webkit-details-marker {
-  display: none;
+.fw-scene[data-side='right'] .fw-scene-copy {
+  order: 2;
 }
-.fw-feature-groups summary > span {
-  font: italic 25px var(--fo-display);
+.fw-scene-copy {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+}
+.fw-scene-number {
+  font-family: var(--fo-display);
+  font-style: italic;
+  font-size: clamp(72px, 7vw, 120px);
+  line-height: 0.8;
+  letter-spacing: -0.05em;
   color: var(--fo-red);
 }
-.fw-feature-groups summary h3 {
-  font: 500 26px var(--fo-serif);
+.fw-scene-copy h3 {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(30px, 3.4vw, 54px);
+  line-height: 1.18;
+  letter-spacing: -0.02em;
 }
-.fw-feature-groups summary small {
-  margin-left: auto;
-  color: var(--fo-muted);
-  font-size: 12px;
+.fw-scene-copy blockquote {
+  max-width: 28em;
+  padding-left: 16px;
+  border-left: 3px solid var(--fo-red);
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: clamp(16px, 1.35vw, 19px);
+  line-height: 1.7;
+  color: var(--fo-text);
 }
-.fw-feature-groups summary > svg {
-  transition: rotate 0.3s;
+.fw-scene-copy ul {
+  display: grid;
+  gap: 10px;
+  max-width: 30em;
 }
-.fw-feature-groups details[open] summary > svg {
-  rotate: 180deg;
+.fw-scene-copy li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.fw-scene-copy li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.82em;
+  width: 12px;
+  height: 2px;
+  background: var(--fo-ink);
+}
+.fw-scene > .fws {
+  --mat: var(--fo-pink);
+  width: 100%;
+  max-width: 680px;
+  padding: clamp(30px, 3.6vw, 52px) clamp(20px, 3.4vw, 46px) 64px;
+  border-radius: 32px;
+  background: var(--mat);
+}
+.fw-scene > .fws-compose {
+  padding-top: clamp(84px, 8vw, 104px);
+}
+.fw-scene > .fws-compose .fwc-back {
+  top: clamp(22px, 2.6vw, 34px);
+  right: 4%;
+}
+.fw-scene > .fws-relay {
+  --mat: var(--fo-yellow);
+}
+.fw-scene > .fws-control {
+  --mat: var(--fo-periwinkle);
+}
+.fw-scene > .fws .fo-loop-note,
+.fw-scene > .fws .fo-loop-toggle {
+  bottom: 18px;
+}
+.fw-scene > .fws .fo-loop-toggle {
+  right: 18px;
+}
+
+/* ---------- 五点不同 ---------- */
+.fw-diff strong .fw-phase {
+  margin-left: 10px;
+  vertical-align: 0.2em;
+}
+
+/* ---------- 更多场景：五张色卡 ---------- */
+.fw-more-cards {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 22px);
+}
+.fw-more-cards li {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: clamp(24px, 2.4vw, 34px);
+  border-radius: 26px;
+  background: var(--fo-white);
+  box-shadow: var(--fo-shadow);
+}
+.fw-more-cards li:nth-child(-n + 2) {
+  grid-column: span 3;
+}
+.fw-more-cards li:nth-child(2) {
+  background: var(--fo-yellow);
+}
+.fw-more-cards li:nth-child(3) {
+  background: var(--fo-pink);
+}
+.fw-more-cards li:nth-child(4) {
+  background: var(--fo-blue);
+  color: var(--fo-white);
+}
+.fw-more-cards li.is-in:nth-child(odd) {
+  rotate: -0.5deg;
+}
+.fw-more-cards li.is-in:nth-child(even) {
+  rotate: 0.6deg;
+}
+.fw-more-cards .fo-index {
+  font-size: 44px;
+}
+.fw-more-cards li:nth-child(n + 2) .fo-index {
+  color: var(--fo-ink);
+}
+.fw-more-cards li:nth-child(4) .fo-index {
+  color: var(--fo-yellow);
+}
+.fw-more-cards h3 {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(21px, 1.9vw, 28px);
+  line-height: 1.3;
+}
+.fw-more-cards p {
+  font-size: 15.5px;
+  line-height: 1.75;
+}
+.fw-more-cards .fw-more-pain {
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  opacity: 0.72;
+}
+.fw-more-cards .fw-phase {
+  margin-top: auto;
+}
+
+/* ---------- 功能全景 ---------- */
+.fw-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.fw-legend li,
+.fw-feature-groups li {
+  --mark: var(--fo-ink);
+}
+.fw-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.fw-legend li::before,
+.fw-feature-groups li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--fo-ink);
+}
+:is(.fw-legend, .fw-feature-groups) [data-phase='next']::before {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--fo-ink);
+}
+:is(.fw-legend, .fw-feature-groups) [data-phase='preview']::before {
+  background: var(--fo-yellow);
+  box-shadow: inset 0 0 0 1.5px var(--fo-ink);
+}
+:is(.fw-legend, .fw-feature-groups) [data-phase='planned']::before {
+  background: transparent;
+  border: 1.5px dashed var(--fo-muted);
+}
+.fw-feature-groups {
+  display: grid;
+  gap: clamp(36px, 4vw, 56px);
+}
+.fw-feature-groups h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--fo-ink);
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(22px, 2vw, 30px);
+}
+.fw-feature-groups h3 small {
+  font-family: var(--fo-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--fo-red);
 }
 .fw-feature-groups ul {
-  padding: 0 0 30px 48px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  column-gap: clamp(20px, 2.6vw, 40px);
 }
 .fw-feature-groups li {
   display: grid;
-  grid-template-columns: minmax(150px, 0.7fr) minmax(0, 2fr) auto;
-  gap: 20px;
-  padding: 20px 0;
-  border-top: 1px solid var(--fo-line);
-  align-items: start;
-}
-.fw-feature-groups li > strong {
-  font-size: 16px;
-  line-height: 1.9;
-}
-.fw-feature-groups li > p {
-  font-size: 16px;
-  line-height: 1.9;
-  color: var(--fo-muted);
-}
-.fw-compare-list {
-  display: grid;
-  gap: 10px;
-  margin-top: 50px;
-}
-.fw-compare-list details {
+  grid-template-columns: 11px minmax(0, 1fr);
+  column-gap: 12px;
+  row-gap: 3px;
+  padding: 14px 0;
   border-bottom: 1px solid var(--fo-line);
 }
-.fw-compare-list summary {
-  list-style: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 22px 0;
-  font-size: 16px;
-  cursor: pointer;
+.fw-feature-groups li::before {
+  grid-row: 1;
+  margin-top: 0.42em;
 }
-.fw-compare-list summary::-webkit-details-marker {
-  display: none;
+.fw-feature-groups strong {
+  font-size: 15.5px;
+  font-weight: 700;
+  line-height: 1.45;
 }
-.fw-compare-list details > div {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 40px;
-  padding: 0 0 30px;
-}
-.fw-compare-list p {
-  font-size: 16px;
-  line-height: 1.9;
-}
-.fw-gap {
+.fw-feature-groups span {
+  grid-column: 2;
+  font-size: 13.5px;
+  line-height: 1.6;
   color: var(--fo-muted);
 }
-.fw-local ul {
-  display: grid;
-  gap: 24px;
+
+/* ---------- 和你现在的做法比 ---------- */
+.fw-compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
 }
-.fw-local li {
-  display: flex;
-  gap: 15px;
-  padding-bottom: 22px;
-  border-bottom: 1px solid rgb(18 24 38 / 0.18);
-}
-.fw-local li svg {
-  flex-shrink: 0;
-  margin-top: 6px;
-}
-.fw-local p {
-  font-size: 16px;
-  line-height: 1.9;
-}
-.fw-start-paths {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  margin-top: 60px;
-}
-.fw-start-paths > article {
-  border-top: 1px solid var(--fo-line);
-  padding-top: 28px;
-}
-.fw-start-paths small {
+.fw-compare-table thead th {
+  padding: 12px 20px 14px 0;
+  border-bottom: 3px solid var(--fo-ink);
   font-size: 13px;
-  letter-spacing: 0.03em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   color: var(--fo-muted);
 }
-.fw-start-paths h3 {
-  font: 500 30px var(--fo-serif);
-  margin: 18px 0;
+.fw-compare-table thead th:nth-child(2) {
+  padding-left: 22px;
+  border-radius: 16px 16px 0 0;
+  background: var(--fo-yellow);
+  color: var(--fo-ink);
 }
-.fw-start-paths p {
-  max-width: 35em;
+.fw-compare-table tbody th {
+  width: 28%;
+  padding: 26px 24px 26px 0;
+  border-bottom: 1px solid var(--fo-line);
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(18px, 1.6vw, 24px);
+  line-height: 1.4;
+  vertical-align: top;
+}
+.fw-compare-table td {
+  padding: 26px 22px;
+  border-bottom: 1px solid var(--fo-line);
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--fo-muted);
+  vertical-align: top;
+}
+.fw-compare-table td:nth-of-type(1) {
+  width: 40%;
+  background: rgb(246 196 69 / 0.26);
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: clamp(16px, 1.35vw, 19px);
+  color: var(--fo-ink);
+}
+
+/* ---------- 本地优先与边界 ---------- */
+.fw-bounds-list {
+  border-top: 2px solid var(--fo-ink);
+}
+.fw-bounds-list li {
+  position: relative;
+  padding: 20px 0 20px 34px;
+  border-bottom: 1px solid rgb(18 24 38 / 0.18);
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: clamp(16px, 1.4vw, 20px);
+  line-height: 1.65;
+}
+.fw-bounds-list li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 1.35em;
+  width: 16px;
+  height: 8px;
+  border-left: 2.5px solid var(--fo-ink);
+  border-bottom: 2.5px solid var(--fo-ink);
+  rotate: -45deg;
+}
+
+/* ---------- 现在能用什么 ---------- */
+.fw-access-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 1.8vw, 24px);
+}
+.fw-access-cards article {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: clamp(26px, 3vw, 44px);
+  border-radius: 28px;
+  background: var(--fo-paper);
+}
+.fw-access-cards article:nth-child(2) {
+  background: var(--fo-ink);
+  color: var(--fo-white);
+}
+.fw-access-cards small {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--fo-red);
+}
+.fw-access-cards article:nth-child(2) small {
+  color: var(--fo-yellow);
+}
+.fw-access-cards h3 {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(26px, 2.6vw, 40px);
+  line-height: 1.25;
+}
+.fw-access-cards p {
+  max-width: 30em;
   font-size: 16px;
-  line-height: 1.9;
-  color: var(--fo-muted);
-  margin-bottom: 28px;
+  line-height: 1.8;
+  opacity: 0.86;
 }
-.fw-footer-note {
-  font-size: 12px;
-  line-height: 1.9;
-  padding: 0 var(--fo-gutter) 40px;
+.fw-access-cards .fo-actions {
+  margin-top: auto;
+  padding-top: 8px;
 }
-@media (max-width: 800px) {
-  .fw-main-scene .fd-editorial {
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 1100px) {
+  .fw-flow {
     grid-template-columns: 1fr;
   }
-  .fw-difference-grid {
-    gap: 28px;
+  .fw-flow-lane {
+    display: none;
   }
-  .fw-feature-groups li {
-    grid-template-columns: 1fr auto;
-    gap: 10px;
+  .fw-flow ol {
+    grid-column: 1;
   }
-  .fw-feature-groups li p {
-    grid-column: 1/-1;
-    grid-row: 2;
+  .fw-more-cards li,
+  .fw-more-cards li:nth-child(-n + 2) {
+    grid-column: span 3;
   }
-  .fw-start-paths {
-    gap: 30px;
+  .fw-more-cards li:last-child {
+    grid-column: 1 / -1;
   }
 }
-@media (max-width: 540px) {
-  .fw-hero .fo-hero-art {
-    margin-bottom: 55px;
-  }
-  .fw-platform-strip {
+@media (max-width: 900px) {
+  .fw-modes {
     grid-template-columns: 1fr;
-    gap: 0;
+    gap: 22px;
   }
-  .fw-platform-strip > div {
-    padding: 22px 0;
-    grid-template-columns: 35px 1fr auto;
-    border-bottom: 1px solid var(--fo-line);
-    gap: 10px;
+  .fw-scene,
+  .fw-scene[data-side='right'] {
+    grid-template-columns: minmax(0, 1fr);
   }
-  .fw-platform-strip > div > svg {
-    grid-column: 3;
-    grid-row: 1;
+  .fw-scene[data-side='right'] .fw-scene-copy {
+    order: 0;
   }
-  .fw-platform-strip strong {
+  .fw-access-cards {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 760px) {
+  .fw-flow {
+    padding: 22px 16px;
+  }
+  .fw-flow ol {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .fw-flow ol::before {
+    display: none;
+  }
+  .fw-flow li {
+    grid-template-rows: none;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: 8px 12px;
+  }
+  .fw-flow-tile {
+    grid-row: 1 / 3;
+    min-height: 0;
+  }
+  .fw-flow-ai {
     grid-column: 2;
-    grid-row: 1;
+    margin: 0;
     align-self: center;
-    font-size: 23px;
   }
-  .fw-platform-strip p {
-    grid-column: 2/-1;
+  .fw-flow-ai::after {
+    display: none;
   }
-  .fw-difference-grid {
+  .fw-flow-you {
+    grid-column: 2;
+    margin: 0;
+  }
+  .fw-flow-gap {
+    display: none;
+  }
+  .fw-more-cards {
     grid-template-columns: 1fr;
   }
-  .fw-difference-grid h3 {
-    font-size: 25px;
+  .fw-more-cards li,
+  .fw-more-cards li:nth-child(-n + 2),
+  .fw-more-cards li:last-child {
+    grid-column: auto;
   }
-  .fw-feature-groups summary {
-    gap: 14px;
-    min-height: 80px;
+  .fw-arch-plugins,
+  .fw-arch-layers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .fw-feature-groups summary h3 {
-    font-size: 23px;
+  .fw-arch-plugins {
+    grid-template-columns: 1fr;
   }
-  .fw-feature-groups summary small {
+  .fw-compare-table,
+  .fw-compare-table tbody,
+  .fw-compare-table tr,
+  .fw-compare-table th,
+  .fw-compare-table td {
+    display: block;
+    width: auto;
+  }
+  .fw-compare-table thead {
+    display: none;
+  }
+  .fw-compare-table tbody tr {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--fo-line);
+  }
+  .fw-compare-table tbody th,
+  .fw-compare-table td,
+  .fw-compare-table td:nth-of-type(1) {
+    width: auto;
+    padding: 0;
+    border: 0;
+  }
+  .fw-compare-table td {
+    margin-top: 10px;
+  }
+  .fw-compare-table td:nth-of-type(1) {
+    width: auto;
+    padding: 12px 14px;
+    border-radius: 14px;
+  }
+  .fw-compare-table td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    font-family: var(--fo-sans);
     font-size: 12px;
-  }
-  .fw-feature-groups ul {
-    padding-left: 0;
-  }
-  .fw-compare-list details > div {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  .fw-start-paths {
-    grid-template-columns: 1fr;
-    gap: 45px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--fo-muted);
   }
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .fw-site .fd-demo * {
-    transition: none !important;
+  .fw-flow {
+    --p: 1;
   }
 }

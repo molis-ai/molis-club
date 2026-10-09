@@ -1,0 +1,1167 @@
+/* Tool 页的两段动态：三层接力、插件即能力。前缀 ftl- / ftp-，12 秒一轮；基础样式就是播完的样子。 */
+.ftx-pointer {
+  position: absolute;
+  z-index: 5;
+  display: block;
+  width: 20px;
+  height: 20px;
+  color: var(--fo-ink);
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.25));
+  opacity: 0;
+  pointer-events: none;
+}
+.ftx-pointer svg {
+  stroke: var(--fo-white);
+}
+
+/* ---------- 三层：同一场展览，一层接一层 ---------- */
+.ftl {
+  padding-bottom: 52px;
+}
+.ftl .fo-loop-note,
+.ftl .fo-loop-toggle {
+  bottom: 4px;
+}
+.ftl .fo-loop-note {
+  left: 0;
+}
+.ftl-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 2.4vw, 36px);
+}
+.ftl-panel {
+  display: grid;
+  align-content: start;
+  gap: 22px;
+}
+.ftl-paper {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-height: 330px;
+  padding: 22px clamp(18px, 1.8vw, 26px);
+  border-radius: 18px;
+  background: var(--fo-white);
+  color: var(--fo-ink);
+  box-shadow:
+    0 0 0 1px rgb(18 24 38 / 0.06),
+    0 30px 50px -30px rgb(40 24 10 / 0.5);
+  rotate: -1.2deg;
+}
+.ftl-panel:nth-child(2) .ftl-paper {
+  rotate: 1deg;
+}
+.ftl-panel:nth-child(3) .ftl-paper {
+  rotate: -0.6deg;
+}
+.ftl-panel[data-layer='near'] .ftl-paper {
+  animation: ftl-lift-1 12s var(--fo-ease) infinite;
+}
+.ftl-panel[data-layer='beside'] .ftl-paper {
+  animation: ftl-lift-2 12s var(--fo-ease) infinite;
+}
+.ftl-panel[data-layer='later'] .ftl-paper {
+  animation: ftl-lift-3 12s var(--fo-ease) infinite;
+}
+.ftl-paper > small {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--fo-muted);
+}
+.ftl-caption {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+.ftl-caption .fo-index {
+  font-size: 44px;
+}
+.ftl-caption h3 {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(24px, 2.2vw, 34px);
+}
+.ftl-caption p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--fo-text);
+}
+
+/* 光标旁 */
+.ftl-text {
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: clamp(17px, 1.5vw, 21px);
+  line-height: 1.7;
+}
+.ftl-text mark {
+  color: inherit;
+  background: linear-gradient(
+      transparent 12%,
+      var(--fo-yellow) 12%,
+      var(--fo-yellow) 92%,
+      transparent 92%
+    )
+    no-repeat 0 0 / 100% 100%;
+  animation: ftl-mark 12s var(--fo-ease) infinite;
+}
+.ftl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ftl-chips span {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 13px;
+  border-radius: 999px;
+  background: var(--fo-paper);
+  box-shadow: 0 10px 18px -12px rgb(40 24 10 / 0.6);
+  font-size: 13px;
+  font-weight: 600;
+  rotate: -2deg;
+  animation: ftl-chips 12s var(--fo-ease) infinite;
+}
+.ftl-chips span:first-child {
+  animation-name: ftl-chips, ftl-press;
+}
+.ftl-chips span:nth-child(2) {
+  background: var(--fo-sage);
+  rotate: 2deg;
+}
+.ftl-pointer-near {
+  left: 60%;
+  top: 55%;
+  animation: ftl-pointer-near 12s var(--fo-ease) infinite;
+}
+.ftl-near-result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 11px 14px;
+  border-radius: 4px 14px 14px 14px;
+  background: rgb(61 138 90 / 0.14);
+  font-size: 13.5px;
+  font-weight: 700;
+  animation: ftl-near-result 12s var(--fo-ease) infinite;
+}
+.ftl-near-result svg {
+  color: #3d8a5a;
+}
+.ftl-near-result u {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--fo-muted);
+}
+
+/* 身旁 */
+.ftl-beside {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 10px;
+}
+.ftl-poster {
+  position: relative;
+  display: grid;
+  align-content: start;
+  min-height: 190px;
+  padding: 14px 12px;
+  overflow: visible;
+  border-radius: 8px;
+  background: var(--fo-navy);
+  color: var(--fo-white);
+  isolation: isolate;
+}
+.ftl-poster-sun {
+  position: absolute;
+  z-index: -1;
+  right: -10px;
+  bottom: 18px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--fo-red);
+}
+.ftl-poster b {
+  font-family: var(--fo-display);
+  font-weight: 500;
+  font-size: 46px;
+  line-height: 0.9;
+  color: var(--fo-yellow);
+}
+.ftl-poster i {
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--fo-yellow);
+}
+.ftl-poster strong {
+  margin-top: 12px;
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: 19px;
+  line-height: 1.2;
+}
+.ftl-frame {
+  position: absolute;
+  inset: -7px;
+  border: 2px dashed var(--fo-red);
+  border-radius: 12px;
+  animation: ftl-frame 12s var(--fo-ease) infinite;
+}
+.ftl-card {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 8px;
+  padding: 12px 12px 10px;
+  border-radius: 4px 14px 14px 14px;
+  background: var(--fo-white);
+  box-shadow:
+    0 0 0 1px var(--fo-line),
+    0 20px 36px -20px rgb(40 24 10 / 0.55);
+  rotate: 2deg;
+  animation: ftl-card 12s var(--fo-ease) infinite;
+}
+.ftl-card em {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--fo-red);
+}
+.ftl-card dl {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+.ftl-card dl > div {
+  display: grid;
+  gap: 1px;
+}
+.ftl-card dt {
+  font-size: 10.5px;
+  color: var(--fo-muted);
+}
+.ftl-card dd {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.ftl-card dd span {
+  display: inline-block;
+  max-width: 12em;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.ftl-card dl > div:nth-child(1) dd span {
+  animation: ftl-type-1 12s linear infinite;
+}
+.ftl-card dl > div:nth-child(2) dd span {
+  animation: ftl-type-2 12s linear infinite;
+}
+.ftl-card dl > div:nth-child(3) dd span {
+  animation: ftl-type-3 12s linear infinite;
+}
+.ftl-source {
+  padding-top: 6px;
+  border-top: 1px dashed var(--fo-line);
+  font-size: 10.5px;
+  color: var(--fo-muted);
+  animation: ftl-tail 12s var(--fo-ease) infinite;
+}
+.ftl-card-actions {
+  display: flex;
+  gap: 6px;
+  animation: ftl-tail 12s var(--fo-ease) infinite;
+}
+.ftl-card-actions span {
+  padding: 3px 10px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1.5px var(--fo-line);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.ftl-card-actions span:first-child {
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  box-shadow: none;
+}
+
+/* 离开以后 */
+.ftl-keys {
+  display: flex;
+  gap: 6px;
+}
+.ftl-keys kbd {
+  display: grid;
+  place-items: center;
+  min-width: 38px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: var(--fo-paper);
+  box-shadow:
+    inset 0 -3px 0 rgb(18 24 38 / 0.14),
+    0 0 0 1px var(--fo-line);
+  font-family: var(--fo-sans);
+  font-size: 13px;
+  font-weight: 700;
+  animation: ftl-key 12s var(--fo-ease) infinite;
+}
+.ftl-keys kbd:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.ftl-bar {
+  display: grid;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  box-shadow: 0 22px 36px -22px rgb(18 24 38 / 0.8);
+  animation: ftl-bar 12s var(--fo-ease) infinite;
+}
+.ftl-query {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.12);
+  font-size: 14px;
+}
+.ftl-query span {
+  display: inline-block;
+  max-width: 3em;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: ftl-query 12s linear infinite;
+}
+.ftl-hit {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 2px 10px;
+  margin: 6px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  background: rgb(255 255 255 / 0.12);
+  animation: ftl-hit 12s var(--fo-ease) infinite;
+}
+.ftl-hit svg {
+  grid-row: 1 / 3;
+  color: var(--fo-yellow);
+}
+.ftl-hit strong {
+  font-size: 13px;
+}
+.ftl-hit small {
+  font-size: 11px;
+  opacity: 0.7;
+}
+.ftl-back {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--fo-yellow);
+  font-size: 13px;
+  font-weight: 700;
+  rotate: -1.5deg;
+  animation: ftl-back 12s var(--fo-ease) infinite;
+}
+
+@keyframes ftl-lift-1 {
+  0%,
+  1%,
+  33%,
+  100% {
+    transform: none;
+    box-shadow:
+      0 0 0 1px rgb(18 24 38 / 0.06),
+      0 30px 50px -30px rgb(40 24 10 / 0.5);
+  }
+  4%,
+  30% {
+    transform: translateY(-8px);
+    box-shadow:
+      0 0 0 2px var(--fo-ink),
+      0 40px 60px -30px rgb(40 24 10 / 0.6);
+  }
+}
+@keyframes ftl-lift-2 {
+  0%,
+  33%,
+  66%,
+  100% {
+    transform: none;
+    box-shadow:
+      0 0 0 1px rgb(18 24 38 / 0.06),
+      0 30px 50px -30px rgb(40 24 10 / 0.5);
+  }
+  36%,
+  63% {
+    transform: translateY(-8px);
+    box-shadow:
+      0 0 0 2px var(--fo-ink),
+      0 40px 60px -30px rgb(40 24 10 / 0.6);
+  }
+}
+@keyframes ftl-lift-3 {
+  0%,
+  66%,
+  98%,
+  100% {
+    transform: none;
+    box-shadow:
+      0 0 0 1px rgb(18 24 38 / 0.06),
+      0 30px 50px -30px rgb(40 24 10 / 0.5);
+  }
+  69%,
+  95% {
+    transform: translateY(-8px);
+    box-shadow:
+      0 0 0 2px var(--fo-ink),
+      0 40px 60px -30px rgb(40 24 10 / 0.6);
+  }
+}
+@keyframes ftl-mark {
+  0%,
+  4% {
+    background-size: 0% 100%;
+  }
+  12%,
+  96% {
+    background-size: 100% 100%;
+  }
+  99%,
+  100% {
+    background-size: 0% 100%;
+  }
+}
+@keyframes ftl-chips {
+  0%,
+  12% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+  }
+  15%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftl-press {
+  0%,
+  20% {
+    background: var(--fo-paper);
+    color: var(--fo-ink);
+  }
+  21%,
+  96% {
+    background: var(--fo-red);
+    color: var(--fo-white);
+  }
+  99%,
+  100% {
+    background: var(--fo-paper);
+  }
+}
+@keyframes ftl-pointer-near {
+  0%,
+  13% {
+    opacity: 0;
+    transform: translate(40px, -36px);
+  }
+  17% {
+    opacity: 1;
+  }
+  19% {
+    opacity: 1;
+    transform: none;
+  }
+  21% {
+    transform: scale(0.84);
+  }
+  23% {
+    opacity: 1;
+    transform: none;
+  }
+  27%,
+  100% {
+    opacity: 0;
+    transform: translate(10px, 16px);
+  }
+}
+@keyframes ftl-near-result {
+  0%,
+  23% {
+    opacity: 0;
+    transform: translateY(10px) rotate(-2deg);
+  }
+  27%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftl-frame {
+  0%,
+  36% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+  40%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftl-card {
+  0%,
+  41% {
+    opacity: 0;
+    transform: translateX(-30px) rotate(-4deg);
+  }
+  45%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftl-type-1 {
+  0%,
+  45% {
+    max-width: 0;
+    animation-timing-function: steps(5, end);
+  }
+  49%,
+  96% {
+    max-width: 12em;
+  }
+  99%,
+  100% {
+    max-width: 0;
+  }
+}
+@keyframes ftl-type-2 {
+  0%,
+  49% {
+    max-width: 0;
+    animation-timing-function: steps(8, end);
+  }
+  54%,
+  96% {
+    max-width: 12em;
+  }
+  99%,
+  100% {
+    max-width: 0;
+  }
+}
+@keyframes ftl-type-3 {
+  0%,
+  54% {
+    max-width: 0;
+    animation-timing-function: steps(6, end);
+  }
+  58%,
+  96% {
+    max-width: 12em;
+  }
+  99%,
+  100% {
+    max-width: 0;
+  }
+}
+@keyframes ftl-tail {
+  0%,
+  58% {
+    opacity: 0;
+  }
+  61%,
+  96% {
+    opacity: 1;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftl-key {
+  0%,
+  68% {
+    background: var(--fo-paper);
+    transform: none;
+  }
+  69%,
+  71% {
+    background: var(--fo-yellow);
+    transform: translateY(2px) scale(0.94);
+  }
+  73%,
+  100% {
+    background: var(--fo-paper);
+    transform: none;
+  }
+}
+@keyframes ftl-bar {
+  0%,
+  71% {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.96);
+  }
+  74%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftl-query {
+  0%,
+  74% {
+    max-width: 0;
+    animation-timing-function: steps(3, end);
+  }
+  79%,
+  96% {
+    max-width: 3em;
+  }
+  99%,
+  100% {
+    max-width: 0;
+  }
+}
+@keyframes ftl-hit {
+  0%,
+  80% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  83%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftl-back {
+  0%,
+  86% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  89%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---------- 插件就是能力 ---------- */
+.ftp {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  align-items: start;
+  gap: 18px;
+  padding-bottom: 50px;
+  color: var(--fo-ink);
+}
+.ftp .fo-loop-note,
+.ftp .fo-loop-toggle {
+  bottom: 4px;
+}
+.ftp .fo-loop-note {
+  left: 0;
+}
+.ftp-slip {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 18px 18px 16px;
+  border-radius: 6px 18px 18px 18px;
+  background: var(--fo-white);
+  box-shadow: 0 30px 50px -28px rgb(40 24 10 / 0.6);
+  rotate: -2deg;
+}
+.ftp-slip header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--fo-ink);
+}
+.ftp-slip header svg {
+  grid-row: 1 / 3;
+  color: var(--fo-red);
+}
+.ftp-slip header small {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--fo-muted);
+}
+.ftp-slip header strong {
+  grid-column: 2;
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(20px, 1.8vw, 26px);
+}
+.ftp-toggle {
+  position: relative;
+  grid-column: 3;
+  grid-row: 1 / 3;
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--fo-ink);
+  animation: ftp-track 12s var(--fo-ease) infinite;
+}
+.ftp-toggle i {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--fo-white);
+  transform: translateX(20px);
+  animation: ftp-knob 12s var(--fo-ease) infinite;
+}
+.ftp-pointer {
+  left: 14px;
+  top: 10px;
+  animation: ftp-pointer 12s var(--fo-ease) infinite;
+}
+.ftp-slip dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+.ftp-slip dl > div {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: baseline;
+}
+.ftp-slip dt {
+  font-size: 12px;
+  color: var(--fo-muted);
+}
+.ftp-slip dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+.ftp-surfaces {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.ftp-surface {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-height: 112px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgb(255 252 246 / 0.72);
+  box-shadow: inset 0 0 0 1.5px rgb(18 24 38 / 0.12);
+}
+.ftp-surface:nth-child(odd) {
+  rotate: -0.8deg;
+}
+.ftp-surface:nth-child(even) {
+  rotate: 0.9deg;
+}
+.ftp-surface > small {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+.ftp-new {
+  animation: ftp-new 12s var(--fo-ease) infinite;
+}
+.ftp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ftp-chips span {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--fo-paper);
+  font-size: 12px;
+  font-weight: 600;
+}
+.ftp-chips .ftp-new {
+  background: var(--fo-red);
+  color: var(--fo-white);
+}
+.ftp-menu {
+  display: grid;
+  overflow: hidden;
+  border-radius: 9px;
+  background: var(--fo-white);
+  box-shadow: 0 0 0 1px var(--fo-line);
+  font-size: 12px;
+}
+.ftp-menu li {
+  padding: 5px 10px;
+}
+.ftp-menu li + li {
+  border-top: 1px solid var(--fo-line);
+}
+.ftp-menu .ftp-new {
+  background: var(--fo-red);
+  color: var(--fo-white);
+  font-weight: 700;
+}
+.ftp-drop {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 1.5px dashed rgb(18 24 38 / 0.35);
+  border-radius: 10px;
+  font-size: 11.5px;
+  color: var(--fo-muted);
+}
+.ftp-drop b {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--fo-red);
+  color: var(--fo-white);
+  font-size: 12px;
+}
+.ftp-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  font-size: 12px;
+}
+.ftp-bar-hit {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 9px;
+  background: var(--fo-red);
+  color: var(--fo-white);
+  font-size: 12px;
+  font-weight: 700;
+}
+.ftp-bar-hit i {
+  font-style: normal;
+  font-weight: 500;
+  opacity: 0.8;
+}
+.ftp-chain {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--fo-white);
+  box-shadow: 0 24px 40px -28px rgb(40 24 10 / 0.6);
+  font-size: 13px;
+}
+.ftp-file {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 11px;
+  border-radius: 8px;
+  background: var(--fo-paper);
+  font-weight: 700;
+}
+.ftp-step {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  font-weight: 700;
+}
+.ftp-step-a {
+  animation: ftp-step-a 12s var(--fo-ease) infinite;
+}
+.ftp-step-b,
+.ftp-arrow-b {
+  animation: ftp-step-b 12s var(--fo-ease) infinite;
+}
+.ftp-step-b {
+  background: var(--fo-sage);
+  color: var(--fo-ink);
+}
+.ftp-out-a {
+  animation: ftp-out-a 12s var(--fo-ease) infinite;
+}
+.ftp-out-b {
+  animation: ftp-out-b 12s var(--fo-ease) infinite;
+}
+.ftp-kept {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  font-size: 12.5px;
+  font-weight: 600;
+  animation: ftp-kept 12s var(--fo-ease) infinite;
+}
+
+@keyframes ftp-track {
+  0%,
+  9% {
+    background: rgb(18 24 38 / 0.22);
+  }
+  11%,
+  65% {
+    background: var(--fo-ink);
+  }
+  67%,
+  100% {
+    background: rgb(18 24 38 / 0.22);
+  }
+}
+@keyframes ftp-knob {
+  0%,
+  9% {
+    transform: none;
+  }
+  11%,
+  65% {
+    transform: translateX(20px);
+  }
+  67%,
+  100% {
+    transform: none;
+  }
+}
+@keyframes ftp-pointer {
+  0%,
+  3% {
+    opacity: 0;
+    transform: translate(40px, 36px);
+  }
+  6% {
+    opacity: 1;
+  }
+  8% {
+    opacity: 1;
+    transform: none;
+  }
+  9.5% {
+    transform: scale(0.84);
+  }
+  11% {
+    opacity: 1;
+    transform: none;
+  }
+  14%,
+  58% {
+    opacity: 0;
+    transform: translate(16px, 20px);
+  }
+  62% {
+    opacity: 1;
+    transform: none;
+  }
+  65.5% {
+    transform: scale(0.84);
+  }
+  67% {
+    opacity: 1;
+    transform: none;
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: translate(16px, 20px);
+  }
+}
+@keyframes ftp-new {
+  0%,
+  11% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  14% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  16%,
+  66% {
+    opacity: 1;
+    transform: none;
+  }
+  68%,
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+@keyframes ftp-step-a {
+  0%,
+  22% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  25%,
+  66% {
+    opacity: 1;
+    transform: none;
+  }
+  68%,
+  96% {
+    opacity: 0.32;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftp-out-a {
+  0%,
+  30% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  33%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftp-step-b {
+  0%,
+  38% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  41%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftp-out-b {
+  0%,
+  46% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  49%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ftp-kept {
+  0%,
+  69% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  72%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  .ftl-row {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+    margin-inline: auto;
+  }
+  .ftl-paper {
+    min-height: 0;
+  }
+}
+@media (max-width: 640px) {
+  .ftp {
+    grid-template-columns: 1fr;
+  }
+  .ftp-surface {
+    min-height: 0;
+  }
+}
+
+/* 插件一段左栏：标题下接三条要点 */
+.ft-plugins-copy {
+  display: grid;
+  gap: clamp(28px, 3.4vw, 44px);
+}
+.ft-plugins-copy .fo-list strong {
+  font-size: clamp(18px, 1.5vw, 22px);
+}
+.ft-plugins-copy .fo-list p {
+  font-size: 15px;
+}

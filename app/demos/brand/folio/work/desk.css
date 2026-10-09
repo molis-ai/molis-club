@@ -1,0 +1,551 @@
+/* Work 首屏演示：一页 Pages 压在剪纸上，助理以操作卡出现，不是聊天框。
+   基础样式就是播完的样子；关掉动画（减少动态）时停在结果上。一轮 12 秒。 */
+.fw-desk {
+  width: min(100%, 700px);
+  padding: 8% 7% 12% 5%;
+}
+.fw-desk .fo-cuts svg {
+  opacity: 0;
+  translate: none;
+  rotate: none;
+  transform: translateY(60px) rotate(-10deg);
+}
+.fw-desk .fo-cuts-arch {
+  width: 36%;
+}
+.fw-desk .fo-cuts-sun {
+  width: 24%;
+}
+.is-ready .fw-desk .fo-cuts svg {
+  animation: fo-cut-in 1.2s var(--fo-ease) 0.2s forwards;
+}
+.is-ready .fw-desk .fo-cuts-sun {
+  animation-delay: 0.35s;
+}
+.is-ready .fw-desk .fo-cuts-star {
+  animation-delay: 0.5s;
+}
+
+.fw-sheet {
+  position: relative;
+  z-index: 1;
+  border-radius: 16px;
+  background: var(--fo-white);
+  color: var(--fo-ink);
+  text-align: left;
+  box-shadow: 0 40px 70px -34px rgb(40 24 10 / 0.6);
+  rotate: -1.5deg;
+  opacity: 0;
+  translate: 0 50px;
+  transition:
+    opacity 1s var(--fo-ease) 0.4s,
+    translate 1.2s var(--fo-ease) 0.4s;
+}
+.is-ready .fw-sheet {
+  opacity: 1;
+  translate: none;
+}
+.fw-sheet-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 44px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--fo-line);
+  font-size: 12px;
+}
+.fw-project {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+.fw-project i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--fo-red);
+  rotate: 12deg;
+}
+.fw-goal {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 4px 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--fo-paper);
+  color: var(--fo-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.fw-sheet-body {
+  position: relative;
+  padding: 26px clamp(18px, 6%, 44px) 30px;
+}
+.fw-doc {
+  width: 64%;
+}
+.fw-doc small {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--fo-red);
+}
+.fw-doc h3 {
+  margin-top: 6px;
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(22px, 2.2vw, 30px);
+  line-height: 1.25;
+}
+.fw-typed {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 14px;
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: clamp(15px, 1.3vw, 17px);
+  line-height: 1.7;
+}
+.fw-typed span {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: fw-type 12s linear infinite;
+}
+.fw-caret {
+  width: 2px;
+  height: 1.15em;
+  margin-left: 2px;
+  background: var(--fo-red);
+  opacity: 0;
+  animation: fw-caret 12s steps(1) infinite;
+}
+.fw-insert {
+  display: grid;
+  margin-top: 10px;
+}
+.fw-insert li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  max-height: 40px;
+  padding: 3px 0 3px 12px;
+  overflow: hidden;
+  border-left: 3px solid var(--fo-yellow);
+  font-size: 14px;
+  line-height: 1.6;
+  animation: fw-insert 12s var(--fo-ease) infinite;
+}
+.fw-insert li + li {
+  margin-top: 6px;
+}
+.fw-insert li:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.fw-insert li:nth-child(3) {
+  animation-delay: 0.6s;
+}
+.fw-insert em {
+  flex-shrink: 0;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--fo-paper);
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--fo-muted);
+}
+.fw-line {
+  display: block;
+  height: 8px;
+  margin-top: 14px;
+  border-radius: 8px;
+  background: rgb(18 24 38 / 0.08);
+}
+.fw-line-short {
+  width: 62%;
+  margin-top: 10px;
+}
+
+/* 助理的操作卡：贴在文档旁边，像一张便笺 */
+.fw-card {
+  position: absolute;
+  z-index: 2;
+  top: 64px;
+  right: -7%;
+  display: grid;
+  gap: 10px;
+  width: min(54%, 300px);
+  padding: 16px 18px 15px;
+  border-radius: 6px 18px 18px 18px;
+  background: var(--fo-white);
+  box-shadow:
+    0 0 0 1px var(--fo-line),
+    0 28px 50px -24px rgb(40 24 10 / 0.55);
+  rotate: 2deg;
+  animation: fw-card 12s var(--fo-ease) infinite;
+}
+.fw-card::before {
+  content: '';
+  position: absolute;
+  top: -11px;
+  left: 26px;
+  width: 70px;
+  height: 22px;
+  background: rgb(143 182 155 / 0.85);
+  rotate: -5deg;
+}
+.fw-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  font-size: 11.5px;
+  color: var(--fo-muted);
+}
+.fw-card-head svg {
+  color: var(--fo-red);
+}
+.fw-card-head strong {
+  color: var(--fo-ink);
+}
+.fw-card p {
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+.fw-card-ask,
+.fw-card-done {
+  grid-row: 4;
+  grid-column: 1;
+}
+.fw-card-ask {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  animation: fw-ask 12s var(--fo-ease) infinite;
+}
+.fw-run,
+.fw-skip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.fw-run {
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  animation: fw-press 12s var(--fo-ease) infinite;
+}
+.fw-skip {
+  box-shadow: inset 0 0 0 1.5px var(--fo-line);
+  color: var(--fo-muted);
+}
+.fw-card-done {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  animation: fw-done 12s var(--fo-ease) infinite;
+}
+.fw-card-done svg {
+  color: #3d8a5a;
+}
+.fw-card-done u {
+  margin-left: auto;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--fo-paper);
+  font-size: 12px;
+  text-decoration: none;
+  color: var(--fo-text);
+}
+.fw-pointer {
+  position: absolute;
+  z-index: 3;
+  left: 52%;
+  top: 46%;
+  display: block;
+  width: 22px;
+  height: 22px;
+  color: var(--fo-ink);
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.25));
+  opacity: 0;
+  animation: fw-pointer 12s var(--fo-ease) infinite;
+}
+.fw-pointer svg {
+  stroke: var(--fo-white);
+}
+
+/* 底栏：插件一排，助理在最右边 */
+.fw-dock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 16px 14px;
+  border-top: 1px solid var(--fo-line);
+}
+.fw-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: var(--fo-paper);
+  font-size: 12px;
+  font-weight: 600;
+}
+.fw-chip[data-active] {
+  background: var(--fo-ink);
+  color: var(--fo-white);
+}
+.fw-chip-ai {
+  margin-left: auto;
+  background: var(--fo-yellow);
+}
+.fw-chip b {
+  position: absolute;
+  top: -9px;
+  right: -7px;
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1;
+}
+.fw-badge-inbox {
+  background: var(--fo-red);
+  color: var(--fo-white);
+  transform: scale(0);
+  animation: fw-inbox 12s var(--fo-ease) infinite;
+}
+.fw-badge-todo {
+  background: #3d8a5a;
+  color: var(--fo-white);
+  animation: fw-todo 12s var(--fo-ease) infinite;
+}
+
+/* 15 个全角字，每步出一个字，光标跟在后面 */
+@keyframes fw-type {
+  0%,
+  5% {
+    max-width: 0;
+    animation-timing-function: steps(15, end);
+  }
+  24%,
+  95% {
+    max-width: 15em;
+  }
+  99%,
+  100% {
+    max-width: 0;
+  }
+}
+@keyframes fw-caret {
+  0%,
+  4%,
+  27%,
+  100% {
+    opacity: 0;
+  }
+  5%,
+  9%,
+  13%,
+  17%,
+  21%,
+  25% {
+    opacity: 1;
+  }
+  7%,
+  11%,
+  15%,
+  19%,
+  23% {
+    opacity: 0.4;
+  }
+}
+@keyframes fw-inbox {
+  0%,
+  25% {
+    transform: scale(0);
+  }
+  27% {
+    transform: scale(1.35);
+  }
+  29%,
+  50% {
+    transform: scale(1);
+  }
+  53%,
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes fw-card {
+  0%,
+  29% {
+    opacity: 0;
+    transform: translate(26px, 12px) rotate(4deg) scale(0.96);
+  }
+  34%,
+  94% {
+    opacity: 1;
+    transform: none;
+  }
+  98%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+@keyframes fw-ask {
+  0%,
+  51% {
+    opacity: 1;
+  }
+  53%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fw-done {
+  0%,
+  52% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  56%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fw-press {
+  0%,
+  45% {
+    background: var(--fo-ink);
+    transform: none;
+  }
+  47% {
+    background: var(--fo-red);
+    transform: scale(0.92);
+  }
+  50%,
+  100% {
+    background: var(--fo-red);
+    transform: none;
+  }
+}
+@keyframes fw-pointer {
+  0%,
+  37% {
+    opacity: 0;
+    transform: translate(70px, 60px);
+  }
+  41% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 1;
+    transform: none;
+  }
+  47% {
+    transform: scale(0.84);
+  }
+  49%,
+  53% {
+    opacity: 1;
+    transform: none;
+  }
+  58%,
+  100% {
+    opacity: 0;
+    transform: translate(10px, 18px);
+  }
+}
+@keyframes fw-insert {
+  0%,
+  51% {
+    max-height: 0;
+    padding-block: 0;
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+  56%,
+  95% {
+    max-height: 40px;
+    padding-block: 3px;
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    max-height: 0;
+    padding-block: 0;
+    opacity: 0;
+  }
+}
+@keyframes fw-todo {
+  0%,
+  59% {
+    transform: scale(0);
+  }
+  62% {
+    transform: scale(1.35);
+  }
+  65%,
+  95% {
+    transform: scale(1);
+  }
+  99%,
+  100% {
+    transform: scale(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .fw-desk {
+    padding: 12% 2% 16%;
+  }
+  .fw-doc {
+    width: 100%;
+  }
+  .fw-card {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: auto;
+    margin: 18px -4px 0 18%;
+  }
+  .fw-goal {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fw-desk .fo-cuts svg,
+  .fw-sheet {
+    opacity: 1;
+    transform: none;
+    translate: none;
+  }
+}

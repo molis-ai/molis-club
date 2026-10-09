@@ -12,8 +12,10 @@ import {
   promises,
   shift,
 } from '../../../../../content/molis-tool';
+import { folioTool } from '../../../../../content/folio';
 import { CursorDemo } from './cursor-demo';
-import { LayerStory, ToolMoments, PluginDemo } from './demos';
+import { Moments } from './moments';
+import { LayerRelay, PluginStage } from './stages';
 import { Closing, Phrases, ProductHero, SectionHead, pad } from '../kit';
 import {
   Footer,
@@ -27,7 +29,7 @@ import '../folio.css';
 import '../kit.css';
 import './tool.css';
 
-// 首屏沿用 Claude 原版。只替换三层、使用场景的截图和插件能力示意。
+// 首屏沿用 Claude 原版。三层改成同一件事的接力动画，插件一段按插件协议讲清能力怎样被各处调用。
 
 export default function FolioToolPage() {
   const rootRef = useFolioMotion();
@@ -101,7 +103,7 @@ export default function FolioToolPage() {
             kicker={layers.kicker}
             title={layers.title}
           />
-          <LayerStory />
+          <LayerRelay />
         </section>
 
         <section
@@ -114,7 +116,7 @@ export default function FolioToolPage() {
             kicker={moments.kicker}
             title={moments.title}
           />
-          <ToolMoments />
+          <Moments />
         </section>
 
         <section
@@ -189,13 +191,27 @@ export default function FolioToolPage() {
           aria-labelledby="ft-plugins-title"
         >
           <div className="fo-split">
-            <SectionHead
-              id="ft-plugins-title"
-              kicker={plugins.kicker}
-              title={plugins.title}
-              lead={plugins.text}
-            />
-            <PluginDemo />
+            <div className="ft-plugins-copy">
+              <SectionHead
+                id="ft-plugins-title"
+                kicker={plugins.kicker}
+                title={plugins.title}
+              />
+              <ol className="fo-list">
+                {folioTool.plugins.facts.map((fact, index) => (
+                  <li
+                    key={fact.title}
+                    data-reveal
+                    style={{ '--i': index } as Vars}
+                  >
+                    <span className="fo-index">{pad(index)}</span>
+                    <strong>{fact.title}</strong>
+                    <p>{fact.text}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <PluginStage />
           </div>
         </section>
 

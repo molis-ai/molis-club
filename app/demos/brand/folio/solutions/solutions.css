@@ -175,9 +175,48 @@
 .fs-card-problem {
   margin-top: 22px;
   min-height: 3.7em;
-  font-size: 1rem;
-  line-height: 1.85;
-  color: #54524e;
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: var(--fo-ink);
+}
+.fs-card-problem small {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--fo-sans);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--fs-accent);
+}
+/* 我们一起做：四步排成一条，箭头接着 */
+.fs-process {
+  margin-bottom: 28px;
+  padding-bottom: 26px;
+  border-bottom: 1px dashed var(--fo-line);
+}
+.fs-process h4 {
+  margin: 0 0 14px;
+  font: 500 0.9375rem/1.5 var(--fo-sans);
+  color: var(--fo-muted);
+}
+.fs-process ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 4px;
+}
+.fs-process li {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.fs-process li:not(:last-child)::after {
+  content: '→';
+  margin: 0 4px 0 2px;
+  color: var(--fs-accent);
 }
 .fs-card-body {
   flex: 1;

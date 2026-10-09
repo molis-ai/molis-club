@@ -1,0 +1,1040 @@
+/* Work 三个主场景的演示。白纸压在色块上，12 秒一轮；基础样式就是播完的样子。 */
+.fws {
+  --fws-paper: var(--fo-white);
+  width: min(100%, 640px);
+  justify-self: center;
+  padding: 26px 0 54px;
+  color: var(--fo-ink);
+  text-align: left;
+}
+.fws .fo-loop-note,
+.fws .fo-loop-toggle {
+  bottom: 6px;
+}
+.fws-pointer {
+  position: absolute;
+  z-index: 5;
+  display: block;
+  width: 22px;
+  height: 22px;
+  color: var(--fo-ink);
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.25));
+  opacity: 0;
+  pointer-events: none;
+}
+.fws-pointer svg {
+  stroke: var(--fo-white);
+}
+.fws :is(.fwc-front, .fwc-back, .fwr-goal, .fwk-catalog, .fwk-event) {
+  border-radius: 16px;
+  background: var(--fws-paper);
+  box-shadow:
+    0 0 0 1px rgb(18 24 38 / 0.06),
+    0 34px 60px -32px rgb(40 24 10 / 0.55);
+}
+
+/* ---------- 场景 1：拼一个工作台 ---------- */
+.fws-compose {
+  position: relative;
+  padding-top: 70px;
+}
+.fwc-back {
+  position: absolute;
+  top: 0;
+  right: -2%;
+  width: 74%;
+  padding: 14px 16px;
+  rotate: 3.5deg;
+  opacity: 0.94;
+}
+.fwc-back header,
+.fwc-front header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.fwc-back header i,
+.fwc-front header i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--fo-blue);
+  rotate: 12deg;
+}
+.fwc-front header i {
+  background: var(--fo-red);
+}
+.fwc-front header small {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--fo-muted);
+}
+.fwc-back .fwc-dock {
+  margin-top: 10px;
+}
+.fwc-front {
+  position: relative;
+  width: 94%;
+  padding: 16px 18px 12px;
+  rotate: -1.4deg;
+}
+.fwc-canvas {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0 74px;
+}
+.fwc-canvas span {
+  height: 10px;
+  border-radius: 8px;
+  background: rgb(18 24 38 / 0.08);
+}
+.fwc-canvas span:first-child {
+  width: 46%;
+  height: 16px;
+  background: rgb(18 24 38 / 0.16);
+}
+.fwc-canvas span:last-child {
+  width: 70%;
+}
+.fwc-dock {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 5px;
+  padding-top: 12px;
+  border-top: 1px solid var(--fo-line);
+}
+.fwc-back .fwc-dock {
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+}
+.fwc-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 27px;
+  max-width: 120px;
+  padding: 0 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--fo-paper);
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.fwc-personal {
+  background: rgb(143 182 155 / 0.45);
+  animation: fwc-same 12s var(--fo-ease) infinite;
+}
+.fwc-divider {
+  width: 1.5px;
+  height: 20px;
+  margin: 0 4px;
+  background: var(--fo-line);
+}
+.fwc-add {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--fo-ink);
+  animation: fwc-press 12s var(--fo-ease) infinite;
+}
+.fwc-new {
+  background: var(--fo-pink);
+  animation: fwc-new 12s var(--fo-ease) infinite;
+}
+.fwc-new-b {
+  animation-delay: 0.35s;
+}
+.fwc-personal-note {
+  display: block;
+  margin-top: 8px;
+  font-size: 11px;
+  text-align: right;
+  color: var(--fo-muted);
+}
+.fwc-picker {
+  position: absolute;
+  z-index: 3;
+  right: 6%;
+  bottom: 70px;
+  display: grid;
+  gap: 2px;
+  width: 168px;
+  padding: 10px;
+  border-radius: 14px;
+  background: var(--fo-white);
+  box-shadow:
+    0 0 0 1px var(--fo-line),
+    0 24px 40px -20px rgb(40 24 10 / 0.5);
+  opacity: 0;
+  transform-origin: 80% 100%;
+  animation: fwc-picker 12s var(--fo-ease) infinite;
+}
+.fwc-picker small {
+  padding: 0 6px 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--fo-muted);
+}
+.fwc-picker > span {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.fwc-picker [data-pick] {
+  animation: fwc-pick 12s var(--fo-ease) infinite;
+}
+.fwc-toast {
+  position: absolute;
+  z-index: 2;
+  left: 18px;
+  bottom: 84px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: calc(100% - 36px);
+  padding: 8px 14px;
+  border-radius: 6px 14px 14px 14px;
+  background: var(--fo-yellow);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  rotate: -1deg;
+  animation: fwc-toast 12s var(--fo-ease) infinite;
+}
+.fwc-pointer-add {
+  left: 14px;
+  top: 14px;
+  animation: fwc-pointer-add 12s var(--fo-ease) infinite;
+}
+.fwc-pointer-pick {
+  left: 40%;
+  top: 50%;
+  animation: fwc-pointer-pick 12s var(--fo-ease) infinite;
+}
+@keyframes fwc-pointer-add {
+  0%,
+  9% {
+    opacity: 0;
+    transform: translate(-60px, -50px);
+  }
+  14% {
+    opacity: 1;
+  }
+  17% {
+    opacity: 1;
+    transform: none;
+  }
+  19% {
+    transform: scale(0.84);
+  }
+  21%,
+  24% {
+    opacity: 1;
+    transform: none;
+  }
+  27%,
+  100% {
+    opacity: 0;
+    transform: translate(-20px, -40px);
+  }
+}
+@keyframes fwc-press {
+  0%,
+  18% {
+    background: transparent;
+    transform: none;
+  }
+  19% {
+    background: var(--fo-yellow);
+    transform: scale(0.88);
+  }
+  22%,
+  40% {
+    background: var(--fo-yellow);
+    transform: none;
+  }
+  43%,
+  100% {
+    background: transparent;
+  }
+}
+@keyframes fwc-picker {
+  0%,
+  20% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.92);
+  }
+  24%,
+  40% {
+    opacity: 1;
+    transform: none;
+  }
+  43%,
+  100% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+}
+@keyframes fwc-pointer-pick {
+  0%,
+  26% {
+    opacity: 0;
+    transform: translate(30px, -30px);
+  }
+  30% {
+    opacity: 1;
+  }
+  34% {
+    opacity: 1;
+    transform: none;
+  }
+  36% {
+    transform: scale(0.84);
+  }
+  38% {
+    opacity: 1;
+    transform: none;
+  }
+  41%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fwc-pick {
+  0%,
+  35% {
+    background: transparent;
+  }
+  36%,
+  41% {
+    background: rgb(244 180 192 / 0.7);
+  }
+  44%,
+  100% {
+    background: transparent;
+  }
+}
+@keyframes fwc-toast {
+  0%,
+  42% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  46%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fwc-new {
+  0%,
+  44% {
+    max-width: 0;
+    padding-inline: 0;
+    margin-right: -6px;
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  49%,
+  95% {
+    max-width: 120px;
+    padding-inline: 9px;
+    margin-right: 0;
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    max-width: 0;
+    padding-inline: 0;
+    margin-right: -6px;
+    opacity: 0;
+  }
+}
+@keyframes fwc-same {
+  0%,
+  58%,
+  76%,
+  100% {
+    box-shadow: none;
+  }
+  62%,
+  72% {
+    box-shadow: 0 0 0 2.5px var(--fo-ink);
+  }
+}
+
+/* ---------- 场景 2：同一个 Goal 接力 ---------- */
+.fwr-goal {
+  position: relative;
+  padding: 20px 22px 18px;
+  rotate: -1.2deg;
+}
+.fwr-goal header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 2px 12px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--fo-ink);
+}
+.fwr-goal header small {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--fo-red);
+}
+.fwr-goal h4 {
+  margin: 0;
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(20px, 1.9vw, 26px);
+  line-height: 1.3;
+}
+.fwr-stamp {
+  padding: 5px 12px;
+  border: 2px solid #3d8a5a;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #3d8a5a;
+  white-space: nowrap;
+  rotate: -6deg;
+  animation: fwr-stamp 12s var(--fo-ease) infinite;
+}
+.fwr-req {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 12px;
+}
+.fwr-req li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.fwr-box {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+}
+.fwr-req li:nth-child(1) .fwr-box {
+  animation: fwr-tick-1 12s var(--fo-ease) infinite;
+}
+.fwr-req li:nth-child(2) .fwr-box {
+  animation: fwr-tick-2 12s var(--fo-ease) infinite;
+}
+.fwr-req li:nth-child(3) .fwr-box {
+  animation: fwr-tick-3 12s var(--fo-ease) infinite;
+}
+.fwr-log {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.fwr-log li {
+  --tone: var(--fo-ink);
+  display: grid;
+  grid-template-columns: 36px auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+}
+.fwr-log li[data-tone='red'] {
+  --tone: var(--fo-red);
+}
+.fwr-log li[data-tone='blue'] {
+  --tone: var(--fo-blue);
+}
+.fwr-log li:nth-child(1) {
+  animation: fwr-log-1 12s var(--fo-ease) infinite;
+}
+.fwr-log li:nth-child(2) {
+  animation: fwr-log-2 12s var(--fo-ease) infinite;
+}
+.fwr-log li:nth-child(3) {
+  animation: fwr-log-3 12s var(--fo-ease) infinite;
+}
+.fwr-log li:nth-child(4) {
+  animation: fwr-log-4 12s var(--fo-ease) infinite;
+}
+.fwr-log small {
+  font-size: 11.5px;
+  color: var(--fo-muted);
+}
+.fwr-log b {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--tone);
+  color: var(--fo-white);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+.fwr-log span {
+  font-family: var(--fo-serif);
+  font-weight: 500;
+}
+.fwr-check {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgb(61 138 90 / 0.12);
+  font-size: 12.5px;
+  font-weight: 600;
+  animation: fwr-check 12s var(--fo-ease) infinite;
+}
+.fwr-check strong {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+}
+.fwr-check span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.fwr-check svg {
+  color: #3d8a5a;
+}
+.fwr-proposal {
+  position: absolute;
+  z-index: 2;
+  right: -5%;
+  top: 46%;
+  width: min(44%, 230px);
+  padding: 12px 14px;
+  border-radius: 4px 14px 14px 14px;
+  background: var(--fo-pink);
+  box-shadow: 0 20px 34px -20px rgb(40 24 10 / 0.55);
+  rotate: 3deg;
+  animation: fwr-proposal 12s var(--fo-ease) infinite;
+}
+.fwr-proposal small {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.fwr-proposal p {
+  margin-top: 4px;
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: 14px;
+  line-height: 1.45;
+}
+@keyframes fwr-log-1 {
+  0%,
+  6% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  10%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fwr-log-2 {
+  0%,
+  24% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  28%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fwr-log-3 {
+  0%,
+  48% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  52%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fwr-log-4 {
+  0%,
+  62% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  66%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fwr-tick-1 {
+  0%,
+  12% {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--fo-ink);
+    color: transparent;
+  }
+  14%,
+  95% {
+    background: var(--fo-ink);
+    box-shadow: none;
+    color: var(--fo-white);
+  }
+  99%,
+  100% {
+    background: transparent;
+    color: transparent;
+  }
+}
+@keyframes fwr-tick-2 {
+  0%,
+  31% {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--fo-ink);
+    color: transparent;
+  }
+  33%,
+  95% {
+    background: var(--fo-ink);
+    box-shadow: none;
+    color: var(--fo-white);
+  }
+  99%,
+  100% {
+    background: transparent;
+    color: transparent;
+  }
+}
+@keyframes fwr-tick-3 {
+  0%,
+  54% {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--fo-ink);
+    color: transparent;
+  }
+  56%,
+  95% {
+    background: var(--fo-ink);
+    box-shadow: none;
+    color: var(--fo-white);
+  }
+  99%,
+  100% {
+    background: transparent;
+    color: transparent;
+  }
+}
+@keyframes fwr-proposal {
+  0%,
+  35% {
+    opacity: 0;
+    transform: translate(16px, -10px) rotate(6deg);
+  }
+  39%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fwr-check {
+  0%,
+  67% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  71%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fwr-stamp {
+  0%,
+  75% {
+    opacity: 0;
+    transform: scale(1.6) rotate(-14deg);
+  }
+  79% {
+    opacity: 1;
+    transform: scale(0.94);
+  }
+  81%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---------- 场景 3：一个能力目录，一套授权 ---------- */
+.fws-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+}
+.fwk-catalog {
+  position: relative;
+  padding: 16px 16px 12px;
+  rotate: -1.6deg;
+}
+.fwk-catalog header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--fo-ink);
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: 16px;
+}
+.fwk-catalog table {
+  width: 100%;
+  margin-top: 6px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.fwk-catalog th,
+.fwk-catalog td {
+  padding: 8px 2px;
+  border-bottom: 1px solid var(--fo-line);
+  text-align: center;
+}
+.fwk-catalog thead th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fo-muted);
+}
+.fwk-catalog tbody th {
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+}
+.fwk-catalog tr:last-child > * {
+  border-bottom: 0;
+}
+.fwk-dot {
+  position: relative;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px rgb(18 24 38 / 0.35);
+  vertical-align: middle;
+}
+.fwk-dot[data-on] {
+  background: var(--fo-ink);
+  box-shadow: none;
+}
+/* 助理改文档、Codex 推送：被调用时闪一下 */
+.fwk-dot[data-cell='1-1'] {
+  animation: fwk-call-1 12s var(--fo-ease) infinite;
+}
+.fwk-dot[data-cell='3-2'] {
+  animation: fwk-call-2 12s var(--fo-ease) infinite;
+}
+/* Codex 改文档：最后被撤掉，所以基础样式是空心 */
+.fwk-dot[data-cell='3-1'] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--fo-red);
+  animation: fwk-revoke 12s var(--fo-ease) infinite;
+}
+.fwk-pointer {
+  left: 6px;
+  top: 6px;
+  animation: fwk-pointer 12s var(--fo-ease) infinite;
+}
+.fwk-events {
+  display: grid;
+  gap: 10px;
+}
+.fwk-event {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.fwk-event b {
+  font-weight: 800;
+}
+.fwk-event-undo {
+  rotate: 1.5deg;
+  animation: fwk-event-1 12s var(--fo-ease) infinite;
+}
+.fwk-event-undo svg {
+  color: var(--fo-red);
+}
+.fwk-event-undo u {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--fo-paper);
+  text-decoration: none;
+  font-weight: 600;
+}
+.fwk-event-review {
+  display: grid;
+  gap: 6px;
+  background: var(--fo-yellow);
+  rotate: -1.2deg;
+  animation: fwk-event-2 12s var(--fo-ease) infinite;
+}
+.fwk-event-review small {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+.fwk-event-review p {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: 14px;
+}
+.fwk-event-review p b {
+  margin-right: 6px;
+}
+.fwk-event-review span {
+  display: flex;
+  gap: 6px;
+}
+.fwk-event-review i {
+  padding: 3px 11px;
+  border-radius: 999px;
+  background: var(--fo-white);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+}
+.fwk-event-review i:first-child {
+  background: var(--fo-ink);
+  color: var(--fo-white);
+}
+.fwk-event-revoke {
+  background: var(--fo-white);
+  box-shadow:
+    inset 0 0 0 1.5px var(--fo-red),
+    0 34px 60px -32px rgb(40 24 10 / 0.55);
+  rotate: 1deg;
+  animation: fwk-event-3 12s var(--fo-ease) infinite;
+}
+.fwk-event-revoke svg,
+.fwk-event-revoke b {
+  color: var(--fo-red);
+}
+@keyframes fwk-call-1 {
+  0%,
+  5%,
+  14%,
+  100% {
+    transform: none;
+    box-shadow: none;
+  }
+  8%,
+  11% {
+    transform: scale(1.35);
+    box-shadow: 0 0 0 4px rgb(246 196 69 / 0.8);
+  }
+}
+@keyframes fwk-call-2 {
+  0%,
+  24%,
+  34%,
+  100% {
+    transform: none;
+    box-shadow: none;
+  }
+  27%,
+  31% {
+    transform: scale(1.35);
+    box-shadow: 0 0 0 4px rgb(246 196 69 / 0.8);
+  }
+}
+@keyframes fwk-revoke {
+  0%,
+  61% {
+    background: var(--fo-ink);
+    box-shadow: none;
+    transform: none;
+  }
+  63% {
+    transform: scale(0.8);
+  }
+  65%,
+  95% {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--fo-red);
+    transform: none;
+  }
+  99%,
+  100% {
+    background: var(--fo-ink);
+    box-shadow: none;
+  }
+}
+@keyframes fwk-pointer {
+  0%,
+  50% {
+    opacity: 0;
+    transform: translate(60px, 50px);
+  }
+  55% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+    transform: none;
+  }
+  63% {
+    transform: scale(0.84);
+  }
+  65%,
+  68% {
+    opacity: 1;
+    transform: none;
+  }
+  72%,
+  100% {
+    opacity: 0;
+    transform: translate(16px, 20px);
+  }
+}
+@keyframes fwk-event-1 {
+  0%,
+  10% {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+  14%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fwk-event-2 {
+  0%,
+  30% {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+  34%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fwk-event-3 {
+  0%,
+  67% {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+  71%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .fws-compose {
+    padding-top: 56px;
+  }
+  .fwc-front .fwc-dock {
+    flex-wrap: wrap;
+  }
+  .fwc-toast {
+    bottom: 118px;
+  }
+  .fwc-front {
+    width: 100%;
+  }
+  .fwc-front header small {
+    display: none;
+  }
+  .fwr-proposal {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: auto;
+    margin: 14px 0 0 24%;
+  }
+  .fws-control {
+    grid-template-columns: 1fr;
+  }
+}
