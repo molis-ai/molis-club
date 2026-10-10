@@ -14,12 +14,24 @@ await mkdir(sources, { recursive: true });
 await mkdir(resolve(output, 'assets'), { recursive: true });
 
 const routes = [
-  ['home', '', 'Molis AI · AI 工作台、桌面工具与互动世界'],
+  ['home', '', 'Molis AI · AI 产品工作室'],
   ['tool', '/tool', 'Molis Tool · 光标在哪里，软件就在哪里'],
   ['work', '/work', 'Molis Work · 让工作，在人、工具与 Agent 之间继续'],
   ['solutions', '/solutions', 'Molis AI 解决方案 · 把 AI 用进具体业务'],
   ['life', '/life', 'Molis Life'],
   ['story', '/story', 'Molis Story'],
+  ['about', '/about', '关于我们 · Molis AI'],
+  ['essays', '/essays', '文章 · Molis AI'],
+  [
+    'essay-human-scale',
+    '/essays/human-scale',
+    '人的尺度：理想主义在 AI 时代的生与死 · Molis AI',
+  ],
+  [
+    'essay-idealism',
+    '/essays/idealism',
+    '落地主义：一种不承认自己是哲学的哲学 · Molis AI',
+  ],
   ['community', '/demos/community', 'Molis AI 社区 · 好奇心，值得做出来'],
 ];
 
@@ -110,7 +122,7 @@ createRoot(document.getElementById('root')!).render(<div className="molis-demo">
   );
   await writeFile(
     resolve(output, 'README.txt'),
-    'Molis AI Folio presentation preview\n\nSeven pages with original interactive animations. Community, shared navigation, images and Skill downloads are included. Contact and knowledge links use the original application. No backend, database, user data or credentials are included.\n',
+    'Molis AI Folio presentation preview\n\nEleven pages with original interactive animations. Community, shared navigation, images and Skill downloads are included. Contact and knowledge links use the original application. No backend, database, user data or credentials are included.\n',
   );
 } finally {
   await rm(sources, { recursive: true, force: true });

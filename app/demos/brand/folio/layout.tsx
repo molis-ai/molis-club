@@ -1,5 +1,5 @@
 import { Noto_Serif_SC } from 'next/font/google';
-import { folioStudio } from '../../../../content/folio';
+import { folioHomeCopy } from '../../../../content/folio';
 
 const serif = Noto_Serif_SC({
   weight: ['500', '900'],
@@ -10,8 +10,8 @@ const serif = Noto_Serif_SC({
 });
 
 export const metadata = {
-  title: { absolute: 'Molis AI · 把工作做轻，把时间还给生活' },
-  description: folioStudio.description,
+  title: { absolute: 'Molis AI · AI 产品工作室' },
+  description: folioHomeCopy.description,
 };
 
 export default function FolioLayout({

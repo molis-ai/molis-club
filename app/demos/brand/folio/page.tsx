@@ -1,19 +1,16 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { ArrowUpRight } from 'lucide-react';
 import { GITHUB_URL } from '../../../../content/molis-work';
-import {
-  ending,
-  lineImages,
-  lineNames,
-  team,
-} from '../../../../content/studio';
+import { ending, lineImages, lineNames } from '../../../../content/studio';
+import { AiWordCycle } from '../ai-words';
 import { CoverArt, LifeArt, StoryArt } from './art';
-import { Actions, Phrases, Status, pad } from './kit';
+import { Actions, Status, pad } from './kit';
 import {
   COMMUNITY,
   Footer,
+  LOGIN,
   SiteHeader,
   WORK,
   SOLUTIONS,
@@ -26,98 +23,49 @@ import './folio.css';
 import './kit.css';
 import './tool/tool.css';
 import './home.css';
-import { people, companies } from './team';
-import { folioStudio } from '../../../../content/folio';
+import { folioHomeCopy, folioStudio } from '../../../../content/folio';
 import { WorkDesk } from './work/desk';
 import { CursorDemo } from './tool/cursor-demo';
-import { DayStory } from './day';
 
-// 保留 Claude 原版的刊头、剪纸封面、白纸叠压、三张色纸与成员交互。
-// 首屏改成愿景与四个产品的目录；之后用「一天」的纸带讲怎么做到，再进入各产品。
+// 首页保留刊头、剪纸封面、白纸叠压与三张色纸，产品之后直接接社区与合作。
+// 团队与文章由导航进入各自的独立页面。
 
-type Person = (typeof people)[number];
-
-/** 一位成员：照片垫着色纸，悬停、键盘聚焦或点按照片时，旁边翻出写着经历的便笺 */
-function PersonCard({
-  index,
-  image,
-  imagePosition,
-  personRole,
-  experience,
-  aside,
-  tone,
-}: Person & { index: number }) {
-  const [open, setOpen] = useState(false);
-  const root = useRef<HTMLDivElement>(null);
-  const noteId = `fo-person-note-${index}`;
-  useEffect(() => {
-    if (!open) return;
-    const outside = (event: PointerEvent) => {
-      if (!root.current?.contains(event.target as Node)) setOpen(false);
-    };
-    const escape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
-    };
-    document.addEventListener('pointerdown', outside);
-    document.addEventListener('keydown', escape);
-    return () => {
-      document.removeEventListener('pointerdown', outside);
-      document.removeEventListener('keydown', escape);
-    };
-  }, [open]);
+/** 区块标题：一个英文关键词配中文小字，下面一道墨线；需要时右边放一段说明 */
+function Label({
+  id,
+  en,
+  zh,
+  children,
+}: {
+  id: string;
+  en: string;
+  zh: string;
+  children?: ReactNode;
+}) {
   return (
-    <div
-      className={`fo-person fo-tone-${tone}`}
-      ref={root}
-      data-open={open}
-      data-reveal
-      style={{ '--i': index } as Vars}
-    >
-      <button
-        type="button"
-        className="fo-person-photo"
-        aria-expanded={open}
-        aria-controls={noteId}
-        aria-label={`认识团队里负责${personRole}的成员`}
-        onClick={() => setOpen((value) => !value)}
-      >
-        <span aria-hidden="true" />
-        <img
-          src={image}
-          width="160"
-          height="160"
-          alt=""
-          loading="lazy"
-          style={{ objectPosition: imagePosition }}
-        />
-      </button>
-      <strong>{personRole}</strong>
-      <em>{aside}</em>
-      <p className="fo-person-note" id={noteId}>
-        {experience}
-      </p>
-    </div>
+    <header className="fo-label" data-reveal>
+      <h2 id={id}>
+        <span lang="en">{en}</span>
+        <small>{zh}</small>
+      </h2>
+      {children ? <div className="fo-label-side">{children}</div> : null}
+    </header>
   );
 }
 
 function CoreProduct() {
   const work = folioStudio.work;
   return (
-    <section id="work" className="fo-core" aria-labelledby="fo-core-title">
+    <div id="work" className="fo-core">
+      <Label id="fo-products-title" {...folioStudio.labels.products} />
       <div className="fo-core-copy" data-reveal>
         <span className="fo-kicker">
           {pad(0)} · {work.kicker}
         </span>
-        <h2 id="fo-core-title">{work.name}</h2>
-        <p className="fo-core-line">{work.line}</p>
-        <ol className="fo-core-points">
-          {work.highlights.map((item, index) => (
-            <li key={item}>
-              <span aria-hidden="true">{pad(index)}</span>
-              {item}
-            </li>
-          ))}
-        </ol>
+        <h3>
+          <Link href={WORK}>{work.name}</Link>
+        </h3>
+        <p className="fo-core-line">{folioHomeCopy.products.work}</p>
         <Status items={work.status} />
         <Actions
           items={[
@@ -132,7 +80,7 @@ function CoreProduct() {
         />
       </div>
       <WorkDesk />
-    </section>
+    </div>
   );
 }
 
@@ -145,12 +93,7 @@ function LineArt({ id }: { id: 'tool' | 'life' | 'story' }) {
 
 function Lines() {
   return (
-    <section id="lines" className="fo-lines" aria-labelledby="fo-lines-title">
-      <header className="fo-lines-intro" data-reveal>
-        <h2 id="fo-lines-title">
-          <Phrases text={folioStudio.linesTitle} />
-        </h2>
-      </header>
+    <div className="fo-lines">
       <div className="fo-stack">
         {folioStudio.lines.map((line, index) => (
           <article
@@ -172,8 +115,7 @@ function Lines() {
                 <h3 id={`fo-line-${line.id}`}>
                   <Link href={lineHref[line.id]}>{lineNames[line.id]}</Link>
                 </h3>
-                <p>{line.line}</p>
-                <p className="fo-sheet-value">{line.value}</p>
+                <p>{folioHomeCopy.products[line.id]}</p>
                 <Link className="fo-sheet-more" href={lineHref[line.id]}>
                   {line.more}
                   <span aria-hidden="true">
@@ -186,53 +128,14 @@ function Lines() {
           </article>
         ))}
       </div>
-    </section>
-  );
-}
-
-function Team() {
-  return (
-    <section id="about" className="fo-people" aria-labelledby="fo-people-title">
-      <div className="fo-people-head" data-reveal>
-        <span className="fo-kicker">{team.kicker}</span>
-        <h2 id="fo-people-title">
-          {team.title[0]}
-          <br />
-          {team.title[1]}
-        </h2>
-        <p>{team.text}</p>
-      </div>
-
-      <div className="fo-people-grid">
-        {people.map((person, index) => (
-          <PersonCard key={person.image} index={index} {...person} />
-        ))}
-      </div>
-
-      <div className="fo-proof" aria-label="团队成员的职业经历">
-        <p>{team.proof}</p>
-        <div className="fo-logos">
-          {companies.map((company) => (
-            <span key={company.name} className={`fo-logo-${company.kind}`}>
-              <img
-                src={company.src}
-                width={company.width}
-                height={company.height}
-                alt={company.name}
-                loading="lazy"
-              />
-              {company.kind === 'linkedin' ? <b>LinkedIn</b> : null}
-            </span>
-          ))}
-        </div>
-      </div>
-    </section>
+    </div>
   );
 }
 
 export default function FolioDirection() {
   const rootRef = useFolioMotion();
-  const { community, contact } = ending.paths;
+  const { community } = folioStudio;
+  const { contact } = ending.paths;
   const mark = ending.title.slice(-1);
 
   return (
@@ -246,59 +149,36 @@ export default function FolioDirection() {
           data-parallax
           aria-labelledby="fo-title"
         >
-          <div className="fo-masthead" aria-hidden="true" lang="en">
+          <h1
+            className="fo-masthead"
+            id="fo-title"
+            aria-label="Molis AI"
+            lang="en"
+          >
             {Array.from('Molis').map((letter, index) => (
               <span key={index} style={{ '--i': index } as Vars}>
                 {letter}
               </span>
             ))}
             <sup>AI</sup>
-          </div>
+          </h1>
           <div className="fo-cover-art">
             <CoverArt />
           </div>
           <div className="fo-cover-copy">
-            <h1 id="fo-title">
-              {folioStudio.title.map((line) => (
-                <span className="fo-phrase" key={line}>
-                  {line}
-                </span>
+            <AiWordCycle prefix="fo" />
+            <p className="fo-cover-keys">
+              {folioStudio.keywords.map((word) => (
+                <span key={word}>{word}</span>
               ))}
-            </h1>
-            <p>{folioStudio.lead}</p>
-            <nav className="fo-cover-index" aria-label="Molis AI 的四个产品">
-              <span className="fo-tape fo-tape-a" aria-hidden="true" />
-              <a className="fo-cover-how" href="#how">
-                {folioStudio.how}
-                <ArrowDownRight size={20} aria-hidden="true" />
-              </a>
-              {folioStudio.groups.map((group, groupIndex) => (
-                <div className="fo-cover-group" key={group.label}>
-                  <p>
-                    <b>{group.label}</b>
-                    {group.goal}
-                  </p>
-                  <ul>
-                    {group.items.map((item, index) => (
-                      <li key={item.id}>
-                        <a href={`#${item.id}`} data-tone={item.id}>
-                          <i>{pad(groupIndex * 2 + index)}</i>
-                          <strong>{item.name}</strong>
-                          <span>{item.hint}</span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </nav>
+            </p>
           </div>
         </section>
 
-        <DayStory />
-        <CoreProduct />
-        <Lines />
-        <Team />
+        <section id="products" aria-labelledby="fo-products-title">
+          <CoreProduct />
+          <Lines />
+        </section>
       </main>
 
       <Footer>
@@ -308,7 +188,7 @@ export default function FolioDirection() {
             <span className="fo-back-mark">{mark}</span>
           </h2>
           <div className="fo-back-paths">
-            <Link href={COMMUNITY} className="fo-back-path">
+            <div className="fo-back-path">
               <small>{community.label}</small>
               <h3>
                 {community.title.map((line) => (
@@ -317,11 +197,17 @@ export default function FolioDirection() {
                   </span>
                 ))}
               </h3>
-              <span>
-                {community.action}
-                <ArrowUpRight size={19} aria-hidden="true" />
-              </span>
-            </Link>
+              <div className="fo-back-links">
+                <Link href={COMMUNITY}>
+                  {community.action}{' '}
+                  <ArrowUpRight size={19} aria-hidden="true" />
+                </Link>
+                <Link href={LOGIN}>
+                  {folioStudio.nav.login}{' '}
+                  <ArrowUpRight size={19} aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
             <div className="fo-back-path fo-back-cooperation">
               <small>{contact.label}</small>
               <h3>
@@ -331,7 +217,6 @@ export default function FolioDirection() {
                   </span>
                 ))}
               </h3>
-              <p>{folioStudio.enterprise}</p>
               <div className="fo-back-links">
                 <Link href={SOLUTIONS}>
                   了解解决方案 <ArrowUpRight size={19} aria-hidden="true" />

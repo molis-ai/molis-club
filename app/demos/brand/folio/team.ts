@@ -45,7 +45,7 @@ export type Person = {
   tone: string;
 };
 
-// 保留已确认的团队资料，Folio 首页直接展示。
+// 保留已确认的团队资料，在 Folio 的独立关于页展示。
 export const people: Person[] = [
   {
     image: '/images/daylight/team/yijun.jpg',

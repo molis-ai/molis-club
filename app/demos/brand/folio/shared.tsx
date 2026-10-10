@@ -6,14 +6,13 @@ import type { CSSProperties, ReactNode } from 'react';
 import {
   footer,
   lineNames,
-  lines,
   navLabels,
   signature,
-  workLine,
   type LineId,
 } from '../../../../content/studio';
+import { folioStudio } from '../../../../content/folio';
 
-// Folio 各页共用：路由、顶栏（含「产品」菜单）、页尾封底和页面动效。文案都来自 content/studio.ts。
+// Folio 各页共用：路由、顶栏（含「产品」菜单）、页尾封底和页面动效。文案来自 content/studio.ts 与 content/folio.ts。
 
 export type Vars = CSSProperties & Record<`--${string}`, string | number>;
 
@@ -25,8 +24,13 @@ export const STORY = `${HOME}/story`;
 export const CONTACT = `${HOME}/contact`;
 export const SOLUTIONS = `${HOME}/solutions`;
 export const COMMUNITY = '/demos/community';
+export const ESSAYS = `${HOME}/essays`;
+export const ABOUT = `${HOME}/about`;
+export const LOGIN = '/login';
+export const essayHref = (slug: string) => `${HOME}/essays/${slug}`;
 
-export const lineIds: LineId[] = ['work', 'life', 'tool', 'story'];
+/** 产品的顺序：首页、顶栏下拉、页尾和产品页「接着看」都按这一个顺序 */
+export const lineIds: LineId[] = ['work', 'tool', 'life', 'story'];
 
 export const lineHref: Record<LineId, string> = {
   work: WORK,
@@ -43,12 +47,12 @@ export const lineTone: Record<LineId, string> = {
   story: 'blue',
 };
 
-const lineLine: Record<LineId, string> = {
-  work: workLine,
-  ...(Object.fromEntries(lines.map((line) => [line.id, line.line])) as Record<
-    Exclude<LineId, 'work'>,
-    string
-  >),
+/** 每件产品的一句话，和首页同一份（content/folio.ts） */
+export const lineLine: Record<LineId, string> = {
+  work: folioStudio.work.line,
+  ...(Object.fromEntries(
+    folioStudio.lines.map((line) => [line.id, line.line]),
+  ) as Record<Exclude<LineId, 'work'>, string>),
 };
 
 /** 联系页；topic 预选「企业合作」或预填关注哪条产品线 */
@@ -89,6 +93,7 @@ function ProductsMenu({ current }: { current?: LineId }) {
         type="button"
         aria-expanded={open}
         aria-controls="fo-products-menu"
+        data-current={Boolean(current)}
         onClick={() => setOpen((value) => !value)}
       >
         {navLabels.products}
@@ -113,8 +118,13 @@ function ProductsMenu({ current }: { current?: LineId }) {
   );
 }
 
-/** 所有 Folio 页面共用的顶栏：产品 · 解决方案 · 社区 · 关于 · 聊一聊 */
-export function SiteHeader({ current }: { current?: LineId | 'solutions' }) {
+/** 所有 Folio 页面共用的顶栏：产品 · 解决方案 · 文章 · 社区 · 关于，右边登录和聊一聊 */
+export function SiteHeader({
+  current,
+}: {
+  current?: LineId | 'solutions' | 'essays' | 'about';
+}) {
+  const product = lineIds.find((id) => id === current);
   return (
     <header className="fo-header">
       <Link href={HOME} className="fo-logo" aria-label="Molis AI 首页">
@@ -122,19 +132,35 @@ export function SiteHeader({ current }: { current?: LineId | 'solutions' }) {
         <span>Molis AI</span>
       </Link>
       <nav className="fo-nav" aria-label="主导航">
-        <ProductsMenu current={current === 'solutions' ? undefined : current} />
+        <ProductsMenu current={product} />
         <Link
           href={SOLUTIONS}
           aria-current={current === 'solutions' ? 'page' : undefined}
         >
           {navLabels.solutions}
         </Link>
+        <Link
+          href={ESSAYS}
+          aria-current={current === 'essays' ? 'page' : undefined}
+        >
+          {folioStudio.nav.essays}
+        </Link>
         <Link href={COMMUNITY}>{navLabels.community}</Link>
-        <Link href={`${HOME}#about`}>{navLabels.about}</Link>
+        <Link
+          href={ABOUT}
+          aria-current={current === 'about' ? 'page' : undefined}
+        >
+          {navLabels.about}
+        </Link>
       </nav>
-      <Link href={CONTACT} className="fo-nav-cta">
-        {navLabels.contact}
-      </Link>
+      <div className="fo-header-end">
+        <Link href={LOGIN} className="fo-nav-login">
+          {folioStudio.nav.login}
+        </Link>
+        <Link href={CONTACT} className="fo-nav-cta">
+          {navLabels.contact}
+        </Link>
+      </div>
     </header>
   );
 }
@@ -143,12 +169,15 @@ export function SiteHeader({ current }: { current?: LineId | 'solutions' }) {
 export function Footer({
   children,
   tone = 'red',
+  compact = false,
 }: {
   children?: ReactNode;
   tone?: 'red' | 'yellow' | 'blue' | 'paper';
+  /** 正文很短的页面（登录、账号、404）不放刊头大字，免得页尾比正文还高 */
+  compact?: boolean;
 }) {
   return (
-    <footer className="fo-back" data-tone={tone}>
+    <footer className="fo-back" data-tone={tone} data-compact={compact}>
       {children}
       <div className="fo-colophon">
         <span className="fo-colophon-mark" aria-hidden="true">
@@ -186,10 +215,13 @@ export function Footer({
                   <Link href={SOLUTIONS}>{footer.studio.solutions}</Link>
                 </li>
                 <li>
+                  <Link href={ESSAYS}>{folioStudio.nav.essays}</Link>
+                </li>
+                <li>
                   <Link href={COMMUNITY}>{footer.studio.community}</Link>
                 </li>
                 <li>
-                  <Link href={`${HOME}#about`}>{footer.studio.about}</Link>
+                  <Link href={ABOUT}>{footer.studio.about}</Link>
                 </li>
                 <li>
                   <Link href={CONTACT}>{footer.studio.contact}</Link>

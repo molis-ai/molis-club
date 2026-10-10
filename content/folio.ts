@@ -1,127 +1,64 @@
 // Folio 官网的文案，其他品牌方向各有自己的一份。
-// 首页依据 2026-10-08 一骏给出的工作室定位与愿景；Work 详情在 content/folio-work.ts。
+// 首页依据 2026-10-09 与一骏的讨论：不喊口号，首屏只放 A/I 词组和关键词，往下是产品、团队、文章、社区。
+// 方案见 specs/folio-studio-home/spec.md；Work 详情在 content/folio-work.ts。
 // Life、Story 的详情页本轮不改，首页只用一句话说清方向，不写尚未开放的能力。
 
 export type FolioProductId = 'work' | 'tool' | 'life' | 'story';
 
+/** 2026-10-10 首页简介：按四条产品线的实际方向重写，独立于其他样张复用的原短句。 */
+export const folioHomeCopy = {
+  description:
+    'Molis AI 是一间围绕工作、生活与体验研发 AI 产品的工作室。用 Molis Work 探索人与 AI 共事，用 Molis Tool 把工具带到光标旁；也在探索为日常减负、发现生活新意的 Molis Life，以及可以进入、体验并归来的 Molis Story。',
+  products: {
+    work: '一张随你生长的 AI 工作台',
+    tool: 'AI就在你的鼠标边',
+    life: '把琐事安顿好，让喜欢的生活发生',
+    story: '走进另一个世界，带一段经历回来',
+  } satisfies Record<FolioProductId, string>,
+};
+
 export const folioStudio = {
-  /** 首屏：愿景先行，下面一句说清我们是谁 */
-  title: ['把工作做轻，', '把时间还给生活。'],
-  lead: 'Molis AI 是一个做 AI 产品的小团队。我们想让工作更快、更好、更舒服，把省下来的时间，留给生活、体验和创造。',
+  /** 首屏 A/I 词组下面的一行：取自落款「始终好奇，持续创造」与原版首屏、文章《人的尺度》 */
+  keywords: ['好奇', '创造', '人的尺度'],
   description:
     'Molis AI 是一个围绕工作、生活和体验场景研发 AI 产品的小团队：Molis Work 是可扩展的 AI 工作平台，Molis Tool 让能力来到你选中的文字和文件旁边；同时探索结合硬件与个人 Agent 的 Molis Life，和沉浸式世界 Molis Story。',
-  /** 首屏的目录：愿景的两半，各由两个产品承担 */
-  how: '怎么做到？',
-  groups: [
-    {
-      label: '现在',
-      goal: '把工作做轻',
-      items: [
-        { id: 'work', name: 'Molis Work', hint: '可扩展的 AI 工作平台' },
-        { id: 'tool', name: 'Molis Tool', hint: '能力来到选中的东西旁' },
-      ],
-    },
-    {
-      label: '接下来',
-      goal: '把时间还给生活',
-      items: [
-        { id: 'life', name: 'Molis Life', hint: '硬件与个人 Agent' },
-        { id: 'story', name: 'Molis Story', hint: '可以走进去的世界' },
-      ],
-    },
-  ] as {
-    label: string;
-    goal: string;
-    items: { id: FolioProductId; name: string; hint: string }[];
-  }[],
 
-  /** 首屏之后：一天里的时间，被工作的缝隙占走，又一段段还回来。画面是示意，不是统计。 */
-  day: {
-    kicker: '怎么做到',
-    title: ['时间花在工作上，', '却不全花在工作本身。'],
-    lead: '交代背景、搬运资料、来回切换、盯着 AI 有没有做完。我们先把这些缝隙收起来。',
-    note: '示意',
-    marks: ['早上', '中午', '傍晚', '夜里'],
-    labels: {
-      core: '工作本身',
-      context: '重新交代背景',
-      carry: '在应用间搬运',
-      wait: '盯着 AI 做没做完',
-      switch: '来回切换',
-      check: '核对“做完了”',
-      life: '自己的时间',
-      lifeAfter: '生活',
-      storyAfter: '体验与创造',
-    },
-    steps: [
-      {
-        id: 'work',
-        name: 'Molis Work',
-        title: '交代、等待和核对，交给同一套流程。',
-        text: '目标、资料和工具放在一起。你直接用工具，AI 和 Agent 在需要的环节动手，做没做完可以核对。',
-        more: '看看 Molis Work',
-      },
-      {
-        id: 'tool',
-        name: 'Molis Tool',
-        title: '搬运和切换，留在原处解决。',
-        text: '选中文字、拖入文件，合适的能力就在旁边，结果带着出处回来。',
-        more: '看看 Molis Tool',
-      },
-      {
-        id: 'life',
-        name: 'Molis Life · Molis Story',
-        title: '省下来的，留给生活和创造。',
-        text: 'Life 探索硬件与个人 Agent，把琐事接过去；Story 做可以走进去的世界。',
-        more: '看看生活与故事',
-      },
-    ] as {
-      id: FolioProductId;
-      name: string;
-      title: string;
-      text: string;
-      more: string;
-    }[],
+  /** 各区块只用一个关键词作标题，不再写整句 */
+  labels: {
+    products: { en: 'Products', zh: '产品' },
+    team: { en: 'Team', zh: '团队' },
+    essays: { en: 'Essays', zh: '文章' },
   },
+  nav: { essays: '文章', login: '登录' },
 
   work: {
     kicker: '现在重点推进',
     name: 'Molis Work',
-    line: '一个可扩展的 AI 工作平台。你直接用工具，AI 在需要的环节动手。',
-    highlights: [
-      '到处有 AI，但不是到处是对话',
-      '一个平台，按需加插件',
-      '换一个 Agent，工作也接得上',
-    ],
+    line: '可扩展的 AI 工作平台',
     status: ['v0.2.0 已开源', '0.3.0 开发中', 'macOS'],
     actions: { more: '了解 Molis Work', github: '在 GitHub 查看' },
   },
 
-  /** 三张色纸前的过渡句 */
-  linesTitle: '一件件小事做轻，时间才真的回来。',
   lines: [
     {
       id: 'tool',
       area: '工作 · 桌面',
       status: '开发中',
-      line: '围绕你眼前选中的文字和文件，就近给出合适的能力。',
-      value: '少一点跨应用的搬运和打断。',
+      line: '能力来到你选中的东西旁边',
       more: '了解 Molis Tool',
     },
     {
       id: 'life',
       area: '生活 · 探索中',
       status: '原型探索',
-      line: '结合硬件与个人 Agent，把琐事接过去，把想做的事记住。',
-      value: '让日子里多出一点属于自己的时间。',
+      line: '硬件与个人 Agent',
       more: '了解 Molis Life',
     },
     {
       id: 'story',
       area: '体验 · 探索中',
       status: '开发中',
-      line: '走进一个沉浸式的世界，和 AI 一起经历一段故事。',
-      value: '待一会儿，再带一样东西回来。',
+      line: '可以走进去的世界',
       more: '了解 Molis Story',
     },
   ] as {
@@ -129,11 +66,34 @@ export const folioStudio = {
     area: string;
     status: string;
     line: string;
-    value: string;
     more: string;
   }[],
-  enterprise:
-    '从梳理业务流程、连接现有数据和工具，到用 Molis Work 试运行具体方案，我们可以和你一起找到值得做的一步。',
+
+  /** 文章：原文在 content/stories.json，摘要沿用观点页 */
+  essays: {
+    author: '一骏',
+    read: '分钟阅读',
+    action: '阅读全文',
+    next: '接着读',
+    back: '回到首页',
+    items: [
+      {
+        slug: 'human-scale',
+        description: '当机器能够承担更多执行，我们如何决定什么值得做。',
+      },
+      {
+        slug: 'idealism',
+        description: '从落地与实践出发，讨论想法、行动与自我判断。',
+      },
+    ],
+  },
+
+  /** 结尾两条去处：社区（molis.club）与合作 */
+  community: {
+    label: '社区 · molis.club',
+    title: ['看看我们在做什么，', '和一群人一起试。'],
+    action: '去社区看看',
+  },
 };
 
 export const folioSolutions = {
