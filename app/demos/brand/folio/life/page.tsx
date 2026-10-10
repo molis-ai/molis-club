@@ -17,6 +17,7 @@ import {
   Closing,
   Collage,
   Frame,
+  NextProduct,
   ProductHero,
   SectionHead,
   Tag,
@@ -263,6 +264,7 @@ export default function FolioLifePage() {
             { label: closing.home, href: HOME, tone: 'light' },
           ]}
         />
+        <NextProduct current="life" />
       </Footer>
     </div>
   );

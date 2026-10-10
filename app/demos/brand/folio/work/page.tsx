@@ -10,7 +10,6 @@ import {
   compare,
   differences,
   everywhere,
-  features,
   hero,
   more,
   phaseLabel,
@@ -20,7 +19,14 @@ import {
   type Phase as PhaseId,
   type Scene,
 } from '../../../../../content/folio-work';
-import { Actions, Closing, ProductHero, SectionHead, pad } from '../kit';
+import {
+  Actions,
+  Closing,
+  NextProduct,
+  ProductHero,
+  SectionHead,
+  pad,
+} from '../kit';
 import {
   Footer,
   HOME,
@@ -37,7 +43,8 @@ import '../kit.css';
 import './work.css';
 
 // 首屏与 Tool 同一规格：左边说清是什么、给谁、解决什么，右边是贴着真实产品的动作。
-// 正文顺序照产品介绍 V2 的建议：亮点 → 平台和插件 → 三个主场景 → 五点不同 → 更多场景 → 功能 → 比较与边界。
+// 正文顺序照产品介绍 V2 的建议：亮点 → 平台和插件 → 三个主场景 → 五点不同 → 更多场景 → 比较与边界 → 现在能用什么。
+// 原来的「功能全景」27 项清单收进「现在能用什么」的三栏，免得后半段变成一张小字表。
 
 function Phase({ phase, note }: { phase: PhaseId; note?: string }) {
   return (
@@ -352,6 +359,8 @@ export default function FolioWorkPage() {
             id="fw-more-title"
             kicker={more.kicker}
             title={more.title}
+            lead={more.lead}
+            layout="split"
           />
           <ul className="fw-more-cards">
             {more.items.map((item, index) => (
@@ -364,52 +373,12 @@ export default function FolioWorkPage() {
                 <h3>{item.title}</h3>
                 <p className="fw-more-pain">{item.pain}</p>
                 <p>{item.text}</p>
-                <Phase phase={item.phase} note={item.phaseNote} />
+                {item.phase === 'next' ? null : (
+                  <Phase phase={item.phase} note={item.phaseNote} />
+                )}
               </li>
             ))}
           </ul>
-        </section>
-
-        <section
-          className="fo-section fw-features"
-          data-bg="white"
-          aria-labelledby="fw-features-title"
-        >
-          <SectionHead
-            id="fw-features-title"
-            kicker={features.kicker}
-            title={features.title}
-            lead={features.lead}
-            layout="split"
-          >
-            <ul className="fw-legend" aria-label="状态说明">
-              {(['released', 'next', 'preview', 'planned'] as const).map(
-                (phase) => (
-                  <li key={phase} data-phase={phase}>
-                    {phaseLabel[phase]}
-                  </li>
-                ),
-              )}
-            </ul>
-          </SectionHead>
-          <div className="fw-feature-groups">
-            {features.groups.map((group) => (
-              <section key={group.name} aria-label={group.name}>
-                <h3>
-                  {group.name}
-                  <small>{group.items.length}</small>
-                </h3>
-                <ul>
-                  {group.items.map(([name, line, phase]) => (
-                    <li key={name} data-phase={phase}>
-                      <strong>{name}</strong>
-                      <span>{line}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
-          </div>
         </section>
 
         <section
@@ -478,6 +447,11 @@ export default function FolioWorkPage() {
             <article data-reveal>
               <small>{access.now.label}</small>
               <h3>{access.now.title}</h3>
+              <ul>
+                {access.now.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
               <p>{access.now.text}</p>
               <Actions
                 items={[
@@ -498,6 +472,11 @@ export default function FolioWorkPage() {
             <article data-reveal style={{ '--i': 1 } as Vars}>
               <small>{access.next.label}</small>
               <h3>{access.next.title}</h3>
+              <ul>
+                {access.next.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
               <p>{access.next.text}</p>
               <Actions
                 items={[
@@ -515,6 +494,18 @@ export default function FolioWorkPage() {
                 ]}
               />
             </article>
+            <article data-reveal style={{ '--i': 2 } as Vars}>
+              <small>{access.later.label}</small>
+              <h3>{access.later.title}</h3>
+              <ul>
+                {access.later.items.map(([item, phase]) => (
+                  <li key={item}>
+                    {item}
+                    <Phase phase={phase} />
+                  </li>
+                ))}
+              </ul>
+            </article>
           </div>
         </section>
       </main>
@@ -529,6 +520,7 @@ export default function FolioWorkPage() {
             { label: closing.home, href: HOME, tone: 'light' },
           ]}
         />
+        <NextProduct current="work" />
       </Footer>
     </div>
   );

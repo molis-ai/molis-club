@@ -1,5 +1,5 @@
 'use client';
-import { Check, CheckCheck, Layers } from 'lucide-react';
+import { ArrowRight, Check, Layers } from 'lucide-react';
 import { folioSolutions as content } from '../../../../../content/folio';
 import { Actions, Closing, SectionHead, pad } from '../kit';
 import {
@@ -13,6 +13,9 @@ import {
 import '../folio.css';
 import '../kit.css';
 import './solutions.css';
+
+// 解决方案：交接文档定的顺序——合作如何开始 → 三个场景 → 你最想改善的是哪一段工作。
+// 版式用 Folio 的语言：三步是一排略歪的色纸卡；三个场景是三张整幅色纸，左边问题、右边做法与留下的东西。
 
 export default function FolioSolutionsPage() {
   const ref = useFolioMotion();
@@ -30,7 +33,8 @@ export default function FolioSolutionsPage() {
               <div data-reveal>
                 <span className="fo-kicker">合作如何开始</span>
                 <h1 id="fs-title">
-                  把 AI 用进<em>一段具体业务。</em>
+                  <span className="fo-phrase">把 AI 用进</span>
+                  <span className="fo-phrase">一段具体业务。</span>
                 </h1>
               </div>
               <div
@@ -47,22 +51,22 @@ export default function FolioSolutionsPage() {
                 />
               </div>
             </header>
-            <ol className="fs-steps" aria-label="合作的三个步骤">
+            <ol className="fo-cards fs-steps" aria-label="合作的三个步骤">
               {content.stages.map((stage, index) => (
                 <li
                   key={stage.title}
                   data-reveal
                   style={{ '--i': index } as Vars}
                 >
-                  <span className="fs-step-index" aria-hidden="true">
+                  <span className="fo-index" aria-hidden="true">
                     {pad(index)}
                   </span>
                   <h2>{stage.title}</h2>
                   <p>{stage.text}</p>
-                  <div className="fs-step-result">
-                    <CheckCheck size={20} aria-hidden="true" />
-                    <strong>{stage.result}</strong>
-                  </div>
+                  <p className="fs-step-result">
+                    <small>留下</small>
+                    {stage.result}
+                  </p>
                 </li>
               ))}
             </ol>
@@ -82,58 +86,63 @@ export default function FolioSolutionsPage() {
               lead="带着真实的资料、现有的工具和一个明确目标，选一段值得改进的工作，一起验证。"
               layout="split"
             />
-            <div className="fs-scenario-grid">
+            <div className="fs-scenario-list">
               {content.directions.map((direction, index) => (
                 <article
                   key={direction.id}
-                  className={
-                    'fs-direction fs-scenario fs-scenario-' + direction.id
-                  }
+                  className={'fs-scenario fs-scenario-' + direction.id}
                   aria-labelledby={'fs-' + direction.id + '-title'}
                   data-reveal
-                  style={{ '--i': index } as Vars}
                 >
                   <div className="fs-card-heading">
-                    <div className="fs-card-label">
-                      <span>{direction.name}</span>
-                      <span className="fs-card-index" aria-hidden="true">
+                    <p className="fs-card-label">
+                      <span className="fo-index" aria-hidden="true">
                         {pad(index)}
                       </span>
-                    </div>
+                      {direction.name}
+                    </p>
                     <h3 id={'fs-' + direction.id + '-title'}>
-                      <span>{direction.headline[0]}</span>
-                      <em>{direction.headline[1]}</em>
+                      {direction.headline.map((line) => (
+                        <span className="fo-phrase" key={line}>
+                          {line}
+                        </span>
+                      ))}
                     </h3>
                     <p className="fs-card-problem">
                       <small>现在卡在</small>
                       {direction.problem}
                     </p>
-                  </div>
-                  <div className="fs-card-body">
-                    <div className="fs-process">
-                      <h4>我们一起做</h4>
-                      <ol>
-                        {direction.process.map((step) => (
-                          <li key={step}>{step}</li>
-                        ))}
-                      </ol>
-                    </div>
-                    <div className="fs-outcomes">
-                      <h4>让这段工作留下</h4>
-                      <ul>
-                        {direction.outcomes.map((outcome) => (
-                          <li key={outcome}>
-                            <Check size={18} aria-hidden="true" />
-                            <span>{outcome}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
                     <div className="fs-card-boundary">
                       <span className="fs-direction-status">
                         {direction.status}
                       </span>
                       <p>{direction.boundary}</p>
+                    </div>
+                  </div>
+                  <div className="fs-card-body">
+                    <div className="fs-process">
+                      <h4>我们一起做</h4>
+                      <ol>
+                        {direction.process.map((step, at) => (
+                          <li key={step}>
+                            {step}
+                            {at < direction.process.length - 1 ? (
+                              <ArrowRight size={16} aria-hidden="true" />
+                            ) : null}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                    <div className="fs-outcomes">
+                      <h4>这段工作留下</h4>
+                      <ul>
+                        {direction.outcomes.map((outcome) => (
+                          <li key={outcome}>
+                            <Check size={20} aria-hidden="true" />
+                            {outcome}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </article>

@@ -399,6 +399,13 @@
   align-items: start;
   gap: 40px clamp(32px, 5vw, 90px);
 }
+/* 两栏里左边只有标题、右边是长清单时，标题跟着滚，读到哪里都看得见 */
+@media (min-width: 901px) {
+  .fo-split > .fo-head {
+    position: sticky;
+    top: calc(var(--fo-head) + 48px);
+  }
+}
 .fo-section > .fo-head + * {
   margin-top: clamp(48px, 6vw, 84px);
 }
@@ -631,5 +638,69 @@
   }
   .fo-collage {
     --p: 1;
+  }
+}
+
+/* ---------- 产品页封底：接着看下一件产品 ---------- */
+.fo-site .fo-next {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 10px clamp(18px, 2.4vw, 36px);
+  margin-top: clamp(56px, 7vw, 100px);
+  padding-top: 22px;
+  border-top: 2px solid currentColor;
+}
+.fo-next small {
+  grid-column: 1 / -1;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+}
+.fo-next strong {
+  font-family: var(--fo-display);
+  font-weight: 500;
+  font-size: clamp(48px, 7vw, 120px);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+.fo-next > span {
+  padding-bottom: 0.4em;
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: clamp(17px, 1.6vw, 24px);
+  line-height: 1.5;
+}
+.fo-next i {
+  display: grid;
+  place-items: center;
+  width: clamp(52px, 5vw, 72px);
+  aspect-ratio: 1;
+  margin-bottom: 0.2em;
+  border-radius: 50%;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  transition:
+    background 0.3s,
+    color 0.3s,
+    transform 0.4s var(--fo-ease);
+}
+.fo-next:hover i,
+.fo-next:focus-visible i {
+  background: var(--fo-white);
+  color: var(--fo-ink);
+  transform: rotate(45deg);
+}
+@media (max-width: 760px) {
+  .fo-site .fo-next {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .fo-next > span {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  .fo-next i {
+    grid-column: 2;
+    grid-row: 2;
   }
 }

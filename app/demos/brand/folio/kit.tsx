@@ -2,8 +2,10 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { lineNames, type LineId } from '../../../../content/studio';
+import { folioStudio } from '../../../../content/folio';
 import { Cuts } from './art';
-import type { Vars } from './shared';
+import { lineHref, lineIds, lineLine, type Vars } from './shared';
 
 // 首页和四个产品页共用的部件：首屏、区块标题、状态签、标签、按钮、贴胶带的截图和结尾。
 // 都是 Folio 的剪纸杂志样子，样式在 kit.css。
@@ -265,5 +267,20 @@ export function Closing({
       {children}
       {actions ? <Actions items={actions} /> : null}
     </section>
+  );
+}
+
+/** 产品页封底：按首页的顺序 Work → Tool → Life → Story，接着看下一件，最后一件回到第一件 */
+export function NextProduct({ current }: { current: LineId }) {
+  const next = lineIds[(lineIds.indexOf(current) + 1) % lineIds.length];
+  return (
+    <Link href={lineHref[next]} className="fo-next">
+      <small>{folioStudio.nextProduct}</small>
+      <strong>{lineNames[next]}</strong>
+      <span>{lineLine[next]}</span>
+      <i aria-hidden="true">
+        <ArrowUpRight size={26} />
+      </i>
+    </Link>
   );
 }

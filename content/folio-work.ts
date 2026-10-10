@@ -315,6 +315,8 @@ export const differences = {
 export const more = {
   kicker: '更多场景',
   title: '从一条消息，到一段代码。',
+  /** 状态说一次：卡片上只标已发布和预览这两种例外 */
+  lead: '没有标注的能力都在开发版里，随 0.3.0 一起发布。',
   items: [
     {
       title: '一个看得见你在做什么的助理',
@@ -354,77 +356,6 @@ export const more = {
     phase: Phase;
     phaseNote?: string;
   }[],
-};
-
-export const features = {
-  kicker: '功能全景',
-  title: '每一项，现在走到哪一步。',
-  lead: '状态按「现在能不能下载到」标注。公开版本是 v0.2.0，其余在开发版里，随 0.3.0 一起发布。',
-  groups: [
-    {
-      name: '平台',
-      items: [
-        [
-          '统一能力目录与 MCP',
-          '按调用方授权，外部 Agent 只看得到授权给它的能力',
-          'next',
-        ],
-        ['外部 Agent 接入', '五家内置接入，先预览再写入，失败回滚', 'released'],
-        ['工作台与插件选择器', '底栏、侧栏、⌘K 各一套，插件就地添加', 'next'],
-        ['打开与新建项目', '停在项目选择页；新建时 AI 整理出待办草稿', 'next'],
-        ['侧栏与侧栏浏览器', '助理操作网页逐步确认，随时交还给你', 'next'],
-        ['系统搜索 ⌘K', '搜所有插件的内容，由原插件核对后打开', 'next'],
-        ['个人助理', '理解当前页面和选区，操作卡点一下执行', 'next'],
-        ['提醒、记忆与分工', '守勿扰；记忆可见可删；大事拆给子任务', 'next'],
-        ['角色、提示词与模型', '都在设置里可见可改，模型和密钥配一次', 'next'],
-        [
-          '更多连接与文档导入',
-          '约 45 个服务的连接方式，Notion、飞书导入',
-          'next',
-        ],
-      ],
-    },
-    {
-      name: '项目插件',
-      items: [
-        ['Goals', '依赖画布、决定中心，完成要显式收尾', 'released'],
-        ['Sessions', '回到各工具的会话继续做；v0.2.0 里叫 Work', 'released'],
-        ['Feed 与来源', 'RSS、网页、YouTube、GitHub、Gmail', 'released'],
-        ['成果库', '固定下来的一版，记得来自哪份原文', 'next'],
-        ['Inbox', '只放需要你介入的事，写明为什么', 'next'],
-        ['Schedule', '到点跑你建好的任务', 'next'],
-        ['Coding 一族', '编码会话、文件、Git、Diff，副作用先审查', 'next'],
-      ],
-    },
-    {
-      name: '个人插件',
-      items: [
-        ['待办', '记待办、设提醒，助理帮你整理', 'next'],
-        ['Jelly、灵光', '安排日程、写笔记、收想法', 'next'],
-        [
-          'Pages、Forms、Dataset、PPT、图片',
-          '文档、问卷、表格、幻灯片大纲、生图',
-          'next',
-        ],
-        [
-          'Cognia、Shelf、炼金术士、实验、工作流程',
-          '整理知识、处理文件、比较模型、串成流程',
-          'next',
-        ],
-        ['插件创作台', '描述需求，Agent 在沙箱里做出插件', 'preview'],
-      ],
-    },
-    {
-      name: '协作与以后',
-      items: [
-        ['项目讨论', '项目主群与公开 Thread，要自行部署本地 Server', 'preview'],
-        ['团队空间与多设备同步', '成员、权限、共享项目', 'planned'],
-        ['第三方插件与分享', '方向已定，目前只有方案', 'planned'],
-        ['自动更新与定时备份', '新版本自动装上，定时备份 Home', 'planned'],
-        ['Windows 与 Linux', '目前只有 macOS', 'planned'],
-      ],
-    },
-  ] as { name: string; items: [string, string, Phase][] }[],
 };
 
 export const compare = {
@@ -467,22 +398,48 @@ export const bounds = {
   ],
 };
 
+/** 现在能用什么：原来的「功能全景」27 项按「能不能下载到」收成三栏白话，状态与产品介绍 V2 一致 */
 export const access = {
   kicker: '现在能用什么',
   title: '先用开源版，或者等下一版。',
   now: {
     label: '现在 · v0.2.0',
     title: '开源版本',
-    text: '包含 Goals、Work（现在叫 Sessions）、Feed、Artifacts（现在叫成果）四个插件。MIT 开源，在 macOS 上从源码安装。',
+    items: [
+      '目标与核对（Goals）：完成要显式收尾',
+      '回到各个工具继续的会话（Sessions）',
+      '信息源汇总（Feed）：RSS、网页、YouTube、GitHub、Gmail',
+      '固定下来的成果，记得来自哪份原文',
+      '五家 Agent 内置接入，先预览再写入',
+    ],
+    text: 'MIT 开源，在 macOS 上从源码安装。',
     install: '看安装步骤',
     github: '在 GitHub 查看',
   },
   next: {
     label: '下一版 · 0.3.0',
     title: '完整的平台与插件',
-    text: '这页上标「开发版」的能力随 0.3.0 一起发布，日期还没定。v0.2.0 的数据不能直接带到新版本，接入的 Agent 也要重新接。',
+    items: [
+      '看得见当前页面的助理，建议点一下就执行',
+      '只放需要你介入的事的 Inbox，写明为什么',
+      '⌘K 搜所有插件里的内容',
+      '编码会话、文件与 Git，副作用先经你审查',
+      '待办、文档、表格、幻灯片大纲等个人插件',
+    ],
+    text: '日期还没定。v0.2.0 的数据不能直接带到新版本，接入的 Agent 也要重新接。',
     follow: '关注下一版',
     releases: '看发布记录',
+  },
+  later: {
+    label: '以后',
+    title: '还在路上',
+    items: [
+      ['插件创作台：描述需求，Agent 在沙箱里做出插件', 'preview'],
+      ['项目讨论：主群与公开 Thread，要自行部署本地 Server', 'preview'],
+      ['团队空间与多设备同步', 'planned'],
+      ['第三方插件与分享', 'planned'],
+      ['Windows、Linux，自动更新与定时备份', 'planned'],
+    ] as [string, Phase][],
   },
 };
 

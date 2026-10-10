@@ -196,5 +196,8 @@ export const contact = {
     life: { role: '早期体验者', idea: '想关注 Molis Life 的进展。' },
     tool: { role: '早期体验者', idea: '想关注 Molis Tool 的进展。' },
     story: { role: '早期体验者', idea: '想关注 Molis Story 的进展。' },
+    /** 社区页「聊聊你的体验」「分享一个念头」 */
+    feedback: { role: '早期体验者', idea: '' },
+    creator: { role: '创造者', idea: '' },
   } as Record<string, { role: string; idea: string }>,
 };

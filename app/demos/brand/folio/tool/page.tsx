@@ -16,7 +16,14 @@ import { folioTool } from '../../../../../content/folio';
 import { CursorDemo } from './cursor-demo';
 import { Moments } from './moments';
 import { LayerRelay, PluginStage } from './stages';
-import { Closing, Phrases, ProductHero, SectionHead, pad } from '../kit';
+import {
+  Closing,
+  NextProduct,
+  Phrases,
+  ProductHero,
+  SectionHead,
+  pad,
+} from '../kit';
 import {
   Footer,
   HOME,
@@ -253,6 +260,7 @@ export default function FolioToolPage() {
             { label: closing.home, href: HOME, tone: 'light' },
           ]}
         />
+        <NextProduct current="tool" />
       </Footer>
     </div>
   );

@@ -1,7 +1,7 @@
 import { sites } from '@openai/sites-vite-plugin';
 import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import hostingConfig from './.openai/hosting.json' with { type: 'json' };
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
@@ -32,6 +32,40 @@ if (isCloudflareDeploy) {
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
+
+// Vite 8 does not inherit `define` in its dependency optimizer. Vinext's
+// prebundled next/link router must not depend on @vite/env installing `process`.
+// Reuse only the already-public client definitions, never the host process.env.
+const clientDependencyDefines: Plugin = {
+  name: 'molis:client-dependency-defines',
+  apply: 'serve',
+  configEnvironment: {
+    order: 'post',
+    handler(name, environment) {
+      if (name !== 'client') return;
+      const define = Object.fromEntries(
+        Object.entries(environment.define ?? {}).map(([key, value]) => [
+          key,
+          typeof value === 'string'
+            ? value
+            : (JSON.stringify(value) ?? 'undefined'),
+        ]),
+      );
+      return {
+        optimizeDeps: {
+          rolldownOptions: {
+            transform: {
+              define: {
+                ...define,
+                ...environment.optimizeDeps?.rolldownOptions?.transform?.define,
+              },
+            },
+          },
+        },
+      };
+    },
+  },
+};
 
 const localBindingConfig = {
   main: 'vinext/server/fetch-handler',
@@ -74,6 +108,7 @@ export default defineConfig(async () => {
       : undefined,
     plugins: [
       vinext(),
+      clientDependencyDefines,
       ...(isCloudflareDeploy ? [] : [sites()]),
       cloudflare({
         viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },

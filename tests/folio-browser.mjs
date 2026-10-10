@@ -76,7 +76,7 @@ try {
   );
   assert.equal(
     await page.locator('.fo-header-end a').first().getAttribute('href'),
-    '/login',
+    '/demos/brand/folio/login',
   );
   console.log(
     'PASS: original cover animation, A/I phrase cycle, three product sheets; team and essays no longer appear on the home page.',
@@ -136,6 +136,97 @@ try {
     /\/essays\/human-scale$/,
   );
   console.log('PASS: essay reader with contents, references and next essay.');
+
+  // 登录留在 Folio 里：同一个顶栏，Logo 回到 Folio 首页，表单换成 Folio 的样子
+  await visit('/login');
+  assert.equal(
+    await page.locator('.fo-logo').getAttribute('href'),
+    '/demos/brand/folio',
+  );
+  assert.equal(await page.locator('.fa-panel form').count(), 1);
+  assert.equal(
+    await page
+      .locator('.fa-panel .field input')
+      .first()
+      .evaluate((el) => getComputedStyle(el).borderBottomWidth),
+    '2px',
+  );
+  await page.locator('.auth-switch button').click();
+  assert.equal(
+    await page.locator('.fa-panel .consent a').getAttribute('href'),
+    '/demos/brand/folio/contact#privacy',
+  );
+  console.log(
+    'PASS: Folio login keeps the Folio header, home link and form style.',
+  );
+
+  // 产品页读到底可以接着看下一件；不存在的地址留在 Folio 自己的 404
+  const nextOf = {
+    '/work': 'tool',
+    '/tool': 'life',
+    '/life': 'story',
+    '/story': 'work',
+  };
+  for (const [route, next] of Object.entries(nextOf)) {
+    await visit(route);
+    assert.equal(
+      await page.locator('.fo-next').getAttribute('href'),
+      `/demos/brand/folio/${next}`,
+      route,
+    );
+  }
+  const missing = await page.goto(folio + '/no-such-page', {
+    waitUntil: 'networkidle',
+  });
+  assert.equal(missing.status(), 404);
+  assert.equal(await page.locator('.fo-site .fm-missing').count(), 1);
+  assert.equal(
+    await page.locator('.fo-logo').getAttribute('href'),
+    '/demos/brand/folio',
+  );
+  console.log(
+    'PASS: product pages lead to the next product; unknown addresses stay on the Folio 404.',
+  );
+
+  // 百科：三张艺术家试样加构建入口，六个可以动手的示例，24 个组件来源；搜索会收窄目录
+  await visit('/wiki');
+  assert.equal(await page.locator('.fw-gallery li').count(), 3);
+  assert.equal(await page.locator('.fw-builder').count(), 1);
+  assert.equal(await page.locator('.fw-entry .fw-demo').count(), 6);
+  assert.equal(await page.locator('.fw-row').count(), 24);
+  await page.locator('.fw-search input').fill('toast');
+  const found = Number(
+    (await page.locator('.fw-count').innerText()).match(/^\d+/)[0],
+  );
+  assert.ok(found > 0 && found < 24, `toast matched ${found}`);
+  assert.equal(
+    (await page.locator('.fw-row').count()) +
+      (await page.locator('.fw-entry').count()),
+    found,
+  );
+  await page.locator('.fw-search input').fill('');
+  await page.locator('.fw-filters button', { hasText: '网页词典' }).click();
+  assert.equal(await page.locator('.fw-entry').count(), 3);
+  assert.equal(await page.locator('.fw-row').count(), 0);
+  await visit('/wiki/stagger');
+  assert.match(await page.locator('h1').innerText(), /错落入场/);
+  const promptBefore = await page.locator('#fw-prompt').inputValue();
+  await page.locator('.fw-duration input').fill('1000');
+  assert.notEqual(await page.locator('#fw-prompt').inputValue(), promptBefore);
+  assert.match(await page.locator('#fw-prompt').inputValue(), /1000ms/);
+  await visit('/wiki/artists/monet-impressionism');
+  assert.equal(
+    await page.locator('a[download]').getAttribute('href'),
+    '/downloads/artists/monet-impressionism.zip',
+  );
+  assert.equal(await page.locator('.fw-related li').count(), 3);
+  const legacy = await page.goto(folio + '/wiki/no-such-entry', {
+    waitUntil: 'networkidle',
+  });
+  assert.equal(legacy.status(), 404);
+  console.log(
+    'PASS: Folio wiki with artists, six live examples, searchable resources, entry lab and artist downloads.',
+  );
 
   const running = (selector) =>
     page.locator(selector).getAttribute('data-running');
@@ -198,7 +289,16 @@ try {
     await page.locator('.fws-compose, .fws-relay, .fws-control').count(),
     3,
   );
-  assert.equal(await page.locator('.fw-feature-groups > section').count(), 4);
+  // 功能全景收进「现在能用什么」的三栏；更多场景只标已发布和预览两种例外
+  assert.equal(
+    await page.locator('.fw-features, .fw-feature-groups').count(),
+    0,
+  );
+  assert.equal(await page.locator('.fw-access-cards article').count(), 3);
+  assert.equal(
+    await page.locator('.fw-more-cards .fw-phase[data-phase="next"]').count(),
+    0,
+  );
   assert.equal(
     await page.locator('.wd-dock, .wd-surface, .fd-window-bar').count(),
     0,
@@ -233,9 +333,23 @@ try {
       '/essays',
       '/essays/human-scale',
       '/essays/idealism',
+      '/login',
+      '/account',
+      '/wiki',
+      '/wiki/sticky',
+      '/wiki/animata',
+      '/wiki/artists/art-style-skill-builder',
     ]) {
       await visit(route);
       assert.equal(await page.locator('h1').count(), 1, `${route} @ ${width}`);
+      if (route === '/about' || route === '/essays') {
+        const heading = await page.locator('h1').boundingBox();
+        const header = await page.locator('.fo-header').boundingBox();
+        assert.ok(
+          heading.y >= header.y + header.height - 1,
+          `${route} title hidden by navigation @ ${width}`,
+        );
+      }
       assert.equal(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth,
@@ -262,6 +376,16 @@ try {
   }
   await page.goto(origin + '/demos/community/', { waitUntil: 'networkidle' });
   assert.equal(await page.locator('h1').count(), 1);
+  assert.deepEqual(
+    await page
+      .locator('.fcm-essay')
+      .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
+    [
+      '/demos/brand/folio/essays/human-scale',
+      '/demos/brand/folio/essays/idealism',
+    ],
+  );
+  assert.equal(await page.locator('a[href^="/wiki"]').count(), 0);
   assert.equal(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -270,7 +394,7 @@ try {
   );
   assert.equal(errors.length, 0, errors.join('\n'));
   console.log(
-    'PASS: all eleven pages, five viewport widths, community links, images and no browser runtime errors.',
+    'PASS: Folio pages at five viewport widths, visible page titles, community links, images and no browser runtime errors.',
   );
 } finally {
   await browser.close();

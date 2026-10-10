@@ -7,10 +7,15 @@ import { authClient } from '../../lib/auth-client';
 import { formText } from '../../lib/forms';
 export function LoginForm({
   compactProviders = false,
+  paths,
 }: {
   compactProviders?: boolean;
+  /** 登录后去哪、第三方登录失败回到哪、隐私说明在哪；默认是当前版本自己的账号页、登录页和隐私页 */
+  paths?: { account: string; login: string; privacy: string };
 }) {
   const editionPath = useEditionPath();
+  const account = paths?.account ?? editionPath('/account');
+  const login = paths?.login ?? editionPath('/login');
   const [mode, setMode] = useState<'login' | 'signup'>('login'),
     [busy, setBusy] = useState(false),
     [error, setError] = useState<string | null>(null);
@@ -49,13 +54,15 @@ export function LoginForm({
         setError(
           result.error.status === 429
             ? '尝试太频繁，请稍等一分钟再试。'
-            : mode === 'login'
-              ? '邮箱或密码不正确，请检查后重试。'
-              : '未能创建账号。请检查邮箱和密码，或尝试登录已有账号。',
+            : result.error.status >= 500 || result.error.status === 0
+              ? '账号服务暂时没有响应，请稍后重试。'
+              : mode === 'login'
+                ? '邮箱或密码不正确，请检查后重试。'
+                : '未能创建账号。请检查邮箱和密码，或尝试登录已有账号。',
         );
         return;
       }
-      window.location.assign(editionPath('/account'));
+      window.location.assign(account);
     } catch {
       setError('账号服务暂时没有响应，请稍后重试。');
     } finally {
@@ -68,8 +75,8 @@ export function LoginForm({
     try {
       const r = await authClient.signIn.social({
         provider,
-        callbackURL: editionPath('/account'),
-        errorCallbackURL: editionPath('/login?error=oauth'),
+        callbackURL: account,
+        errorCallbackURL: `${login}?error=oauth`,
       });
       if (r.error) setError('这次授权未能开始，请稍后重试。');
     } catch {
@@ -84,7 +91,7 @@ export function LoginForm({
         <div>
           <h1>你已经登录了。</h1>
           <p>{session.user.name}，欢迎回来。</p>
-          <Link className="button primary" href="/account">
+          <Link className="button primary" href={account}>
             查看我的账号
           </Link>
         </div>
@@ -179,7 +186,8 @@ export function LoginForm({
               <label className="consent">
                 <input type="checkbox" required />
                 <span>
-                  我已阅读并同意<Link href="/privacy">隐私说明</Link>。
+                  我已阅读并同意
+                  <Link href={paths?.privacy ?? '/privacy'}>隐私说明</Link>。
                 </span>
               </label>
             )}

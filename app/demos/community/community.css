@@ -91,25 +91,6 @@
 .fcm-text-link svg {
   flex-shrink: 0;
 }
-.fcm-site .fcm-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  min-height: 51px;
-  padding: 12px 22px;
-  border-radius: 4px;
-  background: var(--fo-ink);
-  color: var(--fo-white);
-  font-size: 14px;
-  transition:
-    background 0.2s,
-    transform 0.2s;
-}
-.fcm-site .fcm-button:hover {
-  background: var(--fo-blue);
-  transform: translateY(-2px);
-}
 .fcm-hero {
   max-width: var(--fcm-max);
   margin: auto;
@@ -689,9 +670,9 @@
 }
 .fcm-method-card {
   background: var(--fo-white);
-  border-radius: 3px;
+  border-radius: 24px;
   overflow: hidden;
-  border: 1px solid var(--fo-line);
+  box-shadow: 0 24px 48px -36px rgb(40 24 10 / 0.4);
 }
 .fcm-method-sample {
   height: 215px;
@@ -700,7 +681,6 @@
   align-items: center;
   justify-content: center;
   gap: 15px;
-  border-bottom: 1px solid var(--fo-line);
   padding: 23px;
 }
 .fcm-stagger-sample {
@@ -740,22 +720,22 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 13px;
   min-height: 44px;
 }
 .fcm-method-body {
   padding: 27px 25px 21px;
 }
 .fcm-method-body h3 {
-  font-size: 21px;
+  font-size: 24px;
   font-family: var(--fo-serif);
-  font-weight: 500;
+  font-weight: 900;
   letter-spacing: -0.04em;
   margin: 9px 0 13px;
 }
 .fcm-method-body > p {
-  font-size: 13px;
-  color: #625d54;
+  font-size: 15px;
+  color: var(--fo-text);
   min-height: 75px;
 }
 .fcm-method-body > .fcm-copy,
@@ -763,7 +743,7 @@
   margin-top: 15px;
 }
 .fcm-method-body .fcm-text-link {
-  font-size: 12px;
+  font-size: 14px;
 }
 .fcm-fold-sample {
   background: #f1e1d5;
@@ -965,40 +945,51 @@
 .fcm-join-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0;
+  gap: 24px;
   text-align: left;
   margin-top: 54px;
-  border-block: 1px solid var(--fo-line);
 }
 .fcm-join-grid > a {
-  padding: 30px;
-  transition: background 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 32px;
+  border-radius: 24px;
+  background: var(--fo-yellow);
+  box-shadow: 0 24px 48px -36px rgb(40 24 10 / 0.4);
+  transition: transform 0.3s var(--fo-ease);
 }
-.fcm-join-grid > a + a {
-  border-left: 1px solid var(--fo-line);
+.fcm-join-grid > a:nth-child(2) {
+  background: var(--fo-pink);
 }
-.fcm-join-grid > a:hover {
-  background: var(--fo-white);
+.fcm-join-grid > a:nth-child(3) {
+  background: var(--fo-sage);
+}
+.fcm-join-grid > a:is(:hover, :focus-visible) {
+  transform: translateY(-4px);
 }
 .fcm-join-grid > a > svg {
   color: var(--fo-blue);
   margin-bottom: 17px;
 }
 .fcm-join-grid h3 {
-  font-size: 20px;
-  font-weight: 500;
+  font-family: var(--fo-serif);
+  font-size: 24px;
+  font-weight: 900;
   margin-bottom: 11px;
 }
 .fcm-join-grid p {
-  color: var(--fo-muted);
-  font-size: 13px;
+  color: var(--fo-text);
+  font-size: 15px;
+  margin-bottom: 24px;
 }
 .fcm-join-grid span {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
-  margin-top: 23px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: auto;
 }
 .fcm-site .fo-colophon-mark {
   font-size: clamp(140px, 23vw, 370px);
@@ -1326,7 +1317,7 @@
   .fcm-hero-actions .fcm-text-link {
     font-size: 12px;
   }
-  .fcm-hero-actions .fcm-button {
+  .fcm-hero-actions .fo-btn {
     gap: 16px;
     padding-inline: 18px;
   }
@@ -1561,13 +1552,10 @@
   .fcm-join-grid {
     grid-template-columns: 1fr;
     margin-top: 30px;
+    gap: 16px;
   }
   .fcm-join-grid > a {
-    padding: 26px 10px;
-  }
-  .fcm-join-grid > a + a {
-    border-left: 0;
-    border-top: 1px solid var(--fo-line);
+    padding: 26px;
   }
   .fcm-join-grid h3 {
     font-size: 21px;

@@ -18,8 +18,16 @@ import {
 } from 'lucide-react';
 import { artistSkills } from '../../../content/artists';
 import { knowledge, knowledgePrompt } from '../../../content/knowledge';
-import { Footer, HOME, contactHref } from '../brand/folio/shared';
+import {
+  Footer,
+  HOME,
+  WIKI,
+  artistHref,
+  contactHref,
+  essayHref,
+} from '../brand/folio/shared';
 import '../brand/folio/folio.css';
+import '../brand/folio/kit.css';
 import './community.css';
 
 const stagger = knowledge.find((entry) => entry.slug === 'stagger')!;
@@ -488,7 +496,7 @@ function Methods() {
             <br />
             提示词、操作思路和 Skill，都在这里。
           </p>
-          <Link className="fcm-text-link" href="/wiki">
+          <Link className="fcm-text-link" href={WIKI}>
             逛逛完整百科
             <ArrowUpRight size={17} aria-hidden="true" />
           </Link>
@@ -596,7 +604,7 @@ function Methods() {
               <CopyAction id="monet-prompt" text={styles[0].prompt} />
               <Link
                 className="fcm-text-link"
-                href="/wiki/artists/monet-impressionism"
+                href={artistHref('monet-impressionism')}
               >
                 看看完整方法
                 <ArrowUpRight size={16} aria-hidden="true" />
@@ -637,7 +645,11 @@ function People() {
           </div>
         </div>
         <div className="fcm-essays">
-          <Link href="/story/human-scale" className="fcm-essay" data-enter>
+          <Link
+            href={essayHref('human-scale')}
+            className="fcm-essay"
+            data-enter
+          >
             <span className="fcm-essay-letter" aria-hidden="true">
               人
             </span>
@@ -651,7 +663,7 @@ function People() {
               </span>
             </div>
           </Link>
-          <Link href="/story/idealism" className="fcm-essay" data-enter>
+          <Link href={essayHref('idealism')} className="fcm-essay" data-enter>
             <span className="fcm-essay-letter" aria-hidden="true">
               想
             </span>
@@ -733,7 +745,7 @@ export default function CommunityPage() {
               带走一个方法，也留下你的新想法。
             </p>
             <div className="fcm-hero-actions">
-              <a href="#works" className="fcm-button">
+              <a href="#works" className="fo-btn fo-btn-ink">
                 从作品开始
                 <ArrowDown size={17} aria-hidden="true" />
               </a>
@@ -791,7 +803,7 @@ export default function CommunityPage() {
                 <ArrowUpRight size={18} aria-hidden="true" />
               </span>
             </a>
-            <Link href={contactHref()}>
+            <Link href={contactHref('feedback')}>
               <MessageCircle size={23} aria-hidden="true" />
               <h3>告诉我们，试得怎么样</h3>
               <p>你在做什么，哪里顺手，哪里卡住了。具体的感受最有用。</p>
@@ -800,7 +812,7 @@ export default function CommunityPage() {
                 <ArrowUpRight size={18} aria-hidden="true" />
               </span>
             </Link>
-            <Link href={contactHref()}>
+            <Link href={contactHref('creator')}>
               <Plus size={23} aria-hidden="true" />
               <h3>带来你的作品</h3>
               <p>已经做出来的，或刚冒出来的想法，都欢迎和我们聊聊。</p>

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Check } from 'lucide-react';
 import { contact } from '../../../../../content/studio';
 import { useContactForm } from '../../use-contact-form';
-import { Cuts } from '../art';
+import { CoverArt } from '../art';
 import { Phrases, pad } from '../kit';
 import { Footer, HOME, SiteHeader, WORK, useFolioMotion } from '../shared';
 import '../folio.css';
@@ -34,18 +34,8 @@ export default function FolioContactPage() {
               ))}
             </h1>
             <p>{contact.lede}</p>
-            <div className="fc-photo">
-              <Cuts />
-              <div className="fo-frame">
-                <span className="fo-tape fo-tape-a" aria-hidden="true" />
-                <img
-                  src="/images/atelier/threshold.jpg"
-                  width={1440}
-                  height={900}
-                  alt=""
-                  fetchPriority="high"
-                />
-              </div>
+            <div className="fc-art" aria-hidden="true">
+              <CoverArt />
             </div>
           </div>
 

@@ -29,7 +29,9 @@ export const folioStudio = {
     team: { en: 'Team', zh: '团队' },
     essays: { en: 'Essays', zh: '文章' },
   },
-  nav: { essays: '文章', login: '登录' },
+  nav: { essays: '文章', wiki: '百科', login: '登录', account: '我的账号' },
+  /** 产品页封底指向下一件产品 */
+  nextProduct: '接着看',
 
   work: {
     kicker: '现在重点推进',
@@ -88,11 +90,120 @@ export const folioStudio = {
     ],
   },
 
+  /** 登录与账号页左边那页：沿用原登录页的一句英文和一句中文 */
+  auth: {
+    line: ['A space for', 'your curiosity.'],
+    note: '有意思的相遇，从这里开始。',
+  },
+
   /** 结尾两条去处：社区（molis.club）与合作 */
   community: {
     label: '社区 · molis.club',
     title: ['看看我们在做什么，', '和一群人一起试。'],
     action: '去社区看看',
+  },
+};
+
+/** Folio 的百科：条目与艺术家 Skill 的内容在 content/knowledge.ts、content/artists.ts，这里只放页面上的说明文字（沿用旧版百科的文案） */
+export const folioWiki = {
+  kicker: 'Molis Wikipedia · 百科',
+  title: '看懂一种表达，把它变成自己的能力。',
+  lead: '艺术家 Skill、网页与动效、外部组件来源。每一条都可以先试一试，再把方法和 Prompt 带走，在你自己的工具里用。',
+  actions: { artists: '看艺术家 Skill', entries: '试试网页与动效' },
+  counts: {
+    artists: '个艺术家 Skill',
+    techniques: '个网页与动效',
+    resources: '个组件来源',
+  },
+  artists: {
+    kicker: '艺术家 Skill',
+    title: '从一种观看世界的方式，开始创作。',
+    lead: 'Skill 是交给 AI 工具的一套创作方法，包含风格选择、输入要求和检查方式。你带来题材，它帮助组织画面。',
+    more: '探索创作方法',
+    disclosure: '图像来自 Artist-skill 的 AI 创作试样，非艺术家原作。',
+    builder: {
+      text: '把原作观察、研究与成图反馈，变成可复用的创作方法。',
+      more: '了解构建方法',
+    },
+  },
+  entries: {
+    kicker: '网页、动效与组件',
+    title: '看懂一种表达，或带走一份组件来源。',
+    lead: '动效和布局可以直接在卡片上试；组件资源是整理过的外部来源，点进去看用途、边界和 Prompt。',
+    search: '试试「逐段浮现」「toast」或「tabs」',
+    searchLabel: '搜索网页、动效与组件条目',
+    count: '个条目',
+    try: '试一试，带走 Prompt',
+    empty: {
+      title: '还没找到这个条目。',
+      text: '换个说法，或看看已有的动效、布局与组件。',
+      reset: '查看全部条目',
+    },
+  },
+  closing: {
+    title: '从看见，到做到。',
+    text: '每个条目都有用途、边界和参考资料；Prompt 是起点，你的内容与判断决定最终的表达。',
+    ask: '告诉我们你想了解的能力',
+    community: '去社区看看',
+  },
+  entry: {
+    back: '百科',
+    use: { technique: '什么时候使用', resource: '可以重点看什么' },
+    caution: { technique: '留意这些细节', resource: '使用时留意' },
+    source: '参考与整理',
+    editor: 'Molis AI 编辑整理',
+    reduced: 'MDN · 减少动态偏好',
+    related: '接着探索',
+    duration: '动效时长',
+    help: {
+      motion: '拖动时长后点「重播」。系统开启减少动态时，直接展示最终状态。',
+      layout: '用上方的控件，或在示例里滚动，看布局怎样变化。',
+      resource:
+        '这是外部来源，不是本站内置组件。打开官方页面看真实交互，再决定要不要带进项目。',
+    },
+    prompt: {
+      technique: {
+        title: '把这个效果，带回你的项目。',
+        text: '复制后补充页面位置与实际内容，交给你本地的 AI 编程工具。',
+        label: '实现 Prompt',
+      },
+      resource: {
+        title: '把这份参考，带回你的项目。',
+        text: '复制后补充要改进的控件，交给你本地的 AI 编程工具。只引入真正需要的那一个交互。',
+        label: '参考 Prompt',
+      },
+    },
+    open: '打开官方页面',
+  },
+  artist: {
+    method: '它怎样组织创作',
+    download: '下载完整 Skill',
+    package: [
+      '含 Skill 正文与所需参考文件。',
+      '来源：Artist-skill · 本地整理版 2026.09.16',
+    ],
+    sample: 'Artist-skill · AI 创作试样，非艺术家原作。',
+    noImage: {
+      lines: ['Observe.', 'Translate.', 'Create.'],
+      text: '观察，转译，再创造。',
+    },
+    howTitle: '把方法带进自己的创作',
+    steps: [
+      '下载并解压，保留 Skill 文件夹的完整结构。',
+      '将文件夹安装到你的 AI 工具支持的 Skills 目录，确认它已被识别。',
+      '复制调用示例，换成你的题材与要求。制作图片时，需要工具具备图像生成能力。',
+    ],
+    note: '调用示例用于开始新的创作，并非上方试样的原始生成提示。请按所用工具的安装方式操作。',
+    promptLabel: '从这个调用示例开始',
+    copy: '复制调用示例',
+    others: '其他观看方式',
+  },
+  copy: {
+    idle: '无需登录',
+    done: '已复制，可以粘贴到本地工具。',
+    failed: '复制未成功，文本已选中。请按 ⌘C / Ctrl+C 复制。',
+    button: '复制 Prompt',
+    copied: '已复制 Prompt',
   },
 };
 

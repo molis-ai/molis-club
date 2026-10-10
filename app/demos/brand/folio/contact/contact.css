@@ -26,17 +26,22 @@
   line-height: 1.8;
   color: var(--fo-text);
 }
-.fc-photo {
-  --p: 1;
-  position: relative;
-  width: 100%;
-  margin-top: 20px;
-  padding: 8% 10% 10% 6%;
+.fc-art {
+  width: min(100%, 400px);
+  aspect-ratio: 1;
+  justify-self: center;
+  margin-top: 8px;
+  /* 与账号页共用封面剪纸；裁齐海浪，保留纸片上沿。 */
+  clip-path: inset(-20% 0 0 0 round 0 0 24px 24px);
 }
-.fc-photo .fo-frame {
-  position: relative;
-  z-index: 1;
-  rotate: -2.5deg;
+.fc-art .fo-cut {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+.fc-art .fo-cover-line {
+  stroke-dashoffset: 0;
+  animation: none;
 }
 
 /* 表格：一张白纸，角上一条胶带 */
@@ -249,8 +254,9 @@
   .fc-contact {
     grid-template-columns: 1fr;
   }
-  .fc-photo {
-    max-width: 560px;
+  /* 单栏时先让人填写，装饰插画不占据一整屏。 */
+  .fc-art {
+    display: none;
   }
 }
 @media (max-width: 560px) {

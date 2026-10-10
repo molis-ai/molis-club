@@ -12,7 +12,14 @@ import {
   worldsIntro,
 } from '../../../../../content/molis-story';
 import { Star } from '../art';
-import { Closing, ProductHero, SectionHead, Tag, pad } from '../kit';
+import {
+  Closing,
+  NextProduct,
+  ProductHero,
+  SectionHead,
+  Tag,
+  pad,
+} from '../kit';
 import {
   Footer,
   HOME,
@@ -264,6 +271,7 @@ export default function FolioStoryPage() {
             { label: closing.home, href: HOME, tone: 'light' },
           ]}
         />
+        <NextProduct current="story" />
       </Footer>
     </div>
   );

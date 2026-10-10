@@ -1,0 +1,31 @@
+/* Folio · 404：一行刊头大字，下面一句话和两个去处。前缀 fm- */
+.fm-missing {
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  gap: 22px;
+  min-height: 100svh;
+  padding: calc(var(--fo-head) + 40px) var(--fo-gutter) 80px;
+}
+.fo-hero-mast.fm-mast {
+  position: static;
+  z-index: auto;
+  font-size: clamp(140px, 26vw, 420px);
+  color: var(--fo-ink);
+  transform: none;
+}
+.fo-site .fm-mast span:nth-child(2) {
+  color: var(--fo-red);
+}
+.fm-missing h1 {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(34px, 4.4vw, 72px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.fm-missing > p {
+  font-size: clamp(16px, 1.3vw, 19px);
+  line-height: 1.8;
+  color: var(--fo-text);
+}

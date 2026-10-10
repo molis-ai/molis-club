@@ -11,6 +11,7 @@ import {
   type LineId,
 } from '../../../../content/studio';
 import { folioStudio } from '../../../../content/folio';
+import { authClient } from '../../../../lib/auth-client';
 
 // Folio 各页共用：路由、顶栏（含「产品」菜单）、页尾封底和页面动效。文案来自 content/studio.ts 与 content/folio.ts。
 
@@ -26,8 +27,12 @@ export const SOLUTIONS = `${HOME}/solutions`;
 export const COMMUNITY = '/demos/community';
 export const ESSAYS = `${HOME}/essays`;
 export const ABOUT = `${HOME}/about`;
-export const LOGIN = '/login';
+export const LOGIN = `${HOME}/login`;
+export const ACCOUNT = `${HOME}/account`;
 export const essayHref = (slug: string) => `${HOME}/essays/${slug}`;
+export const WIKI = `${HOME}/wiki`;
+export const wikiHref = (slug: string) => `${WIKI}/${slug}`;
+export const artistHref = (slug: string) => `${WIKI}/artists/${slug}`;
 
 /** 产品的顺序：首页、顶栏下拉、页尾和产品页「接着看」都按这一个顺序 */
 export const lineIds: LineId[] = ['work', 'tool', 'life', 'story'];
@@ -118,11 +123,25 @@ function ProductsMenu({ current }: { current?: LineId }) {
   );
 }
 
+/** 顶栏右边：没登录时是「登录」，登录后是「我的账号」，都留在 Folio 里 */
+function AccountLink({ current }: { current: boolean }) {
+  const { data } = authClient.useSession();
+  return (
+    <Link
+      href={data ? ACCOUNT : LOGIN}
+      className="fo-nav-login"
+      aria-current={current ? 'page' : undefined}
+    >
+      {data ? folioStudio.nav.account : folioStudio.nav.login}
+    </Link>
+  );
+}
+
 /** 所有 Folio 页面共用的顶栏：产品 · 解决方案 · 文章 · 社区 · 关于，右边登录和聊一聊 */
 export function SiteHeader({
   current,
 }: {
-  current?: LineId | 'solutions' | 'essays' | 'about';
+  current?: LineId | 'solutions' | 'essays' | 'about' | 'account';
 }) {
   const product = lineIds.find((id) => id === current);
   return (
@@ -154,9 +173,7 @@ export function SiteHeader({
         </Link>
       </nav>
       <div className="fo-header-end">
-        <Link href={LOGIN} className="fo-nav-login">
-          {folioStudio.nav.login}
-        </Link>
+        <AccountLink current={current === 'account'} />
         <Link href={CONTACT} className="fo-nav-cta">
           {navLabels.contact}
         </Link>
@@ -216,6 +233,9 @@ export function Footer({
                 </li>
                 <li>
                   <Link href={ESSAYS}>{folioStudio.nav.essays}</Link>
+                </li>
+                <li>
+                  <Link href={WIKI}>{folioStudio.nav.wiki}</Link>
                 </li>
                 <li>
                   <Link href={COMMUNITY}>{footer.studio.community}</Link>

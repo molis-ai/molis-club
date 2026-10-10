@@ -40,15 +40,17 @@ export function useContactForm() {
           consent: data.get('consent') === 'on',
         }),
       });
-      const result = (await response.json()) as { error?: string };
-      if (!response.ok) throw new Error(result.error);
+      const result = (await response.json().catch(() => null)) as {
+        error?: string;
+        status?: string;
+      } | null;
+      if (!response.ok || result?.status !== 'received') {
+        setError(result?.error || contact.errorFallback);
+        return;
+      }
       setDone(true);
-    } catch (caught) {
-      setError(
-        caught instanceof Error && caught.message
-          ? caught.message
-          : contact.errorFallback,
-      );
+    } catch {
+      setError(contact.errorFallback);
     } finally {
       setBusy(false);
     }

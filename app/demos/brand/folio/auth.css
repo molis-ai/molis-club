@@ -1,0 +1,333 @@
+/* Folio · 登录与账号：左边一页封面剪纸和一句话，右边一张贴上去的白纸，表单和联系页同一套样子。前缀 fa- */
+
+.fa-auth {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 90px);
+  min-height: 100svh;
+  padding: calc(var(--fo-head) + clamp(32px, 5vw, 72px)) var(--fo-gutter)
+    clamp(60px, 8vw, 120px);
+}
+.fa-scene {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+}
+.fa-art {
+  width: min(100%, 500px);
+  aspect-ratio: 1;
+  /* 封面的海浪比画框宽，首屏靠封面裁掉；这里按画框裁齐两边和底部，星星仍可探出顶上 */
+  clip-path: inset(-40% 0 0 0 round 0 0 28px 28px);
+}
+.fa-scene p {
+  font-family: var(--fo-display);
+  font-weight: 400;
+  font-size: clamp(40px, 4.6vw, 80px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+.fa-scene em {
+  display: block;
+  font-style: italic;
+  color: var(--fo-red);
+}
+.fa-scene span {
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--fo-text);
+}
+
+/* 白纸：角上一条胶带，微微歪着贴上去 */
+.fa-panel {
+  position: relative;
+  padding: clamp(28px, 3.6vw, 52px);
+  border-radius: 28px;
+  background: var(--fo-white);
+  box-shadow: 0 40px 80px -40px rgb(40 24 10 / 0.5);
+  rotate: 0.8deg;
+}
+.fa-panel::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  right: 18%;
+  width: 110px;
+  height: 30px;
+  background: rgb(246 196 69 / 0.75);
+  rotate: 6deg;
+}
+
+/* ---------- 登录表单：沿用 LoginForm 的结构，换成 Folio 的字和线 ---------- */
+.fa-panel .auth-panel {
+  padding: 0;
+}
+.fa-panel h1 {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(32px, 3vw, 48px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.fa-panel .auth-heading > p,
+.fa-panel .auth-panel > div > p,
+.fa-account > h1 + p {
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--fo-text);
+}
+.fa-panel .social-buttons {
+  margin-top: 28px;
+}
+.fa-panel .social-buttons button {
+  min-height: 48px;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 2px var(--fo-ink);
+  background: var(--fo-white);
+  color: var(--fo-ink);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.fa-panel .social-buttons button:hover:not(:disabled) {
+  background: var(--fo-yellow);
+}
+.fa-panel .auth-divider {
+  margin: 28px 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--fo-red);
+}
+.fa-panel .auth-divider::before,
+.fa-panel .auth-divider::after {
+  background: var(--fo-line);
+}
+.fa-panel .field {
+  gap: 8px;
+  margin: 0 0 24px;
+}
+.fa-panel .field > span {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.fa-panel .field input {
+  min-height: 0;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 2px solid var(--fo-ink);
+  border-radius: 0;
+  background: transparent;
+  color: var(--fo-ink);
+  font: inherit;
+  font-size: 17px;
+  transition: border-color 0.25s;
+}
+.fo-site .fa-panel .field input:is(:focus, :focus-visible) {
+  outline: none;
+  border-color: var(--fo-red);
+}
+.fa-panel .field input::placeholder {
+  color: var(--fo-muted);
+  opacity: 0.8;
+}
+.fa-panel .consent {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  margin: 0 0 24px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--fo-text);
+}
+.fa-panel .consent input {
+  width: 20px;
+  height: 20px;
+  margin: 3px 0 0;
+  accent-color: var(--fo-red);
+}
+.fa-panel .consent a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.fo-site .fa-panel .button.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.3s,
+    transform 0.4s var(--fo-ease);
+}
+.fo-site .fa-panel .button.primary:hover:not(:disabled) {
+  background: var(--fo-red);
+  transform: translateY(-2px) rotate(-1deg);
+}
+.fo-site .fa-panel .button.primary:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.fa-panel .auth-panel > div > .button {
+  margin-top: 24px;
+}
+.fa-panel .button.wide {
+  width: 100%;
+  justify-content: center;
+}
+.fa-panel .feedback {
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.fa-panel .error {
+  color: var(--fo-red);
+}
+.fa-panel .auth-switch {
+  margin-top: 6px;
+  font-size: 15px;
+  color: var(--fo-text);
+}
+.fa-panel .auth-switch button {
+  padding: 4px 6px;
+  border: 0;
+  background: none;
+  color: var(--fo-ink);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--fo-red);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+  cursor: pointer;
+}
+.fa-panel .form-caption {
+  margin: 14px 0 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--fo-muted);
+}
+
+/* ---------- 账号：问候、邮箱签、两个去处，修改密码收起来 ---------- */
+.fa-account {
+  display: grid;
+  gap: 18px;
+}
+.fa-account > h1 + p {
+  margin-top: 0;
+}
+.fa-email {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+}
+.fa-email span {
+  padding: 3px 12px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1.5px currentColor;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+.fa-note {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--fo-muted);
+}
+.fa-account .fo-actions {
+  margin-top: 8px;
+}
+.fo-site .fa-panel button.fo-btn {
+  border: 0;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fo-site .fa-panel button.fo-btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.fa-password {
+  margin-top: 10px;
+  padding-top: 18px;
+  border-top: 1px solid var(--fo-line);
+}
+.fa-password summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: 22px;
+  list-style: none;
+  cursor: pointer;
+}
+.fa-password summary::-webkit-details-marker {
+  display: none;
+}
+.fa-password summary::after {
+  content: '+';
+  font-family: var(--fo-display);
+  font-size: 30px;
+  line-height: 1;
+  color: var(--fo-red);
+  transition: rotate 0.3s var(--fo-ease);
+}
+.fa-password[open] summary::after {
+  rotate: 45deg;
+}
+.fa-password > p {
+  margin: 10px 0 22px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--fo-text);
+}
+.fa-success {
+  display: block;
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fo-navy);
+}
+.fa-error {
+  min-height: 1px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fo-red);
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+  .fa-auth {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  /* 窄屏先给表单，剪纸和那句话放到下面 */
+  .fa-panel {
+    order: -1;
+  }
+  .fa-art {
+    width: min(64%, 320px);
+  }
+  .fa-panel {
+    rotate: 0deg;
+  }
+}
