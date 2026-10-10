@@ -1,8 +1,8 @@
-import { team } from '../../../../../content/studio';
+import { folioTeam } from '../../../../../content/folio-team';
 
 export const metadata = {
-  title: { absolute: '关于我们 · Molis AI' },
-  description: team.text,
+  title: { absolute: '团队 · Molis AI' },
+  description: folioTeam.intro,
 };
 
 export default function AboutLayout({

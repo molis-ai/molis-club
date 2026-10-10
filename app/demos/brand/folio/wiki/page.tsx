@@ -241,6 +241,11 @@ export default function FolioWiki() {
     <div className="fo-site" ref={rootRef}>
       <SiteHeader />
       <main id="main">
+        <div className="fw-community-context">
+          <Link href={COMMUNITY}>社区</Link>
+          <span aria-hidden="true">/</span>
+          <span>百科 · 把试出来的方法留下来</span>
+        </div>
         <ProductHero
           id="fw-title"
           kicker={folioWiki.kicker}

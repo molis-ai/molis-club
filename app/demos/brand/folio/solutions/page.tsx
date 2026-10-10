@@ -1,21 +1,19 @@
 'use client';
-import { ArrowRight, Check, Layers } from 'lucide-react';
-import { folioSolutions as content } from '../../../../../content/folio';
+import Link from 'next/link';
+import { ArrowUpRight, Check } from 'lucide-react';
+import { folioCooperation as content } from '../../../../../content/folio-cooperation';
 import { Actions, Closing, SectionHead, pad } from '../kit';
 import {
+  ABOUT,
   Footer,
   SiteHeader,
   WORK,
   contactHref,
   useFolioMotion,
-  type Vars,
 } from '../shared';
 import '../folio.css';
 import '../kit.css';
 import './solutions.css';
-
-// 解决方案：交接文档定的顺序——合作如何开始 → 三个场景 → 你最想改善的是哪一段工作。
-// 版式用 Folio 的语言：三步是一排略歪的色纸卡；三个场景是三张整幅色纸，左边问题、右边做法与留下的东西。
 
 export default function FolioSolutionsPage() {
   const ref = useFolioMotion();
@@ -30,163 +28,174 @@ export default function FolioSolutionsPage() {
         >
           <div className="fs-shell">
             <header className="fs-intro">
-              <div data-reveal>
-                <span className="fo-kicker">合作如何开始</span>
+              <div>
+                <span className="fo-kicker">和 Molis 一起做</span>
                 <h1 id="fs-title">
-                  <span className="fo-phrase">把 AI 用进</span>
-                  <span className="fo-phrase">一段具体业务。</span>
+                  {content.title.map((line) => (
+                    <span className="fo-phrase" key={line}>
+                      {line}
+                    </span>
+                  ))}
                 </h1>
-              </div>
-              <div
-                className="fs-intro-side"
-                data-reveal
-                style={{ '--i': 1 } as Vars}
-              >
-                <p className="fs-intro-highlight">
-                  先把一段工作跑通，再决定下一步。
-                </p>
-                <p>{content.lead}</p>
+                <p className="fs-lead">{content.lead}</p>
                 <Actions
-                  items={[{ label: '看看可以一起做什么', href: '#directions' }]}
+                  items={[
+                    {
+                      label: '聊聊你的业务问题',
+                      href: contactHref('enterprise'),
+                    },
+                    {
+                      label: '看看我们怎么做',
+                      href: '#directions',
+                      tone: 'ghost',
+                    },
+                  ]}
                 />
               </div>
+              <div
+                className="fs-handoff-art"
+                aria-label="合作方式示意：从业务问题到可运行流程，再由团队接手"
+              >
+                <span className="fo-tape fo-tape-a" aria-hidden="true" />
+                <p className="fs-art-caption">一件真实的工作</p>
+                <div className="fs-art-question">
+                  <small>一起说清楚</small>
+                  <strong>
+                    要什么？
+                    <br />
+                    怎样才算做好？
+                  </strong>
+                </div>
+                <div className="fs-art-flow">
+                  <span>业务经验</span>
+                  <b>＋</b>
+                  <span>Agent 执行</span>
+                </div>
+                <div className="fs-art-receipt">
+                  <Check size={22} aria-hidden="true" />
+                  <div>
+                    <strong>团队亲手跑通、亲自验收</strong>
+                    <p>留下流程、材料与使用方法</p>
+                  </div>
+                </div>
+                <p className="fs-art-note">交付之后，还能继续往前。</p>
+              </div>
             </header>
-            <ol className="fo-cards fs-steps" aria-label="合作的三个步骤">
-              {content.stages.map((stage, index) => (
-                <li
-                  key={stage.title}
-                  data-reveal
-                  style={{ '--i': index } as Vars}
-                >
-                  <span className="fo-index" aria-hidden="true">
-                    {pad(index)}
-                  </span>
-                  <h2>{stage.title}</h2>
-                  <p>{stage.text}</p>
-                  <p className="fs-step-result">
-                    <small>留下</small>
-                    {stage.result}
-                  </p>
-                </li>
-              ))}
-            </ol>
           </div>
         </section>
         <section
           id="directions"
-          className="fo-section fs-scenarios"
+          className="fo-section"
           data-bg="white"
           aria-labelledby="fs-directions-title"
         >
           <div className="fs-shell">
             <SectionHead
               id="fs-directions-title"
-              kicker="可以一起做什么"
-              title="从这三个场景开始。"
-              lead="带着真实的资料、现有的工具和一个明确目标，选一段值得改进的工作，一起验证。"
+              kicker="我们能一起做的事"
+              title="从业务问题，到团队自己的能力。"
+              lead="我们采用贴近业务现场的共建方式（FDE）。和实际使用的人一起，把目标、材料、执行和检查，一步步接起来。"
               layout="split"
             />
-            <div className="fs-scenario-list">
-              {content.directions.map((direction, index) => (
+            <div className="fs-services">
+              {content.services.map((service, index) => (
                 <article
-                  key={direction.id}
-                  className={'fs-scenario fs-scenario-' + direction.id}
-                  aria-labelledby={'fs-' + direction.id + '-title'}
-                  data-reveal
+                  key={service.id}
+                  className={`fs-service fs-service-${service.tone}`}
+                  aria-labelledby={`fs-${service.id}-title`}
                 >
-                  <div className="fs-card-heading">
-                    <p className="fs-card-label">
-                      <span className="fo-index" aria-hidden="true">
-                        {pad(index)}
-                      </span>
-                      {direction.name}
-                    </p>
-                    <h3 id={'fs-' + direction.id + '-title'}>
-                      {direction.headline.map((line) => (
-                        <span className="fo-phrase" key={line}>
-                          {line}
-                        </span>
-                      ))}
-                    </h3>
-                    <p className="fs-card-problem">
-                      <small>现在卡在</small>
-                      {direction.problem}
-                    </p>
-                    <div className="fs-card-boundary">
-                      <span className="fs-direction-status">
-                        {direction.status}
-                      </span>
-                      <p>{direction.boundary}</p>
-                    </div>
+                  <span className="fo-index" aria-hidden="true">
+                    {pad(index)}
+                  </span>
+                  <div className="fs-service-heading">
+                    <h3 id={`fs-${service.id}-title`}>{service.title}</h3>
+                    <p>{service.situation}</p>
                   </div>
-                  <div className="fs-card-body">
-                    <div className="fs-process">
-                      <h4>我们一起做</h4>
-                      <ol>
-                        {direction.process.map((step, at) => (
-                          <li key={step}>
-                            {step}
-                            {at < direction.process.length - 1 ? (
-                              <ArrowRight size={16} aria-hidden="true" />
-                            ) : null}
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                    <div className="fs-outcomes">
-                      <h4>这段工作留下</h4>
-                      <ul>
-                        {direction.outcomes.map((outcome) => (
-                          <li key={outcome}>
-                            <Check size={20} aria-hidden="true" />
-                            {outcome}
-                          </li>
-                        ))}
-                      </ul>
+                  <div className="fs-service-body">
+                    <p>{service.action}</p>
+                    <div className="fs-service-result">
+                      <small>一起做到</small>
+                      <p>{service.result}</p>
                     </div>
                   </div>
                 </article>
               ))}
             </div>
-            <aside
-              className="fs-work-note"
-              aria-labelledby="fs-work-title"
-              data-reveal
-            >
-              <div className="fs-work-heading">
-                <Layers size={26} aria-hidden="true" />
-                <h3 id="fs-work-title">用 Molis Work 把这段工作接起来。</h3>
-              </div>
-              <div className="fs-work-content">
-                <p className="fs-work-capabilities">
-                  组织资料与目标 · 连接已有工具 · 关键判断由人确认
-                </p>
-                <p>
-                  当前首先服务个人与小团队里的牵头人。团队空间、多设备同步仍在规划，具体业务接入范围在验证前共同确认。
-                </p>
-              </div>
-              <Actions
-                items={[
-                  { label: '了解 Molis Work', href: WORK, tone: 'light' },
-                ]}
-              />
+          </div>
+        </section>
+        <section
+          className="fo-section"
+          data-bg="paper"
+          aria-labelledby="fs-start-title"
+        >
+          <div className="fs-shell">
+            <SectionHead
+              id="fs-start-title"
+              kicker="从你手边的一件事开始"
+              title="先挑一个结果能检查的问题。"
+              lead="可以从这些任务类型开始讨论，再用你们的实际材料确认范围。"
+            />
+            <div className="fs-starting-points">
+              {content.startingPoints.map((item) => (
+                <article key={item.title}>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </article>
+              ))}
+            </div>
+            <aside className="fs-principle">
+              <strong>执行交给 Agent，关键判断留给人。</strong>
+              <p>
+                付款、发布、报价、权限与重要业务决定，由你们确认。我们一起约定可执行的范围、检查的方法，以及出错时谁来接手。
+              </p>
             </aside>
+            <div className="fs-product-note">
+              <p>
+                从现有工具和业务流程出发，选择合适的实现方式。我们也在把人与
+                Agent 共事的方法做进 Molis Work。
+              </p>
+              <Link href={WORK}>
+                看看我们的工作台 <ArrowUpRight size={18} aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+        </section>
+        <section
+          className="fo-section fs-begin"
+          data-bg="yellow"
+          aria-labelledby="fs-begin-title"
+        >
+          <div className="fs-shell">
+            <SectionHead
+              id="fs-begin-title"
+              kicker="合作如何开始"
+              title="合作，从一次具体的交谈开始。"
+            />
+            <ol className="fs-steps">
+              {content.stages.map((stage, index) => (
+                <li key={stage.title}>
+                  <span className="fo-index" aria-hidden="true">
+                    {pad(index)}
+                  </span>
+                  <h3>{stage.title}</h3>
+                  <p>{stage.text}</p>
+                </li>
+              ))}
+            </ol>
           </div>
         </section>
       </main>
       <Footer>
         <Closing
           id="fs-closing-title"
-          title={['你最想改善的，', '是哪一段工作？']}
+          title={['你们的下一段工作，', '我们一起看看。']}
           actions={[
             { label: '聊聊企业合作', href: contactHref('enterprise') },
-            { label: '先了解 Molis Work', href: WORK, tone: 'light' },
+            { label: '认识团队', href: ABOUT, tone: 'light' },
           ]}
         >
           <p className="fs-contact-hint">
-            告诉我们现在怎么做、卡在哪里、希望得到什么结果。
-            <br />
-            一个具体问题，就足够开始。
+            带上现在的做法、遇到的困难，或者一份还不够满意的结果。
           </p>
         </Closing>
       </Footer>

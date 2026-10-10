@@ -82,11 +82,29 @@ try {
     'PASS: original cover animation, A/I phrase cycle, three product sheets; team and essays no longer appear on the home page.',
   );
 
-  await page.locator('.fo-nav a', { hasText: '关于' }).click();
+  await page.locator('.fo-nav a', { hasText: '团队' }).click();
   await page.waitForURL(folio + '/about');
   assert.match(await page.locator('h1').innerText(), /Team/);
   const members = page.locator('.fo-person');
-  assert.equal(await members.count(), 4);
+  assert.equal(await members.count(), 9);
+  assert.deepEqual(await members.locator('.ftm-person-name').allInnerTexts(), [
+    '王一骏',
+    '赵壮实',
+    '尹凯',
+    '杨鹏飞',
+    '庄昊哲',
+    '徐晶',
+    '谢俊',
+    '隋欣怡',
+    '靳曲',
+  ]);
+  for (const name of ['尹凯', '杨鹏飞', '徐晶']) {
+    const member = members.filter({
+      has: page.getByRole('heading', { name, exact: true }),
+    });
+    assert.equal(await member.locator('.ftm-bio-placeholder').count(), 1);
+    assert.equal(await member.locator('.fo-person-note').count(), 0);
+  }
   assert.match(await members.first().innerText(), /系统架构、产品与技术管理/);
   assert.match(await members.nth(1).innerText(), /AI 数据产品与复杂业务设计/);
   await members.first().scrollIntoViewIfNeeded();
@@ -106,6 +124,12 @@ try {
   assert.equal(await photo.getAttribute('aria-expanded'), 'true');
   await page.keyboard.press('Escape');
   assert.equal(await photo.getAttribute('aria-expanded'), 'false');
+  await page.waitForTimeout(650);
+  assert.equal(
+    await note.evaluate((el) => getComputedStyle(el).visibility),
+    'hidden',
+  );
+  await page.locator('.fo-nav a').first().focus();
   await photo.focus();
   await page.waitForTimeout(650);
   assert.equal(
@@ -306,8 +330,8 @@ try {
   assert.match(await page.locator('main').innerText(), /到处有 AI/);
   await visit('/solutions');
   assert.equal(await page.locator('.fd-player').count(), 0);
-  assert.equal(await page.locator('.fs-scenario').count(), 3);
-  assert.equal(await page.locator('.fs-process').count(), 3);
+  assert.equal(await page.locator('.fs-service').count(), 4);
+  assert.equal(await page.locator('.fs-service-result').count(), 4);
   const sectionOrder = await page
     .locator('#cooperation, #directions, #fs-closing-title')
     .evaluateAll((nodes) => nodes.map((node) => node.id));
@@ -317,7 +341,7 @@ try {
     'fs-closing-title',
   ]);
   console.log(
-    'PASS: Work hero, workflow strip, three scene demos and feature groups; solution cards with process and section order.',
+    'PASS: Work hero, workflow strip, three scene demos and feature groups; business cooperation services, outcomes and section order.',
   );
 
   for (const width of [1440, 1024, 768, 390, 360]) {

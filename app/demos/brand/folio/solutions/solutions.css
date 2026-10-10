@@ -1,324 +1,290 @@
-/* Folio · 解决方案：合作如何开始 → 三个场景 → 你最想改善的是哪一段工作。前缀 fs-
-   三步是一排略歪的色纸卡（kit 的 .fo-cards）；三个场景是整幅色纸，左边问题、右边做法与留下的东西。 */
-
+/* 业务共建：沿用 Folio 的色纸、场景画面和阅读尺度。 */
 .fs-shell {
   max-width: 1440px;
   margin: 0 auto;
 }
-
-/* ---------- 合作如何开始 ---------- */
 .fs-cooperation {
-  padding: calc(var(--fo-head) + clamp(48px, 7vw, 110px)) var(--fo-gutter)
-    clamp(110px, 12vw, 170px);
+  padding: calc(var(--fo-head) + clamp(60px, 7vw, 110px)) var(--fo-gutter)
+    clamp(90px, 10vw, 150px);
 }
 .fs-intro {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  align-items: end;
-  gap: 28px var(--fo-gutter);
-}
-.fs-intro > div:first-child {
-  display: grid;
-  justify-items: start;
-  gap: 22px;
+  grid-template-columns: 1.2fr 1fr;
+  gap: clamp(40px, 6vw, 90px);
+  align-items: center;
 }
 .fs-intro h1 {
-  font-family: var(--fo-serif);
-  font-weight: 900;
-  font-size: clamp(44px, 6vw, 104px);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  margin-top: 26px;
+  font: 900 clamp(40px, 4.6vw, 76px) / 1.25 var(--fo-serif);
+  letter-spacing: -0.025em;
 }
 .fs-intro h1 .fo-phrase {
   display: block;
 }
-.fs-intro-side {
-  display: grid;
-  justify-items: start;
-  gap: 18px;
-}
-.fs-intro-side > p {
-  max-width: 30em;
-  font-size: 17px;
-  line-height: 1.85;
+.fs-lead {
+  margin: 28px 0 30px !important;
+  max-width: 32em;
+  font-size: 18px;
+  line-height: 1.9;
   color: var(--fo-text);
 }
-.fs-intro-side .fs-intro-highlight {
-  font-family: var(--fo-serif);
-  font-weight: 900;
-  font-size: clamp(22px, 2vw, 30px);
-  line-height: 1.4;
-  color: var(--fo-ink);
-}
-.fs-intro-side .fo-actions {
-  margin-top: 6px;
-}
-
-/* 三步：白、黄、粉三张色纸，大号斜体编号，底下贴一枚「留下」纸签 */
-.fs-steps {
-  margin-top: clamp(56px, 7vw, 96px);
-}
-.fs-steps h2 {
-  font-family: var(--fo-serif);
-  font-weight: 900;
-  font-size: clamp(24px, 2.2vw, 32px);
-  line-height: 1.3;
-}
-.fs-steps > li > p:not(.fs-step-result) {
-  font-size: 16px;
-  line-height: 1.8;
-}
-.fs-site .fs-step-result {
-  display: grid;
-  gap: 4px;
-  margin-top: 10px;
-  padding: 14px 16px;
-  border-radius: 16px;
-  background: rgb(255 252 246 / 0.7);
-  font-family: var(--fo-serif);
-  font-weight: 900;
-  font-size: 17px;
-  line-height: 1.5;
-}
-.fs-steps > li:first-child .fs-step-result {
-  background: var(--fo-paper);
-}
-.fs-step-result small {
-  font-family: var(--fo-sans);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--fo-red);
-}
-
-/* ---------- 三个场景：整幅色纸，一张一张压下来 ---------- */
-.fs-scenarios .fo-head h2 {
-  max-width: 12em;
-}
-.fs-scenarios .fo-head + .fs-scenario-list {
-  margin-top: clamp(48px, 6vw, 84px);
-}
-.fs-scenario-list {
-  display: grid;
-  gap: clamp(20px, 2.4vw, 32px);
-}
-.fs-scenario {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-  gap: clamp(28px, 4vw, 72px);
-  padding: clamp(28px, 4vw, 60px);
-  border-radius: 32px;
-  background: var(--fo-pink);
-  box-shadow: var(--fo-shadow);
-}
-.fs-scenario-software {
-  background: var(--fo-yellow);
-}
-.fs-scenario-data {
-  background: var(--fo-sage);
-}
-.fs-scenario.is-in:nth-child(odd) {
-  rotate: -0.5deg;
-}
-.fs-scenario.is-in:nth-child(even) {
-  rotate: 0.4deg;
-}
-/* 左栏：编号、标题、现在卡在哪；成熟度和边界沉到底部，和右栏一样高 */
-.fs-card-heading {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 22px;
-}
-.fs-card-heading .fs-card-boundary {
-  margin-top: auto;
-  padding-top: 18px;
-  border-top: 2px solid var(--fo-ink);
-}
-.fs-site .fs-card-label {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-.fs-card-label .fo-index {
-  font-size: clamp(48px, 4.4vw, 72px);
-  color: var(--fo-ink);
-}
-.fs-scenario h3 {
-  font-family: var(--fo-serif);
-  font-weight: 900;
-  font-size: clamp(32px, 3.6vw, 56px);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-}
-.fs-scenario h3 .fo-phrase {
-  display: block;
-}
-.fs-site .fs-card-problem {
-  display: grid;
-  gap: 6px;
-  max-width: 26em;
-  font-size: 17px;
-  line-height: 1.8;
-}
-.fs-card-problem small,
-.fs-card-body h4 {
-  font-family: var(--fo-sans);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-}
-.fs-card-body {
-  display: grid;
-  align-content: start;
-  gap: 28px;
-  padding: clamp(22px, 2.6vw, 34px);
-  border-radius: 24px;
+.fs-handoff-art {
+  position: relative;
+  padding: clamp(26px, 3vw, 44px);
+  border-radius: 26px;
   background: var(--fo-white);
+  box-shadow: var(--fo-shadow);
+  transform: rotate(2deg);
 }
-.fs-card-body h4 {
-  margin-bottom: 12px;
-  color: var(--fo-red);
+.fs-handoff-art::before {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: -28px;
+  right: -20px;
+  background: var(--fo-red);
+  border-radius: 50%;
+  z-index: -1;
 }
-
-/* 我们一起做：四枚纸签，箭头接着 */
-.fs-process ol {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 8px;
-}
-.fs-process li {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1.5px var(--fo-ink);
-  font-size: 15px;
-  font-weight: 600;
-}
-.fs-process li svg {
-  margin-right: -4px;
-  color: var(--fo-red);
-}
-
-/* 这段工作留下：三条结果，字放大 */
-.fs-outcomes ul {
-  border-top: 2px solid var(--fo-ink);
-}
-.fs-outcomes li {
-  display: grid;
-  grid-template-columns: 26px minmax(0, 1fr);
-  align-items: baseline;
-  padding: 12px 0;
+.fs-art-caption {
+  padding-bottom: 18px;
   border-bottom: 1px solid var(--fo-line);
-  font-family: var(--fo-serif);
-  font-weight: 900;
-  font-size: clamp(17px, 1.4vw, 20px);
-  line-height: 1.5;
+  font-weight: 600;
+  font-size: 14px;
 }
-.fs-outcomes svg {
-  align-self: center;
-  color: var(--fo-red);
+.fs-art-question {
+  padding: 26px 0;
 }
-
-/* 成熟度：一枚墨色纸签，边界说明紧跟着 */
-.fs-card-boundary {
-  display: grid;
-  justify-items: start;
-  gap: 10px;
-}
-.fs-direction-status {
-  padding: 5px 12px;
-  border-radius: 999px;
-  background: var(--fo-ink);
-  color: var(--fo-white);
+.fs-art-question small,
+.fs-service-result small {
+  display: block;
+  margin-bottom: 12px;
   font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  color: var(--fo-muted);
 }
-.fs-card-boundary p {
-  max-width: 30em;
-  font-size: 15px;
-  line-height: 1.75;
+.fs-art-question strong {
+  font: 900 clamp(26px, 2.8vw, 40px) / 1.5 var(--fo-serif);
 }
-
-/* ---------- 用 Molis Work 把这段工作接起来 ---------- */
-.fs-work-note {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 18px 32px;
+.fs-art-flow {
+  display: flex;
   align-items: center;
-  margin-top: clamp(32px, 4vw, 56px);
-  padding: clamp(28px, 3.4vw, 48px);
-  border-radius: 32px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px;
+  background: var(--fo-yellow);
+  border-radius: 12px;
+  font-size: clamp(13px, 1.3vw, 18px);
+}
+.fs-art-flow b {
+  font-weight: 400;
+}
+.fs-art-receipt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px -14px 0;
+  padding: 22px;
+  border-radius: 16px;
   background: var(--fo-navy);
   color: var(--fo-white);
+  transform: rotate(-3deg);
 }
-.fs-work-heading {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.fs-work-heading svg {
+.fs-art-receipt svg {
   flex-shrink: 0;
   color: var(--fo-yellow);
 }
-.fs-work-heading h3 {
-  font-family: var(--fo-serif);
-  font-weight: 900;
-  font-size: clamp(24px, 2.4vw, 36px);
-  line-height: 1.3;
+.fs-art-receipt strong {
+  font-size: 15px;
 }
-.fs-work-content {
-  grid-row: 2;
-  max-width: 62em;
+.fs-art-receipt p {
+  margin-top: 6px;
+  font-size: 13px;
+  opacity: 0.8;
 }
-.fs-work-content p {
+.fs-art-note {
+  padding-top: 24px;
+  font-size: 13px;
+  color: var(--fo-muted);
+}
+.fs-services {
+  display: grid;
+  gap: 24px;
+  margin-top: 54px;
+}
+.fs-service {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr;
+  gap: 24px 36px;
+  padding: clamp(28px, 3.8vw, 56px);
+  border-radius: 26px;
+  background: var(--fo-paper);
+}
+.fs-service-pink {
+  background: var(--fo-pink);
+}
+.fs-service-sage {
+  background: var(--fo-sage);
+}
+.fs-service-yellow {
+  background: var(--fo-yellow);
+}
+.fs-service .fo-index {
+  color: var(--fo-ink);
+  font-size: 48px;
+}
+.fs-service h3 {
+  max-width: 11em;
+  font: 900 clamp(28px, 2.8vw, 42px) / 1.4 var(--fo-serif);
+}
+.fs-service-heading > p {
+  margin-top: 22px;
   font-size: 16px;
-  line-height: 1.85;
-  color: rgb(255 252 246 / 0.78);
+  line-height: 1.9;
+  color: var(--fo-text);
 }
-.fs-work-content .fs-work-capabilities {
-  margin-bottom: 10px;
-  font-size: 17px;
+.fs-service-body > p {
+  font-size: 16px;
+  line-height: 1.9;
+}
+.fs-service-result {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid rgb(18 24 38 / 0.3);
+}
+.fs-service-result small {
+  color: var(--fo-ink);
+}
+.fs-service-result p {
+  font: 600 18px / 1.8 var(--fo-serif);
+}
+.fs-starting-points {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 36px;
+  margin: 42px 0 56px;
+}
+.fs-starting-points article {
+  padding-top: 26px;
+  border-top: 2px solid var(--fo-ink);
+}
+.fs-starting-points h3,
+.fs-steps h3 {
+  font: 900 25px / 1.5 var(--fo-serif);
+}
+.fs-starting-points p,
+.fs-steps p {
+  margin-top: 18px;
+  color: var(--fo-text);
+  font-size: 16px;
+  line-height: 1.9;
+}
+.fs-principle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  padding: 34px;
+  background: var(--fo-navy);
   color: var(--fo-white);
+  border-radius: 20px;
 }
-.fs-work-note > .fo-actions {
-  grid-column: 2;
-  grid-row: 1 / 3;
+.fs-principle strong {
+  font: 900 28px / 1.5 var(--fo-serif);
+}
+.fs-principle p {
+  font-size: 16px;
+  line-height: 1.9;
+}
+.fs-product-note {
+  display: flex;
+  gap: 28px;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 28px;
+}
+.fs-product-note p {
+  max-width: 48em;
+  color: var(--fo-muted);
+  line-height: 1.9;
+  font-size: 15px;
+}
+.fs-product-note a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  min-height: 44px;
+  font-size: 15px;
+}
+.fs-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 44px;
+  margin-top: 46px !important;
+}
+.fs-steps .fo-index {
+  display: block;
+  margin-bottom: 18px;
+  color: var(--fo-ink);
 }
 .fs-contact-hint {
-  font-size: 1.125rem;
+  font-size: 18px;
   line-height: 1.9;
-  margin: 30px 0 !important;
+  margin: 28px 0 !important;
 }
-
-/* ---------- 响应式 ---------- */
 @media (max-width: 1000px) {
-  .fs-intro,
-  .fs-scenario {
-    grid-template-columns: minmax(0, 1fr);
+  .fs-intro {
+    grid-template-columns: 1fr;
   }
-  .fs-work-note {
-    grid-template-columns: minmax(0, 1fr);
+  .fs-handoff-art {
+    width: min(100%, 560px);
+    justify-self: center;
+    margin-top: 20px;
   }
-  .fs-work-note > .fo-actions {
-    grid-column: 1;
-    grid-row: auto;
+  .fs-service {
+    grid-template-columns: 46px 1fr;
+    gap: 24px;
+  }
+  .fs-service-body {
+    grid-column: 2;
+  }
+  .fs-service h3 {
+    max-width: none;
+  }
+  .fs-starting-points,
+  .fs-steps {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .fs-principle {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .fs-product-note {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
   }
 }
-@media (max-width: 640px) {
-  .fs-scenario {
-    border-radius: 26px;
+@media (max-width: 560px) {
+  .fs-handoff-art {
+    transform: none;
+    padding: 24px;
   }
-  .fs-scenario.is-in:nth-child(n) {
-    rotate: 0deg;
+  .fs-handoff-art::before {
+    right: -10px;
+    width: 72px;
+    height: 72px;
   }
-  .fs-card-body {
-    padding: 20px;
+  .fs-service {
+    grid-template-columns: 1fr;
+    padding: 26px;
+    gap: 18px;
+  }
+  .fs-service-body {
+    grid-column: 1;
+  }
+  .fs-principle {
+    padding: 26px;
   }
 }

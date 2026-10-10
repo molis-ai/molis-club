@@ -169,7 +169,7 @@ export function SiteHeader({
           href={ABOUT}
           aria-current={current === 'about' ? 'page' : undefined}
         >
-          {navLabels.about}
+          {folioStudio.labels.team.zh}
         </Link>
       </nav>
       <div className="fo-header-end">
@@ -241,7 +241,7 @@ export function Footer({
                   <Link href={COMMUNITY}>{footer.studio.community}</Link>
                 </li>
                 <li>
-                  <Link href={ABOUT}>{footer.studio.about}</Link>
+                  <Link href={ABOUT}>{folioStudio.labels.team.zh}</Link>
                 </li>
                 <li>
                   <Link href={CONTACT}>{footer.studio.contact}</Link>

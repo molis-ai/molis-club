@@ -1108,3 +1108,22 @@ a:focus-visible > .fw-more {
     rotate: 0deg;
   }
 }
+
+.fw-community-context {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: calc(var(--fo-head) + 30px) var(--fo-gutter) 0;
+  font-size: 13px;
+  color: var(--fo-muted);
+}
+.fw-community-context a {
+  color: var(--fo-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.fw-community-context + .fo-hero {
+  padding-top: 50px;
+}

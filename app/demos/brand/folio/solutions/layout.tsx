@@ -1,8 +1,8 @@
-import { folioSolutions } from '../../../../../content/folio';
+import { folioCooperation } from '../../../../../content/folio-cooperation';
 
 export const metadata = {
-  title: { absolute: 'Molis AI 解决方案 · 把 AI 用进具体业务' },
-  description: folioSolutions.lead,
+  title: { absolute: 'Molis AI 企业合作 · 把 AI 用进业务，把能力留在团队' },
+  description: folioCooperation.lead,
 };
 
 export default function SolutionsLayout({
