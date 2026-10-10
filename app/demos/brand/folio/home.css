@@ -240,6 +240,33 @@
   text-underline-offset: 5px;
 }
 
+/* 首页结尾：合作先出现，保持社区的独立入口。 */
+.fo-back-business-first {
+  grid-template-columns: 1.1fr 0.9fr;
+}
+.fo-back-business-first .fo-back-cooperation {
+  background: var(--fo-white);
+  color: var(--fo-ink);
+}
+.fo-back-business-first .fo-back-path:not(.fo-back-cooperation) {
+  background: var(--fo-paper);
+  color: var(--fo-ink);
+}
+.fo-back-links .fo-cooperation-cta {
+  padding: 10px 16px;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  border-radius: 999px;
+}
+.fo-back-business-first .fo-back-links {
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .fo-back-business-first {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- 响应式 ---------- */
 @media (max-width: 900px) {
   /* 窄屏的封面高过一屏，文字要读完，不跟着滚动淡出 */

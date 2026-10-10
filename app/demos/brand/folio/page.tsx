@@ -187,7 +187,28 @@ export default function FolioDirection() {
             {ending.title.slice(0, -1)}
             <span className="fo-back-mark">{mark}</span>
           </h2>
-          <div className="fo-back-paths">
+          <div className="fo-back-paths fo-back-business-first">
+            <div className="fo-back-path fo-back-cooperation">
+              <small>{contact.label}</small>
+              <h3>
+                {contact.title.map((line) => (
+                  <span className="fo-phrase" key={line}>
+                    {line}
+                  </span>
+                ))}
+              </h3>
+              <div className="fo-back-links">
+                <Link href={SOLUTIONS}>
+                  了解解决方案 <ArrowUpRight size={19} aria-hidden="true" />
+                </Link>
+                <Link
+                  className="fo-cooperation-cta"
+                  href={contactHref('enterprise')}
+                >
+                  {contact.action} <ArrowUpRight size={19} aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
             <div className="fo-back-path">
               <small>{community.label}</small>
               <h3>
@@ -205,24 +226,6 @@ export default function FolioDirection() {
                 <Link href={LOGIN}>
                   {folioStudio.nav.login}{' '}
                   <ArrowUpRight size={19} aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-            <div className="fo-back-path fo-back-cooperation">
-              <small>{contact.label}</small>
-              <h3>
-                {contact.title.map((line) => (
-                  <span className="fo-phrase" key={line}>
-                    {line}
-                  </span>
-                ))}
-              </h3>
-              <div className="fo-back-links">
-                <Link href={SOLUTIONS}>
-                  了解解决方案 <ArrowUpRight size={19} aria-hidden="true" />
-                </Link>
-                <Link href={contactHref('enterprise')}>
-                  {contact.action} <ArrowUpRight size={19} aria-hidden="true" />
                 </Link>
               </div>
             </div>
