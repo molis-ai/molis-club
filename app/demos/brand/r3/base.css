@@ -1,0 +1,69 @@
+/* 第三轮三个首页的公共底层：读屏文字、演示外壳的暂停钮位置。颜色与版式在各方向自己的样式表里。 */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.r3-index {
+  min-height: 100svh;
+  display: grid;
+  place-content: center;
+  gap: 28px;
+  padding: 48px 16px;
+  background: #f4f1ea;
+  color: #1d2433;
+  font-family: var(--font-geist), 'PingFang SC', sans-serif;
+}
+.r3-index h1 {
+  margin: 0;
+  font:
+    400 clamp(30px, 4vw, 44px) / 1.2 var(--font-r3-serif),
+    'Songti SC',
+    serif;
+}
+.r3-index ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.r3-index a {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 4px 16px;
+  padding: 18px 22px;
+  border-radius: 14px;
+  background: #fffdf8;
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 1px 0 rgb(29 36 51 / 0.08);
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+.r3-index a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgb(29 36 51 / 0.1);
+}
+.r3-index b {
+  grid-row: span 2;
+  font:
+    500 30px / 1 var(--font-editorial),
+    serif;
+}
+.r3-index strong {
+  font-weight: 500;
+}
+.r3-index small {
+  color: #6c6a64;
+  font-size: 13px;
+}
