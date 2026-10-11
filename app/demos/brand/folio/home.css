@@ -157,8 +157,43 @@
   background: var(--fo-pink);
 }
 .fo-essay:hover::before,
-.fo-essay:focus-visible::before {
+.fo-essay:has(.fo-essay-link:focus-visible)::before {
   transform: scaleX(1);
+}
+/* 标题链接用伪元素铺满整行，整行仍然一点就进文章 */
+.fo-essay-link {
+  display: grid;
+  gap: 14px;
+}
+.fo-essay-link::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+}
+.fo-site .fo-essay-link:focus-visible {
+  outline: none;
+}
+.fo-essay:has(.fo-essay-link:focus-visible) {
+  outline: 2px solid var(--fo-red);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+/* 作者名浮在铺满的链接上面，单独去公众号 */
+.fo-essay-author {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--fo-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.fo-essay-author:hover {
+  color: var(--fo-red);
 }
 .fo-essay-number {
   align-self: start;
@@ -170,7 +205,6 @@
 }
 .fo-essay :is(h2, h3) {
   display: grid;
-  gap: 14px;
 }
 .fo-essay-title {
   font-family: var(--fo-serif);
@@ -216,7 +250,7 @@
     transform 0.4s var(--fo-ease);
 }
 .fo-essay:hover .fo-essay-go,
-.fo-essay:focus-visible .fo-essay-go {
+.fo-essay:has(.fo-essay-link:focus-visible) .fo-essay-go {
   background: var(--fo-red);
   transform: rotate(45deg);
 }

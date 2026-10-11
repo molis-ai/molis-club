@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import type { ReactNode } from 'react';
 import stories from '../../../../../content/stories.json';
-import { folioStudio } from '../../../../../content/folio';
+import { folioEssayAuthor, folioStudio } from '../../../../../content/folio';
 import { pad } from '../kit';
 import {
   Footer,
@@ -17,6 +17,7 @@ import '../folio.css';
 import './essays.css';
 
 // Folio 的文章阅读页：刊头式开篇，正文是一张压上来的白纸，左边目录粘住；封底接着读另一篇。
+// 署名链到作者的公众号，封底另有「去公众号读更多」。
 // 原文在 content/stories.json，按空行分段，支持小标题、引文、分隔线、编号列表与粗体、斜体。
 
 /** 行内的 **粗体** 和 *斜体* */
@@ -93,7 +94,16 @@ export function Essay({ slug }: { slug: string }) {
           </h1>
           <p className="fo-read-lead">{item.description}</p>
           <p className="fo-read-byline">
-            <span>{essays.author}</span>
+            <a
+              className="fo-read-author"
+              href={folioEssayAuthor.href}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={essays.author + folioEssayAuthor.labelSuffix}
+            >
+              {essays.author}
+              <ArrowUpRight size={13} aria-hidden="true" />
+            </a>
             <span>{story.label}</span>
             <span>
               {Math.ceil(story.body.length / 500)} {essays.read}
@@ -132,10 +142,21 @@ export function Essay({ slug }: { slug: string }) {
               <ArrowUpRight size={26} />
             </span>
           </Link>
-          <Link href={HOME} className="fo-read-home">
-            {essays.back}
-            <ArrowUpRight size={17} aria-hidden="true" />
-          </Link>
+          <div className="fo-read-links">
+            <a
+              href={folioEssayAuthor.href}
+              className="fo-read-home"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {folioEssayAuthor.more}
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </a>
+            <Link href={HOME} className="fo-read-home">
+              {essays.back}
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
+          </div>
         </section>
       </Footer>
     </div>

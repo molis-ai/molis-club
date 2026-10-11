@@ -110,6 +110,17 @@ export const folioStudio = {
   },
 };
 
+/**
+ * 文章作者一骏的公众号主页（A10，2026-10-11 负责人给出）。微信以外的浏览器可能打不开；
+ * 备用的公众号二维码要由负责人提供图片，拿到之前只放链接。
+ */
+export const folioEssayAuthor = {
+  href: 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzkzNzczNjYxMQ==#wechat_redirect',
+  /** 接在作者名（folioStudio.essays.author）后面，作为链接的无障碍名称 */
+  labelSuffix: '的公众号（在新窗口打开）',
+  more: '去公众号读更多',
+};
+
 /** 账号页：只说登录现在能做什么，不写还不存在的用途（A11） */
 export const folioAccount = {
   purpose:

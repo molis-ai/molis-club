@@ -59,15 +59,23 @@
   font-weight: 600;
   letter-spacing: 0.06em;
 }
-.fo-read-byline span {
+.fo-read-byline > * {
   padding: 4px 12px;
   border-radius: 999px;
   box-shadow: inset 0 0 0 1.5px currentColor;
 }
-.fo-read-byline span:first-child {
+/* 署名是第一枚墨色签，点了去作者的公众号 */
+.fo-read-byline > .fo-read-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: var(--fo-ink);
   color: var(--fo-white);
   box-shadow: none;
+  transition: background 0.3s;
+}
+.fo-read-author:hover {
+  background: var(--fo-red);
 }
 
 /* ---------- 正文：一张白纸压上来，左边目录粘住 ---------- */
@@ -228,11 +236,16 @@
   color: var(--fo-ink);
   transform: rotate(45deg);
 }
+.fo-read-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin-top: 12px;
+}
 .fo-site .fo-read-home {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 12px;
   font-size: 15px;
   font-weight: 600;
 }
