@@ -140,12 +140,22 @@ try {
   await page.waitForURL(folio + '/essays');
   assert.match(await page.locator('h1').innerText(), /Essays/);
   const essays = await page
-    .locator('.fo-essay')
+    .locator('.fo-essay-link')
     .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
   assert.deepEqual(essays, [
     '/demos/brand/folio/essays/human-scale',
     '/demos/brand/folio/essays/idealism',
   ]);
+  // 作者名单独链到公众号，新窗口打开；整行仍由标题链接铺满，不嵌套链接
+  const wechat = /^https:\/\/mp\.weixin\.qq\.com\/mp\/profile_ext\?/;
+  const authors = page.locator('.fo-essay-author');
+  assert.equal(await authors.count(), 2);
+  for (const author of await authors.all()) {
+    assert.match(await author.getAttribute('href'), wechat);
+    assert.equal(await author.getAttribute('target'), '_blank');
+    assert.equal(await author.getAttribute('rel'), 'noreferrer');
+  }
+  assert.equal(await page.locator('a a').count(), 0);
   console.log(
     'PASS: independent team and essays pages preserve content, member interactions and article links.',
   );
@@ -159,7 +169,20 @@ try {
     await page.locator('.fo-read-next-link').getAttribute('href'),
     /\/essays\/human-scale$/,
   );
-  console.log('PASS: essay reader with contents, references and next essay.');
+  assert.match(
+    await page.locator('.fo-read-author').getAttribute('href'),
+    wechat,
+  );
+  assert.equal(
+    await page.locator('.fo-read-author').getAttribute('target'),
+    '_blank',
+  );
+  const more = page.locator('.fo-read-links a', { hasText: '去公众号读更多' });
+  assert.match(await more.getAttribute('href'), wechat);
+  assert.equal(await more.getAttribute('target'), '_blank');
+  console.log(
+    'PASS: essay reader with contents, references, next essay and the author account link.',
+  );
 
   // 登录留在 Folio 里：同一个顶栏，Logo 回到 Folio 首页，表单换成 Folio 的样子
   await visit('/login');

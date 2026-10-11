@@ -42,6 +42,15 @@
 - 两页各互链一次；全部用将来时、标「规划中」，站内没有「已合并」「已打通」，也没有时间或版本号。社区里 niul.ai、DropAgent「正在走向 Molis Tool」不变。
 - 外部待办（不在本仓库）：Molis Tool 仓库 9/29 的路线图仍写「现在不做：把 Tool 做成 molis-work 的一个入口」，需要 Tool 负责人按新方向更新。
 
+**阶段 1 验收（2026-10-12，本设备）**
+
+- 通过：`npm run check`；`npm test` 19 项；`npm run build`；改动的 17 个文件 lint 与格式检查。全仓 `oxlint` 仍报 `tests/community.test.mjs`、`tests/knowledge.test.mjs` 的 18 项 `no-floating-promises`，两文件本阶段未改，属既有问题。
+- HTTP（本地 3000）：`discovery-http`、`editorial-http` 通过。`brand-review-http` 的页面断言全部通过，到 `/api/design-votes` 返回 503：本设备原来没有 `.wrangler/state`，开发服务新建的本地 D1 是空库、没有表；没有自行初始化数据库。`auth-http` 没跑：本设备没有 `.dev.vars`，账号服务未配置，`get-session` 返回 500。
+- 浏览器（playwright-core 1.55.0 临时装在仓库外，驱动本机 Chrome 155）：`folio-browser.mjs` 的文章目录断言随 A10 改读 `.fo-essay-link`，并补上作者链接与「去公众号读更多」的检查。
+  - 团队页「程序聚焦头像后便笺可见」一条在改动前的 39c2348 上同样失败（同一行），是本机 Chrome 的焦点可见性差异，与本阶段无关；跳过这一条后其余全部通过，含五种宽度、Tool 减少动态与无运行时错误。
+  - `folio-journey.mjs`：首页结尾无登录、顶栏有登录的新断言通过。从社区「告诉我们」站内跳到联系页时，角色预选约 0.8 秒后才从默认的「企业合作」改为「早期体验者」，测试读得太早而失败；39c2348 上同样失败，直接打开该地址是正确的。等待预选就绪后，其余路径全部通过。这一处随 A9（联系表单）处理。
+- 浏览器实看：1024px 与 390px 下首页 Tool 色纸、Tool 页关系段、Work 页「以后」一栏、文章目录悬停与点击、正文署名与封底链接；无横向溢出。
+
 ## 2026-10-11 提交与远端同步
 
 - 用户本轮明确授权将已完成的页面调整提交并推送至 `origin/main`。按「首页合作入口」与「站内页面及体验」组织两个提交，范围限本轮 18 个文件。
