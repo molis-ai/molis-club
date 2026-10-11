@@ -1,11 +1,12 @@
 'use client';
 import Link from 'next/link';
+import { folioAccount } from '../../../../../content/folio';
 import { authClient } from '../../../../../lib/auth-client';
 import { useAccountActions } from '../../../../account/use-account';
 import { AuthPage } from '../auth';
 import { HOME, LOGIN } from '../shared';
 
-// Folio 的账号页：问候、邮箱、回到首页与退出登录，修改密码收在下面。逻辑与旧版账号页共用。
+// Folio 的账号页：问候、邮箱、一句现在登录能做什么、回到首页与退出登录，修改密码收在下面。逻辑与旧版账号页共用。
 
 export default function FolioAccount() {
   const { data, isPending, error: sessionError } = authClient.useSession();
@@ -43,6 +44,7 @@ export default function FolioAccount() {
                 试用阶段暂未配置验证邮件，账号不会显示为已验证。
               </p>
             )}
+            <p className="fa-purpose">{folioAccount.purpose}</p>
             <div className="fo-actions">
               <Link className="fo-btn fo-btn-ink" href={HOME}>
                 回到首页

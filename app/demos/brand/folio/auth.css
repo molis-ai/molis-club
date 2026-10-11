@@ -251,6 +251,11 @@
   line-height: 1.7;
   color: var(--fo-muted);
 }
+.fa-purpose {
+  max-width: 34em;
+  font-size: 15px;
+  line-height: 1.75;
+}
 .fa-account .fo-actions {
   margin-top: 8px;
 }

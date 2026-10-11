@@ -110,6 +110,12 @@ export const folioStudio = {
   },
 };
 
+/** 账号页：只说登录现在能做什么，不写还不存在的用途（A11） */
+export const folioAccount = {
+  purpose:
+    '现在登录后，可以管理账号本身；和账号有关的功能上线时，会出现在这里。',
+};
+
 /** Folio 的百科：条目与艺术家 Skill 的内容在 content/knowledge.ts、content/artists.ts，这里只放页面上的说明文字（沿用旧版百科的文案） */
 export const folioWiki = {
   kicker: 'Molis Wikipedia · 百科',

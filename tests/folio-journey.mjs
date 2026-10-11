@@ -31,6 +31,15 @@ try {
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await visit(home);
+    // The homepage ending no longer offers login; the header entry stays.
+    assert.equal(
+      await page.locator(`.fo-ending a[href="${home}/login"]`).count(),
+      0,
+    );
+    assert.equal(
+      await page.locator(`.fo-header a[href="${home}/login"]`).count(),
+      1,
+    );
     // Confirm hydration before testing Link, so a plain document navigation
     // cannot hide a client-router failure.
     await page.locator('.fo-menu > button').click();

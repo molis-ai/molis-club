@@ -10,7 +10,6 @@ import { Actions, Status, pad } from './kit';
 import {
   COMMUNITY,
   Footer,
-  LOGIN,
   SiteHeader,
   WORK,
   SOLUTIONS,
@@ -221,10 +220,6 @@ export default function FolioDirection() {
               <div className="fo-back-links">
                 <Link href={COMMUNITY}>
                   {community.action}{' '}
-                  <ArrowUpRight size={19} aria-hidden="true" />
-                </Link>
-                <Link href={LOGIN}>
-                  {folioStudio.nav.login}{' '}
                   <ArrowUpRight size={19} aria-hidden="true" />
                 </Link>
               </div>
