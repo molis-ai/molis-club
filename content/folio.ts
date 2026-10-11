@@ -34,6 +34,27 @@ export const folioHomeCopy = {
     story: '走进另一个世界，带一段经历回来',
     world: folioWorld.line,
   } satisfies Record<FolioProductId, string>,
+  /**
+   * 工作室身份说明（P1）：放在首屏之后、Work 之前。先用 467bc17 删掉的原句，措辞之后再定。
+   * 首屏仍只放刊头、词组和关键词（10/9 的决定）。
+   */
+  studio: {
+    label: 'Studio',
+    text: 'Molis AI 是一个做 AI 产品的小团队。我们想让工作更快、更好、更舒服，把省下来的时间，留给生活、体验和创造。',
+  },
+  /**
+   * 首页结尾（P1）：去掉「你正在好奇什么？」的硬切，从产品自然走到下一步。企业合作与社区两块都保留，
+   * 不放登录（A11）。共享的 ending 不改；卡片里原有的标签和标题仍读它。过渡句是建议措辞，之后再定。
+   */
+  ending: {
+    transition: '除了自己的产品，我们也和企业一起，把 AI 用进一段具体业务。',
+    cooperation: { more: '了解企业合作', contact: '聊聊企业合作' },
+    also: {
+      label: '也可以',
+      install: '安装 Molis Work 开源版',
+      essays: '读读我们的文章',
+    },
+  },
   /** 色纸上的领域签只写领域，阶段只看阶段签；folioStudio.lines 的 area 混了状态，留给其他样张 */
   areas: {
     tool: '工作 · 桌面',

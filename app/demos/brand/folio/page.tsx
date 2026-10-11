@@ -2,16 +2,18 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { ArrowUpRight } from 'lucide-react';
-import { GITHUB_URL } from '../../../../content/molis-work';
+import { GITHUB_URL, INSTALL_URL } from '../../../../content/molis-work';
 import { ending, lineImages, lineNames } from '../../../../content/studio';
 import { AiWordCycle } from '../ai-words';
 import { CoverArt, LifeArt, StoryArt } from './art';
-import { Actions, Status, Tag, pad } from './kit';
+import { Actions, Phrases, Status, Tag, pad } from './kit';
 import {
   COMMUNITY,
+  ESSAYS,
   Footer,
   SiteHeader,
   WORK,
+  WORLD,
   SOLUTIONS,
   contactHref,
   lineHref,
@@ -27,10 +29,12 @@ import {
   folioStudio,
   folioTool,
 } from '../../../../content/folio';
+import { folioWorld } from '../../../../content/folio-world';
 import { WorkDesk } from './work/desk';
 import { CursorDemo } from './tool/cursor-demo';
 
-// 首页保留刊头、剪纸封面、白纸叠压与三张色纸，产品之后直接接社区与合作。
+// 首页保留刊头、剪纸封面、白纸叠压与三张色纸。白纸最上面是一句工作室身份说明（P1），
+// Story 之后有一个 Molis World 的入口（A1，概念设计，不单独占一屏）；结尾从产品走到企业合作与社区（P1）。
 // 团队与文章由导航进入各自的独立页面。
 
 /** 区块标题：一个英文关键词配中文小字，下面一道墨线；需要时右边放一段说明 */
@@ -60,6 +64,10 @@ function CoreProduct() {
   const work = folioStudio.work;
   return (
     <div id="work" className="fo-core">
+      <div className="fo-studio" data-reveal>
+        <small lang="en">{folioHomeCopy.studio.label}</small>
+        <p>{folioHomeCopy.studio.text}</p>
+      </div>
       <Label id="fo-products-title" {...folioStudio.labels.products} />
       <div className="fo-core-copy" data-reveal>
         <span className="fo-kicker">
@@ -137,6 +145,27 @@ function Lines() {
           </article>
         ))}
       </div>
+      <WorldEntry />
+    </div>
+  );
+}
+
+/** Story 之后的 World 入口：一句过渡，一张小卡；World 还是概念，不单独占一屏 */
+function WorldEntry() {
+  return (
+    <div id="world" className="fo-world-entry">
+      <p className="fo-world-transition" data-reveal>
+        <Phrases text={folioWorld.home.transition} />
+      </p>
+      <Link href={WORLD} className="fo-world-card" data-reveal>
+        <span className="fo-world-status">{folioWorld.status}</span>
+        <strong lang="en">{folioWorld.name}</strong>
+        <span className="fo-world-line">{folioWorld.line}</span>
+        <span className="fo-world-more">
+          {folioWorld.home.more}
+          <ArrowUpRight size={18} aria-hidden="true" />
+        </span>
+      </Link>
     </div>
   );
 }
@@ -145,7 +174,7 @@ export default function FolioDirection() {
   const rootRef = useFolioMotion();
   const { community } = folioStudio;
   const { contact } = ending.paths;
-  const mark = ending.title.slice(-1);
+  const close = folioHomeCopy.ending;
 
   return (
     <div className="fo-site" ref={rootRef}>
@@ -192,9 +221,8 @@ export default function FolioDirection() {
 
       <Footer>
         <section className="fo-ending" aria-labelledby="fo-ending-title">
-          <h2 id="fo-ending-title" data-reveal>
-            {ending.title.slice(0, -1)}
-            <span className="fo-back-mark">{mark}</span>
+          <h2 id="fo-ending-title" className="fo-ending-lead" data-reveal>
+            <Phrases text={close.transition} />
           </h2>
           <div className="fo-back-paths fo-back-business-first">
             <div className="fo-back-path fo-back-cooperation">
@@ -208,13 +236,15 @@ export default function FolioDirection() {
               </h3>
               <div className="fo-back-links">
                 <Link href={SOLUTIONS}>
-                  了解解决方案 <ArrowUpRight size={19} aria-hidden="true" />
+                  {close.cooperation.more}{' '}
+                  <ArrowUpRight size={19} aria-hidden="true" />
                 </Link>
                 <Link
                   className="fo-cooperation-cta"
                   href={contactHref('enterprise')}
                 >
-                  {contact.action} <ArrowUpRight size={19} aria-hidden="true" />
+                  {close.cooperation.contact}{' '}
+                  <ArrowUpRight size={19} aria-hidden="true" />
                 </Link>
               </div>
             </div>
@@ -235,6 +265,17 @@ export default function FolioDirection() {
               </div>
             </div>
           </div>
+          <p className="fo-ending-also">
+            <span>{close.also.label}</span>
+            <a href={INSTALL_URL} target="_blank" rel="noreferrer">
+              {close.also.install}
+              <ArrowUpRight size={15} aria-hidden="true" />
+            </a>
+            <Link href={ESSAYS}>
+              {close.also.essays}
+              <ArrowUpRight size={15} aria-hidden="true" />
+            </Link>
+          </p>
         </section>
       </Footer>
     </div>

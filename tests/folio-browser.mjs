@@ -31,6 +31,43 @@ try {
     0,
   );
   assert.equal(await page.locator('.fo-sheet').count(), 3);
+  // 首屏之后、Work 之前有一句工作室身份说明；Story 之后是 World 入口（概念设计，不是第四张色纸）；
+  // 结尾从产品走到企业合作与社区，不再问「你正在好奇什么？」，没有登录和团队模块
+  const homeOrder = await page
+    .locator('.fo-studio, #fo-products-title, #story, #world, .fo-ending')
+    .evaluateAll((nodes) =>
+      nodes.map((node) => node.id || node.className.split(' ')[0]),
+    );
+  assert.deepEqual(homeOrder, [
+    'fo-studio',
+    'fo-products-title',
+    'story',
+    'world',
+    'fo-ending',
+  ]);
+  assert.match(
+    await page.locator('.fo-studio').innerText(),
+    /Molis AI 是一个做 AI 产品的小团队/,
+  );
+  assert.match(await page.locator('#world').innerText(), /概念设计/);
+  assert.equal(
+    await page.locator('#world a[href="/demos/brand/folio/world"]').count(),
+    1,
+  );
+  const endingText = await page.locator('.fo-ending').innerText();
+  assert.doesNotMatch(endingText, /你正在好奇什么/);
+  assert.match(endingText, /了解企业合作/);
+  assert.match(endingText, /去社区看看/);
+  assert.equal(
+    await page
+      .locator(
+        '.fo-ending a[href="/demos/brand/folio/contact?topic=enterprise"]',
+      )
+      .count(),
+    1,
+  );
+  assert.equal(await page.locator('.fo-ending a[href$="/login"]').count(), 0);
+  assert.equal(await page.locator('.fo-person, .fo-people').count(), 0);
   const originalArt = page.locator('.fo-cover-art .fo-cut').first();
   assert.match(
     await originalArt.evaluate((el) => getComputedStyle(el).animationName),

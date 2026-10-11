@@ -102,6 +102,91 @@
 .fo-core > .fo-label {
   grid-column: 1 / -1;
 }
+/* 工作室身份说明：白纸最上面一句话，像事务所的自我介绍，之后才是产品 */
+.fo-studio {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.18fr) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px var(--fo-gutter);
+  padding-bottom: clamp(24px, 3vw, 48px);
+}
+.fo-studio small {
+  font-family: var(--fo-display);
+  font-style: italic;
+  font-size: clamp(20px, 1.8vw, 28px);
+  color: var(--fo-red);
+}
+.fo-studio p {
+  max-width: 21em;
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: clamp(24px, 2.8vw, 46px);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+/* Story 之后的 Molis World 入口：一句过渡加一张小卡，不单独占一屏 */
+.fo-world-entry {
+  display: grid;
+  justify-items: center;
+  gap: clamp(28px, 3vw, 44px);
+  padding: clamp(80px, 9vw, 140px) var(--fo-gutter);
+  text-align: center;
+}
+.fo-world-transition {
+  max-width: 20em;
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(28px, 3.6vw, 56px);
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+.fo-site .fo-world-card {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: min(100%, 460px);
+  padding: 26px 28px 22px;
+  border: 1.5px dashed var(--fo-ink);
+  border-radius: 26px;
+  background: var(--fo-white);
+  transition:
+    transform 0.5s var(--fo-ease),
+    background 0.3s;
+}
+.fo-world-card:hover {
+  transform: translateY(-4px) rotate(-0.6deg);
+  background: var(--fo-sage);
+}
+.fo-world-status {
+  padding: 3px 12px;
+  border: 1.5px dashed currentColor;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.fo-world-card strong {
+  font-family: var(--fo-display);
+  font-weight: 500;
+  font-size: clamp(34px, 3.4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+.fo-world-line {
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: clamp(16px, 1.3vw, 19px);
+}
+.fo-world-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: 650;
+}
 .fo-core > .fw-desk {
   justify-self: center;
 }
@@ -274,7 +359,34 @@
   text-underline-offset: 5px;
 }
 
-/* 首页结尾：合作先出现，保持社区的独立入口。 */
+/* 首页结尾：一句话从产品走到下一步，合作先出现，保持社区的独立入口 */
+.fo-site .fo-ending-lead {
+  max-width: 15em;
+  font-size: clamp(32px, 4.6vw, 76px);
+  line-height: 1.22;
+}
+.fo-ending-also {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+  margin-top: 22px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.fo-ending-also span {
+  opacity: 0.72;
+}
+.fo-ending-also a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+}
+.fo-ending-also a:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
 .fo-back-business-first {
   grid-template-columns: 1.1fr 0.9fr;
 }
@@ -345,5 +457,11 @@
   .fo-essay-go {
     grid-column: 2;
     grid-row: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .fo-studio {
+    grid-template-columns: 1fr;
   }
 }

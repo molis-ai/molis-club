@@ -145,6 +145,12 @@ export const folioWorld = {
     ],
   },
 
+  /** 首页 Story 之后的入口（A1）：不单独占一屏；过渡句是暂用，等 P2 定稿 */
+  home: {
+    transition: '生活里有陪伴，故事里有远方，你的世界是归处。',
+    more: '了解 Molis World',
+  },
+
   closing: {
     title: ['它还是一个概念，', '想看它慢慢长出来吗？'],
     follow: '关注 Molis World 的进展',
