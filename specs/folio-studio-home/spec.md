@@ -90,6 +90,14 @@
 - 「认识团队」从结尾移到这一段末尾，结尾只留「聊聊企业合作」。
 - 验收：页面没有客户案例、客户 logo 或效果数字；`folio-browser.mjs` 检查段落顺序、四步、四位成员、导语、团队链接与结尾。1440px 与 390px 截图核对排版。
 
+**阶段 2 验收（2026-10-12，本设备）**
+
+- 通过：`npm run check`；`npm test` 23 项（新增 3 项联系表单契约、2 项合作证据）；`npm run build`（新路由 `/demos/community/methods/…` 与旧 `/wiki…` 重定向都在路由表里）；阶段 2 改动的 36 个代码与文案文件 lint、格式检查。`README.md`、`docs/CLOUDFLARE-DEPLOYMENT.md` 原本就不符合格式规则，只改了迁移命令几行，没有整篇重排。
+- HTTP（本地 3000，库已初始化）：`discovery-http`、`editorial-http`、`brand-review-http` 通过。`brand-review` 有一次请求 `/demos/brand/edition-c/story` 偶发 500，随后重试与两次完整重跑均为 200、通过；服务端错误日志只有缺账号配置的认证报错。`auth-http` 仍因缺 `.dev.vars` 未跑。
+- 浏览器：`folio-journey.mjs` 全部通过（不再需要阶段 1 的等待改动）。`folio-browser.mjs` 除阶段 1 记录的团队页焦点检查（39c2348 上同样失败）外全部通过。
+- 本地数据：`applications` 里有本阶段的测试记录（A9 迁移标记、三条同邮箱留言、一条旧客户端请求、一条分享投稿），都在本设备 `.wrangler/state`，没有写线上。
+- 并行工作：本阶段期间，同一工作区出现未跟踪的 `app/demos/brand/origin/`（「零点」品牌方向）和 `.claude/launch.json` 新增的 5192 预览配置，来自另一个会话。没有改动、暂存或提交它们；本设备为预览在 `launch.json` 加的 3000 配置也未提交。
+
 ## 2026-10-11 提交与远端同步
 
 - 用户本轮明确授权将已完成的页面调整提交并推送至 `origin/main`。按「首页合作入口」与「站内页面及体验」组织两个提交，范围限本轮 18 个文件。
