@@ -121,6 +121,22 @@ export const folioEssayAuthor = {
   more: '去公众号读更多',
 };
 
+/**
+ * 联系页提交成功后回到来处（A9）：按地址栏的 topic 决定第一个按钮，没有来处时只给「回到首页」。
+ * topic 对应：enterprise → 企业合作；产品 → 对应产品页；feedback、creator、share-* → 社区。
+ */
+export const folioContact = {
+  back: {
+    enterprise: '回到企业合作',
+    work: '回到 Molis Work',
+    tool: '回到 Molis Tool',
+    life: '回到 Molis Life',
+    story: '回到 Molis Story',
+    community: '回到社区',
+  },
+  home: '回到首页',
+};
+
 /** 账号页：只说登录现在能做什么，不写还不存在的用途（A11） */
 export const folioAccount = {
   purpose:

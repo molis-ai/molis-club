@@ -38,7 +38,11 @@
 ```sh
 npx wrangler d1 execute molis-club-preview --remote --file drizzle/0000_jittery_lady_deathstrike.sql
 npx wrangler d1 execute molis-club-preview --remote --file drizzle/0001_nebulous_power_man.sql
+npx wrangler d1 execute molis-club-preview --remote --file drizzle/0002_curved_ultron.sql
+npx wrangler d1 execute molis-club-preview --remote --file drizzle/0003_applications_multiple_submissions.sql
 ```
+
+`0003` 去掉 `applications.email` 的唯一索引，新增 `topic`、`allow_display` 两列，不重建表、不删行。联系接口从这一版起写入这两列：已有数据库要先执行 `0003`，再部署新代码，否则提交会返回 503。
 
 初始化前确认目标名称为 `molis-club-preview`；不得对 Production 或现有 Sites 数据库运行。执行后检查 `user`、`account`、`session`、`verification`、`rate_limit`、`applications` 和 `notes` 表存在，但不读取或输出用户数据。
 

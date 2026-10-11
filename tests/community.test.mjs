@@ -121,9 +121,10 @@ test('参数化保存输入，SQL 片段和 HTML 只是留言文字', async () =
   assert.equal((await saveNote(req('notes', d), db, ['niulai'])).status, 201);
   assert.equal(db.sql.prepare('SELECT body FROM notes').get().body, d.body);
 });
-test('申请邮箱归一化且重复不覆盖，不在返回值暴露私人资料', async () => {
+test('同一邮箱的两次不同留言各存一行，邮箱归一化，不在返回值暴露私人资料', async () => {
   const db = dbFixture(),
     d = {
+      id: crypto.randomUUID(),
       name: '一位创作者',
       email: 'Maker@Example.com',
       role: '创造者',
@@ -133,18 +134,93 @@ test('申请邮箱归一化且重复不覆盖，不在返回值暴露私人资�
   const r = await saveApplication(req('join', d), db);
   assert.equal(r.status, 201);
   assert.deepEqual(Object.keys(await r.json()).sort(), ['message', 'status']);
-  await saveApplication(
+  const second = await saveApplication(
     req('join', {
       ...d,
+      id: crypto.randomUUID(),
       email: 'maker@example.com',
-      idea: '第二次提交另一个想法',
+      role: '企业合作',
+      idea: '第二次提交另一个想法：想聊企业合作。',
     }),
     db,
   );
-  const rows = db.sql.prepare('SELECT * FROM applications').all();
-  assert.equal(rows.length, 1);
-  assert.equal(rows[0].email, 'maker@example.com');
-  assert.equal(rows[0].idea, d.idea);
+  assert.equal(second.status, 201);
+  const rows = db.sql
+    .prepare('SELECT email, role, idea FROM applications ORDER BY role')
+    .all();
+  assert.equal(rows.length, 2);
+  assert.ok(rows.every((row) => row.email === 'maker@example.com'));
+  assert.deepEqual(
+    rows.map((row) => row.idea),
+    ['第二次提交另一个想法：想聊企业合作。', d.idea],
+  );
+});
+test('同一次提交重试只存一次；不带 id 的旧请求仍然成功；坏 id 被拒', async () => {
+  const db = dbFixture(),
+    d = {
+      id: crypto.randomUUID(),
+      name: '访客',
+      email: 'retry@example.com',
+      role: '早期体验者',
+      idea: '网络断了一下，我又点了一次。',
+      consent: true,
+    };
+  assert.equal((await saveApplication(req('join', d), db)).status, 201);
+  assert.equal((await saveApplication(req('join', d), db)).status, 201);
+  const count = () =>
+    db.sql.prepare('SELECT count(*) AS n FROM applications').get().n;
+  assert.equal(count(), 1);
+  const { id: _id, ...legacy } = d;
+  assert.equal((await saveApplication(req('join', legacy), db)).status, 201);
+  assert.equal(count(), 2);
+  const generated = db.sql
+    .prepare('SELECT id FROM applications WHERE id != ?')
+    .get(d.id).id;
+  assert.match(generated, /^[0-9a-f-]{36}$/);
+  for (const id of ['not-a-uuid', 42, ''])
+    assert.equal(
+      (await saveApplication(req('join', { ...d, id }), db)).status,
+      400,
+    );
+  assert.equal(count(), 2);
+});
+test('记录来源入口和展示同意；不规范的来源不记，也不拦下提交', async () => {
+  const db = dbFixture(),
+    d = {
+      name: '投稿的人',
+      email: 'share@example.com',
+      role: '创造者',
+      idea: '我用莫奈的光与色 Skill 做了一组街景。',
+      consent: true,
+    };
+  await saveApplication(
+    req('join', {
+      ...d,
+      id: crypto.randomUUID(),
+      topic: 'share-artist',
+      allowDisplay: true,
+    }),
+    db,
+  );
+  await saveApplication(
+    req('join', {
+      ...d,
+      id: crypto.randomUUID(),
+      topic: '<script>',
+      allowDisplay: 'yes',
+    }),
+    db,
+  );
+  const rows = db.sql
+    .prepare('SELECT topic, allow_display FROM applications ORDER BY topic')
+    .all();
+  assert.deepEqual(
+    rows.map((row) => [row.topic, row.allow_display]),
+    [
+      [null, 0],
+      ['share-artist', 1],
+    ],
+  );
 });
 test('联系页的「企业合作」也收进同一个申请收件箱', async () => {
   const db = dbFixture(),

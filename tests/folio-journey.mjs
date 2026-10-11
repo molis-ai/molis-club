@@ -193,8 +193,10 @@ try {
   );
   assert.equal(await page.locator('textarea[name="idea"]').inputValue(), '');
   let submissions = 0;
+  const sent = [];
   await page.route('**/api/join', (route) => {
     submissions++;
+    sent.push(route.request().postDataJSON());
     return route.fulfill({
       status: submissions === 1 ? 503 : submissions === 2 ? 200 : 201,
       contentType: submissions === 1 ? 'text/html' : 'application/json',
@@ -231,9 +233,48 @@ try {
   await page.locator('.fc-submit').click();
   await page.locator('.fc-success').waitFor({ state: 'visible' });
   assert.equal(submissions, 3);
+  // One submission id for all retries, and the entry topic travels with it.
+  assert.match(sent[0].id, /^[0-9a-f-]{36}$/);
+  assert.ok(sent.every((body) => body.id === sent[0].id));
+  assert.ok(sent.every((body) => body.topic === 'feedback'));
+  // Success leads back to where the visitor came from, then home.
+  const backLinks = async () =>
+    page
+      .locator('.fc-success a')
+      .evaluateAll((links) =>
+        links.map((link) => [
+          link.textContent.trim(),
+          link.getAttribute('href'),
+        ]),
+      );
+  assert.deepEqual(await backLinks(), [
+    ['回到社区', '/demos/community'],
+    ['回到首页', home],
+  ]);
+  for (const { topic, expected } of [
+    { topic: 'enterprise', expected: ['回到企业合作', home + '/solutions'] },
+    { topic: 'tool', expected: ['回到 Molis Tool', home + '/tool'] },
+    { topic: '', expected: null },
+  ]) {
+    await visit(home + '/contact' + (topic ? '?topic=' + topic : ''));
+    await page.locator('input[name="name"]').fill('A9 回到来处');
+    await page.locator('input[name="email"]').fill('folio-ui@example.test');
+    await page
+      .locator('textarea[name="idea"]')
+      .fill('检查成功之后的按钮回到哪里。');
+    await page.locator('input[name="consent"]').check();
+    await page.locator('.fc-submit').click();
+    await page.locator('.fc-success').waitFor({ state: 'visible' });
+    assert.equal(sent.at(-1).topic, topic || undefined);
+    assert.notEqual(sent.at(-1).id, sent[0].id);
+    assert.deepEqual(
+      await backLinks(),
+      expected ? [expected, ['回到首页', home]] : [['回到首页', home]],
+    );
+  }
   await clickTo(page.locator('.fc-success a').first(), home);
   console.log(
-    'PASS: contact validation, HTML 503 and invalid 200 preserve input; explicit received receipt shows success (responses simulated, no database writes).',
+    'PASS: contact validation, HTML 503 and invalid 200 preserve input; retries reuse one submission id; success returns to the entry page (responses simulated, no database writes).',
   );
 
   await clickTo(page.locator('.fo-nav-login'), home + '/login');

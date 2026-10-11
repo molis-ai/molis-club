@@ -24,12 +24,18 @@ export const designVotes = sqliteTable(
   },
   (t) => [index('idx_design_votes_updated').on(t.updatedAt)],
 );
+// 一次提交一行：id 由表单打开时生成，重试同一个 id 不重复；同一邮箱可以留多条不同的话。
+// topic 记从哪里来（enterprise、work、share-artist…），allow_display 是投稿者是否同意展示。
 export const applications = sqliteTable('applications', {
   id: text('id').primaryKey(),
-  email: text('email').notNull().unique(),
+  email: text('email').notNull(),
   name: text('name').notNull(),
   role: text('role').notNull(),
   idea: text('idea').notNull(),
+  topic: text('topic'),
+  allowDisplay: integer('allow_display', { mode: 'boolean' })
+    .notNull()
+    .default(false),
   createdAt: text('created_at').notNull(),
 });
 
