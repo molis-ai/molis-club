@@ -135,6 +135,13 @@
 - 长句用 `Phrases` 在标点处断行。
 - 验收：`folio-browser.mjs` 加首页顺序（身份说明 → Products → Story → World → 结尾）、World 入口、结尾措辞与链接、无登录、无团队模块的检查。减少动态时三张色纸 `--c` 为 0、没有缩放残留，World 卡完整显示；390px 下身份说明、World 入口、结尾都看过截图，无溢出。身份说明与过渡句的最终措辞仍待定（P1、P2）。
 
+**阶段 3 验收（2026-10-12，本设备）**
+
+- 通过：`npm run check`；`npm test` 23 项；`npm run build`（新路由 `/demos/brand/folio/world`）；阶段 3 改动的 23 个文件 lint 与格式检查；`discovery-http`、`editorial-http`、`brand-review-http`。`auth-http` 仍因缺 `.dev.vars` 未跑。
+- 浏览器：`folio-journey.mjs` 全部通过；`folio-browser.mjs` 新增的首页、World、Life、Story 检查全部通过，五件产品的「接着看」一圈通过；除阶段 1 记录的团队页焦点检查（39c2348 上同样失败）外全部通过。
+- 375px：首页、World、Life、Story 在普通与减少动态两种设置下都没有横向滚动、没有运行时错误。World、Story 页面内容里没有下载、登录、预约等不存在的入口（顶栏的登录是全站导航）。
+- 待定、未替负责人选：身份说明与结尾过渡句的最终措辞（P1）、World 过渡句与 Life/Story 首页简介（P2）、World 的视觉风格（P13）。
+
 ## 2026-10-11 提交与远端同步
 
 - 用户本轮明确授权将已完成的页面调整提交并推送至 `origin/main`。按「首页合作入口」与「站内页面及体验」组织两个提交，范围限本轮 18 个文件。
