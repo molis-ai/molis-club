@@ -36,6 +36,8 @@ export const METHODS = `${COMMUNITY}#methods`;
 export const methodHref = (slug: string) => `${COMMUNITY}/methods/${slug}`;
 export const artistHref = (slug: string) =>
   `${COMMUNITY}/methods/artists/${slug}`;
+/** 旧名：品牌探索稿 app/demos/brand/r3/kit.tsx 仍在用（不改探索稿），指向同一个方法段 */
+export const WIKI = METHODS;
 
 /** 产品的顺序：首页、顶栏下拉、页尾和产品页「接着看」都按这一个顺序 */
 export const lineIds: LineId[] = ['work', 'tool', 'life', 'story'];
