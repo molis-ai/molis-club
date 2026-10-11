@@ -158,6 +158,11 @@
   outline: none;
   border-color: var(--fo-red);
 }
+.fc-hint {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--fo-muted);
+}
 .fc-field ::placeholder {
   color: var(--fo-muted);
   opacity: 0.8;

@@ -40,6 +40,8 @@ export default function FolioContactPage() {
   const { role, setRole, idea, setIdea, topic, busy, done, error, submit } =
     useContactForm();
   const back = backTo(topic);
+  // 分享类投稿：提示贴链接，另给一个「同意展示」，和「同意联系」分开
+  const sharing = topic === 'creator' || Boolean(topic?.startsWith('share-'));
 
   return (
     <div className="fo-site fc-site" ref={rootRef}>
@@ -134,12 +136,24 @@ export default function FolioContactPage() {
                     value={idea}
                     onChange={(event) => setIdea(event.target.value)}
                     placeholder={contact.fields.ideaPlaceholder}
+                    aria-describedby={sharing ? 'fc-share-hint' : undefined}
                   />
+                  {sharing ? (
+                    <small className="fc-hint" id="fc-share-hint">
+                      {folioContact.shareHint}
+                    </small>
+                  ) : null}
                 </label>
                 <label className="fc-consent">
                   <input type="checkbox" name="consent" required />
                   <span>{contact.consent}</span>
                 </label>
+                {sharing ? (
+                  <label className="fc-consent">
+                    <input type="checkbox" name="allowDisplay" />
+                    <span>{folioContact.allowDisplay}</span>
+                  </label>
+                ) : null}
                 <button className="fo-btn fo-btn-ink fc-submit" disabled={busy}>
                   {busy ? contact.sending : contact.submit}
                 </button>

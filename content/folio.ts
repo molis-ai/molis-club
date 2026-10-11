@@ -135,6 +135,10 @@ export const folioContact = {
     community: '回到社区',
   },
   home: '回到首页',
+  /** 分享类投稿（creator、share-*）才出现；和「同意联系」分开存（applications.allow_display） */
+  allowDisplay:
+    '同意在社区「大家做的」里展示这次投稿和我的称呼（可选，不勾也会收到）。',
+  shareHint: '表单只收文字：贴上作品链接，说说用了什么、怎么做的。',
 };
 
 /** 账号页：只说登录现在能做什么，不写还不存在的用途（A11） */
@@ -143,50 +147,12 @@ export const folioAccount = {
     '现在登录后，可以管理账号本身；和账号有关的功能上线时，会出现在这里。',
 };
 
-/** Folio 的百科：条目与艺术家 Skill 的内容在 content/knowledge.ts、content/artists.ts，这里只放页面上的说明文字（沿用旧版百科的文案） */
+/**
+ * 社区「方法」（原百科，A6 并入社区）的详情页与示例文字：条目与艺术家 Skill 的内容在 content/knowledge.ts、
+ * content/artists.ts；方法段本身的文案在 content/folio-community.ts。
+ */
 export const folioWiki = {
-  kicker: 'Molis Wikipedia · 百科',
-  title: '看懂一种表达，把它变成自己的能力。',
-  lead: '艺术家 Skill、网页与动效、外部组件来源。每一条都可以先试一试，再把方法和 Prompt 带走，在你自己的工具里用。',
-  actions: { artists: '看艺术家 Skill', entries: '试试网页与动效' },
-  counts: {
-    artists: '个艺术家 Skill',
-    techniques: '个网页与动效',
-    resources: '个组件来源',
-  },
-  artists: {
-    kicker: '艺术家 Skill',
-    title: '从一种观看世界的方式，开始创作。',
-    lead: 'Skill 是交给 AI 工具的一套创作方法，包含风格选择、输入要求和检查方式。你带来题材，它帮助组织画面。',
-    more: '探索创作方法',
-    disclosure: '图像来自 Artist-skill 的 AI 创作试样，非艺术家原作。',
-    builder: {
-      text: '把原作观察、研究与成图反馈，变成可复用的创作方法。',
-      more: '了解构建方法',
-    },
-  },
-  entries: {
-    kicker: '网页、动效与组件',
-    title: '看懂一种表达，或带走一份组件来源。',
-    lead: '动效和布局可以直接在卡片上试；组件资源是整理过的外部来源，点进去看用途、边界和 Prompt。',
-    search: '试试「逐段浮现」「toast」或「tabs」',
-    searchLabel: '搜索网页、动效与组件条目',
-    count: '个条目',
-    try: '试一试，带走 Prompt',
-    empty: {
-      title: '还没找到这个条目。',
-      text: '换个说法，或看看已有的动效、布局与组件。',
-      reset: '查看全部条目',
-    },
-  },
-  closing: {
-    title: '从看见，到做到。',
-    text: '每个条目都有用途、边界和参考资料；Prompt 是起点，你的内容与判断决定最终的表达。',
-    ask: '告诉我们你想了解的能力',
-    community: '去社区看看',
-  },
   entry: {
-    back: '百科',
     use: { technique: '什么时候使用', resource: '可以重点看什么' },
     caution: { technique: '留意这些细节', resource: '使用时留意' },
     source: '参考与整理',

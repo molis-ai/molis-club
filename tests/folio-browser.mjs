@@ -235,44 +235,90 @@ try {
     'PASS: product pages lead to the next product; unknown addresses stay on the Folio 404.',
   );
 
-  // 百科：三张艺术家试样加构建入口，六个可以动手的示例，24 个组件来源；搜索会收窄目录
-  await visit('/wiki');
-  assert.equal(await page.locator('.fw-gallery li').count(), 3);
-  assert.equal(await page.locator('.fw-builder').count(), 1);
-  assert.equal(await page.locator('.fw-entry .fw-demo').count(), 6);
-  assert.equal(await page.locator('.fw-row').count(), 24);
-  await page.locator('.fw-search input').fill('toast');
+  // 方法（原百科）并进社区：默认六张精选（三位艺术家 + 三个示例），「查看全部」原处展开，
+  // 24 个组件来源默认收起；搜索与分类会收窄；详情在社区下，旧的百科地址都跳过去。
+  const community = `${origin}/demos/community`;
+  await page.goto(community, { waitUntil: 'networkidle' });
+  const methods = page.locator('#methods');
+  assert.equal(await methods.locator('.fcm-m-card').count(), 6);
+  assert.equal(
+    await methods.locator('.fcm-m-card[data-kind="artist"]').count(),
+    3,
+  );
+  assert.equal(await methods.locator('.fcm-m-card .fw-demo').count(), 3);
+  assert.equal(await methods.locator('.fw-row').count(), 24);
+  assert.equal(
+    await methods.locator('.fcm-m-resources').getAttribute('open'),
+    null,
+  );
+  await methods.getByRole('button', { name: '查看全部方法' }).click();
+  assert.equal(await methods.locator('.fcm-m-card').count(), 10);
+  await methods.locator('.fw-search input').fill('toast');
   const found = Number(
-    (await page.locator('.fw-count').innerText()).match(/^\d+/)[0],
+    (await methods.locator('.fw-count').innerText()).match(/^\d+/)[0],
   );
   assert.ok(found > 0 && found < 24, `toast matched ${found}`);
   assert.equal(
-    (await page.locator('.fw-row').count()) +
-      (await page.locator('.fw-entry').count()),
+    (await methods.locator('.fw-row').count()) +
+      (await methods.locator('.fcm-m-card').count()),
     found,
   );
-  await page.locator('.fw-search input').fill('');
-  await page.locator('.fw-filters button', { hasText: '网页词典' }).click();
-  assert.equal(await page.locator('.fw-entry').count(), 3);
-  assert.equal(await page.locator('.fw-row').count(), 0);
-  await visit('/wiki/stagger');
+  await methods.locator('.fw-search input').fill('');
+  await methods
+    .locator('.fw-filters button', { hasText: '网页与动效' })
+    .click();
+  assert.equal(await methods.locator('.fcm-m-card').count(), 6);
+  assert.equal(await methods.locator('.fw-row').count(), 0);
+  await methods
+    .locator('.fw-filters button', { hasText: '艺术家 Skill' })
+    .click();
+  assert.equal(await methods.locator('.fcm-m-card').count(), 4);
+  assert.equal(
+    await methods
+      .locator('.fcm-m-card a[download]')
+      .first()
+      .getAttribute('href'),
+    '/downloads/artists/monet-impressionism.zip',
+  );
+  await page.goto(`${community}/methods/stagger`, { waitUntil: 'networkidle' });
   assert.match(await page.locator('h1').innerText(), /错落入场/);
+  assert.match(await page.locator('.fw-trail').innerText(), /社区\s*\/\s*方法/);
+  assert.equal(await page.locator('.fcm-header').count(), 1);
   const promptBefore = await page.locator('#fw-prompt').inputValue();
   await page.locator('.fw-duration input').fill('1000');
   assert.notEqual(await page.locator('#fw-prompt').inputValue(), promptBefore);
   assert.match(await page.locator('#fw-prompt').inputValue(), /1000ms/);
-  await visit('/wiki/artists/monet-impressionism');
+  await page.goto(`${community}/methods/artists/monet-impressionism`, {
+    waitUntil: 'networkidle',
+  });
   assert.equal(
     await page.locator('a[download]').getAttribute('href'),
     '/downloads/artists/monet-impressionism.zip',
   );
   assert.equal(await page.locator('.fw-related li').count(), 3);
-  const legacy = await page.goto(folio + '/wiki/no-such-entry', {
-    waitUntil: 'networkidle',
-  });
-  assert.equal(legacy.status(), 404);
+  for (const [from, to] of [
+    ['/wiki', '/demos/community#methods'],
+    ['/wiki/artists', '/demos/community#methods'],
+    ['/wiki/stagger', '/demos/community/methods/stagger'],
+    [
+      '/wiki/artists/monet-impressionism',
+      '/demos/community/methods/artists/monet-impressionism',
+    ],
+  ]) {
+    await page.goto(folio + from, { waitUntil: 'networkidle' });
+    assert.equal(page.url(), origin + to, from);
+  }
+  for (const missing of [
+    '/wiki/no-such-entry',
+    '/wiki/artists/no-such-artist',
+  ]) {
+    const response = await page.goto(folio + missing, {
+      waitUntil: 'networkidle',
+    });
+    assert.equal(response.status(), 404, missing);
+  }
   console.log(
-    'PASS: Folio wiki with artists, six live examples, searchable resources, entry lab and artist downloads.',
+    'PASS: community methods with six picks, expand in place, folded sources, search and filters; method details under the community; old wiki addresses redirect.',
   );
 
   const running = (selector) =>
@@ -382,10 +428,6 @@ try {
       '/essays/idealism',
       '/login',
       '/account',
-      '/wiki',
-      '/wiki/sticky',
-      '/wiki/animata',
-      '/wiki/artists/art-style-skill-builder',
     ]) {
       await visit(route);
       assert.equal(await page.locator('h1').count(), 1, `${route} @ ${width}`);
@@ -421,24 +463,54 @@ try {
       );
     }
   }
+  // 社区与方法详情：五种宽度下一个 h1、无横向溢出、图片都加载；社区页五段，团队只留一行入口
+  for (const width of [1440, 1024, 768, 390, 360]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const route of [
+      '/demos/community/',
+      '/demos/community/methods/sticky',
+      '/demos/community/methods/animata',
+      '/demos/community/methods/artists/art-style-skill-builder',
+    ]) {
+      const response = await page.goto(origin + route, {
+        waitUntil: 'networkidle',
+      });
+      assert.equal(response.status(), 200, route);
+      assert.equal(await page.locator('h1').count(), 1, `${route} @ ${width}`);
+      assert.equal(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+        true,
+        `${route} horizontal overflow @ ${width}`,
+      );
+      assert.equal(
+        await page
+          .locator('img')
+          .evaluateAll(
+            (imgs) =>
+              imgs.filter((img) => img.complete && !img.naturalWidth).length,
+          ),
+        0,
+      );
+      assert.equal(
+        await page.locator('a[href^="/wiki"], a[href*="/folio/wiki"]').count(),
+        0,
+      );
+    }
+  }
   await page.goto(origin + '/demos/community/', { waitUntil: 'networkidle' });
-  assert.equal(await page.locator('h1').count(), 1);
   assert.deepEqual(
     await page
-      .locator('.fcm-essay')
-      .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
-    [
-      '/demos/brand/folio/essays/human-scale',
-      '/demos/brand/folio/essays/idealism',
-    ],
+      .locator('main > section[id]')
+      .evaluateAll((nodes) => nodes.map((node) => node.id)),
+    ['try', 'methods', 'share', 'improve'],
   );
-  assert.equal(await page.locator('a[href^="/wiki"]').count(), 0);
   assert.equal(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-    true,
+    await page.locator('.fcm-people-line a').getAttribute('href'),
+    '/demos/brand/folio/about',
   );
+  assert.equal(await page.locator('.fcm-showcase-empty').count(), 1);
   assert.equal(errors.length, 0, errors.join('\n'));
   console.log(
     'PASS: Folio pages at five viewport widths, visible page titles, community links, images and no browser runtime errors.',

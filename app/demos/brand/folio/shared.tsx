@@ -11,6 +11,7 @@ import {
   type LineId,
 } from '../../../../content/studio';
 import { folioHomeCopy, folioStudio } from '../../../../content/folio';
+import { folioCommunity } from '../../../../content/folio-community';
 import { authClient } from '../../../../lib/auth-client';
 
 // Folio 各页共用：路由、顶栏（含「产品」菜单）、页尾封底和页面动效。文案来自 content/studio.ts 与 content/folio.ts。
@@ -30,9 +31,11 @@ export const ABOUT = `${HOME}/about`;
 export const LOGIN = `${HOME}/login`;
 export const ACCOUNT = `${HOME}/account`;
 export const essayHref = (slug: string) => `${HOME}/essays/${slug}`;
-export const WIKI = `${HOME}/wiki`;
-export const wikiHref = (slug: string) => `${WIKI}/${slug}`;
-export const artistHref = (slug: string) => `${WIKI}/artists/${slug}`;
+/** 方法（原百科）并进社区：列表是社区页的「方法」段，详情是社区下的子页 */
+export const METHODS = `${COMMUNITY}#methods`;
+export const methodHref = (slug: string) => `${COMMUNITY}/methods/${slug}`;
+export const artistHref = (slug: string) =>
+  `${COMMUNITY}/methods/artists/${slug}`;
 
 /** 产品的顺序：首页、顶栏下拉、页尾和产品页「接着看」都按这一个顺序 */
 export const lineIds: LineId[] = ['work', 'tool', 'life', 'story'];
@@ -230,7 +233,7 @@ export function Footer({
                   <Link href={ESSAYS}>{folioStudio.nav.essays}</Link>
                 </li>
                 <li>
-                  <Link href={WIKI}>{folioStudio.nav.wiki}</Link>
+                  <Link href={METHODS}>{folioCommunity.nav.footerMethods}</Link>
                 </li>
                 <li>
                   <Link href={COMMUNITY}>{footer.studio.community}</Link>

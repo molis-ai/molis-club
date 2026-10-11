@@ -199,5 +199,9 @@ export const contact = {
     /** 社区页「聊聊你的体验」「分享一个念头」 */
     feedback: { role: '早期体验者', idea: '' },
     creator: { role: '创造者', idea: '' },
+    /** 社区「做了一个？分享给我们」：预填用了什么，接着写做了什么、贴链接 */
+    'share-flower': { role: '创造者', idea: '我用「一朵好奇」小实验做了：' },
+    'share-artist': { role: '创造者', idea: '我用艺术家 Skill 做了：' },
+    'share-method': { role: '创造者', idea: '我用社区里的方法做了：' },
   } as Record<string, { role: string; idea: string }>,
 };

@@ -1,0 +1,61 @@
+/* 社区顶栏：社区页和方法详情页共用。前缀 fcm- */
+.fcm-header {
+  position: sticky;
+}
+.fcm-header .fo-logo {
+  white-space: nowrap;
+}
+.fcm-community-label {
+  font-weight: 400;
+  color: var(--fo-muted);
+  font-size: 12px;
+  border-left: 1px solid var(--fo-line);
+  padding-left: 12px;
+  margin-left: 3px;
+}
+.fcm-back-home {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  justify-self: end;
+  gap: 5px;
+  font-size: 12px;
+}
+@media (max-width: 800px) {
+  .fcm-header {
+    grid-template-columns: 1fr auto;
+    height: 100px;
+    align-content: center;
+    row-gap: 5px;
+  }
+  .fcm-header .fo-nav {
+    display: flex;
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-content: start;
+    gap: 27px;
+    font-size: 12px;
+  }
+  .fcm-header .fo-nav > a {
+    min-height: 44px;
+    padding-block: 6px;
+  }
+  .fcm-header .fcm-back-home {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  /* 两行顶栏更高，锚点落在它下面 */
+  .fo-site main [id] {
+    scroll-margin-top: 120px;
+  }
+}
+@media (max-width: 600px) {
+  .fcm-header .fo-logo img {
+    width: 29px;
+    height: 29px;
+  }
+  .fcm-community-label {
+    font-size: 11px;
+    padding-left: 10px;
+  }
+}

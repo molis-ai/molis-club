@@ -123,14 +123,21 @@ try {
   await page.goBack(); // chapter anchor
   await page.goBack(); // essay
   await page.waitForURL(origin + home + '/essays');
-  await clickTo(page.locator(`footer a[href="${home}/wiki"]`), home + '/wiki');
-  await page.locator('.fw-search input').fill('no-such-method-s02');
-  await page.locator('.fw-empty').waitFor({ state: 'visible' });
-  await page.locator('.fw-empty button').click();
-  assert.equal(await page.locator('.fw-search input').inputValue(), '');
+  // The footer's 社区 · 方法 lands on the community methods section.
   await clickTo(
-    page.locator(`a[href="${home}/wiki/stagger"]`).first(),
-    home + '/wiki/stagger',
+    page.locator('footer a[href="/demos/community#methods"]'),
+    '/demos/community#methods',
+  );
+  await page.locator('#methods .fw-search input').fill('no-such-method-s02');
+  await page.locator('#methods .fw-empty').waitFor({ state: 'visible' });
+  await page.locator('#methods .fw-empty button').click();
+  assert.equal(
+    await page.locator('#methods .fw-search input').inputValue(),
+    '',
+  );
+  await clickTo(
+    page.locator('#methods a[href="/demos/community/methods/stagger"]').first(),
+    '/demos/community/methods/stagger',
   );
   await page.locator('.fw-duration input').fill('1000');
   const prompt = await page.locator('#fw-prompt').inputValue();
@@ -140,12 +147,13 @@ try {
     await page.evaluate(() => navigator.clipboard.readText()),
     prompt,
   );
+  // Method details carry the community header; its 试一试 returns to the page.
   await clickTo(
-    page.locator('.fo-nav a', { hasText: '社区' }),
-    '/demos/community',
+    page.locator('.fcm-header .fo-nav a', { hasText: '试一试' }),
+    '/demos/community#try',
   );
   await page.locator('.fcm-hero-actions .fo-btn').click();
-  await page.waitForURL(origin + '/demos/community#works');
+  await page.waitForURL(origin + '/demos/community#try');
   await page.locator('#fcm-bloom').fill('25');
   assert.match(await page.locator('#fcm-flower-title').textContent(), /25%/);
   await page.getByRole('button', { name: '朱红', exact: true }).click();
@@ -156,10 +164,15 @@ try {
   assert.equal((svg.match(/<ellipse\b/g) || []).length, 24);
   assert.match(svg, /25%/);
   assert.match(svg, /#bd432b/);
+  // After a download the status offers to send the result to us too.
+  assert.match(
+    await page.locator('.fcm-download-status a').getAttribute('href'),
+    /contact\?topic=share-flower$/,
+  );
   const copy = page
-    .locator('.fcm-method-card')
+    .locator('.fcm-m-card[data-kind="technique"]')
     .first()
-    .getByRole('button', { name: '复制提示词' });
+    .getByRole('button', { name: '复制 Prompt' });
   await copy.click();
   await page.waitForFunction(() =>
     document
@@ -175,16 +188,37 @@ try {
     /错落|stagger/,
   );
   const skillDownload = page.waitForEvent('download');
-  await page.locator('.fcm-method-card a[download]').click();
+  await page.locator('.fcm-m-card a[download]').first().click();
   const zip = await readFile(await (await skillDownload).path());
   assert.equal(zip.subarray(0, 2).toString(), 'PK');
   assert.ok(zip.length > 500);
   console.log(
-    'PASS: mobile home → Work → essays/back → wiki/search/copy → community/SVG and Skill downloads.',
+    'PASS: mobile home → Work → essays/back → community methods search/detail/copy → community/SVG and Skill downloads.',
   );
 
+  // A share entry opens the contact form as 创造者, with the opening line and a separate display consent.
   await clickTo(
-    page.locator(`.fcm-join-grid a[href="${home}/contact?topic=feedback"]`),
+    page.locator('.fcm-m-card[data-kind="technique"] .fcm-share-entry').first(),
+    home + '/contact?topic=share-method',
+  );
+  assert.equal(
+    await page.locator('input[name="role"]:checked').inputValue(),
+    '创造者',
+  );
+  assert.match(
+    await page.locator('textarea[name="idea"]').inputValue(),
+    /^我用社区里的方法做了：/,
+  );
+  assert.equal(await page.locator('input[name="allowDisplay"]').count(), 1);
+  assert.equal(
+    await page.locator('input[name="allowDisplay"]').isChecked(),
+    false,
+  );
+  await page.goBack();
+  await page.waitForURL(/\/demos\/community(#\w+)?$/);
+
+  await clickTo(
+    page.locator(`.fcm-improve-links a[href="${home}/contact?topic=feedback"]`),
     home + '/contact?topic=feedback',
   );
   assert.equal(
@@ -331,13 +365,12 @@ try {
             (await page.locator('input[name="name"]').boundingBox()).y < 900,
           );
       } else {
-        await page.locator('.fcm-method-detail summary').first().click();
-        assert.equal(
-          await page.locator('.fcm-method-detail').first().getAttribute('open'),
-          '',
+        await page.locator('.fcm-how summary').click();
+        assert.equal(await page.locator('.fcm-how').getAttribute('open'), '');
+        await page.locator('.fcm-improve-links').scrollIntoViewIfNeeded();
+        assert.ok(
+          await page.locator('.fcm-improve-links a').last().isVisible(),
         );
-        await page.locator('.fcm-join-grid').scrollIntoViewIfNeeded();
-        assert.ok(await page.locator('.fcm-join-grid a').last().isVisible());
       }
     }
   }

@@ -1,39 +1,38 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import Link from 'next/link';
 import {
   ArrowDownToLine,
   ArrowDown,
   ArrowUpRight,
   Check,
-  Copy,
   GitBranch,
   MessageCircle,
   Plus,
-  RotateCcw,
 } from 'lucide-react';
 import { artistSkills } from '../../../content/artists';
-import { knowledge, knowledgePrompt } from '../../../content/knowledge';
+import { folioCommunity } from '../../../content/folio-community';
 import {
   ABOUT,
   Footer,
-  TOOL,
-  wikiHref,
   HOME,
-  WIKI,
+  TOOL,
   artistHref,
   contactHref,
-  essayHref,
 } from '../brand/folio/shared';
 import '../brand/folio/folio.css';
 import '../brand/folio/kit.css';
 import './community.css';
+import { CopyAction, ShareAfter } from './copy';
+import { CommunityHeader } from './header';
+import { MethodsSection } from './methods-section';
 import { CowScene, DropScene } from './scenes';
 
-const stagger = knowledge.find((entry) => entry.slug === 'stagger')!;
-const accordion = knowledge.find((entry) => entry.slug === 'accordion')!;
+// 社区页五段：首屏（小花实验，「怎么做的」折在旁边）→ 01 试一试 → 02 方法（原百科）→ 03 大家的分享
+// → 04 一起改进；团队与文章只留页尾前一行。文案在 content/folio-community.ts。
+
 const styles = artistSkills.filter((skill) => skill.image).slice(0, 3);
 const palette = [
   { name: '群青', color: '#2d53e3' },
@@ -43,14 +42,7 @@ const palette = [
 const experimentPrompt =
   '用 SVG 做一朵可以交互的线条花：以画面中心为原点，将一个椭圆旋转重复 24 次。增加一个从 0 到 100 的滑杆，同时改变椭圆的短轴和旋转间隔；提供三种背景色和 SVG 下载。保留清楚的控件标签、键盘操作和减少动态效果支持。不需要连接 AI 或后端。';
 
-function OutLink({ href, children }: { href: string; children: ReactNode }) {
-  return (
-    <a className="fcm-text-link" href={href} target="_blank" rel="noreferrer">
-      {children}
-      <ArrowUpRight size={17} aria-hidden="true" />
-    </a>
-  );
-}
+const pad = (index: number) => String(index + 1).padStart(2, '0');
 
 function FlowerLines({ bloom, count = 24 }: { bloom: number; count?: number }) {
   return (
@@ -72,55 +64,35 @@ function FlowerLines({ bloom, count = 24 }: { bloom: number; count?: number }) {
   );
 }
 
-function CopyAction({
-  text,
-  id,
-  label = '复制提示词',
-}: {
-  text: string;
-  id: string;
-  label?: string;
-}) {
-  const [status, setStatus] = useState<'idle' | 'copied' | 'manual'>('idle');
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setStatus('copied');
-    } catch {
-      setStatus('manual');
-    }
-  };
+/** 原来的「把过程摊开」：收成小花旁边的一个折叠 */
+function HowItsMade() {
+  const { how } = folioCommunity.hero;
   return (
-    <div className="fcm-copy">
-      <button
-        type="button"
-        className="fcm-text-link"
-        onClick={copy}
-        aria-describedby={`${id}-status`}
-      >
-        {status === 'copied' ? (
-          <Check size={16} aria-hidden="true" />
-        ) : (
-          <Copy size={16} aria-hidden="true" />
-        )}
-        {label}
-      </button>
-      <output className="fcm-copy-status" id={`${id}-status`}>
-        {status === 'copied'
-          ? '已复制，可以带走了。'
-          : status === 'manual'
-            ? '请选中下方文字，手动复制。'
-            : ''}
-      </output>
-      {status === 'manual' && (
-        <textarea
-          aria-label={`${label}内容`}
-          readOnly
-          value={text}
-          onFocus={(event) => event.currentTarget.select()}
-        />
-      )}
-    </div>
+    <details className="fcm-how">
+      <summary>
+        {how.summary}
+        <Plus size={16} aria-hidden="true" />
+      </summary>
+      <p>{how.lead}</p>
+      <ol>
+        {how.steps.map((step, index) => (
+          <li key={step.title}>
+            <svg viewBox="0 0 520 470" fill="none" aria-hidden="true">
+              <FlowerLines bloom={step.bloom} count={step.count} />
+            </svg>
+            <span>{pad(index)}</span>
+            <strong>{step.title}</strong>
+            <p>{step.text}</p>
+          </li>
+        ))}
+      </ol>
+      <CopyAction
+        id="flower-prompt"
+        text={experimentPrompt}
+        label={how.copy}
+        topic="share-flower"
+      />
+    </details>
   );
 }
 
@@ -214,9 +186,14 @@ function Playground() {
           </button>
         </div>
         <output className="fcm-download-status">
-          {downloaded
-            ? 'SVG 已开始下载，留给你的下一次创作。'
-            : '不用登录，喜欢就带走。'}
+          {downloaded ? (
+            <ShareAfter
+              text={folioCommunity.after.flower}
+              topic="share-flower"
+            />
+          ) : (
+            '不用登录，喜欢就带走。'
+          )}
         </output>
       </div>
       <span className="fcm-poster-note" aria-hidden="true">
@@ -226,451 +203,231 @@ function Playground() {
   );
 }
 
-function Works() {
+/** Artist Skill 的小图：三种风格切换，看一种方法怎样换一种观看 */
+function ArtistScene({
+  index,
+  onPick,
+}: {
+  index: number;
+  onPick: (index: number) => void;
+}) {
+  const artist = styles[index];
+  return (
+    <div className="fcm-work-art fcm-artist-art">
+      <div className="fcm-art-top">
+        <span>一种方法，一次新的观看</span>
+        <span>AI 创作试样</span>
+      </div>
+      <div className="fcm-art-print" key={artist.slug}>
+        <img
+          src={artist.image}
+          width={artist.width}
+          height={artist.height}
+          alt={artist.imageAlt}
+          loading="lazy"
+        />
+        <p>{artist.name}</p>
+      </div>
+      <div className="fcm-artist-method">
+        <span>从这里观察</span>
+        <strong>{artist.method[0].title}</strong>
+      </div>
+      <fieldset className="fcm-style-picker" aria-label="选择艺术风格">
+        {styles.map((item, i) => (
+          <button
+            key={item.slug}
+            type="button"
+            aria-pressed={i === index}
+            onClick={() => onPick(i)}
+          >
+            {['光与色', '梦的形状', '画面秩序'][i]}
+          </button>
+        ))}
+      </fieldset>
+    </div>
+  );
+}
+
+function TrySection({ number }: { number: string }) {
+  const t = folioCommunity.try;
   const [styleIndex, setStyleIndex] = useState(0);
-  const artist = styles[styleIndex];
+  const scenes: Record<string, React.ReactNode> = {
+    niulai: <CowScene />,
+    dropagent: <DropScene />,
+    'artist-skill': <ArtistScene index={styleIndex} onPick={setStyleIndex} />,
+  };
   return (
     <section
-      className="fcm-section fcm-works"
-      id="works"
-      aria-labelledby="fcm-works-title"
+      className="fcm-section fcm-try"
+      id="try"
+      aria-labelledby="fcm-try-title"
     >
       <div className="fcm-section-heading">
         <div>
-          <p className="fcm-eyebrow">作品与实验</p>
-          <h2 id="fcm-works-title">
-            从一个念头，
-            <br />
-            到你手边的一件东西。
-          </h2>
+          <p className="fcm-eyebrow">
+            {number} / {t.kicker}
+          </p>
+          <h2 id="fcm-try-title">{t.title}</h2>
         </div>
-        <p>
-          这里是可以接触的工具、作品和实验。
-          <br />
-          有些会长进产品，有些成为下一次创造的方法。
-        </p>
+        <p>{t.lead}</p>
       </div>
-      <div className="fcm-work-grid">
-        <article className="fcm-work-card" id="niulai" data-enter>
-          <div className="fcm-work-copy">
-            <p className="fcm-work-type">桌面工具 · 公开仓库</p>
-            <h3>
-              niul.ai <span>牛来</span>
-            </h3>
-            <h4>
-              等待 AI 的时候，
-              <br />
-              有头牛替你留意。
-            </h4>
-            <p>
-              从反复切窗口，到被轻轻提醒。让每个 AI
-              会话的进度，变成桌面上看得见的状态。
-            </p>
-            <OutLink href="https://github.com/molis-ai/niul.ai">
-              去 GitHub 牵头牛
-            </OutLink>
-            <div className="fcm-product-relation">
-              <p>独立的小工具，也在走向 Molis Tool。</p>
-              <Link href={TOOL}>
-                看看 Tool 怎样接住这些能力{' '}
-                <ArrowUpRight size={16} aria-hidden="true" />
-              </Link>
-            </div>
-          </div>
-          <CowScene />
-        </article>
-        <article className="fcm-work-card" id="dropagent" data-enter>
-          <div className="fcm-work-copy">
-            <p className="fcm-work-type">Mac 工具 · 公开下载</p>
-            <h3>DropAgent</h3>
-            <h4>
-              把材料放下，
-              <br />
-              把结果带走。
-            </h4>
-            <p>
-              文件、网页、文字，交给已经装好的本地
-              Agent。在副本上工作，再把结果带回手头的事情。
-            </p>
-            <OutLink href="https://github.com/molis-ai/DropAgent">
-              查看项目与安装说明
-            </OutLink>
-            <div className="fcm-product-relation">
-              <p>拖放处理的能力，正在走向 Molis Tool。</p>
-              <Link href={TOOL}>
-                了解 Tool 的整合方向{' '}
-                <ArrowUpRight size={16} aria-hidden="true" />
-              </Link>
-            </div>
-          </div>
-          <DropScene />
-        </article>
-        <article className="fcm-work-card" id="artist-skill" data-enter>
-          <div className="fcm-work-copy">
-            <p className="fcm-work-type">创作方法 · 开源 Skill</p>
-            <h3>Artist Skill</h3>
-            <h4>
-              借一双眼睛，
-              <br />
-              做出自己的作品。
-            </h4>
-            <p>
-              把光、笔触和构图整理成可以复用的方法。带上一个主题，在自己的 AI
-              工具里开始创作。
-            </p>
-            <Link className="fcm-text-link" href={artistHref(artist.slug)}>
-              看方法，带走 Skill <ArrowUpRight size={17} aria-hidden="true" />
-            </Link>
-            <div className="fcm-product-relation">
-              <p>从作品里拆出的创作方法，收在百科里。</p>
-              <OutLink href="https://github.com/molis-ai/artist-skill">
-                查看开源项目
-              </OutLink>
-            </div>
-          </div>
-          <div className="fcm-work-art fcm-artist-art">
-            <div className="fcm-art-top">
-              <span>一种方法，一次新的观看</span>
-              <span>已有 AI 创作试样</span>
-            </div>
-            <div className="fcm-art-print" key={artist.slug}>
-              <img
-                src={artist.image}
-                width={artist.width}
-                height={artist.height}
-                alt={artist.imageAlt}
-                loading="lazy"
-              />
-              <p>{artist.name}</p>
-            </div>
-            <div className="fcm-artist-method">
-              <span>从这里观察</span>
-              <strong>{artist.method[0].title}</strong>
-            </div>
-            <fieldset className="fcm-style-picker" aria-label="选择艺术风格">
-              {styles.map((item, index) => (
-                <button
-                  key={item.slug}
-                  type="button"
-                  aria-pressed={index === styleIndex}
-                  onClick={() => setStyleIndex(index)}
-                >
-                  {['光与色', '梦的形状', '画面秩序'][index]}
-                </button>
-              ))}
-            </fieldset>
-          </div>
-        </article>
-      </div>
+      <ul className="fcm-try-grid">
+        {t.works.map((work) => {
+          const artist = work.id === 'artist-skill';
+          return (
+            <li className="fcm-try-card" id={work.id} key={work.id} data-enter>
+              {scenes[work.id]}
+              <div className="fcm-try-copy">
+                <p className="fcm-work-type">{work.type}</p>
+                <h3>
+                  {work.name}
+                  {'alias' in work ? <span>{work.alias}</span> : null}
+                </h3>
+                <p className="fcm-try-line">{work.line}</p>
+                {artist ? (
+                  <Link
+                    className="fcm-text-link"
+                    href={artistHref(styles[styleIndex].slug)}
+                  >
+                    {work.link.label}
+                    <ArrowUpRight size={17} aria-hidden="true" />
+                  </Link>
+                ) : (
+                  <a
+                    className="fcm-text-link"
+                    href={'href' in work.link ? work.link.href : undefined}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {work.link.label}
+                    <ArrowUpRight size={17} aria-hidden="true" />
+                  </a>
+                )}
+                <p className="fcm-product-relation">
+                  {work.relation}
+                  {artist ? (
+                    <a href="#methods">
+                      {t.toMethods}
+                      <ArrowDown size={14} aria-hidden="true" />
+                    </a>
+                  ) : (
+                    <Link href={TOOL}>
+                      {t.toTool}
+                      <ArrowUpRight size={14} aria-hidden="true" />
+                    </Link>
+                  )}
+                </p>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
       <div className="fcm-works-end">
-        <p>Work、Tool、Life、Story，是我们持续建设的产品方向。</p>
+        <p>{t.family}</p>
         <Link href={`${HOME}#products`} className="fcm-text-link">
-          认识 Molis 的产品家族 <ArrowUpRight size={17} aria-hidden="true" />
+          {t.familyLink} <ArrowUpRight size={17} aria-hidden="true" />
         </Link>
       </div>
     </section>
   );
 }
 
-function Process() {
+function ShareSection({ number }: { number: string }) {
+  const t = folioCommunity.share;
+  const { showcase } = t;
   return (
     <section
-      className="fcm-process"
-      id="process"
-      aria-labelledby="fcm-process-title"
+      className="fcm-section fcm-share"
+      id="share"
+      aria-labelledby="fcm-share-title"
     >
-      <div className="fcm-section">
-        <div className="fcm-section-heading">
-          <div>
-            <p className="fcm-eyebrow">02 / 把过程摊开</p>
-            <h2 id="fcm-process-title">
-              好看的结果背后，
-              <br />
-              是一些可以学会的小事。
-            </h2>
-          </div>
-          <p>
-            就从你刚才玩过的那朵花开始。
-            <br />
-            一个形状，加一点重复，再留一点变化。
-          </p>
-        </div>
-        <div className="fcm-process-grid">
-          {[
-            {
-              number: '01',
-              title: '先画一条线',
-              text: '一个椭圆，就足够开始。不必等一个完整的大想法。',
-              count: 1,
-              bloom: 44,
-            },
-            {
-              number: '02',
-              title: '试着重复它',
-              text: '把它旋转、重复 24 次。复杂的形状，从简单的规则里长出来。',
-              count: 24,
-              bloom: 44,
-            },
-            {
-              number: '03',
-              title: '把变化交给你',
-              text: '留出形状和颜色的选择。下一种可能，由动手的人决定。',
-              count: 24,
-              bloom: 82,
-            },
-          ].map((step) => (
-            <article className="fcm-process-step" key={step.number} data-enter>
-              <div className="fcm-process-drawing">
-                <span>{step.number}</span>
-                <svg viewBox="0 0 520 470" fill="none" aria-hidden="true">
-                  <FlowerLines bloom={step.bloom} count={step.count} />
-                </svg>
-              </div>
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
-            </article>
-          ))}
-        </div>
-        <div className="fcm-process-bottom">
-          <p>从试出来，到讲明白，再到别人也能接着做。</p>
-          <CopyAction
-            id="flower-prompt"
-            text={experimentPrompt}
-            label="复制这个实验的提示词"
-          />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Methods() {
-  const [replay, setReplay] = useState(0);
-  return (
-    <section
-      className="fcm-section fcm-methods"
-      id="methods"
-      aria-labelledby="fcm-methods-title"
-    >
-      <div className="fcm-section-heading">
-        <div>
-          <p className="fcm-eyebrow">03 / 留给下一次创造</p>
-          <h2 id="fcm-methods-title">
-            带走一个方法，
-            <br />
-            做出你的版本。
-          </h2>
-        </div>
-        <div>
-          <p>
-            社区里试出的方法，收进百科。
-            <br />
-            这里先试一小段，完整用法、来源和材料都在那里。
-          </p>
-          <Link className="fcm-text-link" href={WIKI}>
-            打开社区的方法库
-            <ArrowUpRight size={17} aria-hidden="true" />
-          </Link>
-        </div>
-      </div>
-      <div className="fcm-method-grid">
-        <article className="fcm-method-card" data-enter>
-          <div className="fcm-method-sample fcm-stagger-sample">
-            <div className="fcm-sample-window">
-              <p>一张创作简报</p>
-              <div className="fcm-stagger-notes" key={replay}>
-                {['先看主题', '再看内容', '最后看行动'].map((text, index) => (
-                  <span
-                    key={text}
-                    style={{ '--order': index } as CSSProperties}
-                  >
-                    {text}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setReplay((value) => value + 1)}
-              aria-label="再试一次错落入场"
-            >
-              <RotateCcw size={16} aria-hidden="true" />
-              再试一次
-            </button>
-          </div>
-          <div className="fcm-method-body">
-            <span className="fcm-work-type">动效 / 错落入场</span>
-            <h3>让内容，依次出现。</h3>
-            <p>{stagger.description}</p>
-            <CopyAction id="stagger-prompt" text={knowledgePrompt(stagger)} />
-            <Link className="fcm-text-link" href={wikiHref('stagger')}>
-              在百科里看完整方法 <ArrowUpRight size={16} aria-hidden="true" />
-            </Link>
-            <details className="fcm-method-detail">
-              <summary>
-                怎么用
-                <Plus size={15} aria-hidden="true" />
-              </summary>
-              <p>{stagger.use}</p>
-              <p>{stagger.caution}</p>
-              <OutLink href={stagger.source.url}>阅读原理</OutLink>
-            </details>
-          </div>
-        </article>
-        <article className="fcm-method-card" data-enter>
-          <div className="fcm-method-sample fcm-fold-sample">
-            <details>
-              <summary>
-                我可以怎样开始？
-                <Plus size={19} aria-hidden="true" />
-              </summary>
-              <p>
-                选一件作品试一试，把自己的想法写下来。需要细节时，再展开这一页。
-              </p>
-            </details>
-            <span>点一下，或者按 Enter。</span>
-          </div>
-          <div className="fcm-method-body">
-            <span className="fcm-work-type">交互 / 折叠展开</span>
-            <h3>复杂的信息，轻轻折起。</h3>
-            <p>{accordion.description}</p>
-            <CopyAction
-              id="accordion-prompt"
-              text={knowledgePrompt(accordion)}
-            />
-            <Link className="fcm-text-link" href={wikiHref('accordion')}>
-              在百科里看完整方法 <ArrowUpRight size={16} aria-hidden="true" />
-            </Link>
-            <details className="fcm-method-detail">
-              <summary>
-                怎么用
-                <Plus size={15} aria-hidden="true" />
-              </summary>
-              <p>{accordion.use}</p>
-              <p>{accordion.caution}</p>
-              <OutLink href={accordion.source.url}>阅读原理</OutLink>
-            </details>
-          </div>
-        </article>
-        <article className="fcm-method-card" data-enter>
-          <div className="fcm-method-sample fcm-color-sample">
-            <img
-              src={styles[0].image}
-              width={styles[0].width}
-              height={styles[0].height}
-              alt={styles[0].imageAlt}
-              loading="lazy"
-            />
-            <div className="fcm-light-note">
-              <small>观察光与色</small>
-              <p>
-                雨后的池塘，
-                <br />
-                午后的光从垂柳间落下。
-              </p>
-              <span>AI 创作试样</span>
-            </div>
-          </div>
-          <div className="fcm-method-body">
-            <span className="fcm-work-type">创作 / 莫奈的光与色</span>
-            <h3>把一种观察，变成方法。</h3>
-            <p>
-              {styles[0].description}把主题交给 Skill，在自己的工具里试一幅。
-            </p>
-            <a
-              className="fcm-text-link"
-              href="/downloads/artists/monet-impressionism.zip"
-              download
-            >
-              <ArrowDownToLine size={16} aria-hidden="true" />
-              下载莫奈 Skill
-            </a>
-            <details className="fcm-method-detail">
-              <summary>
-                怎么用
-                <Plus size={15} aria-hidden="true" />
-              </summary>
-              <p>
-                解压 Skill，按其中的说明放入支持 Skill 的 AI
-                工具，再给它一个你想画的主题。
-              </p>
-              <CopyAction id="monet-prompt" text={styles[0].prompt} />
-              <Link
+      <p className="fcm-eyebrow">
+        {number} / {t.kicker}
+      </p>
+      <h2 id="fcm-share-title">
+        {t.title[0]}
+        <br />
+        <span>{t.title[1]}</span>
+      </h2>
+      <p className="fcm-share-lead">{t.lead}</p>
+      <ol className="fcm-share-ways">
+        {t.ways.map((way, index) => (
+          <li key={way.title} data-enter>
+            <span className="fcm-share-number">{pad(index)}</span>
+            <h3>{way.title}</h3>
+            <p>{way.text}</p>
+            {'href' in way ? (
+              <a
                 className="fcm-text-link"
-                href={artistHref('monet-impressionism')}
+                href={way.href}
+                target="_blank"
+                rel="noreferrer"
               >
-                看看完整方法
-                <ArrowUpRight size={16} aria-hidden="true" />
+                {way.action}
+                <ArrowUpRight size={17} aria-hidden="true" />
+              </a>
+            ) : 'action' in way ? (
+              <Link className="fcm-text-link" href={contactHref('creator')}>
+                {way.action}
+                <ArrowUpRight size={17} aria-hidden="true" />
               </Link>
-            </details>
-          </div>
-        </article>
+            ) : null}
+          </li>
+        ))}
+      </ol>
+      <div className="fcm-showcase" aria-labelledby="fcm-showcase-title">
+        <div className="fcm-showcase-head">
+          <h3 id="fcm-showcase-title">{showcase.title}</h3>
+          <p>{showcase.note}</p>
+        </div>
+        {showcase.items.length > 0 ? (
+          <ul className="fcm-showcase-grid">
+            {showcase.items.map((item) => (
+              <li key={item.href}>
+                <a href={item.href} target="_blank" rel="noreferrer">
+                  <strong>{item.title}</strong>
+                  <span>
+                    {item.by}
+                    {item.method ? ` · ${item.method}` : ''}
+                  </span>
+                  <ArrowUpRight size={18} aria-hidden="true" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="fcm-showcase-empty">{showcase.empty}</p>
+        )}
       </div>
     </section>
   );
 }
 
-function People() {
+function ImproveSection({ number }: { number: string }) {
+  const t = folioCommunity.improve;
   return (
     <section
-      className="fcm-people"
-      id="people"
-      aria-labelledby="fcm-people-title"
+      className="fcm-section fcm-improve"
+      id="improve"
+      aria-labelledby="fcm-improve-title"
     >
-      <div className="fcm-section">
-        <div className="fcm-people-intro">
-          <div>
-            <p className="fcm-eyebrow">04 / 做东西的人，也在想事情</p>
-            <h2 id="fcm-people-title">
-              作品让我们
-              <br />
-              认识彼此。
-            </h2>
-          </div>
-          <div className="fcm-people-note">
-            <p>
-              我们做产品，也分享为什么做、哪里还没想明白。关于技术与人，关于一个念头怎样真正落地。
-            </p>
-            <Link href={ABOUT} className="fcm-text-link">
-              认识 Molis 的伙伴
-              <ArrowUpRight size={17} aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
-        <div className="fcm-essays">
-          <Link
-            href={essayHref('human-scale')}
-            className="fcm-essay"
-            data-enter
-          >
-            <span className="fcm-essay-letter" aria-hidden="true">
-              人
-            </span>
-            <div>
-              <span>一骏 / 观点</span>
-              <h3>人的尺度</h3>
-              <p>理想主义在 AI 时代的生与死</p>
-              <span className="fcm-essay-link">
-                关于机器与人，以及我们把判断留在哪里。
-                <ArrowUpRight size={20} aria-hidden="true" />
-              </span>
-            </div>
-          </Link>
-          <Link href={essayHref('idealism')} className="fcm-essay" data-enter>
-            <span className="fcm-essay-letter" aria-hidden="true">
-              想
-            </span>
-            <div>
-              <span>一骏 / 观点</span>
-              <h3>落地主义</h3>
-              <p>一种不承认自己是哲学的哲学</p>
-              <span className="fcm-essay-link">
-                先想清楚为什么值得，再把它做出来。
-                <ArrowUpRight size={20} aria-hidden="true" />
-              </span>
-            </div>
-          </Link>
-        </div>
+      <div>
+        <p className="fcm-eyebrow">
+          {number} / {t.kicker}
+        </p>
+        <h2 id="fcm-improve-title">{t.text}</h2>
+      </div>
+      <div className="fcm-improve-links">
+        <a href="https://github.com/molis-ai" target="_blank" rel="noreferrer">
+          <GitBranch size={20} aria-hidden="true" />
+          {t.github}
+          <ArrowUpRight size={17} aria-hidden="true" />
+        </a>
+        <Link href={contactHref('feedback')}>
+          <MessageCircle size={20} aria-hidden="true" />
+          {t.feedback}
+          <ArrowUpRight size={17} aria-hidden="true" />
+        </Link>
       </div>
     </section>
   );
@@ -678,6 +435,7 @@ function People() {
 
 export default function CommunityPage() {
   const root = useRef<HTMLDivElement>(null);
+  const { hero } = folioCommunity;
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -696,29 +454,13 @@ export default function CommunityPage() {
   }, []);
   return (
     <div className="fo-site fcm-site" ref={root}>
-      <header className="fo-header fcm-header">
-        <Link href={HOME} className="fo-logo" aria-label="Molis AI 工作室首页">
-          <img src="/images/molis-logo.png" width="36" height="36" alt="" />
-          <span>Molis AI</span>
-          <span className="fcm-community-label">社区</span>
-        </Link>
-        <nav className="fo-nav" aria-label="社区导航">
-          <a href="#works">作品</a>
-          <a href="#process">过程</a>
-          <a href="#methods">方法</a>
-          <a href="#join">一起做</a>
-        </nav>
-        <Link href={HOME} className="fcm-back-home">
-          回工作室
-          <ArrowUpRight size={16} aria-hidden="true" />
-        </Link>
-      </header>
+      <CommunityHeader />
       <main id="main">
         <section className="fcm-hero" aria-labelledby="fcm-hero-title">
           <div className="fcm-hero-copy">
             <p className="fcm-eyebrow">
               <span />
-              MOLIS AI · 创作社区
+              {hero.eyebrow}
             </p>
             <h1 id="fcm-hero-title">
               好奇心，
@@ -733,89 +475,40 @@ export default function CommunityPage() {
               。
             </h1>
             <p className="fcm-hero-description">
-              试试有意思的作品，看看它们怎么做出来。
+              {hero.description[0]}
               <br />
-              带走一个方法，也留下你的新想法。
+              {hero.description[1]}
             </p>
             <div className="fcm-hero-actions">
-              <a href="#works" className="fo-btn fo-btn-ink">
-                从作品开始
+              <a href="#try" className="fo-btn fo-btn-ink">
+                {hero.actions.try}
                 <ArrowDown size={17} aria-hidden="true" />
               </a>
-              <a href="#methods" className="fcm-text-link">
-                先带走一个方法
+              <a href="#share" className="fcm-text-link">
+                {hero.actions.share}
                 <ArrowUpRight size={17} aria-hidden="true" />
               </a>
             </div>
             <p className="fcm-hero-signature">
-              始终好奇，持续创造。<span>Made of curiosity.</span>
+              {hero.signature.zh}
+              <span>{hero.signature.en}</span>
             </p>
           </div>
-          <Playground />
-        </section>
-        <div className="fcm-page-index">
-          <span>看见一个念头，如何变成作品。</span>
-          <nav aria-label="本页内容">
-            <a href="#works">试作品</a>
-            <a href="#process">看过程</a>
-            <a href="#methods">带走方法</a>
-            <a href="#join">一起做</a>
-          </nav>
-        </div>
-        <Works />
-        <Process />
-        <Methods />
-        <People />
-        <section
-          className="fcm-section fcm-join"
-          id="join"
-          aria-labelledby="fcm-join-title"
-        >
-          <p className="fcm-eyebrow">下一件有意思的事，也许从你开始</p>
-          <h2 id="fcm-join-title">
-            带着好奇来。
-            <br />
-            <span>带点什么走，再带点什么回来。</span>
-          </h2>
-          <p className="fcm-join-description">
-            一个用过后的感受、一处小小的改进，
-            <br />
-            或者一个还没想明白的念头，都可以是开始。
-          </p>
-          <div className="fcm-join-grid">
-            <a
-              href="https://github.com/molis-ai"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <GitBranch size={23} aria-hidden="true" />
-              <h3>一起改一点</h3>
-              <p>从公开项目开始，提一个具体问题，或贡献一处改进。</p>
-              <span>
-                去 GitHub 看看
-                <ArrowUpRight size={18} aria-hidden="true" />
-              </span>
-            </a>
-            <Link href={contactHref('feedback')}>
-              <MessageCircle size={23} aria-hidden="true" />
-              <h3>告诉我们，试得怎么样</h3>
-              <p>你在做什么，哪里顺手，哪里卡住了。具体的感受最有用。</p>
-              <span>
-                聊聊你的体验
-                <ArrowUpRight size={18} aria-hidden="true" />
-              </span>
-            </Link>
-            <Link href={contactHref('creator')}>
-              <Plus size={23} aria-hidden="true" />
-              <h3>带来你的作品</h3>
-              <p>已经做出来的，或刚冒出来的想法，都欢迎和我们聊聊。</p>
-              <span>
-                分享一个念头
-                <ArrowUpRight size={18} aria-hidden="true" />
-              </span>
-            </Link>
+          <div className="fcm-hero-side">
+            <Playground />
+            <HowItsMade />
           </div>
         </section>
+        <TrySection number="01" />
+        <MethodsSection number="02" />
+        <ShareSection number="03" />
+        <ImproveSection number="04" />
+        <p className="fcm-people-line">
+          <Link href={ABOUT} className="fcm-text-link">
+            {folioCommunity.people}
+            <ArrowUpRight size={17} aria-hidden="true" />
+          </Link>
+        </p>
       </main>
       <Footer tone="blue" />
     </div>

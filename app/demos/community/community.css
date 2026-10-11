@@ -42,28 +42,6 @@
   margin-inline: auto;
   padding: 100px var(--fo-gutter);
 }
-.fcm-header {
-  position: sticky;
-}
-.fcm-header .fo-logo {
-  white-space: nowrap;
-}
-.fcm-community-label {
-  font-weight: 400;
-  color: var(--fo-muted);
-  font-size: 12px;
-  border-left: 1px solid var(--fo-line);
-  padding-left: 12px;
-  margin-left: 3px;
-}
-.fcm-back-home {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  justify-self: end;
-  gap: 5px;
-  font-size: 12px;
-}
 .fcm-site .fcm-text-link {
   display: inline-flex;
   align-items: center;
@@ -292,27 +270,6 @@
   color: var(--fo-muted);
   font-size: 11px;
 }
-.fcm-page-index {
-  max-width: var(--fcm-max);
-  padding: 22px var(--fo-gutter);
-  margin: auto;
-  border-block: 1px solid var(--fo-line);
-  display: flex;
-  justify-content: space-between;
-  gap: 24px;
-  font-size: 12px;
-  color: var(--fo-muted);
-}
-.fcm-page-index nav {
-  display: flex;
-  gap: 26px;
-  color: var(--fo-ink);
-}
-.fcm-page-index a {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-}
 .fcm-section-heading {
   display: flex;
   justify-content: space-between;
@@ -320,8 +277,7 @@
   align-items: end;
   margin-bottom: 48px;
 }
-.fcm-section-heading .fcm-eyebrow,
-.fcm-people-intro .fcm-eyebrow {
+.fcm-section-heading .fcm-eyebrow {
   margin-bottom: 22px;
 }
 .fcm-section-heading > p,
@@ -333,49 +289,10 @@
   margin-top: 12px;
 }
 /* 每件作品是一幅能解释用途的场景，和 Folio 产品页使用同一阅读尺度。 */
-.fcm-work-grid {
-  display: grid;
-  gap: 44px;
-}
-.fcm-work-card {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  align-items: center;
-  gap: clamp(30px, 4.5vw, 68px);
-  padding: clamp(28px, 4vw, 56px);
-  border-radius: 30px;
-  background: var(--fo-white);
-}
-.fcm-work-copy {
-  min-width: 0;
-}
 .fcm-site .fcm-work-type {
   display: block;
   font-size: 12px;
   color: var(--fo-muted);
-}
-.fcm-work-copy h3 {
-  margin-top: 16px;
-  font: 500 clamp(36px, 4vw, 62px) / 1.1 var(--fo-display);
-  letter-spacing: -0.045em;
-}
-.fcm-work-copy h3 span {
-  font: 500 18px var(--fo-serif);
-  margin-left: 10px;
-  letter-spacing: 0;
-}
-.fcm-work-copy h4 {
-  margin: 26px 0 18px;
-  font: 500 clamp(24px, 2.3vw, 34px) / 1.5 var(--fo-serif);
-}
-.fcm-work-copy > p:last-of-type {
-  max-width: 26em;
-  font-size: 16px;
-  color: var(--fo-text);
-}
-.fcm-work-copy > .fcm-text-link {
-  margin-top: 22px;
-  font-weight: 650;
 }
 .fcm-product-relation {
   margin-top: 26px;
@@ -775,111 +692,85 @@
   }
 }
 @media (max-width: 1000px) {
-  .fcm-work-card {
-    grid-template-columns: 1fr;
-    padding: 32px;
-  }
   .fcm-work-art {
     width: min(100%, 620px);
     justify-self: center;
   }
-  .fcm-work-copy h3 {
-    font-size: 52px;
-  }
-  .fcm-work-copy h4 {
-    font-size: 30px;
-  }
 }
-@media (max-width: 600px) {
-  .fcm-work-card {
-    padding: 24px 18px;
-    gap: 28px;
-    border-radius: 24px;
-  }
-  .fcm-work-copy h3 {
-    font-size: 43px;
-  }
-  .fcm-work-copy h4 {
-    font-size: 25px;
-    margin-top: 20px;
-  }
-  .fcm-work-copy > p:last-of-type {
-    font-size: 15px;
-  }
-  .fcm-work-art {
-    height: 390px;
-    padding: 18px 14px;
-  }
-  .fcm-art-top {
-    font-size: 9px;
-  }
-  .fcm-cow-scene {
-    right: 12px;
-    height: 182px;
-  }
-  .fcm-cow-scene img {
-    width: 125px;
-    height: 125px;
-  }
-  .fcm-cow-speech {
-    font-size: 12px !important;
-  }
-  .fcm-desktop-window {
-    top: 60px;
-    left: 5%;
-    width: 90%;
-  }
-  .fcm-session {
-    padding: 14px;
-  }
-  .fcm-session strong {
-    font-size: 12px;
-  }
-  .fcm-session p {
-    font-size: 10px;
-  }
-  .fcm-demo-switch {
-    left: 12px;
-    bottom: 12px;
-    font-size: 11px;
-  }
-  .fcm-source-file {
-    top: 55px;
-    left: 7%;
-    width: 135px;
-    padding: 15px;
-  }
-  .fcm-agent-dock {
-    top: 125px;
-    width: 74%;
-    right: 5%;
-  }
-  .fcm-agent-dock strong {
-    font-size: 15px;
-  }
-  .fcm-agent-dock > span {
-    font-size: 10px;
-  }
-  .fcm-result-sheet {
-    width: 75%;
-    padding: 15px;
-  }
-  .fcm-art-print {
-    top: 60px;
-    left: 5%;
-    width: 85%;
-  }
-  .fcm-art-print img {
-    height: 217px;
-  }
-  .fcm-artist-method {
-    bottom: 66px;
-    max-width: 190px;
-    padding: 12px 14px;
-  }
-  .fcm-artist-method strong {
-    font-size: 14px;
-  }
+/* 试一试的卡片里，场景用紧凑的尺寸（原来手机上的那一套），三张并排也放得下 */
+.fcm-try-card .fcm-work-art {
+  height: 390px;
+  padding: 18px 14px;
+}
+.fcm-try-card .fcm-art-top {
+  font-size: 9px;
+}
+.fcm-try-card .fcm-cow-scene {
+  right: 12px;
+  height: 182px;
+}
+.fcm-try-card .fcm-cow-scene img {
+  width: 125px;
+  height: 125px;
+}
+.fcm-try-card .fcm-cow-speech {
+  font-size: 12px !important;
+}
+.fcm-try-card .fcm-desktop-window {
+  top: 60px;
+  left: 5%;
+  width: 90%;
+}
+.fcm-try-card .fcm-session {
+  padding: 14px;
+}
+.fcm-try-card .fcm-session strong {
+  font-size: 12px;
+}
+.fcm-try-card .fcm-session p {
+  font-size: 10px;
+}
+.fcm-try-card .fcm-demo-switch {
+  left: 12px;
+  bottom: 12px;
+  font-size: 11px;
+}
+.fcm-try-card .fcm-source-file {
+  top: 55px;
+  left: 7%;
+  width: 135px;
+  padding: 15px;
+}
+.fcm-try-card .fcm-agent-dock {
+  top: 125px;
+  width: 74%;
+  right: 5%;
+}
+.fcm-try-card .fcm-agent-dock strong {
+  font-size: 15px;
+}
+.fcm-try-card .fcm-agent-dock > span {
+  font-size: 10px;
+}
+.fcm-try-card .fcm-result-sheet {
+  width: 75%;
+  padding: 15px;
+}
+.fcm-try-card .fcm-art-print {
+  top: 60px;
+  left: 5%;
+  width: 85%;
+}
+.fcm-try-card .fcm-art-print img {
+  height: 217px;
+}
+.fcm-try-card .fcm-artist-method {
+  bottom: 66px;
+  max-width: 190px;
+  padding: 12px 14px;
+}
+.fcm-try-card .fcm-artist-method strong {
+  font-size: 14px;
 }
 .fcm-works-end {
   display: flex;
@@ -895,77 +786,6 @@
 .fcm-works-end .fcm-text-link {
   color: var(--fo-ink);
   font-size: 13px;
-}
-.fcm-process {
-  background: var(--fo-navy);
-  color: var(--fo-white);
-}
-.fcm-process .fcm-eyebrow,
-.fcm-process .fcm-section-heading > p {
-  color: #bfcae2;
-}
-.fcm-process h2 {
-  font-size: clamp(34px, 3.7vw, 56px);
-}
-.fcm-process-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 35px;
-}
-.fcm-process-drawing {
-  position: relative;
-  height: 245px;
-  color: #eee3bf;
-  border-block: 1px solid #fffcf62e;
-  margin-bottom: 22px;
-}
-.fcm-process-drawing > span {
-  position: absolute;
-  top: 18px;
-  left: 0;
-  font-family: var(--fo-display);
-  font-size: 20px;
-  font-style: italic;
-  color: #c4cce1;
-}
-.fcm-process-drawing svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-.fcm-process-step:first-child .fcm-process-drawing {
-  color: #f4b4c0;
-}
-.fcm-process-step:last-child .fcm-process-drawing {
-  color: #b8cef0;
-}
-.fcm-process-step h3 {
-  font-family: var(--fo-serif);
-  font-weight: 500;
-  font-size: 24px;
-  letter-spacing: -0.04em;
-  margin-bottom: 10px;
-}
-.fcm-process-step > p {
-  font-size: 14px;
-  color: #bfcae2;
-  max-width: 29ch;
-}
-.fcm-process-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  border-top: 1px solid #fffcf62e;
-  padding-top: 27px;
-  margin-top: 44px;
-}
-.fcm-process-bottom > p {
-  color: #bfcae2;
-  font-size: 13px;
-}
-.fcm-process .fcm-text-link:hover {
-  color: var(--fo-yellow);
 }
 .fcm-copy-status {
   display: block;
@@ -985,161 +805,6 @@
   color: var(--fo-ink);
   background: var(--fo-white);
 }
-.fcm-process-bottom .fcm-copy {
-  max-width: 420px;
-}
-.fcm-method-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-}
-.fcm-method-card {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background: var(--fo-white);
-  border-radius: 24px;
-  overflow: hidden;
-}
-.fcm-method-sample {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 340px;
-  gap: 16px;
-  padding: 35px;
-}
-.fcm-stagger-sample {
-  background: var(--fo-periwinkle);
-}
-.fcm-sample-window {
-  width: min(100%, 350px);
-  padding: 22px;
-  background: var(--fo-white);
-  box-shadow: var(--fo-shadow);
-  border-radius: 14px;
-  transform: rotate(-3deg);
-}
-.fcm-sample-window > p {
-  font-size: 13px;
-  margin-bottom: 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--fo-line);
-}
-.fcm-stagger-notes {
-  display: grid;
-  gap: 9px;
-}
-.fcm-stagger-notes span {
-  display: block;
-  padding: 10px 14px;
-  border-radius: 7px;
-  background: var(--fo-paper);
-  font-size: 13px;
-}
-.fcm-stagger-notes span:nth-child(2) {
-  background: var(--fo-yellow);
-}
-.fcm-stagger-notes span:nth-child(3) {
-  background: var(--fo-pink);
-}
-.fcm-stagger-sample button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  border: 0;
-  background: transparent;
-  font-size: 13px;
-}
-.fcm-color-sample {
-  position: relative;
-  isolation: isolate;
-  background: var(--fo-sage);
-}
-.fcm-color-sample > img {
-  width: 100%;
-  height: 245px;
-  object-fit: cover;
-  border: 10px solid var(--fo-white);
-  box-shadow: var(--fo-shadow);
-  transform: rotate(-4deg);
-}
-.fcm-light-note {
-  position: absolute;
-  bottom: 27px;
-  right: 24px;
-  padding: 15px 20px;
-  background: var(--fo-yellow);
-  transform: rotate(3deg);
-  box-shadow: var(--fo-shadow);
-}
-.fcm-light-note small,
-.fcm-light-note span {
-  font-size: 10px;
-}
-.fcm-light-note p {
-  font: 500 16px / 1.7 var(--fo-serif);
-  padding: 6px 0;
-}
-@media (max-width: 800px) {
-  .fcm-method-card {
-    grid-template-columns: 1fr;
-  }
-  .fcm-method-sample {
-    min-height: 310px;
-    padding: 28px;
-  }
-}
-.fcm-method-body {
-  padding: 27px 25px 21px;
-}
-.fcm-method-body h3 {
-  font-size: 24px;
-  font-family: var(--fo-serif);
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  margin: 9px 0 13px;
-}
-.fcm-method-body > p {
-  font-size: 15px;
-  color: var(--fo-text);
-  min-height: 0;
-}
-.fcm-method-body > .fcm-copy,
-.fcm-method-body > .fcm-text-link {
-  margin-top: 15px;
-}
-.fcm-method-body .fcm-text-link {
-  font-size: 14px;
-}
-.fcm-fold-sample {
-  background: #f1e1d5;
-}
-.fcm-fold-sample details {
-  width: 100%;
-  background: var(--fo-white);
-  border-radius: 4px;
-  padding: 0 15px;
-}
-.fcm-fold-sample summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  cursor: pointer;
-  min-height: 51px;
-  font-size: 12px;
-}
-.fcm-fold-sample details p {
-  font-size: 12px;
-  padding-bottom: 15px;
-  color: var(--fo-muted);
-}
-.fcm-fold-sample > span {
-  font-size: 11px;
-  color: var(--fo-muted);
-}
 .fcm-site summary {
   list-style: none;
 }
@@ -1151,173 +816,6 @@
 }
 .fcm-site summary > svg {
   transition: transform 0.2s;
-}
-.fcm-method-detail {
-  margin-top: 15px;
-  border-top: 1px solid var(--fo-line);
-}
-.fcm-method-detail > summary {
-  font-size: 12px;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-}
-.fcm-method-detail > p {
-  font-size: 13px;
-  color: var(--fo-muted);
-  margin: 8px 0 13px;
-}
-.fcm-people {
-  background: #e6e9df;
-}
-.fcm-people-intro {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 70px;
-  align-items: end;
-  margin-bottom: 45px;
-}
-.fcm-people-note {
-  max-width: 425px;
-  justify-self: end;
-}
-.fcm-people-note > p {
-  color: #546050;
-  font-size: 15px;
-}
-.fcm-people-note .fcm-text-link {
-  margin-top: 15px;
-}
-.fcm-essays {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 26px;
-}
-.fcm-essay {
-  display: flex;
-  gap: 25px;
-  align-items: center;
-  background: var(--fo-white);
-  padding: 30px;
-  border-radius: 3px;
-  transition: transform 0.4s var(--fo-ease);
-}
-.fcm-essay:hover {
-  transform: translateY(-5px);
-}
-.fcm-essay-letter {
-  font-family: var(--fo-serif);
-  font-size: 84px;
-  background: var(--fo-pink);
-  color: var(--fo-navy);
-  display: grid;
-  place-items: center;
-  width: 120px;
-  height: 163px;
-  flex-shrink: 0;
-  transform: rotate(-5deg);
-}
-.fcm-essay:nth-child(2) .fcm-essay-letter {
-  background: var(--fo-yellow);
-  transform: rotate(4deg);
-}
-.fcm-essay > div {
-  flex: 1;
-}
-.fcm-essay > div > span:first-child {
-  font-size: 11px;
-  color: var(--fo-muted);
-}
-.fcm-essay h3 {
-  font-size: 28px;
-  font-family: var(--fo-serif);
-  font-weight: 500;
-  margin: 8px 0 10px;
-  letter-spacing: -0.03em;
-}
-.fcm-essay p {
-  font-size: 12px;
-}
-.fcm-essay-link {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 12px;
-  font-size: 11px;
-  color: var(--fo-muted);
-  margin-top: 20px;
-  line-height: 1.8;
-}
-.fcm-join {
-  text-align: center;
-  padding-top: 110px;
-  padding-bottom: 110px;
-}
-.fcm-join .fcm-eyebrow {
-  margin-bottom: 24px;
-}
-.fcm-join h2 {
-  font-size: clamp(37px, 4vw, 60px);
-}
-.fcm-join h2 span {
-  color: var(--fo-blue);
-  font-size: 0.72em;
-}
-.fcm-join-description {
-  margin-top: 22px !important;
-  font-size: 15px;
-  color: var(--fo-muted);
-}
-.fcm-join-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-  text-align: left;
-  margin-top: 54px;
-}
-.fcm-join-grid > a {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 32px;
-  border-radius: 24px;
-  background: var(--fo-yellow);
-  box-shadow: 0 24px 48px -36px rgb(40 24 10 / 0.4);
-  transition: transform 0.3s var(--fo-ease);
-}
-.fcm-join-grid > a:nth-child(2) {
-  background: var(--fo-pink);
-}
-.fcm-join-grid > a:nth-child(3) {
-  background: var(--fo-sage);
-}
-.fcm-join-grid > a:is(:hover, :focus-visible) {
-  transform: translateY(-4px);
-}
-.fcm-join-grid > a > svg {
-  color: var(--fo-blue);
-  margin-bottom: 17px;
-}
-.fcm-join-grid h3 {
-  font-family: var(--fo-serif);
-  font-size: 24px;
-  font-weight: 900;
-  margin-bottom: 11px;
-}
-.fcm-join-grid p {
-  color: var(--fo-text);
-  font-size: 15px;
-  margin-bottom: 24px;
-}
-.fcm-join-grid span {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  margin-top: auto;
 }
 .fcm-site .fo-colophon-mark {
   font-size: clamp(140px, 23vw, 370px);
@@ -1334,14 +832,6 @@
 }
 .fcm-playground.fcm-seen .fcm-flower g > g {
   animation: fcm-flower-in 1.5s var(--fo-ease) both;
-}
-.fcm-process-step.fcm-seen ellipse {
-  stroke-dasharray: 1400;
-  animation: fcm-draw 1.5s var(--fo-ease) both;
-}
-.fcm-method-card.fcm-seen .fcm-stagger-notes span {
-  animation: fcm-note-in 0.65s calc(var(--order) * 180ms) var(--fo-ease)
-    backwards;
 }
 @keyframes fcm-poster-in {
   from {
@@ -1387,6 +877,414 @@
     stroke-dashoffset: 0;
   }
 }
+/* ---------- 首屏：小花旁边的「怎么做的」，原来的「把过程摊开」收在这里 ---------- */
+.fcm-hero-side {
+  display: grid;
+  min-width: 0;
+}
+.fcm-how {
+  justify-self: end;
+  width: min(100%, 510px);
+  margin-top: 26px;
+  border-top: 1px solid var(--fo-line);
+}
+.fcm-how > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  font-size: 14px;
+  font-weight: 650;
+}
+.fcm-site .fcm-how > p {
+  font-size: 13px;
+  color: var(--fo-muted);
+}
+.fcm-how ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 14px 0 8px;
+  padding: 0;
+  list-style: none;
+}
+.fcm-how li {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+}
+.fcm-how li svg {
+  width: 100%;
+  height: 76px;
+  border-block: 1px solid var(--fo-line);
+  color: var(--fo-blue);
+}
+.fcm-how li > span {
+  font: italic 15px var(--fo-display);
+  color: var(--fo-red);
+}
+.fcm-how li strong {
+  font: 500 15px/1.4 var(--fo-serif);
+}
+.fcm-site .fcm-how li p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--fo-text);
+}
+
+/* ---------- 01 试一试：三张轻卡，一张小图、一句话、一个入口和一行关系 ---------- */
+.fcm-try-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 28px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fcm-try-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 20px;
+  padding: 14px 14px 18px;
+  border-radius: 26px;
+  background: var(--fo-white);
+}
+.fcm-try-copy {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 10px;
+  padding: 0 8px;
+}
+.fcm-try-copy h3 {
+  font: 500 clamp(30px, 2.6vw, 40px) / 1.1 var(--fo-display);
+  letter-spacing: -0.04em;
+}
+.fcm-try-copy h3 span {
+  margin-left: 8px;
+  font: 500 15px var(--fo-serif);
+  letter-spacing: 0;
+}
+.fcm-site .fcm-try-line {
+  font: 500 clamp(18px, 1.5vw, 21px) / 1.6 var(--fo-serif);
+}
+.fcm-try-copy > .fcm-text-link {
+  font-weight: 650;
+}
+.fcm-site .fcm-try-copy .fcm-product-relation {
+  align-self: end;
+  width: 100%;
+  margin-top: 6px;
+  padding-top: 12px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--fo-muted);
+}
+.fcm-try-copy .fcm-product-relation a {
+  gap: 4px;
+  margin-left: 8px;
+  color: var(--fo-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ---------- 02 方法：分类加搜索，默认六张精选，展开全部在原处，组件来源收起 ---------- */
+.fcm-methods .fw-tools {
+  margin: 0 0 28px;
+}
+.fcm-m-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 28px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fcm-m-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: 12px;
+  border-radius: 26px;
+  background: var(--fo-white);
+  box-shadow: var(--fo-shadow);
+}
+.fcm-m-card .fw-demo-bar {
+  padding: 0 6px;
+}
+.fcm-m-art {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: 18px;
+  background: var(--fo-paper);
+}
+.fcm-m-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--fo-ease);
+}
+.fcm-m-art:hover img {
+  transform: scale(1.03);
+}
+.fcm-m-builder {
+  display: grid;
+  place-content: center;
+  height: 100%;
+  background: var(--fo-ink);
+  color: var(--fo-white);
+  font: italic 500 clamp(26px, 2.4vw, 34px) / 1.15 var(--fo-display);
+  text-align: center;
+}
+.fcm-m-body {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 8px;
+  padding: 18px 10px 4px;
+}
+.fcm-m-body h3 {
+  font: 900 clamp(20px, 1.8vw, 26px) / 1.35 var(--fo-serif);
+}
+.fcm-m-body h3 a:hover {
+  color: var(--fo-red);
+}
+.fcm-site .fcm-m-body > p {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--fo-text);
+}
+.fcm-m-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 20px;
+  margin-top: 4px;
+}
+.fcm-site .fcm-m-actions .fcm-text-link {
+  font-size: 14px;
+  font-weight: 650;
+}
+.fcm-m-body > output:empty {
+  display: none;
+}
+.fcm-share-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-size: 13px;
+  color: var(--fo-muted);
+}
+.fcm-share-entry:hover {
+  color: var(--fo-red);
+}
+.fcm-site .fcm-m-more {
+  display: block;
+  min-height: 48px;
+  margin: 28px auto 0;
+  padding: 0 26px;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 2px var(--fo-ink);
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 650;
+}
+.fcm-m-more:hover {
+  background: var(--fo-white);
+}
+.fcm-m-resources {
+  margin-top: 40px;
+  border-top: 2px solid var(--fo-ink);
+}
+.fcm-m-resources > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+  padding: 18px 0;
+  font: 900 clamp(20px, 2vw, 26px) / 1.3 var(--fo-serif);
+}
+.fcm-m-resources > summary small {
+  font: 400 13px var(--fo-sans);
+  color: var(--fo-muted);
+}
+.fcm-m-resources > summary > svg {
+  align-self: center;
+  margin-left: auto;
+}
+.fcm-m-resources .fw-group:first-child h3 {
+  margin-top: 12px;
+}
+.fcm-methods > .fw-resources {
+  margin-top: 12px;
+}
+.fcm-site .fcm-m-disclosure {
+  margin-top: 18px;
+  font-size: 12px;
+  color: var(--fo-muted);
+}
+
+/* ---------- 03 大家的分享：三个口子由轻到重，下面是只放真实投稿的精选墙 ---------- */
+.fcm-share {
+  text-align: center;
+}
+.fcm-share .fcm-eyebrow {
+  margin-bottom: 24px;
+}
+.fcm-site .fcm-share h2 {
+  font-size: clamp(37px, 4vw, 60px);
+}
+.fcm-share h2 span {
+  color: var(--fo-blue);
+  font-size: 0.72em;
+}
+.fcm-site .fcm-share-lead {
+  margin-top: 18px;
+  font-size: 15px;
+  color: var(--fo-text);
+}
+.fcm-share-ways {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 44px 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+.fcm-share-ways > li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 28px;
+  border-radius: 24px;
+  background: var(--fo-yellow);
+}
+.fcm-share-ways > li:nth-child(2) {
+  background: var(--fo-pink);
+}
+.fcm-share-ways > li:nth-child(3) {
+  background: var(--fo-sage);
+}
+.fcm-share-number {
+  font: italic 22px var(--fo-display);
+}
+.fcm-share-ways h3 {
+  font: 900 20px / 1.4 var(--fo-serif);
+}
+.fcm-site .fcm-share-ways p {
+  font-size: 14px;
+  line-height: 1.75;
+}
+.fcm-share-ways .fcm-text-link {
+  margin-top: auto;
+  font-weight: 650;
+}
+.fcm-showcase {
+  margin-top: 28px;
+  padding: 28px;
+  border-radius: 24px;
+  box-shadow: inset 0 0 0 1.5px var(--fo-line);
+  text-align: left;
+}
+.fcm-showcase-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 24px;
+}
+.fcm-showcase-head h3 {
+  font: 900 22px / 1.4 var(--fo-serif);
+}
+.fcm-site .fcm-showcase-head p {
+  max-width: 34em;
+  font-size: 13px;
+  color: var(--fo-muted);
+}
+.fcm-site .fcm-showcase-empty {
+  margin-top: 18px;
+  padding: 26px;
+  border: 1.5px dashed var(--fo-line);
+  border-radius: 18px;
+  font: 500 17px var(--fo-serif);
+  color: var(--fo-muted);
+  text-align: center;
+}
+.fcm-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.fcm-showcase-grid a {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--fo-white);
+}
+.fcm-showcase-grid strong {
+  font: 900 17px var(--fo-serif);
+}
+.fcm-showcase-grid span {
+  grid-column: 1;
+  font-size: 12px;
+  color: var(--fo-muted);
+}
+.fcm-showcase-grid svg {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  align-self: center;
+}
+
+/* ---------- 04 一起改进：一行两个去处；团队与文章只留一行入口 ---------- */
+.fcm-improve {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px 48px;
+  padding-top: 0;
+}
+.fcm-improve .fcm-eyebrow {
+  margin-bottom: 16px;
+}
+.fcm-site .fcm-improve h2 {
+  font-size: clamp(26px, 2.6vw, 38px);
+}
+.fcm-improve-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.fcm-improve-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 2px var(--fo-ink);
+  font-size: 15px;
+  font-weight: 650;
+  transition: background 0.25s;
+}
+.fcm-improve-links a:hover {
+  background: var(--fo-white);
+}
+.fcm-people-line {
+  max-width: var(--fcm-max);
+  margin: 0 auto;
+  padding: 0 var(--fo-gutter) 90px;
+}
 @media (max-width: 1100px) {
   .fcm-hero {
     gap: 36px;
@@ -1394,45 +1292,8 @@
   .fcm-site h1 {
     font-size: clamp(45px, 5.9vw, 65px);
   }
-  .fcm-essay {
-    padding: 22px;
-    gap: 20px;
-  }
-  .fcm-essay-letter {
-    width: 85px;
-    height: 145px;
-    font-size: 62px;
-  }
-  .fcm-method-body {
-    padding: 23px 18px 17px;
-  }
-  .fcm-method-body h3 {
-    font-size: 19px;
-  }
 }
 @media (max-width: 800px) {
-  .fcm-header {
-    grid-template-columns: 1fr auto;
-    height: 100px;
-    align-content: center;
-    row-gap: 5px;
-  }
-  .fcm-header .fo-nav {
-    display: flex;
-    grid-row: 2;
-    grid-column: 1 / -1;
-    justify-content: start;
-    gap: 27px;
-    font-size: 12px;
-  }
-  .fcm-header .fo-nav > a {
-    min-height: 44px;
-    padding-block: 6px;
-  }
-  .fcm-header .fcm-back-home {
-    grid-row: 1;
-    grid-column: 2;
-  }
   .fcm-site main [id] {
     scroll-margin-top: 120px;
   }
@@ -1462,14 +1323,6 @@
   .fcm-poster-bottom {
     font-size: 9px;
   }
-  .fcm-page-index > span {
-    display: none;
-  }
-  .fcm-page-index nav {
-    width: 100%;
-    justify-content: space-between;
-    gap: 15px;
-  }
   .fcm-section {
     padding-block: 72px;
   }
@@ -1479,64 +1332,8 @@
     gap: 24px;
     margin-bottom: 35px;
   }
-  .fcm-process-grid {
-    gap: 23px;
-  }
-  .fcm-process-drawing {
-    height: 190px;
-  }
-  .fcm-process-step h3 {
-    font-size: 21px;
-  }
-  .fcm-process-step > p {
-    font-size: 12px;
-  }
-  .fcm-fold-sample summary {
-    font-size: 11px;
-  }
-  .fcm-fold-sample details {
-    padding: 0 10px;
-  }
-  .fcm-method-body {
-    padding: 21px 14px 15px;
-  }
-  .fcm-method-body > p {
-    min-height: 0;
-  }
-  .fcm-people-intro {
-    gap: 35px;
-  }
-  .fcm-people-note > p {
-    font-size: 14px;
-  }
-  .fcm-essay {
-    padding: 22px;
-    gap: 18px;
-  }
-  .fcm-essay-letter {
-    width: 65px;
-    height: 120px;
-    font-size: 46px;
-  }
-  .fcm-essay h3 {
-    font-size: 25px;
-  }
-  .fcm-join-grid > a {
-    padding: 25px 18px;
-  }
-  .fcm-join-grid h3 {
-    font-size: 18px;
-  }
 }
 @media (max-width: 600px) {
-  .fcm-header .fo-logo img {
-    width: 29px;
-    height: 29px;
-  }
-  .fcm-community-label {
-    font-size: 11px;
-    padding-left: 10px;
-  }
   .fcm-hero {
     grid-template-columns: 1fr;
     padding-top: 46px;
@@ -1590,21 +1387,13 @@
     top: -8px;
     right: -1px;
   }
-  .fcm-page-index {
-    font-size: 10px;
-    padding-block: 15px;
-  }
-  .fcm-page-index nav {
-    gap: 12px;
-  }
   .fcm-section {
     padding-block: 60px;
   }
   .fcm-site :where(main) h2 {
     font-size: 36px;
   }
-  .fcm-section-heading .fcm-eyebrow,
-  .fcm-people-intro .fcm-eyebrow {
+  .fcm-section-heading .fcm-eyebrow {
     font-size: 10px;
     margin-bottom: 17px;
   }
@@ -1618,123 +1407,6 @@
     gap: 6px;
     margin-top: 35px;
   }
-  .fcm-process h2 {
-    font-size: 33px;
-  }
-  .fcm-process-grid {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-  .fcm-process-step {
-    display: grid;
-    grid-template-columns: 130px 1fr;
-    column-gap: 23px;
-    align-items: start;
-  }
-  .fcm-process-drawing {
-    grid-row: 1 / 3;
-    height: 150px;
-    margin: 0;
-  }
-  .fcm-process-drawing > span {
-    font-size: 14px;
-    top: 7px;
-  }
-  .fcm-process-drawing svg {
-    transform: scale(1.15);
-  }
-  .fcm-process-step h3 {
-    margin-top: 14px;
-    margin-bottom: 5px;
-    font-size: 21px;
-  }
-  .fcm-process-step > p {
-    font-size: 13px;
-  }
-  .fcm-process-bottom {
-    flex-direction: column;
-    align-items: start;
-    gap: 13px;
-    margin-top: 30px;
-  }
-  .fcm-process-bottom .fcm-copy {
-    max-width: 100%;
-  }
-  .fcm-fold-sample details {
-    max-width: 285px;
-    padding: 0 15px;
-  }
-  .fcm-fold-sample summary,
-  .fcm-fold-sample details p {
-    font-size: 13px;
-  }
-  .fcm-method-body {
-    padding: 25px 24px 17px;
-  }
-  .fcm-method-body h3 {
-    font-size: 23px;
-  }
-  .fcm-method-body > p {
-    min-height: 0;
-    font-size: 14px;
-  }
-  .fcm-method-body .fcm-text-link {
-    font-size: 13px;
-  }
-  .fcm-people-intro {
-    grid-template-columns: 1fr;
-    gap: 24px;
-    margin-bottom: 30px;
-  }
-  .fcm-people-note {
-    justify-self: start;
-  }
-  .fcm-essays {
-    grid-template-columns: 1fr;
-    gap: 19px;
-  }
-  .fcm-essay {
-    padding: 23px;
-    gap: 23px;
-  }
-  .fcm-essay-letter {
-    width: 80px;
-    height: 143px;
-    font-size: 58px;
-  }
-  .fcm-essay h3 {
-    font-size: 27px;
-  }
-  .fcm-essay-link {
-    margin-top: 13px;
-  }
-  .fcm-join h2 {
-    font-size: 36px;
-  }
-  .fcm-join h2 span {
-    font-size: 0.75em;
-  }
-  .fcm-join-description {
-    font-size: 14px;
-  }
-  .fcm-join-grid {
-    grid-template-columns: 1fr;
-    margin-top: 30px;
-    gap: 16px;
-  }
-  .fcm-join-grid > a {
-    padding: 26px;
-  }
-  .fcm-join-grid h3 {
-    font-size: 21px;
-  }
-  .fcm-join-grid p {
-    font-size: 14px;
-  }
-  .fcm-join-grid span {
-    font-size: 13px;
-    margin-top: 14px;
-  }
 }
 @media (max-width: 360px) {
   .fcm-hero-actions {
@@ -1746,16 +1418,55 @@
   .fcm-site h1 {
     font-size: 43px;
   }
-  .fcm-process-step {
-    grid-template-columns: 110px 1fr;
-    column-gap: 15px;
+}
+@media (max-width: 1000px) {
+  .fcm-try-grid,
+  .fcm-m-grid,
+  .fcm-share-ways {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .fcm-essay {
-    padding: 18px;
-    gap: 17px;
+}
+@media (max-width: 680px) {
+  .fcm-share-ways {
+    grid-template-columns: 1fr;
   }
-  .fcm-essay-letter {
-    width: 65px;
+  /* 手机上作品与精选方法各排成一行，左右滑；下一张露出一截，提示还有 */
+  .fcm-try-grid,
+  .fcm-m-grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 86%;
+    gap: 14px;
+    margin-inline: calc(var(--fo-gutter) * -1);
+    padding: 4px var(--fo-gutter) 18px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--fo-gutter);
+  }
+  .fcm-try-grid > li,
+  .fcm-m-grid > li {
+    scroll-snap-align: start;
+  }
+  .fcm-how {
+    justify-self: center;
+    width: min(100%, 440px);
+  }
+  .fcm-how ol {
+    gap: 10px;
+  }
+  .fcm-how li svg {
+    height: 58px;
+  }
+  .fcm-share-ways > li,
+  .fcm-showcase {
+    padding: 22px 18px;
+  }
+  .fcm-improve-links a {
+    width: 100%;
+  }
+  .fcm-people-line {
+    padding-bottom: 60px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1766,7 +1477,6 @@
     transition: none !important;
   }
 }
-
 @media (prefers-reduced-motion: reduce) {
   .fcm-drop-art * {
     animation: none !important;
