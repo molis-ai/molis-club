@@ -667,6 +667,35 @@
   rotate: -8deg;
 }
 
+/* ---------- 和 Molis Work 的关系：两句话，第二句是将来的事 ---------- */
+.ft-relation-text {
+  display: grid;
+  gap: 6px;
+  margin-top: 28px;
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(26px, 3.4vw, 52px);
+  line-height: 1.3;
+}
+.ft-relation-text .fo-tag {
+  vertical-align: middle;
+  translate: 0 -0.2em;
+}
+.fo-site .ft-relation-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 32px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 6px;
+}
+.ft-relation-link:hover {
+  color: var(--fo-red);
+}
+
 @media (max-width: 900px) {
   .ft-layers,
   .ft-moment-grid,

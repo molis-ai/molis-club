@@ -435,13 +435,16 @@ export const access = {
   later: {
     label: '以后',
     title: '还在路上',
+    /** 第三项可选：链到站内哪个产品页 */
     items: [
       ['插件创作台：描述需求，Agent 在沙箱里做出插件', 'preview'],
       ['项目讨论：主群与公开 Thread，要自行部署本地 Server', 'preview'],
+      // 10/11 决定 Tool 以后成为 Work 的基础能力；并入的时间和范围未定（P10），只写方向
+      ['光标旁的能力（来自 Molis Tool）', 'planned', 'tool'],
       ['团队空间与多设备同步', 'planned'],
       ['第三方插件与分享', 'planned'],
       ['Windows、Linux，自动更新与定时备份', 'planned'],
-    ] as [string, Phase][],
+    ] as [string, Phase, 'tool'?][],
   },
 };
 

@@ -703,6 +703,15 @@
 .fw-access-cards article:nth-child(3) .fw-phase[data-phase='preview'] {
   background: var(--fo-white);
 }
+/* 「以后」里指向别的产品页的那一条 */
+.fo-site .fw-access-link {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.fw-access-link:hover {
+  color: var(--fo-red);
+}
 .fw-access-cards p {
   font-size: 15px;
   line-height: 1.75;

@@ -6,7 +6,7 @@ import { GITHUB_URL } from '../../../../content/molis-work';
 import { ending, lineImages, lineNames } from '../../../../content/studio';
 import { AiWordCycle } from '../ai-words';
 import { CoverArt, LifeArt, StoryArt } from './art';
-import { Actions, Status, pad } from './kit';
+import { Actions, Status, Tag, pad } from './kit';
 import {
   COMMUNITY,
   Footer,
@@ -22,7 +22,11 @@ import './folio.css';
 import './kit.css';
 import './tool/tool.css';
 import './home.css';
-import { folioHomeCopy, folioStudio } from '../../../../content/folio';
+import {
+  folioHomeCopy,
+  folioStudio,
+  folioTool,
+} from '../../../../content/folio';
 import { WorkDesk } from './work/desk';
 import { CursorDemo } from './tool/cursor-demo';
 
@@ -115,6 +119,12 @@ function Lines() {
                   <Link href={lineHref[line.id]}>{lineNames[line.id]}</Link>
                 </h3>
                 <p>{folioHomeCopy.products[line.id]}</p>
+                {line.id === 'tool' ? (
+                  <small className="fo-sheet-note">
+                    {folioTool.relation.home}
+                    <Tag>{folioTool.relation.phase}</Tag>
+                  </small>
+                ) : null}
                 <Link className="fo-sheet-more" href={lineHref[line.id]}>
                   {line.more}
                   <span aria-hidden="true">

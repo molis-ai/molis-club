@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { ArrowUpRight, X } from 'lucide-react';
 import {
   DROPAGENT_URL,
@@ -22,12 +23,14 @@ import {
   Phrases,
   ProductHero,
   SectionHead,
+  Tag,
   pad,
 } from '../kit';
 import {
   Footer,
   HOME,
   SiteHeader,
+  WORK,
   contactHref,
   useFolioMotion,
   type Vars,
@@ -37,9 +40,11 @@ import '../kit.css';
 import './tool.css';
 
 // 首屏沿用 Claude 原版。三层改成同一件事的接力动画，插件一段按插件协议讲清能力怎样被各处调用。
+// 结尾前一段讲和 Molis Work 的关系：可以单独用，以后也会成为 Work 的基础能力（规划中）。
 
 export default function FolioToolPage() {
   const rootRef = useFolioMotion();
+  const { relation } = folioTool;
 
   return (
     <div className="fo-site ft-site" ref={rootRef}>
@@ -242,6 +247,27 @@ export default function FolioToolPage() {
               </li>
             ))}
           </ul>
+        </section>
+
+        <section
+          className="fo-section ft-relation"
+          data-bg="white"
+          aria-labelledby="ft-relation-title"
+        >
+          <h2 id="ft-relation-title" className="fo-kicker">
+            {relation.kicker}
+          </h2>
+          <p className="ft-relation-text" data-reveal>
+            <span className="fo-phrase">{relation.now}</span>
+            <span className="fo-phrase">
+              {relation.later}
+              <Tag>{relation.phase}</Tag>
+            </span>
+          </p>
+          <Link className="ft-relation-link" href={WORK}>
+            {relation.work}
+            <ArrowUpRight size={18} aria-hidden="true" />
+          </Link>
         </section>
       </main>
 

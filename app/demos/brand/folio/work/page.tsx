@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { Sparkles } from 'lucide-react';
 import {
   GITHUB_URL,
@@ -33,6 +34,7 @@ import {
   SOLUTIONS,
   SiteHeader,
   contactHref,
+  lineHref,
   useFolioMotion,
   type Vars,
 } from '../shared';
@@ -498,9 +500,15 @@ export default function FolioWorkPage() {
               <small>{access.later.label}</small>
               <h3>{access.later.title}</h3>
               <ul>
-                {access.later.items.map(([item, phase]) => (
+                {access.later.items.map(([item, phase, link]) => (
                   <li key={item}>
-                    {item}
+                    {link ? (
+                      <Link className="fw-access-link" href={lineHref[link]}>
+                        {item}
+                      </Link>
+                    ) : (
+                      item
+                    )}
                     <Phase phase={phase} />
                   </li>
                 ))}
