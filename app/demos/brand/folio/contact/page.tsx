@@ -12,8 +12,8 @@ import {
   HOME,
   SOLUTIONS,
   SiteHeader,
-  lineHref,
-  lineIds,
+  productHref,
+  productIds,
   useFolioMotion,
 } from '../shared';
 import '../folio.css';
@@ -31,8 +31,8 @@ function backTo(topic: string | null) {
     return { label: back.enterprise, href: SOLUTIONS };
   if (topic === 'feedback' || topic === 'creator' || topic.startsWith('share-'))
     return { label: back.community, href: COMMUNITY };
-  const product = lineIds.find((id) => id === topic);
-  return product ? { label: back[product], href: lineHref[product] } : null;
+  const product = productIds.find((id) => id === topic);
+  return product ? { label: back[product], href: productHref[product] } : null;
 }
 
 export default function FolioContactPage() {

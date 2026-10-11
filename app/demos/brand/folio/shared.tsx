@@ -10,8 +10,15 @@ import {
   signature,
   type LineId,
 } from '../../../../content/studio';
-import { folioHomeCopy, folioStudio } from '../../../../content/folio';
+import {
+  folioHomeCopy,
+  folioProductTags,
+  folioProducts,
+  folioStudio,
+  type FolioProductId,
+} from '../../../../content/folio';
 import { folioCommunity } from '../../../../content/folio-community';
+import { folioWorld } from '../../../../content/folio-world';
 import { authClient } from '../../../../lib/auth-client';
 
 // Folio 各页共用：路由、顶栏（含「产品」菜单）、页尾封底和页面动效。文案来自 content/studio.ts 与 content/folio.ts。
@@ -23,6 +30,7 @@ export const WORK = `${HOME}/work`;
 export const LIFE = `${HOME}/life`;
 export const TOOL = `${HOME}/tool`;
 export const STORY = `${HOME}/story`;
+export const WORLD = `${HOME}/world`;
 export const CONTACT = `${HOME}/contact`;
 export const SOLUTIONS = `${HOME}/solutions`;
 export const COMMUNITY = '/demos/community';
@@ -39,7 +47,7 @@ export const artistHref = (slug: string) =>
 /** 旧名：品牌探索稿 app/demos/brand/r3/kit.tsx 仍在用（不改探索稿），指向同一个方法段 */
 export const WIKI = METHODS;
 
-/** 产品的顺序：首页、顶栏下拉、页尾和产品页「接着看」都按这一个顺序 */
+/** 四条产品线的顺序（首页色纸用）；顶栏下拉、页尾和「接着看」改用下面含 World 的 productIds */
 export const lineIds: LineId[] = ['work', 'tool', 'life', 'story'];
 
 export const lineHref: Record<LineId, string> = {
@@ -60,12 +68,32 @@ export const lineTone: Record<LineId, string> = {
 /** 每件产品的一句话：顶栏下拉和「接着看」直接读首页那一份（content/folio.ts 的 folioHomeCopy） */
 export const lineLine: Record<LineId, string> = folioHomeCopy.products;
 
+// Folio 自己的产品列表，多了 Molis World（概念设计）。共享的 LineId、lineNames 不变；
+// 上面的 lineIds、lineHref 等仍按四条产品线导出，品牌探索稿还在用。
+export const productIds: FolioProductId[] = folioProducts;
+export const productHref: Record<FolioProductId, string> = {
+  ...lineHref,
+  world: WORLD,
+};
+/** World 的颜色暂用鼠尾草绿占位，视觉定了再换（方案 P13） */
+export const productTone: Record<FolioProductId, string> = {
+  ...lineTone,
+  world: 'sage',
+};
+export const productName: Record<FolioProductId, string> = {
+  ...lineNames,
+  world: folioWorld.name,
+};
+export const productLine: Record<FolioProductId, string> =
+  folioHomeCopy.products;
+export const productTag = folioProductTags;
+
 /** 联系页；topic 预选「企业合作」或预填关注哪条产品线 */
 export const contactHref = (topic?: string) =>
   topic ? `${CONTACT}?topic=${topic}` : CONTACT;
 
-/** 「产品」下拉：四条产品线各一句话，当前页高亮；Esc 和点外面都能收起 */
-function ProductsMenu({ current }: { current?: LineId }) {
+/** 「产品」下拉：五个产品平铺，各一句话，当前页高亮；Esc 和点外面都能收起 */
+function ProductsMenu({ current }: { current?: FolioProductId }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -105,17 +133,22 @@ function ProductsMenu({ current }: { current?: LineId }) {
         <ChevronDown size={15} aria-hidden="true" />
       </button>
       <div className="fo-menu-panel" id="fo-products-menu" hidden={!open}>
-        {lineIds.map((id, index) => (
+        {productIds.map((id, index) => (
           <Link
             key={id}
-            href={lineHref[id]}
-            data-tone={lineTone[id]}
+            href={productHref[id]}
+            data-tone={productTone[id]}
             aria-current={current === id ? 'page' : undefined}
             onClick={() => setOpen(false)}
           >
             <i aria-hidden="true">{String(index + 1).padStart(2, '0')}</i>
-            <strong>{lineNames[id]}</strong>
-            <small>{lineLine[id]}</small>
+            <strong>
+              {productName[id]}
+              {productTag[id] ? (
+                <span className="fo-menu-tag">{productTag[id]}</span>
+              ) : null}
+            </strong>
+            <small>{productLine[id]}</small>
           </Link>
         ))}
       </div>
@@ -141,9 +174,9 @@ function AccountLink({ current }: { current: boolean }) {
 export function SiteHeader({
   current,
 }: {
-  current?: LineId | 'solutions' | 'essays' | 'about' | 'account';
+  current?: FolioProductId | 'solutions' | 'essays' | 'about' | 'account';
 }) {
-  const product = lineIds.find((id) => id === current);
+  const product = productIds.find((id) => id === current);
   return (
     <header className="fo-header">
       <Link href={HOME} className="fo-logo" aria-label="Molis AI 首页">
@@ -218,9 +251,9 @@ export function Footer({
             <div>
               <h2>{footer.productsLabel}</h2>
               <ul>
-                {lineIds.map((id) => (
+                {productIds.map((id) => (
                   <li key={id}>
-                    <Link href={lineHref[id]}>{lineNames[id]}</Link>
+                    <Link href={productHref[id]}>{productName[id]}</Link>
                   </li>
                 ))}
               </ul>

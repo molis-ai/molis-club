@@ -2,8 +2,26 @@
 // 首页依据 2026-10-09 与一骏的讨论：不喊口号，首屏只放 A/I 词组和关键词，往下是产品、团队、文章、社区。
 // 方案见 specs/folio-studio-home/spec.md；Work 详情在 content/folio-work.ts。
 // Life、Story 的详情页本轮不改，首页只用一句话说清方向，不写尚未开放的能力。
+// 2026-10-12 起产品多了 Molis World（概念设计，文案在 content/folio-world.ts）；共享的 LineId 不变，
+// Folio 用自己的 FolioProductId 与 folioProducts 排顺序。
 
-export type FolioProductId = 'work' | 'tool' | 'life' | 'story';
+import { folioWorld } from './folio-world';
+
+export type FolioProductId = 'work' | 'tool' | 'life' | 'story' | 'world';
+
+/** Folio 的产品顺序：顶栏下拉、页尾和产品页「接着看」都按这一个顺序；World 是概念，排在最后 */
+export const folioProducts: FolioProductId[] = [
+  'work',
+  'tool',
+  'life',
+  'story',
+  'world',
+];
+
+/** 还是概念的产品，在下拉和「接着看」里带一枚状态签 */
+export const folioProductTags: Partial<Record<FolioProductId, string>> = {
+  world: folioWorld.status,
+};
 
 /** 2026-10-10 首页简介：按四条产品线的实际方向重写，独立于其他样张复用的原短句。 */
 export const folioHomeCopy = {
@@ -14,13 +32,14 @@ export const folioHomeCopy = {
     tool: 'AI就在你的鼠标边',
     life: '把琐事安顿好，让喜欢的生活发生',
     story: '走进另一个世界，带一段经历回来',
+    world: folioWorld.line,
   } satisfies Record<FolioProductId, string>,
   /** 色纸上的领域签只写领域，阶段只看阶段签；folioStudio.lines 的 area 混了状态，留给其他样张 */
   areas: {
     tool: '工作 · 桌面',
     life: '生活',
     story: '体验',
-  } satisfies Record<Exclude<FolioProductId, 'work'>, string>,
+  } satisfies Record<'tool' | 'life' | 'story', string>,
 };
 
 export const folioStudio = {
@@ -70,7 +89,7 @@ export const folioStudio = {
       more: '了解 Molis Story',
     },
   ] as {
-    id: Exclude<FolioProductId, 'work'>;
+    id: 'tool' | 'life' | 'story';
     area: string;
     status: string;
     line: string;
@@ -132,6 +151,7 @@ export const folioContact = {
     tool: '回到 Molis Tool',
     life: '回到 Molis Life',
     story: '回到 Molis Story',
+    world: '回到 Molis World',
     community: '回到社区',
   },
   home: '回到首页',

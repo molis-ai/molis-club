@@ -2,12 +2,18 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { lineNames, type LineId } from '../../../../content/studio';
-import { folioStudio } from '../../../../content/folio';
+import { folioStudio, type FolioProductId } from '../../../../content/folio';
 import { Cuts } from './art';
-import { lineHref, lineIds, lineLine, type Vars } from './shared';
+import {
+  productHref,
+  productIds,
+  productLine,
+  productName,
+  productTag,
+  type Vars,
+} from './shared';
 
-// 首页和四个产品页共用的部件：首屏、区块标题、状态签、标签、按钮、贴胶带的截图和结尾。
+// 首页和各产品页共用的部件：首屏、区块标题、状态签、标签、按钮、贴胶带的截图和结尾。
 // 都是 Folio 的剪纸杂志样子，样式在 kit.css。
 
 /** 在逗号、顿号、句号后断行，避免中文标题在词中间折开 */
@@ -270,14 +276,18 @@ export function Closing({
   );
 }
 
-/** 产品页封底：按首页的顺序 Work → Tool → Life → Story，接着看下一件，最后一件回到第一件 */
-export function NextProduct({ current }: { current: LineId }) {
-  const next = lineIds[(lineIds.indexOf(current) + 1) % lineIds.length];
+/** 产品页封底：Work → Tool → Life → Story → World，接着看下一件，最后一件回到第一件 */
+export function NextProduct({ current }: { current: FolioProductId }) {
+  const next =
+    productIds[(productIds.indexOf(current) + 1) % productIds.length];
   return (
-    <Link href={lineHref[next]} className="fo-next">
+    <Link href={productHref[next]} className="fo-next">
       <small>{folioStudio.nextProduct}</small>
-      <strong>{lineNames[next]}</strong>
-      <span>{lineLine[next]}</span>
+      <strong>
+        {productName[next]}
+        {productTag[next] ? <Tag>{productTag[next]}</Tag> : null}
+      </strong>
+      <span>{productLine[next]}</span>
       <i aria-hidden="true">
         <ArrowUpRight size={26} />
       </i>

@@ -212,7 +212,8 @@ try {
     '/work': 'tool',
     '/tool': 'life',
     '/life': 'story',
-    '/story': 'work',
+    '/story': 'world',
+    '/world': 'work',
   };
   for (const [route, next] of Object.entries(nextOf)) {
     await visit(route);
@@ -233,6 +234,48 @@ try {
   );
   console.log(
     'PASS: product pages lead to the next product; unknown addresses stay on the Folio 404.',
+  );
+
+  // Molis World 是概念：状态签写「概念设计」，示例旅程标示意，没有下载、试用、注册入口；
+  // 「关注进展」预选早期体验者并预填内容；下拉、页尾都能到达
+  await visit('/world');
+  assert.match(await page.locator('h1').innerText(), /慢慢长大的世界/);
+  assert.match(
+    await page.locator('.fo-hero .fo-status').innerText(),
+    /概念设计/,
+  );
+  assert.equal(await page.locator('.fwd-steps > li').count(), 6);
+  assert.match(await page.locator('#journey').innerText(), /概念示意/);
+  assert.doesNotMatch(
+    await page.locator('main').innerText(),
+    /立即下载|下载 Molis World|试用|注册|立即体验|已经打通|已打通/,
+  );
+  assert.equal(
+    await page.locator('main a[download], main a[href*="login"]').count(),
+    0,
+  );
+  assert.equal(
+    await page
+      .locator('.fo-menu-panel a[href="/demos/brand/folio/world"]')
+      .count(),
+    1,
+  );
+  assert.equal(
+    await page.locator('footer a[href="/demos/brand/folio/world"]').count(),
+    1,
+  );
+  await page.locator('.fo-hero .fo-btn', { hasText: '关注进展' }).click();
+  await page.waitForURL(folio + '/contact?topic=world');
+  assert.equal(
+    await page.locator('input[name="role"]:checked').inputValue(),
+    '早期体验者',
+  );
+  assert.equal(
+    await page.locator('textarea[name="idea"]').inputValue(),
+    '想关注 Molis World 的进展。',
+  );
+  console.log(
+    'PASS: Molis World concept page with status, sample journey, no product entry points, and the follow-up preselect.',
   );
 
   // 方法（原百科）并进社区：默认六张精选（三位艺术家 + 三个示例），「查看全部」原处展开，
@@ -447,6 +490,7 @@ try {
       '/solutions',
       '/life',
       '/story',
+      '/world',
       '/about',
       '/essays',
       '/essays/human-scale',

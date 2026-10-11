@@ -98,6 +98,19 @@
 - 本地数据：`applications` 里有本阶段的测试记录（A9 迁移标记、三条同邮箱留言、一条旧客户端请求、一条分享投稿），都在本设备 `.wrangler/state`，没有写线上。
 - 并行工作：本阶段期间，同一工作区出现未跟踪的 `app/demos/brand/origin/`（「零点」品牌方向）和 `.claude/launch.json` 新增的 5192 预览配置，来自另一个会话。没有改动、暂存或提交它们；本设备为预览在 `launch.json` 加的 3000 配置也未提交。
 
+### 阶段 3：新页面与首页
+
+阶段 2 推送时远端 main 多了 6 个品牌探索提交（r3–r6、`public/images/brand-a/`），与本方案改动的文件不重叠；本地 4 个提交变基到其后再推送。合入的 `app/demos/brand/r3/kit.tsx` 仍从 `folio/shared` 引用 `WIKI`，在 `shared.tsx` 保留它作为方法段地址的别名，不改探索稿。
+
+**A2 Molis World 页（概念）**
+
+- 文案先写在新的 `content/folio-world.ts`，页面 `/demos/brand/folio/world` 再读它。已定文案原样使用：首屏标题、一句话、状态「概念设计」、主行动「关注进展」（`contact?topic=world`，预选「早期体验者」、预填「想关注 Molis World 的进展。」，共享预选表只新增这一项）、页面描述。
+- 页面顺序（我定）：首屏（右边一张「你的世界」的纸，三样东西贴在上面：巷口的面馆、雾港的一夜、第十三号钥匙牌，标「概念示意」）→ World 是什么（放进在意的地方、按你的方式布置、随时回来接着改；不连别的产品也能开始）→ 一段示例旅程（六步，每步标属于 World / Story / Life，带 Agent 或队伍一步标「规划中」，整段标「示例旅程 · 概念示意」）→ 三个产品的关系（Life + Story = World，各自独立，靠用户选择共享的数据和同一个身份连接；三张卡写清各自阶段）→ 分寸（附录 C 六条）→ 结尾。没有下载、试用、注册入口。
+- 视觉：沿用 Folio 的纸、胶带、色点和卡片，不新增插画和依赖；World 的颜色用鼠尾草绿占位，只写在 `world/world.css` 与 `world/art.tsx`，不改 `folio.css` 的共享变量（P13 定了以后整体替换）。
+- 站内配套：`FolioProductId` 加上 world，新增 `folioProducts`（Work、Tool、Life、Story、World）与概念签；`shared.tsx` 新增 `productIds`、`productHref`、`productTone`、`productName`、`productLine`，顶栏下拉平铺五个产品（World 带「概念设计」签）、页尾「产品」一栏加 Molis World、「接着看」改为 Work → Tool → Life → Story → World → Work。共享的 `LineId`、`lineNames` 和探索稿在用的 `lineIds`、`lineHref` 不变。联系页从 World 来时成功后回到 World。
+- 预览导出脚本加 World 路由；`folio-browser.mjs` 加 World 页检查（状态签、六步旅程、无下载/试用/注册、下拉与页尾入口、「关注进展」预选）并把「接着看」改为五件一圈。
+- 验收：1440px、390px 截图核对，手机上旅程按顺序一行一步，不拥挤；无横向溢出、无运行时错误。
+
 ## 2026-10-11 提交与远端同步
 
 - 用户本轮明确授权将已完成的页面调整提交并推送至 `origin/main`。按「首页合作入口」与「站内页面及体验」组织两个提交，范围限本轮 18 个文件。

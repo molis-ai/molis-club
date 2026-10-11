@@ -20,6 +20,7 @@ const routes = [
   ['solutions', '/solutions', 'Molis AI 解决方案 · 把 AI 用进具体业务'],
   ['life', '/life', 'Molis Life'],
   ['story', '/story', 'Molis Story'],
+  ['world', '/world', 'Molis World · 现实和故事，都住进你慢慢长大的世界'],
   ['about', '/about', '关于我们 · Molis AI'],
   ['essays', '/essays', '文章 · Molis AI'],
   [
