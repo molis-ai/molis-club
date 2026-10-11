@@ -3,8 +3,16 @@
   "configurations": [
     {
       "name": "molis-dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "5191"],
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "VINEXT_NO_DEV_LOCK=1",
+        "npm",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "5191"
+      ],
       "port": 5191
     }
   ]
