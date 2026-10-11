@@ -1,0 +1,357 @@
+/* Work、Tool 演示的时间轴，A 与 D 共用。只管「什么时候出现」；颜色、圆角、字号在各方向的样式表里。
+   元素用 data-a 标记，外壳 [data-running='true'] 时播放；基础样式就是播完的样子。 */
+
+.r3-sheet {
+  --loop: 12s;
+  --r3-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+.r3-tool {
+  --loop: 9s;
+}
+.r3-sheet [data-a] {
+  animation-duration: var(--loop);
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  animation-timing-function: var(--r3-ease);
+  animation-play-state: paused;
+}
+.r3-sheet[data-running='true'] [data-a] {
+  animation-play-state: running;
+}
+
+/* ---------- Work ---------- */
+.r3-work [data-a='typed'] {
+  display: inline-block;
+  width: calc(var(--n) * 1em);
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  animation-name: r3-type;
+  animation-timing-function: steps(15, end);
+}
+.r3-work [data-a='caret'] {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.15em;
+  margin-left: 1px;
+  background: currentColor;
+  animation-name: r3-blink;
+  animation-duration: 1s;
+  animation-timing-function: steps(1);
+}
+.r3-work [data-a='inbox'] {
+  animation-name: r3-pop-inbox;
+}
+.r3-work [data-a='todo'] {
+  animation-name: r3-pop-todo;
+}
+.r3-work [data-a='open'] {
+  display: grid;
+  grid-template-rows: 1fr;
+  animation-name: r3-open;
+}
+.r3-work [data-a='open'] > ul {
+  min-height: 0;
+  overflow: hidden;
+}
+.r3-work [data-a='insert'] {
+  animation-name: r3-insert;
+  animation-delay: calc(var(--k) * 0.22s);
+}
+.r3-work [data-a='card'] {
+  animation-name: r3-card;
+}
+.r3-card-foot {
+  display: grid;
+}
+.r3-card-foot > * {
+  grid-area: 1 / 1;
+}
+.r3-work [data-a='ask'] {
+  opacity: 0;
+  animation-name: r3-ask;
+}
+.r3-work [data-a='done'] {
+  animation-name: r3-done;
+}
+.r3-work [data-a='press'] {
+  position: relative;
+  animation-name: r3-press;
+}
+.r3-work [data-a='point'] {
+  position: absolute;
+  left: 60%;
+  top: 55%;
+  opacity: 0;
+  animation-name: r3-point;
+}
+
+@keyframes r3-type {
+  0%,
+  4% {
+    width: 0;
+  }
+  22%,
+  95% {
+    width: calc(var(--n) * 1em);
+  }
+  100% {
+    width: 0;
+  }
+}
+@keyframes r3-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes r3-pop-inbox {
+  0%,
+  23% {
+    transform: scale(0);
+  }
+  26% {
+    transform: scale(1.25);
+  }
+  28%,
+  95% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes r3-pop-todo {
+  0%,
+  60% {
+    transform: scale(0);
+  }
+  63% {
+    transform: scale(1.25);
+  }
+  65%,
+  95% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes r3-card {
+  0%,
+  27% {
+    opacity: 0;
+    transform: translateY(1.2em) scale(0.97);
+  }
+  32%,
+  94% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(0.6em);
+  }
+}
+@keyframes r3-ask {
+  0%,
+  51% {
+    opacity: 1;
+  }
+  54%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes r3-done {
+  0%,
+  52% {
+    opacity: 0;
+    transform: translateY(0.4em);
+  }
+  56%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes r3-press {
+  0%,
+  47% {
+    transform: none;
+  }
+  48.5% {
+    transform: scale(0.92);
+  }
+  50%,
+  100% {
+    transform: none;
+  }
+}
+@keyframes r3-point {
+  0%,
+  34% {
+    opacity: 0;
+    transform: translate(9em, 5em);
+  }
+  37% {
+    opacity: 1;
+  }
+  46% {
+    transform: translate(0, 0);
+  }
+  48% {
+    transform: translate(0, 0) scale(0.84);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  55%,
+  100% {
+    opacity: 0;
+    transform: translate(0.6em, 0.6em);
+  }
+}
+@keyframes r3-open {
+  0%,
+  54% {
+    grid-template-rows: 0fr;
+  }
+  60%,
+  95% {
+    grid-template-rows: 1fr;
+  }
+  100% {
+    grid-template-rows: 0fr;
+  }
+}
+@keyframes r3-insert {
+  0%,
+  55% {
+    opacity: 0;
+    transform: translateX(-0.8em);
+  }
+  60%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---------- Tool ---------- */
+.r3-tool [data-a='select'] {
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  animation-name: r3-select;
+  animation-timing-function: linear;
+}
+.r3-tool [data-a='drag'] {
+  display: inline-block;
+  width: 0;
+  vertical-align: -0.3em;
+  opacity: 0;
+  animation-name: r3-drag;
+}
+.r3-tool [data-a='chips'] {
+  animation-name: r3-chips;
+}
+.r3-tool [data-a='click'] {
+  position: absolute;
+  left: 55%;
+  top: 60%;
+  opacity: 0;
+  animation-name: r3-click;
+}
+.r3-tool [data-a='result'] {
+  animation-name: r3-result;
+}
+@keyframes r3-select {
+  0%,
+  8% {
+    background-size: 0% 100%;
+  }
+  26%,
+  95% {
+    background-size: 100% 100%;
+  }
+  100% {
+    background-size: 0% 100%;
+  }
+}
+@keyframes r3-drag {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  24%,
+  30% {
+    opacity: 1;
+  }
+  34%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes r3-chips {
+  0%,
+  29% {
+    opacity: 0;
+    transform: translateY(0.6em);
+  }
+  33%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes r3-click {
+  0%,
+  35% {
+    opacity: 0;
+    transform: translate(3em, 2.4em);
+  }
+  38% {
+    opacity: 1;
+  }
+  44% {
+    transform: translate(0, 0);
+  }
+  46% {
+    transform: scale(0.84);
+  }
+  48% {
+    opacity: 1;
+    transform: none;
+  }
+  53%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes r3-result {
+  0%,
+  46% {
+    opacity: 0;
+    transform: translateY(0.8em);
+  }
+  51%,
+  95% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r3-sheet [data-a] {
+    animation: none !important;
+  }
+}
