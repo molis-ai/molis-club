@@ -315,6 +315,46 @@ try {
     'PASS: Molis Life as a caring personal Agent with sample walkthroughs, planned capabilities marked, and links to Story and World.',
   );
 
+  // Molis Story（A4）：不再出现「不是游戏」；导语带上 Agent；四个世界卡片原样，各自说明怎么玩；
+  // 「和谁一起去」「自己做一个世界」标规划中；归来可以去 World
+  await visit('/story');
+  const storyText = await page.locator('main').innerText();
+  assert.doesNotMatch(storyText, /不是游戏/);
+  assert.match(await page.locator('.fo-hero').innerText(), /带上你的 Agent/);
+  assert.deepEqual(
+    await page.locator('.fo-hero .fo-status li').allInnerTexts(),
+    ['开发中', 'macOS', '还不能下载'],
+  );
+  assert.equal(await page.locator('.fs-world').count(), 4);
+  assert.equal(await page.locator('.fs-world-play').count(), 4);
+  assert.deepEqual(await page.locator('.fs-world blockquote').allInnerTexts(), [
+    '另一端，也有谁在试着理解你。',
+    '把一个一直留在心里的如果，认真走完一次，然后回到这里。',
+    '把一段经历里的照片与文字，变成可以走近、探索和重访的私人展览。',
+    '有些东西，在被弄丢之前，就先送到了这里。',
+  ]);
+  assert.match(
+    await page.locator('#fs-company-title').locator('..').innerText(),
+    /规划中/,
+  );
+  assert.match(
+    await page.locator('#fs-create-title').locator('..').innerText(),
+    /规划中/,
+  );
+  assert.equal(
+    await page
+      .locator('.fs-after-return a[href="/demos/brand/folio/world"]')
+      .count(),
+    1,
+  );
+  assert.equal(
+    await page.locator('.fs-create a[href="/demos/community#share"]').count(),
+    1,
+  );
+  console.log(
+    'PASS: Molis Story keeps its four worlds, says how each is played, marks Agent company and world-making as planned, and returns to World.',
+  );
+
   // 方法（原百科）并进社区：默认六张精选（三位艺术家 + 三个示例），「查看全部」原处展开，
   // 24 个组件来源默认收起；搜索与分类会收窄；详情在社区下，旧的百科地址都跳过去。
   const community = `${origin}/demos/community`;
