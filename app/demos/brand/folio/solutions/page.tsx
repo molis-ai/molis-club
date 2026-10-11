@@ -15,6 +15,9 @@ import '../folio.css';
 import '../kit.css';
 import './solutions.css';
 
+// 企业合作：首屏 → 我们能一起做的事（四段服务）→ 做这件事的人（只用成员个人经历，A8）→
+// 从手边的一件事开始 → 合作如何开始 → 结尾。没有客户案例、客户 logo 或效果数字。
+
 export default function FolioSolutionsPage() {
   const ref = useFolioMotion();
   return (
@@ -124,6 +127,50 @@ export default function FolioSolutionsPage() {
           </div>
         </section>
         <section
+          id="people"
+          className="fo-section fs-people"
+          data-bg="sage"
+          aria-labelledby="fs-people-title"
+        >
+          <div className="fs-shell">
+            <SectionHead
+              id="fs-people-title"
+              kicker={content.people.kicker}
+              title={content.people.title}
+              lead={content.people.lead}
+              layout="split"
+            />
+            <ol className="fs-evidence">
+              {content.people.steps.map((step, index) => {
+                const service = content.services.find(
+                  (item) => item.id === step.service,
+                )!;
+                return (
+                  <li key={step.service} data-reveal>
+                    <span className="fo-index" aria-hidden="true">
+                      {pad(index)}
+                    </span>
+                    <h3>{service.title}</h3>
+                    <ul>
+                      {step.evidence.map((item) => (
+                        <li key={item.name}>
+                          <strong>{item.name}</strong>
+                          <p>{item.quotes.join('，')}。</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                );
+              })}
+            </ol>
+            <Actions
+              items={[
+                { label: content.people.team, href: ABOUT, tone: 'ghost' },
+              ]}
+            />
+          </div>
+        </section>
+        <section
           className="fo-section"
           data-bg="paper"
           aria-labelledby="fs-start-title"
@@ -189,10 +236,7 @@ export default function FolioSolutionsPage() {
         <Closing
           id="fs-closing-title"
           title={['你们的下一段工作，', '我们一起看看。']}
-          actions={[
-            { label: '聊聊企业合作', href: contactHref('enterprise') },
-            { label: '认识团队', href: ABOUT, tone: 'light' },
-          ]}
+          actions={[{ label: '聊聊企业合作', href: contactHref('enterprise') }]}
         >
           <p className="fs-contact-hint">
             带上现在的做法、遇到的困难，或者一份还不够满意的结果。

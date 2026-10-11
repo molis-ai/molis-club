@@ -402,15 +402,40 @@ try {
   assert.equal(await page.locator('.fs-service').count(), 4);
   assert.equal(await page.locator('.fs-service-result').count(), 4);
   const sectionOrder = await page
-    .locator('#cooperation, #directions, #fs-closing-title')
+    .locator('#cooperation, #directions, #people, #fs-closing-title')
     .evaluateAll((nodes) => nodes.map((node) => node.id));
   assert.deepEqual(sectionOrder, [
     'cooperation',
     'directions',
+    'people',
     'fs-closing-title',
   ]);
+  // 做这件事的人：四步各对应成员经历，只写姓名与过去的经历，末尾去团队页；结尾不再放「认识团队」
+  assert.equal(await page.locator('.fs-evidence > li').count(), 4);
+  assert.deepEqual(
+    new Set(await page.locator('.fs-evidence ul strong').allInnerTexts()),
+    new Set(['王一骏', '谢俊', '赵壮实', '隋欣怡']),
+  );
+  assert.match(
+    await page.locator('#people').innerText(),
+    /还没有可以公开的案例/,
+  );
+  assert.equal(
+    await page.locator('#people a[href="/demos/brand/folio/about"]').count(),
+    1,
+  );
+  assert.equal(
+    await page
+      .locator('.fo-closing a[href="/demos/brand/folio/about"]')
+      .count(),
+    0,
+  );
+  assert.doesNotMatch(
+    await page.locator('main').innerText(),
+    /已在两个固定真实服务|客户 logo|100\+/,
+  );
   console.log(
-    'PASS: Work hero, workflow strip, three scene demos and feature groups; business cooperation services, outcomes and section order.',
+    'PASS: Work hero, workflow strip, three scene demos and feature groups; business cooperation services, member evidence, outcomes and section order.',
   );
 
   for (const width of [1440, 1024, 768, 390, 360]) {
