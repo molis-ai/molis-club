@@ -35,114 +35,175 @@
     0 30px 50px -24px rgb(40 24 10 / 0.6);
 }
 
-/* 三件事：引号先行 */
-.fl-jobs blockquote {
-  font-family: var(--fo-serif);
-  font-weight: 500;
-  font-size: clamp(18px, 1.5vw, 22px);
-  line-height: 1.6;
-}
-.fo-site .fl-jobs h3 {
-  margin-top: auto;
-  padding-top: 18px;
-  border-top: 2px solid currentColor;
-}
-.fo-site .fl-jobs .fo-index {
-  margin-bottom: 0;
-  padding-bottom: 8px;
-}
-
-/* 怎么交代 */
-.fl-handoff-body {
-  display: grid;
-  gap: 18px;
-}
-.fl-handoff-body h3 {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-.fl-handoff-body .fo-list + h3 {
-  margin-top: 26px;
-}
-.fo-site .fl-handoff .fo-list li {
-  border-color: rgb(18 24 38 / 0.2);
-}
-
-/* 八个场景：八张小色卡 */
-.fl-scenes {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-}
-.fl-scenes li {
+/* 三件事：三张纸签切换，一次看一件，从一句话走到有结果 */
+.fl-tabs {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 36px;
-  min-height: 170px;
-  padding: 22px 24px;
-  border-radius: 22px;
-  background: var(--fo-paper);
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(32px, 4vw, 52px);
 }
-.fl-scenes li:nth-child(8n + 2),
-.fl-scenes li:nth-child(8n + 7) {
+.fl-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 20px 0 14px;
+  border: 0;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 2px var(--fo-ink);
+  background: transparent;
+  color: var(--fo-ink);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    color 0.25s,
+    rotate 0.4s var(--fo-ease);
+}
+.fl-tabs button .fo-index {
+  font-size: 18px;
+}
+.fl-tabs button:hover {
+  background: var(--fo-white);
+}
+.fl-tabs button[aria-selected='true'] {
   background: var(--fo-yellow);
-}
-.fl-scenes li:nth-child(8n + 4),
-.fl-scenes li:nth-child(8n + 5) {
-  background: var(--fo-pink);
-}
-.fl-scenes li:nth-child(8n + 3) {
-  background: var(--fo-sage);
-}
-.fl-scenes li:nth-child(8n + 8) {
-  background: var(--fo-blue);
-  color: var(--fo-white);
-}
-.fl-scenes li:nth-child(8n + 8) .fo-index {
-  color: var(--fo-yellow);
-}
-.fl-scenes li.is-in:nth-child(odd) {
-  rotate: -0.8deg;
-}
-.fl-scenes li.is-in:nth-child(even) {
-  rotate: 0.9deg;
-}
-.fl-scenes .fo-index {
-  font-size: 40px;
-}
-.fl-scenes strong {
-  font-family: var(--fo-serif);
-  font-weight: 900;
-  font-size: clamp(20px, 1.8vw, 26px);
-  line-height: 1.3;
-}
-
-/* 手机和电脑 */
-.fl-moments {
-  padding: 8% 6% 4%;
-  border-radius: 28px;
-  background: var(--fo-sage);
-}
-.fl-moments .fl-devices {
   rotate: -1.5deg;
 }
-.fl-moments .fo-note {
-  margin-top: 40px;
-  color: var(--fo-ink);
-}
-.fl-devices-copy {
+.fl-story {
   display: grid;
-  gap: 40px;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: clamp(24px, 4vw, 64px);
+  margin-top: 28px;
+  padding: clamp(26px, 3.4vw, 48px);
+  border-radius: 28px;
+  background: var(--fo-white);
+  box-shadow: var(--fo-shadow);
+}
+.fl-story blockquote {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(26px, 2.8vw, 40px);
+  line-height: 1.4;
+}
+.fl-steps {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fl-steps li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid var(--fo-line);
+  animation: fl-step-in 0.5s var(--fo-ease) both;
+  animation-delay: calc(var(--i) * 90ms);
+}
+.fl-steps li:first-child {
+  border-top: 2px solid var(--fo-ink);
+}
+.fl-steps p {
+  font-size: 16px;
+  line-height: 1.75;
+}
+.fl-steps .fo-tag {
+  box-shadow: inset 0 0 0 1.5px currentColor;
+  color: var(--fo-muted);
+}
+@keyframes fl-step-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+
+/* 它怎么理解你：三张卡，下面一张纸写清原型现在做到哪一步 */
+.fl-now {
+  display: grid;
+  gap: 8px;
+  max-width: 760px;
+  margin-top: 28px;
+  padding: 22px 26px;
+  border-radius: 20px;
+  border: 1.5px dashed var(--fo-ink);
+}
+.fl-now strong {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: 20px;
+}
+.fl-now .fo-tag {
+  border: 1.5px dashed currentColor;
+}
+.fl-now p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--fo-text);
+}
+
+/* 和 Story、World 的关系 */
+.fl-worlds-body {
+  display: grid;
+  gap: 24px;
+}
+.fl-worlds-body p {
+  font-family: var(--fo-serif);
+  font-weight: 500;
+  font-size: clamp(19px, 1.7vw, 24px);
+  line-height: 1.7;
+}
+.fl-worlds-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+}
+.fo-site .fl-worlds-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  font-size: 16px;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.fl-worlds-links .fo-tag {
+  border: 1.5px dashed currentColor;
+}
+
+/* 还在路上：路线图类的内容各只留一行 */
+.fl-roadmap ul {
+  margin: 24px 0 0;
+  padding: 0;
+  border-top: 2px solid var(--fo-ink);
+  list-style: none;
+}
+.fl-roadmap li {
+  display: grid;
+  grid-template-columns: minmax(0, 0.32fr) minmax(0, 1fr);
+  gap: 6px 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--fo-line);
+}
+.fl-roadmap strong {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: 18px;
+}
+.fl-roadmap p {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--fo-text);
 }
 
 @media (max-width: 900px) {
-  .fl-scenes {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .fl-scenes li {
-    min-height: 130px;
+  .fl-story {
+    grid-template-columns: 1fr;
   }
 }
 @media (max-width: 640px) {
@@ -155,5 +216,16 @@
     box-shadow:
       0 0 0 4px var(--fo-ink),
       0 20px 30px -18px rgb(40 24 10 / 0.6);
+  }
+  .fl-tabs button {
+    width: 100%;
+  }
+  .fl-roadmap li {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fl-steps li {
+    animation: none;
   }
 }

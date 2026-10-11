@@ -278,6 +278,43 @@ try {
     'PASS: Molis World concept page with status, sample journey, no product entry points, and the follow-up preselect.',
   );
 
+  // Molis Life（A3）：首屏讲懂你、陪你的 Agent，状态签不变；三件事切换着看，每步标示意；
+  // 超出原型的能力标规划中；能到 Story 与 World；路线图各一行
+  await visit('/life');
+  assert.match(await page.locator('h1').innerText(), /懂你.*陪你/s);
+  assert.deepEqual(
+    await page.locator('.fo-hero .fo-status li').allInnerTexts(),
+    ['原型探索', '还不能下载', '页面里的例子都是示意'],
+  );
+  const lifeTabs = page.locator('.fl-tabs [role="tab"]');
+  assert.equal(await lifeTabs.count(), 3);
+  assert.match(await page.locator('.fl-story blockquote').innerText(), /退/);
+  await lifeTabs.nth(1).click();
+  assert.match(await page.locator('.fl-story blockquote').innerText(), /看海/);
+  await page.keyboard.press('ArrowRight');
+  assert.equal(await lifeTabs.nth(2).getAttribute('aria-selected'), 'true');
+  assert.equal(
+    await page.locator('.fl-steps li .fo-tag').count(),
+    await page.locator('.fl-steps li').count(),
+  );
+  assert.match(await page.locator('.fl-now').innerText(), /规划中/);
+  assert.equal(
+    await page.locator('main a[href="/demos/brand/folio/story"]').count(),
+    1,
+  );
+  assert.equal(
+    await page.locator('main a[href="/demos/brand/folio/world"]').count(),
+    1,
+  );
+  assert.equal(await page.locator('.fl-roadmap li').count(), 4);
+  assert.doesNotMatch(
+    await page.locator('main').innerText(),
+    /同一套插件思路|硬件与个人 Agent/,
+  );
+  console.log(
+    'PASS: Molis Life as a caring personal Agent with sample walkthroughs, planned capabilities marked, and links to Story and World.',
+  );
+
   // 方法（原百科）并进社区：默认六张精选（三位艺术家 + 三个示例），「查看全部」原处展开，
   // 24 个组件来源默认收起；搜索与分类会收窄；详情在社区下，旧的百科地址都跳过去。
   const community = `${origin}/demos/community`;

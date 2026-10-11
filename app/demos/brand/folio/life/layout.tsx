@@ -1,8 +1,8 @@
-import { hero } from '../../../../../content/molis-life';
+import { folioLife } from '../../../../../content/folio-life';
 
 export const metadata = {
-  title: { absolute: 'Molis Life · 把琐事交代出去，把时间留给喜欢的生活' },
-  description: hero.lead,
+  title: { absolute: folioLife.meta.title },
+  description: folioLife.meta.description,
 };
 
 export default function FolioLifeLayout({
