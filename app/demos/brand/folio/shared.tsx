@@ -10,7 +10,7 @@ import {
   signature,
   type LineId,
 } from '../../../../content/studio';
-import { folioStudio } from '../../../../content/folio';
+import { folioHomeCopy, folioStudio } from '../../../../content/folio';
 import { authClient } from '../../../../lib/auth-client';
 
 // Folio 各页共用：路由、顶栏（含「产品」菜单）、页尾封底和页面动效。文案来自 content/studio.ts 与 content/folio.ts。
@@ -52,13 +52,8 @@ export const lineTone: Record<LineId, string> = {
   story: 'blue',
 };
 
-/** 每件产品的一句话，和首页同一份（content/folio.ts） */
-export const lineLine: Record<LineId, string> = {
-  work: folioStudio.work.line,
-  ...(Object.fromEntries(
-    folioStudio.lines.map((line) => [line.id, line.line]),
-  ) as Record<Exclude<LineId, 'work'>, string>),
-};
+/** 每件产品的一句话：顶栏下拉和「接着看」直接读首页那一份（content/folio.ts 的 folioHomeCopy） */
+export const lineLine: Record<LineId, string> = folioHomeCopy.products;
 
 /** 联系页；topic 预选「企业合作」或预填关注哪条产品线 */
 export const contactHref = (topic?: string) =>

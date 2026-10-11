@@ -15,6 +15,12 @@ export const folioHomeCopy = {
     life: '把琐事安顿好，让喜欢的生活发生',
     story: '走进另一个世界，带一段经历回来',
   } satisfies Record<FolioProductId, string>,
+  /** 色纸上的领域签只写领域，阶段只看阶段签；folioStudio.lines 的 area 混了状态，留给其他样张 */
+  areas: {
+    tool: '工作 · 桌面',
+    life: '生活',
+    story: '体验',
+  } satisfies Record<Exclude<FolioProductId, 'work'>, string>,
 };
 
 export const folioStudio = {

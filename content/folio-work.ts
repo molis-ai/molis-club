@@ -133,15 +133,16 @@ export const platform = {
     'Cognia',
     'Shelf',
     '炼金术士',
-    '实验',
     '工作流程',
     '插件创作台',
     '角色',
   ],
   released: ['Goals', 'Sessions', 'Feed', '成果'],
   yours: '你做的插件',
+  // 数量按 molis-work main @ bca1bd19（2026-10-12）的 apps/workbench/src/builtin-plugins.ts 与 PRODUCT.md 核对：
+  // 实验插件 10/10 已删除；Text stats 只在开发者模式出现，角色只在「设置 › 角色」。
   count:
-    '开发版内置 26 个插件；标圆点的四个已在 v0.2.0 里。角色之后并进设置，不再算插件。',
+    '开发版内置 25 个插件：项目插件 11 个，个人插件 14 个；标圆点的四个已在 v0.2.0 里。Text stats 只在开发者模式下出现，角色在设置里。',
   principles: [
     {
       title: '一个平台，按需加插件',
@@ -409,7 +410,7 @@ export const access = {
       '目标与核对（Goals）：完成要显式收尾',
       '回到各个工具继续的会话（Sessions）',
       '信息源汇总（Feed）：RSS、网页、YouTube、GitHub、Gmail',
-      '固定下来的成果，记得来自哪份原文',
+      '把某一版成果固定下来（基础版）',
       '五家 Agent 内置接入，先预览再写入',
     ],
     text: 'MIT 开源，在 macOS 上从源码安装。',
@@ -423,6 +424,7 @@ export const access = {
       '看得见当前页面的助理，建议点一下就执行',
       '只放需要你介入的事的 Inbox，写明为什么',
       '⌘K 搜所有插件里的内容',
+      '成果记得来自哪份原文的哪一版，原文改了也看得出',
       '编码会话、文件与 Git，副作用先经你审查',
       '待办、文档、表格、幻灯片大纲等个人插件',
     ],
@@ -445,6 +447,6 @@ export const access = {
 
 export const closing = {
   title: ['工具可以不断长出来，', '工作不必一次次重来。'],
-  solutions: '和团队一起用',
+  solutions: '了解企业合作',
   home: '回到 Molis AI',
 };

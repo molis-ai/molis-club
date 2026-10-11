@@ -109,7 +109,7 @@ function Lines() {
                   {pad(index + 1)}
                 </span>
                 <div className="fo-sheet-meta">
-                  <span>{line.area}</span>
+                  <span>{folioHomeCopy.areas[line.id]}</span>
                   <span>{line.status}</span>
                 </div>
                 <h3 id={`fo-line-${line.id}`}>
