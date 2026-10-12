@@ -1465,6 +1465,21 @@
   border-bottom: 2px solid var(--apricot);
 }
 
+/* 随滚动：贴纸像被手拿着慢慢转正、浮起，Work 的窗口也跟着晃一点 */
+.re-thing .re-sticker {
+  translate: 0 calc((0.5 - var(--p, 0.5)) * 70px);
+  rotate: calc(-6deg + var(--p, 0.5) * 8deg);
+}
+.re-thing:nth-child(even) .re-sticker {
+  rotate: calc(6deg - var(--p, 0.5) * 8deg);
+}
+.re-thing .re-thing-copy {
+  translate: 0 calc((0.5 - var(--p, 0.5)) * 30px);
+}
+.re-work .re-crankwork {
+  rotate: calc(-1.5deg + var(--p, 0.5) * 3deg);
+}
+
 /* 进入视口：文字轻轻弹上来，贴纸倾斜着落下 */
 .re [data-reveal] {
   opacity: 0;
@@ -1866,6 +1881,13 @@
 
 /* ---------- 减少动态：停在画好的样子 ---------- */
 @media (prefers-reduced-motion: reduce) {
+  .re-thing .re-sticker,
+  .re-thing:nth-child(even) .re-sticker,
+  .re-thing .re-thing-copy,
+  .re-work .re-crankwork {
+    translate: none;
+    rotate: none;
+  }
   .re *,
   .re *::before,
   .re *::after {

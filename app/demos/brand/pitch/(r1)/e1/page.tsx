@@ -214,6 +214,7 @@ export default function DirectionE() {
             <article
               className="re-work"
               id="work"
+              data-scene="pass"
               aria-labelledby="re-work-title"
             >
               <div className="re-work-copy" data-reveal>
@@ -259,6 +260,7 @@ export default function DirectionE() {
                     key={line.id}
                     id={line.id}
                     className={`re-thing re-thing-${line.id}`}
+                    data-scene="pass"
                     aria-labelledby={`re-${line.id}-title`}
                   >
                     <figure className="re-sticker" data-reveal>
@@ -327,6 +329,7 @@ export default function DirectionE() {
               <article
                 id="world"
                 className="re-thing re-thing-world"
+                data-scene="pass"
                 aria-labelledby="re-world-title"
               >
                 <figure className="re-sticker re-sticker-blank" data-reveal>

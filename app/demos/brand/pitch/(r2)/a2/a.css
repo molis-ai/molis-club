@@ -1483,6 +1483,23 @@
   transform: translateY(160%);
 }
 
+/* 矮屏：左边的列表收紧一些，五项加展开的那一项都放得下 */
+@media (max-height: 820px) and (min-width: 1001px) {
+  .wa-list {
+    top: 11vh;
+  }
+  .wa-list h3 a {
+    padding: 7px 0 7px 18px;
+    font-size: clamp(22px, 2vw, 28px);
+  }
+  .wa-list-more > div {
+    gap: 8px;
+  }
+  .wa-list-line {
+    font-size: 16px;
+  }
+}
+
 /* ---------- 窄屏 ---------- */
 @media (max-width: 1000px) {
   .wa-brief-grid {

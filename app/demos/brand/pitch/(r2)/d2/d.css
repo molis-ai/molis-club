@@ -414,7 +414,8 @@
   text-transform: uppercase;
   opacity: 0.8;
 }
-.wd-about h2 {
+.wd-about-title {
+  --r: clamp(0, calc((var(--p, 1) - 0.12) / 0.26), 1);
   grid-column: 1 / -1;
   max-width: 16em;
   font: 200 clamp(34px, 4.6vw, 72px) / 1.28 var(--sans);
@@ -425,10 +426,14 @@
   font: 300 clamp(20px, 1.9vw, 28px) / 1.55 var(--sans);
 }
 .wd-about-text {
+  --r: clamp(0, calc((var(--p, 1) - 0.32) / 0.26), 1);
   font: 300 clamp(16px, 1.25vw, 18px) / 1.95 var(--sans);
-  opacity: 0.92;
 }
-.wd-about-name {
+.wd-about-title .ch,
+.wd-about-text .ch {
+  opacity: clamp(0.12, calc(var(--r) * (var(--n) + 12) - var(--i)), 1);
+}
+.wd-about-text em {
   font: italic 400 1.1em/1 var(--serif);
 }
 .wd [data-reveal] {
@@ -999,7 +1004,24 @@
   font-size: 0.82em;
 }
 
-/* 细线画 */
+/* 细线画：纸屏走进视野时一笔一笔画出来 */
+.wd-screen .wd-ink [style] {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.6s cubic-bezier(0.6, 0, 0.3, 1);
+  transition-delay: calc(0.25s + var(--k) * 0.14s);
+}
+.wd-screen .wd-ink .wd-leaf[style] {
+  fill-opacity: 0;
+  transition:
+    stroke-dashoffset 1.6s cubic-bezier(0.6, 0, 0.3, 1)
+      calc(0.25s + var(--k) * 0.14s),
+    fill-opacity 0.8s ease calc(1.2s + var(--k) * 0.14s);
+}
+.wd-screen.is-in .wd-ink [style] {
+  stroke-dashoffset: 0;
+  fill-opacity: 1;
+}
 .wd-drawing {
   position: relative;
   z-index: 2;
@@ -1320,6 +1342,10 @@
 
 /* ---------- 减少动态：天停住，产品竖排 ---------- */
 @media (prefers-reduced-motion: reduce) {
+  .wd-screen .wd-ink [style] {
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+  }
   .wd *,
   .wd *::before,
   .wd *::after {

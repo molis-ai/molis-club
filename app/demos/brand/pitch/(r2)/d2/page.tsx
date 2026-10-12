@@ -14,16 +14,17 @@ import {
   CONTACT,
   ColophonLinks,
   Header,
+  InkText,
   SOLUTIONS,
   contactHref,
   ending,
   footer,
   home,
   lineHref,
+  lineIds,
   lineNames,
   signature,
   useStage,
-  withNames,
   type Vars,
 } from '../../_kit/kit';
 import { ToolSheet, WorkSheet } from '../../_kit/sheets';
@@ -230,15 +231,19 @@ export default function DirectionD() {
             <section
               className="wd-about"
               id="studio"
+              data-scene="pass"
               aria-labelledby="wd-studio-title"
             >
               <p className="wd-about-kicker" data-reveal>
                 <span lang="en">{studio.label}</span>
                 <span>{studio.labelZh}</span>
               </p>
-              <h2 id="wd-studio-title" data-reveal>
-                {studio.title}
-              </h2>
+              <InkText
+                as="h2"
+                id="wd-studio-title"
+                className="wd-about-title"
+                text={studio.title}
+              />
               <p
                 className="wd-about-view"
                 data-reveal
@@ -246,13 +251,11 @@ export default function DirectionD() {
               >
                 {studio.view}
               </p>
-              <p
+              <InkText
                 className="wd-about-text"
-                data-reveal
-                style={{ '--d': '240ms' } as Vars}
-              >
-                {withNames(studio.text, 'wd-about-name')}
-              </p>
+                text={studio.text}
+                marks={lineIds.map((id) => lineNames[id])}
+              />
             </section>
           </div>
 
@@ -326,7 +329,7 @@ export default function DirectionD() {
                     id={line.id}
                     aria-labelledby={`wd-${line.id}-title`}
                   >
-                    <div className="wd-screen">
+                    <div className="wd-screen" data-reveal>
                       {line.id === 'tool' ? <ToolSheet p="wd" active /> : null}
                       {line.id === 'life' ? <LifeDrawing /> : null}
                       {line.id === 'story' ? <StoryDrawing /> : null}
@@ -371,7 +374,7 @@ export default function DirectionD() {
                   id="world"
                   aria-labelledby="wd-world-title"
                 >
-                  <div className="wd-screen">
+                  <div className="wd-screen" data-reveal>
                     <WorldDrawing />
                     <MonsteraShadow className="wd-shadow-screen" />
                     <span className="wd-screen-note">{home.world.status}</span>

@@ -35,7 +35,7 @@ export const pitchGroups: PitchGroup[] = [
   {
     id: 'base',
     name: '基准',
-    text: '现在线上的 Folio 首页，内容一直在更新。其余八版取的是它 10 月 11 日的内容。',
+    text: '现在线上的 Folio 首页。其余八版读的是同一份文案，Folio 改了文案，八版跟着变；差别只在视觉与动效。',
     refs: '',
   },
   {
