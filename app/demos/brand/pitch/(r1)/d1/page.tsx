@@ -6,18 +6,17 @@ import { lineImages } from '../../../../../../content/studio';
 import { GITHUB_URL } from '../../../../../../content/molis-work';
 import { AiWordCycle } from '../../../ai-words';
 import {
-  ABOUT,
+  AlsoLinks,
   COMMUNITY,
   CONTACT,
   ColophonLinks,
-  ESSAYS,
   Header,
   InkText,
-  LOGIN,
   SOLUTIONS,
   contactHref,
   ending,
   footer,
+  home,
   lineHref,
   lineIds,
   lineNames,
@@ -32,7 +31,8 @@ import { ToolSheet, WorkSheet } from '../../_kit/sheets';
 import './d.css';
 
 // D · 日光与生活：一天的光。清晨的工作台和一群人，白墙上的百叶窗影里读到工作室在做什么；
-// 走近书桌看 Work 怎样干活；午后、傍晚、夜里各有一件正在做的东西；最后灯灭了，只剩一扇暖光的窗。
+// 走近书桌看 Work 怎样干活；午后、傍晚、夜里各有一件正在做的东西；百叶窗影里再读到一句 World 的话；
+// 最后灯灭了，只剩一扇暖光的窗。
 // 内容与 Folio 首页同一份，只换视觉、版式与动效。照片是氛围图，不是团队纪实或用户证言。
 
 const work = folioStudio.work;
@@ -82,8 +82,6 @@ export default function DirectionD() {
   const lines = folioStudio.lines;
   const { community } = folioStudio;
   const { contact } = ending.paths;
-  const question = ending.title.slice(0, -1);
-  const mark = ending.title.slice(-1);
 
   return (
     <>
@@ -144,19 +142,35 @@ export default function DirectionD() {
             </div>
           </section>
 
-          {/* 白墙与百叶窗影：工作室的一段自述逐字亮起 */}
+          {/* 白墙与百叶窗影：工作室身份说明逐字亮起 */}
           <section
             className="rd-manifesto"
+            id="studio"
             data-scene="pin"
-            aria-label="关于 Molis AI"
+            aria-labelledby="rd-studio-title"
           >
             <div className="rd-manifesto-stage">
               <Blinds />
-              <InkText
-                className="rd-manifesto-text"
-                text={folioHomeCopy.description}
-                marks={lineIds.map((id) => lineNames[id])}
-              />
+              <div className="rd-manifesto-copy">
+                <p className="rd-manifesto-kicker">
+                  <span lang="en">{home.studio.label}</span>
+                  <span>{home.studio.labelZh}</span>
+                </p>
+                <InkText
+                  as="h2"
+                  id="rd-studio-title"
+                  className="rd-manifesto-text"
+                  text={home.studio.title}
+                />
+                <div className="rd-manifesto-row">
+                  <p className="rd-manifesto-view">{home.studio.view}</p>
+                  <InkText
+                    className="rd-manifesto-more"
+                    text={home.studio.text}
+                    marks={lineIds.map((id) => lineNames[id])}
+                  />
+                </div>
+              </div>
             </div>
           </section>
 
@@ -196,6 +210,7 @@ export default function DirectionD() {
                     </Link>
                   </h3>
                   <p className="rd-work-line">{folioHomeCopy.products.work}</p>
+                  <p className="rd-ask">{home.asks.work}</p>
                   <ul className="rd-status" aria-label="当前状态">
                     {work.status.map((item) => (
                       <li key={item}>{item}</li>
@@ -269,7 +284,7 @@ export default function DirectionD() {
                 >
                   <div className="rd-day-copy" data-reveal>
                     <p className="rd-day-meta">
-                      <span>{line.area}</span>
+                      <span>{home.areas[line.id]}</span>
                       <span>{line.status}</span>
                     </p>
                     <h3 id={`rd-${line.id}-title`}>
@@ -280,6 +295,13 @@ export default function DirectionD() {
                     <p className="rd-day-line">
                       {folioHomeCopy.products[line.id]}
                     </p>
+                    <p className="rd-ask rd-ask-light">{home.asks[line.id]}</p>
+                    {line.id === 'tool' ? (
+                      <p className="rd-relation">
+                        {home.relation.home}
+                        <span>{home.relation.phase}</span>
+                      </p>
+                    ) : null}
                     <Link
                       className="rd-link rd-link-light"
                       href={lineHref[line.id]}
@@ -291,6 +313,34 @@ export default function DirectionD() {
                   </div>
                 </article>
               ))}
+            </div>
+
+            {/* World：夜深以后，白墙上的百叶窗影里浮出一句话，旁边一张小卡 */}
+            <div
+              className="rd-world"
+              id="world"
+              data-scene="pass"
+              aria-labelledby="rd-world-title"
+            >
+              <Blinds />
+              <InkText className="rd-world-text" text={home.world.transition} />
+              <Link
+                className="rd-hero-card rd-world-card"
+                href={home.world.href}
+              >
+                <span className="rd-world-glyph" aria-hidden="true">
+                  <i />
+                </span>
+                <span className="rd-hero-card-text">
+                  <small>{home.world.status}</small>
+                  <strong id="rd-world-title">{home.world.name}</strong>
+                  <em>{home.world.line}</em>
+                </span>
+                <span className="rd-world-more">
+                  {home.world.more}
+                  <ArrowUpRight size={16} aria-hidden="true" />
+                </span>
+              </Link>
             </div>
           </section>
         </main>
@@ -309,10 +359,7 @@ export default function DirectionD() {
                 <i />
                 <i />
               </span>
-              <h2 id="rd-ending-title">
-                {question}
-                <span lang="en">{mark}</span>
-              </h2>
+              <h2 id="rd-ending-title">{home.close.transition}</h2>
             </div>
           </section>
 
@@ -326,10 +373,10 @@ export default function DirectionD() {
               </h3>
               <div className="rd-path-links">
                 <Link className="rd-button" href={contactHref('enterprise')}>
-                  {contact.action}
+                  {home.close.cooperation.contact}
                 </Link>
                 <Link className="rd-link rd-link-light" href={SOLUTIONS}>
-                  了解解决方案
+                  {home.close.cooperation.more}
                   <ArrowUpRight size={15} aria-hidden="true" />
                 </Link>
               </div>
@@ -349,12 +396,9 @@ export default function DirectionD() {
                 <Link className="rd-button rd-button-ghost" href={COMMUNITY}>
                   {community.action}
                 </Link>
-                <Link className="rd-link rd-link-light" href={LOGIN}>
-                  {folioStudio.nav.login}
-                  <ArrowUpRight size={15} aria-hidden="true" />
-                </Link>
               </div>
             </div>
+            <AlsoLinks p="rd" />
           </section>
 
           <div className="rd-colophon">

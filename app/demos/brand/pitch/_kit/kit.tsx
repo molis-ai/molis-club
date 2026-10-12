@@ -294,10 +294,15 @@ export function InkText({
   text,
   marks = [],
   className,
+  as: Tag = 'p',
+  id,
 }: {
   text: string;
   marks?: string[];
   className?: string;
+  /** 标题也可以逐字显影 */
+  as?: 'p' | 'h2';
+  id?: string;
 }) {
   const pieces: { text: string; mark: boolean }[] = [];
   let rest = text;
@@ -322,7 +327,7 @@ export function InkText({
   let index = 0;
   const total = Array.from(text).length;
   return (
-    <p className={className} style={{ '--n': total } as Vars}>
+    <Tag id={id} className={className} style={{ '--n': total } as Vars}>
       <span className="sr-only">{text}</span>
       <span aria-hidden="true">
         {pieces.map((piece, pieceIndex) => {
@@ -338,7 +343,7 @@ export function InkText({
           );
         })}
       </span>
-    </p>
+    </Tag>
   );
 }
 
