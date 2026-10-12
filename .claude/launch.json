@@ -14,6 +14,20 @@
         "5191"
       ],
       "port": 5191
+    },
+    {
+      "name": "molis-dev-3100",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "VINEXT_NO_DEV_LOCK=1",
+        "npm",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "3100"
+      ],
+      "port": 3100
     }
   ]
 }
