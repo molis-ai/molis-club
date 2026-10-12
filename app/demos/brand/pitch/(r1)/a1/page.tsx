@@ -9,15 +9,15 @@ import { demo } from '../../../../../../content/molis-tool';
 import { GITHUB_URL } from '../../../../../../content/molis-work';
 import { AiWordCycle } from '../../../ai-words';
 import {
-  CONTACT,
+  ABOUT,
   COMMUNITY,
+  CONTACT,
+  ColophonLinks,
   ESSAYS,
   Header,
   InkText,
   LOGIN,
   SOLUTIONS,
-  WIKI,
-  ABOUT,
   contactHref,
   ending,
   footer,
@@ -388,52 +388,7 @@ export default function DirectionA() {
               <strong>Molis AI</strong>
               <p>{signature}</p>
             </div>
-            <nav className="ra-colophon-links" aria-label="页尾导航">
-              <div>
-                <h2>{footer.productsLabel}</h2>
-                <ul>
-                  {lineIds.map((id) => (
-                    <li key={id}>
-                      <Link href={lineHref[id]}>{lineNames[id]}</Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h2>{footer.studioLabel}</h2>
-                <ul>
-                  <li>
-                    <Link href={SOLUTIONS}>{footer.studio.solutions}</Link>
-                  </li>
-                  <li>
-                    <Link href={ESSAYS}>{folioStudio.nav.essays}</Link>
-                  </li>
-                  <li>
-                    <Link href={WIKI}>{folioStudio.nav.wiki}</Link>
-                  </li>
-                  <li>
-                    <Link href={COMMUNITY}>{footer.studio.community}</Link>
-                  </li>
-                  <li>
-                    <Link href={ABOUT}>{folioStudio.labels.team.zh}</Link>
-                  </li>
-                  <li>
-                    <Link href={CONTACT}>{footer.studio.contact}</Link>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h2>GitHub</h2>
-                <ul>
-                  <li>
-                    <a href={footer.github} target="_blank" rel="noreferrer">
-                      github.com/molis-ai
-                      <ArrowUpRight size={13} aria-hidden="true" />
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </nav>
+            <ColophonLinks p="ra" />
             <div className="ra-colophon-base">
               <span>{footer.copyright}</span>
               <Link href={`${CONTACT}#privacy`}>{footer.privacy}</Link>

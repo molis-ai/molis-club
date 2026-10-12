@@ -157,3 +157,126 @@ export function FloorPlan({
     </nav>
   );
 }
+
+/**
+ * 逐字被照亮的一段字：每个字一个 span，带 --i；样式用所在展厅的 --p 和 --n 算出每个字的亮度。
+ * 读屏读整段原文。marks 里的词（产品名）整体包一层，单独上色。
+ */
+export function LitText({
+  text,
+  as: Tag = 'p',
+  id,
+  className,
+  marks = [],
+}: {
+  text: string;
+  as?: 'p' | 'h2';
+  id?: string;
+  className?: string;
+  marks?: string[];
+}) {
+  const pieces: { text: string; mark: boolean }[] = [];
+  let rest = text;
+  while (rest) {
+    const hits = marks
+      .map((mark) => ({ mark, at: rest.indexOf(mark) }))
+      .filter((hit) => hit.at !== -1)
+      .sort((a, b) => a.at - b.at);
+    if (!hits.length) {
+      pieces.push({ text: rest, mark: false });
+      break;
+    }
+    const { mark, at } = hits[0];
+    if (at > 0) pieces.push({ text: rest.slice(0, at), mark: false });
+    pieces.push({ text: mark, mark: true });
+    rest = rest.slice(at + mark.length);
+  }
+  let index = 0;
+  return (
+    <Tag
+      id={id}
+      className={className}
+      style={{ '--n': Array.from(text).length } as Vars}
+    >
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true">
+        {pieces.map((piece, pieceIndex) => {
+          const chars = Array.from(piece.text).map((char) => (
+            <span className="ch" key={index} style={{ '--i': index++ } as Vars}>
+              {char}
+            </span>
+          ));
+          return piece.mark ? (
+            <em key={pieceIndex} lang="en">
+              {chars}
+            </em>
+          ) : (
+            <span key={pieceIndex}>{chars}</span>
+          );
+        })}
+      </span>
+    </Tag>
+  );
+}
+
+/** World：一个还在布展的点阵小世界模型，经线慢慢转，几处亮点是放进去的地方 */
+export function WorldModel() {
+  return (
+    <div className="xs-world" aria-hidden="true">
+      <svg viewBox="-120 -120 240 240">
+        <defs>
+          <filter
+            id="xs-world-glow"
+            x="-50%"
+            y="-50%"
+            width="200%"
+            height="200%"
+          >
+            <feGaussianBlur stdDeviation="2.4" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <circle className="xs-world-rim" r="100" />
+        {[-66, -36, 0, 36, 66].map((y) => (
+          <ellipse
+            key={y}
+            className="xs-world-lat"
+            cy={y}
+            rx={Math.sqrt(100 * 100 - y * y).toFixed(1)}
+            ry={(Math.sqrt(100 * 100 - y * y) * 0.18).toFixed(1)}
+          />
+        ))}
+        {[0, 1, 2, 3].map((k) => (
+          <ellipse
+            key={k}
+            className="xs-world-lon"
+            rx="100"
+            ry="100"
+            style={{ '--k': k } as Vars}
+          />
+        ))}
+        <g filter="url(#xs-world-glow)">
+          <circle className="xs-world-spot" cx="-34" cy="-22" r="3.2" />
+          <circle
+            className="xs-world-spot"
+            cx="40"
+            cy="14"
+            r="2.6"
+            style={{ '--k': 1 } as Vars}
+          />
+          <circle
+            className="xs-world-spot"
+            cx="-8"
+            cy="52"
+            r="2.2"
+            style={{ '--k': 2 } as Vars}
+          />
+        </g>
+      </svg>
+      <span className="xs-world-floor" />
+    </div>
+  );
+}

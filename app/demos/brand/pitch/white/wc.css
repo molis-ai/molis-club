@@ -537,29 +537,20 @@
   white-space: nowrap;
   animation: wc-rise 1.4s var(--ease) both;
 }
-.wc-intro {
-  max-width: 372px;
+.wc-keys.wc-masthead-keys {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  margin: 0;
+  padding: 0 0 6px;
+  border: 0;
   color: var(--ink-2);
-  font-size: 13.5px;
-  line-height: 1.75;
+  font-size: 14px;
+  letter-spacing: 0.12em;
   animation: wc-rise 1.4s 0.15s var(--ease) both;
 }
-.wc-enter {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 12px;
-  padding-bottom: 3px;
-  border-bottom: 1px solid var(--ink);
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 500;
-}
-.wc-enter svg {
-  transition: transform 0.3s var(--ease);
-}
-.wc-enter:hover svg {
-  transform: translateY(3px);
+.wc-keys.wc-masthead-keys span + span::before {
+  content: none;
 }
 @keyframes wc-rise {
   from {
@@ -1596,10 +1587,11 @@
   padding: clamp(110px, 16vh, 180px) var(--gutter) clamp(90px, 14vh, 150px);
 }
 .wc-visit h2 {
-  font-size: clamp(44px, 7.6vw, 124px);
+  max-width: 21em;
+  font-size: clamp(30px, 3.8vw, 58px);
   font-weight: 500;
-  line-height: 1.04;
-  letter-spacing: -0.02em;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
 }
 .wc-visit h2 span {
   letter-spacing: 0;
@@ -1760,6 +1752,157 @@ main[data-step='5'] .wc-guide li:nth-child(4) a {
 .wc.is-ready [data-reveal]:not(.is-in) {
   opacity: 0;
   transform: translateY(18px);
+}
+
+/* ---------- 前言墙：工作室身份说明 ---------- */
+.wc-studio {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(110px, 18vh, 200px) var(--gutter) clamp(60px, 10vh, 120px);
+}
+.wc-studio-kicker {
+  display: flex;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+  color: var(--mute);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.wc-studio-title {
+  max-width: 17em;
+  margin-top: 36px;
+  font-size: clamp(32px, 4.4vw, 68px);
+  font-weight: 500;
+  line-height: 1.24;
+  letter-spacing: -0.02em;
+}
+/* 像墙上贴字：从左往右一点点显出来（剪裁放在里层，外层留给进入视口的判断） */
+.wc-studio-title > span {
+  display: block;
+}
+.wc.is-ready .wc-studio-title > span {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1.8s var(--ease) 0.1s;
+}
+.wc.is-ready .wc-studio-title:not(.is-in) > span {
+  clip-path: inset(0 100% 0 0);
+}
+.wc-studio-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: 28px clamp(32px, 6vw, 96px);
+  margin-top: clamp(48px, 8vh, 88px);
+}
+.wc-studio-view {
+  padding-left: 18px;
+  border-left: 1px solid var(--ink);
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.7;
+}
+.wc-studio-text {
+  color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1.95;
+}
+.wc-studio-name {
+  color: var(--ink);
+  font: italic 400 1.12em/1 var(--serif);
+}
+
+/* ---------- 展签上新增的两行 ---------- */
+.wc-label-ask {
+  margin-top: 10px;
+  padding: 8px 0 0;
+  border-top: 1px dashed var(--hair);
+  color: var(--ink-2);
+  font:
+    italic 400 13px/1.6 var(--serif),
+    serif;
+}
+.wc-label-relation {
+  margin-top: 8px;
+  color: var(--mute);
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+.wc-label-relation span {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border: 1px solid var(--hair);
+  color: var(--ink-2);
+  font-size: 10.5px;
+}
+.wc-label-medium {
+  margin-top: 6px;
+  color: var(--mute);
+  font-size: 11px;
+}
+
+/* ---------- World：还没布展的空展厅 ---------- */
+.wc-world-wall {
+  width: 460px;
+  color: var(--ink);
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+.wc.is-ready .wc-hall-world .wc-world-wall {
+  clip-path: inset(0 calc((1 - var(--lab, 1)) * 100%) 0 0);
+}
+.wc-hall-world {
+  height: 210vh;
+}
+.wc-rooms-upcoming a {
+  border-bottom-style: dashed;
+}
+.wc-rooms-upcoming strong {
+  color: var(--ink-2);
+}
+.wc-thumb-world {
+  background: linear-gradient(transparent 0 78%, #cfcbc3 78%), var(--wall);
+}
+.wc-thumb-world i:nth-child(1) {
+  left: 18px;
+  top: 18px;
+  width: 40px;
+  height: 2px;
+  background: rgb(21 21 20 / 0.55);
+}
+.wc-thumb-world i:nth-child(2) {
+  left: 18px;
+  top: 24px;
+  width: 26px;
+  height: 2px;
+  background: rgb(21 21 20 / 0.55);
+}
+
+/* ---------- 结尾最后一行：也可以 ---------- */
+.wc-also {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin-top: clamp(56px, 8vh, 88px);
+  padding-top: 18px;
+  border-top: 1px solid var(--hair);
+  color: var(--mute);
+  font-size: 13px;
+}
+.wc-also a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--ink);
+  font-weight: 500;
+  border-bottom: 1px solid var(--hair);
+}
+.wc-also a:hover {
+  border-color: var(--ink);
 }
 
 /* ---------- 墙上的比例随屏幕宽度调 ---------- */
@@ -1980,7 +2123,18 @@ main[data-step='5'] .wc-guide li:nth-child(4) a {
     grid-column: auto;
   }
   .wc-visit h2 {
-    font-size: 11vw;
+    font-size: 7.4vw;
+  }
+  .wc-studio-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .wc-world-wall {
+    width: auto;
+    font-size: 24px;
+  }
+  .wc-keys.wc-masthead-keys {
+    align-items: flex-start;
+    margin-top: 24px;
   }
   .wc-guide {
     display: none;

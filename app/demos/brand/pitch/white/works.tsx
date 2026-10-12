@@ -233,7 +233,11 @@ export function ColorField() {
 }
 
 /** 导览里的缩略图：四件作品各一个极小的样子 */
-export function Thumb({ id }: { id: 'work' | 'tool' | 'life' | 'story' }) {
+export function Thumb({
+  id,
+}: {
+  id: 'work' | 'tool' | 'life' | 'story' | 'world';
+}) {
   return (
     <span className={`wc-thumb wc-thumb-${id}`} aria-hidden="true">
       <i />

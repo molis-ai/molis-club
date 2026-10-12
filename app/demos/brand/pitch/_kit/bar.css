@@ -22,6 +22,7 @@
     'Microsoft YaHei',
     sans-serif;
   letter-spacing: 0;
+  white-space: nowrap;
 }
 .pb a {
   color: inherit;

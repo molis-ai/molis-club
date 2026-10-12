@@ -9,23 +9,23 @@ import { demo } from '../../../../../content/molis-tool';
 import { GITHUB_URL } from '../../../../../content/molis-work';
 import { AiWordCycle } from '../../ai-words';
 import {
-  ABOUT,
+  AlsoLinks,
   COMMUNITY,
   CONTACT,
-  ESSAYS,
+  ColophonLinks,
   Header,
-  LOGIN,
   SOLUTIONS,
-  WIKI,
   contactHref,
   ending,
   footer,
+  home,
   lineHref,
   lineIds,
   lineNames,
   signature,
   useStage,
   useStepper,
+  withNames,
   type Vars,
 } from '../_kit/kit';
 import {
@@ -42,8 +42,8 @@ import { PitchBar } from '../_kit/bar';
 
 // 白盒子美术馆：近白的墙、极少的颜色、展签式的精确文字。
 // 首屏像画廊官网——大字标与一张展厅照片；往下走，照片放大成整个视野，镜头推向墙上的 A/I 词组。
-// 导览列出四个展厅；每个展厅停在视口里，镜头推近，展签浮现。结尾是参观信息式的两栏去处。
-// 内容与 Folio 首页同一份。
+// 接着是一面前言墙（工作室身份说明）。导览列出四个展厅和一间还没布展的空展厅（World）；
+// 每个展厅停在视口里，镜头推近，展签浮现。结尾是参观信息式的两栏去处。内容与 Folio 首页同一份。
 
 const HOME = findPitch('white').href;
 
@@ -57,8 +57,16 @@ const rooms = lineIds.map((id, index) => ({
   number: index + 1,
   name: lineNames[id],
   line: folioHomeCopy.products[id],
-  meta: id === 'work' ? work.kicker : `${lines[id].area} · ${lines[id].status}`,
+  meta: id === 'work' ? work.kicker : `${home.areas[id]} · ${lines[id].status}`,
 }));
+
+/** 导览最后一行：World 还是概念，是一间还没布展的空展厅，不编号 */
+const upcoming = {
+  id: 'world' as const,
+  name: home.world.name,
+  line: home.world.line,
+  meta: home.world.status,
+};
 
 /** 一个展厅：镜头推向正墙，作品居中偏左，展签在右边 */
 function Hall({
@@ -66,20 +74,23 @@ function Hall({
   art,
   label,
 }: {
-  id: 'work' | 'tool' | 'life' | 'story';
+  id: 'work' | 'tool' | 'life' | 'story' | 'world';
   art: ReactNode;
   label: ReactNode;
 }) {
-  const room = rooms.find((item) => item.id === id) ?? rooms[0];
+  const room =
+    id === 'world'
+      ? { ...upcoming, number: 0 }
+      : (rooms.find((item) => item.id === id) ?? rooms[0]);
   return (
     <>
       {/* 展厅门口的一块名牌 */}
       <div className="wc-entry" aria-hidden="true" data-reveal>
         <p className="wc-entry-no" lang="en">
-          Room {room.number}
+          {room.number ? `Room ${room.number}` : 'Molis World'}
         </p>
         <p className="wc-entry-name" lang="en">
-          {room.name}
+          {room.number ? room.name : home.world.status}
         </p>
         <p className="wc-entry-meta">{room.meta}</p>
       </div>
@@ -119,7 +130,7 @@ function LineLabel({
         Room {number}
       </p>
       <p className="wc-label-meta">
-        {line.area} · {line.status}
+        {home.areas[id]} · {line.status}
       </p>
       <h3 className="wc-label-name" id={`wc-${id}-title`}>
         <Link href={lineHref[id]} lang="en">
@@ -127,6 +138,13 @@ function LineLabel({
         </Link>
       </h3>
       <p className="wc-label-line">{folioHomeCopy.products[id]}</p>
+      <p className="wc-label-ask">{home.asks[id]}</p>
+      {id === 'tool' ? (
+        <p className="wc-label-relation">
+          {home.relation.home}
+          <span>{home.relation.phase}</span>
+        </p>
+      ) : null}
       <div className="wc-label-links">
         <Link className="wc-more" href={lineHref[id]}>
           {line.more}
@@ -143,8 +161,7 @@ export default function WhiteCube() {
   const guide = useStepper<HTMLElement>('[data-room]');
   const { community } = folioStudio;
   const { contact } = ending.paths;
-  const question = ending.title.slice(0, -1);
-  const mark = ending.title.slice(-1);
+  const { studio, close } = home;
 
   return (
     <>
@@ -168,13 +185,11 @@ export default function WhiteCube() {
                 <h1 className="wc-title" id="wc-title" lang="en">
                   Molis AI
                 </h1>
-                <div className="wc-intro">
-                  <p>{folioHomeCopy.description}</p>
-                  <a className="wc-enter" href="#products">
-                    看看我们在做什么
-                    <ArrowDown size={14} aria-hidden="true" />
-                  </a>
-                </div>
+                <p className="wc-keys wc-masthead-keys">
+                  {folioStudio.keywords.map((word) => (
+                    <span key={word}>{word}</span>
+                  ))}
+                </p>
               </div>
               <div className="wc-frame">
                 <Room>
@@ -197,15 +212,44 @@ export default function WhiteCube() {
                       >
                         A / I
                       </p>
-                      <p className="wc-keys">
-                        {folioStudio.keywords.map((word) => (
-                          <span key={word}>{word}</span>
-                        ))}
+                      <p
+                        className="wc-label-medium"
+                        lang="en"
+                        aria-hidden="true"
+                      >
+                        Wall text, variable
                       </p>
                     </div>
                   </div>
                 </Room>
               </div>
+            </div>
+          </section>
+
+          {/* 前言墙：工作室身份说明，像展览入口处的一面字 */}
+          <section
+            className="wc-studio"
+            id="studio"
+            aria-labelledby="wc-studio-title"
+          >
+            <p className="wc-studio-kicker" data-reveal>
+              <span lang="en">{studio.label}</span>
+              <span>{studio.labelZh}</span>
+            </p>
+            <h2 id="wc-studio-title" className="wc-studio-title" data-reveal>
+              <span>{studio.title}</span>
+            </h2>
+            <div className="wc-studio-row">
+              <p className="wc-studio-view" data-reveal>
+                {studio.view}
+              </p>
+              <p
+                className="wc-studio-text"
+                data-reveal
+                style={{ '--delay': '120ms' } as Vars}
+              >
+                {withNames(studio.text, 'wc-studio-name')}
+              </p>
             </div>
           </section>
 
@@ -222,7 +266,7 @@ export default function WhiteCube() {
                   <small>{folioStudio.labels.products.zh}</small>
                 </h2>
                 <p lang="en" aria-hidden="true">
-                  Rooms 1–4
+                  Rooms 1–5
                 </p>
               </header>
               <ol className="wc-rooms">
@@ -248,6 +292,26 @@ export default function WhiteCube() {
                     </a>
                   </li>
                 ))}
+                <li
+                  className="wc-rooms-upcoming"
+                  data-reveal
+                  style={{ '--delay': '350ms' } as Vars}
+                >
+                  <a href="#world">
+                    <span className="wc-rooms-no" aria-hidden="true">
+                      ·
+                    </span>
+                    <Thumb id="world" />
+                    <strong lang="en">{upcoming.name}</strong>
+                    <span className="wc-rooms-line">{upcoming.line}</span>
+                    <small>{upcoming.meta}</small>
+                    <ArrowDown
+                      className="wc-rooms-go"
+                      size={16}
+                      aria-hidden="true"
+                    />
+                  </a>
+                </li>
               </ol>
             </div>
 
@@ -266,6 +330,7 @@ export default function WhiteCube() {
                     </Link>
                   </h3>
                   <p className="wc-label-line">{folioHomeCopy.products.work}</p>
+                  <p className="wc-label-ask">{home.asks.work}</p>
                   <ul className="wc-status" aria-label="当前状态">
                     {work.status.map((item) => (
                       <li key={item}>{item}</li>
@@ -304,9 +369,35 @@ export default function WhiteCube() {
               art={<ColorField />}
               label={<LineLabel id="story" note={lineImages.story.note} />}
             />
+            {/* World：一间还没布展的空展厅，墙上只有一句话 */}
+            <Hall
+              id="world"
+              art={
+                <p className="wc-world-wall" lang="zh">
+                  {home.world.transition}
+                </p>
+              }
+              label={
+                <>
+                  <p className="wc-label-meta">{home.world.status}</p>
+                  <h3 className="wc-label-name" id="wc-world-title">
+                    <Link href={home.world.href} lang="en">
+                      {home.world.name}
+                    </Link>
+                  </h3>
+                  <p className="wc-label-line">{home.world.line}</p>
+                  <div className="wc-label-links">
+                    <Link className="wc-more" href={home.world.href}>
+                      {home.world.more}
+                      <ArrowUpRight size={13} aria-hidden="true" />
+                    </Link>
+                  </div>
+                </>
+              }
+            />
           </section>
 
-          {/* 参观信息：一个问题，两条去处 */}
+          {/* 参观信息：从产品走到企业合作与社区 */}
           <section
             className="wc-visit"
             id="visit"
@@ -314,8 +405,7 @@ export default function WhiteCube() {
             aria-labelledby="wc-visit-title"
           >
             <h2 id="wc-visit-title" data-reveal>
-              {question}
-              <span lang="en">{mark}</span>
+              {close.transition}
             </h2>
             <div className="wc-visit-cols">
               <div className="wc-visit-col" data-reveal>
@@ -327,10 +417,10 @@ export default function WhiteCube() {
                 </h3>
                 <div className="wc-label-links">
                   <Link className="wc-button" href={contactHref('enterprise')}>
-                    {contact.action}
+                    {close.cooperation.contact}
                   </Link>
                   <Link className="wc-more" href={SOLUTIONS}>
-                    了解解决方案
+                    {close.cooperation.more}
                     <ArrowUpRight size={13} aria-hidden="true" />
                   </Link>
                 </div>
@@ -350,13 +440,10 @@ export default function WhiteCube() {
                   <Link className="wc-button wc-button-ghost" href={COMMUNITY}>
                     {community.action}
                   </Link>
-                  <Link className="wc-more" href={LOGIN}>
-                    {folioStudio.nav.login}
-                    <ArrowUpRight size={13} aria-hidden="true" />
-                  </Link>
                 </div>
               </div>
             </div>
+            <AlsoLinks p="wc" />
           </section>
 
           {/* 导览条：在展厅里时出现在左下角，标出第几间 */}
@@ -393,52 +480,7 @@ export default function WhiteCube() {
             </span>
             <p>{signature}</p>
           </div>
-          <nav className="wc-colophon-links" aria-label="页尾导航">
-            <div>
-              <h2>{footer.productsLabel}</h2>
-              <ul>
-                {lineIds.map((id) => (
-                  <li key={id}>
-                    <Link href={lineHref[id]}>{lineNames[id]}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h2>{footer.studioLabel}</h2>
-              <ul>
-                <li>
-                  <Link href={SOLUTIONS}>{footer.studio.solutions}</Link>
-                </li>
-                <li>
-                  <Link href={ESSAYS}>{folioStudio.nav.essays}</Link>
-                </li>
-                <li>
-                  <Link href={WIKI}>{folioStudio.nav.wiki}</Link>
-                </li>
-                <li>
-                  <Link href={COMMUNITY}>{footer.studio.community}</Link>
-                </li>
-                <li>
-                  <Link href={ABOUT}>{folioStudio.labels.team.zh}</Link>
-                </li>
-                <li>
-                  <Link href={CONTACT}>{footer.studio.contact}</Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h2>GitHub</h2>
-              <ul>
-                <li>
-                  <a href={footer.github} target="_blank" rel="noreferrer">
-                    github.com/molis-ai
-                    <ArrowUpRight size={12} aria-hidden="true" />
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </nav>
+          <ColophonLinks p="wc" />
           <div className="wc-colophon-base">
             <span>{footer.copyright}</span>
             <Link href={`${CONTACT}#privacy`}>{footer.privacy}</Link>

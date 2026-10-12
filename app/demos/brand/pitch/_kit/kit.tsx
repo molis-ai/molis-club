@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { ChevronDown, Pause, Play } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, Pause, Play } from 'lucide-react';
 import {
   useEffect,
   useRef,
@@ -8,8 +8,15 @@ import {
   type CSSProperties,
   type ReactNode,
 } from 'react';
-import { lineNames, navLabels } from '../../../../../content/studio';
-import { folioStudio } from '../../../../../content/folio';
+import { footer, navLabels } from '../../../../../content/studio';
+import {
+  folioHomeCopy,
+  folioStudio,
+  folioTool,
+} from '../../../../../content/folio';
+import { folioWorld } from '../../../../../content/folio-world';
+import { folioCommunity } from '../../../../../content/folio-community';
+import { INSTALL_URL } from '../../../../../content/molis-work';
 import { authClient } from '../../../../../lib/auth-client';
 import {
   ABOUT,
@@ -18,21 +25,26 @@ import {
   CONTACT,
   ESSAYS,
   LOGIN,
+  METHODS,
   SOLUTIONS,
-  lineHref,
-  lineIds,
-  lineLine,
+  WORLD,
+  productHref,
+  productIds,
+  productLine,
+  productName,
+  productTag,
 } from '../../folio/shared';
 import './base.css';
 
-// 比稿各版共用：顶栏（含产品菜单）、滚动驱动、逐字显影和演示外壳。
-// 内容、链接与 Folio 首页同一份；视觉由各方向自己的样式表按类名前缀决定。
+// 比稿各版共用：顶栏（含产品菜单）、首页内容、页尾栏目、滚动驱动、逐字显影和演示外壳。
+// 内容、链接与现行 Folio 首页同一份（content/ 与 folio/shared），Folio 改文案时九版一起变；
+// 视觉由各方向自己的样式表按类名前缀决定。
 
 export type Vars = CSSProperties & Record<`--${string}`, string | number>;
 
 export type NavKey = 'products' | 'solutions' | 'essays' | 'community' | 'team';
 
-/** 产品下拉：四条产品线各一句话；Esc、点外面、焦点离开都会收起 */
+/** 产品下拉：五个产品各一句话，概念阶段的带状态签；Esc、点外面、焦点离开都会收起 */
 function ProductsMenu({
   p,
   icon,
@@ -83,11 +95,16 @@ function ProductsMenu({
         id={`${p}-products-menu`}
         hidden={!open}
       >
-        {lineIds.map((id, index) => (
-          <Link key={id} href={lineHref[id]} onClick={() => setOpen(false)}>
+        {productIds.map((id, index) => (
+          <Link key={id} href={productHref[id]} onClick={() => setOpen(false)}>
             <i aria-hidden="true">{String(index + 1).padStart(2, '0')}</i>
-            <strong>{lineNames[id]}</strong>
-            <small>{lineLine[id]}</small>
+            <strong>
+              {productName[id]}
+              {productTag[id] ? (
+                <span className={`${p}-menu-tag`}>{productTag[id]}</span>
+              ) : null}
+            </strong>
+            <small>{productLine[id]}</small>
           </Link>
         ))}
       </div>
@@ -392,6 +409,112 @@ export function Demo({
   );
 }
 
+/**
+ * 首页内容里 10/11 之后新增或改动的部分，全部直接读 Folio 首页用的那几份：
+ * 工作室身份说明、每件产品问访客的一句话、领域签、Tool 与 Work 的关系、World 入口、结尾。
+ */
+export const home = {
+  studio: folioHomeCopy.studio,
+  asks: folioHomeCopy.asks,
+  areas: folioHomeCopy.areas,
+  relation: folioTool.relation,
+  close: folioHomeCopy.ending,
+  world: {
+    name: folioWorld.name,
+    line: folioWorld.line,
+    status: folioWorld.status,
+    transition: folioWorld.home.transition,
+    more: folioWorld.home.more,
+    href: WORLD,
+  },
+  install: INSTALL_URL,
+};
+
+/** 正文里的产品名单独包一层，各版自己决定怎么标出来 */
+export function withNames(text: string, className: string) {
+  return text
+    .split(/(Molis (?:Work|Tool|Life|Story|World))/)
+    .map((part, index) =>
+      index % 2 ? (
+        <span key={index} className={className} lang="en">
+          {part}
+        </span>
+      ) : (
+        part
+      ),
+    );
+}
+
+/** 页尾栏目：产品（五个）、工作室、GitHub，和 Folio 页尾同一组 */
+export function ColophonLinks({ p }: { p: string }) {
+  return (
+    <nav className={`${p}-colophon-links`} aria-label="页尾导航">
+      <div>
+        <h2>{footer.productsLabel}</h2>
+        <ul>
+          {productIds.map((id) => (
+            <li key={id}>
+              <Link href={productHref[id]}>{productName[id]}</Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h2>{footer.studioLabel}</h2>
+        <ul>
+          <li>
+            <Link href={SOLUTIONS}>{footer.studio.solutions}</Link>
+          </li>
+          <li>
+            <Link href={ESSAYS}>{folioStudio.nav.essays}</Link>
+          </li>
+          <li>
+            <Link href={METHODS}>{folioCommunity.nav.footerMethods}</Link>
+          </li>
+          <li>
+            <Link href={COMMUNITY}>{footer.studio.community}</Link>
+          </li>
+          <li>
+            <Link href={ABOUT}>{folioStudio.labels.team.zh}</Link>
+          </li>
+          <li>
+            <Link href={CONTACT}>{footer.studio.contact}</Link>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h2>GitHub</h2>
+        <ul>
+          <li>
+            <a href={footer.github} target="_blank" rel="noreferrer">
+              github.com/molis-ai
+              <ArrowUpRight size={13} aria-hidden="true" />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  );
+}
+
+/** 结尾最后一行：「也可以」安装开源版、读文章 */
+export function AlsoLinks({ p }: { p: string }) {
+  const { also } = home.close;
+  return (
+    <p className={`${p}-also`}>
+      <span>{also.label}</span>
+      <a href={home.install} target="_blank" rel="noreferrer">
+        {also.install}
+        <ArrowUpRight size={14} aria-hidden="true" />
+      </a>
+      <Link href={ESSAYS}>
+        {also.essays}
+        <ArrowUpRight size={14} aria-hidden="true" />
+      </Link>
+    </p>
+  );
+}
+
 /** 页尾栏目：和 Folio 页尾同一组 */
 export {
   footer,
@@ -406,8 +529,8 @@ export {
   ESSAYS,
   LOGIN,
   SOLUTIONS,
-  WIKI,
   WORK,
+  WORLD,
   contactHref,
   lineHref,
   lineIds,
