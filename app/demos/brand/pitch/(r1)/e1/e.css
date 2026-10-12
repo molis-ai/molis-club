@@ -1279,6 +1279,192 @@
   letter-spacing: 0.04em;
 }
 
+/* 产品文案里新增的提问与 Tool 的关系 */
+.re-ask {
+  max-width: 26em;
+  padding: 8px 14px;
+  border: 2px dashed var(--ink);
+  border-radius: 14px;
+  background: #fff;
+  font: 500 15px/1.6 var(--cjk);
+  rotate: -0.6deg;
+}
+.re-relation {
+  max-width: 26em;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.re-relation span {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 9px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--apricot);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* World：空白贴纸上的一颗小星球 */
+.re-sticker-blank {
+  aspect-ratio: 3 / 2;
+}
+.re-blank {
+  position: absolute;
+  inset: clamp(10px, 1vw, 16px);
+  border-radius: 18px;
+  background:
+    radial-gradient(
+        circle at 1px 1px,
+        rgb(31 29 26 / 0.12) 1px,
+        transparent 1.4px
+      )
+      0 0 / 18px 18px,
+    var(--paper);
+}
+.re-doodle-planet {
+  left: 50%;
+  top: 50%;
+  width: min(62%, 360px);
+  translate: -50% -42%;
+}
+.re-planet-mascot {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 18%;
+  width: clamp(64px, 6vw, 90px);
+  translate: -64% -40%;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.4s 1.4s,
+    transform 0.6s var(--bounce) 1.4s;
+}
+.re-sticker.is-in .re-planet-mascot {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- 工作室：大字和小角色的对话框 ---------- */
+.re-studio {
+  display: grid;
+  gap: clamp(40px, 7vh, 72px);
+  padding: clamp(90px, 14vh, 160px) var(--gutter) clamp(30px, 6vh, 60px);
+}
+.re-studio-head {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+}
+.re-studio-badge {
+  --size: 92px;
+  position: absolute;
+  top: -40px;
+  right: 2%;
+  rotate: 10deg;
+  font: 800 17px/1 var(--cjk);
+}
+.re-studio-label {
+  color: var(--muted);
+  font: 700 13px/1 var(--display);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+.re-studio-head h2 {
+  max-width: 17em;
+  font: 800 clamp(34px, 4.4vw, 72px) / 1.18 var(--cjk);
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.re-studio-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 28px clamp(32px, 5vw, 80px);
+}
+.re-studio-say {
+  display: grid;
+  grid-template-columns: clamp(70px, 6vw, 96px) minmax(0, 1fr);
+  align-items: end;
+  gap: 10px;
+}
+.re-studio-mascot {
+  width: 100%;
+  animation: re-bob 3.2s ease-in-out infinite;
+}
+.re-bubble {
+  position: relative;
+  margin-bottom: 40px;
+  padding: 18px 22px;
+  border: 3px solid var(--ink);
+  border-radius: 26px 30px 24px 32px / 30px 24px 32px 26px;
+  background: var(--apricot);
+  box-shadow: 6px 6px 0 var(--ink);
+  font: 700 clamp(17px, 1.5vw, 21px) / 1.55 var(--cjk);
+}
+.re-bubble::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  bottom: 18px;
+  width: 22px;
+  height: 18px;
+  border-left: 3px solid var(--ink);
+  border-bottom: 3px solid var(--ink);
+  background: var(--apricot);
+  clip-path: polygon(0 100%, 100% 0, 100% 100%);
+}
+.re-studio-text {
+  font: 500 clamp(16px, 1.25vw, 18px) / 2.05 var(--cjk);
+}
+/* 产品名：马克笔从左往右划一道 */
+.re-hl {
+  padding: 0 2px;
+  background: linear-gradient(
+      transparent 52%,
+      rgb(234 146 96 / 0.75) 52% 88%,
+      transparent 88%
+    )
+    0 0 / 0 100% no-repeat;
+  font-weight: 700;
+  transition: background-size 0.8s cubic-bezier(0.6, 0, 0.3, 1) 0.6s;
+}
+.re-studio-text.is-in .re-hl {
+  background-size: 100% 100%;
+}
+.re-studio-text.is-in .re-hl:nth-child(2) {
+  transition-delay: 0.85s;
+}
+.re-studio-text.is-in .re-hl:nth-child(3) {
+  transition-delay: 1.1s;
+}
+.re-studio-text.is-in .re-hl:nth-child(4) {
+  transition-delay: 1.35s;
+}
+
+/* 结尾最后一行：也可以 */
+.re-also {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 22px;
+  margin-top: 34px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+.re-also a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ink);
+  border-bottom: 2px solid var(--apricot);
+}
+
 /* 进入视口：文字轻轻弹上来，贴纸倾斜着落下 */
 .re [data-reveal] {
   opacity: 0;
@@ -1314,8 +1500,10 @@
   text-align: center;
 }
 .re-ending h2 {
-  font: 600 clamp(52px, 10vw, 168px) / 1 var(--cjk);
+  max-width: 16em;
+  font: 600 clamp(32px, 4.6vw, 74px) / 1.25 var(--cjk);
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 .re-ending h2 span {
   color: var(--apricot-deep);
@@ -1504,6 +1692,13 @@
   }
 }
 @media (max-width: 860px) {
+  .re-studio-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .re-studio-badge {
+    --size: 70px;
+    top: -56px;
+  }
   .re-header {
     grid-template-columns: 1fr auto;
     grid-template-rows: 50px auto;
@@ -1605,7 +1800,7 @@
     --w: 60px;
   }
   .re-ending h2 {
-    font-size: 9.4vw;
+    font-size: 6.6vw;
     letter-spacing: -0.03em;
   }
   .re-ticket h3 {

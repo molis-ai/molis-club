@@ -16,18 +16,18 @@ import { demo } from '../../../../../../content/molis-tool';
 import { AiWordCycle } from '../../../ai-words';
 import {
   ABOUT,
+  AlsoLinks,
   COMMUNITY,
   CONTACT,
   ColophonLinks,
   ESSAYS,
   Header,
-  LOGIN,
   SOLUTIONS,
   contactHref,
   ending,
   footer,
+  home,
   lineHref,
-  lineIds,
   lineNames,
   signature,
   useStage,
@@ -41,7 +41,8 @@ import { Doodle, Mascot, Stamp } from './ink';
 import './e.css';
 
 // E · 玩心造物：一个墨线小角色和一种颜色。它从字标后面探出头，五个同伴举着牌子当导航；
-// Work 是一扇带摇柄的窗，转一格走一步；另外三件事是铅笔线描上的马克笔涂鸦；最后它举着问号回来。
+// 工作室的自我介绍由它在对话框里说；Work 是一扇带摇柄的窗，转一格走一步；另外三件事是铅笔线描上的
+// 马克笔涂鸦，第四张空白贴纸上它站在一颗小星球上（World）；最后它举着「&」回来，说也和企业一起做。
 // 内容与 Folio 首页同一份，只换视觉、版式与动效。
 
 const icons: Record<NavKey, LucideIcon> = {
@@ -90,13 +91,25 @@ const shelf: Record<
   },
 };
 
+/** 正文里的产品名用马克笔划一道 */
+function markNames(text: string) {
+  return text.split(/(Molis (?:Work|Tool|Life|Story))/).map((part, index) =>
+    index % 2 ? (
+      <span key={index} className="re-hl" lang="en">
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  );
+}
+
 export default function DirectionE() {
   const root = useStage();
   const work = folioStudio.work;
   const { community } = folioStudio;
   const { contact } = ending.paths;
-  const question = ending.title.slice(0, -1);
-  const mark = ending.title.slice(-1);
+  const { studio, close } = home;
 
   return (
     <>
@@ -154,6 +167,40 @@ export default function DirectionE() {
             </nav>
           </section>
 
+          {/* 工作室：大字说是谁，小角色在对话框里说想遇见谁 */}
+          <section
+            className="re-studio"
+            id="studio"
+            aria-labelledby="re-studio-title"
+          >
+            <div className="re-studio-head" data-reveal>
+              <Stamp tone="ink" className="re-studio-badge">
+                {studio.labelZh}
+              </Stamp>
+              <span className="re-studio-label" lang="en">
+                {studio.label}
+              </span>
+              <h2 id="re-studio-title">{studio.title}</h2>
+            </div>
+            <div className="re-studio-row">
+              <div
+                className="re-studio-say"
+                data-reveal
+                style={{ '--d': '120ms' } as Vars}
+              >
+                <Mascot pose="wave" variant={1} className="re-studio-mascot" />
+                <p className="re-bubble">{studio.view}</p>
+              </div>
+              <p
+                className="re-studio-text"
+                data-reveal
+                style={{ '--d': '240ms' } as Vars}
+              >
+                {markNames(studio.text)}
+              </p>
+            </div>
+          </section>
+
           <section
             className="re-products"
             id="products"
@@ -180,6 +227,7 @@ export default function DirectionE() {
                   </Link>
                 </h3>
                 <p className="re-work-line">{folioHomeCopy.products.work}</p>
+                <p className="re-ask">{home.asks.work}</p>
                 <ul className="re-status" aria-label="当前状态">
                   {work.status.map((item) => (
                     <li key={item}>{item}</li>
@@ -247,7 +295,7 @@ export default function DirectionE() {
                         {String(index + 1).padStart(2, '0')}
                       </Stamp>
                       <p className="re-thing-meta">
-                        <span>{line.area}</span>
+                        <span>{home.areas[line.id]}</span>
                         <span>{line.status}</span>
                       </p>
                       <h3 id={`re-${line.id}-title`}>
@@ -259,6 +307,13 @@ export default function DirectionE() {
                       <p className="re-thing-line">
                         {folioHomeCopy.products[line.id]}
                       </p>
+                      <p className="re-ask">{home.asks[line.id]}</p>
+                      {line.id === 'tool' ? (
+                        <p className="re-relation">
+                          {home.relation.home}
+                          <span>{home.relation.phase}</span>
+                        </p>
+                      ) : null}
                       <Link className="re-link" href={lineHref[line.id]}>
                         {line.more}
                         <ArrowUpRight size={15} aria-hidden="true" />
@@ -267,6 +322,48 @@ export default function DirectionE() {
                   </article>
                 );
               })}
+
+              {/* 第四张：空白贴纸上一颗小星球，小角色站在上面招手——World 还是概念 */}
+              <article
+                id="world"
+                className="re-thing re-thing-world"
+                aria-labelledby="re-world-title"
+              >
+                <figure className="re-sticker re-sticker-blank" data-reveal>
+                  <span className="re-blank" aria-hidden="true" />
+                  <Doodle kind="planet" />
+                  <Mascot
+                    pose="wave"
+                    variant={2}
+                    className="re-planet-mascot"
+                  />
+                  <figcaption>{home.world.status}</figcaption>
+                </figure>
+                <div
+                  className="re-thing-copy"
+                  data-reveal
+                  style={{ '--d': '120ms' } as Vars}
+                >
+                  <Stamp tone="paper" className="re-thing-num">
+                    +
+                  </Stamp>
+                  <p className="re-thing-meta">
+                    <span>{home.world.status}</span>
+                  </p>
+                  <h3 id="re-world-title">
+                    <Link href={home.world.href} lang="en">
+                      {home.world.name}
+                      <span className="re-dot">.</span>
+                    </Link>
+                  </h3>
+                  <p className="re-thing-line">{home.world.line}</p>
+                  <p className="re-ask">{home.world.transition}</p>
+                  <Link className="re-link" href={home.world.href}>
+                    {home.world.more}
+                    <ArrowUpRight size={15} aria-hidden="true" />
+                  </Link>
+                </div>
+              </article>
             </div>
           </section>
         </main>
@@ -275,13 +372,10 @@ export default function DirectionE() {
           <section className="re-ending" aria-labelledby="re-ending-title">
             <div className="re-ending-head" data-reveal>
               <Mascot pose="sign" variant={0} className="re-asker" />
-              <span className="re-ask-sign" aria-hidden="true">
-                ？
+              <span className="re-ask-sign" aria-hidden="true" lang="en">
+                &amp;
               </span>
-              <h2 id="re-ending-title">
-                {question}
-                <span lang="en">{mark}</span>
-              </h2>
+              <h2 id="re-ending-title">{close.transition}</h2>
             </div>
             <div className="re-tickets">
               <div className="re-ticket re-ticket-business" data-reveal>
@@ -297,10 +391,10 @@ export default function DirectionE() {
                       className="re-button re-button-ink"
                       href={contactHref('enterprise')}
                     >
-                      {contact.action}
+                      {close.cooperation.contact}
                     </Link>
                     <Link className="re-link" href={SOLUTIONS}>
-                      了解解决方案
+                      {close.cooperation.more}
                       <ArrowUpRight size={15} aria-hidden="true" />
                     </Link>
                   </div>
@@ -325,10 +419,6 @@ export default function DirectionE() {
                     <Link className="re-button" href={COMMUNITY}>
                       {community.action}
                     </Link>
-                    <Link className="re-link" href={LOGIN}>
-                      {folioStudio.nav.login}
-                      <ArrowUpRight size={15} aria-hidden="true" />
-                    </Link>
                   </div>
                 </div>
                 <span className="re-ticket-stub" aria-hidden="true">
@@ -336,6 +426,7 @@ export default function DirectionE() {
                 </span>
               </div>
             </div>
+            <AlsoLinks p="re" />
           </section>
 
           <div className="re-colophon">

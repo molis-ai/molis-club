@@ -189,7 +189,39 @@ export function Stamp({
 }
 
 /** 马克笔涂鸦：进入视口（父级 .is-in）时逐笔画出 */
-export function Doodle({ kind }: { kind: 'cursor' | 'list' | 'door' }) {
+export function Doodle({
+  kind,
+}: {
+  kind: 'cursor' | 'list' | 'door' | 'planet';
+}) {
+  if (kind === 'planet')
+    return (
+      <svg
+        className="re-doodle re-doodle-planet"
+        viewBox="0 0 200 170"
+        aria-hidden="true"
+      >
+        <path
+          className="re-d-light"
+          pathLength={1}
+          d="M44 112 C42 72 70 44 104 44 C140 44 164 72 162 110 C160 140 136 160 103 160 C70 160 46 140 44 112 Z"
+        />
+        <path
+          pathLength={1}
+          d="M14 120 C40 136 160 130 190 104 C198 96 186 92 168 96 M36 128 C22 132 8 130 14 120"
+        />
+        <path
+          pathLength={1}
+          d="M70 96 C84 88 96 100 110 92 M96 128 C110 120 122 132 136 124"
+        />
+        <path
+          className="re-d-sprout"
+          pathLength={1}
+          d="M150 52 C154 40 156 30 154 20 M154 32 C162 24 170 24 174 28 C168 36 160 36 154 32"
+        />
+        <circle pathLength={1} cx="34" cy="30" r="9" />
+      </svg>
+    );
   if (kind === 'cursor')
     return (
       <svg
