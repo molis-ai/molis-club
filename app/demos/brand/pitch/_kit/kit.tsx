@@ -534,4 +534,7 @@ export {
   contactHref,
   lineHref,
   lineIds,
+  productHref,
+  productIds,
+  productName,
 } from '../../folio/shared';

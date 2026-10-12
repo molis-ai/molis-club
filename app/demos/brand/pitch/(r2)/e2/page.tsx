@@ -13,6 +13,7 @@ import { GITHUB_URL } from '../../../../../../content/molis-work';
 import { AiWordCycle } from '../../../ai-words';
 import {
   ABOUT,
+  AlsoLinks,
   COMMUNITY,
   CONTACT,
   ColophonLinks,
@@ -22,11 +23,16 @@ import {
   contactHref,
   ending,
   footer,
+  home,
   lineHref,
   lineIds,
   lineNames,
+  productHref,
+  productIds,
+  productName,
   signature,
   useStage,
+  withNames,
   type Vars,
 } from '../../_kit/kit';
 import { findPitch } from '../../routes';
@@ -139,10 +145,10 @@ function MegaHeader() {
             {navLabels.products}
           </a>
           <ul>
-            {lineIds.map((id) => (
+            {productIds.map((id) => (
               <li key={id}>
-                <Link href={lineHref[id]} lang="en">
-                  {lineNames[id].replace('Molis ', '')}
+                <Link href={productHref[id]} lang="en">
+                  {productName[id].replace('Molis ', '')}
                 </Link>
               </li>
             ))}
@@ -193,7 +199,7 @@ function MegaHeader() {
   );
 }
 
-/** 四张牌：开始叠成一摞，滚动时摊开 */
+/** 五张牌：开始叠成一摞，滚动时摊开；最后一张是 World 的百搭牌 */
 function Deck() {
   return (
     <section
@@ -212,7 +218,7 @@ function Deck() {
             const isWork = id === 'work';
             const meta = isWork
               ? work.kicker
-              : `${lines[id].area} · ${lines[id].status}`;
+              : `${home.areas[id]} · ${lines[id].status}`;
             return (
               <li
                 key={id}
@@ -246,6 +252,13 @@ function Deck() {
                   <span className="we-card-line" id={`we-${id}-line`}>
                     {folioHomeCopy.products[id]}
                   </span>
+                  <span className="we-card-ask">{home.asks[id]}</span>
+                  {id === 'tool' ? (
+                    <span className="we-card-relation">
+                      {home.relation.home}
+                      <b>{home.relation.phase}</b>
+                    </span>
+                  ) : null}
                   <span className="we-card-go" aria-hidden="true">
                     {isWork ? work.actions.more : lines[id].more}
                     <ArrowUpRight size={13} />
@@ -254,6 +267,56 @@ function Deck() {
               </li>
             );
           })}
+          {/* 第五张是百搭牌：World 还是概念，牌面是一颗铅笔画的小星球 */}
+          <li
+            id="world"
+            className="we-card we-card-world"
+            style={{ '--i': 4 } as Vars}
+          >
+            <Link
+              href={home.world.href}
+              aria-labelledby="we-world-name"
+              aria-describedby="we-world-line"
+            >
+              <span className="we-index" aria-hidden="true">
+                <b lang="en">?</b>
+                <i>05</i>
+              </span>
+              <span className="we-index we-index-end" aria-hidden="true">
+                <b lang="en">?</b>
+                <i>05</i>
+              </span>
+              <span className="we-card-art">
+                <svg
+                  className="we-world-pip"
+                  viewBox="0 0 120 120"
+                  aria-hidden="true"
+                >
+                  <circle cx="60" cy="66" r="34" />
+                  <path d="M28 60 C 44 70 76 70 92 60 M30 78 C 46 86 74 86 90 78" />
+                  <path d="M50 34 L50 24 L60 16 L70 24 L70 34 M57 34 L57 28 L63 28 L63 34" />
+                  <path
+                    d="M14 96 C 34 106 86 92 104 70"
+                    className="we-world-orbit"
+                  />
+                  <circle cx="98" cy="28" r="6" className="we-world-sun" />
+                </svg>
+              </span>
+              <span className="we-card-note">{home.world.status}</span>
+              <span className="we-card-meta">{home.world.status}</span>
+              <strong id="we-world-name" lang="en">
+                {home.world.name}
+              </strong>
+              <span className="we-card-line" id="we-world-line">
+                {home.world.line}
+              </span>
+              <span className="we-card-ask">{home.world.transition}</span>
+              <span className="we-card-go" aria-hidden="true">
+                {home.world.more}
+                <ArrowUpRight size={13} />
+              </span>
+            </Link>
+          </li>
         </ul>
       </div>
     </section>
@@ -270,6 +333,7 @@ function Comic() {
           {work.name}
         </h2>
         <p>{folioHomeCopy.products.work}</p>
+        <p className="we-comic-ask">{home.asks.work}</p>
         <ul className="we-status" aria-label="当前状态">
           {work.status.map((item) => (
             <li key={item}>{item}</li>
@@ -372,8 +436,7 @@ export default function DirectionE() {
   const root = useStage();
   const { community } = folioStudio;
   const { contact } = ending.paths;
-  const question = ending.title.slice(0, -1);
-  const mark = ending.title.slice(-1);
+  const { studio, close } = home;
 
   return (
     <>
@@ -414,6 +477,32 @@ export default function DirectionE() {
             </div>
           </section>
 
+          {/* 工作室说明：粗黑大字，想遇见的人写在一个对话气泡里 */}
+          <section
+            className="we-studio"
+            id="studio"
+            aria-labelledby="we-studio-title"
+          >
+            <span className="we-badge" data-reveal>
+              <span lang="en">{studio.label}</span> · {studio.labelZh}
+            </span>
+            <h2 id="we-studio-title" className="we-studio-title" data-reveal>
+              {studio.title}
+            </h2>
+            <div className="we-studio-row">
+              <p className="we-say" data-reveal>
+                {studio.view}
+              </p>
+              <p
+                className="we-studio-text"
+                data-reveal
+                style={{ '--d': '160ms' } as Vars}
+              >
+                {withNames(studio.text, 'we-studio-name')}
+              </p>
+            </div>
+          </section>
+
           <Deck />
           <Comic />
         </main>
@@ -422,10 +511,7 @@ export default function DirectionE() {
           <section className="we-ending" aria-labelledby="we-ending-title">
             <span className="we-moon" aria-hidden="true" />
             <h2 id="we-ending-title" data-reveal>
-              {question.slice(0, 5)}
-              <br />
-              {question.slice(5)}
-              <span lang="en">{mark}</span>
+              {close.transition}
             </h2>
             <div className="we-blocks">
               <div className="we-block we-block-business" data-reveal>
@@ -436,11 +522,11 @@ export default function DirectionE() {
                   ))}
                 </h3>
                 <Link className="we-link" href={SOLUTIONS}>
-                  了解解决方案
+                  {close.cooperation.more}
                   <ArrowUpRight size={14} aria-hidden="true" />
                 </Link>
                 <Link className="we-vertical" href={contactHref('enterprise')}>
-                  <span>{contact.action}</span>
+                  <span>{close.cooperation.contact}</span>
                   <svg viewBox="0 0 40 60" aria-hidden="true">
                     <path d="M30 2 L30 46 L6 46 M14 36 L4 46 L14 56" />
                   </svg>
@@ -457,10 +543,6 @@ export default function DirectionE() {
                     <span key={line}>{line}</span>
                   ))}
                 </h3>
-                <Link className="we-link" href={LOGIN}>
-                  {folioStudio.nav.login}
-                  <ArrowUpRight size={14} aria-hidden="true" />
-                </Link>
                 <Link className="we-vertical" href={COMMUNITY}>
                   <span>{community.action}</span>
                   <svg viewBox="0 0 40 60" aria-hidden="true">
@@ -469,6 +551,7 @@ export default function DirectionE() {
                 </Link>
               </div>
             </div>
+            <AlsoLinks p="we" />
           </section>
 
           <div className="we-colophon">

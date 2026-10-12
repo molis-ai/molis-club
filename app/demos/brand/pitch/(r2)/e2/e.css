@@ -535,11 +535,11 @@
   position: relative;
 }
 .we-card {
-  --w: clamp(220px, 19vw, 300px);
+  --w: clamp(196px, 16.4vw, 268px);
   position: absolute;
   left: 50%;
   top: 50%;
-  z-index: calc(4 - var(--i));
+  z-index: calc(5 - var(--i));
   width: var(--w);
   aspect-ratio: 5 / 7;
   margin-left: calc(var(--w) / -2);
@@ -552,38 +552,45 @@
   transition: translate 0.4s var(--bounce);
 }
 .we-card:nth-child(1) {
-  --tx: -162%;
-  --ty: 6%;
-  --rot: -7deg;
+  --tx: -216%;
+  --ty: 9%;
+  --rot: -8deg;
   --r0: -3deg;
 }
 .we-card:nth-child(2) {
-  --tx: -54%;
-  --ty: -1%;
-  --rot: -2.4deg;
+  --tx: -108%;
+  --ty: 1%;
+  --rot: -3.6deg;
   --r0: 2deg;
 }
 .we-card:nth-child(3) {
-  --tx: 54%;
-  --ty: -1%;
-  --rot: 2.4deg;
+  --tx: 0%;
+  --ty: -2%;
+  --rot: 0deg;
   --r0: -1deg;
 }
 .we-card:nth-child(4) {
-  --tx: 162%;
-  --ty: 6%;
-  --rot: 7deg;
+  --tx: 108%;
+  --ty: 1%;
+  --rot: 3.6deg;
   --r0: 3.5deg;
+}
+.we-card:nth-child(5) {
+  --tx: 216%;
+  --ty: 9%;
+  --rot: 8deg;
+  --r0: -2deg;
 }
 .we-card:hover,
 .we-card:focus-within {
-  z-index: 5;
+  z-index: 6;
   translate: 0 -16px;
 }
 .we-card > a {
   position: relative;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto auto auto auto;
+  grid-template-rows: minmax(0, 1fr);
+  grid-auto-rows: auto;
   gap: 6px;
   height: 100%;
   padding: 34px 20px 18px;
@@ -654,6 +661,67 @@
 .we-card-line {
   font: 600 13.5px/1.45 var(--cjk);
 }
+/* 牌底的小字：每件产品问你的一句话，像卡牌上的说明文字 */
+.we-card-ask {
+  padding-top: 5px;
+  border-top: 1px dashed var(--line);
+  color: var(--ink-soft);
+  font:
+    italic 400 10.5px/1.45 var(--mono),
+    var(--cjk);
+}
+.we-card-relation {
+  color: var(--ink-soft);
+  font:
+    400 9.5px/1.4 var(--mono),
+    var(--cjk);
+}
+.we-card-relation b {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 4px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 500;
+}
+.we-card-world > a {
+  border-style: dashed;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 9px,
+      rgb(18 18 18 / 0.04) 9px 10px
+    ),
+    #fff;
+}
+.we-world-pip {
+  position: absolute;
+  inset: 4% 10%;
+  width: 80%;
+  height: 92%;
+  overflow: visible;
+}
+.we-world-pip circle,
+.we-world-pip path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.we-world-pip .we-world-orbit {
+  stroke-dasharray: 3 6;
+  animation: we-orbit 5s linear infinite;
+}
+.we-world-pip .we-world-sun {
+  fill: var(--accent);
+  stroke: none;
+}
+@keyframes we-orbit {
+  to {
+    stroke-dashoffset: -90;
+  }
+}
 .we-card-go {
   display: inline-flex;
   align-items: center;
@@ -662,6 +730,102 @@
   font:
     500 11.5px/1 var(--mono),
     var(--cjk);
+}
+
+/* ---------- 工作室说明：粗黑大字和一个对话气泡 ---------- */
+.we-studio {
+  display: grid;
+  justify-items: start;
+  gap: clamp(22px, 4vh, 40px);
+  padding: clamp(80px, 13vh, 140px) var(--gutter);
+  border-top: 1.5px solid var(--ink);
+}
+.we-studio-title {
+  max-width: 14em;
+  font: 600 clamp(36px, 5vw, 84px) / 1.18 var(--cjk);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.we-studio-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 28px clamp(32px, 5vw, 80px);
+  width: 100%;
+  max-width: 1240px;
+}
+.we-say {
+  position: relative;
+  padding: 20px 24px;
+  border: 2.5px solid var(--ink);
+  border-radius: 24px;
+  background: var(--accent);
+  box-shadow: 6px 6px 0 var(--ink);
+  font: 600 clamp(18px, 1.6vw, 23px) / 1.5 var(--cjk);
+  transform-origin: 18% 120%;
+}
+.we-say::after {
+  content: '';
+  position: absolute;
+  left: 34px;
+  bottom: -19px;
+  width: 26px;
+  height: 20px;
+  border-right: 2.5px solid var(--ink);
+  border-bottom: 2.5px solid var(--ink);
+  background: var(--accent);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  translate: 0 -1px;
+}
+.we.is-ready .we-say:not(.is-in) {
+  opacity: 0;
+  transform: scale(0.6) rotate(-4deg);
+}
+.we-say.is-in {
+  transition:
+    opacity 0.3s ease,
+    transform 0.6s var(--bounce);
+}
+.we-studio-text {
+  font: 400 clamp(15px, 1.2vw, 17px) / 2.05 var(--cjk);
+}
+.we-studio-name {
+  display: inline-block;
+  margin: 0 3px;
+  padding: 0 8px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: #fff;
+  font: 800 0.8em/1.7 var(--wide);
+  letter-spacing: -0.01em;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.we-comic-ask {
+  max-width: 34em;
+  padding-left: 12px;
+  border-left: 3px solid var(--accent);
+  font:
+    italic 400 15px/1.6 var(--mono),
+    var(--cjk);
+}
+
+/* ---------- 结尾最后一行：也可以 ---------- */
+.we-also {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+  margin-top: 26px;
+  font:
+    400 13px/1.4 var(--mono),
+    var(--cjk);
+}
+.we-also a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  border-bottom: 2px solid var(--accent);
 }
 
 /* ---------- 四格漫画 ---------- */
@@ -1049,8 +1213,10 @@
   background: var(--accent);
 }
 .we-ending h2 {
-  font: 600 clamp(60px, 11vw, 196px) / 1 var(--cjk);
-  letter-spacing: -0.03em;
+  max-width: 15em;
+  font: 600 clamp(34px, 4.8vw, 80px) / 1.22 var(--cjk);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 .we-ending h2 span {
   font: 800 1em/1 var(--wide);
@@ -1261,7 +1427,10 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .we-ending h2 {
-    font-size: 17vw;
+    font-size: 8.4vw;
+  }
+  .we-studio-row {
+    grid-template-columns: minmax(0, 1fr);
   }
   .we-blocks,
   .we-colophon {
