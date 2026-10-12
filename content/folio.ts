@@ -154,6 +154,12 @@ export const folioStudio = {
  * 文章作者一骏的公众号主页（A10，2026-10-11 负责人给出）。微信以外的浏览器可能打不开；
  * 备用的公众号二维码要由负责人提供图片，拿到之前只放链接。
  */
+/** 文章正文末尾的去处（P7「可先做」）：只加链接，不加新的说明句 */
+export const folioEssayLinks = {
+  products: '看看我们在做的产品',
+  team: '认识做这些的人',
+};
+
 export const folioEssayAuthor = {
   href: 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzkzNzczNjYxMQ==#wechat_redirect',
   /** 接在作者名（folioStudio.essays.author）后面，作为链接的无障碍名称 */
@@ -423,5 +429,13 @@ export const folioTool = {
     work: '了解 Molis Work',
     /** 首页 Tool 色纸上的一行小字 */
     home: '可以单独使用，也将成为 Molis Work 的基础能力',
+  },
+  /**
+   * 先在社区试试（P4「可先做」）：DropAgent、niul.ai 的入口指到社区「试一试」，那里有它们的
+   * 互动示意和项目链接；独立版的 GitHub 链接保留。共享的 molis-tool.ts 不改。
+   */
+  community: {
+    try: '先在社区试试',
+    available: '或者先在社区试试',
   },
 };

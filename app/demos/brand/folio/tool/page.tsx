@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import { ArrowUpRight, X } from 'lucide-react';
 import {
-  DROPAGENT_URL,
   closing,
   hero,
   layers,
@@ -27,6 +26,7 @@ import {
   pad,
 } from '../kit';
 import {
+  COMMUNITY,
   Footer,
   HOME,
   SiteHeader,
@@ -61,9 +61,8 @@ export default function FolioToolPage() {
           actions={[
             { label: hero.actions.follow, href: contactHref('tool') },
             {
-              label: hero.actions.try,
-              href: DROPAGENT_URL,
-              external: true,
+              label: folioTool.community.try,
+              href: `${COMMUNITY}#try`,
               tone: 'ghost',
             },
           ]}
@@ -194,6 +193,10 @@ export default function FolioToolPage() {
                 <ArrowUpRight size={14} aria-hidden="true" />
               </a>
             ))}
+            <Link href={`${COMMUNITY}#try`}>
+              {folioTool.community.available}
+              <ArrowUpRight size={14} aria-hidden="true" />
+            </Link>
           </p>
         </section>
 
@@ -278,9 +281,8 @@ export default function FolioToolPage() {
           actions={[
             { label: closing.follow, href: contactHref('tool') },
             {
-              label: closing.try,
-              href: DROPAGENT_URL,
-              external: true,
+              label: folioTool.community.try,
+              href: `${COMMUNITY}#try`,
               tone: 'light',
             },
             { label: closing.home, href: HOME, tone: 'light' },

@@ -217,8 +217,20 @@ try {
   const more = page.locator('.fo-read-links a', { hasText: '去公众号读更多' });
   assert.match(await more.getAttribute('href'), wechat);
   assert.equal(await more.getAttribute('target'), '_blank');
+  // 读完能去看产品、认识团队（P7 可先做：只加链接）
+  assert.deepEqual(
+    await page
+      .locator('.fo-read-links a')
+      .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
+    [
+      '/demos/brand/folio#products',
+      '/demos/brand/folio/about',
+      await more.getAttribute('href'),
+      '/demos/brand/folio',
+    ],
+  );
   console.log(
-    'PASS: essay reader with contents, references, next essay and the author account link.',
+    'PASS: essay reader with contents, references, next essay, product and team links, and the author account link.',
   );
 
   // 登录留在 Folio 里：同一个顶栏，Logo 回到 Folio 首页，表单换成 Folio 的样子
@@ -481,6 +493,29 @@ try {
   const running = (selector) =>
     page.locator(selector).getAttribute('data-running');
   await visit('/tool');
+  // DropAgent、niul.ai 的入口先去社区试一试（P4 可先做），独立版的 GitHub 链接保留
+  assert.equal(
+    await page
+      .locator('.fo-hero a', { hasText: '先在社区试试' })
+      .getAttribute('href'),
+    '/demos/community#try',
+  );
+  assert.equal(
+    await page
+      .locator('.fo-closing a', { hasText: '先在社区试试' })
+      .getAttribute('href'),
+    '/demos/community#try',
+  );
+  assert.deepEqual(
+    await page
+      .locator('.ft-available a')
+      .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
+    [
+      'https://github.com/molis-ai/DropAgent',
+      'https://github.com/molis-ai/niul.ai',
+      '/demos/community#try',
+    ],
+  );
   const mark = page.locator('.ft-hero .ft-page mark');
   assert.match(
     await mark.evaluate((el) => getComputedStyle(el).animationName),
