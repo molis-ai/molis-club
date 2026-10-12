@@ -1,22 +1,47 @@
 'use client';
 import Link from 'next/link';
 import { Check } from 'lucide-react';
+import { folioContact } from '../../../../../content/folio';
 import { contact } from '../../../../../content/studio';
 import { useContactForm } from '../../use-contact-form';
 import { CoverArt } from '../art';
 import { Phrases, pad } from '../kit';
-import { Footer, HOME, SiteHeader, WORK, useFolioMotion } from '../shared';
+import {
+  COMMUNITY,
+  Footer,
+  HOME,
+  SOLUTIONS,
+  SiteHeader,
+  productHref,
+  productIds,
+  useFolioMotion,
+} from '../shared';
 import '../folio.css';
 import '../kit.css';
 import './contact.css';
 
 // 联系页：表单逻辑在 ../../use-contact-form.ts，五个方向共用；产品页的「关注进展」都指到这里。
-// 目前不发邮件，也不开通账号。
+// 目前不发邮件，也不开通账号。提交成功后按地址栏的 topic 回到来处。
+
+/** 提交成功后的第一个按钮：回到访客来的那一页；没有 topic 时不给，只留「回到首页」 */
+function backTo(topic: string | null) {
+  const { back } = folioContact;
+  if (!topic) return null;
+  if (topic === 'enterprise')
+    return { label: back.enterprise, href: SOLUTIONS };
+  if (topic === 'feedback' || topic === 'creator' || topic.startsWith('share-'))
+    return { label: back.community, href: COMMUNITY };
+  const product = productIds.find((id) => id === topic);
+  return product ? { label: back[product], href: productHref[product] } : null;
+}
 
 export default function FolioContactPage() {
   const rootRef = useFolioMotion();
-  const { role, setRole, idea, setIdea, busy, done, error, submit } =
+  const { role, setRole, idea, setIdea, topic, busy, done, error, submit } =
     useContactForm();
+  const back = backTo(topic);
+  // 分享类投稿：提示贴链接，另给一个「同意展示」，和「同意联系」分开
+  const sharing = topic === 'creator' || Boolean(topic?.startsWith('share-'));
 
   return (
     <div className="fo-site fc-site" ref={rootRef}>
@@ -48,11 +73,16 @@ export default function FolioContactPage() {
                 <h2>{contact.success.title}</h2>
                 <p>{contact.success.text}</p>
                 <div className="fo-actions">
-                  <Link className="fo-btn fo-btn-ink" href={HOME}>
-                    {contact.successActions.home}
-                  </Link>
-                  <Link className="fo-btn fo-btn-ghost" href={WORK}>
-                    {contact.successActions.work}
+                  {back ? (
+                    <Link className="fo-btn fo-btn-ink" href={back.href}>
+                      {back.label}
+                    </Link>
+                  ) : null}
+                  <Link
+                    className={`fo-btn ${back ? 'fo-btn-ghost' : 'fo-btn-ink'}`}
+                    href={HOME}
+                  >
+                    {folioContact.home}
                   </Link>
                 </div>
               </div>
@@ -106,12 +136,24 @@ export default function FolioContactPage() {
                     value={idea}
                     onChange={(event) => setIdea(event.target.value)}
                     placeholder={contact.fields.ideaPlaceholder}
+                    aria-describedby={sharing ? 'fc-share-hint' : undefined}
                   />
+                  {sharing ? (
+                    <small className="fc-hint" id="fc-share-hint">
+                      {folioContact.shareHint}
+                    </small>
+                  ) : null}
                 </label>
                 <label className="fc-consent">
                   <input type="checkbox" name="consent" required />
                   <span>{contact.consent}</span>
                 </label>
+                {sharing ? (
+                  <label className="fc-consent">
+                    <input type="checkbox" name="allowDisplay" />
+                    <span>{folioContact.allowDisplay}</span>
+                  </label>
+                ) : null}
                 <button className="fo-btn fo-btn-ink fc-submit" disabled={busy}>
                   {busy ? contact.sending : contact.submit}
                 </button>

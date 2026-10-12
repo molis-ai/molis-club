@@ -180,12 +180,12 @@ export const contact = {
   errorFallback: '这次没能发出去，请稍后再试。',
   success: {
     title: '收到了。',
-    text: '已经存进 Molis AI 的私密收件箱。目前不会自动发邮件；同一个邮箱重复提交时，保留先前那一份。',
+    text: '已经存进 Molis AI 的私密收件箱。目前不会自动发邮件。',
   },
   note: '这是早期阶段的联系方式，不会自动开通任何账号或产品。',
   privacyTitle: '隐私说明',
   privacy: [
-    '这张表只收你填写的称呼、邮箱、方向和内容，存在 Molis AI 团队的私密收件箱里。',
+    '这张表只收你填写的称呼、邮箱、方向和内容，以及你是从哪个页面过来的，存在 Molis AI 团队的私密收件箱里。',
     '只用来了解你的想法并联系你，不公开展示，也不用于广告。',
     '需要修改或删除，联系时告诉我们即可。',
   ],
@@ -196,8 +196,14 @@ export const contact = {
     life: { role: '早期体验者', idea: '想关注 Molis Life 的进展。' },
     tool: { role: '早期体验者', idea: '想关注 Molis Tool 的进展。' },
     story: { role: '早期体验者', idea: '想关注 Molis Story 的进展。' },
+    /** Folio 的 Molis World 页「关注进展」（概念设计） */
+    world: { role: '早期体验者', idea: '想关注 Molis World 的进展。' },
     /** 社区页「聊聊你的体验」「分享一个念头」 */
     feedback: { role: '早期体验者', idea: '' },
     creator: { role: '创造者', idea: '' },
+    /** 社区「做了一个？分享给我们」：预填用了什么，接着写做了什么、贴链接 */
+    'share-flower': { role: '创造者', idea: '我用「一朵好奇」小实验做了：' },
+    'share-artist': { role: '创造者', idea: '我用艺术家 Skill 做了：' },
+    'share-method': { role: '创造者', idea: '我用社区里的方法做了：' },
   } as Record<string, { role: string; idea: string }>,
 };

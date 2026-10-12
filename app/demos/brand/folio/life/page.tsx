@@ -1,17 +1,10 @@
 'use client';
-import {
-  closing,
-  control,
-  devices,
-  handoff,
-  hero,
-  jobs,
-  merged,
-  momentsNote,
-  scenes,
-  shotLabels,
-  shots,
-} from '../../../../../content/molis-life';
+import Link from 'next/link';
+import { useRef, useState } from 'react';
+import type { KeyboardEvent } from 'react';
+import { ArrowUpRight } from 'lucide-react';
+import { shotLabels, shots } from '../../../../../content/molis-life';
+import { folioLife } from '../../../../../content/folio-life';
 import { LifeArt } from '../art';
 import {
   Closing,
@@ -26,7 +19,9 @@ import {
 import {
   Footer,
   HOME,
+  STORY,
   SiteHeader,
+  WORLD,
   contactHref,
   useFolioMotion,
   type Vars,
@@ -35,8 +30,9 @@ import '../folio.css';
 import '../kit.css';
 import './life.css';
 
-// 文案来自 content/molis-life.ts，五个方向共用。首屏是剪纸插画；
-// 界面画面用 molis-life 的生活空间概念稿，始终标「概念稿」。
+// A3 重做：首屏说清 Life 是懂你、陪你的个人 Agent；往下是概念稿、三件事各走一遍（每步标示意）、
+// 它怎么理解你（原型能做到哪一步写清楚）、决定权、和 Story / World 的关系；路线图各只留一行。
+// 文案在 content/folio-life.ts；概念稿图片沿用共享的 content/molis-life.ts。
 
 function Phone({ src, w, h }: { src: string; w: number; h: number }) {
   return (
@@ -46,8 +42,84 @@ function Phone({ src, w, h }: { src: string; w: number; h: number }) {
   );
 }
 
+/** 三件事：一次看一件，从一句话走到有结果；方向键可以在三件之间切换 */
+function Example() {
+  const { example } = folioLife;
+  const [active, setActive] = useState(0);
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const story = example.stories[active];
+  const move = (event: KeyboardEvent, index: number) => {
+    const step =
+      event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+    if (!step) return;
+    event.preventDefault();
+    const next =
+      (index + step + example.stories.length) % example.stories.length;
+    setActive(next);
+    tabs.current[next]?.focus();
+  };
+  return (
+    <section
+      id="example"
+      className="fo-section fl-example"
+      data-bg="paper"
+      aria-labelledby="fl-example-title"
+    >
+      <SectionHead
+        id="fl-example-title"
+        kicker={example.kicker}
+        title={example.title}
+        lead={example.note}
+        layout="split"
+      />
+      <div className="fl-tabs" role="tablist" aria-label={example.kicker}>
+        {example.stories.map((item, index) => (
+          <button
+            key={item.id}
+            ref={(node) => {
+              tabs.current[index] = node;
+            }}
+            type="button"
+            role="tab"
+            id={`fl-tab-${item.id}`}
+            aria-selected={index === active}
+            aria-controls="fl-example-panel"
+            tabIndex={index === active ? 0 : -1}
+            onClick={() => setActive(index)}
+            onKeyDown={(event) => move(event, index)}
+          >
+            <span className="fo-index">{pad(index)}</span>
+            {item.tab}
+          </button>
+        ))}
+      </div>
+      <div
+        className="fl-story"
+        role="tabpanel"
+        id="fl-example-panel"
+        aria-labelledby={`fl-tab-${story.id}`}
+        key={story.id}
+      >
+        <blockquote>{story.quote}</blockquote>
+        <ol className="fl-steps">
+          {story.steps.map((step, index) => (
+            <li key={step} style={{ '--i': index } as Vars}>
+              <span className="fo-index">{pad(index)}</span>
+              <p>
+                {step}
+                <Tag>{example.stepTag}</Tag>
+              </p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
 export default function FolioLifePage() {
   const rootRef = useFolioMotion();
+  const { hero, understand, control, worlds, roadmap, closing } = folioLife;
 
   return (
     <div className="fo-site fl-site" ref={rootRef}>
@@ -63,7 +135,7 @@ export default function FolioLifePage() {
           status={hero.status}
           actions={[
             { label: hero.actions.follow, href: contactHref('life') },
-            { label: hero.actions.more, href: '#jobs', tone: 'ghost' },
+            { label: hero.actions.example, href: '#example', tone: 'ghost' },
           ]}
           masthead="Life"
           art={<LifeArt />}
@@ -87,84 +159,34 @@ export default function FolioLifePage() {
           </Collage>
         </section>
 
+        <Example />
+
         <section
-          id="jobs"
           className="fo-section"
-          data-bg="paper"
-          aria-labelledby="fl-jobs-title"
+          data-bg="white"
+          aria-labelledby="fl-understand-title"
         >
           <SectionHead
-            id="fl-jobs-title"
-            kicker={jobs.kicker}
-            title={jobs.title}
+            id="fl-understand-title"
+            kicker={understand.kicker}
+            title={understand.title}
           />
-          <ol className="fo-cards fl-jobs">
-            {jobs.items.map((item, index) => (
+          <ol className="fo-cards fl-understand">
+            {understand.items.map((item, index) => (
               <li key={item.title} data-reveal style={{ '--i': index } as Vars}>
                 <span className="fo-index">{pad(index)}</span>
-                <blockquote>{item.quote}</blockquote>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
               </li>
             ))}
           </ol>
-        </section>
-
-        <section
-          className="fo-section fl-handoff"
-          data-bg="yellow"
-          aria-labelledby="fl-handoff-title"
-        >
-          <div className="fo-split">
-            <SectionHead
-              id="fl-handoff-title"
-              kicker={handoff.kicker}
-              title={handoff.title}
-              lead={handoff.note}
-            />
-            <div className="fl-handoff-body" data-reveal>
-              <h3>{handoff.entriesLabel}</h3>
-              <ul className="fo-list">
-                {handoff.entries.map((entry, index) => (
-                  <li key={entry.title}>
-                    <span className="fo-index">{pad(index)}</span>
-                    <strong>
-                      {entry.title}
-                      {entry.tag ? <Tag>{entry.tag}</Tag> : null}
-                    </strong>
-                  </li>
-                ))}
-              </ul>
-              <h3>{handoff.intentsLabel}</h3>
-              <ul className="fo-chips">
-                {handoff.intents.map((intent) => (
-                  <li key={intent}>{intent}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <section
-          className="fo-section"
-          data-bg="white"
-          aria-labelledby="fl-scenes-title"
-        >
-          <SectionHead
-            id="fl-scenes-title"
-            kicker={scenes.kicker}
-            title={scenes.title}
-            lead={scenes.note}
-            layout="split"
-          />
-          <ul className="fl-scenes">
-            {scenes.items.map((scene, index) => (
-              <li key={scene} data-reveal style={{ '--i': index % 4 } as Vars}>
-                <span className="fo-index">{pad(index)}</span>
-                <strong>{scene}</strong>
-              </li>
-            ))}
-          </ul>
+          <aside className="fl-now" data-reveal>
+            <strong>
+              {understand.now.title}
+              <Tag>{understand.now.tag}</Tag>
+            </strong>
+            <p>{understand.now.text}</p>
+          </aside>
         </section>
 
         <section
@@ -190,68 +212,49 @@ export default function FolioLifePage() {
         </section>
 
         <section
-          className="fo-section fl-devices-section"
-          data-bg="paper"
-          aria-labelledby="fl-devices-title"
+          className="fo-section fl-worlds"
+          data-bg="yellow"
+          aria-labelledby="fl-worlds-title"
         >
           <div className="fo-split">
-            <figure className="fl-moments" data-reveal>
-              <div className="fl-devices">
-                <Frame
-                  src={shots.moments.src}
-                  w={shots.moments.w}
-                  h={shots.moments.h}
-                  label={shotLabels.moments}
-                />
-                <Phone {...shots.onboarding} />
+            <SectionHead
+              id="fl-worlds-title"
+              kicker={worlds.kicker}
+              title={worlds.title}
+            />
+            <div className="fl-worlds-body" data-reveal>
+              <p>{worlds.text}</p>
+              <div className="fl-worlds-links">
+                <Link href={STORY}>
+                  {worlds.story}
+                  <ArrowUpRight size={17} aria-hidden="true" />
+                </Link>
+                <Link href={WORLD}>
+                  {worlds.world}
+                  <Tag>{worlds.worldTag}</Tag>
+                  <ArrowUpRight size={17} aria-hidden="true" />
+                </Link>
               </div>
-              <figcaption className="fo-note">{momentsNote}</figcaption>
-            </figure>
-            <div className="fl-devices-copy">
-              <SectionHead
-                id="fl-devices-title"
-                kicker={devices.kicker}
-                title={devices.title}
-              />
-              <ul className="fo-list">
-                {devices.items.map((item, index) => (
-                  <li
-                    key={item.title}
-                    data-reveal
-                    style={{ '--i': index } as Vars}
-                  >
-                    <span className="fo-index">{pad(index)}</span>
-                    <strong>
-                      {item.title}
-                      {item.tag ? <Tag>{item.tag}</Tag> : null}
-                    </strong>
-                    <p>{item.text}</p>
-                  </li>
-                ))}
-              </ul>
             </div>
           </div>
         </section>
 
         <section
-          className="fo-section"
-          data-bg="white"
-          aria-labelledby="fl-merged-title"
+          className="fo-section fl-roadmap"
+          data-bg="paper"
+          aria-labelledby="fl-roadmap-title"
         >
-          <SectionHead
-            id="fl-merged-title"
-            kicker={merged.kicker}
-            title={merged.title}
-          />
-          <ol className="fo-cards">
-            {merged.items.map((item, index) => (
-              <li key={item.title} data-reveal style={{ '--i': index } as Vars}>
-                <span className="fo-index">{pad(index)}</span>
-                <h3>{item.title}</h3>
+          <h2 id="fl-roadmap-title" className="fo-kicker">
+            {roadmap.kicker}
+          </h2>
+          <ul>
+            {roadmap.items.map((item) => (
+              <li key={item.title}>
+                <strong>{item.title}</strong>
                 <p>{item.text}</p>
               </li>
             ))}
-          </ol>
+          </ul>
         </section>
       </main>
 

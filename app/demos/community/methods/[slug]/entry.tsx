@@ -5,25 +5,27 @@ import {
   isResourceEntry,
   knowledge,
   relatedKnowledge,
-  resourceGroupLabels,
-} from '../../../../../../content/knowledge';
-import { folioWiki } from '../../../../../../content/folio';
-import { pad } from '../../kit';
+} from '../../../../../content/knowledge';
+import { folioWiki } from '../../../../../content/folio';
+import { folioCommunity } from '../../../../../content/folio-community';
+import { pad } from '../../../brand/folio/kit';
 import {
+  COMMUNITY,
   Footer,
-  SiteHeader,
-  WIKI,
+  METHODS,
+  methodHref,
   useFolioMotion,
-  wikiHref,
-} from '../../shared';
+} from '../../../brand/folio/shared';
+import { CommunityHeader } from '../../header';
 import { FwLab } from '../demos';
-import '../../folio.css';
-import '../../kit.css';
-import '../wiki.css';
+import '../../../brand/folio/folio.css';
+import '../../../brand/folio/kit.css';
+import '../methods.css';
 
-// 百科条目：开篇写清它是什么；白纸上是示例和 Prompt；再讲什么时候用、留意什么；封底接着探索同类条目。
+// 方法条目（原百科条目，现属社区）：开篇写清它是什么；白纸上是示例和 Prompt；再讲什么时候用、留意什么；
+// 封底接着探索同类条目。顶栏用社区顶栏，位置是「社区 / 方法」。
 
-export function WikiEntry({ slug }: { slug: string }) {
+export function MethodEntry({ slug }: { slug: string }) {
   const rootRef = useFolioMotion();
   const entry = knowledge.find((item) => item.slug === slug)!;
   const resource = isResourceEntry(entry);
@@ -31,17 +33,13 @@ export function WikiEntry({ slug }: { slug: string }) {
   const t = folioWiki.entry;
   return (
     <div className="fo-site" ref={rootRef}>
-      <SiteHeader />
+      <CommunityHeader current="methods" />
       <main id="main">
         <header className="fw-opening">
           <nav className="fw-trail" aria-label="位置">
-            <Link href={WIKI}>{t.back}</Link>
+            <Link href={COMMUNITY}>{folioCommunity.detail.community}</Link>
             <span aria-hidden="true">/</span>
-            <Link href={`${WIKI}#entries`}>
-              {resource
-                ? resourceGroupLabels[entry.group].title
-                : entry.category}
-            </Link>
+            <Link href={METHODS}>{folioCommunity.detail.methods}</Link>
           </nav>
           <h1>
             <span>{entry.name}</span>
@@ -99,7 +97,7 @@ export function WikiEntry({ slug }: { slug: string }) {
           <ul>
             {relatedKnowledge(entry).map((item, index) => (
               <li key={item.slug}>
-                <Link href={wikiHref(item.slug)}>
+                <Link href={methodHref(item.slug)}>
                   <span className="fo-index" aria-hidden="true">
                     {pad(index)}
                   </span>

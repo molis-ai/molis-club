@@ -290,6 +290,24 @@
 .fo-menu-panel [data-tone='red'] i {
   color: var(--fo-white);
 }
+.fo-menu-panel [data-tone='sage'] {
+  --tone: var(--fo-sage);
+}
+/* 还是概念的产品（World）：名字旁一枚虚线小签 */
+.fo-menu-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  margin-left: 8px;
+  padding: 0 8px;
+  border: 1.5px dashed currentColor;
+  border-radius: 999px;
+  font-family: var(--fo-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
 
 /* ---------- 封面 ---------- */
 .fo-cover {
@@ -1330,21 +1348,6 @@
   font-size: clamp(40px, 9vw, 160px);
   line-height: 1.02;
   letter-spacing: -0.03em;
-}
-.fo-back-mark {
-  display: inline-block;
-  color: var(--fo-yellow);
-  animation: fo-wobble 3.6s ease-in-out infinite;
-  transform-origin: 30% 90%;
-}
-@keyframes fo-wobble {
-  0%,
-  100% {
-    transform: rotate(0);
-  }
-  50% {
-    transform: rotate(12deg) translateY(-4px);
-  }
 }
 .fo-back-paths {
   display: grid;

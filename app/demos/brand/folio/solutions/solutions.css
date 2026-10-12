@@ -288,3 +288,53 @@
     padding: 26px;
   }
 }
+
+/* ---------- 做这件事的人：合作的每一步，对应成员过去的经历 ---------- */
+.fs-evidence {
+  margin: clamp(32px, 4vw, 52px) 0 0;
+  padding: 0;
+  border-top: 2px solid var(--fo-ink);
+  list-style: none;
+}
+.fs-evidence > li {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 0.9fr) minmax(0, 1.4fr);
+  align-items: start;
+  gap: 12px clamp(20px, 3vw, 44px);
+  padding: 26px 0;
+  border-bottom: 1px solid var(--fo-line);
+}
+.fs-evidence h3 {
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(19px, 1.7vw, 24px);
+  line-height: 1.45;
+}
+.fs-evidence ul {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fs-evidence ul strong {
+  font-size: 15px;
+  font-weight: 700;
+}
+.fs-evidence ul p {
+  margin-top: 2px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--fo-text);
+}
+.fs-people .fo-actions {
+  margin-top: 32px;
+}
+@media (max-width: 760px) {
+  .fs-evidence > li {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+  .fs-evidence ul {
+    grid-column: 2;
+  }
+}

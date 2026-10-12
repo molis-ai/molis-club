@@ -1,0 +1,22 @@
+/* 下载、复制成功后的一句话，带「也发给我们一份」。社区页与方法详情页共用 */
+.fcm-after {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 10px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.fcm-after a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 32px;
+  font-weight: 650;
+  color: var(--fo-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.fcm-after a:hover {
+  color: var(--fo-red);
+}

@@ -31,6 +31,43 @@ try {
     0,
   );
   assert.equal(await page.locator('.fo-sheet').count(), 3);
+  // 首屏之后、Work 之前有一句工作室身份说明；Story 之后是 World 入口（概念设计，不是第四张色纸）；
+  // 结尾从产品走到企业合作与社区，不再问「你正在好奇什么？」，没有登录和团队模块
+  const homeOrder = await page
+    .locator('.fo-studio, #fo-products-title, #story, #world, .fo-ending')
+    .evaluateAll((nodes) =>
+      nodes.map((node) => node.id || node.className.split(' ')[0]),
+    );
+  assert.deepEqual(homeOrder, [
+    'fo-studio',
+    'fo-products-title',
+    'story',
+    'world',
+    'fo-ending',
+  ]);
+  assert.match(
+    await page.locator('.fo-studio').innerText(),
+    /Molis AI 是一间围绕工作、生活与体验研发 AI 产品的工作室/,
+  );
+  assert.match(await page.locator('#world').innerText(), /概念设计/);
+  assert.equal(
+    await page.locator('#world a[href="/demos/brand/folio/world"]').count(),
+    1,
+  );
+  const endingText = await page.locator('.fo-ending').innerText();
+  assert.doesNotMatch(endingText, /你正在好奇什么/);
+  assert.match(endingText, /了解企业合作/);
+  assert.match(endingText, /去社区看看/);
+  assert.equal(
+    await page
+      .locator(
+        '.fo-ending a[href="/demos/brand/folio/contact?topic=enterprise"]',
+      )
+      .count(),
+    1,
+  );
+  assert.equal(await page.locator('.fo-ending a[href$="/login"]').count(), 0);
+  assert.equal(await page.locator('.fo-person, .fo-people').count(), 0);
   const originalArt = page.locator('.fo-cover-art .fo-cut').first();
   assert.match(
     await originalArt.evaluate((el) => getComputedStyle(el).animationName),
@@ -180,8 +217,20 @@ try {
   const more = page.locator('.fo-read-links a', { hasText: '去公众号读更多' });
   assert.match(await more.getAttribute('href'), wechat);
   assert.equal(await more.getAttribute('target'), '_blank');
+  // 读完能去看产品、认识团队（P7 可先做：只加链接）
+  assert.deepEqual(
+    await page
+      .locator('.fo-read-links a')
+      .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
+    [
+      '/demos/brand/folio#products',
+      '/demos/brand/folio/about',
+      await more.getAttribute('href'),
+      '/demos/brand/folio',
+    ],
+  );
   console.log(
-    'PASS: essay reader with contents, references, next essay and the author account link.',
+    'PASS: essay reader with contents, references, next essay, product and team links, and the author account link.',
   );
 
   // 登录留在 Folio 里：同一个顶栏，Logo 回到 Folio 首页，表单换成 Folio 的样子
@@ -212,7 +261,8 @@ try {
     '/work': 'tool',
     '/tool': 'life',
     '/life': 'story',
-    '/story': 'work',
+    '/story': 'world',
+    '/world': 'work',
   };
   for (const [route, next] of Object.entries(nextOf)) {
     await visit(route);
@@ -235,49 +285,237 @@ try {
     'PASS: product pages lead to the next product; unknown addresses stay on the Folio 404.',
   );
 
-  // 百科：三张艺术家试样加构建入口，六个可以动手的示例，24 个组件来源；搜索会收窄目录
-  await visit('/wiki');
-  assert.equal(await page.locator('.fw-gallery li').count(), 3);
-  assert.equal(await page.locator('.fw-builder').count(), 1);
-  assert.equal(await page.locator('.fw-entry .fw-demo').count(), 6);
-  assert.equal(await page.locator('.fw-row').count(), 24);
-  await page.locator('.fw-search input').fill('toast');
+  // Molis World 是概念：状态签写「概念设计」，示例旅程标示意，没有下载、试用、注册入口；
+  // 「关注进展」预选早期体验者并预填内容；下拉、页尾都能到达
+  await visit('/world');
+  assert.match(await page.locator('h1').innerText(), /慢慢长大的世界/);
+  assert.match(
+    await page.locator('.fo-hero .fo-status').innerText(),
+    /概念设计/,
+  );
+  assert.equal(await page.locator('.fwd-steps > li').count(), 6);
+  assert.match(await page.locator('#journey').innerText(), /概念示意/);
+  assert.doesNotMatch(
+    await page.locator('main').innerText(),
+    /立即下载|下载 Molis World|试用|注册|立即体验|已经打通|已打通/,
+  );
+  assert.equal(
+    await page.locator('main a[download], main a[href*="login"]').count(),
+    0,
+  );
+  assert.equal(
+    await page
+      .locator('.fo-menu-panel a[href="/demos/brand/folio/world"]')
+      .count(),
+    1,
+  );
+  assert.equal(
+    await page.locator('footer a[href="/demos/brand/folio/world"]').count(),
+    1,
+  );
+  await page.locator('.fo-hero .fo-btn', { hasText: '关注进展' }).click();
+  await page.waitForURL(folio + '/contact?topic=world');
+  assert.equal(
+    await page.locator('input[name="role"]:checked').inputValue(),
+    '早期体验者',
+  );
+  assert.equal(
+    await page.locator('textarea[name="idea"]').inputValue(),
+    '想关注 Molis World 的进展。',
+  );
+  console.log(
+    'PASS: Molis World concept page with status, sample journey, no product entry points, and the follow-up preselect.',
+  );
+
+  // Molis Life（A3）：首屏讲懂你、陪你的 Agent，状态签不变；三件事切换着看，每步标示意；
+  // 超出原型的能力标规划中；能到 Story 与 World；路线图各一行
+  await visit('/life');
+  assert.match(await page.locator('h1').innerText(), /懂你.*陪你/s);
+  assert.deepEqual(
+    await page.locator('.fo-hero .fo-status li').allInnerTexts(),
+    ['原型探索', '还不能下载', '页面里的例子都是示意'],
+  );
+  const lifeTabs = page.locator('.fl-tabs [role="tab"]');
+  assert.equal(await lifeTabs.count(), 3);
+  assert.match(await page.locator('.fl-story blockquote').innerText(), /退/);
+  await lifeTabs.nth(1).click();
+  assert.match(await page.locator('.fl-story blockquote').innerText(), /看海/);
+  await page.keyboard.press('ArrowRight');
+  assert.equal(await lifeTabs.nth(2).getAttribute('aria-selected'), 'true');
+  assert.equal(
+    await page.locator('.fl-steps li .fo-tag').count(),
+    await page.locator('.fl-steps li').count(),
+  );
+  assert.match(await page.locator('.fl-now').innerText(), /规划中/);
+  assert.equal(
+    await page.locator('main a[href="/demos/brand/folio/story"]').count(),
+    1,
+  );
+  assert.equal(
+    await page.locator('main a[href="/demos/brand/folio/world"]').count(),
+    1,
+  );
+  assert.equal(await page.locator('.fl-roadmap li').count(), 4);
+  assert.doesNotMatch(
+    await page.locator('main').innerText(),
+    /同一套插件思路|硬件与个人 Agent/,
+  );
+  console.log(
+    'PASS: Molis Life as a caring personal Agent with sample walkthroughs, planned capabilities marked, and links to Story and World.',
+  );
+
+  // Molis Story（A4）：不再出现「不是游戏」；导语带上 Agent；四个世界卡片原样，各自说明怎么玩；
+  // 「和谁一起去」「自己做一个世界」标规划中；归来可以去 World
+  await visit('/story');
+  const storyText = await page.locator('main').innerText();
+  assert.doesNotMatch(storyText, /不是游戏/);
+  assert.match(await page.locator('.fo-hero').innerText(), /带上你的 Agent/);
+  assert.deepEqual(
+    await page.locator('.fo-hero .fo-status li').allInnerTexts(),
+    ['开发中', 'macOS', '还不能下载'],
+  );
+  assert.equal(await page.locator('.fs-world').count(), 4);
+  assert.equal(await page.locator('.fs-world-play').count(), 4);
+  assert.deepEqual(await page.locator('.fs-world blockquote').allInnerTexts(), [
+    '另一端，也有谁在试着理解你。',
+    '把一个一直留在心里的如果，认真走完一次，然后回到这里。',
+    '把一段经历里的照片与文字，变成可以走近、探索和重访的私人展览。',
+    '有些东西，在被弄丢之前，就先送到了这里。',
+  ]);
+  assert.match(
+    await page.locator('#fs-company-title').locator('..').innerText(),
+    /规划中/,
+  );
+  assert.match(
+    await page.locator('#fs-create-title').locator('..').innerText(),
+    /规划中/,
+  );
+  assert.equal(
+    await page
+      .locator('.fs-after-return a[href="/demos/brand/folio/world"]')
+      .count(),
+    1,
+  );
+  assert.equal(
+    await page.locator('.fs-create a[href="/demos/community#share"]').count(),
+    1,
+  );
+  console.log(
+    'PASS: Molis Story keeps its four worlds, says how each is played, marks Agent company and world-making as planned, and returns to World.',
+  );
+
+  // 方法（原百科）并进社区：默认六张精选（三位艺术家 + 三个示例），「查看全部」原处展开，
+  // 24 个组件来源默认收起；搜索与分类会收窄；详情在社区下，旧的百科地址都跳过去。
+  const community = `${origin}/demos/community`;
+  await page.goto(community, { waitUntil: 'networkidle' });
+  const methods = page.locator('#methods');
+  assert.equal(await methods.locator('.fcm-m-card').count(), 6);
+  assert.equal(
+    await methods.locator('.fcm-m-card[data-kind="artist"]').count(),
+    3,
+  );
+  assert.equal(await methods.locator('.fcm-m-card .fw-demo').count(), 3);
+  assert.equal(await methods.locator('.fw-row').count(), 24);
+  assert.equal(
+    await methods.locator('.fcm-m-resources').getAttribute('open'),
+    null,
+  );
+  await methods.getByRole('button', { name: '查看全部方法' }).click();
+  assert.equal(await methods.locator('.fcm-m-card').count(), 10);
+  await methods.locator('.fw-search input').fill('toast');
   const found = Number(
-    (await page.locator('.fw-count').innerText()).match(/^\d+/)[0],
+    (await methods.locator('.fw-count').innerText()).match(/^\d+/)[0],
   );
   assert.ok(found > 0 && found < 24, `toast matched ${found}`);
   assert.equal(
-    (await page.locator('.fw-row').count()) +
-      (await page.locator('.fw-entry').count()),
+    (await methods.locator('.fw-row').count()) +
+      (await methods.locator('.fcm-m-card').count()),
     found,
   );
-  await page.locator('.fw-search input').fill('');
-  await page.locator('.fw-filters button', { hasText: '网页词典' }).click();
-  assert.equal(await page.locator('.fw-entry').count(), 3);
-  assert.equal(await page.locator('.fw-row').count(), 0);
-  await visit('/wiki/stagger');
+  await methods.locator('.fw-search input').fill('');
+  await methods
+    .locator('.fw-filters button', { hasText: '网页与动效' })
+    .click();
+  assert.equal(await methods.locator('.fcm-m-card').count(), 6);
+  assert.equal(await methods.locator('.fw-row').count(), 0);
+  await methods
+    .locator('.fw-filters button', { hasText: '艺术家 Skill' })
+    .click();
+  assert.equal(await methods.locator('.fcm-m-card').count(), 4);
+  assert.equal(
+    await methods
+      .locator('.fcm-m-card a[download]')
+      .first()
+      .getAttribute('href'),
+    '/downloads/artists/monet-impressionism.zip',
+  );
+  await page.goto(`${community}/methods/stagger`, { waitUntil: 'networkidle' });
   assert.match(await page.locator('h1').innerText(), /错落入场/);
+  assert.match(await page.locator('.fw-trail').innerText(), /社区\s*\/\s*方法/);
+  assert.equal(await page.locator('.fcm-header').count(), 1);
   const promptBefore = await page.locator('#fw-prompt').inputValue();
   await page.locator('.fw-duration input').fill('1000');
   assert.notEqual(await page.locator('#fw-prompt').inputValue(), promptBefore);
   assert.match(await page.locator('#fw-prompt').inputValue(), /1000ms/);
-  await visit('/wiki/artists/monet-impressionism');
+  await page.goto(`${community}/methods/artists/monet-impressionism`, {
+    waitUntil: 'networkidle',
+  });
   assert.equal(
     await page.locator('a[download]').getAttribute('href'),
     '/downloads/artists/monet-impressionism.zip',
   );
   assert.equal(await page.locator('.fw-related li').count(), 3);
-  const legacy = await page.goto(folio + '/wiki/no-such-entry', {
-    waitUntil: 'networkidle',
-  });
-  assert.equal(legacy.status(), 404);
+  for (const [from, to] of [
+    ['/wiki', '/demos/community#methods'],
+    ['/wiki/artists', '/demos/community#methods'],
+    ['/wiki/stagger', '/demos/community/methods/stagger'],
+    [
+      '/wiki/artists/monet-impressionism',
+      '/demos/community/methods/artists/monet-impressionism',
+    ],
+  ]) {
+    await page.goto(folio + from, { waitUntil: 'networkidle' });
+    assert.equal(page.url(), origin + to, from);
+  }
+  for (const missing of [
+    '/wiki/no-such-entry',
+    '/wiki/artists/no-such-artist',
+  ]) {
+    const response = await page.goto(folio + missing, {
+      waitUntil: 'networkidle',
+    });
+    assert.equal(response.status(), 404, missing);
+  }
   console.log(
-    'PASS: Folio wiki with artists, six live examples, searchable resources, entry lab and artist downloads.',
+    'PASS: community methods with six picks, expand in place, folded sources, search and filters; method details under the community; old wiki addresses redirect.',
   );
 
   const running = (selector) =>
     page.locator(selector).getAttribute('data-running');
   await visit('/tool');
+  // DropAgent、niul.ai 的入口先去社区试一试（P4 可先做），独立版的 GitHub 链接保留
+  assert.equal(
+    await page
+      .locator('.fo-hero a', { hasText: '先在社区试试' })
+      .getAttribute('href'),
+    '/demos/community#try',
+  );
+  assert.equal(
+    await page
+      .locator('.fo-closing a', { hasText: '先在社区试试' })
+      .getAttribute('href'),
+    '/demos/community#try',
+  );
+  assert.deepEqual(
+    await page
+      .locator('.ft-available a')
+      .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
+    [
+      'https://github.com/molis-ai/DropAgent',
+      'https://github.com/molis-ai/niul.ai',
+      '/demos/community#try',
+    ],
+  );
   const mark = page.locator('.ft-hero .ft-page mark');
   assert.match(
     await mark.evaluate((el) => getComputedStyle(el).animationName),
@@ -356,15 +594,40 @@ try {
   assert.equal(await page.locator('.fs-service').count(), 4);
   assert.equal(await page.locator('.fs-service-result').count(), 4);
   const sectionOrder = await page
-    .locator('#cooperation, #directions, #fs-closing-title')
+    .locator('#cooperation, #directions, #people, #fs-closing-title')
     .evaluateAll((nodes) => nodes.map((node) => node.id));
   assert.deepEqual(sectionOrder, [
     'cooperation',
     'directions',
+    'people',
     'fs-closing-title',
   ]);
+  // 做这件事的人：四步各对应成员经历，只写姓名与过去的经历，末尾去团队页；结尾不再放「认识团队」
+  assert.equal(await page.locator('.fs-evidence > li').count(), 4);
+  assert.deepEqual(
+    new Set(await page.locator('.fs-evidence ul strong').allInnerTexts()),
+    new Set(['王一骏', '谢俊', '赵壮实', '隋欣怡']),
+  );
+  assert.match(
+    await page.locator('#people').innerText(),
+    /还没有可以公开的案例/,
+  );
+  assert.equal(
+    await page.locator('#people a[href="/demos/brand/folio/about"]').count(),
+    1,
+  );
+  assert.equal(
+    await page
+      .locator('.fo-closing a[href="/demos/brand/folio/about"]')
+      .count(),
+    0,
+  );
+  assert.doesNotMatch(
+    await page.locator('main').innerText(),
+    /已在两个固定真实服务|客户 logo|100\+/,
+  );
   console.log(
-    'PASS: Work hero, workflow strip, three scene demos and feature groups; business cooperation services, outcomes and section order.',
+    'PASS: Work hero, workflow strip, three scene demos and feature groups; business cooperation services, member evidence, outcomes and section order.',
   );
 
   for (const width of [1440, 1024, 768, 390, 360]) {
@@ -376,16 +639,13 @@ try {
       '/solutions',
       '/life',
       '/story',
+      '/world',
       '/about',
       '/essays',
       '/essays/human-scale',
       '/essays/idealism',
       '/login',
       '/account',
-      '/wiki',
-      '/wiki/sticky',
-      '/wiki/animata',
-      '/wiki/artists/art-style-skill-builder',
     ]) {
       await visit(route);
       assert.equal(await page.locator('h1').count(), 1, `${route} @ ${width}`);
@@ -421,24 +681,54 @@ try {
       );
     }
   }
+  // 社区与方法详情：五种宽度下一个 h1、无横向溢出、图片都加载；社区页五段，团队只留一行入口
+  for (const width of [1440, 1024, 768, 390, 360]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const route of [
+      '/demos/community/',
+      '/demos/community/methods/sticky',
+      '/demos/community/methods/animata',
+      '/demos/community/methods/artists/art-style-skill-builder',
+    ]) {
+      const response = await page.goto(origin + route, {
+        waitUntil: 'networkidle',
+      });
+      assert.equal(response.status(), 200, route);
+      assert.equal(await page.locator('h1').count(), 1, `${route} @ ${width}`);
+      assert.equal(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+        true,
+        `${route} horizontal overflow @ ${width}`,
+      );
+      assert.equal(
+        await page
+          .locator('img')
+          .evaluateAll(
+            (imgs) =>
+              imgs.filter((img) => img.complete && !img.naturalWidth).length,
+          ),
+        0,
+      );
+      assert.equal(
+        await page.locator('a[href^="/wiki"], a[href*="/folio/wiki"]').count(),
+        0,
+      );
+    }
+  }
   await page.goto(origin + '/demos/community/', { waitUntil: 'networkidle' });
-  assert.equal(await page.locator('h1').count(), 1);
   assert.deepEqual(
     await page
-      .locator('.fcm-essay')
-      .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
-    [
-      '/demos/brand/folio/essays/human-scale',
-      '/demos/brand/folio/essays/idealism',
-    ],
+      .locator('main > section[id]')
+      .evaluateAll((nodes) => nodes.map((node) => node.id)),
+    ['try', 'methods', 'share', 'improve'],
   );
-  assert.equal(await page.locator('a[href^="/wiki"]').count(), 0);
   assert.equal(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-    true,
+    await page.locator('.fcm-people-line a').getAttribute('href'),
+    '/demos/brand/folio/about',
   );
+  assert.equal(await page.locator('.fcm-showcase-empty').count(), 1);
   assert.equal(errors.length, 0, errors.join('\n'));
   console.log(
     'PASS: Folio pages at five viewport widths, visible page titles, community links, images and no browser runtime errors.',

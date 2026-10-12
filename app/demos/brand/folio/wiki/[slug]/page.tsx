@@ -1,26 +1,11 @@
-import { notFound } from 'next/navigation';
-import {
-  isResourceEntry,
-  knowledge,
-} from '../../../../../../content/knowledge';
-import { WikiEntry } from './entry';
+import { notFound, redirect } from 'next/navigation';
+import { knowledge } from '../../../../../../content/knowledge';
 
+// 原百科条目搬到社区「方法」下（A6）；不存在的条目仍然 404。服务端页面，直接写路径。
 type Props = { params: Promise<{ slug: string }> };
 
-export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
-  const entry = knowledge.find((item) => item.slug === slug);
-  if (!entry) return { title: '条目未找到', robots: { index: false } };
-  return {
-    title: {
-      absolute: `${entry.name} ${entry.english} · ${isResourceEntry(entry) ? '来源与 Prompt' : '演示与 Prompt'} · Molis AI 百科`,
-    },
-    description: entry.description,
-  };
-}
-
-export default async function Page({ params }: Props) {
+export default async function FolioWikiEntryRedirect({ params }: Props) {
   const { slug } = await params;
   if (!knowledge.some((item) => item.slug === slug)) notFound();
-  return <WikiEntry slug={slug} />;
+  redirect(`/demos/community/methods/${slug}`);
 }

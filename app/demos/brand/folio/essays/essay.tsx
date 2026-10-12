@@ -3,10 +3,15 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import type { ReactNode } from 'react';
 import stories from '../../../../../content/stories.json';
-import { folioEssayAuthor, folioStudio } from '../../../../../content/folio';
+import {
+  folioEssayAuthor,
+  folioEssayLinks,
+  folioStudio,
+} from '../../../../../content/folio';
 import { lineNames } from '../../../../../content/studio';
 import { pad } from '../kit';
 import {
+  ABOUT,
   Footer,
   HOME,
   ESSAYS,
@@ -21,7 +26,7 @@ import '../folio.css';
 import './essays.css';
 
 // Folio 的文章阅读页：刊头式开篇，正文是一张压上来的白纸，左边目录粘住；封底接着读另一篇。
-// 署名链到作者的公众号，封底另有「去公众号读更多」。
+// 署名链到作者的公众号；封底除了接着读，还能去看产品、认识团队、去公众号读更多。
 // 《落地主义》末尾接回产品：文章里说的「找到同频的人」，在四条产品线里的样子。只用现有一句话，不新写产品声明。
 const closingWorks = ['idealism'];
 
@@ -169,6 +174,14 @@ export function Essay({ slug }: { slug: string }) {
             </span>
           </Link>
           <div className="fo-read-links">
+            <Link href={`${HOME}#products`} className="fo-read-home">
+              {folioEssayLinks.products}
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
+            <Link href={ABOUT} className="fo-read-home">
+              {folioEssayLinks.team}
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
             <a
               href={folioEssayAuthor.href}
               className="fo-read-home"

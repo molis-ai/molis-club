@@ -59,6 +59,77 @@ export const folioCooperation = {
       text: '把隐性的经验写成步骤与规则，再通过真实任务验证，让更多同事接得住。',
     },
   ],
+  /**
+   * 做这件事的人（A8）：证据只来自成员个人过去的经历，按合作的每一步对应。团队刚组成，还没有以
+   * Molis 名义完成的客户案例：不写「我们为某客户做过」，不写团队一起完成的成果，不写效果数字；
+   * folioSolutions 里自研产品的技术验证也不当证据。
+   * quotes 必须是 content/folio-team.ts 里该成员 experience 的原句片段（tests/cooperation.test.mjs 检查），
+   * 页面用逗号连起来。先用有公开履历的四位；其他成员资料到了只改这里。
+   */
+  people: {
+    kicker: '做这件事的人',
+    title: '和这件事相关的，是成员们过去的经历。',
+    lead: 'Molis 刚开始以团队的名义做企业合作，还没有可以公开的案例。下面是成员们过去做过、和这件事相关的经历。',
+    steps: [
+      {
+        service: 'discover',
+        evidence: [
+          {
+            name: '赵壮实',
+            quotes: [
+              '曾任字节、美团核心团队 AI 数据产品资深专家',
+              '参与抖音数据管理及功能建设',
+            ],
+          },
+          {
+            name: '隋欣怡',
+            quotes: [
+              '曾在美团、字节、小红书核心团队负责数据运营',
+              '对接客户团队',
+            ],
+          },
+        ],
+      },
+      {
+        service: 'build',
+        evidence: [
+          {
+            name: '谢俊',
+            quotes: ['8 年美团研发经验', '参与企业知识库、RAG 与 Agent 实践'],
+          },
+        ],
+      },
+      {
+        service: 'verify',
+        evidence: [
+          {
+            name: '王一骏',
+            quotes: [
+              '曾在美团、字节、滴滴、LinkedIn 及硅谷创业公司的核心研发团队负责架构与管理',
+            ],
+          },
+          {
+            name: '谢俊',
+            quotes: ['长期深耕数据、计算、平台架构和复杂系统工程化'],
+          },
+        ],
+      },
+      {
+        service: 'handover',
+        evidence: [
+          {
+            name: '隋欣怡',
+            quotes: ['对接客户团队', '持续寻找 AI 能力真正进入业务的落点'],
+          },
+          {
+            name: '赵壮实',
+            quotes: ['在 DataFun、美团大学与 CSDI Summit 分享实践'],
+          },
+        ],
+      },
+    ],
+    team: '认识团队',
+  },
   stages: [
     {
       title: '带一个问题来',

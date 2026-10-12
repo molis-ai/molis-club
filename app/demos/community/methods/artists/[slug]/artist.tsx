@@ -1,36 +1,42 @@
 'use client';
 import Link from 'next/link';
+import { useState } from 'react';
 import { ArrowUpRight, Download } from 'lucide-react';
-import { artistSkills } from '../../../../../../../content/artists';
-import { folioWiki } from '../../../../../../../content/folio';
-import { pad } from '../../../kit';
+import { artistSkills } from '../../../../../../content/artists';
+import { folioWiki } from '../../../../../../content/folio';
+import { folioCommunity } from '../../../../../../content/folio-community';
+import { pad } from '../../../../brand/folio/kit';
 import {
+  COMMUNITY,
   Footer,
-  SiteHeader,
-  WIKI,
+  METHODS,
   artistHref,
   useFolioMotion,
-} from '../../../shared';
+} from '../../../../brand/folio/shared';
+import { CommunityHeader } from '../../../header';
+import { ShareAfter } from '../../../copy';
 import { CopyPrompt } from '../../demos';
-import '../../../folio.css';
-import '../../../kit.css';
-import '../../wiki.css';
+import '../../../../brand/folio/folio.css';
+import '../../../../brand/folio/kit.css';
+import '../../methods.css';
 
-// 艺术家 Skill：试样贴在白纸上，旁边是它组织创作的三步和下载；再讲怎样用、给一段调用示例。
+// 艺术家 Skill（社区「方法」的详情）：试样贴在白纸上，旁边是它组织创作的三步和下载；再讲怎样用、
+// 给一段调用示例。顶栏用社区顶栏，位置是「社区 / 方法」；下载后提示可以把作品也发给我们一份。
 
-export function WikiArtist({ slug }: { slug: string }) {
+export function MethodArtist({ slug }: { slug: string }) {
   const rootRef = useFolioMotion();
   const skill = artistSkills.find((item) => item.slug === slug)!;
   const t = folioWiki.artist;
+  const [downloaded, setDownloaded] = useState(false);
   return (
     <div className="fo-site" ref={rootRef}>
-      <SiteHeader />
+      <CommunityHeader current="methods" />
       <main id="main">
         <header className="fw-opening">
           <nav className="fw-trail" aria-label="位置">
-            <Link href={WIKI}>{folioWiki.entry.back}</Link>
+            <Link href={COMMUNITY}>{folioCommunity.detail.community}</Link>
             <span aria-hidden="true">/</span>
-            <Link href={`${WIKI}#artists`}>{folioWiki.artists.kicker}</Link>
+            <Link href={METHODS}>{folioCommunity.detail.methods}</Link>
           </nav>
           <h1>
             <span>{skill.name}</span>
@@ -95,6 +101,7 @@ export function WikiArtist({ slug }: { slug: string }) {
                 href={`/downloads/artists/${skill.slug}.zip`}
                 download
                 className="fo-btn fo-btn-ink"
+                onClick={() => setDownloaded(true)}
               >
                 <Download size={17} aria-hidden="true" />
                 {t.download}
@@ -104,6 +111,14 @@ export function WikiArtist({ slug }: { slug: string }) {
                 <br />
                 {t.package[1]}
               </p>
+              <output className="fw-after">
+                {downloaded ? (
+                  <ShareAfter
+                    text={folioCommunity.after.skill}
+                    topic="share-artist"
+                  />
+                ) : null}
+              </output>
             </div>
           </div>
         </section>

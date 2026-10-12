@@ -34,12 +34,14 @@ cp .dev.vars.example .dev.vars
 
 ```bash
 npm run build
-npx wrangler d1 execute DB --local --config dist/server/wrangler.json --file drizzle/0000_jittery_lady_deathstrike.sql
-npx wrangler d1 execute DB --local --config dist/server/wrangler.json --file drizzle/0001_nebulous_power_man.sql
+npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0000_jittery_lady_deathstrike.sql
+npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0001_nebulous_power_man.sql
+npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0002_curved_ultron.sql
+npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0003_applications_multiple_submissions.sql
 npm run dev
 ```
 
-已有本地数据库时不要重复初始化迁移。打开 [本地网站](http://localhost:3000)。本地数据保存在忽略的 `.wrangler/` 中，与生产数据库分开。
+已有本地数据库时不要重复初始化迁移，只执行还没执行过的新文件。打开 [本地网站](http://localhost:3000)。本地数据保存在忽略的 `.wrangler/` 中，与生产数据库分开。
 
 ## 验证
 

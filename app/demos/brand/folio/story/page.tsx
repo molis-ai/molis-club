@@ -1,4 +1,6 @@
 'use client';
+import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
 import {
   boundaries,
   closing,
@@ -11,6 +13,7 @@ import {
   worlds,
   worldsIntro,
 } from '../../../../../content/molis-story';
+import { folioStory } from '../../../../../content/folio-story';
 import { Star } from '../art';
 import {
   Closing,
@@ -21,9 +24,11 @@ import {
   pad,
 } from '../kit';
 import {
+  COMMUNITY,
   Footer,
   HOME,
   SiteHeader,
+  WORLD,
   contactHref,
   useFolioMotion,
   type Vars,
@@ -32,8 +37,9 @@ import '../folio.css';
 import '../kit.css';
 import './story.css';
 
-// 文案来自 content/molis-story.ts，五个方向共用。首屏是四扇剪纸拱窗，每扇窗后面是一个世界；
-// 生成的氛围画标「概念画面」，袖珍博物馆用仓库里 Unsplash 授权的示例照片。
+// 文案来自 content/molis-story.ts，五个方向共用；Folio 新增和改动的说法在 content/folio-story.ts（A4）：
+// 导语加上「带上你的 Agent」，归来后可以放进 World，每个世界说明怎么玩，「和谁一起去」「自己做一个世界」
+// 标规划中，去掉「不是游戏」。首屏是四扇剪纸拱窗；生成的氛围画标「概念画面」，袖珍博物馆用 Unsplash 示例照片。
 
 /** 首屏：四扇彩纸拱窗，各自通向下面的世界 */
 function Windows() {
@@ -93,8 +99,14 @@ function Here() {
   );
 }
 
+/** 「不是游戏」一条去掉：Story 不限定是不是游戏，每个世界各自说明（A4） */
+const differentItems = different.items.filter(
+  (item) => item.title !== '不是游戏',
+);
+
 export default function FolioStoryPage() {
   const rootRef = useFolioMotion();
+  const { company, create } = folioStory;
 
   return (
     <div className="fo-site fs-site" ref={rootRef}>
@@ -106,7 +118,8 @@ export default function FolioStoryPage() {
           className="fs-hero"
           kicker={hero.kicker}
           title={hero.title}
-          lead={hero.lead}
+          lead={folioStory.hero.lead}
+          extra={<p className="fs-hero-planned">{folioStory.hero.planned}</p>}
           status={hero.status}
           actions={[
             { label: hero.actions.follow, href: contactHref('story') },
@@ -156,6 +169,14 @@ export default function FolioStoryPage() {
             })}
           </ol>
           <p className="fo-note">{imageNote}</p>
+          <p className="fs-after-return" data-reveal>
+            {folioStory.afterReturn.text}
+            <Link href={WORLD}>
+              {folioStory.afterReturn.link}
+              <Tag>{folioStory.afterReturn.tag}</Tag>
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
+          </p>
         </section>
 
         <section
@@ -168,6 +189,7 @@ export default function FolioStoryPage() {
             id="fs-worlds-title"
             kicker={worldsIntro.kicker}
             title={worldsIntro.title}
+            lead={folioStory.worlds.lead}
           />
           <ol>
             {worlds.map((world, index) => (
@@ -212,6 +234,10 @@ export default function FolioStoryPage() {
                     <span>{worldsIntro.souvenirLabel}</span>
                     {world.souvenir}
                   </p>
+                  <p className="fs-world-play">
+                    <span>{folioStory.worlds.playLabel}</span>
+                    {folioStory.worlds.play[world.id]}
+                  </p>
                 </div>
               </li>
             ))}
@@ -219,17 +245,76 @@ export default function FolioStoryPage() {
         </section>
 
         <section
-          className="fo-section"
+          className="fo-section fs-company"
           data-bg="white"
+          aria-labelledby="fs-company-title"
+        >
+          <SectionHead
+            id="fs-company-title"
+            kicker={`${company.kicker} · ${company.tag}`}
+            title={company.title}
+          />
+          <ol className="fo-cards fs-ways">
+            {company.ways.map((way, index) => (
+              <li key={way.title} data-reveal style={{ '--i': index } as Vars}>
+                <span className="fo-index">{pad(index)}</span>
+                <h3>
+                  {way.title}
+                  {index > 0 ? <Tag>{company.tag}</Tag> : null}
+                </h3>
+                <p>{way.text}</p>
+              </li>
+            ))}
+          </ol>
+          <ul className="fs-company-rules">
+            {company.rules.map((rule) => (
+              <li key={rule}>{rule}</li>
+            ))}
+          </ul>
+          <p className="fs-now">{company.now}</p>
+        </section>
+
+        <section
+          className="fo-section fs-create"
+          data-bg="pink"
+          aria-labelledby="fs-create-title"
+        >
+          <div className="fo-split">
+            <SectionHead
+              id="fs-create-title"
+              kicker={`${create.kicker} · ${create.tag}`}
+              title={create.title}
+            />
+            <div className="fs-create-body" data-reveal>
+              <ol className="fo-list">
+                {create.items.map((item, index) => (
+                  <li key={item.title}>
+                    <span className="fo-index">{pad(index)}</span>
+                    <strong>{item.title}</strong>
+                    <p>{item.text}</p>
+                  </li>
+                ))}
+              </ol>
+              <Link className="fs-create-link" href={`${COMMUNITY}#share`}>
+                {create.share}
+                <ArrowUpRight size={17} aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section
+          className="fo-section"
+          data-bg="paper"
           aria-labelledby="fs-different-title"
         >
           <SectionHead
             id="fs-different-title"
-            kicker={different.kicker}
+            kicker={folioStory.different.kicker}
             title={different.title}
           />
           <ol className="fo-cards fs-different">
-            {different.items.map((item, index) => (
+            {differentItems.map((item, index) => (
               <li key={item.title} data-reveal style={{ '--i': index } as Vars}>
                 <span className="fo-index">{pad(index)}</span>
                 <h3>{item.title}</h3>
@@ -251,7 +336,7 @@ export default function FolioStoryPage() {
               title={boundaries.title}
             />
             <ol className="fo-list">
-              {boundaries.items.map((item, index) => (
+              {[folioStory.rule, ...boundaries.items].map((item, index) => (
                 <li key={item} data-reveal style={{ '--i': index } as Vars}>
                   <span className="fo-index">{pad(index)}</span>
                   <strong>{item}</strong>

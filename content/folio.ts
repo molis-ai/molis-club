@@ -2,8 +2,26 @@
 // 首页依据 2026-10-09 与一骏的讨论：不喊口号，首屏只放 A/I 词组和关键词，往下是产品、团队、文章、社区。
 // 方案见 specs/folio-studio-home/spec.md；Work 详情在 content/folio-work.ts。
 // Life、Story 的详情页本轮不改，首页只用一句话说清方向，不写尚未开放的能力。
+// 2026-10-12 起产品多了 Molis World（概念设计，文案在 content/folio-world.ts）；共享的 LineId 不变，
+// Folio 用自己的 FolioProductId 与 folioProducts 排顺序。
 
-export type FolioProductId = 'work' | 'tool' | 'life' | 'story';
+import { folioWorld } from './folio-world';
+
+export type FolioProductId = 'work' | 'tool' | 'life' | 'story' | 'world';
+
+/** Folio 的产品顺序：顶栏下拉、页尾和产品页「接着看」都按这一个顺序；World 是概念，排在最后 */
+export const folioProducts: FolioProductId[] = [
+  'work',
+  'tool',
+  'life',
+  'story',
+  'world',
+];
+
+/** 还是概念的产品，在下拉和「接着看」里带一枚状态签 */
+export const folioProductTags: Partial<Record<FolioProductId, string>> = {
+  world: folioWorld.status,
+};
 
 /** 2026-10-10 首页简介：按四条产品线的实际方向重写，独立于其他样张复用的原短句。 */
 export const folioHomeCopy = {
@@ -14,6 +32,7 @@ export const folioHomeCopy = {
     tool: 'AI就在你的鼠标边',
     life: '把琐事安顿好，让喜欢的生活发生',
     story: '走进另一个世界，带一段经历回来',
+    world: folioWorld.line,
   } satisfies Record<FolioProductId, string>,
   /**
    * 【文案待改】每件产品向访客问的一句话，显示在首页各产品的一句话下面（Work 在核心产品区，其余在色纸上）。
@@ -33,13 +52,40 @@ export const folioHomeCopy = {
     tool: '为了一个很小的动作，你上一次在几个窗口之间切了几回？',
     life: '有哪件琐事，你最想随口交代一句就算数？',
     story: '你最想进去待一会儿的，会是一个什么样的世界？',
-  } satisfies Record<FolioProductId, string>,
+  } satisfies Record<'work' | 'tool' | 'life' | 'story', string>,
+  /**
+   * 工作室身份说明（P1）：放在首屏之后、Work 之前，第一句大字，其余正文。10/12 负责人给了基础段落
+   * （工作室；用 Work 探索人与 AI 共事、用 Tool 把工具带到光标旁；也在探索 Life 与 Story），据此微调：
+   * Life 按 A3 补上「懂你、陪你」（不写「结合硬件与个人 Agent」的旧定位）。首屏仍只放刊头、词组和关键词。
+   */
+  studio: {
+    label: 'Studio',
+    labelZh: '工作室',
+    /** 主标题：我们是谁 */
+    title: 'Molis AI 是一间围绕工作、生活与体验研发 AI 产品的工作室。',
+    /** 观点：想遇见什么样的人（从兜售到适配：找到审美和偏好相近的人） */
+    view: '我们做自己用着舒服的产品，也想遇见和我们口味相投的你。',
+    text: '我们用 Molis Work 探索人与 AI 怎样共事，用 Molis Tool 把工具带到光标旁；也在探索懂你、陪你，为日常减负、发现生活新意的 Molis Life，以及围绕沉浸式世界与 AI 交互的 Molis Story。',
+  },
+  /**
+   * 首页结尾（P1）：去掉「你正在好奇什么？」的硬切，从产品自然走到下一步。企业合作与社区两块都保留，
+   * 不放登录（A11）。共享的 ending 不改；卡片里原有的标签和标题仍读它。过渡句是建议措辞，之后再定。
+   */
+  ending: {
+    transition: '除了自己的产品，我们也和企业一起，把 AI 用进一段具体业务。',
+    cooperation: { more: '了解企业合作', contact: '聊聊企业合作' },
+    also: {
+      label: '也可以',
+      install: '安装 Molis Work 开源版',
+      essays: '读读我们的文章',
+    },
+  },
   /** 色纸上的领域签只写领域，阶段只看阶段签；folioStudio.lines 的 area 混了状态，留给其他样张 */
   areas: {
     tool: '工作 · 桌面',
     life: '生活',
     story: '体验',
-  } satisfies Record<Exclude<FolioProductId, 'work'>, string>,
+  } satisfies Record<'tool' | 'life' | 'story', string>,
 };
 
 export const folioStudio = {
@@ -89,7 +135,7 @@ export const folioStudio = {
       more: '了解 Molis Story',
     },
   ] as {
-    id: Exclude<FolioProductId, 'work'>;
+    id: 'tool' | 'life' | 'story';
     area: string;
     status: string;
     line: string;
@@ -133,11 +179,38 @@ export const folioStudio = {
  * 文章作者一骏的公众号主页（A10，2026-10-11 负责人给出）。微信以外的浏览器可能打不开；
  * 备用的公众号二维码要由负责人提供图片，拿到之前只放链接。
  */
+/** 文章正文末尾的去处（P7「可先做」）：只加链接，不加新的说明句 */
+export const folioEssayLinks = {
+  products: '看看我们在做的产品',
+  team: '认识做这些的人',
+};
+
 export const folioEssayAuthor = {
   href: 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzkzNzczNjYxMQ==#wechat_redirect',
   /** 接在作者名（folioStudio.essays.author）后面，作为链接的无障碍名称 */
   labelSuffix: '的公众号（在新窗口打开）',
   more: '去公众号读更多',
+};
+
+/**
+ * 联系页提交成功后回到来处（A9）：按地址栏的 topic 决定第一个按钮，没有来处时只给「回到首页」。
+ * topic 对应：enterprise → 企业合作；产品 → 对应产品页；feedback、creator、share-* → 社区。
+ */
+export const folioContact = {
+  back: {
+    enterprise: '回到企业合作',
+    work: '回到 Molis Work',
+    tool: '回到 Molis Tool',
+    life: '回到 Molis Life',
+    story: '回到 Molis Story',
+    world: '回到 Molis World',
+    community: '回到社区',
+  },
+  home: '回到首页',
+  /** 分享类投稿（creator、share-*）才出现；和「同意联系」分开存（applications.allow_display） */
+  allowDisplay:
+    '同意在社区「大家做的」里展示这次投稿和我的称呼（可选，不勾也会收到）。',
+  shareHint: '表单只收文字：贴上作品链接，说说用了什么、怎么做的。',
 };
 
 /** 账号页：只说登录现在能做什么，不写还不存在的用途（A11） */
@@ -146,50 +219,12 @@ export const folioAccount = {
     '现在登录后，可以管理账号本身；和账号有关的功能上线时，会出现在这里。',
 };
 
-/** Folio 的百科：条目与艺术家 Skill 的内容在 content/knowledge.ts、content/artists.ts，这里只放页面上的说明文字（沿用旧版百科的文案） */
+/**
+ * 社区「方法」（原百科，A6 并入社区）的详情页与示例文字：条目与艺术家 Skill 的内容在 content/knowledge.ts、
+ * content/artists.ts；方法段本身的文案在 content/folio-community.ts。
+ */
 export const folioWiki = {
-  kicker: 'Molis Wikipedia · 百科',
-  title: '看懂一种表达，把它变成自己的能力。',
-  lead: '艺术家 Skill、网页与动效、外部组件来源。每一条都可以先试一试，再把方法和 Prompt 带走，在你自己的工具里用。',
-  actions: { artists: '看艺术家 Skill', entries: '试试网页与动效' },
-  counts: {
-    artists: '个艺术家 Skill',
-    techniques: '个网页与动效',
-    resources: '个组件来源',
-  },
-  artists: {
-    kicker: '艺术家 Skill',
-    title: '从一种观看世界的方式，开始创作。',
-    lead: 'Skill 是交给 AI 工具的一套创作方法，包含风格选择、输入要求和检查方式。你带来题材，它帮助组织画面。',
-    more: '探索创作方法',
-    disclosure: '图像来自 Artist-skill 的 AI 创作试样，非艺术家原作。',
-    builder: {
-      text: '把原作观察、研究与成图反馈，变成可复用的创作方法。',
-      more: '了解构建方法',
-    },
-  },
-  entries: {
-    kicker: '网页、动效与组件',
-    title: '看懂一种表达，或带走一份组件来源。',
-    lead: '动效和布局可以直接在卡片上试；组件资源是整理过的外部来源，点进去看用途、边界和 Prompt。',
-    search: '试试「逐段浮现」「toast」或「tabs」',
-    searchLabel: '搜索网页、动效与组件条目',
-    count: '个条目',
-    try: '试一试，带走 Prompt',
-    empty: {
-      title: '还没找到这个条目。',
-      text: '换个说法，或看看已有的动效、布局与组件。',
-      reset: '查看全部条目',
-    },
-  },
-  closing: {
-    title: '从看见，到做到。',
-    text: '每个条目都有用途、边界和参考资料；Prompt 是起点，你的内容与判断决定最终的表达。',
-    ask: '告诉我们你想了解的能力',
-    community: '去社区看看',
-  },
   entry: {
-    back: '百科',
     use: { technique: '什么时候使用', resource: '可以重点看什么' },
     caution: { technique: '留意这些细节', resource: '使用时留意' },
     source: '参考与整理',
@@ -419,5 +454,13 @@ export const folioTool = {
     work: '了解 Molis Work',
     /** 首页 Tool 色纸上的一行小字 */
     home: '可以单独使用，也将成为 Molis Work 的基础能力',
+  },
+  /**
+   * 先在社区试试（P4「可先做」）：DropAgent、niul.ai 的入口指到社区「试一试」，那里有它们的
+   * 互动示意和项目链接；独立版的 GitHub 链接保留。共享的 molis-tool.ts 不改。
+   */
+  community: {
+    try: '先在社区试试',
+    available: '或者先在社区试试',
   },
 };

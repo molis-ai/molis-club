@@ -17,12 +17,12 @@ import {
   resourceGroupLabels,
   type KnowledgeEntry,
   type ResourceEntry,
-} from '../../../../../content/knowledge';
-import { folioWiki } from '../../../../../content/folio';
-import { Phrases } from '../kit';
-import { wikiHref, type Vars } from '../shared';
+} from '../../../../content/knowledge';
+import { folioWiki } from '../../../../content/folio';
+import { Phrases } from '../../brand/folio/kit';
+import { methodHref, type Vars } from '../../brand/folio/shared';
 
-// Folio 百科的演示与复制：六种网页、动效示例都画在一张色纸上，可以重播或动手；
+// 社区「方法」（原百科）的演示与复制：六种网页、动效示例都画在一张色纸上，可以重播或动手；
 // 外部组件只给来源卡；条目页的实验台把示例、时长和 Prompt 放在一起。
 
 /** 第一次进入视口才开始播放，重播时换 key 重新挂载 */
@@ -135,7 +135,7 @@ export function FwDemo({
         )}
         {entry.slug === 'underline' && (
           <div key={replay} className="fw-underline" data-playing={replay > 0}>
-            <Link href={compact ? wikiHref(entry.slug) : '#usage'}>
+            <Link href={compact ? methodHref(entry.slug) : '#usage'}>
               留一点好奇心
               <ArrowUpRight size={22} aria-hidden="true" />
             </Link>
