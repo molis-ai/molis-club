@@ -28,9 +28,15 @@ export async function generateMetadata({ params }: Props) {
 }
 function inline(t: string) {
   return t
-    .split(/(\*\*[^*]+\*\*)/g)
+    .split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g)
     .map((s, i) =>
-      s.startsWith('**') ? <strong key={i}>{s.slice(2, -2)}</strong> : s,
+      s.startsWith('**') ? (
+        <strong key={i}>{s.slice(2, -2)}</strong>
+      ) : s.startsWith('*') && s.length > 2 ? (
+        <em key={i}>{s.slice(1, -1)}</em>
+      ) : (
+        s
+      ),
     );
 }
 export default async function Story({ params }: Props) {
@@ -118,6 +124,14 @@ export default async function Story({ params }: Props) {
                 </blockquote>
               );
             if (p === '---') return <hr key={i} />;
+            if (/^\d+\. /.test(p))
+              return (
+                <ol key={i}>
+                  {p.split('\n').map((item) => (
+                    <li key={item}>{inline(item.replace(/^\d+\.\s*/, ''))}</li>
+                  ))}
+                </ol>
+              );
             return <p key={i}>{inline(p)}</p>;
           })}
         </article>
