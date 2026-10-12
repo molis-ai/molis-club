@@ -15,18 +15,11 @@
   font-family: var(--font-geist), 'PingFang SC', 'Microsoft YaHei', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
-.pt h1,
-.pt h2,
-.pt h3,
-.pt p,
-.pt ol,
-.pt ul,
-.pt dl,
-.pt dd {
+/* 重置放进 :where()，不抢各组件自己的外边距 */
+.pt :where(h1, h2, h3, p, ol, ul, dl, dd) {
   margin: 0;
 }
-.pt ol,
-.pt ul {
+.pt :where(ol, ul) {
   padding: 0;
   list-style: none;
 }
