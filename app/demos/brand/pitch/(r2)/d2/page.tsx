@@ -9,35 +9,41 @@ import { demo } from '../../../../../../content/molis-tool';
 import { GITHUB_URL } from '../../../../../../content/molis-work';
 import { AiWordCycle } from '../../../ai-words';
 import {
-  ABOUT,
+  AlsoLinks,
   COMMUNITY,
   CONTACT,
   ColophonLinks,
-  ESSAYS,
   Header,
-  LOGIN,
   SOLUTIONS,
   contactHref,
   ending,
   footer,
+  home,
   lineHref,
-  lineIds,
   lineNames,
   signature,
   useStage,
+  withNames,
   type Vars,
 } from '../../_kit/kit';
 import { ToolSheet, WorkSheet } from '../../_kit/sheets';
 import { findPitch } from '../../routes';
 import { PitchBar } from '../../_kit/bar';
 import { clock, css, initialHour, lightAt, type Light } from './daylight';
-import { LifeDrawing, MonsteraShadow, StoryDrawing, SunMoon } from './drawings';
+import {
+  LifeDrawing,
+  MonsteraShadow,
+  StoryDrawing,
+  SunMoon,
+  WorldDrawing,
+} from './drawings';
 import { Sky } from './sky';
 import './d.css';
 
 // D · 日光与生活（第四轮）：页面的光跟着你此刻的时间走。
 // 首屏是一片真实时刻的天，字很少；产品是阳光下的几块纸面屏幕，墙上有植物的影子，横着一块块看过去；
-// 结尾回到天空。底部的「一天」可以拖动，看清晨、正午和夜里的样子。内容与 Folio 首页同一份。
+// 天上滚过工作室的自述；产品最后一块是还在构思的 World；结尾回到天空。
+// 底部的「一天」可以拖动，看清晨、正午和夜里的样子。内容与 Folio 首页同一份。
 
 const work = folioStudio.work;
 const lines = folioStudio.lines;
@@ -141,8 +147,7 @@ export default function DirectionD() {
   const night = l.night;
   const { community } = folioStudio;
   const { contact } = ending.paths;
-  const question = ending.title.slice(0, -1);
-  const mark = ending.title.slice(-1);
+  const { studio, close } = home;
 
   return (
     <>
@@ -221,8 +226,33 @@ export default function DirectionD() {
               </div>
             </section>
 
-            <section className="wd-about" aria-label="关于 Molis AI">
-              <p data-reveal>{folioHomeCopy.description}</p>
+            {/* 工作室自述：细体大字在天上滚过 */}
+            <section
+              className="wd-about"
+              id="studio"
+              aria-labelledby="wd-studio-title"
+            >
+              <p className="wd-about-kicker" data-reveal>
+                <span lang="en">{studio.label}</span>
+                <span>{studio.labelZh}</span>
+              </p>
+              <h2 id="wd-studio-title" data-reveal>
+                {studio.title}
+              </h2>
+              <p
+                className="wd-about-view"
+                data-reveal
+                style={{ '--d': '120ms' } as Vars}
+              >
+                {studio.view}
+              </p>
+              <p
+                className="wd-about-text"
+                data-reveal
+                style={{ '--d': '240ms' } as Vars}
+              >
+                {withNames(studio.text, 'wd-about-name')}
+              </p>
             </section>
           </div>
 
@@ -266,6 +296,7 @@ export default function DirectionD() {
                     <p className="wd-item-line">
                       {folioHomeCopy.products.work}
                     </p>
+                    <p className="wd-item-ask">{home.asks.work}</p>
                     <ul className="wd-status" aria-label="当前状态">
                       {work.status.map((item) => (
                         <li key={item}>{item}</li>
@@ -308,7 +339,7 @@ export default function DirectionD() {
                     </div>
                     <div className="wd-item-copy">
                       <p className="wd-item-meta">
-                        {line.area} · {line.status}
+                        {home.areas[line.id]} · {line.status}
                       </p>
                       <h3 id={`wd-${line.id}-title`}>
                         <Link href={lineHref[line.id]} lang="en">
@@ -318,6 +349,13 @@ export default function DirectionD() {
                       <p className="wd-item-line">
                         {folioHomeCopy.products[line.id]}
                       </p>
+                      <p className="wd-item-ask">{home.asks[line.id]}</p>
+                      {line.id === 'tool' ? (
+                        <p className="wd-item-relation">
+                          {home.relation.home}
+                          <span>{home.relation.phase}</span>
+                        </p>
+                      ) : null}
                       <div className="wd-item-links">
                         <Link className="wd-link" href={lineHref[line.id]}>
                           {line.more}
@@ -327,6 +365,34 @@ export default function DirectionD() {
                     </div>
                   </article>
                 ))}
+
+                <article
+                  className="wd-item wd-item-world"
+                  id="world"
+                  aria-labelledby="wd-world-title"
+                >
+                  <div className="wd-screen">
+                    <WorldDrawing />
+                    <MonsteraShadow className="wd-shadow-screen" />
+                    <span className="wd-screen-note">{home.world.status}</span>
+                  </div>
+                  <div className="wd-item-copy">
+                    <p className="wd-item-meta">{home.world.status}</p>
+                    <h3 id="wd-world-title">
+                      <Link href={home.world.href} lang="en">
+                        {home.world.name}
+                      </Link>
+                    </h3>
+                    <p className="wd-item-line">{home.world.line}</p>
+                    <p className="wd-item-ask">{home.world.transition}</p>
+                    <div className="wd-item-links">
+                      <Link className="wd-link" href={home.world.href}>
+                        {home.world.more}
+                        <ArrowUpRight size={14} aria-hidden="true" />
+                      </Link>
+                    </div>
+                  </div>
+                </article>
               </div>
             </div>
           </section>
@@ -340,8 +406,7 @@ export default function DirectionD() {
           >
             <Sky light={light} seed={19} clouds={6} className="wd-sky-end" />
             <h2 id="wd-ending-title" data-reveal>
-              {question}
-              <span lang="en">{mark}</span>
+              {close.transition}
             </h2>
             <div className="wd-paths">
               <div className="wd-path wd-path-business" data-reveal>
@@ -353,10 +418,10 @@ export default function DirectionD() {
                 </h3>
                 <div className="wd-item-links">
                   <Link className="wd-button" href={contactHref('enterprise')}>
-                    {contact.action}
+                    {close.cooperation.contact}
                   </Link>
                   <Link className="wd-link" href={SOLUTIONS}>
-                    了解解决方案
+                    {close.cooperation.more}
                     <ArrowUpRight size={14} aria-hidden="true" />
                   </Link>
                 </div>
@@ -376,13 +441,10 @@ export default function DirectionD() {
                   <Link className="wd-button wd-button-ghost" href={COMMUNITY}>
                     {community.action}
                   </Link>
-                  <Link className="wd-link" href={LOGIN}>
-                    {folioStudio.nav.login}
-                    <ArrowUpRight size={14} aria-hidden="true" />
-                  </Link>
                 </div>
               </div>
             </div>
+            <AlsoLinks p="wd" />
           </section>
 
           <div className="wd-colophon">

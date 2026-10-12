@@ -523,7 +523,8 @@
 .wa-brief-grid[data-step='0'] .wa-list > li:nth-child(1) h3 a,
 .wa-brief-grid[data-step='1'] .wa-list > li:nth-child(2) h3 a,
 .wa-brief-grid[data-step='2'] .wa-list > li:nth-child(3) h3 a,
-.wa-brief-grid[data-step='3'] .wa-list > li:nth-child(4) h3 a {
+.wa-brief-grid[data-step='3'] .wa-list > li:nth-child(4) h3 a,
+.wa-brief-grid[data-step='4'] .wa-list > li:nth-child(5) h3 a {
   border-color: var(--ink);
   color: var(--ink);
 }
@@ -531,6 +532,7 @@
 .wa-brief-grid[data-step='1'] .wa-list > li:nth-child(2) .wa-list-more,
 .wa-brief-grid[data-step='2'] .wa-list > li:nth-child(3) .wa-list-more,
 .wa-brief-grid[data-step='3'] .wa-list > li:nth-child(4) .wa-list-more,
+.wa-brief-grid[data-step='4'] .wa-list > li:nth-child(5) .wa-list-more,
 .wa-list > li:focus-within .wa-list-more {
   grid-template-rows: 1fr;
 }
@@ -633,6 +635,10 @@
 .wa-sheet:nth-child(4) {
   top: calc(13vh + 60px);
   rotate: 0.6deg;
+}
+.wa-sheet:nth-child(5) {
+  top: calc(13vh + 80px);
+  rotate: -0.8deg;
 }
 .wa-sheet-note {
   margin-top: 12px;
@@ -1095,6 +1101,198 @@
   color: var(--ink-soft);
 }
 
+/* ---------- 编者的话：工作室身份说明 ---------- */
+.wa-studio {
+  display: grid;
+  justify-items: center;
+  gap: clamp(28px, 5vh, 52px);
+  width: min(100% - var(--gutter) * 2, 1180px);
+  margin: 0 auto;
+  padding: clamp(120px, 20vh, 220px) 0 clamp(40px, 6vh, 80px);
+  text-align: center;
+}
+.wa-studio-kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  color: var(--muted);
+  font: 400 13px/1 var(--sans);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+.wa-studio-kicker i {
+  color: var(--gold);
+  font: italic 400 30px/1 var(--display);
+  letter-spacing: 0;
+}
+.wa-studio-title {
+  max-width: 15em;
+  font: 400 clamp(34px, 4.5vw, 70px) / 1.32 var(--cjk);
+  letter-spacing: 0.01em;
+}
+.wa-studio-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr);
+  gap: 28px clamp(32px, 5vw, 80px);
+  width: 100%;
+  max-width: 1040px;
+  margin-top: clamp(8px, 2vh, 24px);
+  text-align: left;
+}
+.wa-studio-view {
+  position: relative;
+  padding-top: 26px;
+  font:
+    italic 400 clamp(21px, 1.9vw, 28px) / 1.55 var(--display),
+    var(--cjk);
+}
+.wa-studio-view::before {
+  content: '“';
+  position: absolute;
+  top: -10px;
+  left: -4px;
+  color: var(--gold);
+  font: italic 400 64px/1 var(--display);
+}
+.wa-studio-text {
+  color: var(--ink-soft);
+  font: 400 clamp(16px, 1.25vw, 18px) / 2 var(--cjk);
+}
+/* 正文随这一页穿过视口逐字显影，产品名用金色斜体 */
+.wa-studio-text .ch {
+  opacity: clamp(0.14, calc((var(--p, 1) * 2.1 * var(--n) - var(--i)) / 14), 1);
+}
+.wa-studio-text em {
+  color: var(--gold);
+  font: italic 400 1.14em/1 var(--display);
+}
+
+/* ---------- 列表里新增的提问、关系与 World ---------- */
+.wa-list-ask {
+  padding-left: 12px;
+  border-left: 2px solid var(--gold);
+  color: var(--ink-soft);
+  font:
+    italic 400 15px/1.6 var(--display),
+    var(--cjk);
+}
+.wa-list-relation {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.wa-list-relation span {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--gold);
+  color: var(--gold);
+  font-size: 11.5px;
+}
+.wa-list-world h3 a {
+  border-left-style: dashed;
+}
+
+/* ---------- World：一页铅笔速写 ---------- */
+.wa-sketch {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  padding: clamp(16px, 2vw, 28px) 0 4px;
+}
+.wa-sketch svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background:
+    repeating-linear-gradient(
+      transparent 0 27px,
+      rgb(29 26 22 / 0.06) 27px 28px
+    ),
+    var(--card);
+}
+.wa-sketch-lines path {
+  fill: none;
+  stroke: #4a443b;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.6s var(--ease);
+  transition-delay: calc(0.35s + var(--k) * 0.32s);
+}
+.wa-sheet-world.is-in .wa-sketch-lines path {
+  stroke-dashoffset: 0;
+}
+.wa-sketch-sun {
+  fill: rgb(234 146 96 / 0.55);
+  opacity: 0;
+  transition: opacity 1.2s ease 2.4s;
+}
+.wa-sheet-world.is-in .wa-sketch-sun {
+  opacity: 1;
+}
+.wa-sketch-stamp {
+  position: absolute;
+  top: clamp(28px, 3vw, 40px);
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border: 2px solid rgb(168 123 48 / 0.75);
+  border-radius: 50%;
+  color: rgb(168 123 48 / 0.9);
+  font: 500 13px/1 var(--cjk);
+  letter-spacing: 0.2em;
+  rotate: -12deg;
+  opacity: 0;
+  scale: 1.6;
+  transition:
+    opacity 0.3s ease 2.6s,
+    scale 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) 2.6s;
+}
+.wa-sketch-stamp span {
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  border: 1px dashed rgb(168 123 48 / 0.6);
+  border-radius: 50%;
+}
+.wa-sheet-world.is-in .wa-sketch-stamp {
+  opacity: 1;
+  scale: 1;
+}
+.wa-sketch-line {
+  font: 400 clamp(19px, 1.7vw, 25px) / 1.6 var(--cjk);
+  text-align: center;
+}
+
+/* ---------- 结尾最后一行：也可以 ---------- */
+.wa-also {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 22px;
+  margin: clamp(40px, 6vh, 64px) auto 0;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.wa-also a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  transition: border-color 0.3s;
+}
+.wa-also a:hover {
+  border-color: var(--ink);
+}
+
 /* ---------- 结尾：一幅傍晚的画，两封信 ---------- */
 .wa-ending {
   position: relative;
@@ -1111,9 +1309,11 @@
 .wa-ending h2 {
   position: relative;
   z-index: 1;
+  max-width: 17em;
+  text-wrap: balance;
   padding: 0 var(--gutter) 10vh;
   color: var(--cream);
-  font: 400 clamp(46px, 7.4vw, 118px) / 1.1 var(--cjk);
+  font: 400 clamp(30px, 3.9vw, 60px) / 1.45 var(--cjk);
   letter-spacing: 0.04em;
   text-align: center;
   text-shadow: 0 4px 50px rgb(60 30 10 / 0.45);
@@ -1315,7 +1515,16 @@
   }
   .wa-sheet:nth-child(4) {
     order: 8;
+  }
+  .wa-list > li:nth-child(5) {
+    order: 9;
+  }
+  .wa-sheet:nth-child(5) {
+    order: 10;
     margin-bottom: 8vh;
+  }
+  .wa-studio-row {
+    grid-template-columns: minmax(0, 1fr);
   }
   .wa-list > li {
     margin-top: 6vh;
@@ -1471,6 +1680,14 @@
   }
   .wa-rise {
     translate: none;
+    scale: none;
+  }
+  .wa-sketch-lines path {
+    stroke-dashoffset: 0;
+  }
+  .wa-sketch-stamp,
+  .wa-sketch-sun {
+    opacity: 1;
     scale: none;
   }
   .wa [data-reveal] {

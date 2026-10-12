@@ -208,3 +208,28 @@ export function SunMoon({ night }: { night: boolean }) {
     </svg>
   );
 }
+
+/** World：一条小路从窗边（生活）走到一扇拱门（故事），中间一颗慢慢长大的小星球，上面一间屋 */
+export function WorldDrawing() {
+  return (
+    <svg className="wd-drawing" viewBox="0 0 480 320" aria-hidden="true">
+      <g className="wd-ink">
+        <circle cx="240" cy="176" r="74" />
+        <path d="M172 150 C 204 166 276 166 308 150 M168 190 C 204 206 276 206 312 190" />
+        <path d="M218 104 L218 84 L240 68 L262 84 L262 104 M233 104 L233 92 L247 92 L247 104" />
+        <path
+          d="M282 112 L282 96 M282 96 C 272 96 270 82 280 80 C 282 72 294 74 292 82 C 302 84 300 96 290 96 Z"
+          className="wd-leaf"
+        />
+        <path d="M60 286 L60 196 L118 196 L118 286 M60 236 L118 236 M89 196 L89 286" />
+        <path d="M362 286 L362 222 C 362 196 382 182 400 182 C 418 182 438 196 438 222 L438 286" />
+        <path
+          d="M118 270 C 160 270 168 250 180 236 M362 270 C 320 270 312 250 300 236"
+          className="wd-path-dash"
+        />
+        <path d="M40 286 L460 286" />
+        <circle cx="400" cy="244" r="5" />
+      </g>
+    </svg>
+  );
+}
