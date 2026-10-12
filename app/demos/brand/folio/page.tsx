@@ -69,6 +69,7 @@ function CoreProduct() {
           <Link href={WORK}>{work.name}</Link>
         </h3>
         <p className="fo-core-line">{folioHomeCopy.products.work}</p>
+        <small className="fo-ask">{folioHomeCopy.asks.work}</small>
         <Status items={work.status} />
         <Actions
           items={[
@@ -119,6 +120,7 @@ function Lines() {
                   <Link href={lineHref[line.id]}>{lineNames[line.id]}</Link>
                 </h3>
                 <p>{folioHomeCopy.products[line.id]}</p>
+                <small className="fo-ask">{folioHomeCopy.asks[line.id]}</small>
                 {line.id === 'tool' ? (
                   <small className="fo-sheet-note">
                     {folioTool.relation.home}
