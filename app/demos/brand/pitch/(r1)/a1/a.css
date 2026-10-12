@@ -670,6 +670,35 @@
   color: var(--ink-soft);
   font: 400 clamp(18px, 1.55vw, 23px) / 1.6 var(--cjk);
 }
+.ra-label-ask {
+  max-width: 22em;
+  padding-left: 14px;
+  border-left: 1px solid var(--gold);
+  color: var(--ink-soft);
+  font:
+    italic 400 15px/1.65 var(--font-editorial),
+    var(--cjk);
+}
+.ra-label-relation {
+  max-width: 24em;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.ra-label-relation span {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 9px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--gold);
+  color: var(--gold);
+  font-size: 11.5px;
+}
+.ra-plate-tool .ra-label-ask {
+  padding: 0 14px 0 0;
+  border-left: 0;
+  border-right: 1px solid var(--gold);
+}
 .ra-status {
   display: flex;
   flex-wrap: wrap;
@@ -804,9 +833,48 @@
 }
 .ra-plate-story .ra-label-line {
   grid-column: 3;
-  grid-row: span 2;
-  align-self: center;
+  grid-row: 1;
+  align-self: end;
   max-width: none;
+}
+.ra-plate-story .ra-label-ask {
+  grid-column: 3;
+  grid-row: 2;
+  align-self: start;
+  max-width: none;
+}
+/* World：画框里一张只起了铅笔稿的空白画布，随滚动一笔笔画出来 */
+.ra-plate-world {
+  grid-template-columns: minmax(250px, 1fr) minmax(0, 1.25fr);
+  padding-inline-end: 6%;
+}
+.ra-plate-world .ra-frame {
+  order: 2;
+  justify-self: start;
+  width: min(100%, 560px);
+}
+.ra-canvas-blank {
+  aspect-ratio: 1;
+  background:
+    radial-gradient(120% 90% at 30% 20%, #fbf7ec, #efe7d3 70%), #f2ebda;
+}
+.ra-canvas-blank svg {
+  position: absolute;
+  inset: 8%;
+  width: 84%;
+  height: 84%;
+  overflow: visible;
+}
+.ra-underdrawing path,
+.ra-underdrawing circle {
+  --draw: clamp(0, calc((var(--p, 1) - 0.18 - var(--k) * 0.035) / 0.3), 1);
+  fill: none;
+  stroke: rgb(70 62 50 / 0.72);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--draw));
 }
 .ra-plate-story .ra-label > .ra-link {
   grid-column: 4;
@@ -1157,9 +1225,20 @@
   display: grid;
   justify-items: center;
   gap: 30px;
-  width: min(100% - var(--gutter) * 2, 780px);
-  margin: clamp(80px, 13vh, 160px) auto clamp(110px, 18vh, 200px);
+  width: min(100% - var(--gutter) * 2, 860px);
+  margin: clamp(110px, 18vh, 200px) auto clamp(40px, 6vh, 80px);
   text-align: center;
+}
+.ra-letter-title {
+  font: 400 clamp(30px, 3.5vw, 52px) / 1.4 var(--cjk);
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+}
+.ra-letter-view {
+  color: var(--gold);
+  font:
+    italic 400 clamp(19px, 1.7vw, 24px) / 1.6 var(--font-editorial),
+    var(--cjk);
 }
 .ra-letter-from {
   color: var(--gold);
@@ -1181,6 +1260,26 @@
   font:
     italic 400 1.04em/1 var(--font-editorial),
     serif;
+}
+.ra-also {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 22px;
+  margin-top: clamp(36px, 6vh, 60px);
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.ra-also a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.ra-also a:hover {
+  border-color: var(--ink);
 }
 .ra-amps {
   color: var(--gold);
@@ -1218,8 +1317,10 @@
 }
 .ra-ending h2 {
   position: relative;
-  font: 400 clamp(46px, 7.4vw, 112px) / 1.1 var(--cjk);
+  max-width: 17em;
+  font: 400 clamp(30px, 3.8vw, 58px) / 1.45 var(--cjk);
   letter-spacing: 0.03em;
+  text-wrap: balance;
 }
 .ra-ending h2 span {
   margin-left: 0.04em;
@@ -1389,6 +1490,9 @@
 
 /* ---------- 窄屏 ---------- */
 @media (max-width: 1080px) {
+  .ra-plate-world {
+    padding-inline-end: 0;
+  }
   .ra-wall {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -1442,15 +1546,26 @@
   .ra-plate,
   .ra-plate-tool,
   .ra-plate-life,
-  .ra-plate-story {
+  .ra-plate-story,
+  .ra-plate-world {
     grid-template-columns: minmax(0, 1fr);
     gap: 26px;
     min-height: 0;
     padding-block: 7vh;
     padding-inline-start: 0;
   }
-  .ra-plate-tool .ra-frame {
+  .ra-plate-tool .ra-frame,
+  .ra-plate-world .ra-frame {
     order: 0;
+  }
+  .ra-plate-world .ra-frame {
+    justify-self: stretch;
+    width: auto;
+  }
+  .ra-plate-tool .ra-label-ask {
+    padding: 0 0 0 14px;
+    border-right: 0;
+    border-left: 1px solid var(--gold);
   }
   .ra-plate-tool .ra-label {
     justify-items: start;
@@ -1528,7 +1643,7 @@
     font-size: 25vw;
   }
   .ra-ending h2 {
-    font-size: 9.2vw;
+    font-size: 6.6vw;
     letter-spacing: 0.01em;
   }
   .ra-keys {

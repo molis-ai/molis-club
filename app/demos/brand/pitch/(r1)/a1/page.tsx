@@ -9,18 +9,17 @@ import { demo } from '../../../../../../content/molis-tool';
 import { GITHUB_URL } from '../../../../../../content/molis-work';
 import { AiWordCycle } from '../../../ai-words';
 import {
-  ABOUT,
+  AlsoLinks,
   COMMUNITY,
   CONTACT,
   ColophonLinks,
-  ESSAYS,
   Header,
   InkText,
-  LOGIN,
   SOLUTIONS,
   contactHref,
   ending,
   footer,
+  home,
   lineHref,
   lineIds,
   lineNames,
@@ -58,7 +57,7 @@ const paintings: Record<PlateId, { src: string; alt: string }> = {
   },
 };
 
-const numerals = ['I', 'II', 'III', 'IV'];
+const numerals = ['I', 'II', 'III', 'IV', 'V'];
 
 const work = folioStudio.work;
 const lines = Object.fromEntries(
@@ -68,9 +67,9 @@ const lines = Object.fromEntries(
 /** 图版两侧的竖排小字：左边是所在领域，右边是阶段 */
 const edges: Record<PlateId, [string, string]> = {
   work: [work.kicker, work.status[0]],
-  tool: [lines.tool.area, lines.tool.status],
-  life: [lines.life.area, lines.life.status],
-  story: [lines.story.area, lines.story.status],
+  tool: [home.areas.tool, lines.tool.status],
+  life: [home.areas.life, lines.life.status],
+  story: [home.areas.story, lines.story.status],
 };
 
 const notes: Record<PlateId, string> = {
@@ -138,7 +137,7 @@ function Plates() {
       </header>
 
       <div className="ra-wall" ref={ref}>
-        <nav className="ra-rail" aria-label="四件产品">
+        <nav className="ra-rail" aria-label="产品">
           <ol>
             {lineIds.map((id, index) => (
               <li key={id} data-active={active === index}>
@@ -148,6 +147,12 @@ function Plates() {
                 </a>
               </li>
             ))}
+            <li data-active={active === 4}>
+              <a href="#world">
+                <i lang="en">{numerals[4]}</i>
+                <span>{home.world.name}</span>
+              </a>
+            </li>
           </ol>
         </nav>
 
@@ -188,7 +193,7 @@ function Plates() {
                       <span>{work.kicker}</span>
                     ) : (
                       <>
-                        <span>{line!.area}</span>
+                        <span>{home.areas[line!.id]}</span>
                         <span>{line!.status}</span>
                       </>
                     )}
@@ -197,6 +202,13 @@ function Plates() {
                     <Link href={lineHref[id]}>{lineNames[id]}</Link>
                   </h3>
                   <p className="ra-label-line">{folioHomeCopy.products[id]}</p>
+                  <p className="ra-label-ask">{home.asks[id]}</p>
+                  {id === 'tool' ? (
+                    <p className="ra-label-relation">
+                      {home.relation.home}
+                      <span>{home.relation.phase}</span>
+                    </p>
+                  ) : null}
                   {isWork ? (
                     <>
                       <ul className="ra-status" aria-label="当前状态">
@@ -229,6 +241,89 @@ function Plates() {
               </article>
             );
           })}
+
+          {/* 第五幅：World 还没画，画框里是一张只起了铅笔稿的空白画布 */}
+          <article
+            id="world"
+            className="ra-plate ra-plate-world"
+            data-plate={4}
+            data-active={active === 4}
+            data-scene="pass"
+            aria-labelledby="ra-plate-world"
+          >
+            <figure className="ra-frame">
+              <span className="ra-edge ra-edge-start" aria-hidden="true">
+                {home.world.status}
+              </span>
+              <div className="ra-canvas ra-canvas-blank">
+                <svg viewBox="0 0 300 300" aria-hidden="true">
+                  <g className="ra-underdrawing">
+                    <path
+                      pathLength={1}
+                      style={{ '--k': 0 } as Vars}
+                      d="M58 196 C 56 132 98 86 152 86 C 206 86 246 130 244 192"
+                    />
+                    <path
+                      pathLength={1}
+                      style={{ '--k': 1 } as Vars}
+                      d="M40 200 C 100 214 200 214 262 198"
+                    />
+                    <path
+                      pathLength={1}
+                      style={{ '--k': 2 } as Vars}
+                      d="M124 86 L124 62 L150 42 L176 62 L176 86 M142 86 L142 70 L158 70 L158 86"
+                    />
+                    <path
+                      pathLength={1}
+                      style={{ '--k': 3 } as Vars}
+                      d="M206 108 L206 88 M206 88 C 194 88 192 70 204 68 C 206 56 222 58 220 70 C 232 72 228 88 216 88 Z"
+                    />
+                    <path
+                      pathLength={1}
+                      style={{ '--k': 4 } as Vars}
+                      d="M84 160 C 110 150 132 166 156 156 C 178 148 196 162 222 154"
+                    />
+                    <path
+                      pathLength={1}
+                      style={{ '--k': 5 } as Vars}
+                      d="M70 232 C 110 244 192 244 234 230 M96 256 C 130 264 172 264 206 254"
+                    />
+                    <circle
+                      pathLength={1}
+                      style={{ '--k': 6 } as Vars}
+                      cx="232"
+                      cy="46"
+                      r="14"
+                    />
+                  </g>
+                </svg>
+              </div>
+              <span className="ra-edge ra-edge-end" aria-hidden="true">
+                {home.world.status}
+              </span>
+              <figcaption>
+                <span lang="en">Plate {numerals[4]}</span>
+                {home.world.name} · {home.world.status}
+              </figcaption>
+            </figure>
+            <div className="ra-label">
+              <span className="ra-label-num" lang="en" aria-hidden="true">
+                {numerals[4]}
+              </span>
+              <p className="ra-label-meta">
+                <span>{home.world.status}</span>
+              </p>
+              <h3 id="ra-plate-world">
+                <Link href={home.world.href}>{home.world.name}</Link>
+              </h3>
+              <p className="ra-label-line">{home.world.line}</p>
+              <p className="ra-label-ask">{home.world.transition}</p>
+              <Link className="ra-link" href={home.world.href}>
+                {home.world.more}
+                <ArrowUpRight size={15} aria-hidden="true" />
+              </Link>
+            </div>
+          </article>
         </div>
       </div>
     </section>
@@ -239,8 +334,7 @@ export default function DirectionA() {
   const root = useStage();
   const { community } = folioStudio;
   const { contact } = ending.paths;
-  const question = ending.title.slice(0, -1);
-  const mark = ending.title.slice(-1);
+  const { studio, close } = home;
 
   return (
     <>
@@ -286,25 +380,33 @@ export default function DirectionA() {
             </div>
           </section>
 
-          <Plates />
-
+          {/* 一封信：工作室身份说明，正文随滚动逐字显影 */}
           <section
             className="ra-letter"
+            id="studio"
             data-scene="pass"
-            aria-label="关于 Molis AI"
+            aria-labelledby="ra-studio-title"
           >
-            <p className="ra-letter-from" lang="en" aria-hidden="true">
-              Molis AI
+            <p className="ra-letter-from">
+              <span lang="en">{studio.label}</span> · {studio.labelZh}
+            </p>
+            <h2 id="ra-studio-title" className="ra-letter-title" data-reveal>
+              {studio.title}
+            </h2>
+            <p className="ra-letter-view" data-reveal>
+              {studio.view}
             </p>
             <InkText
               className="ra-letter-text"
-              text={folioHomeCopy.description}
+              text={studio.text}
               marks={lineIds.map((id) => lineNames[id])}
             />
             <p className="ra-amps" lang="en" aria-hidden="true">
               &amp; &amp; &amp;
             </p>
           </section>
+
+          <Plates />
         </main>
 
         <footer className="ra-end">
@@ -315,8 +417,7 @@ export default function DirectionA() {
           >
             <LeafLight quiet />
             <h2 id="ra-ending-title" data-reveal>
-              {question}
-              <span lang="en">{mark}</span>
+              {close.transition}
             </h2>
             <div className="ra-paths">
               <div className="ra-path ra-path-business" data-reveal>
@@ -328,10 +429,10 @@ export default function DirectionA() {
                 </h3>
                 <div className="ra-path-links">
                   <Link className="ra-button" href={contactHref('enterprise')}>
-                    {contact.action}
+                    {close.cooperation.contact}
                   </Link>
                   <Link className="ra-link" href={SOLUTIONS}>
-                    了解解决方案
+                    {close.cooperation.more}
                     <ArrowUpRight size={15} aria-hidden="true" />
                   </Link>
                 </div>
@@ -351,13 +452,10 @@ export default function DirectionA() {
                   <Link className="ra-button ra-button-ghost" href={COMMUNITY}>
                     {community.action}
                   </Link>
-                  <Link className="ra-link" href={LOGIN}>
-                    {folioStudio.nav.login}
-                    <ArrowUpRight size={15} aria-hidden="true" />
-                  </Link>
                 </div>
               </div>
             </div>
+            <AlsoLinks p="ra" />
           </section>
 
           <div className="ra-colophon">
