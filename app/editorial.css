@@ -1416,6 +1416,19 @@
   border-top: 1px solid var(--line);
   margin: 46px 0;
 }
+.essay-body ol {
+  margin: 0 0 1.6em;
+  padding-left: 1.6em;
+  list-style: decimal;
+  font-size: 15px;
+  line-height: 1.9;
+}
+.essay-body li {
+  margin-bottom: 0.6em;
+}
+.essay-body em {
+  font-style: italic;
+}
 .essay-next {
   margin: 55px 0 75px 24%;
   padding-top: 32px;
