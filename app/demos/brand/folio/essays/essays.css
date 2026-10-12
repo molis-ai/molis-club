@@ -275,3 +275,49 @@
     display: none;
   }
 }
+
+/* ---------- 《落地主义》末尾：接回产品 ---------- */
+.fo-read-works {
+  margin-top: 3em;
+  padding-top: 1.6em;
+  border-top: 2px solid var(--fo-ink);
+}
+.fo-read-works h2 {
+  margin-top: 0;
+  font-weight: 900;
+  font-size: 1.25em;
+  line-height: 1.5;
+}
+.fo-read-works h2::before {
+  display: none;
+}
+.fo-read-works > p {
+  margin-top: 0.4em;
+  color: var(--fo-text);
+}
+.fo-read-works ul {
+  display: grid;
+  margin-top: 0.8em;
+  list-style: none;
+  padding: 0;
+}
+.fo-read-works li a {
+  display: grid;
+  grid-template-columns: 7.5em 1fr;
+  gap: 1em;
+  padding: 0.7em 0;
+  line-height: 1.7;
+  transition: color 0.25s;
+}
+.fo-read-works li a span {
+  font-size: 0.9em;
+}
+.fo-read-works li a:hover {
+  color: var(--fo-red);
+}
+@media (max-width: 560px) {
+  .fo-read-works li a {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

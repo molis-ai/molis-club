@@ -8,6 +8,7 @@ import {
   folioEssayLinks,
   folioStudio,
 } from '../../../../../content/folio';
+import { lineNames } from '../../../../../content/studio';
 import { pad } from '../kit';
 import {
   ABOUT,
@@ -16,6 +17,9 @@ import {
   ESSAYS,
   SiteHeader,
   essayHref,
+  lineHref,
+  lineIds,
+  lineLine,
   useFolioMotion,
 } from '../shared';
 import '../folio.css';
@@ -23,6 +27,9 @@ import './essays.css';
 
 // Folio 的文章阅读页：刊头式开篇，正文是一张压上来的白纸，左边目录粘住；封底接着读另一篇。
 // 署名链到作者的公众号；封底除了接着读，还能去看产品、认识团队、去公众号读更多。
+// 《落地主义》末尾接回产品：文章里说的「找到同频的人」，在四条产品线里的样子。只用现有一句话，不新写产品声明。
+const closingWorks = ['idealism'];
+
 // 原文在 content/stories.json，按空行分段，支持小标题、引文、分隔线、编号列表与粗体、斜体。
 
 /** 行内的 **粗体** 和 *斜体* */
@@ -131,6 +138,25 @@ export function Essay({ slug }: { slug: string }) {
             {blocks.map((text, at) => (
               <Block key={at} text={text} id={`section-${at}`} />
             ))}
+            {closingWorks.includes(slug) && (
+              <section
+                className="fo-read-works"
+                aria-labelledby="fo-read-works-title"
+              >
+                <h2 id="fo-read-works-title">这个想法，在我们的产品里</h2>
+                <p>不是要证明谁更好，而是看看谁会被它认出来。</p>
+                <ul>
+                  {lineIds.map((id) => (
+                    <li key={id}>
+                      <Link href={lineHref[id]}>
+                        <strong>{lineNames[id]}</strong>
+                        <span>{lineLine[id]}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
           </article>
         </div>
       </main>

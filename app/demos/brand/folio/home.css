@@ -503,6 +503,18 @@
   }
 }
 
+/* 每件产品向访客问的一句话：先让人认出自己，再往下看产品 */
+.fo-site .fo-ask {
+  display: block;
+  max-width: 24em;
+  font-family: var(--fo-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(15px, 1.2vw, 18px);
+  line-height: 1.7;
+  opacity: 0.82;
+}
+
 @media (max-width: 760px) {
   .fo-studio-row {
     grid-template-columns: minmax(0, 1fr);
