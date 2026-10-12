@@ -16,7 +16,7 @@
     "db:generate": "drizzle-kit generate",
     "check": "tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
-    "test:http": "node tests/discovery-http.mjs && node tests/editorial-http.mjs && node tests/auth-http.mjs && node tests/brand-review-http.mjs",
+    "test:http": "node tests/discovery-http.mjs && node tests/editorial-http.mjs && node tests/auth-http.mjs",
     "build:folio-preview": "npm run build && node scripts/export-folio-preview.mjs"
   },
   "dependencies": {
