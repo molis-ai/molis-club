@@ -47,7 +47,7 @@ try {
   ]);
   assert.match(
     await page.locator('.fo-studio').innerText(),
-    /Molis AI 是一个做 AI 产品的小团队/,
+    /Molis AI 是一间围绕工作、生活与体验研发 AI 产品的工作室/,
   );
   assert.match(await page.locator('#world').innerText(), /概念设计/);
   assert.equal(

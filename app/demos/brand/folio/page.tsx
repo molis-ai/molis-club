@@ -5,7 +5,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { GITHUB_URL, INSTALL_URL } from '../../../../content/molis-work';
 import { ending, lineImages, lineNames } from '../../../../content/studio';
 import { AiWordCycle } from '../ai-words';
-import { CoverArt, LifeArt, StoryArt } from './art';
+import { CoverArt, LifeArt, Star, StoryArt } from './art';
 import { Actions, Phrases, Status, Tag, pad } from './kit';
 import {
   COMMUNITY,
@@ -60,14 +60,51 @@ function Label({
   );
 }
 
+/** 正文里的产品名用英文展示字体标出来，扫一眼就能抓到 */
+function withNames(text: string) {
+  return text
+    .split(/(Molis (?:Work|Tool|Life|Story|World))/)
+    .map((part, index) =>
+      index % 2 ? (
+        <span key={index} className="fo-studio-name" lang="en">
+          {part}
+        </span>
+      ) : (
+        part
+      ),
+    );
+}
+
+/** 工作室身份说明（P1）：一张单独的白纸压在封面上；主标题说我们是谁，左栏说想遇见谁，右栏是产品 */
+function Studio() {
+  const { studio } = folioHomeCopy;
+  return (
+    <section className="fo-studio" aria-labelledby="fo-studio-title">
+      <span className="fo-kicker" data-reveal>
+        {`${studio.label} · ${studio.labelZh}`}
+      </span>
+      <h2 id="fo-studio-title" className="fo-studio-title" data-reveal>
+        {studio.title}
+      </h2>
+      <div className="fo-studio-row" data-reveal>
+        <p className="fo-studio-view">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <Star x={12} y={12} r={11} />
+          </svg>
+          <span>
+            <Phrases text={studio.view} />
+          </span>
+        </p>
+        <p className="fo-studio-text">{withNames(studio.text)}</p>
+      </div>
+    </section>
+  );
+}
+
 function CoreProduct() {
   const work = folioStudio.work;
   return (
     <div id="work" className="fo-core">
-      <div className="fo-studio" data-reveal>
-        <small lang="en">{folioHomeCopy.studio.label}</small>
-        <p>{folioHomeCopy.studio.text}</p>
-      </div>
       <Label id="fo-products-title" {...folioStudio.labels.products} />
       <div className="fo-core-copy" data-reveal>
         <span className="fo-kicker">
@@ -212,6 +249,8 @@ export default function FolioDirection() {
             </p>
           </div>
         </section>
+
+        <Studio />
 
         <section id="products" aria-labelledby="fo-products-title">
           <CoreProduct />

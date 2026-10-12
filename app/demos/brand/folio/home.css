@@ -102,28 +102,71 @@
 .fo-core > .fo-label {
   grid-column: 1 / -1;
 }
-/* 工作室身份说明：白纸最上面一句话，像事务所的自我介绍，之后才是产品 */
+/* ---------- 工作室身份说明：一张单独的白纸压在封面上，像事务所的自我介绍 ---------- */
 .fo-studio {
-  grid-column: 1 / -1;
+  position: relative;
+  z-index: 3;
   display: grid;
-  grid-template-columns: minmax(0, 0.18fr) minmax(0, 1fr);
-  align-items: baseline;
-  gap: 12px var(--fo-gutter);
-  padding-bottom: clamp(24px, 3vw, 48px);
+  row-gap: clamp(22px, 2.6vw, 40px);
+  padding: clamp(72px, 8vw, 132px) var(--fo-gutter) clamp(56px, 6vw, 104px);
+  background: var(--fo-white);
+  border-radius: 40px 40px 0 0;
+  box-shadow: 0 -24px 60px -36px rgb(18 24 38 / 0.35);
 }
-.fo-studio small {
-  font-family: var(--fo-display);
-  font-style: italic;
-  font-size: clamp(20px, 1.8vw, 28px);
-  color: var(--fo-red);
+.fo-studio-title {
+  max-width: 17em;
+  font-family: var(--fo-serif);
+  font-weight: 900;
+  font-size: clamp(34px, 4.6vw, 76px);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  word-break: keep-all;
+  text-wrap: balance;
 }
-.fo-studio p {
-  max-width: 21em;
+/* 细线下分两栏：左边一句想遇见谁，右边是产品 */
+.fo-studio-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: 24px var(--fo-gutter);
+  margin-top: clamp(8px, 1.5vw, 24px);
+  padding-top: clamp(24px, 2.6vw, 36px);
+  border-top: 1px solid var(--fo-line);
+}
+.fo-site .fo-studio-view {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 14px;
+  max-width: 16em;
   font-family: var(--fo-serif);
   font-weight: 500;
-  font-size: clamp(24px, 2.8vw, 46px);
-  line-height: 1.5;
-  letter-spacing: -0.01em;
+  font-size: clamp(20px, 1.9vw, 28px);
+  line-height: 1.6;
+  word-break: keep-all;
+}
+.fo-studio-view svg {
+  width: 0.8em;
+  height: 0.8em;
+  margin-top: 0.4em;
+  fill: var(--fo-red);
+  rotate: 12deg;
+}
+.fo-site .fo-studio-text {
+  max-width: 34em;
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 2;
+  color: var(--fo-text);
+}
+.fo-studio-name {
+  font-family: var(--fo-display);
+  font-size: 1.12em;
+  color: var(--fo-ink);
+  white-space: nowrap;
+}
+/* 白纸已经由工作室这一段压上封面，Work 接着往下，不再自己卷边 */
+.fo-studio + #products > .fo-core {
+  border-radius: 0;
+  box-shadow: none;
 }
 
 /* Story 之后的 Molis World 入口：一句过渡加一张小卡，不单独占一屏 */
@@ -460,8 +503,8 @@
   }
 }
 
-@media (max-width: 640px) {
-  .fo-studio {
-    grid-template-columns: 1fr;
+@media (max-width: 760px) {
+  .fo-studio-row {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
