@@ -1,0 +1,86 @@
+/* 比稿条：深色半透明的小胶囊，浮在每一版的右下角，亮暗页面上都看得清 */
+.pb {
+  position: fixed;
+  z-index: 2147483000;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgb(18 18 17 / 0.84);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.08),
+    0 10px 30px -12px rgb(0 0 0 / 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #f4f2ee;
+  font:
+    500 12.5px/1 var(--font-geist),
+    'PingFang SC',
+    'Microsoft YaHei',
+    sans-serif;
+  letter-spacing: 0;
+}
+.pb a {
+  color: inherit;
+  text-decoration: none;
+}
+.pb-all,
+.pb-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+.pb-all {
+  padding: 0 12px 0 11px;
+}
+.pb-step {
+  width: 32px;
+}
+.pb-all:hover,
+.pb-step:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+.pb a:focus-visible {
+  outline: 2px solid #f4f2ee;
+  outline-offset: 1px;
+}
+.pb-now {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 0 8px 0 10px;
+  border-left: 1px solid rgb(255 255 255 / 0.16);
+  white-space: nowrap;
+}
+.pb-now b {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.pb-of {
+  color: rgb(244 242 238 / 0.55);
+}
+.pb-name {
+  margin-left: 4px;
+}
+@media (max-width: 600px) {
+  .pb {
+    right: 50%;
+    bottom: 10px;
+    transform: translateX(50%);
+  }
+  .pb-name {
+    display: none;
+  }
+}
+@media print {
+  .pb {
+    display: none;
+  }
+}
