@@ -3,13 +3,13 @@ import { ArrowDown, ArrowRight } from 'lucide-react';
 import { pitchGroups, pitches } from './routes';
 import './pitch.css';
 
-// 工作室首页视觉方向比稿：说明这次比什么、怎么看，再把九版按方向排开。
+// 工作室首页视觉方向比稿：说明这次比什么、怎么看，再把十版按方向排开。
 // 不做投票；看完在团队群里说选哪一版、为什么。
 
 export const metadata = {
   title: { absolute: 'Molis AI · 工作室首页视觉方向比稿' },
   description:
-    'Molis AI 工作室首页的九版视觉方案：Folio 原版，A 暖纸与画框、D 日光与生活、E 玩心造物各两稿，以及两版展览式首页。',
+    'Molis AI 工作室首页的十版视觉方案：Folio 原版，A 暖纸与画框、D 日光与生活、E 玩心造物各两稿，两版展览式首页，以及零点。',
   robots: { index: false, follow: false },
 };
 
@@ -20,7 +20,7 @@ const steps = [
   },
   {
     title: '只比方向，不比字句',
-    text: '八版用的是同一份内容，文案和产品事实不在这次比较里。界面演示是示意和示例数据；顶栏点进去的内页还是 Folio 现有页面。',
+    text: '九版用的是同一份内容，文案和产品事实不在这次比较里。界面演示是示意和示例数据；顶栏点进去的内页还是 Folio 现有页面。',
   },
   {
     title: '在群里说说你的选择',
@@ -42,7 +42,7 @@ export default function PitchPage() {
         </Link>
         <nav aria-label="比稿页">
           <a href="#how">怎么看</a>
-          <a href="#versions">九版方案</a>
+          <a href="#versions">十版方案</a>
         </nav>
       </header>
 
@@ -55,18 +55,18 @@ export default function PitchPage() {
             选一个视觉方向。
           </h1>
           <p className="pt-lead">
-            Molis AI 官网首页的九版视觉方案都在这里：Folio 原版，A 暖纸与画框、D
+            Molis AI 官网首页的十版视觉方案都在这里：Folio 原版，A 暖纸与画框、D
             日光与生活、E
-            玩心造物各两稿，再加两版展览式的首页。请每一版都点开看完，再告诉大家你选哪一版。
+            玩心造物各两稿，两版展览式的首页，再加一版「零点」。请每一版都点开看完，再告诉大家你选哪一版。
           </p>
           <dl className="pt-facts">
             <div>
               <dt>方案</dt>
-              <dd>9 版</dd>
+              <dd>10 版</dd>
             </div>
             <div>
               <dt>方向</dt>
-              <dd>5 个</dd>
+              <dd>6 个</dd>
             </div>
             <div>
               <dt>内容</dt>
@@ -79,7 +79,7 @@ export default function PitchPage() {
               <ArrowRight size={16} aria-hidden="true" />
             </Link>
             <a className="pt-link" href="#versions">
-              先看九版一览
+              先看十版一览
               <ArrowDown size={15} aria-hidden="true" />
             </a>
           </div>
@@ -106,7 +106,7 @@ export default function PitchPage() {
           aria-labelledby="pt-versions-title"
         >
           <header className="pt-versions-head">
-            <h2 id="pt-versions-title">九版方案</h2>
+            <h2 id="pt-versions-title">十版方案</h2>
             <p>
               点开就是完整的首页。每一版右下角有一条比稿条，可以回到这里，或者直接切到上一版、下一版。
             </p>

@@ -1,0 +1,1354 @@
+/* E2 社区页。前缀 ecm-。整站最「活」的一页，但仍在系统里：首屏是一件能动手的小实验，
+   试一试的三张小画面都能操作，方法是一份可筛可搜的目录，分享用三块从轻到重的轴测体说清三个口子。
+   自动播放只有 DropAgent 的流程（离开视口、页面隐藏或按暂停即停）；减少动态时一律直接给最终画面。 */
+
+.ecm fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.ecm-section {
+  padding: clamp(80px, 12vh, 130px) var(--gutter);
+  border-top: 1px solid var(--rule-2);
+}
+.ecm-card-meta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  color: var(--muted);
+  font:
+    400 11.5px/1.3 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.03em;
+}
+.ecm-card-meta i {
+  color: var(--ink);
+  font-style: normal;
+}
+.ecm-card-meta i + span {
+  padding-left: 12px;
+  border-left: 1px solid var(--rule-2);
+}
+@keyframes ecm-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@keyframes ecm-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---------- 首屏 ---------- */
+.ecm-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 96px);
+  min-height: calc(100svh - var(--header));
+  padding: clamp(40px, 7vh, 80px) var(--gutter) clamp(48px, 8vh, 88px);
+}
+.ecm-hero-copy {
+  display: grid;
+  justify-items: start;
+  gap: clamp(18px, 3vh, 28px);
+  animation: ecm-in 0.9s var(--ease) both;
+}
+.ecm-hero h1 {
+  font: 700 clamp(48px, 6.2vw, 100px) / 1.1 var(--display);
+  letter-spacing: -0.025em;
+}
+.ecm-hero h1 > span {
+  display: block;
+}
+.ecm-accent {
+  color: var(--accent-ink);
+}
+.ecm-hero-text {
+  max-width: 30em;
+  color: var(--ink-2);
+  font: 400 clamp(16px, 1.3vw, 19px) / 1.85 var(--cjk);
+}
+.ecm-hero-text > span {
+  display: block;
+}
+.ecm-index {
+  width: 100%;
+  max-width: 460px;
+  margin-top: 4px;
+}
+.ecm-index ol {
+  border-top: 1px solid var(--ink);
+}
+.ecm-index a {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 44px;
+  border-bottom: 1px solid var(--rule);
+  font: 500 15px/1.3 var(--cjk);
+  transition: color 0.2s;
+}
+.ecm-index i {
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+  font-style: normal;
+}
+.ecm-index svg {
+  color: var(--muted);
+  transition: transform 0.25s var(--ease);
+}
+.ecm-index a:hover {
+  color: var(--accent-ink);
+}
+.ecm-index a:hover svg {
+  transform: translateY(2px);
+}
+.ecm-signature {
+  color: var(--muted);
+  font: 400 13px/1.5 var(--cjk);
+}
+.ecm-signature span {
+  display: block;
+  margin-top: 2px;
+  font: 400 12px/1.4 var(--mono);
+  letter-spacing: 0.04em;
+}
+
+/* 小花：图版上的作品本身（保留三种可下载的底色），线条进场时一条条描出来 */
+.ecm-playground {
+  display: grid;
+  gap: 18px;
+  width: 100%;
+  max-width: 600px;
+  justify-self: end;
+  animation: ecm-in 0.9s var(--ease) 0.12s both;
+}
+.ecm-poster-art {
+  padding: clamp(12px, 1.6vw, 20px);
+}
+.ecm-flower {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.ecm-poster-tag {
+  position: absolute;
+  z-index: 1;
+  top: calc(clamp(12px, 1.6vw, 20px) + 10px);
+  left: calc(clamp(12px, 1.6vw, 20px) + 10px);
+  padding: 4px 7px;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.92);
+  color: var(--ink);
+  font:
+    500 10.5px/1.2 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.03em;
+}
+.ecm-poster-no {
+  left: auto;
+  right: calc(clamp(12px, 1.6vw, 20px) + 10px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ecm-flower ellipse {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: e2-draw 1.2s cubic-bezier(0.55, 0, 0.25, 1)
+      calc(0.35s + var(--i, 0) * 45ms) forwards;
+  }
+}
+.ecm-controls {
+  display: grid;
+  gap: 10px;
+}
+.ecm-hint {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-ink);
+  font:
+    500 11.5px/1.2 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.04em;
+}
+.ecm-hint::before {
+  content: '';
+  width: 22px;
+  height: 1px;
+  background: var(--accent);
+}
+.ecm-range-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ecm-range-label label {
+  font: 500 15px/1.4 var(--cjk);
+}
+.ecm-range-label output {
+  font: 500 13px/1 var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.ecm-control-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+}
+.ecm-swatches {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ecm-swatches button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid rgb(23 23 27 / 0.3);
+  border-radius: 8px;
+  background: var(--swatch);
+  color: #fff;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.ecm-swatches button[aria-pressed='true'] {
+  box-shadow:
+    0 0 0 2px var(--paper),
+    0 0 0 3px var(--ink);
+}
+.ecm-swatch-name {
+  margin-left: 6px;
+  color: var(--muted);
+  font:
+    400 12px/1 var(--mono),
+    var(--cjk);
+}
+
+/* 「怎么做的」：一条墨线下的折叠，三步各一张小线稿 */
+.ecm-how {
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+.ecm-how > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  font: 500 15px/1.3 var(--cjk);
+  cursor: pointer;
+}
+.ecm-how > summary:hover {
+  color: var(--accent-ink);
+}
+.ecm-how[open] > :not(summary) {
+  animation: ecm-in 0.5s var(--ease) backwards;
+}
+.ecm-how-lead {
+  color: var(--ink-2);
+  font: 400 14px/1.7 var(--cjk);
+}
+.e2 .ecm-how ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 14px 0 6px;
+}
+.ecm-how li {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+}
+.ecm-how li svg {
+  width: 100%;
+  height: 84px;
+  margin-bottom: 6px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--plate);
+  color: var(--ink);
+}
+.ecm-how li svg ellipse {
+  vector-effect: non-scaling-stroke;
+  stroke-width: 0.6;
+}
+.ecm-how li > span {
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+}
+.ecm-how li strong {
+  font: 600 14.5px/1.4 var(--cjk);
+}
+.ecm-how li p {
+  color: var(--ink-2);
+  font: 400 12.5px/1.6 var(--cjk);
+}
+.ecm-how .ecm-copy {
+  padding-bottom: 8px;
+}
+
+/* ---------- 01 试一试 ---------- */
+.e2 .ecm-try-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 28px);
+  margin-top: clamp(40px, 7vh, 64px);
+  padding-top: clamp(24px, 3vw, 32px);
+  border-top: 1px solid var(--ink);
+}
+.ecm-try-card {
+  display: grid;
+  align-content: start;
+  gap: 24px;
+}
+.ecm-try-copy {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 10px;
+}
+.ecm-try-copy h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  font: 600 clamp(26px, 2.4vw, 36px) / 1.1 var(--display);
+  letter-spacing: -0.025em;
+}
+.ecm-try-copy h3 small {
+  color: var(--muted);
+  font: 500 15px/1 var(--cjk);
+  letter-spacing: 0;
+}
+.ecm-try-line {
+  font: 500 17px/1.55 var(--cjk);
+}
+.ecm-try-copy .e2-link {
+  min-height: 40px;
+}
+.e2 .ecm-relation {
+  width: 100%;
+  margin-top: 2px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font: 400 13.5px/1.7 var(--cjk);
+}
+.ecm-relation a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  margin-left: 8px;
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: underline 1px transparent;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s;
+}
+.ecm-relation a:hover {
+  text-decoration-color: currentColor;
+}
+.ecm-works-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 24px;
+  margin-top: clamp(40px, 6vh, 64px);
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+.ecm-works-end p {
+  color: var(--ink-2);
+  font: 400 15px/1.6 var(--cjk);
+}
+
+/* 三张小画面：都放在图版里，按文档流排，宽度变了也不散 */
+.ecm-scene {
+  position: relative;
+  height: 440px;
+  padding: 18px;
+}
+
+/* niul.ai：桌面上的两条工作，旁边一头牛；访客切换「工作中 / 完成时」 */
+.ecm-cow {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
+}
+.ecm-window {
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+}
+.ecm-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.ecm-window-bar i {
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--rule-2);
+  border-radius: 50%;
+}
+.ecm-window-bar span {
+  margin-left: 8px;
+  color: var(--muted);
+  font:
+    400 10.5px/1 var(--mono),
+    var(--cjk);
+}
+.ecm-session {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+}
+.ecm-session + .ecm-session {
+  border-top: 1px solid var(--rule);
+}
+.ecm-session strong {
+  font: 600 13.5px/1.3 var(--cjk);
+}
+.e2 .ecm-session p {
+  margin-top: 2px;
+  color: var(--muted);
+  font: 400 11.5px/1.4 var(--cjk);
+}
+.ecm-session > svg {
+  flex: none;
+  margin-left: auto;
+}
+.ecm-session-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: background 0.3s;
+}
+.ecm-cow[data-waiting='false'] .ecm-session:nth-child(2) .ecm-session-dot {
+  background: var(--ink);
+}
+.ecm-cow-stage {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  min-height: 0;
+  padding-right: 8px;
+  border-bottom: 1px solid var(--ink);
+}
+.ecm-cow-stage img {
+  width: 128px;
+  height: 128px;
+  object-fit: contain;
+  transition: transform 0.4s var(--ease);
+}
+.ecm-cow[data-waiting='false'] .ecm-cow-stage img {
+  transform: translateY(-6px);
+}
+.ecm-cow-note {
+  position: absolute;
+  right: 172px;
+  top: 34%;
+  padding: 7px 10px;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  background: var(--white);
+  font: 500 12.5px/1.3 var(--cjk);
+  white-space: nowrap;
+  animation: ecm-fade 0.35s var(--ease) both;
+}
+.ecm-cow-note::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 30px;
+  height: 1px;
+  background: var(--ink);
+}
+.e2 .ecm-switch {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--ink);
+  border-radius: 8px;
+  background: var(--white);
+  font: 500 13px/1 var(--cjk);
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.ecm-switch:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+.ecm-switch svg {
+  transition: transform 0.25s var(--ease);
+}
+.ecm-switch:hover svg {
+  transform: translateX(3px);
+}
+.ecm-switch-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* DropAgent：原文件 ↓ 本地 Agent 在副本上整理 ↓ 带回要点。原文件始终在原处 */
+.ecm-drop {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+}
+.ecm-drop-row {
+  position: relative;
+}
+.ecm-file {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 2px 10px;
+  width: 64%;
+  padding: 12px 14px;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+}
+.ecm-file svg {
+  grid-row: span 2;
+}
+.ecm-file strong {
+  font:
+    500 12.5px/1.3 var(--mono),
+    var(--cjk);
+}
+.ecm-file span {
+  color: var(--muted);
+  font: 400 11px/1.3 var(--cjk);
+}
+.ecm-file i {
+  grid-column: 1 / -1;
+  height: 1px;
+  margin-top: 6px;
+  background: var(--rule-2);
+}
+.ecm-file i:last-child {
+  width: 60%;
+}
+.ecm-file-ghost {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: 64%;
+  height: 100%;
+  border: 1px dashed var(--ink);
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+}
+.ecm-dock {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 16px 14px;
+  border: 1px dashed var(--ink);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 0.55);
+  text-align: center;
+}
+.ecm-dock strong {
+  font: 600 15px/1.3 var(--cjk);
+}
+.ecm-dock span {
+  color: var(--muted);
+  font: 400 11.5px/1.4 var(--cjk);
+}
+.ecm-progress {
+  width: 80%;
+  height: 2px;
+  margin-top: 4px;
+  overflow: hidden;
+  background: var(--rule);
+}
+.ecm-progress i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+}
+.ecm-result {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--ink);
+  border-radius: 8px;
+  background: var(--white);
+}
+.ecm-result > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 6px;
+  font:
+    500 12.5px/1.3 var(--mono),
+    var(--cjk);
+}
+.ecm-result p {
+  padding-left: 9px;
+  border-left: 1px solid var(--accent);
+  font: 400 12px/1.6 var(--cjk);
+}
+.ecm-loop-toggle {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--rule-2);
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+  opacity: 0.7;
+  transition:
+    opacity 0.2s,
+    border-color 0.2s;
+}
+.ecm-drop:hover .ecm-loop-toggle,
+.ecm-loop-toggle:focus-visible,
+.ecm-loop-toggle[aria-pressed='true'] {
+  opacity: 1;
+  border-color: var(--ink);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ecm-file-ghost {
+    animation: ecm-ghost 10s ease-in-out infinite;
+  }
+  .ecm-progress i {
+    animation: ecm-progress 10s linear infinite;
+  }
+  .ecm-result {
+    animation: ecm-arrive 10s ease-in-out infinite;
+  }
+  .ecm-drop[data-running='false'] *,
+  .ecm-drop[data-running='false'] *::before,
+  .ecm-drop[data-running='false'] *::after {
+    animation-play-state: paused !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ecm-loop-toggle {
+    display: none;
+  }
+}
+/* 基础样式就是播完的样子；时间轴：复制一份 → 进度走满 → 要点出现 → 回到开头 */
+@keyframes ecm-ghost {
+  0%,
+  10% {
+    opacity: 0;
+    transform: none;
+  }
+  14% {
+    opacity: 1;
+    transform: none;
+  }
+  30% {
+    opacity: 0.9;
+    transform: translateY(calc(100% + 18px));
+  }
+  36%,
+  100% {
+    opacity: 0;
+    transform: translateY(calc(100% + 18px));
+  }
+}
+@keyframes ecm-progress {
+  0%,
+  28% {
+    transform: scaleX(0);
+  }
+  60%,
+  88% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}
+@keyframes ecm-arrive {
+  0%,
+  50% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  62%,
+  88% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* Artist Skill：试样裱在白卡上，旁边一条引线写「从这里观察」，下面三种风格切换 */
+.ecm-artist {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  gap: 12px;
+}
+.ecm-print {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 8px;
+  min-height: 0;
+  padding: 10px;
+  border: 1px solid var(--rule-2);
+  border-radius: 4px;
+  background: var(--white);
+  animation: ecm-fade 0.45s var(--ease) both;
+}
+.ecm-print img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  background: var(--plate);
+}
+.ecm-print p {
+  font: 500 12.5px/1.3 var(--cjk);
+}
+.ecm-artist-method {
+  display: grid;
+  gap: 3px;
+  padding: 2px 0 2px 12px;
+  border-left: 1px solid var(--accent);
+}
+.ecm-artist-method span {
+  color: var(--muted);
+  font:
+    400 10.5px/1.2 var(--mono),
+    var(--cjk);
+}
+.ecm-artist-method strong {
+  font: 600 14px/1.5 var(--cjk);
+}
+.ecm-picker {
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+}
+.ecm-picker button {
+  flex: 1;
+  min-height: 40px;
+  padding: 6px 8px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  font: 500 12.5px/1.2 var(--cjk);
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.ecm-picker button + button {
+  border-left: 1px solid var(--rule-2);
+}
+.ecm-picker button:hover {
+  background: var(--plate);
+}
+.ecm-picker button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--white);
+}
+.ecm-picker button:focus-visible {
+  outline-offset: -4px;
+}
+
+/* ---------- 02 方法：目录 ---------- */
+.ecm-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 20px;
+  margin-top: clamp(40px, 6vh, 56px);
+  padding-top: 24px;
+  border-top: 1px solid var(--ink);
+}
+.ecm-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ecm-filters button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink-2);
+  font: 500 14px/1 var(--cjk);
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+.ecm-filters button:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.ecm-filters button[aria-pressed='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--white);
+}
+.ecm-search {
+  display: flex;
+  flex: 1 1 280px;
+  align-items: center;
+  gap: 10px;
+  max-width: 400px;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--muted);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.ecm-search:focus-within {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.ecm-search input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 400 15px/1.4 var(--cjk);
+}
+.ecm-search input:focus-visible {
+  outline: none;
+}
+.ecm-search input::placeholder {
+  color: var(--muted);
+}
+.ecm-count {
+  margin-left: auto;
+  color: var(--muted);
+  font:
+    400 12px/1.3 var(--mono),
+    var(--cjk);
+}
+.ecm-count b {
+  color: var(--ink);
+  font-weight: 500;
+}
+.e2 .ecm-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 28px;
+}
+.ecm-card {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  min-width: 0;
+  border: 1px solid var(--rule-2);
+  border-radius: 12px;
+  background: var(--white);
+  animation: ecm-fade 0.4s var(--ease) both;
+}
+.ecm-card > .ecm-card-meta {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule);
+}
+.ecm-card > .ecm-demo {
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+}
+.ecm-card-art {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 241px;
+  padding: 14px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--plate);
+}
+.ecm-card-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.6s var(--ease);
+}
+.ecm-card-art:hover img {
+  transform: translateY(-3px);
+}
+.ecm-builder {
+  display: grid;
+  justify-self: start;
+  padding-left: 8px;
+  font: 600 clamp(28px, 2.4vw, 36px) / 1.1 var(--display);
+  letter-spacing: -0.025em;
+}
+.ecm-builder span:nth-child(2) {
+  color: var(--accent-ink);
+}
+.ecm-card-body {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 8px;
+  padding: 18px 16px 10px;
+}
+.ecm-card h3 {
+  font: 600 20px/1.35 var(--cjk);
+}
+.ecm-card h3 a:hover {
+  color: var(--accent-ink);
+}
+.ecm-card-body > p {
+  color: var(--ink-2);
+  font: 400 14px/1.7 var(--cjk);
+}
+.ecm-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0 20px;
+  margin-top: 2px;
+}
+.ecm-share-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-top: 1px solid var(--rule);
+  border-radius: 0 0 12px 12px;
+  color: var(--muted);
+  font: 400 12.5px/1.2 var(--cjk);
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.ecm-share-entry:hover {
+  background: var(--plate);
+  color: var(--ink);
+}
+.ecm-more {
+  margin-top: 24px;
+}
+.ecm-resources {
+  margin-top: 40px;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+.ecm-resources > summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px 24px;
+  min-height: 68px;
+  padding: 12px 0;
+  cursor: pointer;
+}
+.ecm-resources-count {
+  font: 600 19px/1.2 var(--cjk);
+  white-space: nowrap;
+}
+.ecm-resources-count b {
+  font: 600 22px/1 var(--display);
+  letter-spacing: -0.02em;
+}
+.ecm-resources > summary small {
+  color: var(--muted);
+  font: 400 13.5px/1.5 var(--cjk);
+}
+.ecm-resources > summary:hover .ecm-resources-count {
+  color: var(--accent-ink);
+}
+.ecm-resources[open] .ecm-resources-body {
+  animation: ecm-in 0.5s var(--ease) backwards;
+}
+.ecm-resources-body {
+  padding-bottom: 28px;
+}
+.ecm-methods > .ecm-resources-body {
+  margin-top: 16px;
+}
+.e2 .ecm-group h3 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 36px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink);
+  font: 600 18px/1.3 var(--cjk);
+}
+.ecm-group h3 span {
+  color: var(--muted);
+  font: 400 12px/1 var(--mono);
+}
+.ecm-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 1.7fr) auto;
+  align-items: baseline;
+  gap: 4px clamp(16px, 2.4vw, 32px);
+  padding: 16px 8px;
+  border-bottom: 1px solid var(--rule);
+  transition: background 0.25s;
+}
+.ecm-row:hover {
+  background: var(--white);
+}
+.ecm-row strong {
+  font: 600 16px/1.4 var(--display);
+  letter-spacing: -0.01em;
+}
+.ecm-row em {
+  color: var(--muted);
+  font: 400 12px/1.5 var(--mono);
+  font-style: normal;
+}
+.ecm-row p {
+  color: var(--ink-2);
+  font: 400 14px/1.7 var(--cjk);
+}
+.ecm-row svg {
+  align-self: center;
+  color: var(--muted);
+  transition:
+    transform 0.25s var(--ease),
+    color 0.2s;
+}
+.ecm-row:hover svg {
+  color: var(--ink);
+  transform: translateX(3px);
+}
+.e2 .ecm-disclosure {
+  margin-top: 20px;
+  color: var(--muted);
+  font:
+    400 12px/1.6 var(--mono),
+    var(--cjk);
+}
+.ecm-empty {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  margin-top: 28px;
+  padding: clamp(28px, 4vw, 48px);
+  border: 1px dashed var(--rule-2);
+  border-radius: 12px;
+}
+.ecm-empty strong {
+  font: 600 clamp(22px, 2vw, 30px) / 1.3 var(--cjk);
+}
+.ecm-empty p {
+  color: var(--ink-2);
+  font: 400 15px/1.7 var(--cjk);
+}
+.ecm-empty .e2-button {
+  margin-top: 8px;
+}
+
+/* ---------- 03 大家的分享 ---------- */
+.ecm-share h2 {
+  max-width: 20em;
+}
+.ecm-share-second {
+  display: block;
+  color: var(--muted);
+}
+.e2 .ecm-ways {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: clamp(40px, 7vh, 64px);
+  border-top: 1px solid var(--ink);
+}
+.ecm-ways li {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 10px;
+  padding: 24px clamp(16px, 2vw, 32px) 8px;
+}
+.ecm-ways li:first-child {
+  padding-left: 0;
+}
+.ecm-ways li + li {
+  border-left: 1px solid var(--rule);
+}
+.ecm-way-art {
+  --sw: 0.07;
+  width: 100%;
+  max-width: 190px;
+  height: auto;
+  margin-bottom: 10px;
+  overflow: visible;
+}
+.ecm-way-art .e2-f {
+  --o: 0.1s;
+  --f: 1s;
+}
+.ecm-ways h3 {
+  font: 600 clamp(19px, 1.6vw, 23px) / 1.4 var(--cjk);
+}
+.ecm-ways p {
+  max-width: 24em;
+  color: var(--ink-2);
+  font: 400 15px/1.8 var(--cjk);
+}
+.ecm-showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 24px 48px;
+  margin-top: clamp(56px, 9vh, 96px);
+  padding-top: 28px;
+  border-top: 1px solid var(--rule-2);
+}
+.ecm-showcase-head h3 {
+  font: 600 clamp(24px, 2.2vw, 32px) / 1.3 var(--cjk);
+}
+.e2 .ecm-showcase-head p {
+  max-width: 28em;
+  margin-top: 10px;
+  color: var(--muted);
+  font: 400 14px/1.75 var(--cjk);
+}
+.ecm-showcase-empty {
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+  padding: 24px;
+  border: 1px dashed var(--rule-2);
+  border-radius: 12px;
+  color: var(--muted);
+  font:
+    400 13px/1.5 var(--mono),
+    var(--cjk);
+  text-align: center;
+}
+.ecm-showcase-grid {
+  border-top: 1px solid var(--ink);
+}
+.ecm-showcase-grid a {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 16px;
+  padding: 16px 4px;
+  border-bottom: 1px solid var(--rule);
+}
+.ecm-showcase-grid strong {
+  font: 600 17px/1.4 var(--cjk);
+}
+.ecm-showcase-grid span {
+  color: var(--muted);
+  font: 400 13px/1.5 var(--cjk);
+}
+.ecm-showcase-grid svg {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+/* ---------- 结尾：04 一起改进 ---------- */
+.ecm-improve {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 32px clamp(32px, 6vw, 96px);
+  padding: clamp(80px, 12vh, 130px) var(--gutter) clamp(48px, 8vh, 80px);
+  background: var(--white);
+}
+.ecm-improve-head {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+}
+.ecm-improve h2 {
+  max-width: 14em;
+  font: 600 clamp(28px, 3.2vw, 48px) / 1.35 var(--cjk);
+  letter-spacing: -0.02em;
+}
+.ecm-improve-links {
+  border-top: 1px solid var(--ink);
+}
+.ecm-improve-links a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 72px;
+  padding: 0 6px;
+  border-bottom: 1px solid var(--rule-2);
+  font: 500 clamp(17px, 1.4vw, 20px) / 1.3 var(--cjk);
+  transition: background 0.25s;
+}
+.ecm-improve-links a > span {
+  flex: 1;
+}
+.ecm-improve-links small {
+  color: var(--muted);
+  font: 400 12px/1 var(--mono);
+}
+.ecm-improve-links a:hover {
+  background: var(--plate);
+}
+.ecm-improve-links a > svg:last-child {
+  flex: none;
+  transition: transform 0.25s var(--ease);
+}
+.ecm-improve-links a:hover > svg:last-child {
+  transform: translateX(3px);
+}
+.ecm-improve-links a[href^='http']:hover > svg:last-child {
+  transform: translate(2px, -2px);
+}
+.ecm-people {
+  grid-column: 1 / -1;
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1100px) {
+  .ecm-hero {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+  .ecm-playground {
+    justify-self: start;
+    max-width: 640px;
+  }
+  .e2 .ecm-try-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+  }
+  .ecm-try-card {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 24px 40px;
+  }
+  .e2 .ecm-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ecm-count {
+    margin-left: 0;
+  }
+}
+@media (max-width: 900px) {
+  .ecm-improve,
+  .ecm-showcase {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .ecm-try-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ecm-scene {
+    height: 420px;
+  }
+  .e2 .ecm-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ecm-search {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .e2 .ecm-ways {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ecm-ways li,
+  .ecm-ways li:first-child {
+    padding: 24px 0 8px;
+  }
+  .ecm-ways li + li {
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .ecm-way-art {
+    max-width: 150px;
+  }
+  .ecm-resources > summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .ecm-resources > summary small {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .ecm-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .ecm-row em,
+  .ecm-row p {
+    grid-column: 1;
+  }
+  .ecm-row svg {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .ecm-improve-links small {
+    display: none;
+  }
+}
+@media (max-width: 480px) {
+  .e2 .ecm-how ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ecm-how li {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 2px 12px;
+  }
+  .ecm-how li svg {
+    grid-row: span 3;
+    height: 72px;
+    margin: 0;
+  }
+  .ecm-cow-note {
+    right: 150px;
+  }
+}

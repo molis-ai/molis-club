@@ -1,0 +1,485 @@
+/* Work 首屏的界面示意（前缀 ew-）。一个白色窗口压在图版上：项目栏、Pages 文档、助理的操作卡、底栏。
+   状态由 desk.tsx 写在 .ew-win 的 data-* 上；基础样式就是播完的样子（减少动态时停在这里）。 */
+
+.ew-desk {
+  min-width: 0;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.8s var(--ease) 0.15s,
+    transform 1s var(--ease) 0.15s;
+}
+.ew-desk[data-ready='true'] {
+  opacity: 1;
+  transform: none;
+}
+.ew-desk .e2-plate-body {
+  padding: clamp(14px, 2.2vw, 30px) clamp(14px, 2.2vw, 30px) 0;
+}
+
+/* ---------- 窗口 ---------- */
+.ew-win {
+  overflow: hidden;
+  border: 1px solid var(--rule-2);
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow:
+    0 1px 2px rgb(23 23 27 / 0.05),
+    0 24px 48px -30px rgb(23 23 27 / 0.28);
+}
+.ew-win-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 42px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--rule);
+}
+.ew-win-project {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 13px/1 var(--cjk);
+  white-space: nowrap;
+}
+.ew-win-project i {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--ink);
+}
+.ew-win-goal {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 4px 9px;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  color: var(--muted);
+  font: 400 12px/1.2 var(--cjk);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ew-win-goal svg {
+  flex: none;
+}
+.ew-win-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 22px;
+  padding: 24px 20px 26px;
+}
+
+/* 文档 */
+.ew-doc {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+}
+.ew-doc small {
+  color: var(--accent-ink);
+  font: 500 10.5px/1 var(--mono);
+  letter-spacing: 0.08em;
+}
+.ew-doc strong {
+  font: 600 clamp(19px, 1.6vw, 23px) / 1.25 var(--cjk);
+  letter-spacing: -0.01em;
+}
+.ew-typed {
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+  color: var(--ink-2);
+  font: 400 14px/1.7 var(--cjk);
+}
+.ew-typed span {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ew-caret {
+  flex: none;
+  width: 1.5px;
+  height: 1.05em;
+  margin-left: 2px;
+  background: var(--accent-ink);
+  animation: e2-blink 1.1s steps(1) infinite;
+  transition: opacity 0.2s;
+}
+.ew-insert {
+  display: grid;
+  gap: 6px;
+  margin-top: 4px;
+}
+.ew-insert li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 9px;
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--accent);
+  border-radius: 6px;
+  font: 400 13px/1.45 var(--cjk);
+  transition:
+    opacity 0.5s var(--ease) calc(var(--i) * 120ms),
+    transform 0.6s var(--ease) calc(var(--i) * 120ms);
+}
+.ew-insert span {
+  min-width: 0;
+}
+.ew-insert em {
+  flex: none;
+  color: var(--muted);
+  font: 400 10px/1.6 var(--mono);
+  font-style: normal;
+}
+.ew-ph {
+  display: block;
+  height: 6px;
+  margin-top: 8px;
+  border-radius: 1px;
+  background: rgb(23 23 27 / 0.07);
+}
+.ew-ph-short {
+  width: 58%;
+  margin-top: 2px;
+}
+
+/* 助理的操作卡：出现在文档旁边，不是聊天框 */
+.ew-card {
+  display: grid;
+  gap: 10px;
+  margin-top: 28px;
+  padding: 14px 14px 13px;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow:
+    0 1px 2px rgb(23 23 27 / 0.05),
+    0 10px 26px -14px rgb(23 23 27 / 0.2);
+  transition:
+    opacity 0.5s var(--ease),
+    transform 0.6s var(--ease);
+}
+.ew-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 7px;
+}
+.ew-card-head svg {
+  color: var(--accent-ink);
+}
+.ew-card-head strong {
+  font: 600 13px/1.2 var(--cjk);
+}
+.ew-card-head span {
+  color: var(--muted);
+  font: 400 11.5px/1.3 var(--cjk);
+}
+.ew-card-swap {
+  display: grid;
+}
+.ew-card-ask,
+.ew-card-done {
+  grid-area: 1 / 1;
+  transition:
+    opacity 0.4s var(--ease),
+    visibility 0.4s;
+}
+.ew-card-ask {
+  display: grid;
+  gap: 10px;
+  opacity: 0;
+  visibility: hidden;
+}
+.ew-card-ask p {
+  color: var(--ink-2);
+  font: 400 13px/1.6 var(--cjk);
+}
+.ew-card-actions {
+  display: flex;
+  gap: 6px;
+}
+.ew-run,
+.ew-skip {
+  position: relative;
+  padding: 6px 12px;
+  border: 1px solid var(--rule-2);
+  border-radius: 6px;
+  font: 500 12px/1 var(--cjk);
+  transition:
+    background 0.2s,
+    box-shadow 0.3s;
+}
+.ew-run {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--white);
+}
+.ew-skip {
+  color: var(--ink-2);
+}
+.ew-pointer {
+  position: absolute;
+  left: 60%;
+  top: 55%;
+  width: 18px;
+  opacity: 0;
+  transform: translate(16px, 14px);
+  transition:
+    opacity 0.3s,
+    transform 0.6s var(--ease);
+}
+.ew-pointer path {
+  fill: var(--white);
+  stroke: var(--ink);
+  stroke-width: 2.6;
+  stroke-linejoin: round;
+}
+.ew-card-done {
+  align-self: start;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font: 500 12.5px/1.35 var(--cjk);
+}
+.ew-card-done span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ew-card-done svg {
+  flex: none;
+}
+.ew-card-done u {
+  color: var(--ink-2);
+  font-weight: 400;
+  text-underline-offset: 3px;
+}
+
+/* 底栏 */
+.ew-dock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--rule);
+  background: var(--paper);
+}
+.ew-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border: 1px solid var(--rule-2);
+  border-radius: 6px;
+  background: var(--white);
+  font:
+    400 11.5px/1 var(--mono),
+    var(--cjk);
+  white-space: nowrap;
+}
+.ew-chip[data-active] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--white);
+}
+.ew-chip-ai {
+  margin-left: auto;
+}
+.ew-chip-ai svg {
+  color: var(--accent-ink);
+}
+.ew-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 14px;
+  font: 500 10px/1 var(--mono);
+  transition: opacity 0.35s var(--ease);
+}
+.ew-badge-inbox {
+  background: var(--accent);
+  color: var(--white);
+  opacity: 0;
+}
+.ew-badge-todo {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+/* ---------- 状态：各步只改自己的那几处 ---------- */
+.ew-win[data-typing='true'] .ew-typed span {
+  animation: ew-type 1.9s steps(var(--n), end) 0.25s both;
+}
+@keyframes ew-type {
+  from {
+    max-width: 0;
+  }
+  to {
+    max-width: calc(var(--n) * 1em);
+  }
+}
+.ew-win:not([data-typing='true'], [data-inbox='true']) .ew-caret {
+  opacity: 0;
+}
+.ew-win[data-inbox='true'] .ew-badge-inbox {
+  opacity: 1;
+}
+.ew-win[data-card='false'] .ew-card {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.ew-win[data-done='false'] .ew-card-ask {
+  opacity: 1;
+  visibility: visible;
+}
+.ew-win[data-done='false'] .ew-card-done {
+  opacity: 0;
+  visibility: hidden;
+}
+.ew-win[data-press='true'] .ew-run {
+  background: #000;
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+.ew-win[data-press='true'] .ew-pointer {
+  opacity: 1;
+  transform: none;
+}
+.ew-win[data-done='false'] .ew-insert li {
+  opacity: 0;
+  transform: translateY(6px);
+  transition-delay: 0s;
+}
+.ew-win[data-done='false'] .ew-badge-todo {
+  opacity: 0;
+}
+
+/* ---------- 步骤与暂停 ---------- */
+.ew-desk-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 16px 0 18px;
+}
+.ew-desk-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+.ew-desk-steps button {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  min-height: 34px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.ew-desk-bar {
+  position: relative;
+  display: block;
+  height: 2px;
+  overflow: hidden;
+  background: var(--rule-2);
+}
+.ew-desk-bar i,
+.ew-desk-steps button[data-done] .ew-desk-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform-origin: left;
+}
+.ew-desk-bar i {
+  animation: ew-fill var(--ms) linear both;
+}
+.ew-desk[data-running='false'] .ew-desk-bar i {
+  animation-play-state: paused;
+}
+@keyframes ew-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+.ew-desk-no {
+  color: var(--muted);
+  font: 400 10.5px/1 var(--mono);
+  transition: color 0.2s;
+}
+.ew-desk-steps button:hover .ew-desk-no,
+.ew-desk-steps button[aria-current] .ew-desk-no {
+  color: var(--ink);
+}
+.ew-desk-toggle {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.ew-desk-toggle:hover,
+.ew-desk-toggle[aria-pressed='true'] {
+  border-color: var(--ink);
+}
+.ew-desk-now {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-height: 1.5em;
+  font: 500 14px/1.5 var(--cjk);
+}
+.ew-desk-now i {
+  color: var(--accent-ink);
+  font: 500 11px/1 var(--mono);
+  font-style: normal;
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 620px) {
+  .ew-win-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    padding: 18px 16px 18px;
+  }
+  .ew-card {
+    margin-top: 0;
+  }
+  .ew-win-goal {
+    max-width: 52%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ew-desk {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,401 @@
+/* E2 团队。前缀 ea-。人与经历为主：规整的名册、统一裁切的方形照片、常驻的经历；温和但专业。 */
+
+/* ---------- 首屏 ---------- */
+.ea-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  align-items: end;
+  gap: 24px clamp(32px, 6vw, 96px);
+  padding: clamp(56px, 11vh, 120px) var(--gutter) clamp(48px, 8vh, 80px);
+  animation: ea-rise 0.9s var(--ease) both;
+}
+@keyframes ea-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.ea-hero h1 {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  font: 800 clamp(72px, 10vw, 160px) / 0.9 var(--display);
+  letter-spacing: -0.03em;
+}
+.ea-hero h1 small {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-ink);
+  font:
+    500 clamp(13px, 1vw, 15px) / 1 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.06em;
+}
+.ea-hero h1 small::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.ea-intro {
+  max-width: 28em;
+  padding-top: 20px;
+  border-top: 1px solid var(--ink);
+  color: var(--ink-2);
+  font: 400 clamp(17px, 1.4vw, 20px) / 1.8 var(--cjk);
+}
+
+/* ---------- 段落 ---------- */
+.ea-section {
+  display: grid;
+  gap: clamp(36px, 6vh, 60px);
+  padding: clamp(72px, 11vh, 120px) var(--gutter);
+  border-top: 1px solid var(--rule-2);
+}
+
+/* 01 成员名册：三列，每张同一结构；照片统一 112px 方形裁切 */
+.ea-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 clamp(24px, 3.4vw, 56px);
+  border-top: 1px solid var(--ink);
+}
+.ea-person {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-content: start;
+  gap: 16px;
+  padding: 28px 0 32px;
+  border-bottom: 1px solid var(--rule);
+}
+.ea-person-head {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  align-items: end;
+  gap: 18px;
+}
+.ea-photo {
+  display: grid;
+  place-items: center;
+  width: 112px;
+  height: 112px;
+  aspect-ratio: 1;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+  object-fit: cover;
+}
+.ea-photo-empty {
+  border-style: dashed;
+  background: var(--plate);
+  color: var(--muted);
+  font: 500 22px/1 var(--cjk);
+  letter-spacing: 0.04em;
+}
+.ea-person-name {
+  display: grid;
+  gap: 6px;
+  padding-bottom: 2px;
+}
+.ea-person-no {
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+}
+.ea-person h3 {
+  font: 600 clamp(22px, 1.9vw, 28px) / 1.2 var(--cjk);
+  letter-spacing: 0.01em;
+}
+.ea-role {
+  color: var(--accent-ink);
+  font: 500 13.5px/1.45 var(--cjk);
+}
+.ea-experience {
+  color: var(--ink-2);
+  font: 400 15px/1.85 var(--cjk);
+}
+.ea-experience-empty {
+  display: block;
+  align-self: start;
+  width: 72%;
+  height: 44px;
+  border-bottom: 1px dashed var(--rule-2);
+}
+.ea-aside {
+  padding-left: 12px;
+  border-left: 1px solid var(--rule-2);
+  color: var(--muted);
+  font: 400 14px/1.7 var(--cjk);
+}
+
+/* 曾经的公司：一条五格的细线条带，灰度显示，悬停回到原色 */
+.ea-proof {
+  display: grid;
+  grid-template-columns: minmax(0, 0.32fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px 48px;
+}
+.ea-proof > p {
+  color: var(--muted);
+  font:
+    400 12.5px/1.5 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.04em;
+}
+.ea-logos {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+}
+.ea-logos li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  height: 84px;
+  padding: 0 14px;
+}
+.ea-logos li + li {
+  border-left: 1px solid var(--rule);
+}
+.ea-logos img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: 34px;
+  object-fit: contain;
+  filter: grayscale(1) contrast(1.1);
+  opacity: 0.78;
+  mix-blend-mode: multiply;
+  transition:
+    filter 0.4s,
+    opacity 0.4s;
+}
+.ea-logos li:hover img {
+  filter: none;
+  opacity: 1;
+}
+/* 小红书原图是红底白字，灰度后会成一块深色；反相后与其他标识一样是深色字，悬停回到原样 */
+.ea-logo-red img {
+  height: 30px;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  filter: grayscale(1) invert(1) contrast(2.2);
+}
+.ea-logo-linkedin img {
+  width: 26px;
+  height: 26px;
+}
+.ea-logo-linkedin b {
+  color: var(--ink-2);
+  font: 600 19px/1 var(--display);
+  letter-spacing: -0.02em;
+  transition: color 0.4s;
+}
+.ea-logo-linkedin:hover b {
+  color: #0a66c2;
+}
+
+/* 02 怎样一起做事 */
+.ea-practices {
+  background: var(--white);
+}
+.ea-practice-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 clamp(24px, 3.4vw, 56px);
+  border-top: 1px solid var(--ink);
+}
+.ea-practice-list li {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding-top: 24px;
+}
+.ea-practice-no {
+  font: 600 clamp(28px, 2.6vw, 40px) / 1 var(--display);
+  letter-spacing: -0.025em;
+}
+.ea-practice-list h3 {
+  font: 600 clamp(19px, 1.6vw, 23px) / 1.45 var(--cjk);
+}
+.ea-practice-list p {
+  color: var(--ink-2);
+  font: 400 15.5px/1.85 var(--cjk);
+}
+
+/* ---------- 结尾 ---------- */
+.ea-closing {
+  display: grid;
+  justify-items: start;
+  gap: clamp(28px, 5vh, 44px);
+  padding: clamp(80px, 13vh, 140px) var(--gutter) clamp(56px, 9vh, 96px);
+}
+.ea-closing h2 {
+  font: 600 clamp(30px, 3.8vw, 58px) / 1.3 var(--cjk);
+  letter-spacing: -0.025em;
+}
+.ea-closing h2 span {
+  display: block;
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1100px) {
+  .ea-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ea-proof {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .ea-hero,
+  .ea-practice-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ea-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ea-person {
+    padding: 24px 0;
+  }
+  .ea-person-head {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 16px;
+  }
+  .ea-photo {
+    width: 88px;
+    height: 88px;
+  }
+  .ea-photo-empty {
+    font-size: 18px;
+  }
+  .ea-logos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ea-logos li {
+    height: 72px;
+  }
+  .ea-logos li + li {
+    border-left: 0;
+  }
+  .ea-logos li:nth-child(even) {
+    border-left: 1px solid var(--rule);
+  }
+  .ea-logos li:nth-child(n + 3) {
+    border-top: 1px solid var(--rule);
+  }
+  .ea-logos li:last-child {
+    grid-column: 1 / -1;
+  }
+  .ea-practice-list li + li {
+    margin-top: 16px;
+    border-top: 1px solid var(--rule);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ea-hero {
+    animation: none;
+  }
+}
+
+/* ---------- 互动：我们从哪里来 ---------- */
+.ea-proof {
+  margin-bottom: clamp(8px, 2vh, 20px);
+}
+.ea-proof > p small {
+  display: block;
+  margin-top: 6px;
+  color: var(--accent-ink);
+  letter-spacing: 0.02em;
+}
+.ea-logos li {
+  padding: 0;
+}
+.ea-logos button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  padding: 0 14px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: background 0.3s var(--ease);
+}
+.ea-logos button::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: -1px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.4s var(--bounce);
+}
+.ea-logos button:is(:hover, :focus-visible, [data-lit], [aria-pressed='true']) {
+  background: var(--accent-soft);
+}
+.ea-logos
+  button:is(:hover, :focus-visible, [data-lit], [aria-pressed='true'])::after {
+  transform: scaleX(1);
+}
+.ea-logos
+  button:is(:hover, :focus-visible, [data-lit], [aria-pressed='true'])
+  img {
+  filter: none;
+  opacity: 1;
+}
+.ea-logos
+  .ea-logo-linkedin
+  button:is(:hover, [data-lit], [aria-pressed='true'])
+  b {
+  color: #0a66c2;
+}
+.ea-logos button:focus-visible {
+  outline-offset: -4px;
+}
+.ea-proof-note {
+  grid-column: 2;
+  min-height: 1.4em;
+  color: var(--ink);
+  font:
+    500 12.5px/1.4 var(--mono),
+    var(--cjk);
+}
+.ea-person {
+  transition:
+    opacity 0.35s var(--ease),
+    transform 0.4s var(--bounce);
+}
+.ea-grid[data-filter] .ea-person[data-state='off'] {
+  opacity: 0.28;
+}
+.ea-grid[data-filter] .ea-person[data-state='on'] {
+  transform: translateY(-4px);
+}
+.ea-grid[data-filter] .ea-person[data-state='on'] .ea-photo {
+  outline: 2.5px solid var(--accent);
+  outline-offset: 3px;
+}
+.ea-experience mark {
+  padding: 0 2px;
+  border-radius: 3px;
+  background: rgb(234 146 96 / 0.35);
+  color: inherit;
+}
+@media (max-width: 760px) {
+  .ea-proof-note {
+    grid-column: 1;
+  }
+}

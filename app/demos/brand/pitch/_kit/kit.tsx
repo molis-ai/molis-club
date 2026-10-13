@@ -37,7 +37,7 @@ import {
 import './base.css';
 
 // 比稿各版共用：顶栏（含产品菜单）、首页内容、页尾栏目、滚动驱动、逐字显影和演示外壳。
-// 内容、链接与现行 Folio 首页同一份（content/ 与 folio/shared），Folio 改文案时九版一起变；
+// 内容、链接与现行 Folio 首页同一份（content/ 与 folio/shared），Folio 改文案时十版一起变；
 // 视觉由各方向自己的样式表按类名前缀决定。
 
 export type Vars = CSSProperties & Record<`--${string}`, string | number>;

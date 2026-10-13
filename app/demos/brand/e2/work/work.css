@@ -1,0 +1,1125 @@
+/* E2 · Molis Work（前缀 ew-）。整站最「产品」的一页：首屏左文右界面示意；亮点用泳道图；
+   组成用分层轴测；三个场景是粘住的图版跟着要点换画面；后半段是规格表式的不同、比较、边界与三栏可用性。
+   界面示意的样式在 desk.css、scenes.css。 */
+
+/* ---------- 状态签 ---------- */
+.ew-phase {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 1px solid var(--rule-2);
+  border-radius: 4px;
+  color: var(--ink-2);
+  font:
+    400 11px/1.2 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.ew-phase[data-phase='released'] {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.ew-phase[data-phase='released']::before {
+  content: '';
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.ew-phase[data-phase='preview'] {
+  border-style: dashed;
+}
+.ew-phase[data-phase='planned'] {
+  border-style: dashed;
+  color: var(--muted);
+}
+
+/* ---------- 首屏 ---------- */
+.ew-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  align-items: center;
+  gap: clamp(32px, 4.4vw, 80px);
+  min-height: calc(100svh - var(--header));
+  padding: clamp(36px, 6vh, 72px) var(--gutter) clamp(40px, 6vh, 72px);
+}
+.ew-hero-copy {
+  display: grid;
+  justify-items: start;
+  gap: clamp(18px, 2.6vh, 26px);
+  min-width: 0;
+  animation: ew-rise 0.9s var(--ease) both;
+}
+@keyframes ew-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.ew-hero h1 {
+  max-width: 13em;
+  font: 700 clamp(36px, 4.1vw, 64px) / 1.18 var(--display);
+  letter-spacing: -0.02em;
+}
+.ew-hero-lead {
+  max-width: 34em;
+  color: var(--ink-2);
+  font: 400 clamp(16px, 1.2vw, 18px) / 1.85 var(--cjk);
+}
+.ew-hero-spec {
+  width: 100%;
+  max-width: 36em;
+  border-top: 1px solid var(--ink);
+}
+.ew-hero-spec > div {
+  display: grid;
+  grid-template-columns: 6.5em minmax(0, 1fr);
+  align-items: baseline;
+  gap: 8px 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.ew-hero-spec dt {
+  color: var(--muted);
+  font:
+    400 11.5px/1.6 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.04em;
+}
+.ew-hero-spec dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+}
+.ew-agents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+}
+.ew-agents li {
+  font: 500 14.5px/1.5 var(--display);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.ew-agents li + li::before {
+  content: '/';
+  margin: 0 8px;
+  color: var(--rule-2);
+  font-weight: 400;
+}
+.ew-agents-more {
+  color: var(--muted);
+  font: 400 13px/1.5 var(--cjk);
+}
+
+/* ---------- 通用段落 ---------- */
+.ew-section {
+  padding: clamp(80px, 12vh, 140px) var(--gutter);
+  border-top: 1px solid var(--rule-2);
+}
+.ew-section[data-bg='white'] {
+  background: var(--white);
+}
+.ew-section > .e2-head + * {
+  margin-top: clamp(40px, 7vh, 72px);
+}
+
+/* ---------- 01 亮点 ---------- */
+.ew-modes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--ink);
+}
+.ew-modes li {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 22px clamp(16px, 2vw, 32px) 26px 0;
+}
+.ew-modes li + li {
+  padding-left: clamp(16px, 2vw, 32px);
+  border-left: 1px solid var(--rule);
+}
+.ew-modes i,
+.ew-principles i,
+.ew-diff > li > i,
+.ew-bounds i,
+.ew-more > li > i,
+.ew-scene-meta i,
+.ew-points i {
+  color: var(--muted);
+  font: 400 11px/1.4 var(--mono);
+  font-style: normal;
+}
+.ew-modes strong {
+  font: 600 clamp(24px, 2.2vw, 32px) / 1.2 var(--cjk);
+  letter-spacing: -0.01em;
+}
+.ew-modes p {
+  max-width: 22em;
+  color: var(--ink-2);
+  font: 400 15.5px/1.75 var(--cjk);
+}
+.ew-flow-plate {
+  margin-top: clamp(40px, 6vh, 64px);
+}
+.ew-flow {
+  --gap: clamp(10px, 1.4vw, 20px);
+  position: relative;
+  padding: clamp(24px, 3vw, 40px) clamp(16px, 2.4vw, 36px)
+    clamp(24px, 3vw, 36px) calc(clamp(16px, 2.4vw, 36px) + 56px);
+}
+.ew-flow-lane {
+  position: absolute;
+  left: clamp(16px, 2.4vw, 36px);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font:
+    500 11px/1 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.06em;
+}
+.ew-flow-lane[data-lane='ai'] {
+  top: calc(clamp(24px, 3vw, 40px) + 46px);
+  color: var(--accent-ink);
+}
+.ew-flow-lane[data-lane='you'] {
+  bottom: calc(clamp(24px, 3vw, 36px) + 22px);
+}
+.ew-flow-steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0 var(--gap);
+}
+/* AI 那条泳道：一条虚线；你那条：一条细线 */
+.ew-flow-steps::before,
+.ew-flow-steps::after {
+  content: '';
+  position: absolute;
+  left: -56px;
+  right: 0;
+  height: 0;
+  border-top: 1px dashed rgb(182 90 44 / 0.4);
+}
+.ew-flow-steps::before {
+  top: 52px;
+}
+.ew-flow-steps::after {
+  bottom: 28px;
+  border-top: 1px solid var(--rule);
+}
+.ew-flow-steps li {
+  --a: clamp(0, calc((var(--p, 1) - 0.12 - var(--i) * 0.08) * 7), 1);
+  position: relative;
+  display: grid;
+  grid-template-rows: 104px auto 56px;
+}
+/* 插件之间的连线：随滚动从左往右走 */
+.ew-flow-steps li + li .ew-flow-tile::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  width: calc(var(--gap) + 1px);
+  height: 1px;
+  background: var(--ink);
+  transform-origin: left;
+  transform: scaleX(
+    clamp(0, calc((var(--p, 1) - 0.06 - var(--i) * 0.08) * 7), 1)
+  );
+}
+.ew-flow-ai {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 14px;
+}
+.ew-flow-ai p {
+  position: relative;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--rule-2);
+  border-left: 2px solid var(--accent);
+  border-radius: 6px;
+  background: var(--white);
+  font: 400 12.5px/1.5 var(--cjk);
+  opacity: var(--a);
+  transform: translateY(calc((1 - var(--a)) * 10px));
+}
+.ew-flow-ai p::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 100%;
+  width: 1px;
+  height: 15px;
+  background: var(--ink);
+}
+.ew-flow-ai b {
+  margin-right: 6px;
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.ew-flow-tag {
+  display: none;
+}
+.ew-flow-tile {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  padding: 12px 12px 13px;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+  transition: border-color 0.3s;
+}
+.ew-flow-steps li:has(.ew-flow-ai p) .ew-flow-tile {
+  border-color: color-mix(
+    in srgb,
+    var(--ink) calc(var(--a) * 100%),
+    var(--rule-2)
+  );
+}
+.ew-flow-tile i {
+  color: var(--muted);
+  font: 400 10.5px/1 var(--mono);
+  font-style: normal;
+}
+.ew-flow-tile strong {
+  font: 600 clamp(16px, 1.4vw, 20px) / 1.2 var(--display);
+  letter-spacing: -0.02em;
+}
+.ew-flow-tile small {
+  color: var(--muted);
+  font: 400 12.5px/1.4 var(--cjk);
+}
+.ew-flow-you {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+.ew-flow-you p {
+  position: relative;
+  z-index: 1;
+  padding: 3px 8px 3px 0;
+  background: var(--plate);
+  color: var(--ink-2);
+  font: 400 12.5px/1.4 var(--cjk);
+}
+.ew-flow-you p::before {
+  content: '';
+  position: absolute;
+  left: 18px;
+  bottom: 100%;
+  width: 1px;
+  height: 26px;
+  background: var(--rule-2);
+}
+.ew-aside {
+  max-width: 38em;
+  margin-top: 28px;
+  color: var(--ink-2);
+  font: 400 16px/1.8 var(--cjk);
+}
+
+/* ---------- 02 组成 ---------- */
+.ew-platform {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: clamp(40px, 5vw, 96px);
+}
+.ew-principles {
+  margin-top: clamp(32px, 5vh, 48px);
+  border-top: 1px solid var(--ink);
+}
+.ew-principles li {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 4px 0;
+  padding: 16px 0 18px;
+  border-bottom: 1px solid var(--rule);
+}
+.ew-principles i {
+  grid-row: span 2;
+  padding-top: 4px;
+}
+.ew-principles h3 {
+  font: 600 17px/1.45 var(--cjk);
+}
+.ew-principles p {
+  color: var(--ink-2);
+  font: 400 15px/1.75 var(--cjk);
+}
+.ew-platform-art {
+  --e: clamp(0, calc(var(--p, 1) * 1.7 - 0.25), 1);
+  position: sticky;
+  top: calc(var(--header) + 32px);
+}
+.ew-platform-art .e2-plate-body {
+  padding: clamp(18px, 3vw, 40px) clamp(10px, 2vw, 28px);
+  background: var(--white);
+}
+.ew-stack {
+  --sw: 0.1;
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+.ew-lv {
+  transform: translateY(calc((1 - var(--e, 1)) * var(--k, 0) * 2.2px));
+}
+.ew-axo-text {
+  fill: var(--ink);
+  font-family: var(--cjk);
+  font-weight: 500;
+}
+.ew-axo-text-light {
+  fill: var(--white);
+}
+.ew-slot {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 0.1;
+  stroke-dasharray: 0.4 0.3;
+}
+.ew-slot-plus {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 0.12;
+  stroke-linecap: round;
+}
+/* 面上的字、空位与引线在线描之后淡入 */
+.ew-stack .ew-axo-text,
+.ew-stack .ew-axo-late,
+.ew-stack .e2-callout {
+  opacity: 0;
+}
+.is-in .ew-stack .ew-axo-text,
+.is-in .ew-stack .ew-axo-late,
+.is-in .ew-stack .e2-callout {
+  animation: e2-fade 0.6s var(--ease) 2s forwards;
+}
+.ew-plugins {
+  display: grid;
+  grid-template-columns: minmax(0, 11fr) minmax(0, 15fr);
+  gap: 24px clamp(24px, 3vw, 48px);
+  margin-top: clamp(48px, 8vh, 80px);
+  padding-top: 24px;
+  border-top: 1px solid var(--ink);
+}
+.ew-plugins h3 {
+  margin-bottom: 14px;
+  color: var(--muted);
+  font:
+    400 12px/1.3 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.06em;
+}
+.ew-plugins-group ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ew-plugins-group li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--rule-2);
+  border-radius: 6px;
+  background: var(--white);
+  font:
+    400 12.5px/1.2 var(--mono),
+    var(--cjk);
+}
+.ew-plugins-group li[data-released]::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.ew-plugins-group .ew-plugins-yours {
+  border-style: dashed;
+  background: transparent;
+  color: var(--muted);
+}
+.ew-plugins-count {
+  grid-column: 1 / -1;
+  max-width: 60em;
+  color: var(--muted);
+  font:
+    400 12px/1.7 var(--mono),
+    var(--cjk);
+}
+
+/* ---------- 03 三个场景 ---------- */
+.ew-scene {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(32px, 5vw, 88px);
+  padding: clamp(48px, 8vh, 80px) 0;
+  border-top: 1px solid var(--ink);
+}
+.ew-section > .e2-head + .ew-scene {
+  margin-top: clamp(40px, 7vh, 72px);
+}
+.ew-scene + .ew-scene {
+  border-top-color: var(--rule-2);
+}
+.ew-scene-head {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+}
+.ew-scene-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.ew-scene-meta i {
+  color: var(--ink);
+  font-size: 12px;
+}
+.ew-scene h3 {
+  font: 600 clamp(28px, 2.9vw, 44px) / 1.25 var(--display);
+  letter-spacing: -0.02em;
+}
+.ew-scene blockquote {
+  max-width: 30em;
+  padding-left: 14px;
+  border-left: 1px solid var(--rule-2);
+  color: var(--muted);
+  font: 400 15px/1.8 var(--cjk);
+}
+.ew-points {
+  margin-top: clamp(28px, 5vh, 48px);
+}
+.ew-point {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: start;
+  padding: 18px 0;
+  border-top: 1px solid var(--rule);
+  transition: color 0.35s;
+}
+.ew-point i {
+  padding-top: 5px;
+  transition: color 0.35s;
+}
+.ew-point p {
+  max-width: 26em;
+  font: 500 clamp(17px, 1.35vw, 20px) / 1.65 var(--cjk);
+}
+.ew-scene-stage {
+  align-self: start;
+}
+
+/* ---------- 04 五点不同 / 07 边界：左边标题粘住，右边规格表 ---------- */
+.ew-sheet {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 32px clamp(40px, 5vw, 96px);
+}
+.ew-sheet-head {
+  position: sticky;
+  top: calc(var(--header) + 40px);
+}
+.ew-sheet-head .e2-head h2 {
+  font-size: clamp(28px, 3vw, 44px);
+}
+.ew-diff,
+.ew-bounds {
+  border-top: 1px solid var(--ink);
+}
+.ew-diff > li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 10px 24px;
+  padding: 24px 0 26px;
+  border-bottom: 1px solid var(--rule-2);
+}
+.ew-diff > li > i {
+  padding-top: 5px;
+}
+.ew-diff-title {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+.ew-diff h3 {
+  font: 600 18px/1.5 var(--cjk);
+}
+.ew-diff p {
+  color: var(--ink-2);
+  font: 400 15px/1.8 var(--cjk);
+}
+.ew-bounds li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  padding: 20px 0 22px;
+  border-bottom: 1px solid var(--rule-2);
+}
+.ew-bounds i {
+  padding-top: 5px;
+}
+.ew-bounds p {
+  max-width: 34em;
+  font: 400 17px/1.8 var(--cjk);
+}
+
+/* ---------- 05 更多场景 ---------- */
+.ew-more {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--ink);
+  border-left: 1px solid var(--rule);
+}
+.ew-more > li {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 12px;
+  padding: 24px clamp(18px, 2vw, 30px) 30px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.ew-more h3 {
+  font: 600 19px/1.45 var(--cjk);
+}
+.ew-more p {
+  color: var(--ink-2);
+  font: 400 15px/1.75 var(--cjk);
+}
+.ew-more .ew-more-pain {
+  color: var(--muted);
+  font-size: 14px;
+}
+.ew-more-key {
+  align-content: end !important;
+  background: var(--paper);
+}
+.ew-more-key ul {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+
+/* ---------- 06 比较 ---------- */
+.ew-compare {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.ew-compare thead th {
+  padding: 0 24px 14px 0;
+  border-bottom: 1px solid var(--ink);
+  color: var(--muted);
+  font:
+    400 12px/1.3 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.06em;
+}
+.ew-compare th,
+.ew-compare td {
+  vertical-align: top;
+}
+.ew-compare tbody th,
+.ew-compare td {
+  padding: 22px 24px 24px 0;
+  border-bottom: 1px solid var(--rule-2);
+}
+.ew-compare tbody th {
+  width: 30%;
+  font: 600 17px/1.55 var(--cjk);
+}
+.ew-compare tbody th i {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+  font-style: normal;
+}
+.ew-compare td {
+  width: 35%;
+  color: var(--ink-2);
+  font: 400 15.5px/1.8 var(--cjk);
+}
+.ew-compare td + td {
+  color: var(--muted);
+}
+
+/* ---------- 08 现在能用什么 ---------- */
+.ew-access {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border: 1px solid var(--rule-2);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.ew-access-col {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto auto;
+  align-content: start;
+  justify-items: start;
+  gap: 16px;
+  padding: 34px clamp(20px, 2.4vw, 36px) clamp(26px, 3vw, 40px);
+}
+.ew-access-col + .ew-access-col {
+  border-left: 1px solid var(--rule-2);
+}
+/* 顶边是一条时间轴：现在是实线，下一版虚线，以后点线 */
+.ew-access-col::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-top: 3px solid var(--ink);
+}
+.ew-access-col[data-when='next']::before {
+  border-top: 3px dashed var(--rule-2);
+}
+.ew-access-col[data-when='later']::before {
+  border-top: 3px dotted var(--rule-2);
+}
+.ew-access-col[data-when='now'] {
+  background: var(--white);
+}
+.ew-access-col small {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font:
+    400 12px/1.3 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.04em;
+}
+.ew-access-col[data-when='now'] small {
+  color: var(--accent-ink);
+}
+.ew-access-col[data-when='now'] small::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.ew-access-col h3 {
+  margin-top: -6px;
+  font: 600 clamp(22px, 2vw, 28px) / 1.3 var(--cjk);
+  letter-spacing: -0.01em;
+}
+.ew-access-list {
+  display: grid;
+  width: 100%;
+  border-top: 1px solid var(--rule);
+}
+.ew-access-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font: 400 14.5px/1.6 var(--cjk);
+}
+.ew-access-list svg {
+  flex: none;
+  transform: translateY(2px);
+  color: var(--accent-ink);
+}
+.ew-access-col[data-when='next'] .ew-access-list li::before {
+  content: '';
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--rule-2);
+  border-radius: 50%;
+  transform: translateY(1px);
+}
+.ew-access-later li {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.ew-access-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: underline 1px var(--rule-2);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s;
+}
+.ew-access-link:hover {
+  text-decoration-color: currentColor;
+}
+.ew-access-col > p {
+  color: var(--ink-2);
+  font: 400 14px/1.75 var(--cjk);
+}
+.ew-access-col .e2-actions {
+  gap: 10px 18px;
+}
+
+/* ---------- 结尾 ---------- */
+.ew-closing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 32px 48px;
+  padding: clamp(80px, 13vh, 150px) var(--gutter) clamp(56px, 9vh, 96px);
+}
+.ew-closing h2 {
+  max-width: 16em;
+  font: 600 clamp(30px, 3.8vw, 58px) / 1.3 var(--cjk);
+  letter-spacing: -0.025em;
+}
+
+/* ---------- 宽屏、不减少动态：场景要点按步高亮，图版粘住 ---------- */
+@media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+  .ew-point {
+    min-height: 34vh;
+    color: var(--muted);
+  }
+  .ew-scene[data-step='0'] .ew-point:nth-child(1),
+  .ew-scene[data-step='1'] .ew-point:nth-child(2),
+  .ew-scene[data-step='2'] .ew-point:nth-child(3) {
+    color: var(--ink);
+    border-top-color: var(--ink);
+  }
+  .ew-scene[data-step='0'] .ew-point:nth-child(1) i,
+  .ew-scene[data-step='1'] .ew-point:nth-child(2) i,
+  .ew-scene[data-step='2'] .ew-point:nth-child(3) i {
+    color: var(--accent-ink);
+  }
+  .ew-point:last-child {
+    min-height: 0;
+    padding-bottom: 18vh;
+  }
+  .ew-scene-stage {
+    position: sticky;
+    top: calc(var(--header) + max(24px, (100svh - var(--header) - 560px) / 2));
+  }
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1100px) {
+  .ew-hero {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+  .ew-hero h1 {
+    max-width: 15em;
+  }
+  .ew-platform {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ew-platform-art {
+    position: static;
+  }
+  .ew-more {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .ew-scene,
+  .ew-sheet,
+  .ew-plugins,
+  .ew-closing {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ew-sheet-head {
+    position: static;
+  }
+  .ew-access {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ew-access-col + .ew-access-col {
+    border-left: 0;
+    border-top: 1px solid var(--rule-2);
+  }
+  .ew-closing {
+    align-items: start;
+  }
+
+  /* 泳道图改成竖排：每一步一块，AI 的那句标在下面 */
+  .ew-flow {
+    padding: 20px 16px;
+  }
+  .ew-flow-lane,
+  .ew-flow-steps::before,
+  .ew-flow-steps::after,
+  .ew-flow-ai p::after,
+  .ew-flow-you p::before {
+    display: none;
+  }
+  .ew-flow-steps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding-left: 18px;
+    border-left: 1px solid var(--ink);
+  }
+  .ew-flow-steps li {
+    --a: 1;
+    grid-template-rows: none;
+    gap: 8px;
+    padding: 0 0 22px;
+  }
+  .ew-flow-steps li:last-child {
+    padding-bottom: 0;
+  }
+  .ew-flow-steps li::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 18px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+  .ew-flow-steps li + li .ew-flow-tile::before {
+    display: none;
+  }
+  .ew-flow-ai,
+  .ew-flow-you {
+    padding: 0;
+  }
+  .ew-flow-ai {
+    order: 2;
+  }
+  .ew-flow-tile {
+    order: 1;
+  }
+  .ew-flow-you {
+    order: 3;
+  }
+  .ew-flow-ai:empty,
+  .ew-flow-you:empty {
+    display: none;
+  }
+  .ew-flow-tag {
+    display: inline;
+    margin-right: 6px;
+    color: var(--accent-ink);
+    font: 500 10.5px/1 var(--mono);
+  }
+  .ew-flow-you p {
+    padding: 0;
+    background: none;
+  }
+}
+@media (max-width: 760px) {
+  .ew-modes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ew-modes li,
+  .ew-modes li + li {
+    padding: 18px 0 20px;
+    border-left: 0;
+  }
+  .ew-modes li + li {
+    border-top: 1px solid var(--rule);
+  }
+  .ew-more {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ew-diff > li {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+  .ew-diff > li > p {
+    grid-column: 2;
+  }
+  .ew-hero-spec > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  /* 比较表改成一行一块 */
+  .ew-compare thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .ew-compare,
+  .ew-compare tbody,
+  .ew-compare tr,
+  .ew-compare th,
+  .ew-compare td {
+    display: block;
+    width: 100%;
+  }
+  .ew-compare tr {
+    padding: 20px 0 22px;
+    border-bottom: 1px solid var(--rule-2);
+  }
+  .ew-compare tbody tr:first-child {
+    border-top: 1px solid var(--ink);
+  }
+  .ew-compare tbody th,
+  .ew-compare td {
+    padding: 0;
+    border: 0;
+  }
+  .ew-compare td {
+    margin-top: 12px;
+  }
+  .ew-compare td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font:
+      400 11px/1.3 var(--mono),
+      var(--cjk);
+    letter-spacing: 0.04em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ew-stack .ew-axo-text,
+  .ew-stack .ew-axo-late,
+  .ew-stack .e2-callout {
+    opacity: 1;
+  }
+  .ew-lv {
+    transform: none;
+  }
+  .ew-platform-art {
+    position: static;
+  }
+  .ew-sheet-head {
+    position: static;
+  }
+}
+
+/* ---------- 动效：帮人看懂「现在能用什么」 ---------- */
+/* 05 更多场景：状态图例是筛选；选中一个状态，其余卡片退淡 */
+.ew-more > li {
+  transition:
+    opacity 0.35s var(--ease),
+    background 0.35s var(--ease);
+}
+.e2 .ew-more > li[data-dim] {
+  opacity: 0.28;
+}
+.ew-more[data-only] > li:not([data-dim]):not(.ew-more-key) {
+  background: var(--accent-soft);
+}
+.ew-more-key > small {
+  color: var(--muted);
+  font:
+    500 11.5px/1.2 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.06em;
+}
+.ew-more-key button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 4px 3px 3px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.3s var(--bounce);
+}
+.ew-more-key button:hover {
+  background: rgb(18 18 18 / 0.05);
+}
+.ew-more-key button[aria-pressed='true'] {
+  background: var(--accent-soft);
+  transform: translateX(4px);
+}
+.ew-more-key button[aria-pressed='true'] .ew-phase {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.ew-more-count {
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+}
+
+/* 06 比较：每行进入视口时，从「如果你现在」画一道箭头到「在 Molis Work 里」 */
+.ew-compare tr[data-flow] td:first-of-type {
+  position: relative;
+}
+.ew-compare tr[data-flow] td:first-of-type::before {
+  content: '';
+  position: absolute;
+  top: 33px;
+  left: -22px;
+  width: 14px;
+  height: 1.5px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease) 0.35s;
+}
+.ew-compare tr[data-flow] td:first-of-type::after {
+  content: '';
+  position: absolute;
+  top: 30px;
+  left: -12px;
+  width: 6px;
+  height: 6px;
+  border-top: 1.5px solid var(--ink);
+  border-right: 1.5px solid var(--ink);
+  rotate: 45deg;
+  opacity: 0;
+  transition: opacity 0.2s var(--ease) 0.7s;
+}
+.ew-compare tr[data-flow].is-in td:first-of-type::before {
+  transform: scaleX(1);
+}
+.ew-compare tr[data-flow].is-in td:first-of-type::after {
+  opacity: 1;
+}
+.ew-compare tbody tr {
+  transition: background 0.25s;
+}
+.ew-compare tbody tr:hover {
+  background: linear-gradient(90deg, var(--accent-soft), transparent 80%);
+}
+
+/* 08 现在能用什么：顶边的时间轴按「现在 → 下一版 → 以后」依次画出 */
+.ew-access-col::before {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--ease) var(--line-d, 0.2s);
+}
+.ew-access-col[data-when='next'] {
+  --line-d: 0.75s;
+}
+.ew-access-col[data-when='later'] {
+  --line-d: 1.3s;
+}
+.ew-access-col.is-in::before {
+  transform: scaleX(1);
+}
+@media (max-width: 760px) {
+  .ew-compare tr[data-flow] td:first-of-type::before,
+  .ew-compare tr[data-flow] td:first-of-type::after {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ew-access-col::before {
+    transform: none;
+  }
+}

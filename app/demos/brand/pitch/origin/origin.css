@@ -1,0 +1,1976 @@
+/* ───────────────────────────────────────────────
+   零点 · Origin
+   一把尺，一个温暖的零点：技术回到人的尺度。比稿第十版，内容与 Folio 首页同一份。
+   ─────────────────────────────────────────────── */
+
+.og {
+  --paper: #f2ede4;
+  --paper-2: #ebe4d8;
+  --paper-3: #e1d8c8;
+  --card: #fbf9f5;
+  --ink: #161b2e;
+  --ink-2: #3d4255;
+  --muted: #7a756c;
+  --line: rgba(22, 27, 46, 0.12);
+  --line-strong: rgba(22, 27, 46, 0.26);
+  --navy: #1b2852;
+  --apricot: #e9915e;
+  --apricot-deep: #b95a27;
+  --apricot-soft: rgba(233, 145, 94, 0.18);
+  --on-dark: #f2ede4;
+  --on-dark-2: rgba(242, 237, 228, 0.66);
+  --gutter: clamp(20px, 5.6vw, 92px);
+  --serif: var(--font-og-serif), 'Songti SC', 'STSong', serif;
+  --latin: var(--font-og-latin), 'Iowan Old Style', Georgia, serif;
+  --mono: var(--font-og-mono), ui-monospace, 'SF Mono', monospace;
+  --sans:
+    var(--font-geist), -apple-system, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', sans-serif;
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.25, 1);
+
+  position: relative;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.75;
+  overflow-x: clip;
+}
+.og ::selection {
+  background: var(--apricot);
+  color: var(--ink);
+}
+.og :focus-visible {
+  outline: 2px solid var(--apricot);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+.og em {
+  font-family: inherit;
+  font-weight: inherit;
+  font-style: normal;
+}
+.og h1,
+.og h2,
+.og h3 {
+  font-weight: 300;
+}
+.og section[id] {
+  scroll-margin-top: 0;
+}
+.og article[id] {
+  scroll-margin-top: 104px;
+}
+.og p {
+  text-wrap: pretty;
+}
+.og-wrap {
+  padding-inline: var(--gutter);
+}
+.og-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.og-mono {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+/* 进入视口的显影 */
+.og.is-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 1s var(--ease) var(--d, 0ms),
+    transform 1.3s var(--ease) var(--d, 0ms);
+}
+.og.is-ready [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── 按钮与文字链接 ─────────────────────────── */
+.og .og-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition:
+    background 0.4s var(--ease),
+    color 0.4s var(--ease),
+    transform 0.4s var(--ease);
+}
+.og-button svg {
+  transition: transform 0.4s var(--ease);
+}
+.og .og-button:hover {
+  background: var(--navy);
+}
+.og-button:hover svg {
+  transform: translateX(3px);
+}
+.og .og-button.is-light {
+  background: var(--on-dark);
+  color: var(--navy);
+}
+.og .og-button.is-light:hover {
+  background: var(--apricot);
+  color: var(--ink);
+}
+.og-button.is-light:hover svg {
+  transform: translate(2px, -2px);
+}
+.og-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 3px;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px
+    no-repeat;
+  transition: background-size 0.5s var(--ease);
+}
+.og-text-link::after {
+  content: '→';
+  transition: transform 0.4s var(--ease);
+}
+.og-text-link:hover {
+  background-size: 0 1px;
+  background-position: 100% 100%;
+}
+.og-text-link:hover::after {
+  transform: translateX(4px);
+}
+
+.og-text-link.is-out::after {
+  content: none;
+}
+.og-text-link.is-out svg {
+  transition: transform 0.4s var(--ease);
+}
+.og-text-link.is-out:hover svg {
+  transform: translate(2px, -2px);
+}
+
+/* ── 顶栏：比稿共用的结构（产品下拉、四个栏目、登录与聊一聊），零点的样子 ── */
+.og-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  height: 68px;
+  padding: 0 var(--gutter);
+  color: var(--ink);
+  border-bottom: 1px solid transparent;
+  transition:
+    background 0.5s var(--ease),
+    color 0.5s var(--ease),
+    border-color 0.5s var(--ease);
+}
+.og.is-scrolled .og-header {
+  background: rgba(242, 237, 228, 0.86);
+  border-color: var(--line);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+}
+.og[data-head='dark'] .og-header {
+  color: var(--on-dark);
+}
+.og.is-scrolled[data-head='dark'] .og-header {
+  background: rgba(14, 17, 31, 0.5);
+  border-color: rgba(242, 237, 228, 0.08);
+}
+.og-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.og-logo img {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+.og-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-left: auto;
+  font-size: 14px;
+}
+.og-nav > a,
+.og-menu > button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  opacity: 0.72;
+  transition: opacity 0.3s;
+}
+.og-nav > a::after,
+.og-menu > button::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--apricot);
+  transform: translateX(-50%) scale(0);
+  transition: transform 0.4s var(--ease);
+}
+.og-nav > a:hover,
+.og-menu > button:hover,
+.og-menu[data-open='true'] > button {
+  opacity: 1;
+}
+.og-nav > a:hover::after,
+.og-menu > button:hover::after,
+.og-menu[data-open='true'] > button::after {
+  transform: translateX(-50%) scale(1);
+}
+.og-menu > button svg {
+  transition: transform 0.4s var(--ease);
+}
+.og-menu[data-open='true'] > button svg {
+  transform: rotate(180deg);
+}
+.og-menu {
+  position: relative;
+}
+.og-menu-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: -20px;
+  width: 360px;
+  padding: 10px 0;
+  border-radius: 18px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 24px 50px -28px rgba(22, 27, 46, 0.45);
+  animation: og-fade 0.35s var(--ease) both;
+}
+.og-menu-panel:not([hidden]) {
+  display: grid;
+}
+.og-menu-panel a {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  padding: 12px 20px;
+  transition: background 0.3s;
+}
+.og-menu-panel a:hover {
+  background: var(--paper);
+}
+.og-menu-panel i {
+  grid-row: span 2;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-style: normal;
+  line-height: 2.4;
+  color: var(--apricot-deep);
+}
+.og-menu-panel strong {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--latin);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+.og-menu-tag {
+  padding: 1px 8px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.og-menu-panel small {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.og-header-end {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.og-login {
+  font-size: 14px;
+  opacity: 0.72;
+  transition: opacity 0.3s;
+}
+.og-login:hover {
+  opacity: 1;
+}
+.og-cta {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background 0.4s var(--ease),
+    color 0.4s var(--ease),
+    border-color 0.4s var(--ease);
+}
+.og-cta:hover {
+  background: var(--apricot);
+  border-color: var(--apricot);
+  color: var(--ink);
+}
+
+/* ── 右侧章节刻度 ───────────────────────────── */
+.og-scale {
+  --c: rgba(22, 27, 46, 0.5);
+  --c-soft: rgba(22, 27, 46, 0.2);
+  position: fixed;
+  z-index: 40;
+  right: 22px;
+  top: 50%;
+  width: 56px;
+  height: min(52vh, 460px);
+  transform: translateY(-50%);
+  color: var(--ink);
+  transition: color 0.5s var(--ease);
+}
+.og[data-side='dark'] .og-scale {
+  --c: rgba(242, 237, 228, 0.6);
+  --c-soft: rgba(242, 237, 228, 0.22);
+  color: var(--on-dark);
+}
+.og-scale-track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  border-right: 1px solid var(--c-soft);
+  background:
+    repeating-linear-gradient(to bottom, var(--c) 0 1px, transparent 1px 46px)
+      right top / 10px 100% no-repeat,
+    repeating-linear-gradient(
+        to bottom,
+        var(--c-soft) 0 1px,
+        transparent 1px 9.2px
+      )
+      right top / 5px 100% no-repeat;
+}
+.og-scale-needle {
+  position: absolute;
+  right: -3px;
+  top: calc(var(--at, 0) * 100%);
+  width: 22px;
+  height: 2px;
+  margin-top: -1px;
+  background: var(--apricot);
+  border-radius: 2px;
+}
+.og-scale-needle::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: -2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--apricot);
+}
+.og-scale ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.og-scale li {
+  position: absolute;
+  right: 18px;
+  top: calc(var(--at, 0) * 100%);
+  transform: translateY(-50%);
+}
+.og-scale a {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+  transition:
+    opacity 0.3s,
+    color 0.3s;
+}
+.og-scale em {
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(6px);
+  transition:
+    opacity 0.3s,
+    transform 0.4s var(--ease);
+  pointer-events: none;
+}
+.og-scale li.is-active a {
+  opacity: 1;
+  color: var(--apricot);
+}
+.og-scale:hover a,
+.og-scale a:focus-visible {
+  opacity: 1;
+}
+.og-scale:hover em,
+.og-scale a:focus-visible em {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── 00 零点：字标、A/I 词组与关键词，下面一把尺 ── */
+.og-hero {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-top: 84px;
+  background:
+    radial-gradient(
+      60vw 40vw at 82% 10%,
+      rgba(233, 145, 94, 0.09),
+      transparent 70%
+    ),
+    var(--paper);
+}
+.og-hero-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  animation: og-fade 1.2s 0.6s var(--ease) both;
+}
+.og-hero-meta span:first-child {
+  color: var(--apricot-deep);
+}
+.og-hero-body {
+  align-self: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: clamp(24px, 4vw, 72px);
+  padding-block: 4vh 1vh;
+}
+.og-hero-title {
+  margin: 0;
+  font-family: var(--latin);
+  font-size: clamp(84px, 16.4vw, 264px);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+}
+.og-hero-row {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+.og-hero-row > span {
+  display: inline-block;
+  animation: og-rise 1.4s var(--ease) both;
+}
+.og .og-hero-title em {
+  margin-left: 0.1em;
+  font-size: 0.4em;
+  font-style: italic;
+  letter-spacing: 0;
+  vertical-align: 1.05em;
+  color: var(--ink-2);
+}
+.og-hero-words {
+  padding-bottom: 1.6vw;
+  animation: og-fade 1.4s 0.5s var(--ease) both;
+}
+.og-ai-headline {
+  font-family: var(--latin);
+  font-size: clamp(30px, 3.3vw, 52px);
+  font-style: italic;
+  line-height: 1.06;
+  color: var(--ink-2);
+}
+.og-ai-words {
+  all: unset;
+  display: inline-flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.og-ai-words:focus-visible {
+  outline: 2px solid var(--apricot);
+  outline-offset: 8px;
+  border-radius: 4px;
+}
+.og-ai-row {
+  display: inline-flex;
+  white-space: nowrap;
+}
+.og-ai-row > span:first-child {
+  font-style: normal;
+  color: var(--apricot-deep);
+}
+.og-ai-headline[data-animated='true'] .og-ai-letter {
+  opacity: 0;
+}
+.og-hero-keys {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2em 1.4em;
+  margin: clamp(20px, 2.8vw, 44px) 0 0;
+  font-family: var(--serif);
+  font-size: clamp(30px, 4.4vw, 70px);
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.og-hero-keys > span {
+  position: relative;
+  animation: og-fade 1.4s calc(0.55s + var(--k, 0) * 0.14s) var(--ease) both;
+}
+.og-hero-keys > span:nth-child(2) {
+  --k: 1;
+}
+.og-hero-keys > span:nth-child(3) {
+  --k: 2;
+}
+.og-hero-keys > span + span::before {
+  content: '';
+  position: absolute;
+  left: -1em;
+  top: 0.62em;
+  width: 0.6em;
+  height: 1px;
+  background: var(--line-strong);
+}
+.og .og-hero-keys em {
+  color: var(--apricot);
+}
+.og-ruler {
+  position: relative;
+  height: 156px;
+}
+.og-ruler canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.og-ruler-zero {
+  position: absolute;
+  left: calc(var(--gutter) + 20px);
+  bottom: 58px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--apricot-deep);
+  animation: og-fade 1s 1.2s var(--ease) both;
+  pointer-events: none;
+}
+
+/* ── 通用段落 ──────────────────────────────── */
+.og-section {
+  position: relative;
+  padding-block: clamp(110px, 13vw, 200px);
+}
+.og-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 clamp(40px, 5.6vw, 76px);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.og-label > span:first-child {
+  color: var(--apricot-deep);
+}
+.og-label-rule {
+  width: 52px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+  transform-origin: left;
+  transition: transform 1.4s var(--ease) 0.2s;
+}
+.og.is-ready .og-label:not(.is-in) .og-label-rule {
+  transform: scaleX(0);
+}
+.og-label em {
+  font-family: var(--latin);
+  font-size: 16px;
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.og-display {
+  max-width: 15em;
+  margin: 0 0 clamp(56px, 7.6vw, 112px);
+  font-family: var(--serif);
+  font-size: clamp(32px, 4.4vw, 68px);
+  font-weight: 300;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+}
+
+/* ── 01 工作室：停在视口里，身份说明随滚动逐字显影 ── */
+.og-scrub {
+  max-width: 15em;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(30px, 4.6vw, 74px);
+  font-weight: 300;
+  line-height: 1.36;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+}
+.og-scrub .og-ch {
+  opacity: clamp(0.13, calc((var(--p, 1) * 1.7 - 0.05 - var(--i)) * 9), 1);
+}
+.og-scrub .is-mark {
+  color: var(--apricot-deep);
+}
+.og-studio {
+  --show: clamp(0, calc((var(--p, 1) - 0.66) * 5), 1);
+  position: relative;
+  height: 240vh;
+}
+.og-studio-stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: 96px 56px;
+}
+.og-studio-stage > .og-wrap {
+  width: 100%;
+}
+.og-studio .og-label {
+  margin-bottom: clamp(28px, 4vw, 56px);
+}
+.og-studio-row {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(28px, 5vw, 96px);
+  margin-top: clamp(36px, 5vw, 76px);
+  padding-top: 26px;
+  border-top: 1px solid var(--line-strong);
+  opacity: var(--show);
+  transform: translateY(calc((1 - var(--show)) * 24px));
+}
+.og-studio-view {
+  position: relative;
+  max-width: 18em;
+  padding-left: 26px;
+  font-family: var(--serif);
+  font-size: clamp(20px, 1.9vw, 28px);
+  font-weight: 300;
+  line-height: 1.6;
+}
+.og-studio-view::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.66em;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--apricot);
+}
+.og-phrase {
+  display: inline-block;
+}
+.og-studio-text {
+  max-width: 34em;
+  color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1.95;
+}
+.og-name {
+  font-family: var(--latin);
+  font-size: 1.24em;
+  font-style: italic;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ── 02 产品 ───────────────────────────────── */
+.og-products {
+  padding-bottom: clamp(64px, 8vw, 120px);
+}
+.og-work h3 a,
+.og-line h3 a {
+  transition: color 0.3s;
+}
+.og-work h3 a:hover {
+  color: var(--apricot);
+}
+.og-line h3 a:hover {
+  color: var(--apricot-deep);
+}
+.og-ask {
+  max-width: 26em;
+  margin: 14px 0 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--apricot);
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+.og-work .og-ask {
+  color: var(--on-dark-2);
+}
+.og-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+}
+.og-relation {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.og-relation span {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 0 8px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 999px;
+  font-size: 11.5px;
+}
+.og-work {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 4vw, 72px);
+  padding: clamp(28px, 4.6vw, 72px);
+  border-radius: 28px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      50% 70% at 92% 100%,
+      rgba(233, 145, 94, 0.2),
+      transparent 70%
+    ),
+    radial-gradient(40% 50% at 0% 0%, rgba(120, 140, 220, 0.14), transparent),
+    var(--navy);
+  color: var(--on-dark);
+}
+.og-work-copy .og-mono {
+  color: var(--apricot);
+}
+.og-work h3 {
+  margin: 22px 0 18px;
+  font-family: var(--latin);
+  font-size: clamp(58px, 7.4vw, 120px);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+.og-work-line {
+  max-width: 22em;
+  font-size: 17px;
+  color: var(--on-dark-2);
+}
+.og-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 28px 0 32px;
+  padding: 0;
+  list-style: none;
+}
+.og-chips li {
+  padding: 4px 12px;
+  border: 1px solid rgba(242, 237, 228, 0.24);
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--on-dark-2);
+}
+.og-work-visual {
+  position: relative;
+  align-self: center;
+  margin: 0;
+}
+.og-work-visual figcaption,
+.og-line-visual figcaption {
+  position: absolute;
+  right: 0;
+  bottom: -6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+}
+
+/* Molis Work 接力图 */
+.og-relay {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.og-relay text {
+  font-family: var(--mono);
+}
+.og-relay-kicker {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  fill: var(--apricot);
+}
+.og-relay-caption {
+  font-size: 12px;
+  fill: rgba(242, 237, 228, 0.5);
+}
+.og-relay-tick {
+  stroke: rgba(242, 237, 228, 0.22);
+}
+.og-relay-rest {
+  stroke: rgba(242, 237, 228, 0.24);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 5;
+}
+.og-relay-done {
+  stroke: var(--apricot);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 480;
+  stroke-dashoffset: 480;
+  animation: og-relay-line 9s linear infinite;
+}
+.og-relay-pulse {
+  fill: none;
+  stroke: var(--apricot);
+  stroke-width: 1.5;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: og-relay-pulse 9s var(--delay) ease-out infinite;
+}
+.og-relay-node {
+  fill: var(--navy);
+  stroke: rgba(242, 237, 228, 0.8);
+  stroke-width: 1.5;
+  animation: og-relay-node 9s var(--delay) infinite;
+}
+.og-relay-stem {
+  stroke: rgba(242, 237, 228, 0.22);
+}
+.og-relay-label {
+  font-size: 11px;
+  fill: rgba(242, 237, 228, 0.78);
+}
+.og-relay-token {
+  animation: og-relay-token 9s linear infinite;
+}
+.og-relay-glow {
+  fill: var(--apricot);
+  opacity: 0.22;
+}
+.og-relay-dot {
+  fill: var(--apricot);
+}
+.og-relay-check circle {
+  fill: none;
+  stroke: rgba(242, 237, 228, 0.35);
+  stroke-width: 1.5;
+  animation: og-relay-ring 9s infinite;
+}
+.og-relay-check path {
+  fill: none;
+  stroke: var(--apricot);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 16;
+  stroke-dashoffset: 16;
+  animation: og-relay-tickmark 9s infinite;
+}
+
+/* 三条产品线 */
+.og-lines {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 2.4vw, 36px);
+  margin-top: clamp(24px, 3vw, 40px);
+}
+.og-line:nth-child(2) {
+  margin-top: 64px;
+}
+.og-line:nth-child(3) {
+  margin-top: 128px;
+}
+.og-line-visual {
+  position: relative;
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  place-items: center;
+  aspect-ratio: 1 / 0.92;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 22px;
+  background: var(--paper-2);
+  transition: background 0.6s var(--ease);
+}
+.og-line:hover .og-line-visual {
+  background: var(--paper-3);
+}
+.og-line-visual figcaption {
+  left: 18px;
+  right: auto;
+  bottom: 14px;
+}
+.og-line-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--muted);
+}
+.og-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.og-status::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--apricot);
+}
+.og-line.is-tool .og-status::before,
+.og-line.is-story .og-status::before {
+  background: var(--apricot);
+}
+.og-line h3 {
+  margin: 12px 0 8px;
+  font-family: var(--latin);
+  font-size: clamp(34px, 3vw, 44px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.og-line-line {
+  margin: 0;
+  color: var(--ink-2);
+}
+.og-line .og-text-link {
+  margin-top: 22px;
+}
+
+/* Life：一天的刻度盘 */
+.og-dial {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 18px 18px 46px;
+}
+.og-dial svg {
+  width: auto;
+  max-width: min(76%, 270px);
+  height: 100%;
+  overflow: visible;
+}
+.og-dial-minor {
+  stroke: rgba(22, 27, 46, 0.2);
+}
+.og-dial-major {
+  stroke: rgba(22, 27, 46, 0.55);
+}
+.og-dial-hour {
+  font-family: var(--mono);
+  font-size: 9px;
+  fill: var(--muted);
+}
+.og-dial-day {
+  fill: none;
+  stroke: rgba(22, 27, 46, 0.08);
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+.og-dial-life {
+  fill: none;
+  stroke: var(--apricot);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  animation: og-life 9s var(--ease-io) infinite;
+}
+.og-dial-task {
+  fill: var(--ink);
+  animation: og-task 9s var(--delay) var(--ease) infinite;
+}
+.og-dial-hand {
+  transform-origin: 150px 150px;
+  animation: og-spin 36s linear infinite;
+}
+.og-dial-hand line {
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+.og-dial-hand circle {
+  fill: var(--ink);
+}
+.og-dial-quotes {
+  position: relative;
+  width: 100%;
+  height: 1.7em;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  text-align: center;
+  color: var(--ink-2);
+}
+.og-dial-quotes li {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: og-quote 12s calc(var(--i) * 4s) var(--ease) infinite;
+}
+
+/* Tool：光标旁的动作 */
+.og-tool {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 30px 22px 46px;
+}
+.og-tool.is-live {
+  cursor: none;
+}
+.og-tool-page {
+  width: 88%;
+  margin: 0 auto;
+  padding: 22px 20px 14px;
+  border-radius: 14px;
+  background: var(--card);
+  box-shadow:
+    0 1px 0 var(--line),
+    0 24px 44px -28px rgba(22, 27, 46, 0.35);
+}
+.og-tool-bar {
+  display: block;
+  height: 7px;
+  margin-bottom: 11px;
+  border-radius: 4px;
+  background: rgba(22, 27, 46, 0.08);
+}
+.og-tool-page p {
+  margin: 4px 0 14px;
+  font-family: var(--latin);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  overflow-wrap: normal;
+}
+.og-tool-page mark {
+  color: inherit;
+  background: linear-gradient(var(--apricot-soft), var(--apricot-soft)) 0 0 / 0%
+    100% no-repeat;
+  animation: og-select 8s var(--ease) infinite;
+}
+.og-tool-float {
+  position: absolute;
+  left: 34%;
+  top: 44%;
+  z-index: 2;
+  pointer-events: none;
+  animation: og-cursor 8s var(--ease) infinite;
+}
+.og-tool-cursor {
+  display: block;
+  fill: var(--ink);
+  stroke: var(--card);
+  stroke-width: 1.2;
+  filter: drop-shadow(0 2px 3px rgba(22, 27, 46, 0.25));
+}
+.og-tool-chips {
+  position: absolute;
+  left: 14px;
+  top: 20px;
+  display: flex;
+  gap: 4px;
+}
+.og-tool-chips span {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  animation: og-chip 8s calc(var(--i) * 70ms) var(--ease) infinite;
+}
+.og-tool-chips span:first-child {
+  background: var(--apricot);
+  color: var(--ink);
+}
+.og-tool-result {
+  position: absolute;
+  left: 14px;
+  top: 52px;
+  width: 200px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  box-shadow: 0 16px 30px -18px rgba(22, 27, 46, 0.4);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--ink);
+  opacity: 0;
+  animation: og-result 8s var(--ease) infinite;
+}
+.og-tool.is-live .og-tool-float {
+  left: var(--x);
+  top: var(--y);
+  animation: none;
+  transition:
+    left 0.22s var(--ease),
+    top 0.22s var(--ease);
+}
+.og-tool.is-live .og-tool-chips span {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+.og-tool.is-live .og-tool-result {
+  opacity: 0;
+  animation: none;
+}
+.og-tool.is-live mark {
+  background-size: 100% 100%;
+  animation: none;
+}
+
+/* Story：一扇扇窗 */
+.og-arches {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 22px 18px 46px;
+}
+.og-arches svg {
+  width: min(84%, 280px);
+  height: auto;
+}
+.og-arch {
+  fill: none;
+  stroke: rgba(22, 27, 46, 0.4);
+  stroke-width: 1.2;
+  animation: og-arch 8s calc(var(--i) * 0.62s) infinite;
+}
+.og-arch-ground {
+  stroke: rgba(22, 27, 46, 0.22);
+}
+.og-arch-walker {
+  transform-origin: 150px 268px;
+  animation: og-walk 8s var(--ease-io) infinite;
+}
+.og-arch-walker circle {
+  fill: var(--ink);
+  animation: og-souvenir 8s infinite;
+}
+.og-arches-steps {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+}
+.og-arches-steps li + li::before {
+  content: '→';
+  margin-right: 10px;
+  color: var(--muted);
+}
+
+/* ── 03 World：尺子之外还没量过的一段 ── */
+.og-world {
+  padding-top: clamp(48px, 6vw, 96px);
+}
+.og-world-transition {
+  max-width: 15em;
+  margin: 0 0 clamp(40px, 5vw, 72px);
+  font-family: var(--serif);
+  font-size: clamp(28px, 3.8vw, 58px);
+  font-weight: 300;
+  line-height: 1.34;
+  letter-spacing: -0.02em;
+}
+.og-world-card {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  max-width: 640px;
+  padding: 76px clamp(28px, 3.4vw, 48px) clamp(28px, 3.4vw, 44px);
+  border: 1.5px dashed var(--line-strong);
+  border-radius: 26px;
+  transition:
+    border-color 0.5s var(--ease),
+    background 0.5s var(--ease);
+}
+.og-world-card:hover {
+  border-color: var(--apricot);
+  background: var(--card);
+}
+.og-world-scale {
+  position: absolute;
+  left: clamp(28px, 3.4vw, 48px);
+  right: clamp(28px, 3.4vw, 48px);
+  top: 26px;
+  height: 22px;
+}
+.og-world-scale::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+        to right,
+        var(--line-strong) 0 1px,
+        transparent 1px 40px
+      )
+      left bottom / 100% 14px no-repeat,
+    repeating-linear-gradient(to right, var(--line) 0 1px, transparent 1px 8px)
+      left bottom / 100% 7px no-repeat;
+  -webkit-mask: linear-gradient(to right, #000 0 45%, transparent);
+  mask: linear-gradient(to right, #000 0 45%, transparent);
+  transform-origin: left;
+  transition: transform 1.8s var(--ease) 0.25s;
+}
+.og.is-ready .og-world-card:not(.is-in) .og-world-scale::before {
+  transform: scaleX(0);
+}
+.og-world-scale i {
+  position: absolute;
+  left: -4px;
+  top: -6px;
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--apricot);
+  border-radius: 50%;
+}
+.og-world-status {
+  padding: 1px 10px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.og-world-card h3 {
+  margin: 6px 0 0;
+  font-family: var(--latin);
+  font-size: clamp(40px, 4.4vw, 64px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.og-world-line {
+  color: var(--ink-2);
+}
+.og-world-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.og-world-more svg {
+  transition: transform 0.4s var(--ease);
+}
+.og-world-card:hover .og-world-more svg {
+  transform: translate(2px, -2px);
+}
+
+/* ── 04 结尾：从产品走到企业合作与社区 ── */
+.og-invite {
+  padding-bottom: clamp(72px, 8vw, 120px);
+}
+.og-invite-title {
+  max-width: 16em;
+  margin: 0 0 clamp(48px, 6vw, 88px);
+  font-family: var(--serif);
+  font-size: clamp(30px, 4.4vw, 70px);
+  font-weight: 300;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+.og-paths {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 28px);
+}
+.og-path {
+  display: grid;
+  align-content: space-between;
+  gap: 40px;
+  min-height: 320px;
+  padding: clamp(28px, 3.4vw, 50px);
+  border-radius: 26px;
+  background: var(--paper-2);
+}
+.og-path .og-mono {
+  color: var(--muted);
+}
+.og-path h3 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(26px, 2.8vw, 42px);
+  font-weight: 300;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+.og-path h3 span {
+  display: block;
+}
+.og-path-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+}
+.og-path.is-dark {
+  background:
+    radial-gradient(
+      60% 80% at 100% 100%,
+      rgba(233, 145, 94, 0.18),
+      transparent 70%
+    ),
+    var(--navy);
+  color: var(--on-dark);
+}
+.og-path.is-dark .og-mono {
+  color: var(--apricot);
+}
+.og-also {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 28px;
+  margin: clamp(44px, 5vw, 72px) 0 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  font-size: 15px;
+}
+.og-also span {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.og-also a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+.og-also a:hover {
+  color: var(--apricot-deep);
+}
+
+/* ── 页尾 ───────────────────────────────────── */
+.og-footer {
+  padding: clamp(80px, 9vw, 120px) 0 36px;
+  background: var(--ink);
+  color: var(--on-dark);
+}
+.og-footer-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 40px;
+}
+.og-footer-brand img {
+  border-radius: 12px;
+}
+.og-footer-brand p {
+  margin-top: 26px;
+  font-family: var(--serif);
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 300;
+  line-height: 1.3;
+}
+.og-footer-base {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: clamp(72px, 9vw, 120px);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: rgba(242, 237, 228, 0.45);
+}
+.og-footer-base a {
+  transition: color 0.3s;
+}
+.og-footer-base a:hover {
+  color: var(--apricot);
+}
+.og-colophon-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+.og-colophon-links h2 {
+  margin: 0 0 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(242, 237, 228, 0.45);
+}
+.og-colophon-links ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+}
+.og-colophon-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(242, 237, 228, 0.82);
+  transition: color 0.3s;
+}
+.og-colophon-links a:hover {
+  color: var(--apricot);
+}
+.og-footer-scale {
+  position: relative;
+  flex: 1;
+  height: 14px;
+  background:
+    repeating-linear-gradient(
+        to right,
+        rgba(242, 237, 228, 0.4) 0 1px,
+        transparent 1px 40px
+      )
+      left bottom / 100% 14px no-repeat,
+    repeating-linear-gradient(
+        to right,
+        rgba(242, 237, 228, 0.18) 0 1px,
+        transparent 1px 8px
+      )
+      left bottom / 100% 7px no-repeat;
+}
+.og-footer-scale::before {
+  content: '';
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--apricot);
+}
+
+/* ── 关键帧 ─────────────────────────────────── */
+@keyframes og-rise {
+  from {
+    transform: translateY(105%);
+  }
+}
+@keyframes og-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes og-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes og-relay-line {
+  0% {
+    stroke-dashoffset: 480;
+    opacity: 1;
+  }
+  90% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  97% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+  100% {
+    stroke-dashoffset: 480;
+    opacity: 0;
+  }
+}
+@keyframes og-relay-token {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  90% {
+    transform: translateX(480px);
+    opacity: 1;
+  }
+  94%,
+  100% {
+    transform: translateX(480px);
+    opacity: 0;
+  }
+}
+@keyframes og-relay-pulse {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.4);
+  }
+  14%,
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+@keyframes og-relay-node {
+  0%,
+  26% {
+    fill: var(--apricot);
+    stroke: var(--apricot);
+  }
+  36%,
+  100% {
+    fill: var(--navy);
+    stroke: rgba(242, 237, 228, 0.8);
+  }
+}
+@keyframes og-relay-ring {
+  0%,
+  88% {
+    stroke: rgba(242, 237, 228, 0.35);
+  }
+  91%,
+  98% {
+    stroke: var(--apricot);
+  }
+  100% {
+    stroke: rgba(242, 237, 228, 0.35);
+  }
+}
+@keyframes og-relay-tickmark {
+  0%,
+  89% {
+    stroke-dashoffset: 16;
+  }
+  93%,
+  98% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 16;
+  }
+}
+@keyframes og-life {
+  0%,
+  12% {
+    stroke-dashoffset: 1;
+  }
+  48%,
+  86% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -1;
+  }
+}
+@keyframes og-task {
+  0%,
+  40% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  62% {
+    transform: translateX(48px);
+    opacity: 0;
+  }
+  80% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes og-quote {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  5%,
+  29% {
+    opacity: 1;
+    transform: none;
+  }
+  34%,
+  100% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@keyframes og-select {
+  0%,
+  10% {
+    background-size: 0% 100%;
+  }
+  26%,
+  84% {
+    background-size: 100% 100%;
+  }
+  92%,
+  100% {
+    background-size: 0% 100%;
+  }
+}
+@keyframes og-cursor {
+  0% {
+    left: 16%;
+    top: 36%;
+    opacity: 0;
+  }
+  6%,
+  10% {
+    left: 16%;
+    top: 36%;
+    opacity: 1;
+  }
+  26%,
+  86% {
+    left: 34%;
+    top: 44%;
+    opacity: 1;
+  }
+  94%,
+  100% {
+    left: 34%;
+    top: 44%;
+    opacity: 0;
+  }
+}
+@keyframes og-chip {
+  0%,
+  28% {
+    opacity: 0;
+    transform: translateY(5px) scale(0.94);
+  }
+  33%,
+  80% {
+    opacity: 1;
+    transform: none;
+  }
+  86%,
+  100% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@keyframes og-result {
+  0%,
+  44% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  50%,
+  80% {
+    opacity: 1;
+    transform: none;
+  }
+  86%,
+  100% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@keyframes og-arch {
+  0%,
+  100% {
+    stroke: rgba(22, 27, 46, 0.4);
+  }
+  6% {
+    stroke: var(--apricot);
+  }
+  18% {
+    stroke: rgba(22, 27, 46, 0.4);
+  }
+}
+@keyframes og-walk {
+  0%,
+  6% {
+    transform: translateY(0) scale(1);
+  }
+  44%,
+  58% {
+    transform: translateY(-112px) scale(0.26);
+  }
+  96%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes og-souvenir {
+  0%,
+  50% {
+    fill: var(--ink);
+  }
+  60%,
+  94% {
+    fill: var(--apricot);
+  }
+  100% {
+    fill: var(--ink);
+  }
+}
+
+/* ── 响应式 ─────────────────────────────────── */
+@media (max-width: 1179px) {
+  .og-scale {
+    display: none;
+  }
+}
+@media (max-width: 1080px) {
+  .og-work {
+    grid-template-columns: 1fr;
+  }
+  .og-nav {
+    gap: 20px;
+  }
+}
+@media (max-width: 900px) {
+  .og-header {
+    flex-wrap: wrap;
+    gap: 0 12px;
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 2px;
+  }
+  .og-nav {
+    order: 3;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0;
+    font-size: 13.5px;
+  }
+  .og-header-end {
+    margin-left: auto;
+    gap: 14px;
+  }
+  .og-menu {
+    position: static;
+  }
+  .og-menu-panel {
+    top: 100%;
+    left: var(--gutter);
+    right: var(--gutter);
+    width: auto;
+  }
+  .og-hero {
+    padding-top: 124px;
+  }
+  .og-hero-body {
+    grid-template-columns: 1fr;
+  }
+  .og-hero-words {
+    padding: 14px 0 0;
+  }
+  .og-studio-stage {
+    padding-top: 112px;
+  }
+  .og-lines {
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+  .og-line:nth-child(n) {
+    margin-top: 0;
+  }
+  .og-line-visual {
+    aspect-ratio: 1 / 0.8;
+  }
+  .og-studio-row,
+  .og-paths {
+    grid-template-columns: 1fr;
+  }
+  .og-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .og-hero-meta span:nth-child(2) {
+    display: none;
+  }
+  .og .og-button {
+    padding: 0 20px;
+  }
+  .og-ruler {
+    height: 132px;
+  }
+  .og-ruler-zero {
+    bottom: 52px;
+  }
+  .og-relay-label,
+  .og-relay-caption {
+    font-size: 18px;
+  }
+  .og-relay-kicker {
+    font-size: 16px;
+  }
+  .og-studio-row {
+    gap: 20px;
+    margin-top: 28px;
+  }
+  .og-studio-text {
+    font-size: 15px;
+    line-height: 1.85;
+  }
+  .og-colophon-links {
+    grid-template-columns: 1fr 1fr;
+  }
+  .og-footer-base {
+    flex-wrap: wrap;
+  }
+  .og-footer-scale {
+    order: 3;
+    flex-basis: 100%;
+  }
+}
+
+/* 减少动态：内容一律直接可见，工作室说明不再停在视口里，循环动画停在最能说明问题的那一帧 */
+@media (prefers-reduced-motion: reduce) {
+  .og.is-ready [data-reveal],
+  .og.is-ready .og-label .og-label-rule,
+  .og.is-ready .og-world-scale::before {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .og-hero-row > span,
+  .og-hero-meta,
+  .og-hero-words,
+  .og-hero-keys > span,
+  .og-ruler-zero {
+    animation: none;
+  }
+  .og-studio {
+    height: auto;
+  }
+  .og-studio-stage {
+    position: relative;
+    min-height: 0;
+    padding-block: clamp(110px, 13vw, 200px) 0;
+  }
+  .og-scrub .og-ch {
+    opacity: 1;
+  }
+  .og-studio-row {
+    opacity: 1;
+    transform: none;
+  }
+  .og-relay-done {
+    stroke-dashoffset: 0;
+  }
+  .og-relay-token {
+    display: none;
+  }
+  .og-relay-check path {
+    stroke-dashoffset: 0;
+  }
+  .og-dial-life {
+    stroke-dashoffset: 0;
+  }
+  .og-dial-quotes li:first-child {
+    opacity: 1;
+  }
+  .og-tool-page mark {
+    background-size: 100% 100%;
+  }
+  .og-tool-chips span,
+  .og-tool-result {
+    opacity: 1;
+  }
+}
