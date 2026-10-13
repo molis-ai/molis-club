@@ -23,15 +23,18 @@ export const folioProductTags: Partial<Record<FolioProductId, string>> = {
   world: folioWorld.status,
 };
 
-/** 2026-10-10 首页简介：按四条产品线的实际方向重写，独立于其他样张复用的原短句。 */
+/**
+ * 2026-10-10 首页简介：按四条产品线的实际方向重写，独立于其他样张复用的原短句。
+ * 10/13 负责人改选 Life、Story 两句（P2）：Life 讲懂你、陪你，也接住琐事；Story 讲会回应你的世界。
+ */
 export const folioHomeCopy = {
   description:
     'Molis AI 是一间围绕工作、生活与体验研发 AI 产品的工作室。用 Molis Work 探索人与 AI 共事，用 Molis Tool 把工具带到光标旁；也在探索为日常减负、发现生活新意的 Molis Life，以及可以进入、体验并归来的 Molis Story。',
   products: {
     work: '一张随你生长的 AI 工作台',
     tool: 'AI就在你的鼠标边',
-    life: '把琐事安顿好，让喜欢的生活发生',
-    story: '走进另一个世界，带一段经历回来',
+    life: '懂你的心愿，也接住你的琐事',
+    story: '每扇窗后，都有一个会回应你的世界',
     world: folioWorld.line,
   } satisfies Record<FolioProductId, string>,
   /**

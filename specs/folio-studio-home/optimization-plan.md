@@ -444,6 +444,8 @@
 
 **10/12 进展**：先用现有简介和暂用过渡句做，定稿后只换文字。
 
+**10/13 进展**：首页简介改为 Life「懂你的心愿，也接住你的琐事」、Story「每扇窗后，都有一个会回应你的世界」，见 spec「P2 Life、Story 首页一句话」；World 过渡句仍待定。（本条只记在仓库副本，未同步 Docs。）
+
 ### P3 Work 页重构（简报）
 
 **对象**：`/demos/brand/folio/work`，源码 `app/demos/brand/folio/work/page.tsx`、首屏演示 `work/desk.tsx`、场景演示 `work/scenes.tsx`（`ComposeDemo`、`RelayDemo`、`ControlDemo`）；文案 `content/folio-work.ts`（Folio 专用）。

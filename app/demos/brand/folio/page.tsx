@@ -164,7 +164,9 @@ function Lines() {
                 <h3 id={`fo-line-${line.id}`}>
                   <Link href={lineHref[line.id]}>{lineNames[line.id]}</Link>
                 </h3>
-                <p>{folioHomeCopy.products[line.id]}</p>
+                <p>
+                  <Phrases text={folioHomeCopy.products[line.id]} />
+                </p>
                 <small className="fo-ask">{folioHomeCopy.asks[line.id]}</small>
                 {line.id === 'tool' ? (
                   <small className="fo-sheet-note">
