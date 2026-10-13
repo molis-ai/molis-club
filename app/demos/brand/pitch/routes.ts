@@ -1,5 +1,5 @@
-// 工作室首页视觉方向比稿：九版方案的编号、地址与说明。比稿页、各版底部的比稿条共用这一份。
-// 除 Folio 原版外，八版都以 Folio 首页的内容为基线（content/），差别只在视觉与动效。
+// 工作室首页视觉方向比稿：十版方案的编号、地址与说明。比稿页、各版底部的比稿条共用这一份。
+// 除 Folio 原版外，九版都以 Folio 首页的内容为基线（content/），差别只在视觉与动效。
 
 export const PITCH = '/demos/brand/pitch';
 
@@ -12,10 +12,11 @@ export type PitchId =
   | 'e1'
   | 'e2'
   | 'night'
-  | 'white';
+  | 'white'
+  | 'origin';
 
 export type PitchGroup = {
-  id: 'base' | 'a' | 'd' | 'e' | 'show';
+  id: 'base' | 'a' | 'd' | 'e' | 'show' | 'origin';
   name: string;
   text: string;
   refs: string;
@@ -35,7 +36,7 @@ export const pitchGroups: PitchGroup[] = [
   {
     id: 'base',
     name: '基准',
-    text: '现在线上的 Folio 首页。其余八版读的是同一份文案，Folio 改了文案，八版跟着变；差别只在视觉与动效。',
+    text: '现在线上的 Folio 首页。其余九版读的是同一份文案，Folio 改了文案，九版跟着变；差别只在视觉与动效。',
     refs: '',
   },
   {
@@ -61,6 +62,12 @@ export const pitchGroups: PitchGroup[] = [
     name: '展览',
     text: '把首页做成一场展览，往下滚就是在逛展。',
     refs: '参考 teamLab、Refik Anadol、Gagosian、21_21 DESIGN SIGHT',
+  },
+  {
+    id: 'origin',
+    name: '零点',
+    text: '一把尺和一个温暖的零点：技术回到人的尺度。暖纸、细宋体大字、刻度与等宽注记，像一份精确又温和的说明书。',
+    refs: '',
   },
 ];
 
@@ -154,6 +161,16 @@ export const pitches: Pitch[] = [
     summary:
       '近白的墙和精确的展签；镜头随滚动走进一间间白盒子展厅，三联画、墙面文字、格线画、色域画各讲一个产品。',
     traits: ['三维展厅', '展签', '极少的颜色'],
+  },
+  {
+    id: 'origin',
+    no: '10',
+    group: 'origin',
+    name: '零点',
+    href: `${PITCH}/origin`,
+    summary:
+      '首屏一把刻度尺，零点对齐字标，鼠标靠近处的刻度被抬起；工作室说明停在视口里逐字显影，四件产品各用线和点画一张示意图。',
+    traits: ['刻度尺', '逐字显影', '线与点'],
   },
 ];
 
