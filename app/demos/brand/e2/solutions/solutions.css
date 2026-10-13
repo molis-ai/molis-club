@@ -1,0 +1,957 @@
+/* E2 解决方案（企业合作）。前缀 esl-。最「可信」的一页：结构像一份规格书，动效只有线描进场与淡入。 */
+
+/* ---------- 首屏 ---------- */
+.esl-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+  min-height: calc(100svh - var(--header));
+  padding: clamp(40px, 7vh, 80px) var(--gutter) clamp(48px, 8vh, 88px);
+}
+.esl-hero-copy {
+  display: grid;
+  justify-items: start;
+  gap: clamp(20px, 3vh, 28px);
+  animation: esl-rise 0.9s var(--ease) both;
+}
+@keyframes esl-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.esl-hero h1 {
+  font: 700 clamp(38px, 4.6vw, 72px) / 1.18 var(--display);
+  letter-spacing: -0.025em;
+}
+.esl-hero h1 span {
+  display: block;
+}
+.esl-lead {
+  max-width: 30em;
+  padding-top: 20px;
+  border-top: 1px solid var(--ink);
+  color: var(--ink-2);
+  font: 400 clamp(16px, 1.25vw, 18px) / 1.85 var(--cjk);
+}
+
+/* 合作方式示意：图版里的轴测模型 + 编号图例 */
+.esl-handoff .e2-plate-body {
+  display: grid;
+  gap: 0;
+  background: var(--plate);
+}
+.esl-handoff-title {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  font:
+    500 12px/1.2 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.06em;
+}
+.esl-drawing {
+  --sw: 0.085;
+  display: block;
+  width: 100%;
+  height: auto;
+  padding: clamp(12px, 2vw, 28px) clamp(10px, 2vw, 24px) 4px;
+  overflow: visible;
+}
+.esl-d-onward {
+  stroke-dasharray: 0.02 0.02;
+  opacity: 0.55;
+}
+.esl-drawing[data-draw] .e2-l.esl-d-onward {
+  stroke-dasharray: 0.02 0.02;
+  stroke-dashoffset: 0;
+  animation: none !important;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease) 1.5s;
+}
+.is-ready .esl-drawing[data-draw] .e2-l.esl-d-onward {
+  opacity: 0.55;
+}
+.esl-d-check {
+  stroke-width: calc(var(--sw) * 2.6);
+  stroke-linejoin: round;
+}
+/* 先描台面，再按 03 → 02 → 01 的前后顺序描出物件，引线最后出现 */
+.esl-d-base {
+  --o: 0.05s;
+  --f: 0.95s;
+}
+.esl-d-flow {
+  --o: 0.3s;
+}
+.esl-d-c {
+  --o: 0.4s;
+  --f: 1.25s;
+}
+.esl-d-b {
+  --o: 0.5s;
+  --f: 1.35s;
+}
+.esl-d-a {
+  --o: 0.6s;
+  --f: 1.45s;
+}
+.esl-d-callouts .e2-callout {
+  opacity: 0;
+  animation: e2-fade 0.6s var(--ease) 1.9s forwards;
+}
+.esl-handoff-legend {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--rule-2);
+  background: var(--white);
+}
+.esl-handoff-legend li {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 14px 16px 16px;
+}
+.esl-handoff-legend li + li {
+  border-left: 1px solid var(--rule);
+}
+.esl-handoff-legend i {
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+  font-style: normal;
+}
+.esl-handoff-legend small {
+  color: var(--muted);
+  font: 400 12.5px/1.5 var(--cjk);
+}
+.esl-handoff-legend strong {
+  font: 500 clamp(14.5px, 1.1vw, 16px) / 1.5 var(--cjk);
+}
+.esl-handoff-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px dashed var(--rule-2);
+  background: var(--white);
+  color: var(--ink-2);
+  font: 400 13px/1.5 var(--cjk);
+}
+.esl-handoff-note::before {
+  content: '';
+  flex: none;
+  width: 22px;
+  border-top: 1px dashed var(--ink);
+}
+
+/* ---------- 段落 ---------- */
+.esl-section {
+  display: grid;
+  gap: clamp(36px, 6vh, 60px);
+  padding: clamp(72px, 11vh, 120px) var(--gutter);
+  border-top: 1px solid var(--rule-2);
+}
+.esl-section[data-tone='white'] {
+  background: var(--white);
+}
+.esl-no {
+  color: var(--muted);
+  font: 400 11.5px/1 var(--mono);
+}
+
+/* 01 四件事：像规格表一样一行一件 */
+.esl-services {
+  border-top: 1px solid var(--ink);
+}
+.esl-service {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1.05fr) minmax(0, 1.1fr) minmax(
+      0,
+      0.95fr
+    );
+  gap: 16px clamp(24px, 3vw, 48px);
+  padding: clamp(24px, 3.4vh, 36px) 0;
+}
+.esl-service + .esl-service {
+  border-top: 1px solid var(--rule);
+}
+.esl-service .esl-no {
+  padding-top: 7px;
+}
+.esl-service-head {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+.esl-service h3 {
+  font: 600 clamp(19px, 1.6vw, 24px) / 1.4 var(--cjk);
+  letter-spacing: -0.01em;
+}
+.esl-service-head p {
+  color: var(--muted);
+  font: 400 14.5px/1.75 var(--cjk);
+}
+.esl-service-action {
+  padding-top: 3px;
+  color: var(--ink-2);
+  font: 400 15.5px/1.85 var(--cjk);
+}
+.esl-service-result {
+  align-self: start;
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--paper);
+}
+.esl-service-result small {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font:
+    500 11.5px/1.2 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.06em;
+}
+.esl-service-result small::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.esl-service:not(:first-child) .esl-service-result small::before {
+  background: var(--ink);
+}
+.esl-service-result p {
+  font: 500 15px/1.7 var(--cjk);
+}
+
+/* 02 做这件事的人：四列，与上面四件事同号 */
+.esl-evidence {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--ink);
+}
+.esl-evidence > li {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 22px clamp(14px, 1.6vw, 24px) 8px;
+}
+.esl-evidence > li:first-child {
+  padding-left: 0;
+}
+.esl-evidence > li + li {
+  border-left: 1px solid var(--rule);
+}
+.esl-evidence h3 {
+  min-height: 2.9em;
+  font: 600 16px/1.45 var(--cjk);
+}
+.esl-evidence ul {
+  display: grid;
+  gap: 4px;
+  border-top: 1px solid var(--rule);
+}
+.esl-evidence ul li {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 14px 0;
+}
+.esl-evidence ul li + li {
+  border-top: 1px dashed var(--rule);
+}
+.esl-evidence img,
+.esl-avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--rule-2);
+  border-radius: 50%;
+  background: var(--white);
+  object-fit: cover;
+  color: var(--muted);
+  font: 500 12px/1 var(--cjk);
+}
+.esl-evidence strong {
+  display: block;
+  margin-bottom: 4px;
+  font: 600 15px/1.4 var(--cjk);
+}
+.esl-evidence p {
+  color: var(--ink-2);
+  font: 400 14px/1.75 var(--cjk);
+}
+
+/* 03 从手边的一件事开始 */
+.esl-starts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 clamp(24px, 3vw, 48px);
+  border-top: 1px solid var(--ink);
+}
+.esl-starts li {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding-top: 22px;
+}
+.esl-starts h3 {
+  font: 600 clamp(18px, 1.45vw, 21px) / 1.45 var(--cjk);
+}
+.esl-starts p {
+  color: var(--ink-2);
+  font: 400 15px/1.85 var(--cjk);
+}
+.esl-principle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 16px clamp(24px, 4vw, 64px);
+  padding: clamp(24px, 3vw, 36px);
+  border: 1px solid var(--ink);
+  border-radius: 12px;
+  background: var(--white);
+}
+.esl-principle strong {
+  font: 600 clamp(21px, 2vw, 30px) / 1.4 var(--cjk);
+  letter-spacing: -0.01em;
+}
+.esl-principle p {
+  color: var(--ink-2);
+  font: 400 15.5px/1.85 var(--cjk);
+}
+.esl-product-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+.esl-product-note p {
+  max-width: 40em;
+  color: var(--muted);
+  font: 400 15px/1.8 var(--cjk);
+}
+
+/* 04 合作如何开始：一条线上的三步，墨点标起点，末端箭头 */
+.esl-stages {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 clamp(24px, 3vw, 48px);
+  border-top: 1px solid var(--ink);
+}
+.esl-stages::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  right: 0;
+  width: 9px;
+  height: 9px;
+  border-top: 1px solid var(--ink);
+  border-right: 1px solid var(--ink);
+  transform: rotate(45deg);
+}
+.esl-stages li {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding-top: 28px;
+}
+.esl-stages li::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.esl-stages li:first-child::before {
+  background: var(--accent);
+}
+.esl-stage-no {
+  font: 600 clamp(30px, 3vw, 44px) / 1 var(--display);
+  letter-spacing: -0.025em;
+}
+.esl-stages h3 {
+  font: 600 clamp(19px, 1.6vw, 24px) / 1.4 var(--cjk);
+}
+.esl-stages p {
+  max-width: 22em;
+  color: var(--ink-2);
+  font: 400 15.5px/1.85 var(--cjk);
+}
+
+/* ---------- 结尾 ---------- */
+.esl-closing {
+  padding: clamp(56px, 9vh, 96px) var(--gutter);
+}
+.esl-closing-block {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 32px clamp(32px, 5vw, 80px);
+  padding: clamp(32px, 4.5vw, 64px);
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--white);
+}
+.esl-closing h2 {
+  font: 600 clamp(28px, 3.4vw, 50px) / 1.35 var(--cjk);
+  letter-spacing: -0.02em;
+}
+.esl-closing h2 span {
+  display: block;
+}
+.esl-closing-side {
+  display: grid;
+  justify-items: start;
+  gap: 24px;
+}
+.esl-closing-side p {
+  color: rgb(255 255 255 / 0.72);
+  font: 400 16px/1.8 var(--cjk);
+}
+.esl-closing .e2-button-light:focus-visible {
+  outline-color: var(--white);
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1100px) {
+  .esl-hero {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+  .esl-service {
+    grid-template-columns: 40px minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .esl-service-result {
+    grid-column: 3;
+  }
+  .esl-service-action {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .esl-service-result {
+    grid-row: 1 / span 2;
+  }
+  .esl-evidence {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .esl-evidence > li:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .esl-evidence > li:nth-child(n + 3) {
+    border-top: 1px solid var(--rule-2);
+  }
+}
+@media (max-width: 760px) {
+  .esl-drawing {
+    --sw: 0.13;
+    /* 窄屏不显示引线，viewBox 上方留给标注的空白收回来一些 */
+    margin-top: -9%;
+  }
+  .esl-d-callouts {
+    display: none;
+  }
+  .esl-handoff-legend {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .esl-handoff-legend li {
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 4px 8px;
+  }
+  .esl-handoff-legend li > i {
+    grid-row: span 2;
+    padding-top: 4px;
+  }
+  .esl-handoff-legend li + li {
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .esl-service {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+  .esl-service-action,
+  .esl-service-result {
+    grid-column: 2;
+    grid-row: auto;
+  }
+  .esl-evidence,
+  .esl-starts,
+  .esl-stages,
+  .esl-principle,
+  .esl-closing-block {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .esl-evidence > li {
+    padding-left: 0;
+    padding-right: 0;
+    border-left: 0 !important;
+  }
+  .esl-evidence > li + li {
+    border-top: 1px solid var(--rule-2);
+  }
+  .esl-evidence h3 {
+    min-height: 0;
+  }
+  .esl-starts li + li {
+    margin-top: 12px;
+    border-top: 1px solid var(--rule);
+  }
+  .esl-stages {
+    gap: 0;
+    border-top: 0;
+    border-left: 1px solid var(--ink);
+    margin-left: 4px;
+  }
+  .esl-stages::after {
+    top: auto;
+    right: auto;
+    bottom: 0;
+    left: -5px;
+    transform: rotate(135deg);
+  }
+  .esl-stages li {
+    padding: 0 0 36px 24px;
+  }
+  .esl-stages li::before {
+    top: 4px;
+    left: -5px;
+  }
+  .e2-plate.esl-handoff figcaption {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esl-hero-copy {
+    animation: none;
+  }
+  .esl-d-callouts .e2-callout {
+    opacity: 1;
+  }
+}
+
+/* ---------- 动效：都在讲「怎么合作」 ---------- */
+/* 首屏：一张纸沿流程走过三站；走到哪一站，那一站的物件、引线与图例亮起，其余退淡 */
+.esl-handoff-stage {
+  position: relative;
+}
+.esl-d-a,
+.esl-d-b,
+.esl-d-c,
+.esl-d-callouts .e2-callout {
+  transition: opacity 0.45s var(--ease);
+}
+.esl-handoff-stage[data-stage='0'] :is(.esl-d-b, .esl-d-c),
+.esl-handoff-stage[data-stage='1'] :is(.esl-d-a, .esl-d-c),
+.esl-handoff-stage[data-stage='2'] :is(.esl-d-a, .esl-d-b),
+.esl-handoff-stage[data-stage='3'] :is(.esl-d-a, .esl-d-b) {
+  opacity: 0.32;
+}
+.esl-handoff-stage[data-stage='0'] .e2-callout:nth-child(1) .e2-callout-box,
+.esl-handoff-stage[data-stage='1'] .e2-callout:nth-child(2) .e2-callout-box,
+.esl-handoff-stage[data-stage='2'] .e2-callout:nth-child(3) .e2-callout-box {
+  fill: var(--ink);
+}
+.esl-handoff-stage[data-stage='0']
+  .e2-callout:nth-child(1)
+  :is(.e2-callout-text, .e2-callout-num),
+.esl-handoff-stage[data-stage='1']
+  .e2-callout:nth-child(2)
+  :is(.e2-callout-text, .e2-callout-num),
+.esl-handoff-stage[data-stage='2']
+  .e2-callout:nth-child(3)
+  :is(.e2-callout-text, .e2-callout-num) {
+  fill: #fff;
+}
+.esl-handoff-stage[data-stage='3'] .esl-d-onward {
+  opacity: 1 !important;
+  stroke: var(--accent-deep);
+}
+.esl-d-token {
+  opacity: 0;
+  transition:
+    transform 0.9s var(--ease),
+    opacity 0.5s var(--ease) 0.3s;
+}
+.esl-d-token[data-show] {
+  opacity: 1;
+  transition:
+    transform 0.9s var(--ease),
+    opacity 0.3s var(--ease);
+}
+.esl-d-token .e2-f {
+  stroke-dasharray: none !important;
+  stroke-dashoffset: 0 !important;
+  fill-opacity: 1 !important;
+  animation: none !important;
+}
+.esl-handoff-legend li {
+  position: relative;
+  cursor: default;
+  outline: none;
+  transition: background 0.3s var(--ease);
+}
+.esl-handoff-legend li::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: -1px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease);
+}
+.esl-handoff-legend li[data-on] {
+  background: var(--accent-soft);
+}
+.esl-handoff-legend li[data-on]::after {
+  transform: scaleX(1);
+}
+.esl-handoff-legend li[data-on] i {
+  color: var(--accent-ink);
+}
+.esl-handoff-legend li:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent-deep);
+}
+.esl-handoff-note {
+  transition:
+    color 0.3s,
+    background 0.3s;
+}
+.esl-handoff-note[data-on] {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+/* 01 四件事：进入视口时，箭头从「情况」画到「怎么做」，再画到「一起做到」，最后结果框落定 */
+.esl-service[data-flow] .esl-service-action,
+.esl-service[data-flow] .esl-service-result {
+  position: relative;
+}
+.esl-service[data-flow] .esl-service-action::before,
+.esl-service[data-flow] .esl-service-result::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: calc(clamp(24px, 3vw, 48px) * -1 + 4px);
+  width: calc(clamp(24px, 3vw, 48px) - 10px);
+  height: 1.5px;
+  border-radius: 1px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease) calc(var(--d, 0ms) + 0.35s);
+}
+.esl-service[data-flow] .esl-service-result::before {
+  top: 22px;
+  transition-delay: calc(var(--d, 0ms) + 0.8s);
+}
+.esl-service[data-flow] .esl-service-action::after,
+.esl-service[data-flow] .esl-service-result::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: -13px;
+  width: 7px;
+  height: 7px;
+  border-top: 1.5px solid var(--ink);
+  border-right: 1.5px solid var(--ink);
+  rotate: 45deg;
+  opacity: 0;
+  transition: opacity 0.2s var(--ease) calc(var(--d, 0ms) + 0.75s);
+}
+.esl-service[data-flow] .esl-service-result::after {
+  top: 19px;
+  transition-delay: calc(var(--d, 0ms) + 1.2s);
+}
+.esl-service[data-flow].is-in .esl-service-action::before,
+.esl-service[data-flow].is-in .esl-service-result::before {
+  transform: scaleX(1);
+}
+.esl-service[data-flow].is-in .esl-service-action::after,
+.esl-service[data-flow].is-in .esl-service-result::after {
+  opacity: 1;
+}
+.esl-service[data-flow] .esl-service-result {
+  transition:
+    border-color 0.4s var(--ease) calc(var(--d, 0ms) + 1.3s),
+    box-shadow 0.4s var(--bounce) calc(var(--d, 0ms) + 1.3s),
+    background 0.4s var(--ease) calc(var(--d, 0ms) + 1.3s);
+}
+.esl-service[data-flow].is-in .esl-service-result {
+  border-color: var(--ink);
+  background: var(--white);
+  box-shadow: 3px 3px 0 var(--accent);
+}
+.esl-service {
+  transition: background 0.3s;
+}
+.esl-service:hover {
+  background: linear-gradient(90deg, var(--accent-soft), transparent 70%);
+}
+
+/* 02 做这件事的人：指到一个人，四列里他出现的地方一起亮，其余退淡 */
+.esl-evidence ul li {
+  transition: opacity 0.3s var(--ease);
+}
+.esl-evidence[data-person] ul li:not([data-match]) {
+  opacity: 0.3;
+}
+.esl-evidence ul li[data-match] img,
+.esl-evidence ul li[data-match] .esl-avatar {
+  outline: 2.5px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 03 「执行交给 Agent，关键判断留给人」：一条小跑道 */
+.esl-principle > div:first-child {
+  display: grid;
+  gap: 12px;
+}
+.esl-lane {
+  display: grid;
+  gap: 14px;
+  padding: 18px 20px 14px;
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  background: var(--dots), var(--white);
+}
+.esl-lane-labels {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font:
+    500 11.5px/1 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.06em;
+}
+.esl-lane-labels span:last-child {
+  color: var(--accent-ink);
+}
+.esl-lane-track {
+  position: relative;
+  height: 64px;
+  margin: 0 6px;
+}
+.esl-lane-track::before,
+.esl-lane-fill {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--rule-2);
+}
+.esl-lane-fill {
+  background: var(--ink);
+  transform: scaleX(var(--at, 0));
+  transform-origin: left;
+  transition: transform 0.8s var(--ease);
+}
+.esl-lane-dot {
+  position: absolute;
+  top: 10px;
+  left: calc(var(--at, 0) * 100%);
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--accent);
+  transition: left 0.8s var(--ease);
+}
+.esl-lane-dot[data-wait] {
+  animation: esl-wait 0.9s ease-in-out infinite alternate;
+}
+@keyframes esl-wait {
+  to {
+    box-shadow: 0 0 0 6px var(--accent-soft);
+  }
+}
+.esl-gate {
+  position: absolute;
+  top: 4px;
+  left: calc(var(--g) * 100%);
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: 64px;
+  margin-left: -32px;
+}
+.esl-gate i {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink);
+  font-style: normal;
+  transition:
+    background 0.3s var(--ease),
+    transform 0.35s var(--bounce);
+}
+.esl-gate[data-wait] i {
+  border-style: dashed;
+  transform: translateY(-2px);
+}
+.esl-gate[data-done] i {
+  background: var(--accent);
+}
+.esl-gate small {
+  color: var(--ink-2);
+  font: 600 12px/1 var(--cjk);
+  white-space: nowrap;
+}
+.esl-gate[data-wait] small::after {
+  content: ' · 等你确认';
+  color: var(--accent-ink);
+}
+.esl-lane-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 26px;
+  color: var(--muted);
+  font:
+    400 11px/1 var(--mono),
+    var(--cjk);
+}
+.esl-lane-foot em {
+  font-style: normal;
+}
+.esl-lane-replay {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--white);
+  font:
+    500 11.5px/1 var(--mono),
+    var(--cjk);
+  cursor: pointer;
+}
+.esl-lane-replay:hover {
+  background: var(--accent-soft);
+}
+
+/* 04 合作三步：随滚动，杏橙进度线一格格接上，走到的那一步圆点变杏橙 */
+.esl-stages::before {
+  content: '';
+  position: absolute;
+  top: -1.5px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(clamp(0, calc((var(--p, 1) - 0.15) * 1.4), 1));
+  transform-origin: left;
+}
+.esl-stages li::before {
+  transition:
+    background 0.3s var(--ease),
+    transform 0.35s var(--bounce);
+}
+.esl-stages[data-step='1'] li:nth-child(-n + 2)::before,
+.esl-stages[data-step='2'] li::before {
+  background: var(--accent);
+  transform: scale(1.35);
+}
+.esl-stages li {
+  transition: opacity 0.4s var(--ease);
+}
+.esl-stages[data-step='0'] li:nth-child(n + 2),
+.esl-stages[data-step='1'] li:nth-child(3) {
+  opacity: 0.45;
+}
+
+@media (max-width: 1100px) {
+  .esl-principle {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 1100px) {
+  .esl-service[data-flow] .esl-service-action::before,
+  .esl-service[data-flow] .esl-service-action::after,
+  .esl-service[data-flow] .esl-service-result::before,
+  .esl-service[data-flow] .esl-service-result::after {
+    display: none;
+  }
+}
+@media (max-width: 560px) {
+  .esl-gate small {
+    font-size: 11px;
+  }
+  .esl-gate {
+    width: 48px;
+    margin-left: -24px;
+  }
+  .esl-gate[data-wait] small::after {
+    content: '';
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .esl-stages::before {
+    transform: scaleX(1);
+  }
+  .esl-stages li {
+    opacity: 1 !important;
+  }
+}
+.esl-principle strong {
+  text-wrap: balance;
+}
+@media (max-width: 560px) {
+  .esl-lane {
+    padding: 14px 12px 10px;
+  }
+  .esl-lane-track {
+    margin: 0 2px;
+  }
+  .esl-gate i {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+  }
+  .esl-gate i svg {
+    width: 9px;
+    height: 9px;
+  }
+  .esl-lane-dot {
+    top: 13px;
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+  }
+  .esl-lane-track::before,
+  .esl-lane-fill {
+    top: 18px;
+  }
+}

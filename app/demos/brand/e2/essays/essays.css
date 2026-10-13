@@ -1,0 +1,586 @@
+/* E2 文章：目录页与阅读页。前缀 ee-。
+   目录是一张安静的索引表；阅读页以排版为先：正文一栏约 37em、行高 1.9，宽屏左边目录粘住，
+   顶栏下方一条 2px 阅读进度。动效只有目录逐行淡入与开篇淡入一次，没有视差。 */
+
+.ee {
+  --ee-text: #2a2a2f;
+  --ee-measure: 41rem;
+}
+
+/* ---------- 目录页 ---------- */
+.ee-index {
+  --ee-cols: 56px minmax(0, 1.15fr) minmax(0, 1fr) 28px;
+  --ee-gap: clamp(20px, 3vw, 48px);
+  padding: clamp(56px, 10vh, 112px) var(--gutter) clamp(64px, 10vh, 112px);
+}
+.ee-index-head h1 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 20px;
+  font: 800 clamp(56px, 7.4vw, 120px) / 0.95 var(--display);
+  letter-spacing: -0.03em;
+}
+.ee-index-head h1 small {
+  color: var(--muted);
+  font: 500 clamp(18px, 1.6vw, 24px) / 1 var(--cjk);
+  letter-spacing: 0;
+}
+.ee-cols {
+  display: grid;
+  grid-template-columns: var(--ee-cols);
+  gap: 0 var(--ee-gap);
+  margin-top: clamp(40px, 7vh, 72px);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink);
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+  letter-spacing: 0.08em;
+}
+.ee-list > li {
+  border-bottom: 1px solid var(--rule-2);
+}
+.ee-row {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: var(--ee-cols);
+  gap: 18px var(--ee-gap);
+  padding: clamp(30px, 4.4vw, 52px) 0;
+}
+/* 悬停时整行铺白，铺到页边 */
+.ee-row::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(var(--gutter) * -1);
+  z-index: -1;
+  background: var(--white);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+.ee-row:hover::before {
+  opacity: 1;
+}
+.ee-row-no {
+  padding-top: clamp(10px, 1.1vw, 18px);
+  color: var(--muted);
+  font: 400 12px/1 var(--mono);
+}
+.ee-row-title {
+  font: 600 clamp(30px, 3.4vw, 50px) / 1.2 var(--cjk);
+  letter-spacing: -0.02em;
+}
+.ee-row-link > span,
+.ee-row-link > small {
+  display: block;
+}
+.ee-row-link > small {
+  margin-top: 12px;
+  color: var(--ink-2);
+  font: 400 clamp(16px, 1.3vw, 19px) / 1.5 var(--cjk);
+  letter-spacing: 0;
+}
+/* 标题链接铺满整行 */
+.ee-row-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+}
+.ee-row-link:focus-visible {
+  outline: none;
+}
+.ee-row-link:focus-visible::after {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 2px;
+}
+.ee-row-side {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding-top: clamp(4px, 0.6vw, 10px);
+}
+.ee-row-summary {
+  color: var(--ink);
+  font: 400 clamp(16px, 1.2vw, 17.5px) / 1.75 var(--cjk);
+}
+.ee-row-meta,
+.ee-byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  color: var(--muted);
+  font:
+    400 12px/1.4 var(--mono),
+    var(--cjk);
+}
+.ee-row-meta > * + *,
+.ee-byline > * + * {
+  margin-left: 12px;
+  padding-left: 12px;
+  border-left: 1px solid var(--rule-2);
+}
+/* 作者名单独链到公众号，压在整行链接之上 */
+.ee-author {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 28px;
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: underline 1px transparent;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s;
+}
+.ee-author:hover {
+  text-decoration-color: currentColor;
+}
+.ee-row-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font: 400 13px/1.6 var(--cjk);
+}
+.ee-row-sections li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.ee-row-sections i {
+  font: 400 10px/1 var(--mono);
+  font-style: normal;
+  opacity: 0.8;
+}
+.ee-row-go {
+  margin-top: clamp(10px, 1.1vw, 18px);
+  color: var(--muted);
+  transition:
+    color 0.2s,
+    transform 0.3s var(--ease);
+}
+.ee-row:hover .ee-row-go {
+  color: var(--ink);
+  transform: translateX(4px);
+}
+.ee-index .ee-index-more {
+  margin-top: 20px;
+}
+
+/* ---------- 阅读页 ---------- */
+/* 顶栏下方的阅读进度；窄屏顶栏不粘，进度条贴着视口顶边 */
+.ee-progress {
+  position: fixed;
+  top: var(--header);
+  left: 0;
+  right: 0;
+  z-index: 49;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(var(--read, 0));
+  transform-origin: 0 50%;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.ee-progress[data-on='false'] {
+  opacity: 0;
+}
+
+/* 开篇与正文共用一套三栏：左页边（编号、目录）、中间正文一栏、右边留白 */
+.ee-open,
+.ee-sheet {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(0, var(--ee-measure)) minmax(
+      0,
+      1fr
+    );
+  column-gap: clamp(24px, 3.4vw, 64px);
+  padding-inline: var(--gutter);
+}
+.ee-open {
+  padding-top: clamp(48px, 9vh, 104px);
+  padding-bottom: clamp(44px, 7vh, 76px);
+  animation: ee-rise 0.8s var(--ease) both;
+}
+@keyframes ee-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+.ee-open-rail {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 8px;
+  padding-top: 12px;
+  color: var(--muted);
+  font:
+    400 12px/1.4 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.04em;
+}
+.ee-open-no {
+  color: var(--ink);
+}
+/* inline-block 而不是 flex：保留「Essays · 文章」里的空格 */
+.ee-crumb {
+  display: inline-block;
+  padding-block: 5px;
+  text-decoration: underline 1px transparent;
+  text-underline-offset: 4px;
+  transition:
+    color 0.2s,
+    text-decoration-color 0.2s;
+}
+.ee-crumb:hover {
+  color: var(--ink);
+  text-decoration-color: currentColor;
+}
+.ee-open-main {
+  grid-column: 2 / 4;
+  display: grid;
+  justify-items: start;
+  gap: clamp(20px, 2.6vh, 28px);
+}
+.ee-open h1 {
+  display: grid;
+  gap: clamp(10px, 1.4vh, 16px);
+}
+.ee-title {
+  font: 700 clamp(44px, 5.6vw, 88px) / 1.08 var(--cjk);
+  letter-spacing: -0.02em;
+}
+.ee-subtitle {
+  max-width: 22em;
+  color: var(--ink-2);
+  font: 400 clamp(20px, 2vw, 30px) / 1.45 var(--cjk);
+  letter-spacing: -0.01em;
+}
+.ee-lead {
+  max-width: 30em;
+  color: var(--ink-2);
+  font: 400 clamp(17px, 1.35vw, 20px) / 1.75 var(--cjk);
+}
+.ee-byline {
+  width: 100%;
+  max-width: var(--ee-measure);
+  padding: 8px 0;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--rule-2);
+}
+
+.ee-sheet {
+  padding-top: clamp(44px, 7vh, 72px);
+  padding-bottom: clamp(80px, 12vh, 140px);
+  border-top: 1px solid var(--rule-2);
+  background: var(--white);
+}
+
+/* 目录：粘在左页边，当前小节变墨色、编号换杏橙 */
+.ee-toc {
+  position: sticky;
+  top: calc(var(--header) + 40px);
+  align-self: start;
+  justify-self: start;
+  display: grid;
+  width: min(100%, 240px);
+}
+.ee-toc-label {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink);
+  color: var(--muted);
+  font:
+    400 11px/1 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.12em;
+}
+.ee-toc a {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 4px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--muted);
+  font: 400 14px/1.5 var(--cjk);
+  transition: color 0.2s;
+}
+.ee-toc a i {
+  padding-top: 4px;
+  font: 400 10.5px/1 var(--mono);
+  font-style: normal;
+}
+.ee-toc a:hover {
+  color: var(--ink);
+}
+.ee-toc a[aria-current] {
+  color: var(--ink);
+  font-weight: 500;
+}
+.ee-toc a[aria-current] i {
+  color: var(--accent-ink);
+}
+
+/* 正文 */
+.ee-body {
+  grid-column: 2;
+  min-width: 0;
+  color: var(--ee-text);
+  font: 400 clamp(17px, 1.2vw, 18px) / 1.9 var(--cjk);
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+  hanging-punctuation: allow-end;
+}
+/* 压过 e2.css 里 .e2 p 等元素的 margin: 0 */
+.ee .ee-body > * + * {
+  margin-top: 1.15em;
+}
+.ee .ee-body h2 {
+  margin-top: 2.6em;
+  padding-top: 22px;
+  border-top: 1px solid var(--ink);
+  color: var(--ink);
+  font: 600 clamp(22px, 1.8vw, 27px) / 1.4 var(--cjk);
+  letter-spacing: -0.01em;
+}
+.ee .ee-body > h2:first-child {
+  margin-top: 0;
+}
+.ee .ee-body h2 + * {
+  margin-top: 0.9em;
+}
+.ee-h-no {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font: 400 11.5px/1 var(--mono);
+  letter-spacing: 0.06em;
+}
+.ee .ee-body h3 {
+  margin-top: 2em;
+  color: var(--ink);
+  font: 600 19px/1.5 var(--cjk);
+}
+/* 目录跳过来时，小标题停在顶栏下方一点 */
+.e2 .ee-body :is(h2, h3)[id] {
+  scroll-margin-top: calc(var(--header) + 28px);
+}
+.ee-body blockquote {
+  padding: 2px 0 2px 1.1em;
+  border-left: 2px solid var(--accent);
+  color: var(--ink-2);
+  font-size: 0.94em;
+}
+.ee .ee-body hr {
+  height: 1px;
+  margin-block: 3em;
+  border: 0;
+  background: var(--rule-2);
+}
+/* 分隔线后面紧跟小节标题时，分隔线就是这一节的顶线 */
+.ee .ee-body hr + h2 {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+.ee-body ol {
+  counter-reset: ee-ref;
+  display: grid;
+  gap: 0.7em;
+  color: var(--ink-2);
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.ee-body ol li {
+  counter-increment: ee-ref;
+  position: relative;
+  padding-left: 2.6em;
+}
+.ee-body ol li::before {
+  content: counter(ee-ref, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0.3em;
+  color: var(--muted);
+  font: 400 11px/1.6 var(--mono);
+}
+.ee-body strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.ee .ee-body em {
+  font-family: inherit;
+  font-style: italic;
+}
+
+/* ---------- 结尾：接着读与四条去处 ---------- */
+.ee-end {
+  padding: clamp(48px, 8vh, 88px) var(--gutter) clamp(44px, 7vh, 72px);
+}
+.ee-next {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px 32px;
+  padding-bottom: clamp(36px, 6vh, 56px);
+}
+.ee-next-meta {
+  display: inline-flex;
+  gap: 12px;
+  color: var(--muted);
+  font:
+    400 12px/1.2 var(--mono),
+    var(--cjk);
+}
+.ee-next-meta i {
+  color: var(--ink);
+  font-style: normal;
+}
+.ee-next h2 {
+  display: grid;
+  gap: 10px;
+  font: 600 clamp(40px, 5vw, 76px) / 1.08 var(--cjk);
+  letter-spacing: -0.02em;
+}
+.ee-next h2 > span {
+  text-decoration: underline 1px transparent;
+  text-underline-offset: 10px;
+  transition: text-decoration-color 0.25s;
+}
+.ee-next:hover h2 > span {
+  text-decoration-color: currentColor;
+}
+.ee-next h2 small {
+  color: var(--ink-2);
+  font: 400 clamp(18px, 1.7vw, 26px) / 1.45 var(--cjk);
+  letter-spacing: -0.01em;
+}
+.ee-next-lead {
+  color: var(--ink-2);
+  font: 400 16px/1.6 var(--cjk);
+}
+.ee-next-arrow {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: center;
+  transition: transform 0.3s var(--ease);
+}
+.ee-next:hover .ee-next-arrow {
+  transform: translateX(6px);
+}
+.ee-links {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--ink);
+}
+.ee-links a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 12px 16px 12px 0;
+  border-bottom: 1px solid var(--rule);
+  font: 500 15px/1.4 var(--cjk);
+  transition: background 0.2s;
+}
+.ee-links li + li a {
+  padding-left: 16px;
+  border-left: 1px solid var(--rule);
+}
+.ee-links i {
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+  font-style: normal;
+}
+.ee-links svg {
+  color: var(--muted);
+  transition:
+    color 0.2s,
+    transform 0.25s var(--ease);
+}
+.ee-links a:hover svg {
+  color: var(--ink);
+  transform: translateX(3px);
+}
+.ee-links a[href^='http']:hover svg {
+  transform: translate(2px, -2px);
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1100px) {
+  .ee-open,
+  .ee-sheet {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: max(var(--gutter), calc((100% - var(--ee-measure)) / 2));
+  }
+  .ee-open-rail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    padding-top: 0;
+    margin-bottom: clamp(20px, 3vh, 28px);
+  }
+  .ee-open-main,
+  .ee-body {
+    grid-column: 1;
+  }
+  .ee-toc {
+    position: static;
+    width: 100%;
+    margin-bottom: clamp(40px, 6vh, 56px);
+  }
+  .ee-toc ol {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 20px;
+  }
+  .ee-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ee-links li:nth-child(3) a {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+@media (max-width: 900px) {
+  .ee-cols {
+    display: none;
+  }
+  .ee-index .ee-list {
+    margin-top: clamp(32px, 6vh, 48px);
+    border-top: 1px solid var(--ink);
+  }
+  .ee-row {
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 16px 12px;
+  }
+  .ee-row-side {
+    grid-column: 2;
+    padding-top: 0;
+  }
+  .ee-row-go {
+    display: none;
+  }
+}
+@media (max-width: 560px) {
+  .ee-row-no {
+    padding-top: 9px;
+  }
+  .ee-next {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ee-next-arrow {
+    display: none;
+  }
+  .ee-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ee-links li + li a {
+    padding-left: 0;
+    border-left: 0;
+  }
+}

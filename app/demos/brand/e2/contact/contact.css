@@ -1,0 +1,400 @@
+/* E2 联系。前缀 ec-。表单为主：左边能聊什么、交到哪里，右边是编号的表单行；状态清楚，动效只有淡入。 */
+
+.ec-contact {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  align-items: start;
+  gap: clamp(32px, 5vw, 88px);
+  padding: clamp(48px, 9vh, 96px) var(--gutter) clamp(64px, 10vh, 110px);
+}
+
+/* ---------- 左：说明 ---------- */
+.ec-intro {
+  position: sticky;
+  top: calc(var(--header) + 40px);
+  display: grid;
+  justify-items: start;
+  gap: clamp(18px, 3vh, 26px);
+  animation: ec-rise 0.9s var(--ease) both;
+}
+@keyframes ec-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.ec-intro h1 {
+  font: 700 clamp(36px, 4vw, 62px) / 1.18 var(--display);
+  letter-spacing: -0.025em;
+}
+.ec-intro h1 span {
+  display: block;
+}
+.ec-lede {
+  max-width: 26em;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
+  color: var(--ink-2);
+  font: 400 clamp(16px, 1.25vw, 18px) / 1.8 var(--cjk);
+}
+.ec-figure {
+  width: 100%;
+  margin-top: 8px;
+}
+.ec-drawing {
+  display: block;
+  width: min(100%, 330px);
+  height: auto;
+  margin: 0 auto;
+  padding: 24px 0 14px;
+  overflow: visible;
+}
+.ec-d-tray {
+  --o: 0.1s;
+  --f: 1s;
+}
+.ec-d-sheet {
+  --o: 0.45s;
+  --f: 1.3s;
+}
+.ec-d-callout .e2-callout {
+  opacity: 0;
+}
+.is-in .ec-d-callout .e2-callout {
+  animation: e2-fade 0.6s var(--ease) 1.7s forwards;
+}
+
+/* ---------- 右：表单 ---------- */
+.ec-panel {
+  padding: clamp(22px, 3vw, 44px);
+  border: 1px solid var(--rule-2);
+  border-radius: 12px;
+  background: var(--white);
+}
+.ec-form {
+  display: grid;
+}
+.ec-form > .ec-row:first-child {
+  padding-top: 0;
+}
+.ec-row,
+.ec-row.e2-field {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.ec-row-end {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.ec .ec-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-top: 13px;
+  color: var(--ink);
+  font: 500 14.5px/1.4 var(--cjk);
+}
+.ec-label i {
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+  font-style: normal;
+}
+.ec-control {
+  display: grid;
+  gap: 12px;
+}
+
+/* 想聊的方向：四个等宽的选项格 */
+.ec-roles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.ec-role {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+  font: 500 15px/1.3 var(--cjk);
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.ec-role:hover {
+  border-color: var(--ink-2);
+}
+.ec-role:has(input:checked) {
+  border-color: var(--ink);
+  background: var(--plate);
+}
+.ec-role input {
+  display: grid;
+  place-content: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border: 1px solid var(--ink-2);
+  border-radius: 50%;
+  background: var(--white);
+  appearance: none;
+  cursor: pointer;
+}
+.ec-role input::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: scale(0);
+  transition: transform 0.2s var(--ease);
+}
+.ec-role input:checked {
+  border-color: var(--ink);
+}
+.ec-role input:checked::before {
+  transform: scale(1);
+}
+
+.ec-under {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.ec-hint {
+  color: var(--ink-2);
+  font: 400 13px/1.6 var(--cjk);
+}
+.ec-count {
+  flex: none;
+  color: var(--muted);
+  font: 400 11px/1.6 var(--mono);
+}
+
+.ec-check {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  color: var(--ink-2);
+  font: 400 14px/1.7 var(--cjk);
+  cursor: pointer;
+}
+.ec-check input {
+  width: 16px;
+  height: 16px;
+  margin: 4px 0 0;
+  accent-color: var(--ink);
+  cursor: pointer;
+}
+.ec-submit-row {
+  padding-top: 8px;
+}
+.ec-submit-row .e2-button {
+  min-width: 148px;
+}
+.ec-error {
+  color: var(--accent-ink);
+  font: 500 14px/1.6 var(--cjk);
+}
+.ec-error:not(:empty) {
+  padding: 10px 12px;
+  border-left: 2px solid var(--accent);
+  background: var(--accent-soft);
+}
+.ec-note {
+  color: var(--muted);
+  font: 400 13px/1.7 var(--cjk);
+}
+.ec-note a {
+  margin-left: 4px;
+  color: var(--ink);
+  text-decoration: underline 1px;
+  text-underline-offset: 4px;
+}
+
+/* 提交成功 */
+.ec-success {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+  padding: clamp(8px, 2vw, 24px) 0;
+  animation: ec-rise 0.6s var(--ease) both;
+}
+.ec-success-mark {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--ink);
+  border-radius: 8px;
+  color: var(--accent-ink);
+}
+.ec-success h2 {
+  font: 600 clamp(32px, 3.4vw, 48px) / 1.15 var(--cjk);
+  letter-spacing: -0.02em;
+}
+.ec-success h2:focus {
+  outline: none;
+}
+.ec-success h2:focus-visible {
+  outline: 2px solid var(--accent-ink);
+}
+.ec-success p {
+  max-width: 28em;
+  padding-bottom: 8px;
+  color: var(--ink-2);
+  font: 400 16px/1.8 var(--cjk);
+}
+
+/* ---------- 隐私说明 ---------- */
+.ec-privacy {
+  padding: clamp(64px, 10vh, 110px) var(--gutter);
+  border-top: 1px solid var(--rule-2);
+  background: var(--white);
+}
+.ec-privacy .e2-head {
+  align-items: start;
+}
+.ec-privacy-list {
+  width: 100%;
+  border-top: 1px solid var(--ink);
+}
+.ec-privacy-list li {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 12px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.ec-privacy-list i {
+  padding-top: 5px;
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+  font-style: normal;
+}
+.ec-privacy-list p {
+  color: var(--ink-2);
+  font: 400 15.5px/1.8 var(--cjk);
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 960px) {
+  .ec-contact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ec-intro {
+    position: static;
+  }
+  .ec-figure {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  .ec-panel {
+    padding: 20px 16px;
+  }
+  .ec-row,
+  .ec-row.e2-field {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 18px 0;
+  }
+  .ec .ec-label {
+    padding-top: 0;
+  }
+  .ec-row-end > .ec-label {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ec-intro,
+  .ec-success {
+    animation: none;
+  }
+  .ec-d-callout .e2-callout {
+    opacity: 1;
+  }
+}
+
+/* ---------- 动效：你写的东西去了哪里 ---------- */
+/* 行号：填好就变成杏橙底的勾；表单左侧一条进度线跟着填的行数往下长 */
+.ec-form {
+  position: relative;
+}
+.ec-form::before,
+.ec-form::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 120px;
+  left: -14px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--rule);
+}
+.ec-form::after {
+  background: var(--accent);
+  transform: scaleY(var(--done, 0));
+  transform-origin: top;
+  transition: transform 0.6s var(--ease);
+}
+.ec-label i {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--rule-2);
+  border-radius: 999px;
+  transition:
+    background 0.3s var(--ease),
+    border-color 0.3s var(--ease),
+    transform 0.35s var(--bounce);
+}
+.ec-label i[data-done] {
+  border-color: var(--ink);
+  background: var(--accent);
+  color: var(--ink);
+  transform: scale(1.08);
+}
+/* 左边那张纸：四行跟着表单写上；提交成功落进盒子 */
+.ec-d-line {
+  stroke-width: calc(var(--sw, 0.085) * 1.7);
+  opacity: 0.25;
+  transition:
+    opacity 0.4s var(--ease),
+    stroke 0.4s var(--ease);
+}
+.ec-d-line.is-on {
+  opacity: 1;
+  stroke: var(--ink);
+  stroke-width: calc(var(--sw, 0.085) * 2.6);
+}
+.ec-d-sheet {
+  transition: transform 0.9s var(--bounce);
+}
+.ec-d-sheet[data-sent] {
+  transform: translateY(4.3px);
+}
+.ec-d-legs {
+  transition: opacity 0.3s var(--ease);
+}
+.ec-d-sheet[data-sent] .ec-d-legs {
+  opacity: 0;
+}
+@media (max-width: 760px) {
+  .ec-form::before,
+  .ec-form::after {
+    display: none;
+  }
+}

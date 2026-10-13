@@ -1,0 +1,637 @@
+/* Work 三个主场景的界面示意（前缀 ew- / ewc- / ewr- / ewk-）。
+   基础样式是第三步（播完）的样子；宽屏且不减少动态时，按 .ew-scene 的 data-step 回到第一、二步。 */
+
+.ew-demo {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-height: 430px;
+  padding: clamp(16px, 2.2vw, 28px);
+  text-align: left;
+}
+.ew-marks {
+  justify-self: end;
+  display: flex;
+  gap: 12px;
+  color: var(--muted);
+  font: 400 10.5px/1 var(--mono);
+}
+.ew-marks i {
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--rule-2);
+  font-style: normal;
+  transition:
+    color 0.3s,
+    border-color 0.3s;
+}
+.ew-sp {
+  position: absolute;
+  z-index: 3;
+  width: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.3s,
+    transform 0.6s var(--ease);
+}
+.ew-sp path {
+  fill: var(--white);
+  stroke: var(--ink);
+  stroke-width: 2.6;
+  stroke-linejoin: round;
+}
+:is(.ewc-back, .ewc-front, .ewr-goal, .ewk-catalog, .ewk-event, .ewc-picker) {
+  border: 1px solid var(--rule-2);
+  border-radius: 12px;
+  background: var(--white);
+}
+:is(.ewc-front, .ewr-goal, .ewk-catalog) {
+  box-shadow:
+    0 1px 2px rgb(23 23 27 / 0.05),
+    0 22px 44px -30px rgb(23 23 27 / 0.28);
+}
+.ew-demo
+  :is(
+    .ewc-toast,
+    .ewr-stamp,
+    .ewr-log li,
+    .ewr-proposal,
+    .ewr-check,
+    .ewk-event,
+    .ewc-picker
+  ) {
+  transition:
+    opacity 0.45s var(--ease),
+    transform 0.55s var(--ease),
+    visibility 0.45s;
+}
+
+/* ---------- 场景 1：拼一个工作台 ---------- */
+.ewc {
+  min-height: 450px;
+}
+.ewc header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 13px/1.2 var(--cjk);
+}
+.ewc header i {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--ink);
+}
+.ewc header small {
+  margin-left: auto;
+  color: var(--muted);
+  font: 400 11px/1.2 var(--cjk);
+}
+.ewc-back {
+  position: absolute;
+  top: 52px;
+  right: clamp(16px, 2.2vw, 28px);
+  width: 66%;
+  padding: 12px 14px;
+  opacity: 0.72;
+  transition: opacity 0.4s;
+}
+.ewc-back header i {
+  background: var(--muted);
+}
+.ewc-back .ewc-dock {
+  padding-top: 10px;
+  border-top: 0;
+}
+.ewc-front {
+  position: relative;
+  width: 94%;
+  margin-top: 72px;
+  padding: 14px 16px 14px;
+}
+.ewc-canvas {
+  display: grid;
+  gap: 8px;
+  padding: 18px 0 4px;
+}
+.ewc-canvas span {
+  height: 6px;
+  border-radius: 1px;
+  background: rgb(23 23 27 / 0.07);
+}
+.ewc-canvas span:nth-child(2) {
+  width: 84%;
+}
+.ewc-canvas span:nth-child(3) {
+  width: 60%;
+}
+.ewc-toast {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 14px 0 12px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font: 500 12px/1.4 var(--cjk);
+}
+.ewc-toast svg {
+  flex: none;
+}
+.ewc-dock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+}
+.ewc-chip {
+  padding: 4px 8px;
+  border: 1px solid var(--rule-2);
+  border-radius: 6px;
+  background: var(--white);
+  font:
+    400 11px/1.1 var(--mono),
+    var(--cjk);
+  white-space: nowrap;
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    color 0.3s,
+    opacity 0.3s;
+}
+.ewc-personal {
+  background: var(--plate);
+}
+.ewc-added {
+  border-color: var(--ink);
+}
+.ewc-dep {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.ewc-add {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 22px;
+  border: 1px dashed var(--rule-2);
+  border-radius: 6px;
+  color: var(--muted);
+}
+.ewc-divider {
+  width: 1px;
+  height: 18px;
+  margin: 0 3px;
+  background: var(--rule-2);
+}
+.ewc-note {
+  color: var(--muted);
+  font: 400 10.5px/1 var(--mono);
+  transition: color 0.3s;
+}
+.ewc-picker {
+  position: absolute;
+  right: 30%;
+  bottom: 52px;
+  z-index: 2;
+  display: grid;
+  gap: 2px;
+  width: 168px;
+  padding: 6px;
+  border-radius: 8px;
+  box-shadow:
+    0 1px 2px rgb(23 23 27 / 0.06),
+    0 16px 32px -18px rgb(23 23 27 / 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+}
+.ewc-picker small {
+  padding: 4px 8px 6px;
+  color: var(--muted);
+  font: 400 10.5px/1 var(--cjk);
+}
+.ewc-picker span {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 8px;
+  border-radius: 6px;
+  font:
+    400 12px/1 var(--mono),
+    var(--cjk);
+}
+.ewc-picker span[data-pick] {
+  background: var(--plate);
+}
+.ewc-pointer {
+  right: -4px;
+  top: 12px;
+  transform: translate(14px, 12px);
+}
+
+/* ---------- 场景 2：同一个 Goal ---------- */
+.ewr-goal {
+  display: grid;
+  gap: 14px;
+  margin-top: 8px;
+  padding: 16px 18px 18px;
+}
+.ewr-goal header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 12px;
+}
+.ewr-goal header small {
+  color: var(--muted);
+  font: 400 10.5px/1 var(--mono);
+  letter-spacing: 0.06em;
+}
+.ewr-goal header strong {
+  grid-row: 2;
+  font: 600 18px/1.3 var(--cjk);
+}
+.ewr-stamp {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  font: 500 11.5px/1 var(--cjk);
+  white-space: nowrap;
+}
+.ewr-stamp::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.ewr-req {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+.ewr-req li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font: 400 13px/1.4 var(--cjk);
+}
+.ewr-box {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--white);
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+.ewr-log {
+  border-top: 1px solid var(--rule);
+}
+.ewr-log li {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 7.6em) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+  font: 400 13px/1.45 var(--cjk);
+}
+.ewr-log small {
+  color: var(--muted);
+  font: 400 11px/1 var(--cjk);
+}
+.ewr-log b {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font:
+    500 12px/1.2 var(--mono),
+    var(--cjk);
+  white-space: nowrap;
+}
+.ewr-log b::before {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--ink);
+  border-radius: 1px;
+}
+.ewr-log li[data-tone='red'] b::before {
+  background: var(--ink);
+}
+.ewr-log li[data-tone='ink'] b::before {
+  border-color: var(--accent);
+  border-radius: 50%;
+  background: var(--accent);
+}
+.ewr-log span {
+  color: var(--ink-2);
+}
+.ewr-proposal {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px dashed var(--rule-2);
+  border-radius: 8px;
+}
+.ewr-proposal small {
+  color: var(--muted);
+  font: 400 11px/1.2 var(--cjk);
+}
+.ewr-proposal p {
+  font: 400 13px/1.5 var(--cjk);
+}
+.ewr-check {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  padding-top: 2px;
+  font: 400 12.5px/1.3 var(--cjk);
+}
+.ewr-check strong {
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.06em;
+}
+.ewr-check span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ink-2);
+}
+.ewr-check svg {
+  color: var(--accent-ink);
+}
+
+/* ---------- 场景 3：能力目录 ---------- */
+.ewk-catalog {
+  margin-top: 8px;
+  padding: 14px 16px 6px;
+}
+.ewk-catalog header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 10px;
+  font: 600 13px/1.2 var(--cjk);
+}
+.ewk-catalog table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ewk-catalog th,
+.ewk-catalog td {
+  padding: 9px 4px;
+  border-top: 1px solid var(--rule);
+  text-align: center;
+}
+.ewk-catalog thead th {
+  color: var(--muted);
+  font: 400 11px/1.2 var(--cjk);
+}
+.ewk-catalog th:first-child {
+  text-align: left;
+}
+.ewk-catalog tbody th {
+  font:
+    400 12.5px/1.2 var(--mono),
+    var(--cjk);
+  white-space: nowrap;
+}
+.ewk-dot {
+  position: relative;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  vertical-align: middle;
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+.ewk-dot:not([data-on]) {
+  border-color: var(--rule-2);
+}
+.ewk-dot[data-on] {
+  background: var(--ink);
+}
+/* 撤掉 Codex 改文档的权限：基础样式就是撤权之后 */
+.ewk-dot[data-cell='3-1'] {
+  border-style: dashed;
+  border-color: var(--muted);
+  background: transparent;
+}
+.ewk-pointer {
+  left: 4px;
+  top: 5px;
+  transform: translate(14px, 12px);
+}
+.ewk-events {
+  display: grid;
+  gap: 8px;
+}
+.ewk-event {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 10px 12px;
+  font: 400 12.5px/1.4 var(--cjk);
+}
+.ewk-event b {
+  font-weight: 600;
+}
+.ewk-undo svg:first-child {
+  color: var(--accent-ink);
+}
+.ewk-undo u {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  color: var(--ink-2);
+  text-underline-offset: 3px;
+}
+.ewk-review {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+}
+.ewk-review small {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font: 400 10.5px/1.2 var(--cjk);
+  letter-spacing: 0.06em;
+}
+.ewk-review p b {
+  margin-right: 6px;
+}
+.ewk-review span {
+  display: flex;
+  gap: 5px;
+}
+.ewk-review i {
+  padding: 4px 9px;
+  border: 1px solid var(--rule-2);
+  border-radius: 6px;
+  font: 500 11.5px/1 var(--cjk);
+  font-style: normal;
+}
+.ewk-review i:first-child {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--white);
+}
+.ewk-revoke {
+  border-style: dashed;
+  color: var(--muted);
+}
+.ewk-revoke b {
+  color: var(--ink);
+}
+
+/* ---------- 按步回放（宽屏、不减少动态） ---------- */
+@media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+  .ew-scene[data-step='0'] .ew-marks i:nth-child(1),
+  .ew-scene[data-step='1'] .ew-marks i:nth-child(2),
+  .ew-scene[data-step='2'] .ew-marks i:nth-child(3) {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  /* 场景 1：第一步挑插件；第二步看个人插件；第三步（基础）讲依赖 */
+  .ew-scene[data-step='0'] .ewc-picker {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .ew-scene[data-step='0'] .ewc-pointer {
+    opacity: 1;
+    transform: none;
+  }
+  .ew-scene[data-step='0'] .ewc-added {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+  .ew-scene:is([data-step='0'], [data-step='1']) .ewc-dep {
+    border-color: var(--rule-2);
+    background: var(--white);
+    color: inherit;
+  }
+  .ew-scene:is([data-step='0'], [data-step='1']) .ewc-toast {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  .ew-scene[data-step='1'] .ewc-personal {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--white);
+  }
+  .ew-scene[data-step='1'] .ewc-back {
+    opacity: 1;
+  }
+  .ew-scene[data-step='1'] .ewc-note {
+    color: var(--ink);
+  }
+
+  /* 场景 2：第一步只有周一；第二步换了两次工具；第三步（基础）提需求与收尾核对 */
+  .ew-scene:is([data-step='0'], [data-step='1']) .ewr-stamp,
+  .ew-scene:is([data-step='0'], [data-step='1']) .ewr-proposal,
+  .ew-scene:is([data-step='0'], [data-step='1']) .ewr-check,
+  .ew-scene:is([data-step='0'], [data-step='1']) .ewr-log li:nth-child(4),
+  .ew-scene[data-step='0'] .ewr-log li:nth-child(n + 2) {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  .ew-scene[data-step='0'] .ewr-req li:nth-child(n + 2) .ewr-box {
+    border-color: var(--rule-2);
+    background: var(--white);
+    color: transparent;
+  }
+  .ew-scene[data-step='1'] .ewr-log li:is(:nth-child(2), :nth-child(3)) b {
+    color: var(--accent-ink);
+  }
+
+  /* 场景 3：第一步只看目录；第二步撤销与审查；第三步（基础）撤权 */
+  .ew-scene[data-step='0'] .ewk-event,
+  .ew-scene[data-step='1'] .ewk-revoke {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+  }
+  .ew-scene:is([data-step='0'], [data-step='1']) .ewk-dot[data-cell='3-1'] {
+    border-style: solid;
+    border-color: var(--ink);
+    background: var(--ink);
+  }
+  .ew-scene[data-step='0'] .ewk-catalog tbody th {
+    color: var(--accent-ink);
+  }
+  .ew-scene[data-step='1'] .ewk-dot[data-cell='3-2'] {
+    box-shadow: 0 0 0 4px var(--accent-soft);
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .ew-scene[data-step='2'] .ewk-pointer {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 窄屏或减少动态：直接是第三步的样子，不显示步骤记号 */
+@media (max-width: 900px) {
+  .ew-marks {
+    display: none;
+  }
+  .ew-demo {
+    min-height: 0;
+  }
+  .ewc-front {
+    width: 100%;
+    margin-top: 64px;
+  }
+  .ewc-back {
+    top: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ew-marks {
+    display: none;
+  }
+}
+@media (max-width: 480px) {
+  .ewc-back {
+    width: 82%;
+  }
+  .ewc header small {
+    display: none;
+  }
+  .ewr-log li {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+  .ewr-log li span {
+    grid-column: 2;
+  }
+}

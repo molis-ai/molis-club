@@ -1,0 +1,1175 @@
+/* E2 整站的视觉系统：以第四轮 E「玩心造物」的首页为底（r4/e，现为比稿 E · 二稿），字体换成圆润的一套。
+   画面：白纸、墨线、一种杏橙；轴测图用排线（#e2-hatch / #e2-dense，HatchDefs 在 shell.tsx），
+   线描的工作室、牌、四格漫画这些「玩心」放在首页和探索类页面；面向客户的页面（解决方案、联系、团队、Work）
+   同一套线条与字，但布局更规整、动效更少。
+   字体：Nunito（拉丁，圆头）+ Chiron GoRound TC（中文圆体黑）+ DM Mono（编号、标签与注记）。
+   线：重要的分区 1.5px 墨线，次要的用浅线。按钮与卡片带一点硬投影（E 的标志），但只有 3–4px。
+   动效：进场淡入上移；悬停时的小回弹只用在小物件上（图标、按钮、物件、牌），不用在大块内容上。
+   各页的样式表只写本页的东西，类名用本页前缀；共用部件都在这里，前缀 e2-。 */
+
+/* 中文圆体 Chiron GoRound TC 是繁体（港式）字库，标点居中；简体读者习惯标点落在左下。
+   只把标点这几段码位交给系统里的简体字体（PingFang / 冬青 / 微软雅黑 / 思源），字形仍是圆体。 */
+@font-face {
+  font-family: 'E2 SC Punct';
+  src:
+    local('PingFang SC'), local('PingFangSC-Regular'),
+    local('Hiragino Sans GB'), local('Microsoft YaHei'),
+    local('Noto Sans CJK SC'), local('Source Han Sans SC');
+  unicode-range: U+3000-303F, U+FF00-FFEF, U+2014, U+2026;
+  font-display: swap;
+}
+
+.e2 {
+  --paper: #fdfdfb;
+  --white: #ffffff;
+  --ink: #121212;
+  --ink-2: #3a3a38;
+  --muted: #6d6c67;
+  --rule: rgb(18 18 18 / 0.14);
+  --rule-2: rgb(18 18 18 / 0.28);
+  --plate: #f7f6f2;
+  --plate-2: #efede7;
+  --accent: #ea9260;
+  --accent-deep: #d4733b;
+  --accent-ink: #b65a2c;
+  --accent-soft: rgb(234 146 96 / 0.16);
+  --dots: radial-gradient(rgb(18 18 18 / 0.1) 1px, transparent 1.4px) 0 0 / 10px
+    10px;
+  --gutter: clamp(16px, 4vw, 60px);
+  --measure: 38em;
+  /* 滚过顶栏后出现的快捷栏高度；粘性元素与锚点都让开它 */
+  --header: 56px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --bounce: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --round:
+    'E2 SC Punct', var(--font-e2-latin), var(--font-e2-cjk), 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --sans: var(--round);
+  --display: var(--round);
+  --cjk: var(--round);
+  --mono: var(--font-e2-mono), ui-monospace, 'SF Mono', monospace;
+  min-height: 100svh;
+  overflow-x: clip;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+/* 重置用 :where() 压低优先级，各页的单类名规则（如 .ew-aside { margin-top }）才能生效 */
+:where(.e2) *,
+:where(.e2) *::before,
+:where(.e2) *::after {
+  box-sizing: border-box;
+}
+:where(.e2) a {
+  color: inherit;
+  text-decoration: none;
+}
+:where(.e2) button {
+  font: inherit;
+  color: inherit;
+}
+.e2 :focus-visible {
+  outline: 2.5px solid var(--accent-deep);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+:where(.e2) :is(h1, h2, h3, h4, p, ul, ol, dl, dd, figure, blockquote) {
+  margin: 0;
+}
+:where(.e2) :is(ul, ol) {
+  padding: 0;
+  list-style: none;
+}
+:where(.e2) img {
+  max-width: 100%;
+  height: auto;
+}
+/* 根样式 app/globals.css 把所有 em 设成衬线体；E2 里 em 只是语气（图注里的诚实标注等），沿用所在文字的字体 */
+:where(.e2) em {
+  font-family: inherit;
+  font-weight: inherit;
+}
+.e2 [id] {
+  scroll-margin-top: calc(var(--header) + 16px);
+}
+.e2 .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.e2-phrase {
+  display: inline-block;
+}
+.e2-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* ---------- 顶栏：每栏一个线描图标（第四轮 E） ---------- */
+.e2-skip {
+  position: absolute;
+  left: var(--gutter);
+  top: -60px;
+  z-index: 70;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--white) !important;
+  font: 600 13px/1 var(--cjk);
+}
+.e2-skip:focus {
+  top: 12px;
+}
+.e2-header {
+  position: relative;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 24px;
+  padding: 20px var(--gutter) 18px;
+  border-bottom: 1.5px solid var(--ink);
+  background: var(--paper);
+}
+.e2-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 900 13px/1.05 var(--display);
+  letter-spacing: 0.01em;
+}
+.e2-logo img {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+}
+.e2-nav {
+  justify-self: center;
+  display: flex;
+  gap: clamp(18px, 2.6vw, 42px);
+}
+.e2-nav-block {
+  display: grid;
+  grid-template-columns: 30px auto;
+  grid-template-rows: auto auto;
+  gap: 2px 10px;
+}
+.e2-glyph {
+  grid-row: span 2;
+  width: 30px;
+  height: 30px;
+  overflow: visible;
+  transition: transform 0.4s var(--bounce);
+}
+.e2-glyph * {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.e2-glyph .e2-g-accent {
+  fill: var(--accent);
+}
+.e2-glyph .e2-g-fill {
+  fill: var(--ink);
+  stroke: none;
+}
+.e2-nav-block:hover .e2-glyph,
+.e2-nav-block:focus-within .e2-glyph {
+  transform: rotate(-10deg) scale(1.08);
+}
+.e2-nav-title {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  min-height: 24px;
+  font: 700 15px/1 var(--cjk);
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+.e2-nav-title:hover {
+  color: var(--accent-ink);
+}
+.e2-nav-title[aria-current]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.e2-nav-block ul {
+  display: grid;
+  gap: 1px;
+  color: var(--muted);
+  font:
+    400 10.5px/1.5 var(--mono),
+    var(--cjk);
+}
+.e2-nav-block ul a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+.e2-nav-block ul a[aria-current] {
+  color: var(--ink);
+  font-weight: 500;
+}
+.e2-nav-block ul a[aria-current]::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin: 0 5px 1px -10px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.e2-header-end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.e2-login {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 10px;
+  font: 700 14px/1 var(--cjk);
+  white-space: nowrap;
+}
+.e2-login:hover,
+.e2-login[aria-current] {
+  color: var(--accent-ink);
+}
+.e2-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--ink) !important;
+  font: 700 14px/1 var(--cjk);
+  white-space: nowrap;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition:
+    transform 0.2s var(--bounce),
+    box-shadow 0.2s var(--bounce);
+}
+.e2-cta:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.e2-cta:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+/* 滚过顶栏后滑下来的快捷栏 */
+.e2-minibar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  height: var(--header);
+  padding: 0 var(--gutter);
+  border-bottom: 1.5px solid var(--ink);
+  background: rgb(253 253 251 / 0.94);
+  backdrop-filter: saturate(1.3) blur(10px);
+  -webkit-backdrop-filter: saturate(1.3) blur(10px);
+  transform: translateY(-105%);
+  visibility: hidden;
+  transition:
+    transform 0.35s var(--ease),
+    visibility 0s linear 0.35s;
+}
+.e2.is-past .e2-minibar {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.35s var(--ease);
+}
+.e2-mini-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 800 15px/1 var(--display);
+}
+.e2-mini-logo img {
+  border-radius: 6px;
+}
+.e2-mini-nav {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.e2-nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink-2);
+  font: 700 14px/1 var(--cjk);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.e2-nav-item:hover {
+  background: rgb(18 18 18 / 0.05);
+  color: var(--ink);
+}
+.e2-nav-item[aria-current] {
+  color: var(--ink);
+  box-shadow: inset 0 -2.5px 0 var(--accent);
+  border-radius: 8px 8px 2px 2px;
+}
+.e2-nav-item svg {
+  transition: transform 0.25s var(--ease);
+}
+.e2-mini-cta {
+  min-height: 34px;
+  padding: 0 14px;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.e2-menu {
+  position: relative;
+}
+.e2-menu[data-open='true'] .e2-nav-item svg {
+  transform: rotate(180deg);
+}
+.e2-menu-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: -12px;
+  width: min(460px, calc(100vw - 32px));
+  padding: 6px;
+  border: 1.5px solid var(--ink);
+  border-radius: 14px;
+  background: var(--white);
+  box-shadow: 5px 5px 0 var(--ink);
+  animation: e2-drop 0.3s var(--ease);
+}
+.e2-menu-panel[hidden] {
+  display: none;
+}
+@keyframes e2-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+.e2-menu-panel a {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 2px 8px;
+  padding: 11px 12px 11px 10px;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+.e2-menu-panel a + a {
+  border-top: 1px dashed var(--rule);
+}
+.e2-menu-panel a:hover,
+.e2-menu-panel a[aria-current] {
+  background: var(--plate);
+}
+.e2-menu-panel i {
+  grid-row: span 2;
+  padding-top: 3px;
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+  font-style: normal;
+}
+.e2-menu-panel strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 800 15px/1.3 var(--display);
+}
+.e2-menu-panel small {
+  color: var(--muted);
+  font: 400 13px/1.45 var(--cjk);
+}
+
+/* ---------- 基础部件 ---------- */
+/* 眉题：墨色小签，前面一枚杏橙点（E 的 badge） */
+.e2-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--white);
+  font:
+    500 12px/1.2 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.05em;
+}
+.e2-kicker::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform 0.35s var(--bounce);
+}
+.e2-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--ink-2);
+  font:
+    400 10.5px/1.4 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.e2-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.e2-status li {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 11px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--ink);
+  font:
+    500 12px/1.2 var(--mono),
+    var(--cjk);
+}
+.e2-status li:first-child {
+  background: var(--accent);
+}
+.e2-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 22px;
+}
+.e2-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 22px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: var(--ink);
+  color: var(--white) !important;
+  font: 700 14.5px/1 var(--cjk);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--accent);
+  transition:
+    transform 0.2s var(--bounce),
+    box-shadow 0.2s var(--bounce),
+    background 0.2s;
+}
+.e2-button svg,
+.e2-link svg {
+  flex: none;
+  transition: transform 0.25s var(--ease);
+}
+.e2-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.e2-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--accent);
+}
+.e2-button:hover svg,
+.e2-link:hover svg {
+  transform: translateX(3px);
+}
+.e2-button[href^='http']:hover svg,
+.e2-link[href^='http']:hover svg {
+  transform: translate(2px, -2px);
+}
+.e2-button-ghost {
+  background: var(--white);
+  color: var(--ink) !important;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.e2-button-ghost:hover {
+  box-shadow: 5px 5px 0 var(--ink);
+}
+.e2-button-ghost:active {
+  box-shadow: 1px 1px 0 var(--ink);
+}
+.e2-button-light {
+  border-color: var(--white);
+  background: var(--white);
+  color: var(--ink) !important;
+}
+.e2-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+}
+.e2-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font: 700 14.5px/1 var(--cjk);
+  text-decoration: underline 2px transparent;
+  text-underline-offset: 6px;
+  transition: text-decoration-color 0.2s;
+}
+.e2-link:hover {
+  text-decoration-color: var(--accent-deep);
+}
+
+/* 区块标题 */
+.e2-head {
+  display: grid;
+  gap: 18px 48px;
+}
+.e2-head[data-layout='split'] {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: end;
+}
+.e2-head-main {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+}
+.e2-head-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--accent-ink);
+  font:
+    500 12.5px/1.2 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.08em;
+}
+.e2-head-meta i {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  height: 22px;
+  padding: 0 6px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  color: var(--ink);
+  font-style: normal;
+  letter-spacing: 0;
+}
+.e2-head h2 {
+  max-width: 18em;
+  font: 700 clamp(30px, 3.6vw, 56px) / 1.15 var(--display);
+  letter-spacing: -0.02em;
+}
+.e2-head-side {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+}
+.e2-head-side > p {
+  max-width: 34em;
+  color: var(--ink-2);
+  font: 500 clamp(16px, 1.25vw, 18px) / 1.75 var(--cjk);
+}
+
+/* 图版：细墨线框、网点底（E 的漫画格），下面一行等宽图注 */
+.e2-plate {
+  display: grid;
+  gap: 10px;
+}
+.e2-plate-body {
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid var(--ink);
+  border-radius: 14px;
+  background: var(--dots), var(--white);
+}
+.e2-plate figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--muted);
+  font:
+    400 11px/1.4 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.03em;
+}
+.e2-plate figcaption b {
+  margin-right: 10px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.e2-plate figcaption em {
+  font-style: normal;
+  white-space: nowrap;
+}
+
+/* 接着看下一件 */
+.e2-next {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px 28px;
+  padding: clamp(28px, 4vw, 48px) var(--gutter);
+  border-top: 1.5px solid var(--ink);
+  transition: background 0.3s;
+}
+.e2-next:hover {
+  background: var(--accent-soft);
+}
+.e2-next-card {
+  grid-row: 1 / span 3;
+  position: relative;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  width: 78px;
+  aspect-ratio: 5 / 7;
+  padding-top: 8px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: var(--white);
+  box-shadow: 4px 4px 0 var(--ink);
+  rotate: -5deg;
+  transition:
+    rotate 0.45s var(--bounce),
+    translate 0.45s var(--bounce);
+}
+.e2-next[data-next='work'] .e2-next-card {
+  background: var(--accent);
+}
+.e2-next-card b {
+  font: 900 20px/1 var(--display);
+}
+.e2-next-card i {
+  font: 400 10px/1.4 var(--mono);
+  font-style: normal;
+}
+.e2-next-card .e2-next-card-end {
+  position: absolute;
+  right: 7px;
+  bottom: 6px;
+  rotate: 180deg;
+  font-size: 16px;
+}
+.e2-next:hover .e2-next-card {
+  rotate: 0deg;
+  translate: 0 -4px;
+}
+.e2-next-meta {
+  grid-column: 2;
+  display: inline-flex;
+  gap: 12px;
+  color: var(--accent-ink);
+  font:
+    500 12px/1.2 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.06em;
+}
+.e2-next-meta i {
+  color: var(--ink);
+  font-style: normal;
+}
+.e2-next strong {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 900 clamp(34px, 4.6vw, 68px) / 1.05 var(--display);
+  letter-spacing: -0.025em;
+}
+.e2-next-line {
+  grid-column: 2;
+  color: var(--ink-2);
+  font: 500 16px/1.6 var(--cjk);
+}
+.e2-next-arrow {
+  grid-column: 3;
+  grid-row: 1 / span 3;
+  align-self: center;
+  box-sizing: content-box;
+  padding: 14px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--white);
+  transition:
+    transform 0.35s var(--bounce),
+    background 0.2s;
+}
+.e2-next:hover .e2-next-arrow {
+  transform: translateX(6px);
+  background: var(--accent);
+}
+
+/* 进入视口：淡入、轻轻上移 */
+.e2 [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s var(--ease) var(--d, 0ms),
+    transform 0.8s var(--ease) var(--d, 0ms);
+}
+.e2 [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- 轴测图（与首页那间线描工作室同一种画法） ---------- */
+.e2-f {
+  stroke: var(--ink);
+  stroke-width: calc(var(--sw, 0.085) * 1.7);
+  stroke-linejoin: round;
+}
+.e2-t-top,
+.e2-t-light,
+.e2-t-floor {
+  fill: #fff;
+}
+.e2-t-side {
+  fill: url(#e2-hatch);
+}
+.e2-t-dark,
+.e2-t-cut {
+  fill: url(#e2-dense);
+}
+.e2-t-accent {
+  fill: var(--accent);
+}
+.e2-t-glow {
+  fill: rgb(234 146 96 / 0.22);
+  stroke-dasharray: 0.02 0.02;
+  stroke-width: 0.08;
+}
+.e2-hatch-line {
+  stroke: var(--ink);
+  stroke-width: 0.09;
+  opacity: 0.55;
+}
+.e2-l {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: calc(var(--sw, 0.085) * 1.7);
+  stroke-linecap: round;
+}
+.e2-faint {
+  opacity: 0.35;
+}
+.e2-text {
+  stroke-width: calc(var(--sw, 0.085) * 2.6);
+}
+.e2-sun {
+  fill: var(--accent);
+  stroke: var(--ink);
+  stroke-width: calc(var(--sw, 0.085) * 1.7);
+}
+.e2-knob {
+  fill: var(--ink);
+}
+.e2-ray {
+  stroke: #fff;
+  opacity: 0.7;
+}
+.e2-chip {
+  fill: #fff;
+  stroke: var(--ink);
+  stroke-width: 0.13;
+}
+.e2-chip-on {
+  fill: var(--accent);
+}
+.e2-chip-text {
+  fill: var(--ink);
+  font: 700 1.15px/1 var(--cjk);
+}
+.e2-caret {
+  stroke: var(--accent-deep);
+  stroke-width: calc(var(--sw, 0.085) * 3);
+  animation: e2-blink 1s steps(1) infinite !important;
+}
+@keyframes e2-blink {
+  50% {
+    opacity: 0;
+  }
+}
+/* 编号引线：标注是墨色小牌（E 的 tag），引线一端一个空心小圆 */
+.e2-leader {
+  stroke: var(--ink);
+  stroke-width: 0.09;
+}
+.e2-anchor {
+  fill: var(--white);
+  stroke: var(--ink);
+  stroke-width: 0.11;
+}
+.e2-callout-box {
+  fill: var(--white);
+  stroke: var(--ink);
+  stroke-width: 0.13;
+  transition: fill 0.2s;
+}
+.e2-callout-text {
+  fill: var(--ink);
+  font: 500 1.02px/1 var(--mono);
+  transition: fill 0.2s;
+}
+.e2-callout-num {
+  fill: var(--accent-deep);
+}
+/* 可点的物件：悬停时抬起一点、自己的标注变墨色，其余退淡 */
+.e2-spot {
+  cursor: pointer;
+  outline: none;
+  transition:
+    opacity 0.35s var(--ease),
+    transform 0.4s var(--bounce);
+}
+.e2-spot:hover,
+.e2-spot:focus-visible {
+  transform: translateY(-0.6px);
+}
+.e2-spot:hover .e2-callout-box,
+.e2-spot:focus-visible .e2-callout-box {
+  fill: var(--ink);
+}
+.e2-spot:hover .e2-callout-text,
+.e2-spot:hover .e2-callout-num,
+.e2-spot:focus-visible .e2-callout-text,
+.e2-spot:focus-visible .e2-callout-num {
+  fill: #fff;
+}
+.e2-spot:focus-visible .e2-callout-box {
+  stroke: var(--accent-deep);
+  stroke-width: 0.22;
+}
+svg:has(.e2-spot:hover) .e2-spot:not(:hover),
+svg:has(.e2-spot:focus-visible) .e2-spot:not(:focus-visible) {
+  opacity: 0.45;
+}
+/* 线描进场：给 svg 加 data-draw；进入视口后（父级或自身 .is-in）线先描出来，再铺面与排线。
+   组的先后用 --o（描线延迟）与 --f（铺面延迟）控制。 */
+[data-draw] .e2-f,
+[data-draw] .e2-l:not(.e2-caret) {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+[data-draw] .e2-f {
+  fill-opacity: 0;
+}
+[data-draw] .e2-t-glow {
+  stroke-dasharray: none;
+}
+.is-in [data-draw] .e2-f,
+[data-draw].is-in .e2-f,
+[data-draw='now'] .e2-f {
+  animation:
+    e2-draw 1.4s cubic-bezier(0.6, 0, 0.3, 1) var(--o, 0.1s) forwards,
+    e2-fill 0.6s ease var(--f, 1.1s) forwards;
+}
+.is-in [data-draw] .e2-l:not(.e2-caret),
+[data-draw].is-in .e2-l:not(.e2-caret),
+[data-draw='now'] .e2-l:not(.e2-caret) {
+  animation: e2-draw 1.4s cubic-bezier(0.6, 0, 0.3, 1) var(--o, 0.1s) forwards;
+}
+@keyframes e2-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes e2-fill {
+  to {
+    fill-opacity: 1;
+  }
+}
+@keyframes e2-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- 页尾（第四轮 E 的落款） ---------- */
+.e2-footer {
+  border-top: 1.5px solid var(--ink);
+}
+.e2-colophon {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 32px 48px;
+  padding: 50px var(--gutter) 28px;
+}
+.e2-footer > * + .e2-colophon {
+  border-top: 1.5px solid var(--ink);
+}
+.e2-colophon-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 900 24px/1 var(--display);
+  letter-spacing: -0.01em;
+}
+.e2-colophon-brand img {
+  border-radius: 6px;
+}
+.e2-colophon-lead p {
+  margin-top: 12px;
+  color: var(--muted);
+  font: 600 14.5px/1.5 var(--cjk);
+}
+.e2-colophon-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+.e2-colophon-links h2 {
+  margin-bottom: 12px;
+  color: var(--accent-ink);
+  font:
+    500 11.5px/1 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.2em;
+}
+.e2-colophon-links ul {
+  display: grid;
+  gap: 2px;
+}
+.e2-colophon-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 30px;
+  font: 600 14px/1.2 var(--round);
+}
+.e2-colophon-links a:hover {
+  text-decoration: underline 2px var(--accent-deep);
+  text-underline-offset: 4px;
+}
+.e2-colophon-base {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 22px;
+  border-top: 1px dashed var(--rule);
+  color: var(--muted);
+  font:
+    400 12px/1 var(--mono),
+    var(--cjk);
+}
+.e2-colophon-base a:hover {
+  color: var(--ink);
+}
+.e2-footer[data-compact='true'] .e2-colophon {
+  padding-top: 32px;
+}
+
+/* ---------- 表单 ---------- */
+.e2-field {
+  display: grid;
+  gap: 8px;
+}
+.e2-field > span {
+  color: var(--ink-2);
+  font: 600 13.5px/1.3 var(--cjk);
+}
+.e2-field input,
+.e2-field textarea,
+.e2-field select {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--rule-2);
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--ink);
+  font: 400 15px/1.5 var(--cjk);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.e2-field textarea {
+  min-height: 132px;
+  resize: vertical;
+}
+.e2-field input:focus,
+.e2-field textarea:focus,
+.e2-field select:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 3px 3px 0 var(--accent);
+}
+
+/* ---------- 克制的玩味 ----------
+   只在访客动手时回应一下，不自己循环：顶栏图标悬停歪一下头、Logo 悬停转四分之一圈、
+   按钮按下沉一下、物件悬停抬起一点、区块悬停时眉题的圆点放大、选中文字带杏橙底。 */
+.e2 ::selection {
+  background: rgb(234 146 96 / 0.35);
+  color: var(--ink);
+}
+.e2-logo img,
+.e2-mini-logo img,
+.e2-colophon-brand img {
+  transition: transform 0.7s var(--bounce);
+}
+.e2-logo:hover img,
+.e2-mini-logo:hover img,
+.e2-colophon-brand:hover img {
+  transform: rotate(90deg);
+}
+.e2-head:hover .e2-kicker::before,
+section:hover > * > .e2-kicker::before,
+section:hover > .e2-kicker::before {
+  transform: scale(1.5);
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1100px) {
+  .e2-header {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .e2-nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: stretch;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .e2-header-end {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+  .e2-nav-block ul {
+    display: none;
+  }
+  .e2-nav-block {
+    grid-template-rows: auto;
+    align-items: center;
+  }
+  .e2-glyph {
+    grid-row: auto;
+    width: 24px;
+    height: 24px;
+  }
+  .e2-mini-nav .e2-nav-item {
+    padding: 0 7px;
+  }
+}
+@media (max-width: 900px) {
+  .e2-head[data-layout='split'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .e2-colophon {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .e2-mini-nav > a {
+    display: none;
+  }
+  .e2-mini-nav {
+    justify-self: end;
+  }
+  .e2-menu {
+    position: static;
+  }
+  .e2-menu-panel {
+    left: var(--gutter);
+    right: var(--gutter);
+    top: calc(100% + 6px);
+    width: auto;
+  }
+}
+@media (max-width: 760px) {
+  .e2-glyph {
+    display: none;
+  }
+  .e2-nav {
+    gap: 14px;
+  }
+  .e2-nav-block {
+    grid-template-columns: auto;
+  }
+  .e2-nav-title {
+    min-height: 40px;
+  }
+  .e2-nav-title[aria-current]::after {
+    bottom: 4px;
+  }
+}
+@media (max-width: 560px) {
+  .e2-login {
+    padding: 0 6px;
+  }
+  .e2-colophon-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .e2-colophon-base {
+    flex-direction: column;
+  }
+  .e2-next {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 18px;
+  }
+  .e2-next-card {
+    width: 58px;
+  }
+  .e2-next-arrow {
+    display: none;
+  }
+  .e2-mini-logo span {
+    display: none;
+  }
+}
+
+/* ---------- 减少动态 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .e2 *,
+  .e2 *::before,
+  .e2 *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .e2 [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+  [data-draw] .e2-f,
+  [data-draw] .e2-l {
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+  }
+}

@@ -1,0 +1,670 @@
+/* E2 社区 · 共用部件（社区页与方法详情都用）：复制与投稿提示、开合图标、六种方法示例、来源卡、
+   实验台与 Prompt 白纸、滑杆。前缀 ecm-。示例统一放在图版里：浅灰底、细框、等宽小字的英文名。 */
+
+/* 根样式表给 em 设了衬线体与 400 字重；E2 社区里的 em 只用来标注，字体跟随所在位置 */
+.ecm em,
+.ecd em {
+  font-family: inherit;
+  font-weight: inherit;
+}
+
+/* ---------- 小按钮、状态与投稿提示 ---------- */
+/* e2.css 里 .e2 button { font: inherit } 的优先级高于 .e2-button，<button> 做的按钮字号会变大；本页就地补回 */
+.e2 button.e2-button {
+  font: 500 14.5px/1 var(--cjk);
+}
+.e2 .ecm-textbutton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: 500 14px/1.2 var(--cjk);
+  text-decoration: underline 1px transparent;
+  text-underline-offset: 5px;
+  cursor: pointer;
+  transition: text-decoration-color 0.2s;
+}
+.ecm-textbutton:hover {
+  text-decoration-color: currentColor;
+}
+.ecm-textbutton svg {
+  flex: none;
+  transition: transform 0.25s var(--ease);
+}
+.ecm-textbutton:hover svg.lucide-arrow-right {
+  transform: translateX(3px);
+}
+.ecm-status {
+  display: block;
+  min-height: 1.6em;
+  color: var(--muted);
+  font:
+    400 12px/1.6 var(--mono),
+    var(--cjk);
+}
+.ecm-status:empty {
+  min-height: 0;
+}
+.ecm-after {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 10px;
+  color: var(--ink-2);
+}
+.ecm-after a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 32px;
+  color: var(--accent-ink);
+  font-weight: 500;
+  text-decoration: underline 1px;
+  text-underline-offset: 3px;
+}
+.ecm-after a:hover {
+  color: var(--ink);
+}
+.ecm-copy {
+  display: grid;
+  justify-items: start;
+}
+.ecm-manual {
+  width: 100%;
+  min-height: 120px;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink);
+  font: 400 13px/1.7 var(--cjk);
+  resize: vertical;
+}
+
+/* 开合图标：一横一竖；展开时竖线收起变成减号，不旋转 */
+.ecm-toggle {
+  position: relative;
+  flex: none;
+  width: 13px;
+  height: 13px;
+}
+.ecm-toggle::before,
+.ecm-toggle::after {
+  content: '';
+  position: absolute;
+  background: currentColor;
+  transition: transform 0.3s var(--ease);
+}
+.ecm-toggle::before {
+  left: 0;
+  right: 0;
+  top: 6px;
+  height: 1.5px;
+}
+.ecm-toggle::after {
+  top: 0;
+  bottom: 0;
+  left: 6px;
+  width: 1.5px;
+}
+details[open] > summary .ecm-toggle::after,
+[aria-expanded='true'] > .ecm-toggle::after {
+  transform: scaleY(0);
+}
+.ecm summary,
+.ecd summary {
+  list-style: none;
+}
+.ecm summary::-webkit-details-marker,
+.ecd summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ---------- 滑杆：1px 轨道，已走过的一段墨色，圆形手柄 ---------- */
+.ecm-range,
+.ecm-duration input[type='range'] {
+  --v: 50%;
+  width: 100%;
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.ecm-range::-webkit-slider-runnable-track,
+.ecm-duration input[type='range']::-webkit-slider-runnable-track {
+  height: 2px;
+  background:
+    linear-gradient(var(--ink), var(--ink)) 0 0 / var(--v) 100% no-repeat,
+    var(--rule-2);
+}
+.ecm-range::-webkit-slider-thumb,
+.ecm-duration input[type='range']::-webkit-slider-thumb {
+  width: 18px;
+  height: 18px;
+  margin-top: -8px;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  background: var(--white);
+  appearance: none;
+  -webkit-appearance: none;
+  transition: box-shadow 0.2s;
+}
+.ecm-range::-moz-range-track,
+.ecm-duration input[type='range']::-moz-range-track {
+  height: 2px;
+  background: var(--rule-2);
+}
+.ecm-range::-moz-range-progress,
+.ecm-duration input[type='range']::-moz-range-progress {
+  height: 2px;
+  background: var(--ink);
+}
+.ecm-range::-moz-range-thumb,
+.ecm-duration input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  background: var(--white);
+}
+.ecm-range:hover::-webkit-slider-thumb,
+.ecm-range:focus-visible::-webkit-slider-thumb,
+.ecm-duration input[type='range']:hover::-webkit-slider-thumb,
+.ecm-duration input[type='range']:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+/* ---------- 示例：上面一行等宽英文名与控件，下面是图版 ---------- */
+.ecm-demo {
+  --ecm-d: 700ms;
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--plate);
+}
+.ecm-demo-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 40px;
+  padding: 5px 8px 5px 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.ecm-demo-bar > span {
+  color: var(--muted);
+  font: 400 11px/1.2 var(--mono);
+  letter-spacing: 0.03em;
+}
+.ecm-demo-bar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--rule-2);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--ink);
+  font: 500 12px/1 var(--cjk);
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    opacity 0.2s;
+}
+.ecm-demo-bar button:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+.ecm-demo-bar button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.ecm-demo-arrows {
+  display: inline-flex;
+  gap: 4px;
+}
+.ecm-demo-arrows button {
+  padding: 0;
+}
+.ecm-demo-stage {
+  position: relative;
+  display: grid;
+  min-height: 260px;
+  overflow: hidden;
+}
+.ecm-demo[data-compact='true'] .ecm-demo-stage {
+  min-height: 200px;
+}
+
+/* 错落入场：同组内容从下方 12px 归位，透明度 0.35 到 1，相邻错开 90ms */
+.ecm-stagger {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 2px;
+  padding: clamp(20px, 2.6vw, 32px);
+}
+.ecm-stagger > span {
+  font: 600 clamp(28px, 2.6vw, 40px) / 1.2 var(--display);
+  letter-spacing: -0.02em;
+}
+.ecm-stagger em {
+  color: var(--accent-ink);
+  font-style: normal;
+}
+.e2 .ecm-stagger > p {
+  margin-top: 10px;
+  color: var(--ink-2);
+  font: 400 14px/1.6 var(--cjk);
+}
+.ecm-stagger[data-playing='true'] > * {
+  animation: ecm-rise var(--ecm-d) cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.ecm-stagger[data-playing='true'] > :nth-child(2) {
+  animation-delay: 90ms;
+}
+.ecm-stagger[data-playing='true'] > :nth-child(3) {
+  animation-delay: 180ms;
+}
+@keyframes ecm-rise {
+  from {
+    opacity: 0.35;
+    transform: translateY(12px);
+  }
+}
+
+/* 下划线展开：基础细线一直在；悬停或聚焦时一条 1px 强调线从左边展开，不改变文字位置 */
+.ecm-underline {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 18px;
+  padding: clamp(20px, 2.6vw, 32px);
+}
+.ecm-underline a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 clamp(26px, 2.4vw, 36px) / 1.2 var(--display);
+  letter-spacing: -0.02em;
+}
+.ecm-underline a::before,
+.ecm-underline a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 1px;
+}
+.ecm-underline a::before {
+  background: var(--rule-2);
+}
+.ecm-underline a::after {
+  background: var(--accent-ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--ecm-d) cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ecm-underline a:is(:hover, :focus-visible)::after {
+  transform: scaleX(1);
+}
+.ecm-underline[data-playing='true'] a::after {
+  animation: ecm-underline var(--ecm-d) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes ecm-underline {
+  to {
+    transform: scaleX(1);
+  }
+}
+.ecm-underline p {
+  color: var(--muted);
+  font:
+    400 11.5px/1.4 var(--mono),
+    var(--cjk);
+}
+
+/* 折叠展开：原生 details，展开时内容轻轻浮上来 */
+.ecm-accordion {
+  align-self: center;
+  padding: clamp(14px, 2.2vw, 26px);
+}
+.ecm-accordion details {
+  border-bottom: 1px solid var(--ink);
+}
+.ecm-accordion details:first-child {
+  border-top: 1px solid var(--rule-2);
+}
+.ecm-accordion summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  padding: 10px 0;
+  font: 600 clamp(15.5px, 1.25vw, 18px) / 1.4 var(--cjk);
+  cursor: pointer;
+}
+.ecm-accordion .ecm-toggle::after {
+  transition-duration: var(--ecm-d);
+}
+.ecm-accordion details p {
+  padding-bottom: 16px;
+  color: var(--ink-2);
+  font: 400 14px/1.8 var(--cjk);
+}
+.ecm-accordion details[open] p {
+  animation: ecm-rise var(--ecm-d) cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+/* 滚动吸附：横向一排白卡，停下时对齐，露出下一张 */
+.ecm-snap {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 76%;
+  gap: 12px;
+  padding: 18px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 18px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-2) transparent;
+}
+.ecm-snap > div {
+  display: grid;
+  align-content: end;
+  gap: 4px;
+  min-height: 150px;
+  padding: 18px;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+  scroll-snap-align: start;
+}
+.ecm-demo[data-compact='true'] .ecm-snap > div {
+  min-height: 128px;
+}
+.ecm-snap span {
+  color: var(--muted);
+  font: 400 11px/1.2 var(--mono);
+}
+.ecm-snap strong {
+  font: 600 clamp(24px, 2.2vw, 32px) / 1.2 var(--cjk);
+}
+.ecm-snap p {
+  color: var(--ink-2);
+  font: 400 13.5px/1.6 var(--cjk);
+}
+
+/* 粘性定位：在图版里滚动，章节名停在上面，这一章读完再一起离开 */
+.ecm-sticky {
+  height: 260px;
+  overflow-y: auto;
+  padding: 0 clamp(16px, 2.2vw, 26px);
+  scrollbar-width: thin;
+}
+.ecm-demo[data-compact='true'] .ecm-sticky {
+  height: 200px;
+}
+.ecm-sticky section {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 16px;
+}
+.ecm-sticky section + section {
+  border-top: 1px solid var(--rule-2);
+}
+.ecm-sticky strong {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  padding-top: 18px;
+  font: 600 22px/1.2 var(--cjk);
+}
+.ecm-sticky strong::after {
+  content: '';
+  display: block;
+  width: 16px;
+  height: 1px;
+  margin-top: 10px;
+  background: var(--accent);
+}
+.ecm-sticky p {
+  padding: 20px 0 32px;
+  color: var(--ink-2);
+  font: 400 14.5px/1.7 var(--cjk);
+}
+
+/* 不对称分栏：主栏和旁注 2:1，切成单列时旁注落到下面 */
+.ecm-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-content: center;
+  gap: 14px;
+  padding: clamp(16px, 2.2vw, 26px);
+}
+.ecm-grid[data-single='true'] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.ecm-grid > div {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+}
+.ecm-grid em {
+  color: var(--muted);
+  font: 400 11.5px/1.2 var(--mono);
+  font-style: normal;
+}
+.ecm-grid strong {
+  font: 600 clamp(20px, 1.8vw, 26px) / 1.3 var(--cjk);
+}
+.ecm-demo[data-compact='true'] .ecm-grid strong {
+  font-size: 19px;
+}
+.ecm-grid p {
+  color: var(--ink-2);
+  font: 400 13.5px/1.6 var(--cjk);
+}
+.ecm-grid aside {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 4px 0 4px 12px;
+  border-left: 1px solid var(--accent);
+}
+.ecm-grid aside span {
+  color: var(--accent-ink);
+  font:
+    500 11px/1.2 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.08em;
+}
+
+/* ---------- 外部组件来源卡 ---------- */
+.ecm-resource {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 14px;
+  min-height: 160px;
+  padding: clamp(20px, 2.4vw, 32px);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--plate);
+}
+.ecm-resource-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.ecm-resource-head span {
+  font: 600 clamp(22px, 2vw, 30px) / 1.15 var(--display);
+  letter-spacing: -0.02em;
+}
+.ecm-resource-head small {
+  padding: 3px 7px;
+  border: 1px solid var(--rule-2);
+  border-radius: 4px;
+  color: var(--muted);
+  font:
+    400 11px/1.2 var(--mono),
+    var(--cjk);
+}
+.ecm-resource p {
+  max-width: 34em;
+  color: var(--ink-2);
+  font: 400 15px/1.8 var(--cjk);
+}
+.ecm-resource a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font: 500 14.5px/1 var(--cjk);
+  text-decoration: underline 1px;
+  text-underline-offset: 6px;
+}
+.ecm-resource a:hover {
+  color: var(--accent-ink);
+}
+
+/* ---------- 实验台：左边图版上的示例，右边一张写着 Prompt 的白纸 ---------- */
+.ecm-lab {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(28px, 4vw, 64px);
+}
+.ecm-lab-demo .ecm-demo-stage {
+  min-height: 340px;
+}
+.ecm-lab-demo .ecm-sticky {
+  height: 340px;
+}
+.ecm-lab-demo .ecm-resource {
+  min-height: 340px;
+  align-content: center;
+}
+.ecm-duration {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+  padding: 10px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-2);
+  font: 500 13.5px/1 var(--cjk);
+}
+.ecm-duration output {
+  min-width: 64px;
+  color: var(--ink);
+  font: 500 12.5px/1 var(--mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.e2 .ecm-help {
+  margin-top: 12px;
+  color: var(--muted);
+  font: 400 13.5px/1.7 var(--cjk);
+}
+.ecm-sheet {
+  display: grid;
+  align-content: start;
+  padding: clamp(22px, 2.8vw, 36px);
+  border: 1px solid var(--rule-2);
+  border-radius: 12px;
+  background: var(--white);
+}
+.ecm-sheet h2 {
+  font: 600 clamp(24px, 2.2vw, 32px) / 1.3 var(--display);
+  letter-spacing: -0.02em;
+}
+.e2 .ecm-sheet > p {
+  margin: 10px 0 24px;
+  color: var(--ink-2);
+  font: 400 15px/1.75 var(--cjk);
+}
+.ecm-prompt-copy label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink);
+  font: 500 13.5px/1.2 var(--cjk);
+}
+.ecm-prompt-copy label i {
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+  font-style: normal;
+  letter-spacing: 0.04em;
+}
+.ecm-prompt-copy textarea {
+  display: block;
+  width: 100%;
+  min-height: 260px;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  font:
+    400 13px/1.85 var(--mono),
+    var(--cjk);
+  resize: vertical;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.ecm-prompt-copy textarea:focus-visible {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.ecm-prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin-top: 16px;
+}
+.ecm-prompt-actions output {
+  color: var(--muted);
+  font:
+    400 12px/1.5 var(--mono),
+    var(--cjk);
+}
+.ecm-prompt-actions output[data-state='done'] {
+  color: var(--accent-ink);
+}
+
+@media (max-width: 900px) {
+  .ecm-lab {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ecm-lab-demo .ecm-demo-stage {
+    min-height: 280px;
+  }
+  .ecm-lab-demo .ecm-sticky {
+    height: 280px;
+  }
+}

@@ -1,0 +1,573 @@
+/* E2 · Molis World（概念设计）。前缀 ewd-。
+   最「开放」的一页：一块会慢慢布置起来的小岛。首屏是布置好的样子；示例旅程里同一块岛从空的开始，
+   视口中线走过哪一步就放进哪一样（淡入、≤13px 的落下）。减少动态时直接给布置好的岛、取消粘性。 */
+
+.ewd-no {
+  color: var(--muted);
+  font: 400 11px/1.9 var(--mono);
+}
+.ewd-section {
+  padding: clamp(88px, 13vh, 150px) var(--gutter);
+  border-top: 1px solid var(--rule-2);
+}
+@keyframes ewd-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* ---------- 首屏 ---------- */
+.ewd-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.3fr);
+  align-items: center;
+  gap: clamp(28px, 4.5vw, 80px);
+  min-height: calc(100svh - var(--header));
+  padding: clamp(40px, 8vh, 96px) var(--gutter) clamp(40px, 6vh, 72px);
+}
+.ewd-hero-copy {
+  display: grid;
+  justify-items: start;
+  gap: clamp(18px, 3vh, 28px);
+  animation: ewd-rise 1s var(--ease) both;
+}
+.ewd-hero h1 {
+  max-width: 12em;
+  font: 700 clamp(32px, 3.5vw, 56px) / 1.26 var(--cjk);
+  letter-spacing: -0.02em;
+}
+.ewd-lead {
+  max-width: 28em;
+  color: var(--ink-2);
+  font: 400 clamp(16px, 1.3vw, 19px) / 1.85 var(--cjk);
+}
+.ewd-hero-art {
+  display: grid;
+  gap: 14px;
+}
+.ewd-legend {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--ink);
+}
+.ewd-legend li {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 2px 0;
+  padding: 10px 12px 10px 0;
+}
+.ewd-legend li + li {
+  padding-left: 12px;
+  border-left: 1px solid var(--rule);
+}
+.ewd-legend i {
+  grid-row: span 2;
+  color: var(--muted);
+  font: 400 11px/1.6 var(--mono);
+  font-style: normal;
+}
+.ewd-legend small {
+  color: var(--muted);
+  font:
+    400 11px/1.5 var(--mono),
+    var(--cjk);
+}
+.ewd-legend span {
+  font: 500 14.5px/1.45 var(--cjk);
+}
+.ewd-figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 10px;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font:
+    400 11px/1.4 var(--mono),
+    var(--cjk);
+  letter-spacing: 0.03em;
+}
+.ewd-figcaption b {
+  margin-right: 10px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.ewd-figcaption em {
+  font-style: normal;
+  white-space: nowrap;
+}
+
+/* ---------- 小岛 ---------- */
+.ewd-island {
+  --sw: 0.085;
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.ewd-city {
+  fill: none;
+  stroke: var(--white);
+  stroke-width: calc(var(--sw) * 1.4);
+  stroke-linejoin: round;
+}
+.ewd-dash {
+  stroke-dasharray: 0.3 0.25;
+}
+/* 规划中的同行者：虚线 */
+.ewd-planned g .e2-f,
+.ewd-planned > circle {
+  stroke-dasharray: 0.3 0.22;
+}
+/* 首屏：线描进场，三条标注最后出现 */
+.ewd-island-map .ewd-g-base {
+  --o: 0.05s;
+  --f: 0.9s;
+}
+.ewd-island-map .ewd-g-shop,
+.ewd-island-map .ewd-g-path {
+  --o: 0.3s;
+  --f: 1.15s;
+}
+.ewd-island-map .ewd-g-door {
+  --o: 0.45s;
+  --f: 1.3s;
+}
+.ewd-island-map .ewd-g-keep {
+  --o: 0.6s;
+  --f: 1.45s;
+}
+.ewd-island-map .ewd-note {
+  opacity: 0;
+  animation: e2-fade 0.6s var(--ease) 2s forwards;
+}
+.ewd-island-map .ewd-city {
+  opacity: 0;
+  animation: e2-fade 0.6s ease 1.6s forwards;
+}
+/* 旅程：每一样东西放进来时淡入、轻轻落下；走进门里的同行者向门移动后消失 */
+.ewd-island-journey .ewd-el {
+  opacity: 0;
+  transform: translateY(-0.8px);
+  transition:
+    opacity 0.7s var(--ease),
+    transform 0.9s var(--ease);
+}
+.ewd-island-journey .ewd-el.is-on {
+  opacity: 1;
+  transform: none;
+}
+.ewd-walk {
+  transition:
+    transform 1.2s var(--ease),
+    opacity 0.5s ease;
+}
+.ewd-g-party.is-gone .ewd-walk {
+  opacity: 0;
+  transform: translate(calc(var(--tx) * 1px), calc(var(--ty) * 1px));
+  transition:
+    transform 1.2s var(--ease),
+    opacity 0.5s ease 0.7s;
+}
+.ewd-island-journey .ewd-note {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.ewd-island-journey .ewd-note.is-on {
+  opacity: 1;
+  transition-delay: 0.35s;
+}
+
+/* ---------- World 是什么 ---------- */
+.ewd-what {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px clamp(24px, 4vw, 72px);
+  margin-top: clamp(48px, 8vh, 88px);
+}
+.ewd-what li {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
+}
+.ewd-big-no {
+  color: var(--muted);
+  font: 600 clamp(36px, 3.6vw, 56px) / 1 var(--display);
+  letter-spacing: -0.025em;
+}
+.ewd-what h3 {
+  margin-top: 12px;
+  font: 600 clamp(18px, 1.55vw, 22px) / 1.45 var(--cjk);
+}
+.ewd-what p {
+  max-width: 22em;
+  color: var(--ink-2);
+  font: 400 15.5px/1.85 var(--cjk);
+}
+
+/* ---------- 一段示例旅程 ---------- */
+.ewd-journey-body {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.3fr);
+  align-items: start;
+  gap: 32px clamp(32px, 5vw, 96px);
+  margin-top: clamp(40px, 7vh, 72px);
+}
+.ewd-steps {
+  padding: 8vh 0 22vh;
+}
+.ewd-steps li {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  min-height: 56vh;
+  border-top: 1px solid var(--rule);
+  opacity: 0.32;
+  transition: opacity 0.5s var(--ease);
+}
+.ewd-steps li:first-child {
+  border-top-color: var(--ink);
+}
+.ewd-steps li.is-active {
+  opacity: 1;
+}
+.ewd-step-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font:
+    400 12px/1.2 var(--mono),
+    var(--cjk);
+}
+.ewd-step-meta i {
+  color: var(--ink);
+  font-style: normal;
+}
+.ewd-step-meta i + span {
+  padding-left: 12px;
+  border-left: 1px solid var(--rule-2);
+}
+.ewd-steps p {
+  max-width: 20em;
+  font: 600 clamp(19px, 1.7vw, 25px) / 1.55 var(--cjk);
+}
+.ewd-steps .e2-tag {
+  margin-left: 10px;
+  vertical-align: 4px;
+}
+.ewd-stage {
+  position: sticky;
+  top: calc(var(--header) + 10vh);
+  display: grid;
+  gap: 10px;
+}
+.ewd-stage-plate {
+  position: relative;
+  padding: clamp(20px, 3.4vw, 48px) clamp(12px, 2vw, 32px);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--plate);
+}
+.ewd-stage-count {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  color: var(--muted);
+  font: 400 11px/1 var(--mono);
+}
+
+/* ---------- Life + Story = World ---------- */
+.ewd-family {
+  --gap: clamp(40px, 4.4vw, 72px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap);
+  margin-top: clamp(48px, 8vh, 88px);
+}
+.ewd-family li {
+  position: relative;
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 8px;
+  padding: 14px 14px 18px;
+  border: 1px solid var(--rule-2);
+  border-radius: 12px;
+  background: var(--white);
+}
+.ewd-family li + li::before {
+  content: '+';
+  position: absolute;
+  top: 26%;
+  left: calc(var(--gap) / -2);
+  transform: translate(-50%, -50%);
+  color: var(--muted);
+  font: 600 clamp(28px, 3vw, 44px) / 1 var(--display);
+}
+.ewd-family li:nth-child(3)::before {
+  content: '=';
+}
+.ewd-family .ewd-family-here {
+  border-style: dashed;
+  border-color: var(--ink);
+}
+.ewd-family-art {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: var(--plate);
+}
+.ewd-family-art .e2-pip {
+  --sw: 0.1;
+  position: absolute;
+  inset: 12% 22%;
+  width: 56%;
+  height: 76%;
+  overflow: visible;
+}
+.ewd-family small {
+  color: var(--muted);
+  font:
+    400 11.5px/1.4 var(--mono),
+    var(--cjk);
+}
+.ewd-family h3 {
+  font: 600 clamp(22px, 2vw, 30px) / 1.15 var(--display);
+  letter-spacing: -0.02em;
+}
+.ewd-family p {
+  color: var(--ink-2);
+  font: 400 15.5px/1.8 var(--cjk);
+}
+.ewd-family-status {
+  width: 100%;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font:
+    400 11.5px/1.6 var(--mono),
+    var(--cjk);
+}
+
+/* ---------- 分寸（深色） ---------- */
+.ewd-rules {
+  border-top-color: var(--ink);
+  background: var(--ink);
+  color: var(--white);
+}
+.ewd-rules .e2-head-meta {
+  color: rgb(255 255 255 / 0.6);
+}
+.ewd-rules .e2-head-meta i {
+  color: var(--white);
+}
+.ewd-rules .e2-head-meta i + span {
+  border-left-color: rgb(255 255 255 / 0.25);
+}
+.ewd-rule-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: clamp(40px, 7vh, 72px);
+  border-top: 1px solid rgb(255 255 255 / 0.3);
+}
+.ewd-rule-grid li {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 24px clamp(16px, 2.4vw, 36px) 28px 0;
+  border-bottom: 1px solid rgb(255 255 255 / 0.14);
+}
+.ewd-rule-grid li:not(:nth-child(3n + 1)) {
+  padding-left: clamp(16px, 2.4vw, 36px);
+  border-left: 1px solid rgb(255 255 255 / 0.14);
+}
+.ewd-rule-grid .ewd-no {
+  color: rgb(255 255 255 / 0.5);
+}
+.ewd-rule-grid h3 {
+  font: 500 clamp(17px, 1.45vw, 20px) / 1.45 var(--cjk);
+}
+.ewd-rule-grid p {
+  color: rgb(255 255 255 / 0.72);
+  font: 400 15.5px/1.8 var(--cjk);
+}
+
+/* ---------- 结尾 ---------- */
+.ewd-closing {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 40px 64px;
+  padding: clamp(96px, 15vh, 170px) var(--gutter) clamp(56px, 9vh, 96px);
+}
+.ewd-closing h2 {
+  font: 600 clamp(30px, 3.8vw, 58px) / 1.32 var(--cjk);
+  letter-spacing: -0.025em;
+}
+.ewd-closing h2 .e2-phrase {
+  display: block;
+}
+.ewd-closing-side {
+  display: grid;
+  justify-items: start;
+  gap: 28px;
+}
+.ewd-closing-art {
+  position: relative;
+  display: block;
+  width: min(220px, 60%);
+  aspect-ratio: 28 / 22;
+}
+.ewd-closing-art .e2-pip {
+  --sw: 0.12;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1100px) {
+  .ewd-hero {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+}
+@media (max-width: 900px) {
+  .ewd-journey-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .ewd-stage {
+    z-index: 3;
+    top: 0;
+    order: -1;
+    padding: 8px 0 10px;
+    background: var(--paper);
+  }
+  .ewd-stage-plate {
+    padding: 12px 8px;
+  }
+  .ewd-steps {
+    padding: 4vh 0 30vh;
+  }
+  .ewd-steps li {
+    min-height: 44svh;
+  }
+  .ewd-rule-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ewd-rule-grid li:not(:nth-child(3n + 1)) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .ewd-rule-grid li:nth-child(even) {
+    padding-left: clamp(16px, 2.4vw, 36px);
+    border-left: 1px solid rgb(255 255 255 / 0.14);
+  }
+}
+@media (max-width: 760px) {
+  .ewd-island {
+    --sw: 0.16;
+  }
+  .ewd-island .e2-callout {
+    display: none;
+  }
+  .ewd-legend,
+  .ewd-what,
+  .ewd-family,
+  .ewd-rule-grid,
+  .ewd-closing {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ewd-legend li + li {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .ewd-family li + li::before {
+    top: calc(var(--gap) / -2);
+    left: 50%;
+  }
+  .ewd-rule-grid li:nth-child(even) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .ewd-figcaption {
+    flex-direction: column;
+    gap: 4px;
+    border-top: 0;
+  }
+  .ewd-steps p {
+    font-size: 18px;
+  }
+}
+
+/* ---------- 减少动态：布置好的岛，取消粘性 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ewd-island-map .ewd-note,
+  .ewd-island-map .ewd-city {
+    opacity: 1;
+  }
+  .ewd-stage {
+    position: static;
+  }
+  .ewd-steps {
+    padding: 0;
+  }
+  .ewd-steps li {
+    min-height: 0;
+    padding: 20px 0;
+    opacity: 1;
+  }
+}
+
+/* ---------- 动效：Life + Story = World 像一道等式一样拼起来 ---------- */
+.ewd-family li + li::before {
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.45s var(--bounce) calc(var(--d, 0ms) + 0.45s);
+}
+.ewd-family li.is-in + li.is-in::before,
+.ewd-family li + li.is-in::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+.ewd-family .ewd-family-here {
+  transition:
+    border-color 0.4s var(--ease) 1.1s,
+    border-style 0s linear 1.1s,
+    box-shadow 0.4s var(--bounce) 1.1s;
+}
+.ewd-family .ewd-family-here.is-in {
+  border-style: solid;
+  border-color: var(--ink);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+/* 指到 World：它由哪两件组成，一起亮 */
+.ewd-family li {
+  transition:
+    outline-color 0.3s var(--ease),
+    background 0.3s var(--ease);
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+}
+.ewd-family:has(.ewd-family-here:hover) li:not(.ewd-family-here) {
+  outline-color: var(--accent);
+  background: var(--accent-soft);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ewd-family li + li::before {
+    transform: translate(-50%, -50%);
+  }
+  .ewd-family .ewd-family-here {
+    border-style: solid;
+  }
+}
