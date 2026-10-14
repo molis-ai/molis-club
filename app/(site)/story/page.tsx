@@ -65,7 +65,10 @@ export default function StoryPage() {
           <HereList />
         </section>
         <Worlds />
-        <section className="m-part m-wrap st-rhythm" aria-labelledby="st-rhythm-title">
+        <section
+          className="m-part m-wrap st-rhythm"
+          aria-labelledby="st-rhythm-title"
+        >
           <header className="m-head" data-size="h2" data-reveal>
             <p className="m-head-meta">
               <span className="m-no" aria-hidden="true">

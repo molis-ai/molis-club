@@ -17,21 +17,100 @@ const out = path.join(root, 'public/site');
 /** key：页面里引用的名字；widths：按版面最大显示宽度的 1x / 2x 取档 */
 const images = [
   // 首页前两屏（满幅背景，已定）
-  { key: 'seaside-hero', src: 'public/images/r8/seaside-hero.jpg', widths: [1280, 1920, 2200], quality: 74 },
-  { key: 'seaside-ware', src: 'public/images/r8/seaside-ware.jpg', widths: [1280, 1920, 2200], quality: 74 },
+  {
+    key: 'seaside-hero',
+    src: 'public/images/r8/seaside-hero.jpg',
+    widths: [1280, 1920, 2200],
+    quality: 74,
+  },
+  {
+    key: 'seaside-ware',
+    src: 'public/images/r8/seaside-ware.jpg',
+    widths: [1280, 1920, 2200],
+    quality: 74,
+  },
   // 首页结尾：从窄缝开到满幅
-  { key: 'home-garden', src: 'public/r8-candidates-v2/images/home-v2-a.png', widths: [960, 1672], quality: 76 },
+  {
+    key: 'home-garden',
+    src: 'public/r8-candidates-v2/images/home-v2-a.png',
+    widths: [960, 1672],
+    quality: 76,
+  },
   // 产品页的窗
-  { key: 'work-studio', src: 'public/r8-candidates-v2/images/work-v2-c.png', widths: [800, 1672], quality: 76 },
-  { key: 'tool-light', src: 'public/r8-candidates-v2/images/tool-v2-a.png', widths: [800, 1672], quality: 78 },
-  { key: 'life-shore', src: 'public/r8-candidates-v2/images/life-v2-b.png', widths: [800, 1672], quality: 76 },
-  { key: 'world-woods', src: 'public/images/r8/park-hero.jpg', widths: [900, 1800], quality: 68 },
+  {
+    key: 'work-studio',
+    src: 'public/r8-candidates-v2/images/work-v2-c.png',
+    widths: [800, 1672],
+    quality: 76,
+  },
+  {
+    key: 'tool-light',
+    src: 'public/r8-candidates-v2/images/tool-v2-a.png',
+    widths: [800, 1672],
+    quality: 78,
+  },
+  {
+    key: 'life-shore',
+    src: 'public/r8-candidates-v2/images/life-v2-b.png',
+    widths: [800, 1672],
+    quality: 76,
+  },
+  {
+    key: 'world-woods',
+    src: 'public/images/r8/park-hero.jpg',
+    widths: [900, 1800],
+    quality: 68,
+  },
   // 其余各页
-  { key: 'enterprise-colonnade', src: 'public/r8-candidates-v2/images/work-v2-a.png', widths: [960, 1672], quality: 76 },
-  { key: 'community-line', src: 'public/r8-candidates-v2/images/community-v2-c.png', widths: [800, 1672], quality: 70 },
-  { key: 'community-sketch', src: 'public/images/r8/park-ware.jpg', widths: [900, 1800], quality: 66 },
-  { key: 'about-window', src: 'public/r8-candidates-v2/images/about-v2-b.png', widths: [960, 1672], quality: 76 },
-  { key: 'contact-door', src: 'public/images/r8/afternoon-hero-girl-b.png', widths: [600, 1024], quality: 78 },
+  {
+    key: 'enterprise-colonnade',
+    src: 'public/r8-candidates-v2/images/work-v2-a.png',
+    widths: [960, 1672],
+    quality: 76,
+  },
+  {
+    key: 'community-line',
+    src: 'public/r8-candidates-v2/images/community-v2-c.png',
+    widths: [800, 1672],
+    quality: 70,
+  },
+  {
+    key: 'community-sketch',
+    src: 'public/images/r8/park-ware.jpg',
+    widths: [900, 1800],
+    quality: 66,
+  },
+  {
+    key: 'about-window',
+    src: 'public/r8-candidates-v2/images/about-v2-b.png',
+    widths: [960, 1672],
+    quality: 76,
+  },
+  {
+    key: 'contact-door',
+    src: 'public/images/r8/afternoon-hero-girl-b.png',
+    widths: [600, 1024],
+    quality: 78,
+  },
+  // 社区里艺术家 Skill 的 AI 创作试样（原图留给评审页，这里另出压缩版）
+  {
+    key: 'artist-monet-impressionism',
+    src: 'public/images/artists/monet-pond.jpg',
+    widths: [720, 1440],
+    quality: 76,
+  },
+  {
+    key: 'artist-dali-surrealism',
+    src: 'public/images/artists/dali-forest.jpg',
+    widths: [720, 1440],
+    quality: 76,
+  },
+  {
+    key: 'artist-wes-anderson-poster',
+    src: 'public/images/artists/wes-lake.jpg',
+    widths: [720, 1440],
+    quality: 76,
+  },
 ];
 
 /** 视频：src 是重新编码后的文件；rate 是播放速度（延时素材放慢到让人静下来的速度） */
@@ -105,7 +184,19 @@ for (const video of videos) {
     rate: video.rate,
     srcset: [],
   };
-  console.log(video.key.padEnd(22), `${meta.width}×${meta.height}`.padEnd(11), `${Math.round(size / 1024)}KB mp4`);
+  console.log(
+    video.key.padEnd(22),
+    `${meta.width}×${meta.height}`.padEnd(11),
+    `${Math.round(size / 1024)}KB mp4`,
+  );
+}
+
+// Logo：原图 1254px、800 多 KB；顶栏只显示 30px。按原图等比缩小出 2x / 3x 两档 PNG（不改图形、不调色）
+for (const size of [64, 96]) {
+  await sharp(path.join(root, 'public/images/molis-logo.png'))
+    .resize(size, size)
+    .png({ compressionLevel: 9 })
+    .toFile(path.join(out, `molis-logo-${size}.png`));
 }
 
 await writeFile(

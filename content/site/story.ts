@@ -111,7 +111,9 @@ export const further = {
 
 /** 当前进展：摘自 4.4 原句 */
 export const storyProgress = {
-  have: ['Molis Story 面向 macOS 开发，已有四个世界及共同入口、旅程保存和归来的开发实现。'],
+  have: [
+    'Molis Story 面向 macOS 开发，已有四个世界及共同入口、旅程保存和归来的开发实现。',
+  ],
   notYet: ['真实模型服务与完整桌面体验仍需验证，尚未开放公开下载。'],
   /** 新写 */
   now: ['现在还不能下载体验。想知道哪扇窗先打开，可以留个联系方式。'],

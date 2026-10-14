@@ -117,12 +117,22 @@ export function LoginForm() {
       {anyProvider ? (
         <div className="m-auth-social">
           {providers?.google ? (
-            <button type="button" className="m-btn m-btn-line" disabled={busy} onClick={() => social('google')}>
+            <button
+              type="button"
+              className="m-btn m-btn-line"
+              disabled={busy}
+              onClick={() => social('google')}
+            >
               {t.providers.google}
             </button>
           ) : null}
           {providers?.github ? (
-            <button type="button" className="m-btn m-btn-line" disabled={busy} onClick={() => social('github')}>
+            <button
+              type="button"
+              className="m-btn m-btn-line"
+              disabled={busy}
+              onClick={() => social('github')}
+            >
               {t.providers.github}
             </button>
           ) : null}
@@ -165,7 +175,9 @@ export function LoginForm() {
             required
             minLength={12}
             maxLength={128}
-            autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+            autoComplete={
+              mode === 'login' ? 'current-password' : 'new-password'
+            }
             placeholder={t.fields.passwordPlaceholder}
           />
         </label>

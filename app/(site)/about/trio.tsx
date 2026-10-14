@@ -102,7 +102,11 @@ export function Trio() {
               {trio.pause}
             </button>
           ) : (
-            <button type="button" className="m-link ab-trio-ctl" onClick={replay}>
+            <button
+              type="button"
+              className="m-link ab-trio-ctl"
+              onClick={replay}
+            >
               <RotateCcw size={12} aria-hidden="true" />
               {mode === 'waiting' ? trio.play : trio.replay}
             </button>
@@ -149,7 +153,8 @@ export function Trio() {
                 <pre className="ab-pre">
                   <code>
                     {code.map(([mark, text], index) => {
-                      const Line = mark === '+' ? 'ins' : mark === '-' ? 'del' : 'span';
+                      const Line =
+                        mark === '+' ? 'ins' : mark === '-' ? 'del' : 'span';
                       return (
                         <Line
                           key={`${shown}-${index}`}
@@ -197,7 +202,8 @@ export function Trio() {
                 </p>
                 <p className="ab-sentence">
                   {words.map(([mark, text], index) => {
-                    const Part = mark === '+' ? 'ins' : mark === '-' ? 'del' : 'span';
+                    const Part =
+                      mark === '+' ? 'ins' : mark === '-' ? 'del' : 'span';
                     return (
                       <Part
                         key={`${shown}-${index}`}

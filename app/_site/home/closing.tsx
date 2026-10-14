@@ -11,7 +11,11 @@ export function Closing() {
   const image = mediaOf('home-garden');
   const close = homeClosing;
   return (
-    <section className="m-close" aria-labelledby="m-close-title" data-tone="paper">
+    <section
+      className="m-close"
+      aria-labelledby="m-close-title"
+      data-tone="paper"
+    >
       <h2 id="m-close-title" className="m-close-lead m-wrap" data-reveal>
         <Phrases text={close.lead} />
       </h2>
@@ -60,7 +64,12 @@ export function Closing() {
         </ul>
         <p className="m-close-also" data-reveal>
           <span>{close.also.label}</span>
-          <a className="m-link" href={WORK_GITHUB} target="_blank" rel="noreferrer">
+          <a
+            className="m-link"
+            href={WORK_GITHUB}
+            target="_blank"
+            rel="noreferrer"
+          >
             {close.also.github}
             <ArrowUpRight size={13} aria-hidden="true" />
           </a>

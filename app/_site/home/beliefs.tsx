@@ -9,7 +9,11 @@ import { pad, Phrases, type Vars } from '../ui';
 // 每一句滚到视口中间时从浅灰变成墨色（各自一个 data-scene，读 --p）。没有 JS、减少动态时直接是墨色。
 export function Beliefs() {
   return (
-    <section className="m-beliefs" aria-labelledby="m-beliefs-title" data-tone="paper">
+    <section
+      className="m-beliefs"
+      aria-labelledby="m-beliefs-title"
+      data-tone="paper"
+    >
       <div className="m-wrap">
         <header className="m-beliefs-head" data-reveal>
           <p className="m-kicker" lang="en">

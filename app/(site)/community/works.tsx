@@ -18,7 +18,7 @@ import {
 import { at, Canvas, Cursor } from '../../_site/demo/demo';
 import { useReducedMotion, useVisible } from '../../_site/motion';
 import { artistHref, METHODS, methodHref } from '../../_site/routes';
-import { More, Note, pad } from '../../_site/ui';
+import { More, Note, pad, artistImage } from '../../_site/ui';
 import { CopyAction, SkillDownload } from './copy';
 import { MethodDemo } from './method-demo';
 import { Col } from './parts';
@@ -59,9 +59,7 @@ export function ArtistCols() {
           <div className="m-com-sample-view">
             <img
               key={skill.slug}
-              src={skill.image}
-              width={skill.width}
-              height={skill.height}
+              {...artistImage(skill.slug, skill)}
               alt={skill.imageAlt}
               loading="lazy"
               decoding="async"

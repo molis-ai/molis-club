@@ -121,7 +121,7 @@ const oldWay: Scene = {
     <Canvas step={step} className="tl tl-old" press={[1]}>
       <p className="tl-old-text">
         <span className="tl-sel m-hl" style={at(1)}>
-          会议改到  周四   下午三点 ，地点：  二楼小会议室
+          会议改到 周四 下午三点 ，地点： 二楼小会议室
         </span>
       </p>
       <ol className="tl-old-path m-v" data-fade="" style={at(0, 1)}>
@@ -146,7 +146,9 @@ const oldWay: Scene = {
         </span>
       </span>
       <p className="tl-old-done m-v" style={at(2)}>
-        <span className="tl-clean">会议改到周四下午三点，地点：二楼小会议室。</span>
+        <span className="tl-clean">
+          会议改到周四下午三点，地点：二楼小会议室。
+        </span>
         <span className="tl-old-meta">
           <Check aria-hidden="true" />
           一步，结果留在原处
@@ -174,11 +176,15 @@ const small: Scene = {
           <Where />
         </p>
         <p className="tl-task-body">
-          <s>周四 ，  下午三点 。 二楼</s>
+          <s>周四 ， 下午三点 。 二楼</s>
           <span>周四，下午三点。二楼</span>
         </p>
       </div>
-      <div className="tl-task m-v" style={at(1)} data-on={step === 1 || undefined}>
+      <div
+        className="tl-task m-v"
+        style={at(1)}
+        data-on={step === 1 || undefined}
+      >
         <p className="tl-task-head">
           <Scissors aria-hidden="true" />
           取 PDF 几页
@@ -186,7 +192,10 @@ const small: Scene = {
         </p>
         <div className="tl-pages">
           {[1, 2, 3, 4, 5, 6].map((page) => (
-            <span key={page} data-pick={page >= 2 && page <= 4 ? '' : undefined}>
+            <span
+              key={page}
+              data-pick={page >= 2 && page <= 4 ? '' : undefined}
+            >
               {page}
             </span>
           ))}
@@ -195,7 +204,11 @@ const small: Scene = {
           副本处理，原件保留
         </p>
       </div>
-      <div className="tl-task m-v" style={at(2)} data-on={step === 2 || undefined}>
+      <div
+        className="tl-task m-v"
+        style={at(2)}
+        data-on={step === 2 || undefined}
+      >
         <p className="tl-task-head">
           <ImageIcon aria-hidden="true" />
           写图片说明
@@ -261,7 +274,12 @@ const chain: Scene = {
           ].map((row, r) => (
             <tr key={r}>
               {row.map((cell, c) => (
-                <td key={c} className={r === 2 && c === 3 && step >= 3 ? 'tl-flag' : undefined}>
+                <td
+                  key={c}
+                  className={
+                    r === 2 && c === 3 && step >= 3 ? 'tl-flag' : undefined
+                  }
+                >
                   {cell}
                 </td>
               ))}
@@ -288,7 +306,13 @@ const later: Scene = {
     <Canvas step={step} className="tl tl-later" press={[1]}>
       <div className="tl-menubar">
         <span className="tl-menubar-icon">
-          <img src="/images/molis-logo.png" width="16" height="16" alt="" />
+          <img
+            src="/site/molis-logo-64.png"
+            srcSet="/site/molis-logo-64.png 2x, /site/molis-logo-96.png 3x"
+            width="16"
+            height="16"
+            alt=""
+          />
           <Cursor show={at(1, 2)} x="60%" y="60%" />
         </span>
         <span className="m-mini">14:32</span>

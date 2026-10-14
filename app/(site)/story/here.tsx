@@ -8,7 +8,11 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { hereList, storyWorlds, type StoryWorld } from '../../../content/site/story';
+import {
+  hereList,
+  storyWorlds,
+  type StoryWorld,
+} from '../../../content/site/story';
 import { worldMoments } from '../../_site/scenes/story';
 import { useReducedMotion } from '../../_site/motion';
 
@@ -27,7 +31,9 @@ function readSaved(): string[] {
   try {
     const raw = window.localStorage.getItem(KEY);
     const list = raw ? (JSON.parse(raw) as unknown) : [];
-    return Array.isArray(list) ? list.filter((item) => typeof item === 'string') : [];
+    return Array.isArray(list)
+      ? list.filter((item) => typeof item === 'string')
+      : [];
   } catch {
     return [];
   }
@@ -52,7 +58,9 @@ export function HereProvider({ children }: { children: ReactNode }) {
       return next;
     });
   return (
-    <HereContext.Provider value={{ brought, add }}>{children}</HereContext.Provider>
+    <HereContext.Provider value={{ brought, add }}>
+      {children}
+    </HereContext.Provider>
   );
 }
 
@@ -99,12 +107,18 @@ export function HereChip() {
   const [pulse, setPulse] = useState(0);
   const count = useRef(brought.length);
   useEffect(() => {
-    if (brought.length > count.current) queueMicrotask(() => setPulse((n) => n + 1));
+    if (brought.length > count.current)
+      queueMicrotask(() => setPulse((n) => n + 1));
     count.current = brought.length;
   }, [brought.length]);
   if (!brought.length) return null;
   return (
-    <a className="st-chip" href={`#${hereList.id}`} key={pulse} data-pulse={pulse || undefined}>
+    <a
+      className="st-chip"
+      href={`#${hereList.id}`}
+      key={pulse}
+      data-pulse={pulse || undefined}
+    >
       <span className="m-dot" />
       {hereList.chip} · {brought.length + hereList.brought.length}
     </a>
@@ -132,10 +146,12 @@ export function Walk({ world, index }: { world: StoryWorld; index: number }) {
       const span = rect.height - window.innerHeight;
       const p = span > 0 ? clamp(-rect.top / span) : 0;
       // 0 → 0.22：走进去；0.22 → 0.78：演这个瞬间；0.78 → 1：收回成窗
-      const grow = p < 0.5 ? smooth(clamp(p / 0.22)) : smooth(clamp((1 - p) / 0.22));
+      const grow =
+        p < 0.5 ? smooth(clamp(p / 0.22)) : smooth(clamp((1 - p) / 0.22));
       node.style.setProperty('--g', grow.toFixed(4));
       const t = clamp((p - 0.24) / 0.5);
-      const next = p < 0.24 ? 0 : Math.min(scene.steps - 1, Math.floor(t * scene.steps));
+      const next =
+        p < 0.24 ? 0 : Math.min(scene.steps - 1, Math.floor(t * scene.steps));
       setStep((value) => (value === next ? value : next));
     };
     const request = () => {

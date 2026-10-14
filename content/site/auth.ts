@@ -25,7 +25,11 @@ export const authCopy = {
     passwordPlaceholder: '至少 12 位',
   },
   busy: '请稍候…',
-  signedIn: { title: '你已经登录了。', hello: (name: string) => `${name}，欢迎回来。`, go: '查看我的账号' },
+  signedIn: {
+    title: '你已经登录了。',
+    hello: (name: string) => `${name}，欢迎回来。`,
+    go: '查看我的账号',
+  },
   providers: {
     google: 'Google',
     github: 'GitHub',

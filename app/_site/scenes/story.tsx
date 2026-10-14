@@ -67,7 +67,13 @@ export const elsewhereCase: Scene = {
    ===================================================================== */
 
 /** 云海来客：一来一回的信号 */
-function Signal({ bars, className = '' }: { bars: number[]; className?: string }) {
+function Signal({
+  bars,
+  className = '',
+}: {
+  bars: number[];
+  className?: string;
+}) {
   return (
     <span className={`st-signal ${className}`} aria-hidden="true">
       {bars.map((h, i) => (

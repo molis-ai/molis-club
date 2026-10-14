@@ -16,14 +16,14 @@ export function Account() {
   if (sessionError)
     return (
       <header className="m-auth-head">
-        <h1>{t.error.title}</h1>
+        <h2>{t.error.title}</h2>
         <p>{t.error.text}</p>
       </header>
     );
   if (!data)
     return (
       <header className="m-auth-head">
-        <h1>{t.guest.title}</h1>
+        <h2>{t.guest.title}</h2>
         <p>
           <Link className="m-btn" href={LOGIN}>
             {t.guest.go}
@@ -35,15 +35,23 @@ export function Account() {
   return (
     <>
       <header className="m-auth-head">
-        <h1>{t.hello(data.user.name)}</h1>
+        <h2>{t.hello(data.user.name)}</h2>
         <p className="m-account-email">
           <span>{data.user.email}</span>
-          <span className="m-note">{data.user.emailVerified ? t.verified : t.unverified}</span>
+          <span className="m-note">
+            {data.user.emailVerified ? t.verified : t.unverified}
+          </span>
         </p>
-        {!data.user.emailVerified ? <p className="m-auth-note">{t.unverifiedNote}</p> : null}
+        {!data.user.emailVerified ? (
+          <p className="m-auth-note">{t.unverifiedNote}</p>
+        ) : null}
       </header>
       {ready.map((section) => (
-        <section key={section.id} className="m-account-part" aria-label={section.title}>
+        <section
+          key={section.id}
+          className="m-account-part"
+          aria-label={section.title}
+        >
           <h2>{section.title}</h2>
         </section>
       ))}
@@ -53,11 +61,24 @@ export function Account() {
         <form className="m-auth-form" onSubmit={change}>
           <label className="m-field">
             <span>{t.password.current}</span>
-            <input type="password" name="current" autoComplete="current-password" required maxLength={128} />
+            <input
+              type="password"
+              name="current"
+              autoComplete="current-password"
+              required
+              maxLength={128}
+            />
           </label>
           <label className="m-field">
             <span>{t.password.next}</span>
-            <input type="password" name="new" autoComplete="new-password" required minLength={12} maxLength={128} />
+            <input
+              type="password"
+              name="new"
+              autoComplete="new-password"
+              required
+              minLength={12}
+              maxLength={128}
+            />
           </label>
           <button className="m-btn m-auth-submit" disabled={busy}>
             {busy ? '请稍候…' : t.password.submit}
@@ -69,7 +90,12 @@ export function Account() {
         {error}
       </p>
       <p className="m-account-out">
-        <button type="button" className="m-link" onClick={logout} disabled={busy}>
+        <button
+          type="button"
+          className="m-link"
+          onClick={logout}
+          disabled={busy}
+        >
           {t.logout}
         </button>
         <Link className="m-link" href={HOME} data-dir="right">

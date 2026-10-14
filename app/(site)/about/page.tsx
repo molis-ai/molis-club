@@ -57,7 +57,12 @@ const nearIds = productIds.filter((id) => id !== 'world') as Exclude<
 >[];
 
 const doors = [
-  { href: TEAM, label: nav.aboutItems.team, line: nav.aboutLines.team, en: 'Team' },
+  {
+    href: TEAM,
+    label: nav.aboutItems.team,
+    line: nav.aboutLines.team,
+    en: 'Team',
+  },
   {
     href: ESSAYS,
     label: nav.aboutItems.essays,
@@ -155,7 +160,8 @@ export default function AboutPage() {
                     <Status>{product.stage}</Status>
                   </p>
                   <p className="ab-a-text">
-                    <span lang="en">{product.name}</span> {standard.products[id]}
+                    <span lang="en">{product.name}</span>{' '}
+                    {standard.products[id]}
                   </p>
                   <More href={productHref[id]}>{homeProducts[id].more}</More>
                 </div>

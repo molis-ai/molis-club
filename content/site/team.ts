@@ -47,7 +47,6 @@ export const members: Member[] = [
       '曾在美团、字节、滴滴、LinkedIn 及硅谷创业公司的核心研发团队负责架构与管理，拥有多年复杂系统建设与技术管理经验，也在山禾、DataFun 分享实践。',
     tags: '一个幻想家；首席吹牛官；首席心态崩盘官；首席 Token 官。',
     // 待负责人确认：/images/daylight/team/yijun.jpg 是插画头像，不是本人照片，先用名字首字字标
-
   },
   {
     id: 'xujing',
@@ -67,7 +66,6 @@ export const members: Member[] = [
     tags: '首席布道人；Google 可以搜到的女人（搜索：赵壮实 数据）。',
     motto: '签名摘句：「为什么不愉快接受」。',
     // 待负责人确认：/images/daylight/team/zhuangshi.jpg 是插画头像，不是本人照片，先用名字首字字标
-
   },
   {
     id: 'xiejun',

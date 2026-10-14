@@ -54,7 +54,7 @@ const note = () => ({
   name: '试用访客',
   body: '我需要它提醒我哪个任务在等确认。',
 });
-test('留言通过生产处理器落库，读回同一内容，按作品隔离；重试无重复', async () => {
+void test('留言通过生产处理器落库，读回同一内容，按作品隔离；重试无重复', async () => {
   const db = dbFixture(),
     d = note();
   let r = await saveNote(req('notes', d), db, ['niulai', 'astralo']);
@@ -75,7 +75,7 @@ test('留言通过生产处理器落库，读回同一内容，按作品隔离�
   );
   assert.deepEqual((await r.json()).notes, []);
 });
-test('相同请求 id 不可替换已有内容', async () => {
+void test('相同请求 id 不可替换已有内容', async () => {
   const db = dbFixture(),
     d = note();
   await saveNote(req('notes', d), db, ['niulai']);
@@ -91,7 +91,7 @@ test('相同请求 id 不可替换已有内容', async () => {
   );
   assert.equal(db.sql.prepare('SELECT body FROM notes').get().body, d.body);
 });
-test('外站请求、未知作品、空白和超长留言拒绝且不写库', async () => {
+void test('外站请求、未知作品、空白和超长留言拒绝且不写库', async () => {
   const db = dbFixture();
   for (const d of [
     { ...note(), work: 'nope' },
@@ -110,7 +110,7 @@ test('外站请求、未知作品、空白和超长留言拒绝且不写库', as
   );
   assert.equal(db.sql.prepare('SELECT count(*) AS n FROM notes').get().n, 0);
 });
-test('参数化保存输入，SQL 片段和 HTML 只是留言文字', async () => {
+void test('参数化保存输入，SQL 片段和 HTML 只是留言文字', async () => {
   const db = dbFixture(),
     d = {
       ...note(),
@@ -119,7 +119,7 @@ test('参数化保存输入，SQL 片段和 HTML 只是留言文字', async () =
   assert.equal((await saveNote(req('notes', d), db, ['niulai'])).status, 201);
   assert.equal(db.sql.prepare('SELECT body FROM notes').get().body, d.body);
 });
-test('同一邮箱的两次不同留言各存一行，邮箱归一化，不在返回值暴露私人资料', async () => {
+void test('同一邮箱的两次不同留言各存一行，邮箱归一化，不在返回值暴露私人资料', async () => {
   const db = dbFixture(),
     d = {
       id: crypto.randomUUID(),
@@ -153,7 +153,7 @@ test('同一邮箱的两次不同留言各存一行，邮箱归一化，不在�
     ['第二次提交另一个想法：想聊企业合作。', d.idea],
   );
 });
-test('同一次提交重试只存一次；不带 id 的旧请求仍然成功；坏 id 被拒', async () => {
+void test('同一次提交重试只存一次；不带 id 的旧请求仍然成功；坏 id 被拒', async () => {
   const db = dbFixture(),
     d = {
       id: crypto.randomUUID(),
@@ -182,7 +182,7 @@ test('同一次提交重试只存一次；不带 id 的旧请求仍然成功；�
     );
   assert.equal(count(), 2);
 });
-test('记录来源入口和展示同意；不规范的来源不记，也不拦下提交', async () => {
+void test('记录来源入口和展示同意；不规范的来源不记，也不拦下提交', async () => {
   const db = dbFixture(),
     d = {
       name: '投稿的人',
@@ -220,7 +220,7 @@ test('记录来源入口和展示同意；不规范的来源不记，也不拦�
     ],
   );
 });
-test('联系页的「企业合作」也收进同一个申请收件箱', async () => {
+void test('联系页的「企业合作」也收进同一个申请收件箱', async () => {
   const db = dbFixture(),
     d = {
       name: '一位业务负责人',
@@ -235,7 +235,7 @@ test('联系页的「企业合作」也收进同一个申请收件箱', async ()
     '企业合作',
   );
 });
-test('未同意使用资料、坏邮箱或无效角色不会创建申请', async () => {
+void test('未同意使用资料、坏邮箱或无效角色不会创建申请', async () => {
   const db = dbFixture(),
     d = {
       name: '访客',
@@ -255,7 +255,7 @@ test('未同意使用资料、坏邮箱或无效角色不会创建申请', async
     0,
   );
 });
-test('数据库失败返回可重试错误，不把失败说成保存成功', async () => {
+void test('数据库失败返回可重试错误，不把失败说成保存成功', async () => {
   const db = {
     prepare() {
       throw new Error('offline');
@@ -277,7 +277,7 @@ test('数据库失败返回可重试错误，不把失败说成保存成功', as
   );
 });
 
-test('匿名不能留言，客户端不能冒名，另一账户不能复用同一请求id', async () => {
+void test('匿名不能留言，客户端不能冒名，另一账户不能复用同一请求id', async () => {
   const db = dbFixture(),
     d = { ...note(), name: '被冒充的人' };
   assert.equal(

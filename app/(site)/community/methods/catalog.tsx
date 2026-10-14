@@ -26,7 +26,7 @@ import {
   METHODS,
   methodHref,
 } from '../../../_site/routes';
-import { More, Note, pad } from '../../../_site/ui';
+import { More, Note, pad, artistImage } from '../../../_site/ui';
 import { CopyAction, SkillDownload } from '../copy';
 import { MethodDemo } from '../method-demo';
 
@@ -68,9 +68,11 @@ function ArtistCard({ skill }: { skill: ArtistSkill }) {
       >
         {skill.image ? (
           <img
-            src={skill.image}
-            width={skill.width}
-            height={skill.height}
+            {...artistImage(
+              skill.slug,
+              skill,
+              '(max-width: 900px) 100vw, 30vw',
+            )}
             alt=""
             loading="lazy"
             decoding="async"

@@ -154,7 +154,9 @@ export function Handoff() {
       if (!reduced && from)
         node.animate(
           [
-            { transform: `translate(${from.left - to.left}px, ${from.top - to.top}px)` },
+            {
+              transform: `translate(${from.left - to.left}px, ${from.top - to.top}px)`,
+            },
             { transform: 'none' },
           ],
           { duration: 500, easing: 'cubic-bezier(0.2, 0.7, 0.1, 1)' },
@@ -188,7 +190,11 @@ export function Handoff() {
           <span className="m-dot" />
           {labels.from}
         </p>
-        {holder === 'start' ? cardNode : <div className="hf-slot" aria-hidden="true" />}
+        {holder === 'start' ? (
+          cardNode
+        ) : (
+          <div className="hf-slot" aria-hidden="true" />
+        )}
         <output className="hf-back" aria-live="polite">
           {asked && holder === 'start' ? (
             <>
@@ -209,7 +215,12 @@ export function Handoff() {
           const Icon = icons[item.id];
           const here = holder === item.id;
           return (
-            <div key={item.id} className="hf-lane" data-lane={item.id} data-here={here || undefined}>
+            <div
+              key={item.id}
+              className="hf-lane"
+              data-lane={item.id}
+              data-here={here || undefined}
+            >
               <button
                 type="button"
                 className="hf-pick"

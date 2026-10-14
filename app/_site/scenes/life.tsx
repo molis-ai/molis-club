@@ -160,12 +160,19 @@ const curious: Scene = {
           { icon: BookOpen, text: '一本想读的书', pick: 2 },
           { icon: Music, text: '咖啡店里那段大提琴', pick: 0 },
         ].map((item, index) => (
-          <li key={item.text} className="m-v" style={at(0, undefined, index * 160)}>
+          <li
+            key={item.text}
+            className="m-v"
+            style={at(0, undefined, index * 160)}
+          >
             <item.icon aria-hidden="true" />
             <span>{item.text}</span>
             <span className="lf-choices">
               {['替我处理', '一起想想', '先留着'].map((choice, c) => (
-                <em key={choice} data-on={(step >= 1 && c === item.pick) || undefined}>
+                <em
+                  key={choice}
+                  data-on={(step >= 1 && c === item.pick) || undefined}
+                >
                   {choice}
                 </em>
               ))}

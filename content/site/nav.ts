@@ -40,6 +40,7 @@ export const footer = {
   copyright: '© 2026 Molis AI',
   /** 版权说明：字体、配图来源与 AI 生成说明 */
   fonts: '字体：Jost 与 Fraunces（SIL Open Font License），中文用系统苹方。',
-  images: '配图：Mixkit、Unsplash 的免费授权素材；部分配图由 AI 生成。画面里的人不是团队成员或用户。',
+  images:
+    '配图：Mixkit、Unsplash 的免费授权素材；部分配图由 AI 生成。画面里的人不是团队成员或用户。',
   updated: '本页最近修改',
 };

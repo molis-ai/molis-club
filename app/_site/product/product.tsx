@@ -34,14 +34,23 @@ export function ProductHero({
         <h1 className="m-phero-name m-rise" lang="en">
           {product.name}
         </h1>
-        <p className="m-phero-title m-rise" style={{ '--delay': '120ms' } as Vars}>
+        <p
+          className="m-phero-title m-rise"
+          style={{ '--delay': '120ms' } as Vars}
+        >
           <Phrases text={product.headline} />
         </p>
-        <p className="m-phero-what m-rise" style={{ '--delay': '220ms' } as Vars}>
+        <p
+          className="m-phero-what m-rise"
+          style={{ '--delay': '220ms' } as Vars}
+        >
           {product.what}
         </p>
         {aside ? (
-          <div className="m-phero-aside m-rise" style={{ '--delay': '320ms' } as Vars}>
+          <div
+            className="m-phero-aside m-rise"
+            style={{ '--delay': '320ms' } as Vars}
+          >
             {aside}
           </div>
         ) : null}
@@ -136,7 +145,10 @@ export function ProductEnding({
         no={no++}
         kicker="当前进展"
         title={
-          <span className="m-pend-stagehead" data-concept={concept || undefined}>
+          <span
+            className="m-pend-stagehead"
+            data-concept={concept || undefined}
+          >
             {product.stage}
           </span>
         }
@@ -183,7 +195,9 @@ export function ProductEnding({
               </p>
             ) : null}
             <p>{relation.text}</p>
-            {relation.tag ? <span className="m-note">{relation.tag}</span> : null}
+            {relation.tag ? (
+              <span className="m-note">{relation.tag}</span>
+            ) : null}
           </div>
         </Part>
       ) : null}

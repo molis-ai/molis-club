@@ -241,7 +241,10 @@ export const alongGroups: AlongGroup[] = [
       {
         name: 'Flyleaf',
         ask: '多个应用怎样共用工作环境、衔接上下文，把一件应用里的成果交给另一件。',
-        now: ['应用交互平台的实现', '独立仓库已归档，这些实现与探索记录仍保留着。'],
+        now: [
+          '应用交互平台的实现',
+          '独立仓库已归档，这些实现与探索记录仍保留着。',
+        ],
         where: ['archived'],
       },
       {
@@ -461,7 +464,9 @@ export const alongGroups: AlongGroup[] = [
       {
         name: 'Studio Growth 和社媒发文 Skills',
         ask: '把选题、创作、平台表达与复盘的方法留下来，整理成团队能够继续使用的工作方式。',
-        now: ['这些内部实践，与 CGS 关心的创作问题彼此相邻，各自保留着不同阶段的尝试。'],
+        now: [
+          '这些内部实践，与 CGS 关心的创作问题彼此相邻，各自保留着不同阶段的尝试。',
+        ],
         where: [],
       },
       {

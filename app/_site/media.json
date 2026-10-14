@@ -199,6 +199,54 @@
       ]
     ]
   },
+  "artist-monet-impressionism": {
+    "width": 1440,
+    "height": 960,
+    "avg": "#8b866d",
+    "src": "/site/artist-monet-impressionism-1440.webp",
+    "srcset": [
+      [
+        "/site/artist-monet-impressionism-720.webp",
+        720
+      ],
+      [
+        "/site/artist-monet-impressionism-1440.webp",
+        1440
+      ]
+    ]
+  },
+  "artist-dali-surrealism": {
+    "width": 1440,
+    "height": 810,
+    "avg": "#70614c",
+    "src": "/site/artist-dali-surrealism-1440.webp",
+    "srcset": [
+      [
+        "/site/artist-dali-surrealism-720.webp",
+        720
+      ],
+      [
+        "/site/artist-dali-surrealism-1440.webp",
+        1440
+      ]
+    ]
+  },
+  "artist-wes-anderson-poster": {
+    "width": 960,
+    "height": 1440,
+    "avg": "#a69b7b",
+    "src": "/site/artist-wes-anderson-poster-960.webp",
+    "srcset": [
+      [
+        "/site/artist-wes-anderson-poster-720.webp",
+        720
+      ],
+      [
+        "/site/artist-wes-anderson-poster-960.webp",
+        960
+      ]
+    ]
+  },
   "story-sky": {
     "width": 1280,
     "height": 720,

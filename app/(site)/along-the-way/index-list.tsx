@@ -98,11 +98,7 @@ export function AlongIndex() {
       {visible === 0 ? (
         <div className="m-along-empty">
           <p>{alongUi.empty}</p>
-          <button
-            type="button"
-            className="m-link"
-            onClick={() => pick('all')}
-          >
+          <button type="button" className="m-link" onClick={() => pick('all')}>
             {alongUi.emptyBack}
           </button>
         </div>

@@ -60,9 +60,7 @@ function Front({ member, index }: { member: Member; index: number }) {
         <span className="tm-role">{member.role}</span>
       </div>
       {member.focus ? <p className="tm-focus">{member.focus}</p> : null}
-      {member.experience ? (
-        <p className="tm-exp">{member.experience}</p>
-      ) : null}
+      {member.experience ? <p className="tm-exp">{member.experience}</p> : null}
     </>
   );
 }

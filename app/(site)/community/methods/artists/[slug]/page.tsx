@@ -17,7 +17,13 @@ import {
   contactHref,
   METHODS,
 } from '../../../../../_site/routes';
-import { More, Note, pad, type Vars } from '../../../../../_site/ui';
+import {
+  More,
+  Note,
+  pad,
+  type Vars,
+  artistImage,
+} from '../../../../../_site/ui';
 import { CopyPrompt, SkillDownload } from '../../../copy';
 import '../../methods.css';
 
@@ -94,9 +100,7 @@ export default async function ArtistSkillPage({ params }: Props) {
             <figure className="m-mth-sample">
               <div className="m-mth-sample-view">
                 <img
-                  src={skill.image}
-                  width={skill.width}
-                  height={skill.height}
+                  {...artistImage(skill.slug, skill)}
                   alt={skill.imageAlt}
                   decoding="async"
                 />

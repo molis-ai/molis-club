@@ -176,9 +176,7 @@ export function Path() {
                           <dd>
                             <Leaves
                               text={station.leaves}
-                              term={
-                                mark === 'start' ? advice?.term : undefined
-                              }
+                              term={mark === 'start' ? advice?.term : undefined}
                             />
                           </dd>
                         </div>

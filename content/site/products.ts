@@ -4,7 +4,13 @@
 
 export type ProductId = 'work' | 'tool' | 'life' | 'story' | 'world';
 
-export const productIds: ProductId[] = ['work', 'tool', 'life', 'story', 'world'];
+export const productIds: ProductId[] = [
+  'work',
+  'tool',
+  'life',
+  'story',
+  'world',
+];
 
 export type Section = {
   /** 第 4 章里加粗的小标题 */
@@ -95,7 +101,8 @@ export const products: Record<ProductId, Product> = {
     overview: '围绕当前文字、文件或网页出现的随手工具。',
     fit: '手上已有材料，想顺手完成下一步，少些应用切换与搬运。',
     stage: '开发中',
-    stageNote: '已有桌面开发版本，本机工具、跨应用交互与 AI 能力仍在整合和验证。',
+    stageNote:
+      '已有桌面开发版本，本机工具、跨应用交互与 AI 能力仍在整合和验证。',
     form: 'Mac 工具',
     opening: [
       '读到一段文字，想清理一下格式；拿到一份 PDF，只需要其中几页；看到活动信息，想顺手整理成日程。',
@@ -185,7 +192,8 @@ export const products: Record<ProductId, Product> = {
     overview: '把阅读、对话、探索和创作做成可以进入的世界。',
     fit: '想暂时走出熟悉的日常，进入一段有自己规则与节奏的体验。',
     stage: '开发中',
-    stageNote: '已有四个世界的开发实现，正在打磨进入、经历、归来与再次继续的体验。',
+    stageNote:
+      '已有四个世界的开发实现，正在打磨进入、经历、归来与再次继续的体验。',
     form: 'macOS 互动世界',
     opening: [
       '有时，你想遇见一个完全陌生的生命。有时，你想认真走一遍心里的“如果”。也有时候，你只是想重新看看自己经历过的一段时光。',
@@ -309,5 +317,6 @@ export const access = {
 
 export const WORK_GITHUB = 'https://github.com/molis-ai/molis-work';
 /** 仓库 README 的「Run from source」一节（2026-10-15 核对） */
-export const WORK_BUILD = 'https://github.com/molis-ai/molis-work#run-from-source';
+export const WORK_BUILD =
+  'https://github.com/molis-ai/molis-work#run-from-source';
 export const WORK_RELEASES = 'https://github.com/molis-ai/molis-work/releases';

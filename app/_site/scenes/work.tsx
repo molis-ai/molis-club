@@ -652,7 +652,8 @@ const away: Scene = {
           <li className="m-v" style={at(2)}>
             <span className="m-tick" style={at(99)} />
             <span>
-              07:00 D 公司昨晚发布了新版本<small>要不要加进报告，需要你定</small>
+              07:00 D 公司昨晚发布了新版本
+              <small>要不要加进报告，需要你定</small>
             </span>
           </li>
         </ol>
@@ -667,7 +668,8 @@ const away: Scene = {
         </p>
         <p className="wk-inbox-q">要不要把 D 公司加进报告？</p>
         <p className="m-mini">
-          原因：它昨晚发布了新版本，会影响第二节的结论。其余两件已处理，记录在 Goal 里。
+          原因：它昨晚发布了新版本，会影响第二节的结论。其余两件已处理，记录在
+          Goal 里。
         </p>
         <p className="wk-inbox-act">
           <span className="m-chip" data-tone="ink">

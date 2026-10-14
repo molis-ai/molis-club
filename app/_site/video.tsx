@@ -46,7 +46,8 @@ export function VideoWindow({
     const node = video.current;
     if (!node) return;
     // 第一次进入视口才载入视频；之前只有封面帧
-    if (visible && !node.getAttribute('src')) node.setAttribute('src', clip.src);
+    if (visible && !node.getAttribute('src'))
+      node.setAttribute('src', clip.src);
     node.defaultPlaybackRate = clip.rate;
     node.playbackRate = clip.rate;
     if (playing) void node.play().catch(() => {});

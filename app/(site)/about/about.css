@@ -4,7 +4,8 @@
 .ab {
   --ab-cols: repeat(12, minmax(0, 1fr));
   /* 代码那一栏用系统等宽字，只在这一页的示意里出现 */
-  --ab-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  --ab-mono:
+    ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
 }
 .ab-sec {
   padding-top: var(--section-top);
@@ -619,7 +620,9 @@ html:not(.js) .ab-trio-ctl {
 }
 .ab-whole {
   margin: clamp(48px, 9vh, 96px) 0 0;
-  padding-left: calc((100% - 11 * var(--col-gap)) / 12 * 2 + 2 * var(--col-gap));
+  padding-left: calc(
+    (100% - 11 * var(--col-gap)) / 12 * 2 + 2 * var(--col-gap)
+  );
   font: 300 var(--t-h2) / 1.6 var(--sans);
   letter-spacing: 0.04em;
   max-width: 100%;
@@ -711,8 +714,7 @@ html:not(.js) .ab-trio-ctl {
 .ab-door-label {
   justify-self: start;
   padding-bottom: 4px;
-  background:
-    linear-gradient(currentColor 0 0) left bottom / 0 1px no-repeat;
+  background: linear-gradient(currentColor 0 0) left bottom / 0 1px no-repeat;
   font: 300 var(--t-h1) / 1.25 var(--sans);
   letter-spacing: 0.08em;
   transition: background-size 0.55s var(--ease);

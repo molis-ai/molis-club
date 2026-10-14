@@ -117,7 +117,9 @@ export function Chapters({
               {chapter.kicker ? (
                 <span className="m-kicker">{chapter.kicker}</span>
               ) : null}
-              {chapter.tag ? <span className="m-note">{chapter.tag}</span> : null}
+              {chapter.tag ? (
+                <span className="m-note">{chapter.tag}</span>
+              ) : null}
             </p>
             <Inline chapter={chapter} />
             <h2 className="m-ch-title" id={`${chapter.id}-title`}>
@@ -168,7 +170,12 @@ export function Chapters({
                 data-now={c === at.chapter || undefined}
               >
                 {chapter.scene.render({
-                  step: c === at.chapter ? at.step : c < at.chapter ? chapter.scene.steps - 1 : 0,
+                  step:
+                    c === at.chapter
+                      ? at.step
+                      : c < at.chapter
+                        ? chapter.scene.steps - 1
+                        : 0,
                 })}
               </div>
             ))}

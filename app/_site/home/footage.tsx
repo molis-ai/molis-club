@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react';
 import { Pause, Play } from 'lucide-react';
 import { useReducedMotion } from '../motion';
 import media from '../media.json';
@@ -98,12 +98,14 @@ export function FootageToggle({
 export function Film({
   playing,
   children,
+  ref,
 }: {
   playing: boolean;
   children: ReactNode;
+  ref?: Ref<HTMLDivElement>;
 }) {
   return (
-    <div className="m-film" data-scene data-tone="film">
+    <div className="m-film" data-scene data-tone="film" ref={ref}>
       <div className="m-film-media" aria-hidden="true">
         <Photo still={hero} playing={playing} className="m-film-a" eager />
         <Photo still={ware} playing={playing} className="m-film-b" />

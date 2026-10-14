@@ -321,7 +321,11 @@
   padding: 0.1em 0.35em;
   border-radius: var(--r-label);
   background: var(--paper-2);
-  font: 0.88em/1 ui-monospace, 'SF Mono', Menlo, monospace;
+  font:
+    0.88em/1 ui-monospace,
+    'SF Mono',
+    Menlo,
+    monospace;
 }
 .m-essay-body hr {
   width: 4em;

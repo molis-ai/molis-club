@@ -18,14 +18,7 @@ function Work() {
         rx="10"
       />
       <rect className="m-th-win" x="22" y="14" width="76" height="52" rx="5" />
-      <rect
-        className="m-th-side"
-        x="24"
-        y="16"
-        width="16"
-        height="48"
-        rx="3"
-      />
+      <rect className="m-th-side" x="24" y="16" width="16" height="48" rx="3" />
       <rect
         className="m-th-accent"
         x="28"
@@ -103,14 +96,7 @@ function Work() {
 function Tool() {
   return (
     <svg viewBox="0 0 120 84" className="m-th m-th-tool" aria-hidden="true">
-      <rect
-        className="m-th-mark"
-        x="42"
-        y="19"
-        width="52"
-        height="14"
-        rx="3"
-      />
+      <rect className="m-th-mark" x="42" y="19" width="52" height="14" rx="3" />
       <rect
         className="m-th-ink"
         x="18"

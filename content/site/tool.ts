@@ -68,7 +68,8 @@ export const selectTry = {
   title: '在这一页，选中任意一句话。',
   lead: '用鼠标拖过一句话，或者用键盘选中它，动作条会出现在光标旁边。这里是网页里的示意：字数和纯文本是真的，需要 AI 的动作只演示会出现在哪里。',
   note: '交互示意',
-  sample: '读到一段文字，想清理一下格式；拿到一份 PDF，只需要其中几页；看到活动信息，想顺手整理成日程。',
+  sample:
+    '读到一段文字，想清理一下格式；拿到一份 PDF，只需要其中几页；看到活动信息，想顺手整理成日程。',
   actions: {
     count: '数一数',
     plain: '复制纯文本',
@@ -79,7 +80,8 @@ export const selectTry = {
     count: (n: number) => `这句话有 ${n} 个字。`,
     plain: '已复制为纯文本，格式都去掉了。',
     plainFailed: '浏览器没让复制，选中的文字还在。',
-    explain: '示意：在 Molis Tool 里，这里会用你配置的 AI 服务解释这句话，结果留在原处。',
+    explain:
+      '示意：在 Molis Tool 里，这里会用你配置的 AI 服务解释这句话，结果留在原处。',
     todo: '示意：在 Molis Tool 里，这里会把这句话整理成一条待办草稿，加入前由你确认。',
   },
   local: '本机',
@@ -89,7 +91,9 @@ export const selectTry = {
 
 /** 当前进展：摘自 4.2「当前进展」原句 */
 export const toolProgress = {
-  have: ['Molis Tool 已有 Mac 开发版本，以及文字、文件、PDF、表格等本机处理能力。'],
+  have: [
+    'Molis Tool 已有 Mac 开发版本，以及文字、文件、PDF、表格等本机处理能力。',
+  ],
   notYet: [
     '跨应用交互、真实 AI 和系统服务仍在整合与验证，尚未公开提供安装包。',
     '它按独立产品推进，也计划成为 Molis Work 的基础能力，具体接入范围与时间尚未确定。',

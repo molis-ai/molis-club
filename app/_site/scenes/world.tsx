@@ -41,7 +41,10 @@ export const noodleCase: Scene = {
         <span className="wd-place wd-noodle-shop m-v" data-pop="" style={at(1)}>
           <svg viewBox="0 0 40 34" aria-hidden="true">
             <path d="M4 14 20 4l16 10M8 13v17h24V13M16 30v-9h8v9" />
-            <path className="wd-steam" d="M14 2c-2 3 2 4 0 7M26 2c-2 3 2 4 0 7" />
+            <path
+              className="wd-steam"
+              d="M14 2c-2 3 2 4 0 7M26 2c-2 3 2 4 0 7"
+            />
           </svg>
           <b>巷口那家面馆</b>
         </span>
@@ -56,7 +59,13 @@ export const noodleCase: Scene = {
           <b>带回来的纸灯笼</b>
         </span>
       </div>
-      <svg className="wd-route m-v" data-fade="" style={at(2)} viewBox="0 0 200 80" aria-hidden="true">
+      <svg
+        className="wd-route m-v"
+        data-fade=""
+        style={at(2)}
+        viewBox="0 0 200 80"
+        aria-hidden="true"
+      >
         <path d="M6 70C50 70 70 14 120 18s60 30 74 20" />
       </svg>
       <div className="wd-far m-v" data-fade="" style={at(2)}>
@@ -153,7 +162,14 @@ const meet: Scene = {
           <b>World</b>
           <small>亲手搭建、布置和重访</small>
         </span>
-        <svg className="wd-links m-v" data-fade="" style={at(1)} viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true">
+        <svg
+          className="wd-links m-v"
+          data-fade=""
+          style={at(1)}
+          viewBox="0 0 100 60"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
           <path d="M22 24C36 24 40 42 50 42M78 24C64 24 60 42 50 42" />
         </svg>
       </div>

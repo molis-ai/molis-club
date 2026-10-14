@@ -248,7 +248,10 @@ export function ContactForm({
           </div>
           {product ? (
             <p className="m-form-stage">
-              <span className="m-status" data-concept={product === 'world' || undefined}>
+              <span
+                className="m-status"
+                data-concept={product === 'world' || undefined}
+              >
                 {products[product].stage}
               </span>
             </p>

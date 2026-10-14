@@ -8,12 +8,18 @@ import { siteUrl, publiclyIndexable } from '../lib/site';
 // globals.css、Geist 与 Newsreader 留给评审页；新站用 Jost（300 / 400 / 500 与斜体）配苹方，
 // Fraunces 只用于「Beyond Software」里的 Soft。样式在 app/_site/site.css，全部收在 .m 之下。
 
+// 评审页用的两种字体不预加载：新站页面用不到，用到时才下载
 const newsreader = Newsreader({
   variable: '--font-editorial',
   subsets: ['latin'],
   style: ['normal', 'italic'],
+  preload: false,
 });
-const geist = Geist({ variable: '--font-geist', subsets: ['latin'] });
+const geist = Geist({
+  variable: '--font-geist',
+  subsets: ['latin'],
+  preload: false,
+});
 const jost = Jost({
   weight: ['300', '400', '500'],
   style: ['normal', 'italic'],
@@ -21,12 +27,14 @@ const jost = Jost({
   variable: '--font-jost',
   display: 'swap',
 });
+// 只有首页第二屏的 Soft 用到，不预加载
 const soft = Fraunces({
   style: ['italic'],
   axes: ['SOFT', 'WONK', 'opsz'],
   subsets: ['latin'],
   variable: '--font-soft',
   display: 'swap',
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -35,7 +43,7 @@ export const metadata: Metadata = {
     default: 'Molis AI · 技术，回到人的尺度',
     template: '%s · Molis AI',
   },
-  icons: { icon: '/images/molis-logo.png' },
+  icons: { icon: '/site/molis-logo-96.png' },
   description:
     'Molis AI 是一间围绕工作、生活与体验研发 AI 产品的工作室。我们做自己用着舒服的产品，也想遇见和我们口味相投的你。',
   robots: { index: publiclyIndexable, follow: publiclyIndexable },

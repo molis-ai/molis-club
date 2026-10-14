@@ -184,9 +184,10 @@
   .js .st-world:not([data-still]) .st-arch {
     --i: calc(1 - var(--g));
     clip-path: inset(
-      calc(var(--header) + 9vh * var(--i) + 0px) calc(var(--gutter) * var(--i) + 7vw * var(--i))
-        calc(8vh * var(--i)) calc(52vw * var(--i))
-        round calc(19vw * var(--i)) calc(19vw * var(--i)) calc(14px * var(--i)) calc(14px * var(--i))
+      calc(var(--header) + 9vh * var(--i) + 0px)
+        calc(var(--gutter) * var(--i) + 7vw * var(--i)) calc(8vh * var(--i))
+        calc(52vw * var(--i)) round calc(19vw * var(--i)) calc(19vw * var(--i))
+        calc(14px * var(--i)) calc(14px * var(--i))
     );
   }
   .js .st-world:not([data-still]) .st-arch .m-sc {
@@ -212,9 +213,9 @@
   .js .st-world:not([data-still]) .st-arch {
     --i: calc(1 - var(--g));
     clip-path: inset(
-      calc(var(--header) + 12vh * var(--i)) calc(14vw * var(--i)) calc(12vh * var(--i))
-        calc(14vw * var(--i)) round calc(36vw * var(--i)) calc(36vw * var(--i)) calc(12px * var(--i))
-        calc(12px * var(--i))
+      calc(var(--header) + 12vh * var(--i)) calc(14vw * var(--i))
+        calc(12vh * var(--i)) calc(14vw * var(--i)) round calc(36vw * var(--i))
+        calc(36vw * var(--i)) calc(12px * var(--i)) calc(12px * var(--i))
     );
   }
   .js .st-world:not([data-still]) .st-arch-cap,

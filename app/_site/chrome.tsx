@@ -123,7 +123,9 @@ export function Header() {
   const path = usePathname() ?? '/';
   const ref = useCloseDetails(path);
   const { tone, scrolled } = useTone(path);
-  const productCurrent = productIds.some((id) => isUnder(path, productHref[id]));
+  const productCurrent = productIds.some((id) =>
+    isUnder(path, productHref[id]),
+  );
   const aboutCurrent = aboutLinks.some((link) => isUnder(path, link.href));
   return (
     <header
@@ -132,14 +134,17 @@ export function Header() {
       data-over={tone}
     >
       <Link href="/" className="m-logo" aria-label={nav.home}>
-        <img src="/images/molis-logo.png" width="30" height="30" alt="" />
+        <img
+          src="/site/molis-logo-64.png"
+          srcSet="/site/molis-logo-64.png 2x, /site/molis-logo-96.png 3x"
+          width="30"
+          height="30"
+          alt=""
+        />
         <span lang="en">Molis AI</span>
       </Link>
       <nav className="m-nav" aria-label="主导航">
-        <details
-          className="m-drop"
-          data-current={productCurrent || undefined}
-        >
+        <details className="m-drop" data-current={productCurrent || undefined}>
           <summary>
             {nav.products}
             <ChevronDown size={14} aria-hidden="true" />
@@ -151,7 +156,9 @@ export function Header() {
                 <Link
                   key={id}
                   href={productHref[id]}
-                  aria-current={isUnder(path, productHref[id]) ? 'page' : undefined}
+                  aria-current={
+                    isUnder(path, productHref[id]) ? 'page' : undefined
+                  }
                 >
                   <span className="m-no" aria-hidden="true">
                     {pad(index + 1)}
@@ -225,7 +232,7 @@ export function Header() {
                 <small>{products[id].stage}</small>
               </Link>
             ))}
-            <h2>{nav.about}</h2>
+            <h2>{footer.columns.studio}</h2>
             <Link href={ENTERPRISE}>{nav.enterprise}</Link>
             <Link href={COMMUNITY}>{nav.community}</Link>
             {aboutLinks.map((link) => (
@@ -274,7 +281,8 @@ export function Footer() {
           <div className="m-footer-lead">
             <Link href="/" className="m-logo" aria-label={nav.home}>
               <img
-                src="/images/molis-logo.png"
+                src="/site/molis-logo-64.png"
+                srcSet="/site/molis-logo-64.png 2x, /site/molis-logo-96.png 3x"
                 width="28"
                 height="28"
                 alt=""

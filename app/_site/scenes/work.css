@@ -485,8 +485,9 @@
   gap: 0.6em;
 }
 .wk-build .m-bar {
-  background: linear-gradient(var(--leaf), var(--leaf)) 0 0 /
-      calc(var(--on) * 100%) 100% no-repeat,
+  background:
+    linear-gradient(var(--leaf), var(--leaf)) 0 0 / calc(var(--on) * 100%) 100%
+      no-repeat,
     var(--hair);
 }
 .wk-grow-done {

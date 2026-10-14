@@ -100,7 +100,8 @@ export const form = {
   submit: '发给我们',
   sending: '正在发送…',
   /** 新写：没有 JS 时表单发不出去，照实说 */
-  noScript: '这张表需要开启 JavaScript 才能发送；没开也不要紧，上面的字都能读。',
+  noScript:
+    '这张表需要开启 JavaScript 才能发送；没开也不要紧，上面的字都能读。',
   /** 新写：没选来意或产品就点了发送（一般会先被浏览器拦下） */
   pickIntent: '先选一个来意。',
   pickProduct: '先选想关注哪一件。',

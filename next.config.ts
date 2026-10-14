@@ -7,7 +7,7 @@ const moved: [string, string][] = [
   ['/products', '/#products'],
   ['/solutions', '/enterprise'],
   ['/wiki', '/community/methods'],
-  ['/wiki/artists', '/community/methods'],
+  ['/wiki/artists', '/community/methods?type=artists'],
   ['/wiki/artists/:slug', '/community/methods/artists/:slug'],
   ['/wiki/:slug', '/community/methods/:slug'],
   ['/perspectives', '/essays'],

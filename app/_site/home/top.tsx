@@ -1,5 +1,7 @@
 'use client';
+import { useRef } from 'react';
 import { studio } from '../../../content/site/studio';
+import { useVisible } from '../motion';
 import { AiWordCycle } from './ai-words';
 import { Film, FootageToggle, useFootagePlaying } from './footage';
 import { Ware } from './ware';
@@ -9,8 +11,11 @@ import { Ware } from './ware';
 // 两屏共用一卷胶片：首屏的照片钉在视口里，读到那句话时溶进第二张。
 export function HomeTop() {
   const { playing, toggle } = useFootagePlaying();
+  // 照片的「呼吸」是循环动画：离开视口、页面隐藏时停
+  const film = useRef<HTMLDivElement>(null);
+  const visible = useVisible(film, 0.01);
   return (
-    <Film playing={playing}>
+    <Film playing={playing && visible} ref={film}>
       <section className="m-hero m-real-hero" aria-labelledby="m-title">
         <div className="m-real-copy">
           <h1 id="m-title" className="m-mark" lang="en">

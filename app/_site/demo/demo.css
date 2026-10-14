@@ -92,8 +92,9 @@
   display: block;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(var(--ink), var(--ink)) 0 0 /
-      calc(var(--on) * 100%) 100% no-repeat,
+  background:
+    linear-gradient(var(--ink), var(--ink)) 0 0 / calc(var(--on) * 100%) 100%
+      no-repeat,
     var(--hair);
   transition: background-size 1.1s var(--ease) var(--d, 0ms);
 }

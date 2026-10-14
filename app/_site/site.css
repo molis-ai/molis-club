@@ -177,7 +177,10 @@ body:has(.m) .skip-link {
   border-radius: 999px;
   background: #1b1a18;
   color: #fbfaf7;
-  font: 500 13px/1.4 var(--font-jost), 'PingFang SC', sans-serif;
+  font:
+    500 13px/1.4 var(--font-jost),
+    'PingFang SC',
+    sans-serif;
   letter-spacing: 0.06em;
 }
 .m .num,
@@ -822,6 +825,7 @@ body:has(.m) .skip-link {
   }
   .m-menu-sheet .m-btn {
     display: flex;
+    justify-content: center;
     margin-top: 28px;
     font: 500 15px/1 var(--sans);
     border: 0;

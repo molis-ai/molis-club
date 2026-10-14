@@ -1,5 +1,11 @@
 'use client';
-import { Copy, Hash, ListChecks, MessageCircleQuestionMark, X } from 'lucide-react';
+import {
+  Copy,
+  Hash,
+  ListChecks,
+  MessageCircleQuestionMark,
+  X,
+} from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { selectTry } from '../../../content/site/tool';
 
@@ -94,7 +100,9 @@ export function SelectionBar({ children }: { children: ReactNode }) {
     if (!state) return;
     const { results } = selectTry;
     if (action === 'count')
-      setResult(results.count(Array.from(state.text.replace(/\s/g, '')).length));
+      setResult(
+        results.count(Array.from(state.text.replace(/\s/g, '')).length),
+      );
     else if (action === 'plain') {
       try {
         await navigator.clipboard.writeText(state.text);

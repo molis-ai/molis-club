@@ -27,7 +27,11 @@ export function parseEssay(body: string) {
   for (const part of raw) {
     const lines = part.split('\n').map((line) => line.trim());
     if (part.startsWith('### ')) {
-      blocks.push({ kind: 'h3', text: part.slice(4), id: `t-${blocks.length}` });
+      blocks.push({
+        kind: 'h3',
+        text: part.slice(4),
+        id: `t-${blocks.length}`,
+      });
     } else if (part.startsWith('## ')) {
       const id = `s-${headings.length + 1}`;
       const text = part.slice(3);

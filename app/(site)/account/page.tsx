@@ -12,9 +12,7 @@ export default function AccountPage() {
   return (
     <div className="m-auth m-top">
       <div className="m-auth-card">
-        <p className="m-kicker" lang="en">
-          Molis AI
-        </p>
+        <h1 className="m-kicker">我的账号</h1>
         <Account />
       </div>
     </div>

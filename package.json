@@ -16,8 +16,10 @@
     "db:generate": "drizzle-kit generate",
     "check": "tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
-    "test:http": "node tests/discovery-http.mjs && node tests/editorial-http.mjs && node tests/auth-http.mjs",
-    "build:folio-preview": "npm run build && node scripts/export-folio-preview.mjs"
+    "test:http": "node tests/site-http.mjs && node tests/community-http.mjs && node tests/auth-http.mjs",
+    "build:folio-preview": "npm run build && node scripts/export-folio-preview.mjs",
+    "dates": "node scripts/page-dates.mjs",
+    "media": "node scripts/site-media.mjs"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.7.3",

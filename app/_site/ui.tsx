@@ -218,3 +218,27 @@ export function Window({
 export function mediaOf(name: MediaKey) {
   return media[name];
 }
+
+/** 艺术家 Skill 的 AI 创作试样：压缩后的几档宽度（scripts/site-media.mjs）；没有压缩版时退回原图 */
+export function artistImage(
+  slug: string,
+  fallback: { src?: string; width?: number; height?: number },
+  sizes = '(max-width: 900px) 100vw, 50vw',
+) {
+  const image = (
+    media as Record<string, (typeof media)['home-garden'] | undefined>
+  )[`artist-${slug}`];
+  if (!image)
+    return {
+      src: fallback.src,
+      width: fallback.width,
+      height: fallback.height,
+    };
+  return {
+    src: image.src,
+    srcSet: image.srcset.map(([src, w]) => `${src} ${w}w`).join(', '),
+    sizes,
+    width: image.width,
+    height: image.height,
+  };
+}

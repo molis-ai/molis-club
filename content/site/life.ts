@@ -20,11 +20,7 @@ export const lifeChapters: {
     kicker: '第一周',
     title: life.opening[0],
     paragraphs: life.opening.slice(1),
-    steps: [
-      '一笔还没退回来的款。',
-      '一件快到期的事。',
-      '一个说了很久的愿望。',
-    ],
+    steps: ['一笔还没退回来的款。', '一件快到期的事。', '一个说了很久的愿望。'],
   },
   {
     id: 'refund',
