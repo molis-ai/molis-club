@@ -150,6 +150,7 @@ export function Window({
   focus,
   caption,
   captionNote,
+  captionLang = 'en',
   sizes = '(max-width: 900px) 100vw, 50vw',
   eager = false,
   open = true,
@@ -163,6 +164,8 @@ export function Window({
   focus?: string;
   caption?: ReactNode;
   captionNote?: ReactNode;
+  /** 图注默认是一行英文细斜体；中文图注传 'zh' */
+  captionLang?: 'en' | 'zh';
   sizes?: string;
   eager?: boolean;
   open?: boolean;
@@ -200,7 +203,9 @@ export function Window({
       </div>
       {caption ? (
         <figcaption>
-          <span className="m-caption">{caption}</span>
+          <span className="m-caption" lang={captionLang}>
+            {caption}
+          </span>
           {captionNote ? (
             <span className="m-caption">{captionNote}</span>
           ) : null}

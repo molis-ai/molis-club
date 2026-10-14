@@ -206,7 +206,11 @@ export function Header() {
         <Link className="m-login" href={LOGIN}>
           {nav.login}
         </Link>
-        <Link className="m-btn m-chat" href={CONTACT}>
+        <Link
+          className="m-btn m-chat"
+          href={CONTACT}
+          aria-current={isUnder(path, CONTACT) ? 'page' : undefined}
+        >
           {nav.chat}
         </Link>
         <details className="m-menu">

@@ -1,0 +1,355 @@
+/* 团队页：一群同类，一起创造。白纸上八张白卡片；正面是方向与经历，背面（次一级的纸色）是本人的自述。
+   没有 JS：卡片的两面上下排开，都能读到；有 JS：两面叠在同一格里，按「自述」翻过去；
+   减少动态：不做三维翻转，直接换面。 */
+
+/* ---------- 首屏 ---------- */
+.tm-hero {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: clamp(18px, 3vh, 28px);
+  padding-bottom: clamp(64px, 11vh, 128px);
+}
+.tm-hero > .m-kicker {
+  grid-column: 1 / span 2;
+  padding-top: 1.2em;
+}
+.tm-title {
+  grid-column: 3 / -1;
+  font: 300 var(--t-display) / 1.22 var(--sans);
+  letter-spacing: 0.03em;
+}
+.tm-lead {
+  grid-column: 3 / span 6;
+}
+@media (max-width: 900px) {
+  .tm-hero > .m-kicker,
+  .tm-title,
+  .tm-lead {
+    grid-column: 1 / -1;
+  }
+  .tm-hero > .m-kicker {
+    padding-top: 0;
+  }
+}
+
+/* ---------- 成员 ---------- */
+.tm-people-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ink);
+  margin-bottom: clamp(28px, 5vh, 48px);
+}
+.tm-people-head .num {
+  margin-left: 6px;
+  font: italic 300 15px/1 var(--latin);
+  letter-spacing: 0;
+  color: var(--accent-ink);
+}
+.tm-note .m-note {
+  white-space: normal;
+}
+.tm-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--col-gap);
+}
+.tm-grid > li {
+  display: grid;
+}
+@media (max-width: 1180px) {
+  .tm-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 620px) {
+  .tm-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* 卡片：白底，几乎无阴影；没有 JS 时就是一张卡片，正反两面上下排开 */
+.tm-card {
+  position: relative;
+  display: grid;
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
+  transition: box-shadow 0.4s var(--ease);
+}
+.tm-card:hover {
+  box-shadow: 0 0 0 1px var(--hair-2);
+}
+/* 从别处链过来（/team#xiejun）：那一张描一道杏橙细线 */
+.tm-card:target {
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.tm-inner {
+  display: grid;
+  align-content: start;
+}
+.tm-face {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: clamp(20px, 2vw, 28px);
+}
+.tm-back {
+  border-top: 1px dashed var(--hair-2);
+}
+
+.tm-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+/* 头像：统一裁成圆、同一档轻调色；没有头像的用名字首字做字标 */
+.tm-avatar {
+  display: block;
+  flex: none;
+  width: 76px;
+  height: 76px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--paper-2);
+}
+.tm-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: var(--grade);
+}
+.tm-mark {
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  font: 300 var(--t-h2) / 1 var(--sans);
+  color: var(--ink-2);
+  user-select: none;
+}
+.tm-namebar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+}
+.tm-name {
+  font: 400 var(--t-h3) / 1.35 var(--sans);
+  letter-spacing: 0.06em;
+}
+.tm-role {
+  font: 400 12.5px/1.4 var(--sans);
+  letter-spacing: 0.1em;
+  color: var(--mute);
+}
+.tm-focus {
+  font: 500 var(--t-ui) / 1.7 var(--sans);
+  letter-spacing: 0.04em;
+}
+.tm-exp {
+  font-size: var(--t-ui);
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+
+/* 背面：自述 */
+.tm-self {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.tm-self .m-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-ink);
+}
+.tm-self .m-kicker::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.tm-self-name {
+  font-size: var(--t-small);
+  letter-spacing: 0.08em;
+  color: var(--mute);
+}
+.tm-tags {
+  display: grid;
+  border-top: 1px solid var(--hair);
+}
+.tm-tags li {
+  padding: 10px 0;
+  text-wrap: pretty;
+  border-bottom: 1px solid var(--hair);
+  font: 400 var(--t-lead) / 1.65 var(--sans);
+  letter-spacing: 0.03em;
+}
+.tm-motto {
+  display: grid;
+  gap: 6px;
+  margin-top: 4px;
+}
+.tm-motto-text {
+  font: 400 var(--t-lead) / 1.6 var(--sans);
+}
+
+/* 翻面按钮：只在有 JS 时出现，叠在卡片左下角，不跟着翻 */
+.tm-turn {
+  display: none;
+}
+.js .tm-turn {
+  position: absolute;
+  left: clamp(20px, 2vw, 28px);
+  bottom: 20px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 14px 0 12px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  color: var(--ink-2);
+  font: 400 var(--t-small) / 1 var(--sans);
+  letter-spacing: 0.1em;
+  transition:
+    box-shadow 0.3s var(--ease),
+    background-color 0.3s var(--ease),
+    color 0.3s var(--ease);
+}
+.js .tm-turn:hover {
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.js .tm-turn[aria-pressed='true'] {
+  color: var(--ink);
+  background: var(--accent-wash);
+  box-shadow: inset 0 0 0 1px rgb(234 146 96 / 0.45);
+}
+.tm-turn svg {
+  transition: transform 0.7s var(--ease);
+}
+.tm-turn[aria-pressed='true'] svg {
+  transform: rotate(180deg);
+}
+
+/* 有 JS：两面叠在同一格里，卡片的纸移到两面上；翻过去的那一面同时不进读屏 */
+.js .tm-card[data-flip] {
+  background: none;
+  box-shadow: none;
+  perspective: 1800px;
+}
+.js .tm-card[data-flip] .tm-inner {
+  grid-template-rows: 1fr;
+  align-content: stretch;
+  transform-style: preserve-3d;
+  transition: transform 0.9s var(--ease);
+}
+.js .tm-card[data-flip][data-flipped] .tm-inner {
+  transform: rotateY(180deg);
+}
+.js .tm-card[data-flip] .tm-face {
+  grid-area: 1 / 1;
+  padding-bottom: 76px;
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition:
+    visibility 0s linear 0.45s,
+    box-shadow 0.4s var(--ease);
+}
+.js .tm-card[data-flip] .tm-back {
+  transform: rotateY(180deg);
+  border-top: 0;
+  background: var(--paper-2);
+}
+.js .tm-card[data-flip]:not([data-flipped]) .tm-back,
+.js .tm-card[data-flip][data-flipped] .tm-front {
+  visibility: hidden;
+}
+.js .tm-card[data-flip]:hover .tm-face {
+  box-shadow: 0 0 0 1px var(--hair-2);
+}
+.js .tm-card[data-flip]:target .tm-face {
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+/* ---------- 结尾：从不同的位置出发 ---------- */
+.tm-end {
+  padding-block: var(--section-top) var(--section-bottom);
+}
+.tm-end-body {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 32px;
+}
+.tm-end-text {
+  grid-column: 3 / span 6;
+  font-size: var(--t-read);
+  line-height: 2;
+  color: var(--ink-2);
+}
+.tm-end-body .m-actions {
+  grid-column: 3 / span 8;
+}
+@media (max-width: 900px) {
+  .tm-end-text,
+  .tm-end-body .m-actions {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- 减少动态：不做三维翻转，直接换面 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .js .tm-card[data-flip] .tm-inner,
+  .js .tm-card[data-flip][data-flipped] .tm-inner {
+    transform: none;
+    transition: none;
+  }
+  .js .tm-card[data-flip] .tm-back {
+    transform: none;
+  }
+  .js .tm-card[data-flip] .tm-face,
+  .tm-card,
+  .js .tm-turn,
+  .tm-turn svg {
+    transition: none;
+  }
+}
+
+/* ---------- 打印：两面都印出来 ---------- */
+@media print {
+  .tm-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tm-card {
+    break-inside: avoid;
+  }
+  .js .tm-card[data-flip] .tm-inner {
+    transform: none !important;
+  }
+  .js .tm-card[data-flip] .tm-face {
+    grid-area: auto;
+    padding-bottom: 20px;
+    transform: none !important;
+    visibility: visible !important;
+  }
+  .js .tm-turn {
+    display: none;
+  }
+}

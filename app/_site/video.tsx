@@ -85,7 +85,9 @@ export function VideoWindow({
         {children}
       </div>
       <figcaption>
-        <span className="m-caption">{caption}</span>
+        <span className="m-caption" lang="en">
+          {caption}
+        </span>
         {reduced ? null : (
           <button
             type="button"

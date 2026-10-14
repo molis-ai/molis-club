@@ -1,0 +1,662 @@
+/* 企业合作页：全站秩序感最强的一页。
+   一切对齐 12 栏网格：编号在左两栏，标题从第 3 栏起；区块之间只有 1px 线；没有装饰。
+   标志性交互「选一个最像你们的问题」只换颜色与描边，不做位移。 */
+
+/* ---------- 首屏：一句话 + 一扇 21:9 的宽窗 ---------- */
+.m-ent-hero {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: clamp(18px, 3vh, 32px);
+  align-items: end;
+}
+.m-ent-hero .m-tagline {
+  grid-column: 1 / -1;
+}
+.m-ent-title {
+  grid-column: 1 / span 9;
+  font: 300 var(--t-display) / 1.2 var(--sans);
+  letter-spacing: 0.02em;
+}
+.m-ent-hero-go {
+  grid-column: 10 / -1;
+  justify-content: flex-end;
+  padding-bottom: 0.5em;
+}
+.m-ent-hero-window {
+  grid-column: 1 / -1;
+  margin-top: clamp(12px, 4vh, 48px);
+}
+/* 图注是英文：细斜体（Window 的图注默认按中文排） */
+.m-ent .m-caption [lang='en'] {
+  font-style: italic;
+  font-weight: 300;
+  font-size: var(--t-ui);
+}
+
+.m-ent-intro {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  padding-top: clamp(56px, 9vh, 104px);
+}
+.m-ent-intro-text {
+  grid-column: 3 / span 7;
+  display: grid;
+  gap: 1.1em;
+  font-size: var(--t-lead);
+  line-height: 1.95;
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+.m-ent-intro-text p:last-child {
+  color: var(--ink);
+}
+
+.m-ent-sec {
+  padding-top: var(--section-top);
+}
+.m-ent-talk {
+  padding-bottom: var(--section-bottom);
+}
+
+/* ---------- 01 五个问题：编号 · 问题 · 说明，三栏对齐 ---------- */
+.m-ent-question,
+.m-ent-group {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 14px;
+  padding: clamp(24px, 4vh, 40px) 0;
+  border-top: 1px solid var(--hair);
+}
+.m-ent-question:last-child,
+.m-ent-group:last-child {
+  border-bottom: 1px solid var(--hair);
+}
+.m-ent-qno {
+  grid-column: 1 / span 2;
+  font: italic 300 var(--t-h3) / 1.45 var(--latin);
+  letter-spacing: 0;
+  color: var(--accent-ink);
+}
+.m-ent-qtitle,
+.m-ent-group-title {
+  grid-column: 3 / span 4;
+  font: 400 var(--t-h3) / 1.55 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-ent-qtext {
+  grid-column: 8 / -1;
+  display: grid;
+  gap: 0.9em;
+  line-height: 1.95;
+  color: var(--ink-2);
+}
+
+/* ---------- 02 合作路径：选问题 → 亮出建议起点 ---------- */
+.m-ent-pick {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 18px;
+  padding-bottom: clamp(36px, 6vh, 64px);
+}
+/* 没有 JS 时选不了：整排藏起来，四站照常完整可读 */
+html:not(.js) .m-ent-pick {
+  display: none;
+}
+.m-ent-pick-set {
+  grid-column: 3 / -1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.m-ent-pick-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-bottom: 14px;
+  padding: 0;
+  font-size: var(--t-ui);
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+.m-ent-pick-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.m-ent-pick-item {
+  position: relative;
+  display: inline-flex;
+}
+.m-ent-pick-item input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.m-ent-pick-item > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 18px 0 14px;
+  border-radius: var(--r-pill);
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  font: 400 var(--t-ui) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  transition:
+    box-shadow 0.3s var(--ease),
+    color 0.3s var(--ease);
+}
+.m-ent-pick-no {
+  font: italic 300 var(--t-small) / 1 var(--latin);
+  letter-spacing: 0;
+  color: var(--mute);
+}
+.m-ent-pick-item:hover > span {
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--mute);
+}
+.m-ent-pick-item input:checked + span {
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.m-ent-pick-item input:checked + span .m-ent-pick-no {
+  color: var(--accent-ink);
+}
+.m-ent-pick-item input:focus-visible + span {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+}
+.m-ent-advice {
+  grid-column: 3 / -1;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-height: 6.5em;
+}
+.m-ent-advice-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+}
+.m-ent-advice-line b {
+  font: 400 var(--t-h3) / 1.5 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-advice-label {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--accent-ink);
+}
+.m-ent-advice-why {
+  flex-basis: 100%;
+  font-size: var(--t-ui);
+  line-height: 1.8;
+  color: var(--ink-2);
+}
+.m-ent-advice-idle {
+  padding-top: 0.3em;
+  font-size: var(--t-ui);
+  color: var(--mute);
+}
+
+/* 三步是三段，四站在三段下面；同一排的「路轨」与卡片顶边对齐（subgrid） */
+.m-ent-stages {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: clamp(48px, 7vh, 72px);
+}
+.m-ent-stage {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  row-gap: clamp(24px, 3.5vh, 36px);
+}
+.m-ent-stage[data-span='2'] {
+  grid-column: span 2;
+}
+.m-ent-stage-head {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+.m-ent-roman {
+  font: italic 300 var(--t-h3) / 1 var(--latin);
+  letter-spacing: 0.02em;
+  color: var(--accent-ink);
+}
+.m-ent-stage-title {
+  max-width: 16em;
+  font: 400 var(--t-h3) / 1.55 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-stage-text {
+  display: grid;
+  gap: 0.8em;
+  max-width: 36em;
+  font-size: var(--t-ui);
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+.m-ent-stops {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: var(--col-gap);
+}
+.m-ent-stage[data-span='2'] .m-ent-stops {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.m-ent-stop {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 14px;
+}
+/* 路轨：一道墨线穿过四站，每站一个圆点；建议起点是实心杏橙，「接着」是杏橙空心 */
+.m-ent-rail {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  padding-top: 20px;
+}
+.m-ent-rail::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 0;
+  right: calc(-1 * var(--col-gap));
+  height: 1px;
+  background: var(--ink);
+}
+.m-ent-stage:last-child .m-ent-stop:last-child .m-ent-rail::before {
+  right: 0;
+}
+.m-ent-rail::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--ink);
+  transition:
+    background-color 0.4s var(--ease),
+    box-shadow 0.4s var(--ease);
+}
+.m-ent-stop-name,
+.m-ent-flag {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.m-ent-flag {
+  color: var(--accent-ink);
+}
+.m-ent-flag::before {
+  content: '·';
+  margin-right: 10px;
+  color: var(--faint);
+}
+.m-ent-card {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: 22px 22px 10px;
+  border-radius: var(--r-panel);
+  background-color: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
+  transition:
+    box-shadow 0.4s var(--ease),
+    background-color 0.4s var(--ease);
+}
+.m-ent-service {
+  font: 400 var(--t-h3) / 1.45 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-dl > div {
+  display: grid;
+  gap: 4px;
+  padding: 12px 0 14px;
+  border-top: 1px solid var(--hair);
+}
+.m-ent-dl dt {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.m-ent-dl dd {
+  font-size: var(--t-ui);
+  line-height: 1.85;
+  color: var(--ink-2);
+  transition: color 0.4s var(--ease);
+}
+.m-ent-service {
+  transition: color 0.4s var(--ease);
+}
+.m-ent-stop[data-mark='start'] .m-ent-rail::after {
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-wash);
+}
+.m-ent-stop[data-mark='next'] .m-ent-rail::after {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+.m-ent-stop[data-mark='start'] .m-ent-card {
+  background-image: linear-gradient(var(--accent-wash), var(--accent-wash));
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.m-ent-stop[data-mark='next'] .m-ent-card {
+  box-shadow: none;
+  outline: 1px dashed var(--accent);
+  outline-offset: -1px;
+}
+/* 选了问题之后，其余各站退后一档（只换成辅助色，对比度仍 ≥4.5:1） */
+.m-ent-path[data-picked] .m-ent-stop:not([data-mark]) .m-ent-card {
+  background-color: transparent;
+}
+.m-ent-path[data-picked] .m-ent-stop:not([data-mark]) .m-ent-service,
+.m-ent-path[data-picked] .m-ent-stop:not([data-mark]) dd {
+  color: var(--mute);
+}
+.m-ent-term {
+  padding: 0 1px;
+  background: none;
+  color: var(--ink);
+  box-shadow:
+    inset 0 -0.4em var(--accent-wash),
+    inset 0 -1px var(--accent);
+}
+
+/* ---------- 03 内部探索：一张对齐的表 ---------- */
+.m-ent-table-head,
+.m-ent-row {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+}
+.m-ent-table-head {
+  padding-bottom: 12px;
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.m-ent-table-head span:nth-child(1) {
+  grid-column: 1 / span 2;
+}
+.m-ent-table-head span:nth-child(2) {
+  grid-column: 3 / span 3;
+}
+.m-ent-table-head span:nth-child(3) {
+  grid-column: 6 / span 4;
+}
+.m-ent-table-head span:nth-child(4) {
+  grid-column: 10 / span 3;
+}
+.m-ent-row {
+  row-gap: 16px;
+  padding: clamp(24px, 4vh, 36px) 0;
+  border-top: 1px solid var(--hair);
+}
+.m-ent-row:last-child {
+  border-bottom: 1px solid var(--hair);
+}
+.m-ent-row-name {
+  grid-column: 1 / span 2;
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 12px;
+}
+.m-ent-row-name h3 {
+  font: 300 var(--t-h2) / 1.1 var(--latin);
+  letter-spacing: -0.01em;
+}
+.m-ent-row-name .m-note {
+  white-space: normal;
+}
+.m-ent-row-cells {
+  grid-column: 3 / -1;
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 16px;
+}
+.m-ent-row-cells > div:nth-child(1) {
+  grid-column: span 3;
+}
+.m-ent-row-cells > div:nth-child(2) {
+  grid-column: span 4;
+}
+.m-ent-row-cells > div:nth-child(3) {
+  grid-column: span 3;
+}
+.m-ent-row-cells dt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.m-ent-row-cells dd {
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+.m-ent-row-cells dd.m-strong {
+  color: var(--ink);
+}
+.m-ent-row-note {
+  display: block;
+  margin-top: 8px;
+  font-size: var(--t-ui);
+  line-height: 1.85;
+}
+.m-ent-table-end {
+  max-width: calc(var(--read) + (100% + var(--col-gap)) / 6);
+  margin-top: 28px;
+  padding-left: calc((100% + var(--col-gap)) / 6);
+  color: var(--ink-2);
+  line-height: 1.95;
+}
+
+/* ---------- 04 做这件事的人：四类能力配成员头像 ---------- */
+.m-ent-members {
+  grid-column: 7 / -1;
+  display: grid;
+  gap: 18px;
+}
+.m-ent-member {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  column-gap: 16px;
+  align-items: start;
+}
+.m-ent-member p {
+  padding-top: 10px;
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+.m-ent-face {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--paper-2);
+  box-shadow: 0 0 0 1px var(--hair);
+}
+.m-ent-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: var(--grade);
+}
+.m-ent-face-mark {
+  font: 300 var(--t-h3) / 1 var(--sans);
+  color: var(--ink-2);
+}
+.m-ent-who {
+  margin-right: 0.15em;
+  padding-bottom: 1px;
+  font-weight: 500;
+  color: var(--ink);
+  background:
+    linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat,
+    linear-gradient(var(--hair-2), var(--hair-2)) 0 100% / 100% 1px no-repeat;
+  transition: background-size 0.55s var(--ease);
+}
+.m-ent-who:hover {
+  background-size:
+    100% 1px,
+    100% 1px;
+}
+.m-ent-people-end {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 12px;
+  align-items: baseline;
+  margin-top: 24px;
+}
+.m-ent-people-end p {
+  grid-column: 3 / span 6;
+  font-size: var(--t-small);
+  line-height: 1.8;
+  color: var(--mute);
+}
+.m-ent-people-end .m-link {
+  grid-column: 10 / -1;
+  justify-self: end;
+}
+
+/* ---------- 05 表单 ---------- */
+.m-ent-form {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+}
+.m-ent-form > * {
+  grid-column: 3 / span 7;
+}
+
+/* ---------- 窄一些：路径两列，表格换行 ---------- */
+@media (max-width: 1200px) {
+  .m-ent-stages {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .m-ent-stage:nth-child(2) .m-ent-rail::before {
+    right: 0;
+  }
+  .m-ent-row-name {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 16px;
+  }
+  .m-ent-row-cells {
+    grid-column: 1 / -1;
+  }
+  .m-ent-table-head {
+    display: none;
+  }
+  .m-ent-row-cells dt {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    margin-bottom: 4px;
+    font: 500 var(--t-label) / 1.4 var(--sans);
+    letter-spacing: 0.16em;
+    color: var(--mute);
+  }
+  .m-ent-table-end {
+    padding-left: 0;
+  }
+}
+@media (max-width: 900px) {
+  .m-ent-title,
+  .m-ent-hero-go,
+  .m-ent-intro-text,
+  .m-ent-qtitle,
+  .m-ent-qtext,
+  .m-ent-group-title,
+  .m-ent-members,
+  .m-ent-pick-set,
+  .m-ent-advice,
+  .m-ent-people-end p,
+  .m-ent-people-end .m-link,
+  .m-ent-form > * {
+    grid-column: 1 / -1;
+  }
+  .m-ent-qno {
+    grid-column: 1 / -1;
+  }
+  .m-ent-hero-go,
+  .m-ent-people-end .m-link {
+    justify-content: flex-start;
+    justify-self: start;
+  }
+  .m-ent-row-cells > div:nth-child(n) {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 760px) {
+  .m-ent-stages {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .m-ent-stage[data-span='2'] {
+    grid-column: auto;
+  }
+  .m-ent-stage[data-span='2'] .m-ent-stops {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 28px;
+  }
+  .m-ent-rail::before {
+    right: 0 !important;
+  }
+}
+@media (max-width: 700px) {
+  .m-ent-title {
+    font-size: var(--t-h1);
+    line-height: 1.32;
+  }
+  .m-ent-hero-window .m-window-frame {
+    --ratio: 4 / 3 !important;
+  }
+}
+
+/* 减少动态：选中直接落在结果上，不做颜色过渡 */
+@media (prefers-reduced-motion: reduce) {
+  .m-ent-rail::after,
+  .m-ent-card,
+  .m-ent-service,
+  .m-ent-dl dd,
+  .m-ent-pick-item > span {
+    transition: none;
+  }
+}
+@media print {
+  .m-ent-pick,
+  .m-ent-talk {
+    display: none;
+  }
+}

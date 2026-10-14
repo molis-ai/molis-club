@@ -292,16 +292,14 @@ body:has(.m) .skip-link {
   color: var(--ink);
 }
 .m-caption {
-  font: italic 300 14px/1.5 var(--latin);
-  letter-spacing: 0.01em;
+  font: 400 12.5px/1.6 var(--sans);
+  letter-spacing: 0.03em;
   color: var(--mute);
 }
-/* 图注：细斜体的英文与数字，中文不斜体 */
-.m-caption :lang(zh),
-.m-caption:lang(zh) {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12.5px;
+/* 图注：英文与数字用 Jost 细斜体，中文不斜体 */
+.m-caption:lang(en) {
+  font: italic 300 14px/1.5 var(--latin);
+  letter-spacing: 0.01em;
 }
 
 /* ---------- 按钮：墨色实心胶囊（全站唯一的实心元素） ---------- */
@@ -333,6 +331,13 @@ body:has(.m) .skip-link {
 }
 .m-btn:disabled {
   opacity: 0.55;
+  cursor: not-allowed;
+}
+.m-btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+.m-btn[aria-busy='true'] {
   cursor: progress;
 }
 .m-btn-line {
@@ -983,4 +988,23 @@ body:has(.m) .skip-link {
   .m-window-frame {
     clip-path: none !important;
   }
+}
+
+/* ---------- 404：纯文字 ---------- */
+.m-404 {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 22px;
+  min-height: 72svh;
+  padding-bottom: var(--section-bottom);
+}
+.m-404 h1 {
+  font: 300 var(--t-display) / 1.15 var(--sans);
+  letter-spacing: 0.02em;
+}
+.m-404-lead {
+  max-width: 30em;
+  font: 300 var(--t-lead) / 1.9 var(--sans);
+  color: var(--ink-2);
 }
