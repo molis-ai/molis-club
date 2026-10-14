@@ -1,0 +1,126 @@
+/* Molis Tool 页：几乎全白，一道光；演示区就是白纸。整页选中一句话出现的动作条在这里。 */
+
+.m-tool {
+  --stage: #ffffff;
+}
+.m-tool .m-stage-view,
+.m-tool .m-reel-view {
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.m-tool .m-sig-box {
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.tl-try-note {
+  margin-top: 12px;
+}
+.tl-try {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+  max-width: 44em;
+}
+.tl-try-sample {
+  font: 300 var(--t-h3) / 1.9 var(--sans);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- 动作条：白色浮层，出现在光标旁 ---------- */
+.tl-select {
+  position: fixed;
+  z-index: 45;
+  width: 320px;
+  display: grid;
+  gap: 4px;
+  padding: 6px;
+  border-radius: var(--r-panel);
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.08),
+    0 18px 36px -18px rgb(var(--shade) / 0.45);
+  animation: tl-select-in 0.35s var(--ease) both;
+}
+@keyframes tl-select-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+.tl-select-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+}
+.tl-select-actions button,
+.tl-select-close {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 9px;
+  border-radius: var(--r-inset);
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.tl-select-actions button:hover,
+.tl-select-actions button:focus-visible,
+.tl-select-close:hover,
+.tl-select-close:focus-visible {
+  background: var(--paper-2);
+}
+.tl-select-actions button:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 1px;
+}
+.tl-select-actions svg,
+.tl-select-close svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+.tl-select-actions small {
+  margin-left: auto;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.tl-select-actions small[data-ai] {
+  color: var(--accent-ink);
+}
+.tl-select-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 2px 0 10px;
+  border-top: 1px solid var(--hair);
+}
+.tl-select-result {
+  flex: 1;
+  padding: 6px 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.tl-select-result:empty::before {
+  content: '本机的两个是真的，AI 的两个是示意。';
+  color: var(--mute);
+  font-size: 12px;
+}
+.tl-select-close {
+  justify-content: center;
+  width: 36px;
+  padding: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tl-select {
+    animation: none;
+  }
+}
+@media print {
+  .tl-select {
+    display: none;
+  }
+}

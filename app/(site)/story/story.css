@@ -1,0 +1,514 @@
+/* Molis Story 页：页面本身是「此处」，是白纸；颜色只在拱窗里面。
+   每个世界一段三屏多高的轨道，画面钉在视口里；--g（0…1）是窗放大的程度：窗 → 整屏 → 窗。 */
+
+.m-story {
+  --stage: #232a44;
+}
+.st-place {
+  padding-block: clamp(32px, 6vh, 72px) var(--section-bottom);
+}
+.st-place-note {
+  margin-top: 12px;
+}
+.st-place-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px var(--col-gap);
+  margin-left: calc((100% + var(--col-gap)) / 12 * 2);
+}
+.st-place-list > div {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hair-2);
+}
+.st-place-list h3 {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.st-place-list ul {
+  display: grid;
+  gap: 6px;
+}
+.st-place-list li {
+  font: 300 var(--t-h3) / 1.5 var(--sans);
+  letter-spacing: 0.03em;
+}
+.st-place-list li[data-new] {
+  padding-left: 0.5em;
+  border-left: 2px solid var(--accent);
+  animation: st-arrive 0.9s var(--ease) both;
+}
+@keyframes st-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+@media (max-width: 900px) {
+  .st-place-list {
+    grid-template-columns: minmax(0, 1fr);
+    margin-left: 0;
+  }
+}
+
+/* ---------- 一个世界：文字在左，拱窗在右；滚进去窗放大到整屏 ---------- */
+.st-world {
+  --g: 0;
+  position: relative;
+  display: grid;
+  max-width: none;
+}
+.st-world-text {
+  position: relative;
+  z-index: 2;
+  width: min(100%, var(--wrap));
+  margin: 0 auto;
+  padding: var(--section-top) var(--gutter) 24px;
+}
+.st-world-text .m-ch-meta {
+  border-top: 1px solid var(--ink);
+}
+.st-world-text .m-ch-prose {
+  max-width: 32em;
+}
+.st-world-track {
+  position: relative;
+}
+.st-world-stage {
+  position: relative;
+  height: min(86svh, 760px);
+  margin: 0 var(--gutter);
+  overflow: hidden;
+  border-radius: var(--r-panel);
+}
+.st-arch {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  background: var(--world, #232a44);
+  color: #f5efe6;
+}
+.st-arch .m-sc {
+  position: absolute;
+  inset: 0;
+}
+.st-arch-cap {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(18px, 4vh, 36px);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: rgb(255 255 255 / 0.9);
+}
+.st-arch-cap .m-note {
+  border-color: rgb(255 255 255 / 0.45);
+  color: rgb(255 255 255 / 0.85);
+}
+.st-take {
+  position: absolute;
+  right: clamp(16px, 3vw, 40px);
+  top: calc(var(--header) + clamp(16px, 3vh, 32px));
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: rgb(255 255 255 / 0.9);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.5s var(--ease),
+    transform 0.6s var(--ease),
+    visibility 0.5s;
+}
+.st-take[data-ready] {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+}
+.st-take .m-btn {
+  background: #fff;
+  color: #1b1a18 !important;
+}
+.st-take .m-btn:disabled {
+  opacity: 0.8;
+  cursor: default;
+}
+
+/* 有 JS 的宽屏：文字与画面一起钉住，窗从右边的一扇拱窗放大到整屏，再收回 */
+@media (min-width: 901px) {
+  .js .st-world:not([data-still]) {
+    height: 340vh;
+  }
+  .js .st-world:not([data-still]) > * {
+    grid-area: 1 / 1;
+  }
+  .js .st-world:not([data-still]) .st-world-text {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100svh;
+    display: grid;
+    align-content: center;
+    padding: var(--header) var(--gutter) 0;
+    width: min(100%, calc(var(--wrap) + 2 * var(--gutter)));
+    pointer-events: none;
+    opacity: calc(1 - min(1, var(--g) * 2.4));
+  }
+  .js .st-world:not([data-still]) .st-world-text > * {
+    max-width: 40%;
+    pointer-events: auto;
+  }
+  .js .st-world:not([data-still]) .st-world-track {
+    height: 100%;
+  }
+  .js .st-world:not([data-still]) .st-world-stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    margin: 0;
+    border-radius: 0;
+  }
+  /* 窗：右边一扇拱门的形状 → 整屏 */
+  .js .st-world:not([data-still]) .st-arch {
+    --i: calc(1 - var(--g));
+    clip-path: inset(
+      calc(var(--header) + 9vh * var(--i) + 0px) calc(var(--gutter) * var(--i) + 7vw * var(--i))
+        calc(8vh * var(--i)) calc(52vw * var(--i))
+        round calc(19vw * var(--i)) calc(19vw * var(--i)) calc(14px * var(--i)) calc(14px * var(--i))
+    );
+  }
+  .js .st-world:not([data-still]) .st-arch .m-sc {
+    opacity: calc(0.35 + 0.65 * var(--g));
+  }
+  .js .st-world:not([data-still]) .st-arch-cap,
+  .js .st-world:not([data-still]) .st-take[data-ready] {
+    opacity: clamp(0, calc(var(--g) * 3 - 2), 1);
+  }
+}
+/* 有 JS 的窄屏：文字在上面照常读，画面钉住，窗从中间的拱门放大到整屏 */
+@media (max-width: 900px) {
+  .js .st-world:not([data-still]) .st-world-track {
+    height: 300vh;
+  }
+  .js .st-world:not([data-still]) .st-world-stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    margin: 0;
+    border-radius: 0;
+  }
+  .js .st-world:not([data-still]) .st-arch {
+    --i: calc(1 - var(--g));
+    clip-path: inset(
+      calc(var(--header) + 12vh * var(--i)) calc(14vw * var(--i)) calc(12vh * var(--i))
+        calc(14vw * var(--i)) round calc(36vw * var(--i)) calc(36vw * var(--i)) calc(12px * var(--i))
+        calc(12px * var(--i))
+    );
+  }
+  .js .st-world:not([data-still]) .st-arch-cap,
+  .js .st-world:not([data-still]) .st-take[data-ready] {
+    opacity: clamp(0, calc(var(--g) * 3 - 2), 1);
+  }
+  .st-arch-cap {
+    bottom: 72px;
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+  }
+  .st-take {
+    left: 16px;
+    right: 16px;
+    top: auto;
+    bottom: 140px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* ---------- 四个世界的颜色（只在窗里） ---------- */
+.st-world-astralo {
+  --world: #1f2a4a;
+}
+.st-world-elsewhere {
+  --world: #3b2f45;
+}
+.st-world-museum {
+  --world: #2c4542;
+}
+.st-world-fog {
+  --world: #2d3640;
+}
+
+/* ---------- 整屏的瞬间 ---------- */
+.st.st-moment {
+  display: grid;
+  place-items: center;
+  padding: clamp(80px, 12vh, 140px) 6vw clamp(110px, 16vh, 160px);
+  font-size: clamp(13px, 1.25cqw, 18px);
+  background: transparent;
+}
+.st-moment > * {
+  grid-area: 1 / 1;
+}
+
+/* 云海来客：云里有光，信号一来一回 */
+.st.st-astralo {
+  background: linear-gradient(#1f2a4a, #3a4670 70%, #6a6478);
+}
+/* 云海那一端的一颗星：一枚安静的圆 */
+.st-glow {
+  width: 2.4cqw;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ffe7cc;
+  box-shadow: 0 0 0 1.4cqw rgb(255 231 204 / 0.12);
+  align-self: start;
+  justify-self: end;
+  margin: 4% 14% 0 0;
+}
+.st-talk {
+  display: grid;
+  gap: 1.4em;
+  width: min(100%, 34em);
+}
+.st-line {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+.st-line small {
+  font-size: 0.8em;
+  letter-spacing: 0.14em;
+  color: rgb(255 255 255 / 0.7);
+}
+.st-line-it {
+  justify-content: flex-end;
+}
+.st-signal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  height: 3em;
+}
+.st-signal i {
+  width: 0.36em;
+  height: calc(var(--h) * 0.3em);
+  border-radius: 0.2em;
+  background: #fff;
+  opacity: 0.85;
+}
+.st-line-it .st-signal i {
+  background: #ffd9b3;
+}
+.st-echo i:nth-child(n + 4) {
+  background: #ffd9b3;
+}
+
+/* 彼处：分清真实与想象 → 一本书 → 归来写一句话 */
+.st.st-elsewhere-w {
+  background: linear-gradient(160deg, #3b2f45, #6d4f5c 70%, #b98a6f);
+}
+.st-border {
+  display: grid;
+  gap: 1em;
+  font-size: 1.3em;
+  font-weight: 300;
+}
+.st-border small {
+  display: inline-block;
+  width: 3em;
+  font-size: 0.65em;
+  letter-spacing: 0.14em;
+  color: rgb(255 255 255 / 0.7);
+}
+.st-book-w {
+  width: min(70cqw, 40em);
+}
+.st-moment .st-return {
+  width: min(70cqw, 34em);
+}
+
+/* 袖珍博物馆：一面墙、几张照片、一块展签 */
+.st.st-museum {
+  background: linear-gradient(#2c4542, #3d5a55);
+}
+.st-wall {
+  position: relative;
+  width: min(80cqw, 56em);
+  aspect-ratio: 16 / 8;
+  border-radius: 4px;
+  background: #f1ede4;
+  box-shadow: 0 30px 60px -40px rgb(0 0 0 / 0.6);
+}
+.st-photo {
+  position: absolute;
+  border-radius: 2px;
+  background: var(--tone);
+  box-shadow:
+    0 0 0 0.5em #fff,
+    0 10px 20px -10px rgb(0 0 0 / 0.4);
+}
+.st-label {
+  position: absolute;
+  right: 6%;
+  bottom: 12%;
+  display: grid;
+  gap: 0.2em;
+  padding: 0.6em 0.9em;
+  background: #fff;
+  color: #2d2a26;
+  font-size: 0.86em;
+  box-shadow: 0 6px 14px -8px rgb(0 0 0 / 0.35);
+}
+.st-label b {
+  font-weight: 400;
+}
+.st-label span {
+  font-size: 0.85em;
+  color: #6c6860;
+}
+.st-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 9%;
+  background: #e2ddd2;
+}
+.st-enter {
+  align-self: end;
+  font-size: 1.1em;
+  color: rgb(255 255 255 / 0.92);
+}
+
+/* 雾港失物招领处：夜里的柜台 */
+.st.st-fog {
+  background: linear-gradient(#20272f, #3a4652);
+}
+.st-night {
+  align-self: start;
+  font-size: 0.9em;
+  letter-spacing: 0.16em;
+  color: rgb(255 255 255 / 0.7);
+}
+.st-counter {
+  display: grid;
+  justify-items: center;
+  gap: 1.2em;
+  width: min(80cqw, 40em);
+  padding: 2em 1.6em 1.6em;
+  border-top: 2px solid rgb(255 255 255 / 0.35);
+  text-align: center;
+}
+.st-item {
+  display: grid;
+  justify-items: center;
+  gap: 0.6em;
+  font-size: 1.1em;
+}
+.st-item svg {
+  width: 3.2em;
+  height: 3.2em;
+  fill: none;
+  stroke: #ffd9b3;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+.st-visitor {
+  font-size: 1.15em;
+  font-weight: 300;
+}
+.st-choices {
+  display: flex;
+  gap: 0.8em;
+}
+.st-choices span {
+  padding: 0.4em 1.2em;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.5);
+}
+.st-choices span:last-child {
+  background: #fff;
+  color: #20272f;
+}
+.st-after {
+  font-size: 1.05em;
+  color: #ffd9b3;
+}
+.st-fog .m-stack {
+  display: grid;
+}
+
+/* ---------- 每个世界，都有自己的节奏 / 更远一点 ---------- */
+.st-further {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: 40em;
+  margin-left: calc((100% + var(--col-gap)) / 12 * 2);
+  padding: 20px 24px;
+  border: 1px dashed rgb(27 26 24 / 0.28);
+  border-radius: var(--r-panel);
+  color: var(--ink-2);
+}
+@media (max-width: 900px) {
+  .st-further {
+    margin-left: 0;
+  }
+}
+
+/* ---------- 右下角的「此处」小签 ---------- */
+.st-chip {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 12px 26px -16px rgb(var(--shade) / 0.5);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+.st-chip[data-pulse] {
+  animation: st-pulse 1.2s var(--ease);
+}
+@keyframes st-pulse {
+  30% {
+    transform: translateY(-4px);
+    box-shadow:
+      0 0 0 1px var(--accent),
+      0 16px 30px -16px rgb(var(--shade) / 0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-place-list li[data-new],
+  .st-chip[data-pulse] {
+    animation: none;
+  }
+}
+@media print {
+  .st-world-track,
+  .st-chip {
+    display: none;
+  }
+}

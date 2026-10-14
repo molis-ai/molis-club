@@ -11,11 +11,14 @@ type WindowProps = Parameters<typeof Window>[0];
 export function ProductHero({
   product,
   window,
+  visual,
   concept = false,
   aside,
 }: {
   product: Product;
-  window: WindowProps;
+  window?: WindowProps;
+  /** 右边不是一张图时（例如 Story 的云是一段视频），直接给一个窗 */
+  visual?: ReactNode;
   concept?: boolean;
   /** 首屏左下角的一行（例如 World 的「整页都是概念示意」） */
   aside?: ReactNode;
@@ -23,45 +26,36 @@ export function ProductHero({
   return (
     <header className="m-phero m-wrap m-top">
       <div className="m-phero-copy">
-        <p className="m-tagline" data-reveal>
+        <p className="m-tagline m-rise">
           <b lang="en">{product.name}</b>
           <span>{product.form}</span>
           <Status concept={concept}>{product.stage}</Status>
         </p>
-        <h1 className="m-phero-name" lang="en" data-reveal>
+        <h1 className="m-phero-name m-rise" lang="en">
           {product.name}
         </h1>
-        <p
-          className="m-phero-title"
-          data-reveal
-          style={{ '--delay': '80ms' } as Vars}
-        >
+        <p className="m-phero-title m-rise" style={{ '--delay': '120ms' } as Vars}>
           <Phrases text={product.headline} />
         </p>
-        <p
-          className="m-phero-what"
-          data-reveal
-          style={{ '--delay': '160ms' } as Vars}
-        >
+        <p className="m-phero-what m-rise" style={{ '--delay': '220ms' } as Vars}>
           {product.what}
         </p>
         {aside ? (
-          <div
-            className="m-phero-aside"
-            data-reveal
-            style={{ '--delay': '240ms' } as Vars}
-          >
+          <div className="m-phero-aside m-rise" style={{ '--delay': '320ms' } as Vars}>
             {aside}
           </div>
         ) : null}
       </div>
-      <Window
-        className="m-phero-window"
-        ratio="4 / 5"
-        sizes="(max-width: 900px) 100vw, 40vw"
-        eager
-        {...window}
-      />
+      {visual ??
+        (window ? (
+          <Window
+            className="m-phero-window"
+            ratio="4 / 5"
+            sizes="(max-width: 900px) 100vw, 40vw"
+            eager
+            {...window}
+          />
+        ) : null)}
     </header>
   );
 }
