@@ -1,0 +1,145 @@
+/* 登录 / 注册与账号：白纸中间一张卡片。字段与勾选的样子也给其他表单参考。 */
+
+.m-auth {
+  display: grid;
+  place-items: start center;
+  min-height: 80svh;
+  padding-inline: var(--gutter);
+  padding-bottom: var(--section-bottom);
+}
+.m-auth-card {
+  display: grid;
+  gap: 22px;
+  width: min(100%, 26rem);
+  padding: clamp(28px, 4vw, 44px);
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
+}
+.m-auth-head {
+  display: grid;
+  gap: 8px;
+}
+.m-auth-head h1,
+.m-auth-done h1 {
+  font: 300 var(--t-h2) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-auth-head p {
+  color: var(--ink-2);
+}
+.m-auth-done {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+}
+.m-auth-note,
+.m-auth-foot {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--mute);
+}
+.m-auth-foot {
+  padding-top: 14px;
+  border-top: 1px solid var(--hair);
+}
+.m-auth-social {
+  display: grid;
+  gap: 10px;
+}
+.m-auth-or {
+  font-size: 12.5px;
+  color: var(--mute);
+  text-align: center;
+}
+.m-auth-form {
+  display: grid;
+  gap: 16px;
+}
+.m-field {
+  display: grid;
+  gap: 6px;
+}
+.m-field > span {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.14em;
+  color: var(--mute);
+}
+.m-field input,
+.m-field textarea,
+.m-field select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 2px;
+  border: 0;
+  border-bottom: 1px solid var(--hair-2);
+  border-radius: 0;
+  background: transparent;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+  transition: border-color 0.3s;
+}
+.m-field input:focus,
+.m-field textarea:focus {
+  border-color: var(--ink);
+  outline: none;
+}
+.m-field input:focus-visible,
+.m-field textarea:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+}
+.m-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.m-check input {
+  margin-top: 4px;
+  accent-color: var(--ink);
+}
+.m-auth-submit {
+  width: 100%;
+}
+.m-auth-error:not(:empty) {
+  font-size: 13.5px;
+  color: #a33a2c;
+}
+.m-auth-ok:not(:empty) {
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+.m-auth-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.m-auth-wait {
+  color: var(--mute);
+}
+.m-account-email {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.m-account-part {
+  display: grid;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--hair);
+}
+.m-account-part h2 {
+  font: 400 16px/1.5 var(--sans);
+}
+.m-account-out {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+}

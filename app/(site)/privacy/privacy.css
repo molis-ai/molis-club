@@ -1,0 +1,118 @@
+/* =====================================================================
+   隐私说明：阅读版式。标题偏中，正文一栏约 40rem、行距 2，节号用 Jost 细斜体挂在左两栏。
+   ===================================================================== */
+
+.m-privacy-head,
+.m-privacy-body section {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+}
+.m-privacy-head {
+  row-gap: 18px;
+  padding-bottom: clamp(40px, 7vh, 80px);
+}
+.m-privacy-head .m-head-meta {
+  grid-row: 1 / span 2;
+}
+.m-privacy-head h1,
+.m-privacy-lead {
+  grid-column: 3 / span 8;
+}
+.m-privacy-head h1 {
+  font: 300 var(--t-h1) / 1.32 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-privacy-lead {
+  max-width: var(--read);
+  font: 400 var(--t-lead) / 1.95 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+
+.m-privacy-body {
+  padding-bottom: var(--section-bottom);
+}
+.m-privacy-body section {
+  padding-block: clamp(28px, 5vh, 48px);
+  border-top: 1px solid var(--hair);
+}
+.m-privacy-body section:first-child {
+  border-top-color: var(--ink);
+}
+.m-privacy-body section > * {
+  grid-column: 3 / span 8;
+  max-width: var(--read);
+}
+.m-privacy-body h2 {
+  margin-bottom: 0.7em;
+  font: 400 var(--t-h3) / 1.6 var(--sans);
+  letter-spacing: 0.04em;
+}
+/* 节号在左两栏，和小标题同一行 */
+.m-privacy-body section > .m-privacy-no {
+  grid-column: 1 / span 2;
+  grid-row: 1;
+  padding-top: 0.45em;
+  font: italic 400 14px/1.6 var(--latin);
+  letter-spacing: 0;
+  color: var(--accent-ink);
+}
+.m-privacy-body p {
+  font-size: var(--t-read);
+  line-height: 2;
+  color: var(--ink);
+}
+.m-privacy-body p + p {
+  margin-top: 0.9em;
+}
+
+@media (max-width: 900px) {
+  .m-privacy-head .m-head-meta,
+  .m-privacy-head h1,
+  .m-privacy-lead,
+  .m-privacy-body section > * {
+    grid-column: 1 / -1;
+  }
+  .m-privacy-head .m-head-meta {
+    grid-row: auto;
+  }
+  .m-privacy-body section > .m-privacy-no {
+    grid-row: auto;
+    padding-top: 0;
+  }
+}
+
+@media print {
+  .m:has(.m-privacy) .m-footer-base {
+    border-top-color: #000;
+  }
+  .m-privacy-head,
+  .m-privacy-body section {
+    display: block;
+  }
+  .m-privacy-head {
+    padding-bottom: 18pt;
+  }
+  .m-privacy-head h1 {
+    font-size: 22pt;
+  }
+  .m-privacy-body p {
+    font-size: 11pt;
+    line-height: 1.9;
+    color: #000;
+  }
+  .m-privacy-no {
+    display: block;
+  }
+  .m-privacy-body section {
+    break-inside: avoid;
+  }
+  .m-privacy-body a[data-url]::after {
+    content: '（' attr(data-url) '）';
+    font-size: 0.85em;
+  }
+  .m-privacy-body a svg {
+    display: none;
+  }
+}
