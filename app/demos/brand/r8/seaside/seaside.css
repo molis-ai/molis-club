@@ -1,0 +1,22 @@
+/* 方向四 · 海边：纸面是被晒过的沙色，墨色带一点海的蓝黑。 */
+.r8-seaside {
+  --paper: #f5f2eb;
+  --paper-2: #ece7dc;
+  --white: #fffdf8;
+  --ink: #1c2229;
+  --ink-2: #414a54;
+  --mute: #5e6772;
+  --dim: #848b93;
+  --hair: rgb(28 34 41 / 0.12);
+  --shade: 30 40 50;
+  --tile: #e8e3d8;
+  --stage: #e8e3d8;
+  --card: #fffdf8;
+  --dark: #1c2229;
+  /* 三段统一调色：柔、暖、低对比，把阴天的那张拉进清早的光里 */
+  --grade: sepia(0.12) contrast(0.93) brightness(1.03);
+  /* 画面载入前的底色：取首屏 / 结尾画面的平均色，淡入时不闪 */
+  --film-ground: rgb(222 210 190);
+  --close-ground: rgb(113 120 117);
+  --film-tint: 14 22 30;
+}

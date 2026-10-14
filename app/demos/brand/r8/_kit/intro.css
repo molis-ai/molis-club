@@ -1,0 +1,1979 @@
+/* 产品列表（美术馆的午后这一版）：照产品介绍第 3、4 章重写。类名 ix- 前缀，
+   列表与主画面的骨架沿用 r8-prow / r8-panel，只在这里改内容区和分段演示。
+   这份样式随组件加载，会排在 kit.css 前面：要盖过 kit.css 同级规则的地方都加了 .ix 前缀。
+   一眼看懂：每段只有一个大画面、一行大字；画面里的字不小于 12px，关键动作 1.5 秒内出现。 */
+
+/* ---------- 标题：右边是第 3 章开头那句 ---------- */
+.ix .ix-lead {
+  display: block;
+  max-width: 25em;
+  margin: 0;
+  font: 300 15px/1.85 var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: none;
+  text-align: right;
+  color: var(--ink-2);
+  font-feature-settings: 'palt' 1;
+}
+
+/* ---------- 列表里的阶段小圆点：开源开发中 / 开发中 实心，原型半实心，概念虚线 ---------- */
+.r8-prow-name .ix-row-note,
+.ix-stage {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.ix-row-note i,
+.ix-stage i {
+  display: block;
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-2);
+}
+[data-stage='work'] i,
+i[data-stage='work'] {
+  background: var(--accent);
+}
+[data-stage='life'] i,
+i[data-stage='life'] {
+  background: linear-gradient(90deg, var(--ink-2) 50%, transparent 50%);
+  box-shadow: inset 0 0 0 1px var(--ink-2);
+}
+[data-stage='world'] i,
+i[data-stage='world'] {
+  background: transparent;
+  border: 1px dashed var(--ink-2);
+}
+
+/* ---------- 主画面：标题与一句话 → 演示 → 适合 / 现在 + 去处 ---------- */
+.ix .ix-panel {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 20px;
+}
+.ix-panel .r8-panel-kicker {
+  align-items: center;
+}
+.ix-stage {
+  margin-left: auto;
+  letter-spacing: 0.12em;
+  color: var(--ink-2);
+}
+.ix-panel .r8-panel-line {
+  font-size: clamp(24px, 2.2vw, 34px);
+  text-wrap: balance;
+  /* 只在标点处换行，不把「工具」这样的词拆开 */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  font-feature-settings: 'palt' 1;
+}
+.ix .ix-panel .r8-panel-value {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+.ix .ix-art {
+  min-height: clamp(440px, 56vh, 540px);
+  background:
+    radial-gradient(
+      120% 90% at 12% 0%,
+      rgb(255 255 255 / 0.55),
+      rgb(255 255 255 / 0) 55%
+    ),
+    var(--stage);
+}
+.ix-below {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 14px clamp(20px, 3vw, 40px);
+}
+.ix-facts {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+.ix-facts div {
+  display: grid;
+  grid-template-columns: 2.4em minmax(0, 1fr);
+  gap: 10px;
+}
+.ix-facts dt {
+  font: 500 11px/1.8 var(--sans);
+  letter-spacing: 0.2em;
+  color: var(--dim);
+}
+.ix-facts dd {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: var(--mute);
+  text-wrap: pretty;
+}
+.ix-facts dd b {
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.ix-go {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* ---------- 演示的骨架：一行大字、一个画面、几条进度线 ---------- */
+.ix-reel {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 6px;
+  padding: clamp(18px, 2vw, 26px) clamp(18px, 2.2vw, 30px) 10px;
+}
+.ix-cap {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+.ix-cap-no {
+  flex: none;
+  font: italic 300 14px/1 var(--latin);
+  letter-spacing: 0.04em;
+  color: var(--accent-ink);
+}
+.ix-cap-no i {
+  margin: 0 3px;
+  font-style: normal;
+  color: var(--dim);
+}
+.ix-cap-text {
+  font: 300 clamp(18px, 1.6vw, 22px) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  font-feature-settings: 'palt' 1;
+}
+.ix-cap-text > span {
+  opacity: 0;
+  translate: 0 6px;
+  transition:
+    opacity 0.25s ease,
+    translate 0.25s ease;
+}
+.ix-cap-text > span[data-now] {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 0.6s var(--ease) 0.08s,
+    translate 0.7s var(--ease) 0.08s;
+}
+.ix-view {
+  position: relative;
+  min-height: 0;
+}
+.ix-scene {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s;
+}
+.ix-scene[data-now] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.6s var(--ease) 0.08s;
+}
+.ix-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 32px;
+}
+/* 标注较长时（Story）允许折行，不把舞台撑宽 */
+.ix-bottom .r8-panel-note {
+  min-width: 0;
+}
+.ix-bottom .r8-tag {
+  height: auto;
+  min-height: 22px;
+  padding: 3px 9px;
+  line-height: 1.4;
+  white-space: normal;
+  text-align: right;
+}
+.ix-segs {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.ix-seg {
+  all: unset;
+  width: clamp(28px, 4vw, 52px);
+  padding: 10px 0;
+  cursor: pointer;
+}
+.ix-seg:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+.ix-seg i {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: rgb(var(--shade) / 0.16);
+  overflow: hidden;
+  transition: background 0.3s;
+}
+.ix-seg:hover i {
+  background: rgb(var(--shade) / 0.3);
+}
+.ix-seg b {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.ix-seg[data-done] b,
+.ix-seg[aria-pressed='true'] b {
+  transform: none;
+}
+.is-on .ix-seg[aria-pressed='true'] b {
+  animation: ix-progress var(--dur, 3.3s) linear both;
+}
+@keyframes ix-progress {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* ---------- 登场的几种动作（只在这一段正在播时跑；其余时候停在结果上） ---------- */
+.is-on .ix-scene[data-now] .ix-in {
+  animation: ix-in 0.6s var(--ease) var(--at, 0s) both;
+}
+/* 会退场的元素底色是透明的（停在结果上时看不见），登场要写明落到不透明 */
+.is-on .ix-scene[data-now] .ix-in.ix-gone {
+  animation:
+    ix-show 0.6s var(--ease) var(--at, 0s) both,
+    ix-out 0.35s ease var(--until) forwards;
+}
+.is-on .ix-scene[data-now] .ix-gone:not(.ix-in) {
+  animation: ix-out 0.35s ease var(--until) both;
+}
+.is-on .ix-scene[data-now] .ix-shrink {
+  animation:
+    ix-show 0.4s var(--ease) var(--at, 0s) both,
+    ix-shrink 0.5s cubic-bezier(0.5, 0, 0.75, 0) var(--until) forwards;
+}
+.is-on .ix-scene[data-now] .ix-pop {
+  animation: ix-pop 0.55s cubic-bezier(0.3, 1.4, 0.5, 1) var(--at, 0s) both;
+}
+.is-on .ix-scene[data-now] .ix-typew {
+  animation: ix-typew 0.8s steps(14, end) var(--at, 0s) both;
+}
+.is-on .ix-scene[data-now] .ix-tick {
+  animation: ix-pop 0.4s cubic-bezier(0.3, 1.5, 0.5, 1) var(--at, 0s) both;
+}
+.is-on .ix-scene[data-now] .ix-pick {
+  animation: ix-pick 0.3s ease var(--at, 0s) both;
+}
+.is-on .ix-scene[data-now] .ix-press {
+  animation: ix-press 0.45s ease var(--at, 0s) both;
+}
+.is-on .ix-scene[data-now] .ix-press::after {
+  animation: ix-ring 0.7s ease-out var(--at, 0s) forwards;
+}
+.is-on .ix-scene[data-now] .ix-sel {
+  animation: ix-sweep 0.6s ease-out var(--at, 0s) both;
+}
+.is-on .ix-scene[data-now] .ix-route {
+  animation: ix-route 1.2s var(--ease) var(--at, 0s) both;
+}
+.is-on .ix-scene[data-now] .ix-window-img {
+  animation: ix-drift 3s var(--ease) both;
+}
+.ix-gone,
+.ix-shrink {
+  opacity: 0;
+}
+.ix-press {
+  position: relative;
+}
+.ix-press::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 1.5px solid var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes ix-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+@keyframes ix-show {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes ix-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes ix-shrink {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    scale: 0.14;
+    translate: 55% -105%;
+  }
+}
+@keyframes ix-pop {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+@keyframes ix-typew {
+  from {
+    max-width: 0;
+  }
+}
+@keyframes ix-pick {
+  from {
+    background: var(--white);
+    color: var(--ink-2);
+    box-shadow: inset 0 0 0 1px var(--hair);
+  }
+}
+@keyframes ix-press {
+  40% {
+    scale: 0.9;
+  }
+}
+@keyframes ix-ring {
+  from {
+    opacity: 0.8;
+    scale: 0.8;
+  }
+  to {
+    opacity: 0;
+    scale: 1.35;
+  }
+}
+@keyframes ix-sweep {
+  from {
+    background-size: 0% 100%;
+  }
+}
+@keyframes ix-route {
+  from {
+    opacity: 0;
+    stroke-dashoffset: 90;
+  }
+}
+@keyframes ix-drift {
+  from {
+    scale: 1.08;
+  }
+}
+
+/* ---------- 共用的小零件 ---------- */
+.ix-stack {
+  display: grid;
+}
+.ix-stack > * {
+  grid-area: 1 / 1;
+}
+.ix-card {
+  border-radius: 18px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(var(--shade) / 0.05),
+    0 28px 56px -34px rgb(var(--shade) / 0.5);
+  color: var(--ink);
+  line-height: 1.6;
+}
+.ix-kicker {
+  margin: 0;
+  font: 500 10.5px/1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.ix-doc-h {
+  margin: 4px 0 12px;
+  font: 300 24px/1.3 var(--sans);
+  letter-spacing: 0.04em;
+}
+.ix-label {
+  margin: 0 0 8px;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+}
+.ix-check {
+  position: relative;
+  flex: none;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgb(var(--shade) / 0.28);
+}
+.ix-tick {
+  position: absolute;
+  inset: 0;
+  width: 18px;
+  height: 18px;
+  padding: 4px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--white);
+}
+.ix-opt {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 15px;
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.ix-opt.ix-pick {
+  background: var(--ink);
+  color: var(--white);
+  box-shadow: none;
+}
+.ix-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 12.5px;
+}
+.ix-btn.ix-ghost {
+  background: transparent;
+  color: var(--mute);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.ix-actions {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+}
+.ix-note {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--mute);
+}
+.ix-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: 1px;
+  border-radius: 6px;
+  background: var(--hair);
+  box-shadow: 0 0 0 1px var(--hair);
+  overflow: hidden;
+}
+.ix-grid > * {
+  min-height: 14px;
+  background: var(--white);
+}
+.ix-steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ix-steps li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+/* ---------- Work ---------- */
+.ix-board {
+  display: grid;
+  gap: 14px;
+  width: min(560px, 100%);
+  padding: 20px 22px 22px;
+}
+.ix-board-h {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font: 300 20px/1.3 var(--sans);
+  letter-spacing: 0.04em;
+}
+.ix-board-label {
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: var(--paper-2);
+  font: 500 10.5px/1 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.ix-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ix-tile {
+  display: grid;
+  align-content: space-between;
+  justify-items: start;
+  width: 112px;
+  height: 90px;
+  padding: 13px 14px 12px;
+  border-radius: 14px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px rgb(var(--shade) / 0.06);
+}
+.ix-tile svg {
+  color: var(--accent-ink);
+}
+.ix-tile b {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+.ix-tile-yours {
+  background: transparent;
+  box-shadow: none;
+  border: 1px dashed rgb(var(--shade) / 0.35);
+}
+.ix-tile-yours svg {
+  color: var(--mute);
+}
+.ix-tile-yours b {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.ix-tile-yours small {
+  display: block;
+  font-size: 10.5px;
+  color: var(--accent-ink);
+}
+.ix-board-sub {
+  margin: 4px 0 -4px;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: var(--mute);
+}
+.ix-tile-s {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  height: auto;
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: var(--paper-2);
+  box-shadow: none;
+}
+.ix-tile-s svg {
+  color: var(--mute);
+}
+.ix-tile-s b {
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.ix-doc,
+.ix-goal {
+  position: relative;
+  width: min(540px, 100%);
+  padding: 22px 26px 24px;
+}
+.ix-doc-line {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+.ix-typew {
+  display: inline-block;
+  max-width: 30em;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+.ix-flag {
+  flex: none;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 3px;
+  height: 20px;
+}
+.ix-flag::before {
+  content: '';
+  width: 2px;
+  height: 20px;
+  border-radius: 1px;
+}
+.ix-flag span {
+  padding: 0 6px;
+  border-radius: 5px;
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: #fff;
+  translate: 0 -9px;
+}
+.ix-flag-you::before,
+.ix-flag-you span {
+  background: var(--ink);
+}
+.ix-flag-ai::before,
+.ix-flag-ai span {
+  background: var(--accent-ink);
+}
+.ix-doc-ai {
+  display: grid;
+  gap: 4px;
+  margin: 14px 0 0 -10px;
+  padding: 0;
+  list-style: none;
+}
+.ix-doc-ai li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: var(--accent-wash);
+  font-size: 14px;
+}
+.ix-doc-ai small {
+  margin-left: auto;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--white);
+  font-size: 10.5px;
+  color: var(--accent-ink);
+}
+.ix-doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 16px 0 0;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.ix-doc-meta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ix-doc-meta i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-ink);
+}
+.ix-doc-meta u {
+  margin-left: 4px;
+  color: var(--mute);
+  text-underline-offset: 3px;
+}
+.ix-doc-meta .ix-agents {
+  color: var(--mute);
+}
+.ix-agents b {
+  padding: 1px 9px;
+  border-radius: 999px;
+  background: var(--paper-2);
+  font: 400 11px/1.7 var(--latin);
+  color: var(--ink-2);
+}
+.ix-relay {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 18px;
+  color: var(--mute);
+}
+.ix-relay > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 9px;
+  border-radius: 999px;
+  background: var(--paper);
+  font-size: 12px;
+  color: var(--ink);
+}
+.ix-relay i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.ix-relay [data-tone='red'] i {
+  background: #d4785a;
+}
+.ix-relay [data-tone='blue'] i {
+  background: #5d7fae;
+}
+.ix-relay b {
+  font-weight: 400;
+}
+.ix-relay small {
+  font-size: 10.5px;
+  color: var(--mute);
+}
+.ix-want {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ix-want li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+.ix-decide {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: var(--paper);
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.ix-decide small {
+  flex: none;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: var(--accent-ink);
+}
+.ix-decide em {
+  font-style: normal;
+  color: var(--ink);
+}
+.ix-stamp {
+  position: absolute;
+  right: 22px;
+  top: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 12px;
+  rotate: -3deg;
+  box-shadow: 0 10px 20px -12px rgb(0 0 0 / 0.5);
+}
+
+/* ---------- Tool ---------- */
+.ix-near {
+  position: relative;
+  width: min(600px, 100%);
+  height: min(100%, 320px);
+}
+.ix-page {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 80%;
+  padding: 18px 22px 20px;
+}
+.ix-page-url {
+  display: inline-block;
+  margin: 0;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--paper-2);
+  font-size: 11px;
+  color: var(--mute);
+}
+.ix-page-h {
+  margin: 10px 0 6px;
+  font: 400 21px/1.3 var(--latin);
+  letter-spacing: 0;
+}
+.ix-page-p {
+  margin: 0;
+  font: 300 15px/1.75 var(--latin);
+  letter-spacing: 0.005em;
+  color: var(--ink-2);
+}
+.ix-sel {
+  padding: 2px 0;
+  color: var(--ink);
+  background: linear-gradient(rgb(234 146 96 / 0.32), rgb(234 146 96 / 0.32))
+    no-repeat 0 0 / 100% 100%;
+}
+.ix-acts {
+  position: relative;
+  display: inline-flex;
+  gap: 2px;
+  margin-top: 12px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--ink);
+  box-shadow: 0 12px 24px -12px rgb(0 0 0 / 0.5);
+}
+.ix-acts > span {
+  padding: 4px 13px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  color: rgb(255 255 255 / 0.8);
+}
+.ix-acts > .ix-act-on {
+  background: rgb(255 255 255 / 0.16);
+  color: #fff;
+}
+.ix-ptr {
+  position: absolute;
+  left: 34px;
+  top: 20px;
+  color: var(--ink);
+  fill: var(--white);
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.3));
+}
+.ix-result {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 54%;
+  padding: 14px 16px;
+  box-shadow:
+    0 0 0 1px rgb(var(--shade) / 0.06),
+    0 30px 50px -26px rgb(var(--shade) / 0.6);
+}
+.ix-result > small {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--accent-ink);
+}
+.ix-result p {
+  margin: 4px 0 8px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.ix-result .ix-src {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  letter-spacing: 0;
+  color: var(--mute);
+}
+.ix-chain {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  width: min(640px, 100%);
+}
+.ix-chain-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.ix-arrow {
+  flex: none;
+  color: var(--mute);
+}
+.ix-file {
+  flex: 1 1 0;
+  min-width: 0;
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  padding: 12px;
+}
+.ix-file-art {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--paper);
+  overflow: hidden;
+}
+.ix-file-0 {
+  background:
+    repeating-linear-gradient(
+        transparent 0 9px,
+        rgb(var(--shade) / 0.13) 9px 13px
+      )
+      12px 30px / calc(100% - 24px) calc(100% - 42px) no-repeat,
+    var(--paper);
+}
+.ix-file-1 {
+  background:
+    repeating-linear-gradient(
+        transparent 0 9px,
+        rgb(var(--shade) / 0.22) 9px 13px
+      )
+      12px 14px / calc(100% - 30px) calc(100% - 26px) no-repeat,
+    var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.ix-file-0 b {
+  position: absolute;
+  left: 10px;
+  top: 8px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: #c4604f;
+  color: #fff;
+  font: 500 10px/1.6 var(--latin);
+}
+.ix-file-0::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(225deg, var(--stage) 50%, var(--paper-2) 50%);
+}
+.ix-file-2 {
+  display: grid;
+  align-content: center;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.ix-file-2 .ix-grid > :nth-child(-n + 4) {
+  background: var(--paper);
+}
+.ix-file-name {
+  margin: 2px 0 0;
+  font-size: 13.5px;
+  white-space: nowrap;
+}
+.ix-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+.ix-toast {
+  margin: 0;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 12px;
+}
+.ix-mac {
+  position: relative;
+  width: min(600px, 100%);
+  height: min(100%, 320px);
+  border-radius: 16px;
+  background: linear-gradient(165deg, #efe8dc, #e2d9cb);
+  box-shadow: inset 0 0 0 1px rgb(var(--shade) / 0.06);
+  overflow: hidden;
+}
+.ix-menubar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 28px;
+  margin: 0;
+  padding: 0 16px;
+  background: rgb(255 255 255 / 0.55);
+  border-bottom: 1px solid rgb(var(--shade) / 0.06);
+}
+.ix-menubar-left {
+  width: 96px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgb(var(--shade) / 0.16);
+}
+.ix-menubar-icon {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--ink);
+}
+.ix-menubar-icon i {
+  position: absolute;
+  right: -3px;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 1.5px #efe8dc;
+}
+.ix-float {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 34%;
+  width: min(300px, 72%);
+  margin: 0 auto;
+  padding: 14px 16px;
+  transform-origin: 100% 0;
+}
+.ix-float-h {
+  margin: 0;
+  font-size: 14px;
+}
+.ix-float small {
+  font-size: 11.5px;
+  color: var(--mute);
+}
+.ix-meter {
+  display: block;
+  height: 3px;
+  margin: 10px 0 8px;
+  border-radius: 2px;
+  background: var(--paper-2);
+  overflow: hidden;
+}
+.ix-meter::after {
+  content: '';
+  display: block;
+  width: 42%;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.ix-drop {
+  position: absolute;
+  right: 12px;
+  top: 36px;
+  width: min(340px, 74%);
+  padding: 12px 8px 10px;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.96);
+}
+.ix-drop-h {
+  margin: 0 10px 6px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.ix-drop ul {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ix-drop li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0 10px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  font-size: 13.5px;
+}
+.ix-drop li b {
+  font-weight: 400;
+}
+.ix-drop li small {
+  grid-column: 1;
+  font-size: 11px;
+  color: var(--mute);
+}
+.ix-drop li em {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  align-self: center;
+  font-size: 11px;
+  font-style: normal;
+  color: var(--accent-ink);
+}
+.ix-drop li[data-on] {
+  background: var(--paper);
+}
+.ix-back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 8px 10px 0;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.ix-tail {
+  position: absolute;
+  left: 22px;
+  bottom: 20px;
+  max-width: 11em;
+  margin: 0;
+  font: 300 18px/1.5 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  font-feature-settings: 'palt' 1;
+}
+
+/* ---------- Life：暖一点的纸 ---------- */
+.ix-life {
+  width: min(560px, 100%);
+  overflow: hidden;
+  background: #fffaf3;
+}
+.ix-life-bar {
+  margin: 0;
+  padding: 9px 18px;
+  border-bottom: 1px solid rgb(var(--shade) / 0.07);
+  background: #f7f0e4;
+  font: 400 12px/1.4 var(--latin);
+  color: var(--ink-2);
+}
+.ix-life-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 22px 22px;
+}
+.ix-say {
+  align-self: flex-end;
+  margin: 0;
+  padding: 8px 15px;
+  border-radius: 16px 16px 4px 16px;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 14px;
+}
+.ix-matter {
+  align-self: flex-start;
+  width: min(380px, 92%);
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(var(--shade) / 0.07),
+    0 18px 32px -24px rgb(var(--shade) / 0.5);
+}
+.ix-matter-h {
+  margin: 0 0 10px;
+  font: 400 15px/1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.ix-states {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ix-states li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.ix-states li[data-done] {
+  color: var(--ink);
+}
+.ix-states li:not([data-done]) .ix-check {
+  box-shadow: none;
+  border: 1px dashed rgb(var(--shade) / 0.4);
+}
+.ix-states .r8-tag {
+  margin-left: auto;
+}
+.ix-matter .ix-note {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--hair);
+}
+.ix-wish {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: clamp(16px, 2.4vw, 30px);
+}
+.ix-wish-kept {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+.ix-wish .ix-sea {
+  width: 100%;
+  max-width: 220px;
+  border-width: 6px;
+}
+.ix-wish-kept p {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font: 300 17px/1.5 var(--sans);
+  letter-spacing: 0.04em;
+}
+.ix-wish-now {
+  display: grid;
+  gap: 8px;
+}
+.ix-why {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 2px;
+  font-size: 13px;
+  color: var(--accent-ink);
+}
+.ix-why i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.ix-plan {
+  display: grid;
+  margin: 0;
+  padding: 9px 13px;
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow: 0 0 0 1px rgb(var(--shade) / 0.08);
+}
+.ix-plan b {
+  font-size: 13.5px;
+  font-weight: 400;
+}
+.ix-plan span {
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.ix-wish-now .ix-actions {
+  margin-top: 4px;
+}
+.ix-keeps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.ix-keep {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+.ix-keep figcaption {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.ix-keep-art {
+  position: relative;
+  display: block;
+  aspect-ratio: 5 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.ix-keep-art i {
+  position: absolute;
+}
+.ix-keep-leaf .ix-keep-art {
+  background: #e6ecd9;
+}
+.ix-keep-leaf i:nth-child(1) {
+  left: 30%;
+  top: 16%;
+  width: 40%;
+  height: 58%;
+  border-radius: 0 100% 0 100%;
+  background: #93a878;
+  rotate: -28deg;
+}
+.ix-keep-leaf i:nth-child(2) {
+  left: 49%;
+  top: 34%;
+  width: 1.5px;
+  height: 52%;
+  background: #6f8657;
+  rotate: -28deg;
+}
+.ix-keep-leaf i:nth-child(3) {
+  display: none;
+}
+.ix-keep-book .ix-keep-art {
+  background: #f0e4d2;
+}
+.ix-keep-book i:nth-child(1) {
+  left: 30%;
+  top: 14%;
+  width: 40%;
+  height: 72%;
+  border-radius: 3px 6px 6px 3px;
+  background: var(--story);
+  box-shadow:
+    inset 5px 0 0 rgb(0 0 0 / 0.16),
+    0 10px 16px -10px rgb(0 0 0 / 0.5);
+}
+.ix-keep-book i:nth-child(2),
+.ix-keep-book i:nth-child(3) {
+  left: 40%;
+  top: 30%;
+  width: 22%;
+  height: 2px;
+  background: rgb(255 255 255 / 0.7);
+}
+.ix-keep-book i:nth-child(3) {
+  top: 36%;
+  width: 14%;
+}
+.ix-keep-note .ix-keep-art {
+  background:
+    repeating-linear-gradient(
+        transparent 0 7px,
+        rgb(var(--shade) / 0.22) 7px 8px
+      )
+      center / 70% 40px no-repeat,
+    #ebe6ef;
+}
+.ix-keep-note i:nth-child(1),
+.ix-keep-note i:nth-child(3) {
+  width: 13%;
+  height: 10%;
+  border-radius: 50%;
+  background: var(--ink-2);
+  rotate: -22deg;
+}
+.ix-keep-note i:nth-child(1) {
+  left: 36%;
+  top: 52%;
+}
+.ix-keep-note i:nth-child(3) {
+  left: 56%;
+  top: 44%;
+}
+.ix-keep-note i:nth-child(2) {
+  left: 47.5%;
+  top: 26%;
+  width: 1.5px;
+  height: 30%;
+  background: var(--ink-2);
+}
+.ix-intents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 2px 0 0;
+}
+
+/* ---------- Story：一扇窗与「此处」 ---------- */
+.ix-story {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px;
+  gap: 16px;
+  width: 100%;
+  height: 100%;
+}
+.ix-window {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 46% 46% 16px 16px / 26% 26% 16px 16px;
+  background: #3a3b45;
+  box-shadow: 0 30px 50px -34px rgb(var(--shade) / 0.65);
+}
+.ix-window-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  filter: var(--grade, none);
+}
+.ix-window::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 42%, rgb(14 14 20 / 0.62));
+  pointer-events: none;
+}
+.ix-window-copy {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 20px;
+  z-index: 2;
+  color: #fff;
+  text-shadow: 0 1px 14px rgb(0 0 0 / 0.35);
+}
+.ix-window-name {
+  margin: 0 0 4px;
+  font: 300 26px/1.25 var(--sans);
+  letter-spacing: 0.08em;
+}
+.ix-window-line {
+  max-width: 24em;
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+.ix-here {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 14px 14px;
+  font-size: 12.5px;
+}
+.ix-here-h {
+  display: grid;
+  gap: 2px;
+  margin: 0 0 6px;
+}
+.ix-here-h b {
+  font: 300 22px/1.2 var(--sans);
+  letter-spacing: 0.1em;
+}
+.ix-here-h span {
+  font-size: 11px;
+  color: var(--mute);
+}
+.ix-doors {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ix-doors li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 7px;
+  color: var(--mute);
+  white-space: nowrap;
+}
+.ix-doors i {
+  flex: none;
+  width: 10px;
+  height: 13px;
+  border-radius: 5px 5px 1px 1px;
+  box-shadow: inset 0 0 0 1px rgb(var(--shade) / 0.3);
+}
+.ix-doors li[data-been] {
+  color: var(--ink-2);
+}
+.ix-doors li[data-been] i {
+  background: rgb(var(--shade) / 0.18);
+  box-shadow: none;
+}
+.ix-doors li[data-on] {
+  background: var(--paper);
+  color: var(--ink);
+}
+.ix-doors li[data-on] i {
+  background: var(--story);
+  box-shadow: none;
+}
+.ix-keepsake {
+  display: grid;
+  gap: 2px;
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--accent-wash);
+  font-size: 13px;
+  color: var(--accent-ink);
+}
+.ix-keepsake small {
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+}
+
+/* ---------- World：小岛与三件产品 ---------- */
+.ix-world {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+.ix-island {
+  position: relative;
+  justify-self: center;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 400 / 240;
+}
+.ix-island svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ix-island-shade {
+  fill: rgb(var(--shade) / 0.16);
+}
+.ix-route {
+  fill: none;
+  stroke: var(--accent-ink);
+  stroke-width: 1.6;
+  stroke-dasharray: 3 6;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.ix-spot {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  transform: translate(-50%, -100%);
+  text-align: center;
+  white-space: nowrap;
+}
+.ix-spot b {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow: 0 8px 14px -10px rgb(var(--shade) / 0.7);
+  font-size: 13px;
+  font-weight: 400;
+}
+.ix-spot i {
+  order: 2;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow:
+    0 0 0 4px rgb(255 255 255 / 0.7),
+    0 4px 6px -2px rgb(0 0 0 / 0.3);
+}
+.ix-spot small {
+  order: 3;
+  font-size: 11px;
+  color: var(--mute);
+}
+.ix-spot-story i {
+  background: var(--story);
+}
+.ix-spot-keep i {
+  background: var(--sage);
+}
+.ix-sprout {
+  position: absolute;
+  width: 9px;
+  height: 15px;
+  border-radius: 50% 50% 2px 2px;
+  background: #9fb08a;
+  transform: translate(-50%, -100%);
+}
+.ix-world-side {
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  gap: 12px;
+}
+.ix-thought {
+  margin: 0;
+  padding: 11px 15px;
+  border-radius: 16px 16px 16px 4px;
+  background: var(--white);
+  box-shadow: 0 16px 30px -22px rgb(var(--shade) / 0.6);
+  font: 300 16px/1.55 var(--sans);
+  letter-spacing: 0.03em;
+}
+.ix-handoff {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 5px 13px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 12px;
+}
+.ix-family {
+  display: grid;
+  gap: 18px;
+  width: 100%;
+}
+.ix-family-row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+.ix-member {
+  flex: 1 1 0;
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 14px;
+}
+.ix-member small {
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.ix-member b {
+  font: 300 21px/1.25 var(--latin);
+  letter-spacing: -0.005em;
+}
+.ix-member p {
+  margin: 2px 0 8px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.ix-member .r8-tag {
+  margin-top: auto;
+}
+.ix-member-world {
+  background: linear-gradient(160deg, #f6f3e7, #e7edd8);
+}
+.ix-op {
+  align-self: center;
+  font: 300 26px/1 var(--latin);
+  color: var(--accent-ink);
+}
+.ix-family .ix-note {
+  text-align: center;
+}
+
+/* ---------- 第 3 章：怎样联系、如何体验 ---------- */
+.ix-map {
+  max-width: var(--wrap);
+  margin: clamp(48px, 7vh, 88px) auto 0;
+  padding-top: 26px;
+  border-top: 1px solid var(--hair);
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 32px clamp(32px, 5vw, 88px);
+}
+.ix-map-h {
+  margin: 0 0 18px;
+  font: 500 11.5px/1.4 var(--sans);
+  letter-spacing: 0.22em;
+  color: var(--mute);
+}
+.ix-map-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 clamp(24px, 3vw, 48px);
+  align-content: start;
+}
+.ix-map-links .ix-map-h {
+  grid-column: 1 / -1;
+}
+.ix-pair {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 12px;
+}
+.ix-formula {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font: 300 clamp(24px, 2.2vw, 32px) / 1.1 var(--latin);
+  letter-spacing: -0.01em;
+}
+.ix-formula i {
+  font-style: normal;
+  color: var(--accent-ink);
+}
+.ix-formula-to {
+  display: inline-grid;
+  justify-items: center;
+  gap: 2px;
+  color: var(--accent-ink);
+}
+.ix-formula-to small {
+  font: 400 11px/1.2 var(--sans);
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.ix-map-text {
+  max-width: 30em;
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: var(--ink-2);
+  font-feature-settings: 'palt' 1;
+}
+.ix-map-access dl {
+  margin: 0;
+}
+.ix-map-access dl div {
+  display: grid;
+  grid-template-columns: 11.5em minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.ix-map-access dl div:first-child {
+  padding-top: 0;
+}
+.ix-map-access dt {
+  font: 400 14px/1.7 var(--latin);
+}
+.ix-map-access dd {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--ink-2);
+}
+.ix-map-access dd .r8-more {
+  font-size: 12.5px;
+}
+.ix-map-note {
+  margin: 12px 0 0;
+  font-size: 12.5px;
+  color: var(--mute);
+}
+
+/* 宽屏上画面整体放大一档，填满舞台，字也更好认 */
+@media (min-width: 901px) {
+  .ix-scene > * {
+    zoom: 1.14;
+  }
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 900px) {
+  .ix .ix-lead {
+    text-align: left;
+  }
+  .ix .ix-art {
+    min-height: 560px;
+  }
+  .ix-below {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ix-go {
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
+  }
+  .ix-reel {
+    padding: 16px 14px 8px;
+  }
+  .ix-cap {
+    gap: 10px;
+  }
+  .ix-cap-text {
+    font-size: 17px;
+  }
+  .ix-board,
+  .ix-doc,
+  .ix-goal {
+    padding: 18px 18px 20px;
+  }
+  .ix-tile:not(.ix-tile-s) {
+    width: calc((100% - 20px) / 3);
+    height: 78px;
+  }
+  .ix-tile.ix-tile-yours {
+    width: 100%;
+    height: auto;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+  }
+  .ix-tile-yours b {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .ix-relay small,
+  .ix-relay svg {
+    display: none;
+  }
+  .ix-decide {
+    flex-wrap: wrap;
+    gap: 2px 10px;
+  }
+  .ix-page {
+    width: 100%;
+  }
+  .ix-result {
+    width: 82%;
+  }
+  .ix-chain-row {
+    gap: 4px;
+  }
+  .ix-file {
+    padding: 8px;
+  }
+  .ix-arrow {
+    display: none;
+  }
+  .ix-file-name,
+  .ix-chip {
+    font-size: 11px;
+  }
+  .ix-chip {
+    padding: 0 8px;
+  }
+  .ix-drop {
+    left: 12px;
+    width: auto;
+  }
+  .ix-tail {
+    max-width: none;
+    right: 16px;
+    font-size: 15px;
+  }
+  .ix-wish {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .ix-wish-kept {
+    grid-template-columns: 112px minmax(0, 1fr);
+    justify-items: start;
+    align-items: center;
+  }
+  .ix-wish .ix-sea {
+    max-width: 112px;
+    border-width: 4px;
+  }
+  .ix-wish-kept p {
+    justify-content: flex-start;
+    font-size: 15px;
+  }
+  .ix-wish-now {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ix-wish-now > :not(.ix-plan) {
+    grid-column: 1 / -1;
+  }
+  .ix-keeps {
+    gap: 8px;
+  }
+  .ix-story {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+  .ix-here {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    align-self: stretch;
+    padding: 10px 12px;
+  }
+  .ix-here-h,
+  .ix-doors {
+    display: none;
+  }
+  .ix-keepsake {
+    grid-auto-flow: column;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0;
+  }
+  .ix-world {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+  }
+  .ix-world-side {
+    justify-items: center;
+  }
+  .ix-family-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ix-member {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .ix-member small,
+  .ix-member p {
+    display: none;
+  }
+  .ix-member b {
+    font-size: 17px;
+  }
+  .ix-member .r8-tag {
+    margin-top: 0;
+  }
+  .ix-op {
+    font-size: 18px;
+  }
+  .ix-map,
+  .ix-map-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ix-pair + .ix-pair {
+    margin-top: 28px;
+  }
+  .ix-map-access dl div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ix-scene,
+  .ix-scene[data-now],
+  .ix-cap-text > span,
+  .ix-cap-text > span[data-now] {
+    transition: none;
+  }
+}

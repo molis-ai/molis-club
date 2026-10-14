@@ -1,0 +1,21 @@
+/* 方向五 · Mix：纸面、墨色与调色都同美术馆。 */
+.r8-mix {
+  --paper: #f6f2ec;
+  --paper-2: #eee8df;
+  --white: #fffcf7;
+  --ink: #23201c;
+  --ink-2: #48423a;
+  --mute: #6a6257;
+  --dim: #8c8478;
+  --hair: rgb(35 32 28 / 0.12);
+  --tile: #ebe5db;
+  --stage: #ebe5db;
+  --card: #fffcf7;
+  --dark: #26221d;
+  --film-tint: 40 26 12;
+  /* 三段统一调色：暖一档、对比略低，像午后的天光 */
+  --grade: sepia(0.14) saturate(1.04) contrast(0.96) brightness(1.02);
+  /* 画面载入前的底色：取首屏 / 结尾画面的平均色，淡入时不闪 */
+  --film-ground: rgb(207 211 215);
+  --close-ground: rgb(152 160 168);
+}

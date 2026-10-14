@@ -1,0 +1,21 @@
+/* 方向二 · 日光公园：纸面带一点草地的暖，墨色偏绿黑。 */
+.r8-park {
+  --paper: #f4f3ec;
+  --paper-2: #eae9df;
+  --white: #fdfdf8;
+  --ink: #1f231e;
+  --ink-2: #444a41;
+  --mute: #626a5d;
+  --dim: #878d80;
+  --hair: rgb(31 35 30 / 0.12);
+  --tile: #e6e7da;
+  --stage: #e6e7da;
+  --card: #fdfdf8;
+  --dark: #232820;
+  /* 三段统一调色：暖一点、低对比，晨雾、写生和树梢的光放在一起 */
+  --grade: sepia(0.12) saturate(1.02) contrast(0.95);
+  /* 画面载入前的底色：取首屏 / 结尾画面的平均色，淡入时不闪 */
+  --film-ground: rgb(119 113 73);
+  --close-ground: rgb(93 123 130);
+  --film-tint: 18 26 10;
+}

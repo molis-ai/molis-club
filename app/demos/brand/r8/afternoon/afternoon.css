@@ -1,0 +1,61 @@
+/* 方向一 · 美术馆的午后：暖白纸面，墨色带一点暖。 */
+.r8-afternoon {
+  --paper: #f6f2ec;
+  --paper-2: #eee8df;
+  --white: #fffcf7;
+  --ink: #23201c;
+  --ink-2: #48423a;
+  --mute: #6a6257;
+  --dim: #8c8478;
+  --hair: rgb(35 32 28 / 0.12);
+  --tile: #ebe5db;
+  --stage: #ebe5db;
+  --card: #fffcf7;
+  --dark: #26221d;
+  --film-tint: 40 26 12;
+  /* 三段统一调色：暖一档、对比略低，像午后的天光 */
+  --grade: sepia(0.14) saturate(1.04) contrast(0.96) brightness(1.02);
+  /* 画面载入前的底色：取首屏 / 结尾画面的平均色，淡入时不闪 */
+  --film-ground: rgb(207 211 215);
+  --close-ground: rgb(94 72 55);
+}
+
+/* 结尾（美术馆 B3）：画面中间是通向庭园的门洞。宽屏上照片按原本 3:2 的比例铺在这一段的上部，
+   大句压在长廊的顶上，门洞外的庭园和天整个露出来；照片下沿渐渐融进石地的颜色，三张卡片落在这里 */
+@media (min-width: 901px) {
+  .r8-afternoon .r8-close-media {
+    background: #b4a18a;
+  }
+  .r8-afternoon .r8-close-media .r8-footage {
+    bottom: auto;
+    height: auto;
+    aspect-ratio: 3 / 2;
+  }
+  .r8-afternoon .r8-close-media::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100vw * 2 / 3 - 220px);
+    height: 220px;
+    background: linear-gradient(rgb(180 161 138 / 0), #b4a18a);
+  }
+  /* 长廊的顶是暗的：上沿化进纸色（像光从上面漫进来），大句和顶栏的深色字都立得住；
+     画面从产品列表的纸面里浮出来，下沿再融进石地，整段没有硬边 */
+  .r8-afternoon .r8-close-veil {
+    background:
+      linear-gradient(
+        color-mix(in srgb, var(--paper) 74%, transparent),
+        color-mix(in srgb, var(--paper) 38%, transparent) 12vw,
+        color-mix(in srgb, var(--paper) 0%, transparent) 26vw
+      ),
+      radial-gradient(
+        ellipse 60% 22% at 50% 14%,
+        rgb(255 253 249 / 0.4),
+        rgb(255 253 249 / 0) 72%
+      );
+  }
+  .r8-afternoon .r8-close-cards {
+    margin-top: max(clamp(40px, 7vh, 80px), calc(66.7vw - 470px));
+  }
+}
