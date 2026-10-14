@@ -1,0 +1,15 @@
+import { hero } from '../../../../../content/molis-tool';
+
+export const metadata = {
+  title: { absolute: 'Molis Tool · 光标在哪里，软件就在哪里' },
+  description: hero.lead,
+  robots: { index: false, follow: false },
+};
+
+export default function GalleryToolLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return children;
+}

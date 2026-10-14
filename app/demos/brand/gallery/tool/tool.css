@@ -1,0 +1,1161 @@
+/* Molis Tool · Room 2 的互动装置。前缀 g-tool-
+   首屏光标墙 → 被改过的对照墙 → 三只依次亮灯的展柜 → 错落的画墙 → 四个词 → 一层架子 → 插件图 → 被划掉的四句话 → 关系展签 */
+
+/* ---------- 首屏：左边说明，右边一面光标墙 ---------- */
+.g-tool-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 64px);
+  max-width: 1440px;
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 104px var(--gutter) 48px;
+}
+.g-tool-hero-copy {
+  display: grid;
+  gap: 20px;
+  animation: g-tool-rise 1.2s var(--ease) both;
+}
+.g-tool-kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+  color: var(--mute);
+  font-size: 13px;
+}
+.g-tool-kicker .g-soft {
+  color: var(--ink-2);
+  font-size: 20px;
+}
+.g-tool-title {
+  font-size: clamp(40px, 4.8vw, 76px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+@keyframes g-tool-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+/* 光标墙：墙比别处暗一点，光标那里亮着一束光；墙脚一截木地板 */
+.g-tool-wall {
+  position: relative;
+  min-height: clamp(520px, 76svh, 780px);
+  padding: clamp(48px, 9%, 96px) clamp(28px, 8%, 88px) clamp(120px, 20%, 180px);
+  overflow: hidden;
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      circle 320px at var(--sx, 64%) var(--sy, 42%),
+      rgb(255 255 252 / 0.96),
+      rgb(255 255 252 / 0.5) 40%,
+      rgb(255 255 252 / 0) 74%
+    ),
+    radial-gradient(
+      ellipse 90% 80% at 50% 40%,
+      transparent 50%,
+      rgb(70 60 48 / 0.14)
+    ),
+    linear-gradient(
+      #e8e5de,
+      #e2ded6 82%,
+      #9f9584 82% calc(82% + 3px),
+      #ddd1bd calc(82% + 3px),
+      #cdbfa8
+    );
+  cursor: default;
+  animation: g-tool-fade 1.6s 0.2s ease both;
+}
+.g-tool-wall::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grain) 0 0 / 180px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+@keyframes g-tool-fade {
+  from {
+    opacity: 0;
+  }
+}
+.g-tool-wall-url {
+  color: var(--mute);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.g-tool-wall-en {
+  position: relative;
+  z-index: 1;
+  max-width: 15em;
+  margin-top: 16px;
+  color: #22211f;
+  font-family: var(--serif);
+  font-size: clamp(28px, 2.9vw, 42px);
+  font-weight: 380;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0,
+    'opsz' 72;
+}
+/* 那句话：先是一道杏色虚线，点了以后记号笔从左划到右 */
+.g-tool-mark {
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0 0.04em;
+  border: 0;
+  border-radius: 0.22em;
+  background: linear-gradient(rgb(234 146 96 / 0.36), rgb(234 146 96 / 0.36))
+    no-repeat 0 76% / 0% 0.52em;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  text-decoration: underline dashed rgb(181 98 58 / 0.6);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 8px;
+  cursor: pointer;
+  transition:
+    background-size 0.7s var(--ease),
+    text-decoration-color 0.3s;
+}
+.g-tool-mark:hover {
+  background-size: 100% 0.52em;
+}
+.g-tool-wall[data-selected] .g-tool-mark {
+  background-size: 100% 0.52em;
+  text-decoration-color: transparent;
+}
+.g-tool-wall-hint {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 26px;
+  color: var(--mute);
+  font-size: 13px;
+  transition: opacity 0.4s;
+}
+.g-tool-wall-hint svg {
+  color: var(--ink);
+  animation: g-tool-nudge 2.4s ease-in-out infinite;
+}
+.g-tool-wall[data-selected] .g-tool-wall-hint {
+  opacity: 0;
+}
+@keyframes g-tool-nudge {
+  50% {
+    transform: translate(3px, -3px);
+  }
+}
+/* 光标旁的三个动作 */
+.g-tool-pop {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  margin: -4px 0 0 -4px;
+  animation: g-tool-pop 0.35s var(--ease) both;
+}
+.g-tool-pop-cursor {
+  flex: none;
+  color: var(--ink);
+  filter: drop-shadow(0 6px 6px rgb(40 30 20 / 0.18));
+}
+.g-tool-chips {
+  display: flex;
+  gap: 6px;
+  margin-top: 30px;
+}
+.g-tool-chips button,
+.g-tool-chips span {
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.14),
+    0 10px 18px -12px rgb(40 30 20 / 0.45);
+  color: var(--ink);
+  font: 500 13px/1 var(--sans);
+}
+.g-tool-chips button {
+  background: var(--ink);
+  color: #fff;
+  cursor: pointer;
+}
+.g-tool-chips button[aria-pressed='true'] {
+  background: var(--accent-ink);
+}
+.g-tool-chips span {
+  color: var(--mute);
+}
+@keyframes g-tool-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+}
+/* 译文卡：纸胶带贴在墙上 */
+.g-tool-card {
+  position: absolute;
+  z-index: 2;
+  left: clamp(28px, 8%, 88px);
+  bottom: 21%;
+  width: min(330px, 72%);
+  padding: 24px 22px 16px;
+  border-radius: 3px;
+  background: #fffefb;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.06),
+    0 18px 26px -18px rgb(40 30 20 / 0.45);
+  opacity: 0;
+  transform: translateY(-12px) rotate(-3deg);
+  visibility: hidden;
+  transition:
+    opacity 0.5s var(--ease),
+    transform 0.6s var(--ease),
+    visibility 0.5s;
+}
+.g-tool-card[data-on] {
+  opacity: 1;
+  transform: rotate(-1.2deg);
+  visibility: visible;
+}
+.g-tool-card p {
+  margin: 6px 0 10px;
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+.g-tool-card small {
+  display: block;
+  color: var(--mute);
+  font-size: 11px;
+}
+.g-tool-card small:first-of-type {
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.g-tool-tape {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  display: block;
+  width: 80px;
+  height: 22px;
+  margin-left: -40px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.12) 0 3px,
+      transparent 3px 7px
+    ),
+    rgb(240 186 146 / 0.62);
+  clip-path: polygon(
+    0 10%,
+    4% 0,
+    96% 4%,
+    100% 10%,
+    97% 50%,
+    100% 92%,
+    95% 100%,
+    4% 96%,
+    0 90%,
+    3% 50%
+  );
+  rotate: -3deg;
+}
+.g-tool-reset {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(27 26 24 / 0.05);
+  color: var(--mute);
+  cursor: pointer;
+}
+.g-tool-reset:hover {
+  color: var(--ink);
+}
+.g-tool-wall-note {
+  position: absolute;
+  z-index: 1;
+  right: 20px;
+  bottom: 14px;
+  color: rgb(60 50 38 / 0.6);
+  font-size: 11.5px;
+}
+
+/* ---------- 以前与现在 ---------- */
+.g-tool-compare {
+  width: 100%;
+  margin-top: clamp(40px, 6vh, 64px);
+  border-collapse: collapse;
+}
+.g-tool-compare th,
+.g-tool-compare td {
+  padding: 24px 28px 24px 0;
+  border-bottom: 1px solid var(--hair);
+  text-align: left;
+  vertical-align: baseline;
+}
+.g-tool-compare thead th {
+  padding-bottom: 12px;
+  border-bottom-color: var(--ink);
+  color: var(--mute);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.g-tool-compare thead td {
+  border-bottom-color: var(--ink);
+}
+.g-tool-compare tbody th {
+  width: 16%;
+  color: var(--mute);
+  font-size: 14px;
+  font-weight: 500;
+}
+.g-tool-compare tbody td {
+  font-size: clamp(18px, 1.7vw, 24px);
+  font-weight: 500;
+  line-height: 1.45;
+}
+.g-tool-compare s {
+  color: var(--mute);
+  text-decoration: none;
+  background: linear-gradient(var(--ink), var(--ink)) no-repeat 0 58% / 0% 1.5px;
+  transition: background-size 0.9s var(--ease) 0.5s;
+}
+.g-tool-compare tr.is-in s,
+.g:not(.is-ready) .g-tool-compare s {
+  background-size: 100% 1.5px;
+}
+
+/* ---------- 三层：三只展柜依次亮灯 ---------- */
+.g-tool-layers {
+  height: 300vh;
+}
+.g-tool-layers-stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding: 84px 0 40px;
+}
+.g-tool-layers-stage > .g-wrap {
+  width: 100%;
+}
+.g-tool-vitrines {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 2.4vw, 36px);
+  margin: clamp(36px, 6vh, 64px) 0 0;
+}
+.g-tool-vitrine {
+  display: grid;
+  gap: 18px;
+  transition:
+    opacity 0.6s var(--ease),
+    filter 0.6s var(--ease);
+}
+.g-tool-case {
+  position: relative;
+  height: clamp(250px, 34svh, 330px);
+  padding: 22px;
+  overflow: hidden;
+  border-radius: 4px 4px 0 0;
+  background:
+    radial-gradient(
+      ellipse 70% 60% at 50% -10%,
+      rgb(255 255 252 / 0.95),
+      transparent 70%
+    ),
+    #efede7;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.9),
+    inset 0 0 0 2px rgb(27 26 24 / 0.07),
+    0 18px 0 -8px #f8f7f3,
+    0 26px 30px -18px rgb(40 30 20 / 0.3);
+  font-size: 13px;
+}
+.g-tool-case::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    rgb(255 255 255 / 0.42) 0 10%,
+    transparent 16% 64%,
+    rgb(255 255 255 / 0.22) 68% 72%,
+    transparent 76%
+  );
+  pointer-events: none;
+}
+/* 没轮到的两只暗一些 */
+.g-tool-layers[data-step] .g-tool-vitrine {
+  opacity: 0.42;
+  filter: saturate(0.5);
+}
+.g-tool-layers[data-step='0'] [data-layer='0'],
+.g-tool-layers[data-step='1'] [data-layer='1'],
+.g-tool-layers[data-step='2'] [data-layer='2'] {
+  opacity: 1;
+  filter: none;
+}
+.g-tool-eyebrow {
+  color: var(--mute);
+  font-size: 11.5px;
+}
+.g-tool-near {
+  margin-top: 14px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.g-tool-near mark {
+  padding: 0 2px;
+  border-radius: 3px;
+  background: rgb(234 146 96 / 0.3);
+}
+.g-tool-near-chips {
+  display: flex;
+  gap: 6px;
+  margin-top: 14px;
+}
+.g-tool-near-chips span {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(27 26 24 / 0.12);
+  font-size: 12px;
+}
+.g-tool-near-chips span:first-child {
+  background: var(--ink);
+  color: #fff;
+}
+.g-tool-near-done {
+  margin-top: 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.g-tool-near-done span {
+  margin-left: 6px;
+  color: var(--mute);
+  font-weight: 400;
+}
+.g-tool-beside {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+.g-tool-poster {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  padding: 12px;
+  border-radius: 6px;
+  background: #2b2a33;
+  color: #f4efe6;
+}
+.g-tool-poster b {
+  font-size: 34px;
+  line-height: 1;
+}
+.g-tool-poster small {
+  color: var(--accent);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+.g-tool-poster span {
+  font-size: 13px;
+  font-weight: 600;
+}
+.g-tool-draft {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 12px 20px -14px rgb(40 30 20 / 0.45);
+  font-size: 12px;
+}
+.g-tool-draft small {
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.g-tool-draft p span {
+  display: inline-block;
+  width: 3em;
+  color: var(--mute);
+}
+.g-tool-draft em {
+  color: var(--mute);
+  font-size: 11px;
+  font-style: normal;
+}
+.g-tool-draft-actions {
+  display: flex;
+  gap: 4px;
+}
+.g-tool-draft-actions span {
+  width: auto !important;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff !important;
+}
+.g-tool-draft-actions span + span {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--ink);
+  color: var(--ink) !important;
+}
+.g-tool-bar {
+  margin-top: 16px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 16px 28px -18px rgb(40 30 20 / 0.5);
+}
+.g-tool-bar-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--hair);
+  font-size: 14px;
+}
+.g-tool-bar-input kbd,
+.g-tool-map kbd {
+  padding: 1px 7px;
+  border-radius: 5px;
+  background: rgb(27 26 24 / 0.07);
+  font: 500 11.5px/1.6 var(--sans);
+}
+.g-tool-bar-row {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  background: rgb(234 146 96 / 0.1);
+}
+.g-tool-bar-row strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.g-tool-bar-row small {
+  color: var(--mute);
+  font-size: 11.5px;
+}
+.g-tool-bar-back {
+  padding: 10px 14px;
+  color: var(--accent-ink);
+  font-size: 12px;
+  font-weight: 500;
+}
+.g-tool-vitrine-label {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 2px 10px;
+}
+.g-tool-vitrine-label .g-soft {
+  grid-row: span 2;
+  color: var(--ink-2);
+  font-size: 22px;
+  line-height: 1;
+}
+.g-tool-vitrine-label strong {
+  font-size: 18px;
+  font-weight: 500;
+}
+.g-tool-vitrine-label span:last-child {
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.g-tool-vitrines-note {
+  grid-column: 1 / -1;
+  color: var(--mute);
+  font-size: 12px;
+}
+
+/* ---------- 一天里的几个时刻：错落的画墙 ---------- */
+.g-tool-board {
+  color: var(--mute) !important;
+  font-size: 12.5px !important;
+}
+.g-tool-salon {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(40px, 6vh, 72px) clamp(24px, 4vw, 64px);
+  margin-top: clamp(48px, 7vh, 80px);
+}
+.g-tool-salon li:nth-child(3n + 2) {
+  margin-top: clamp(40px, 8vh, 96px);
+}
+.g-tool-salon li:nth-child(3n) {
+  margin-top: clamp(16px, 3vh, 36px);
+}
+.g-tool-salon .g-framed {
+  transition: transform 0.6s var(--ease);
+}
+.g-tool-salon li:hover .g-framed {
+  transform: translateY(-4px);
+}
+.g-tool-salon .g-caption b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ---------- 四个承诺：墙上的四个词 ---------- */
+.g-tool-promise-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 clamp(20px, 3vw, 48px);
+  margin-top: clamp(48px, 7vh, 80px);
+}
+.g-tool-promise-list li {
+  padding-top: 18px;
+  border-top: 1px solid var(--hair);
+}
+.g-tool-promise-list strong {
+  display: block;
+  color: #262522;
+  font-size: clamp(24px, 2.4vw, 36px);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.g-tool-promise-list p {
+  margin-top: 12px;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+
+/* ---------- 合进来的工具：一层木架子 ---------- */
+.g-tool-shelf {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 56px clamp(24px, 3vw, 48px);
+  margin-top: clamp(48px, 7vh, 80px);
+}
+.g-tool-shelf li {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding-top: 112px;
+}
+/* 架子板：一截木头，上面摆一件小物 */
+.g-tool-shelf li::before {
+  content: '';
+  position: absolute;
+  top: 86px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  border-radius: 2px;
+  background:
+    linear-gradient(rgb(255 252 246 / 0.3), rgb(60 45 30 / 0.12)),
+    var(--g-wood, #d9ccb6) 0 0 / 600px 1400px;
+  box-shadow: 0 12px 14px -10px rgb(40 30 20 / 0.35);
+}
+.g-tool-object {
+  position: absolute;
+  bottom: calc(100% - 86px);
+  left: 18px;
+  display: block;
+  width: 64px;
+  height: 52px;
+  transition: transform 0.6s var(--ease);
+}
+.g-tool-shelf li:hover .g-tool-object {
+  transform: translateY(-4px);
+}
+.g-tool-object[data-k='0'] {
+  width: 70px;
+  height: 46px;
+  border-radius: 6px;
+  background: linear-gradient(#fbfaf6, #e9e6df);
+  box-shadow:
+    inset 0 -10px 0 rgb(27 26 24 / 0.06),
+    0 4px 6px -3px rgb(40 30 20 / 0.3);
+}
+.g-tool-object[data-k='1'] {
+  height: 52px;
+  background:
+    linear-gradient(var(--ink), var(--ink)) 8px 100% / 12px 70% no-repeat,
+    linear-gradient(var(--accent), var(--accent)) 26px 100% / 12px 44% no-repeat,
+    linear-gradient(#cfc9be, #cfc9be) 44px 100% / 12px 86% no-repeat;
+}
+.g-tool-object[data-k='2'] {
+  width: 56px;
+  height: 50px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow:
+    5px -5px 0 -1px #f1efea,
+    10px -10px 0 -2px #e6e3dc,
+    0 4px 6px -3px rgb(40 30 20 / 0.3);
+}
+.g-tool-object[data-k='3'] {
+  width: 50px;
+  height: 50px;
+  background:
+    linear-gradient(rgb(27 26 24 / 0.18), rgb(27 26 24 / 0.18)) 10px 16px / 30px
+      2px no-repeat,
+    linear-gradient(rgb(27 26 24 / 0.18), rgb(27 26 24 / 0.18)) 10px 26px / 22px
+      2px no-repeat,
+    #f6e3a7;
+  box-shadow: 0 4px 6px -3px rgb(40 30 20 / 0.3);
+  rotate: -4deg;
+}
+.g-tool-object[data-k='4'] {
+  width: 60px;
+  height: 52px;
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 34% 56%, var(--ink) 0 9px, transparent 9.5px),
+    linear-gradient(var(--ink), var(--ink)) 36px 18px / 4px 26px no-repeat,
+    #fff;
+  box-shadow: 0 4px 6px -3px rgb(40 30 20 / 0.3);
+}
+.g-tool-object[data-k='5'] {
+  width: 74px;
+  height: 46px;
+  border-radius: 6px;
+  background:
+    linear-gradient(
+        160deg,
+        transparent 46%,
+        var(--accent) 46% 50%,
+        transparent 50%
+      )
+      0 0 / 50% 100% no-repeat,
+    linear-gradient(
+        25deg,
+        transparent 46%,
+        var(--accent) 46% 51%,
+        transparent 51%
+      )
+      100% 0 / 50% 100% no-repeat,
+    #fff;
+  box-shadow: 0 4px 6px -3px rgb(40 30 20 / 0.3);
+}
+.g-tool-shelf strong {
+  font-size: 18px;
+  font-weight: 500;
+}
+.g-tool-shelf small {
+  color: var(--accent-ink);
+  font-size: 12px;
+}
+.g-tool-shelf p {
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.g-tool-available {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  margin-top: clamp(40px, 6vh, 64px);
+  padding-top: 18px;
+  border-top: 1px solid var(--hair);
+  color: var(--mute);
+  font-size: 14px;
+}
+.g-tool-available a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.g-tool-available a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ---------- 插件就是能力 ---------- */
+.g-tool-plugins-body {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: clamp(32px, 5vw, 80px);
+  margin-top: clamp(48px, 7vh, 80px);
+}
+.g-tool-facts li {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 4px 12px;
+  padding: 20px 0;
+  border-top: 1px solid var(--hair);
+}
+.g-tool-facts .g-soft {
+  grid-row: span 2;
+  color: var(--mute);
+  font-size: 22px;
+  line-height: 1.1;
+}
+.g-tool-facts strong {
+  font-size: 17px;
+  font-weight: 500;
+}
+.g-tool-facts p {
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.75;
+}
+.g-tool-map {
+  margin: 0;
+  padding: clamp(20px, 2.6vw, 34px);
+  border-radius: 16px;
+  background:
+    linear-gradient(rgb(27 26 24 / 0.035) 1px, transparent 1px) 0 0 / 100% 24px,
+    linear-gradient(90deg, rgb(27 26 24 / 0.035) 1px, transparent 1px) 0 0 /
+      24px 100%,
+    #f4f2ed;
+  box-shadow: inset 0 0 0 1px rgb(27 26 24 / 0.06);
+}
+.g-tool-map-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 28px 34px;
+}
+.g-tool-plugin {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 0 24px 36px -22px rgb(27 26 24 / 0.6);
+}
+.g-tool-plugin p {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+}
+.g-tool-plugin p small {
+  color: rgb(251 250 247 / 0.6);
+  font-size: 11.5px;
+}
+.g-tool-plugin p span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--accent);
+}
+.g-tool-plugin p span::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.g-tool-plugin strong {
+  font-size: 20px;
+  font-weight: 500;
+}
+.g-tool-plugin dl {
+  display: grid;
+  gap: 4px;
+  margin: 4px 0 0;
+}
+.g-tool-plugin dl div {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+}
+.g-tool-plugin dt {
+  width: 2.6em;
+  color: rgb(251 250 247 / 0.55);
+}
+.g-tool-plugin dd {
+  margin: 0;
+}
+.g-tool-surface {
+  position: relative;
+  display: grid;
+  gap: 6px;
+}
+.g-tool-surface[data-at='near'],
+.g-tool-surface[data-at='drop'] {
+  grid-column: 1;
+}
+.g-tool-surface[data-at='menu'],
+.g-tool-surface[data-at='bar'] {
+  grid-column: 3;
+}
+.g-tool-surface[data-at='near'],
+.g-tool-surface[data-at='menu'] {
+  grid-row: 1;
+}
+.g-tool-surface[data-at='drop'],
+.g-tool-surface[data-at='bar'] {
+  grid-row: 2;
+}
+/* 四处入口各连一根线到中间的插件 */
+.g-tool-surface::after {
+  content: '';
+  position: absolute;
+  top: 60%;
+  width: 34px;
+  height: 1px;
+  background: rgb(27 26 24 / 0.35);
+}
+.g-tool-surface[data-at='near']::after,
+.g-tool-surface[data-at='drop']::after {
+  left: 100%;
+}
+.g-tool-surface[data-at='menu']::after,
+.g-tool-surface[data-at='bar']::after {
+  right: 100%;
+}
+.g-tool-surface small {
+  color: var(--mute);
+  font-size: 11.5px;
+}
+.g-tool-surface p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 10px 18px -14px rgb(40 30 20 / 0.4);
+  font-size: 12px;
+}
+.g-tool-surface b {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 500;
+}
+.g-tool-surface span {
+  color: var(--mute);
+}
+.g-tool-menu {
+  flex-direction: column;
+  align-items: stretch !important;
+}
+.g-tool-menu b {
+  border-radius: 6px;
+}
+.g-tool-drop {
+  justify-content: center;
+  min-height: 64px;
+  border: 1.5px dashed rgb(27 26 24 / 0.25);
+  background: rgb(255 255 255 / 0.5) !important;
+}
+.g-tool-chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px dashed rgb(27 26 24 / 0.18);
+}
+.g-tool-chain > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 11px;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 12.5px;
+}
+.g-tool-chain > span + span::before {
+  content: '→';
+  margin: 0 4px 0 -2px;
+  color: var(--mute);
+}
+.g-tool-chain em {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgb(234 146 96 / 0.16);
+  color: var(--accent-ink);
+  font-size: 11.5px;
+  font-style: normal;
+}
+.g-tool-map figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 16px;
+  margin-top: 14px;
+  color: var(--mute);
+  font-size: 12.5px;
+}
+
+/* ---------- 它不是什么：被划掉的四句话 ---------- */
+.g-tool-not-title {
+  color: var(--mute);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.g-tool-not ul {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+}
+.g-tool-not li {
+  color: #262522;
+  font-size: clamp(24px, 3vw, 46px);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+}
+.g-tool-not li > span {
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  background: linear-gradient(var(--accent), var(--accent)) no-repeat 0 58% / 0%
+    2px;
+  transition:
+    background-size 1.1s var(--ease) 0.45s,
+    color 1.1s var(--ease) 0.45s;
+}
+.g-tool-not li.is-in > span {
+  background-size: 100% 2px;
+  color: var(--mute);
+}
+
+/* ---------- 和 Molis Work 的关系 ---------- */
+.g-tool-relation {
+  padding-bottom: clamp(40px, 6vh, 80px);
+}
+.g-tool-relation-card {
+  display: grid;
+  gap: 16px;
+  max-width: 720px;
+  padding: clamp(24px, 3vw, 40px);
+  border-radius: 6px;
+  background: #fff;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.05),
+    0 24px 44px -30px rgb(40 30 20 / 0.36);
+}
+.g-tool-relation-card > p {
+  font-size: clamp(20px, 1.9vw, 26px);
+  font-weight: 500;
+  line-height: 1.55;
+}
+.g-tool-relation-card .g-more {
+  justify-self: start;
+}
+
+/* ---------- 宽度 ---------- */
+@media (max-width: 1140px) {
+  .g-tool-promise-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px clamp(20px, 3vw, 48px);
+  }
+}
+@media (max-width: 900px) {
+  .g-tool-hero,
+  .g-tool-plugins-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .g-tool-hero {
+    min-height: 0;
+    padding-top: 128px;
+  }
+  .g-tool-wall {
+    min-height: 440px;
+  }
+  .g-tool-vitrines,
+  .g-tool-salon,
+  .g-tool-shelf {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .g-tool-salon li:nth-child(n) {
+    margin-top: 0;
+  }
+  .g-tool-compare thead {
+    display: none;
+  }
+  .g-tool-compare tr,
+  .g-tool-compare th,
+  .g-tool-compare td {
+    display: block;
+    width: auto;
+  }
+  .g-tool-compare tr {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--hair);
+  }
+  .g-tool-compare th,
+  .g-tool-compare td {
+    padding: 2px 0;
+    border: 0;
+  }
+  .g-tool-compare tbody th {
+    width: auto;
+  }
+  .g-tool-map-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .g-tool-plugin {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  .g-tool-surface[data-at='near'],
+  .g-tool-surface[data-at='drop'],
+  .g-tool-surface[data-at='menu'],
+  .g-tool-surface[data-at='bar'] {
+    grid-row: auto;
+    grid-column: auto;
+  }
+  .g-tool-surface::after {
+    display: none;
+  }
+}
+/* 窄屏和减少动态：三只展柜不再粘住，全都亮着 */
+@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+  .g-tool-layers {
+    height: auto;
+  }
+  .g-tool-layers-stage {
+    position: relative;
+    min-height: 0;
+    padding: clamp(96px, 14vh, 168px) 0 clamp(48px, 8vh, 96px);
+  }
+  .g-tool-layers[data-step] .g-tool-vitrine {
+    opacity: 1;
+    filter: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .g-tool-compare s {
+    background-size: 100% 1.5px;
+  }
+  .g-tool-not li > span {
+    background-size: 100% 2px;
+    color: var(--mute);
+  }
+}

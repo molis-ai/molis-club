@@ -1,0 +1,2220 @@
+/* 白盒子美术馆官网 · 首页
+   结构：首屏（大字标 + 展厅照片，往下走推向 A/I 墙面文字）→ 工作室前言墙 → 导览 Rooms 1–5 →
+   四间展厅（--d 是镜头推近的程度）→ Room 5 · World 展柜里的方案模型 → 结尾与平面图。
+   展厅、展签、按钮等公共部分在 gallery.css。 */
+
+/* ---------- 首屏：画廊官网的样子，往下走就进了展厅 ---------- */
+.g-hero {
+  --e: clamp(0, var(--p, 0) / 0.28, 1);
+  --d: clamp(0, (var(--p, 0) - 0.16) / 0.58, 1);
+  --top: clamp(236px, 31svh, 300px);
+  --base: clamp(34px, 5.4svh, 56px);
+  height: 230vh;
+}
+.g-hero .g-room {
+  --vy: calc(
+    (var(--top) + 100svh - var(--base)) / 2 * (1 - var(--e)) + 46svh * var(--e)
+  );
+}
+.g-frame-view {
+  position: absolute;
+  inset: 0;
+}
+.g-mat {
+  position: absolute;
+  z-index: 3;
+  display: block;
+  background: var(--paper);
+}
+.g-mat-top {
+  inset: 0 0 auto;
+  height: var(--top);
+  transform: translateY(calc(var(--e) * -100%));
+}
+.g-mat-base {
+  inset: auto 0 0;
+  height: var(--base);
+  transform: translateY(calc(var(--e) * 100%));
+}
+.g-mat-left,
+.g-mat-right {
+  top: 0;
+  bottom: 0;
+  width: var(--gutter);
+}
+.g-mat-left {
+  left: 0;
+  transform: translateX(calc(var(--e) * -100%));
+}
+.g-mat-right {
+  right: 0;
+  transform: translateX(calc(var(--e) * 100%));
+}
+/* 照片的四角在首屏是圆的，放大成整个视野时变方 */
+.g-hero .g-frame-view {
+  clip-path: inset(
+    calc(var(--top) * (1 - var(--e))) calc(var(--gutter) * (1 - var(--e)))
+      calc(var(--base) * (1 - var(--e))) calc(var(--gutter) * (1 - var(--e)))
+      round calc(14px * (1 - var(--e)))
+  );
+}
+.g-masthead {
+  position: absolute;
+  z-index: 4;
+  top: 64px;
+  left: var(--gutter);
+  right: var(--gutter);
+  height: calc(var(--top) - 64px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  padding-bottom: 22px;
+  opacity: calc(1 - var(--e) * 1.6);
+  transform: translateY(calc(var(--e) * var(--top) * -0.6));
+}
+.g-title {
+  margin-left: -0.04em;
+  font-size: clamp(60px, min(11.8vw, calc((var(--top) - 104px) * 1.12)), 190px);
+  font-weight: 500;
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  animation: g-rise 1.4s var(--ease) both;
+}
+.g-intro {
+  max-width: 380px;
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+  animation: g-rise 1.4s 0.15s var(--ease) both;
+}
+.g-enter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 0 6px 0 16px;
+  min-height: 36px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper) !important;
+  font-size: 13px;
+  font-weight: 500;
+}
+.g-enter svg {
+  box-sizing: content-box;
+  padding: 5px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.14);
+  transition: transform 0.3s var(--ease);
+}
+.g-enter:hover svg {
+  transform: translateY(2px);
+}
+.g-hero-caption {
+  position: absolute;
+  z-index: 4;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 0;
+  height: var(--base);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--mute);
+  font-size: 12px;
+  opacity: calc(1 - var(--e) * 3);
+  pointer-events: none;
+}
+.g-hero-caption em {
+  font-size: 13.5px;
+}
+@keyframes g-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+.g-hero .g-frame-view .g-room {
+  animation: g-fade 1.8s 0.25s ease both;
+}
+@keyframes g-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* 墙上的 A/I 词组：一件墙面文字作品，哑光的刻字 */
+.g-vinyl {
+  width: 460px;
+}
+.g-ai-headline {
+  color: #2a2926;
+  font-size: 64px;
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.55);
+}
+.g-ai-words {
+  all: unset;
+  display: inline-flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.g-ai-words:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 8px;
+}
+.g-ai-row {
+  display: inline-flex;
+  white-space: nowrap;
+}
+.g-ai-headline[data-animated='true'] .g-ai-letter {
+  opacity: 0;
+}
+.g-label-hero {
+  width: 206px;
+}
+.g-label-artist {
+  font-size: 13px;
+  font-weight: 600;
+}
+.g-label-title {
+  margin-top: 2px;
+  font-size: 18px;
+  line-height: 1.3;
+}
+.g-keys {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hair);
+  color: var(--ink-2);
+  font-size: 12.5px;
+}
+.g-keys span + span::before {
+  content: '·';
+  margin: 0 7px;
+  color: var(--mute);
+}
+
+/* ---------- 导览：四个展厅 ---------- */
+.g-index {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(96px, 14vh, 160px) var(--gutter) clamp(80px, 12vh, 140px);
+}
+.g-index-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--ink);
+}
+.g-index-head h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  font-size: clamp(44px, 6.4vw, 96px);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+.g-index-head h2 small {
+  color: var(--mute);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+}
+.g-index-head p {
+  color: var(--mute);
+  font: italic 400 16px/1 var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+.g-rooms a {
+  display: grid;
+  grid-template-columns: 40px 96px minmax(0, 1.05fr) minmax(0, 1fr) minmax(
+      0,
+      0.8fr
+    ) 36px;
+  align-items: center;
+  gap: 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.g-rooms-no {
+  color: var(--mute);
+  font: italic 400 18px/1 var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+.g-rooms strong {
+  font-size: clamp(26px, 2.7vw, 40px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  transition: transform 0.5s var(--ease);
+}
+.g-rooms-line {
+  color: var(--ink-2);
+  font-size: 15px;
+}
+.g-rooms small {
+  color: var(--mute);
+  font-size: 12.5px;
+}
+.g-rooms-go {
+  box-sizing: content-box;
+  justify-self: end;
+  padding: 9px;
+  border-radius: 50%;
+  background: rgb(27 26 24 / 0.05);
+  color: var(--mute);
+  transition:
+    transform 0.4s var(--ease),
+    color 0.3s,
+    background 0.3s;
+}
+.g-rooms a:hover strong {
+  transform: translateX(8px);
+}
+.g-rooms a:hover .g-rooms-go {
+  background: var(--ink);
+  color: var(--paper);
+  transform: translateY(3px);
+}
+.g-rooms a:hover .g-thumb {
+  transform: scale(1.06);
+}
+
+/* 缩略图：一面小墙、一截木地板，墙上是作品的缩影 */
+.g-thumb {
+  position: relative;
+  display: block;
+  width: 96px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 12px;
+  background:
+    radial-gradient(
+      ellipse 50% 60% at 50% 30%,
+      rgb(255 255 253 / 0.9),
+      transparent 75%
+    ),
+    linear-gradient(#f1efea, #e9e7e1 74%, #cdbfa8 74%, #d9ccb6);
+  box-shadow: inset 0 0 0 1px rgb(27 26 24 / 0.06);
+  transition: transform 0.5s var(--ease);
+}
+.g-thumb-art {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  translate: -50% -50%;
+}
+.g-thumb-art i {
+  display: block;
+  flex: none;
+}
+.g-thumb-work i {
+  width: 16px;
+  height: 21px;
+  border: 1.5px solid #c3a27a;
+  background:
+    linear-gradient(#ece3d4, #ece3d4) 50% 45% / 9px 11px no-repeat,
+    #fbfaf6;
+  box-shadow: 0 3px 3px -2px rgb(40 28 16 / 0.35);
+}
+.g-thumb-work i:nth-child(2) {
+  background:
+    linear-gradient(#dfe4e8, #dfe4e8) 50% 45% / 9px 11px no-repeat,
+    #fbfaf6;
+}
+.g-thumb-work i:nth-child(3) {
+  background:
+    linear-gradient(#f1dfd0, #f1dfd0) 50% 45% / 9px 11px no-repeat,
+    #fbfaf6;
+}
+.g-thumb-tool .g-thumb-art {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.g-thumb-tool i {
+  height: 3px;
+  border-radius: 2px;
+  background: #2a2926;
+}
+.g-thumb-tool i:nth-child(1) {
+  width: 44px;
+}
+.g-thumb-tool i:nth-child(2) {
+  width: 50px;
+  background: linear-gradient(
+    to right,
+    #2a2926 0 22%,
+    var(--accent) 22% 78%,
+    #2a2926 78%
+  );
+}
+.g-thumb-tool i:nth-child(3) {
+  width: 30px;
+}
+.g-thumb-life i:nth-child(1) {
+  width: 28px;
+  height: 32px;
+  border: 2px solid #fbfbf9;
+  background:
+    radial-gradient(
+      circle at 72% 78%,
+      var(--accent) 0 2.2px,
+      transparent 2.6px
+    ),
+    radial-gradient(circle at 54% 84%, #f2cf78 0 1.6px, transparent 2px),
+    repeating-linear-gradient(to bottom, #fbf8f1 0 4px, #c9c3b8 4px 4.6px);
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.06),
+    0 3px 3px -2px rgb(40 28 16 / 0.35);
+}
+.g-thumb-story i:nth-child(1) {
+  width: 21px;
+  height: 33px;
+  background:
+    linear-gradient(#5f6ca1 0 50%, transparent 50% 58%, #ddb07c 58%) 2px 2px /
+      17px 29px no-repeat,
+    #2c2741;
+  box-shadow: 0 3px 3px -2px rgb(30 20 30 / 0.45);
+}
+.g-thumb-life i:nth-child(n + 2),
+.g-thumb-story i:nth-child(n + 2) {
+  display: none;
+}
+
+/* ---------- 展厅 ---------- */
+.g-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px 24px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(120px, 22vh, 220px) var(--gutter) 30px;
+}
+.g-entry-no {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+  color: var(--mute);
+  font-size: 12.5px;
+}
+.g-entry-no span:first-child {
+  color: var(--ink-2);
+  font-size: 18px;
+}
+.g-entry-name {
+  font-size: clamp(40px, 5.4vw, 84px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.g-entry-meta {
+  padding-bottom: 8px;
+  color: var(--mute);
+  font-size: 13px;
+}
+.g-hall {
+  --d: clamp(0, (var(--p, 0) - 0.02) / 0.6, 1);
+  --lab: clamp(0, (var(--d) - 0.55) / 0.3, 1);
+  height: 250vh;
+}
+.g-hall .g-stage {
+  border-top: 1px solid var(--paper);
+}
+/* 三联画整组最宽：挂得小一点，让它在远处也落在正墙里；镜头多推一段，走近后和别的展厅一样大 */
+.g-hall-work {
+  --fit: 0.86;
+}
+.g-hall-work .g-room {
+  --T: 1215;
+}
+
+/* ---------- Room 1 · Work 三联版画 ---------- */
+.g-demo {
+  position: relative;
+  margin: 0;
+}
+.g-demo-toggle {
+  position: absolute;
+  top: -38px;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.8);
+  box-shadow: 0 0 0 1px var(--hair);
+  color: var(--mute);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.g-demo:hover .g-demo-toggle,
+.g-demo-toggle:focus-visible,
+.g-demo-toggle[aria-pressed='true'] {
+  opacity: 1;
+}
+.g-tri {
+  display: flex;
+  gap: 26px;
+}
+.g-panel {
+  position: relative;
+  width: 214px;
+}
+/* 每幅一盏作品灯 */
+.g-panel::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: -34%;
+  right: -34%;
+  top: -42%;
+  height: 112%;
+  background: radial-gradient(
+    ellipse 50% 50% at 50% 40%,
+    rgb(255 255 252 / 0.95),
+    transparent 72%
+  );
+  pointer-events: none;
+}
+/* 浅橡木框 */
+.g-frame {
+  position: relative;
+  padding: 6px;
+  background: linear-gradient(135deg, #d6b78f, #c4a074 46%, #b58f64);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 240 215 / 0.25),
+    0 1px 1px rgb(0 0 0 / 0.1),
+    0 3px 4px rgb(40 28 16 / 0.12),
+    0 26px 28px -18px rgb(40 28 16 / 0.48);
+}
+/* 灯没照到时，整幅暗一点 */
+.g-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(34 28 22 / 0.11);
+  opacity: 0;
+  pointer-events: none;
+}
+/* 宽白卡纸，下边略宽 */
+.g-passe {
+  position: relative;
+  padding: 16px 16px 22px;
+  background: #fbfaf6;
+  box-shadow:
+    inset 1px 1px 2px rgb(60 45 30 / 0.28),
+    inset 0 0 0 1px rgb(120 100 70 / 0.12);
+}
+.g-print {
+  position: relative;
+  height: 232px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 2px rgb(150 135 110 / 0.28),
+    inset 1px 1px 3px rgb(60 45 30 / 0.16);
+  font-size: 8px;
+  line-height: 1.5;
+}
+.g-panel-1 .g-print {
+  background: radial-gradient(ellipse at 30% 18%, #f3ebdd, #e8ddca);
+}
+.g-panel-2 .g-print {
+  background: radial-gradient(ellipse at 30% 18%, #ebeef1, #dae0e6);
+}
+.g-panel-3 .g-print {
+  background: radial-gradient(ellipse at 30% 18%, #f7e8dc, #eed6c2);
+}
+/* 版画里的一页纸：圆角、出血到底边 */
+.g-doc {
+  position: absolute;
+  left: 11px;
+  right: 11px;
+  top: 13px;
+  bottom: -10px;
+  padding: 12px 11px;
+  border-radius: 6px 6px 0 0;
+  background: #fff;
+  box-shadow: 0 8px 16px -10px rgb(60 45 30 / 0.4);
+}
+.g-doc-faint {
+  opacity: 0.55;
+  transform: scale(0.95);
+  transform-origin: 50% 0;
+}
+.g-crumb {
+  color: var(--mute);
+  font-size: 6.5px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.g-crumb span {
+  margin: 0 2px;
+}
+.g-doc-head {
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.g-doc-faint .g-doc-head {
+  margin-top: 0;
+}
+.g-typed {
+  display: flex;
+  align-items: center;
+  margin-top: 7px;
+  white-space: nowrap;
+}
+.g-typed-text {
+  display: inline-block;
+}
+.g-caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 10px;
+  margin-left: 1px;
+  border-radius: 1px;
+  background: var(--accent);
+  opacity: 0;
+}
+.g-rule {
+  display: block;
+  height: 3px;
+  margin-top: 9px;
+  border-radius: 2px;
+  background: rgb(27 26 24 / 0.08);
+}
+.g-rule-short {
+  width: 62%;
+  margin-top: 6px;
+}
+.g-rule-mid {
+  width: 80%;
+  margin-top: 6px;
+}
+.g-rule-gap {
+  margin-top: 20px;
+}
+/* II：助理递上的一张操作卡 */
+.g-ask {
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  top: 62px;
+  padding: 10px 10px 9px;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.05),
+    0 16px 26px -12px rgb(40 30 20 / 0.45);
+}
+.g-ask-who {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 8px;
+  font-weight: 600;
+}
+.g-ask-dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.g-ask-context {
+  margin-top: 1px;
+  color: var(--mute);
+  font-size: 6.5px;
+}
+.g-ask-text {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: 7.6px;
+  line-height: 1.55;
+}
+.g-ask-actions {
+  display: flex;
+  gap: 5px;
+  margin-top: 8px;
+  font-size: 7.4px;
+}
+.g-ask-actions span {
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: var(--mute);
+}
+.g-ask-actions .g-ask-run {
+  background: var(--ink);
+  color: #fff;
+}
+.g-tap {
+  position: absolute;
+  left: 30px;
+  bottom: -9px;
+  color: var(--ink);
+}
+/* III：三条反馈带着出处落进来 */
+.g-doc-line {
+  margin-top: 7px;
+  white-space: nowrap;
+}
+.g-fed {
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+}
+.g-fed li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 4px 5px 4px 6px;
+  border-left: 2px solid var(--accent);
+  border-radius: 2px 4px 4px 2px;
+  background: #fdf5ee;
+  font-size: 7.4px;
+  white-space: nowrap;
+}
+.g-fed small {
+  flex: none;
+  padding: 0 5px;
+  border: 1px solid rgb(234 146 96 / 0.55);
+  border-radius: 999px;
+  color: var(--accent-ink);
+  font-size: 6.2px;
+  line-height: 1.6;
+}
+.g-done {
+  position: absolute;
+  left: 11px;
+  right: 11px;
+  bottom: 22px;
+  padding-top: 7px;
+  border-top: 1px solid rgb(27 26 24 / 0.1);
+  font-size: 7.4px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.g-done span {
+  color: var(--mute);
+  font-weight: 400;
+}
+.g-numeral {
+  display: block;
+  margin-top: 14px;
+  color: var(--mute);
+  font-size: 14px;
+  line-height: 1;
+  text-align: center;
+}
+
+/* 三联画的一轮：I 打字 → II 递卡、点执行 → III 三条反馈落进来；作品灯依次照亮三幅，最后三幅都亮 */
+.g-triptych[data-running='true'] .g-panel-1 .g-frame::after {
+  animation: g-dim-1 12s infinite;
+}
+.g-triptych[data-running='true'] .g-panel-2 .g-frame::after {
+  animation: g-dim-2 12s infinite;
+}
+.g-triptych[data-running='true'] .g-panel-3 .g-frame::after {
+  animation: g-dim-3 12s infinite;
+}
+.g-triptych[data-running='true'] .g-panel-1::before {
+  animation: g-pool-1 12s infinite;
+}
+.g-triptych[data-running='true'] .g-panel-2::before {
+  animation: g-pool-2 12s infinite;
+}
+.g-triptych[data-running='true'] .g-panel-3::before {
+  animation: g-pool-3 12s infinite;
+}
+.g-triptych[data-running='true'] .g-typed-text {
+  animation: g-type 12s steps(1, end) infinite;
+}
+.g-triptych[data-running='true'] .g-caret {
+  animation: g-caret 12s infinite;
+}
+.g-triptych[data-running='true'] .g-ask {
+  animation: g-ask 12s var(--ease) infinite;
+}
+.g-triptych[data-running='true'] .g-tap {
+  animation: g-tap 12s var(--ease) infinite;
+}
+.g-triptych[data-running='true'] .g-ask-run {
+  animation: g-run 12s infinite;
+}
+.g-triptych[data-running='true'] .g-fed li {
+  animation: g-fed 12s var(--ease) infinite;
+}
+.g-triptych[data-running='true'] .g-fed li:nth-child(2) {
+  animation-name: g-fed-2;
+}
+.g-triptych[data-running='true'] .g-fed li:nth-child(3) {
+  animation-name: g-fed-3;
+}
+.g-triptych[data-running='true'] .g-done {
+  animation: g-done 12s var(--ease) infinite;
+}
+@keyframes g-dim-1 {
+  0%,
+  31% {
+    opacity: 0;
+  }
+  36%,
+  88% {
+    opacity: 1;
+  }
+  93%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes g-dim-2 {
+  0% {
+    opacity: 0;
+  }
+  4%,
+  30% {
+    opacity: 1;
+  }
+  35%,
+  62% {
+    opacity: 0;
+  }
+  67%,
+  88% {
+    opacity: 1;
+  }
+  93%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes g-dim-3 {
+  0% {
+    opacity: 0;
+  }
+  4%,
+  63% {
+    opacity: 1;
+  }
+  68%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes g-pool-1 {
+  0%,
+  31% {
+    opacity: 1;
+  }
+  36%,
+  88% {
+    opacity: 0.2;
+  }
+  93%,
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes g-pool-2 {
+  0% {
+    opacity: 1;
+  }
+  4%,
+  30% {
+    opacity: 0.2;
+  }
+  35%,
+  62% {
+    opacity: 1;
+  }
+  67%,
+  88% {
+    opacity: 0.2;
+  }
+  93%,
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes g-pool-3 {
+  0% {
+    opacity: 1;
+  }
+  4%,
+  63% {
+    opacity: 0.2;
+  }
+  68%,
+  100% {
+    opacity: 1;
+  }
+}
+/* 打字：15 个字逐字出现 */
+@keyframes g-type {
+  0%,
+  6% {
+    clip-path: inset(0 100% 0 0);
+  }
+  7.2% {
+    clip-path: inset(0 93% 0 0);
+  }
+  8.4% {
+    clip-path: inset(0 86% 0 0);
+  }
+  9.6% {
+    clip-path: inset(0 80% 0 0);
+  }
+  10.8% {
+    clip-path: inset(0 73% 0 0);
+  }
+  12% {
+    clip-path: inset(0 66% 0 0);
+  }
+  13.2% {
+    clip-path: inset(0 60% 0 0);
+  }
+  14.4% {
+    clip-path: inset(0 53% 0 0);
+  }
+  15.6% {
+    clip-path: inset(0 46% 0 0);
+  }
+  16.8% {
+    clip-path: inset(0 40% 0 0);
+  }
+  18% {
+    clip-path: inset(0 33% 0 0);
+  }
+  19.2% {
+    clip-path: inset(0 26% 0 0);
+  }
+  20.4% {
+    clip-path: inset(0 20% 0 0);
+  }
+  21.6% {
+    clip-path: inset(0 13% 0 0);
+  }
+  22.8% {
+    clip-path: inset(0 6% 0 0);
+  }
+  24%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes g-caret {
+  0%,
+  4% {
+    opacity: 0;
+  }
+  5%,
+  27% {
+    opacity: 1;
+  }
+  28%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes g-ask {
+  0%,
+  37% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  42%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes g-tap {
+  0%,
+  44% {
+    opacity: 0;
+    transform: translate(46px, 34px);
+  }
+  47% {
+    opacity: 1;
+    transform: translate(46px, 34px);
+  }
+  53% {
+    opacity: 1;
+    transform: none;
+  }
+  55% {
+    transform: scale(0.86);
+  }
+  57%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes g-run {
+  0%,
+  54% {
+    background: rgb(27 26 24 / 0.82);
+    box-shadow: none;
+  }
+  55%,
+  60% {
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgb(234 146 96 / 0.25);
+  }
+  64%,
+  100% {
+    background: var(--ink);
+    box-shadow: none;
+  }
+}
+@keyframes g-fed {
+  0%,
+  70% {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  74%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes g-fed-2 {
+  0%,
+  74% {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  78%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes g-fed-3 {
+  0%,
+  78% {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  82%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes g-done {
+  0%,
+  86% {
+    opacity: 0;
+  }
+  89%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ---------- Room 2 · Tool 墙面文字 ---------- */
+.g-wt {
+  position: relative;
+  width: 520px;
+}
+.g-wt-url {
+  color: var(--mute);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.g-wt-en {
+  margin-top: 14px;
+  color: #22211f;
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 380;
+  line-height: 1.28;
+  letter-spacing: -0.01em;
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0,
+    'opsz' 72;
+}
+/* 杏色记号笔：从左到右划过选中的那句 */
+.g-wt-en mark {
+  padding: 0 0.04em;
+  border-radius: 0.24em;
+  background-image: linear-gradient(
+    rgb(234 146 96 / 0.34),
+    rgb(234 146 96 / 0.34)
+  );
+  background-position: 0 74%;
+  background-repeat: no-repeat;
+  background-size: 100% 0.52em;
+}
+.g-wt-cursor {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 10px 0 0 52%;
+  color: var(--ink);
+}
+.g-wt-cursor > svg {
+  flex: none;
+  margin-top: -8px;
+  filter: drop-shadow(0 8px 8px rgb(40 30 20 / 0.18));
+}
+.g-wt-chips {
+  display: flex;
+  gap: 6px;
+  padding-top: 26px;
+}
+.g-wt-chips span {
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.12),
+    0 8px 14px -10px rgb(40 30 20 / 0.4);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.g-wt-chips span:first-child {
+  background: var(--ink);
+  color: #fff;
+}
+/* 译文卡片：纸胶带贴在墙上 */
+.g-wt-card {
+  position: relative;
+  width: 300px;
+  margin: 22px 0 0 12%;
+  padding: 24px 20px 16px;
+  border-radius: 3px;
+  background: #fffefb;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.06),
+    0 16px 22px -16px rgb(40 30 20 / 0.42);
+  rotate: -1.2deg;
+}
+.g-wt-card p {
+  margin: 6px 0 9px;
+  font-size: 15px;
+  line-height: 1.65;
+}
+.g-wt-card small {
+  display: block;
+  color: var(--mute);
+  font-size: 10.5px;
+}
+.g-wt-card small:first-of-type {
+  color: var(--accent-ink);
+  font-size: 11px;
+  font-weight: 600;
+}
+.g-tape {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 80px;
+  height: 22px;
+  margin-left: -40px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.12) 0 3px,
+      transparent 3px 7px
+    ),
+    rgb(240 186 146 / 0.62);
+  clip-path: polygon(
+    0 10%,
+    4% 0,
+    9% 8%,
+    91% 4%,
+    96% 0,
+    100% 10%,
+    97% 50%,
+    100% 92%,
+    95% 100%,
+    90% 94%,
+    8% 98%,
+    3% 100%,
+    0 90%,
+    3% 50%
+  );
+  rotate: -3deg;
+}
+.g-walltext[data-running='true'] .g-wt-en mark {
+  animation: g-marker 10s ease-in-out infinite;
+}
+.g-walltext[data-running='true'] .g-wt-cursor > svg {
+  animation: g-cursor 10s var(--ease) infinite;
+}
+.g-walltext[data-running='true'] .g-wt-chips span {
+  animation: g-chip 10s var(--ease) infinite;
+}
+.g-walltext[data-running='true'] .g-wt-chips span:nth-child(2) {
+  animation-name: g-chip-2;
+}
+.g-walltext[data-running='true'] .g-wt-chips span:nth-child(3) {
+  animation-name: g-chip-3;
+}
+.g-walltext[data-running='true'] .g-wt-chips span:first-child {
+  animation-name: g-chip-first;
+}
+.g-walltext[data-running='true'] .g-wt-card {
+  animation: g-card 10s var(--ease) infinite;
+}
+@keyframes g-marker {
+  0%,
+  10% {
+    background-size: 0% 0.52em;
+  }
+  34%,
+  100% {
+    background-size: 100% 0.52em;
+  }
+}
+@keyframes g-cursor {
+  0%,
+  6% {
+    opacity: 0;
+    transform: translate(60px, 50px);
+  }
+  12% {
+    opacity: 1;
+  }
+  34%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes g-chip {
+  0%,
+  38% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  43%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes g-chip-2 {
+  0%,
+  41% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  46%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes g-chip-3 {
+  0%,
+  44% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  49%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes g-chip-first {
+  0%,
+  38% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+    background: #fff;
+    color: var(--ink);
+  }
+  43%,
+  50% {
+    opacity: 1;
+    transform: none;
+    background: #fff;
+    color: var(--ink);
+  }
+  52%,
+  100% {
+    opacity: 1;
+    transform: none;
+    background: var(--ink);
+    color: #fff;
+  }
+}
+@keyframes g-card {
+  0%,
+  56% {
+    opacity: 0;
+    transform: translateY(-10px) rotate(-3deg);
+  }
+  64%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Room 3 · Life 水彩清单 ---------- */
+/* 白漆木框 + 宽卡纸 */
+.g-life-frame {
+  padding: 8px;
+  background: linear-gradient(135deg, #fdfdfb, #f0efeb);
+  box-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 0.05),
+    0 1px 1px rgb(0 0 0 / 0.08),
+    0 3px 5px rgb(40 30 20 / 0.08),
+    0 30px 32px -22px rgb(40 30 20 / 0.46);
+}
+.g-life-mat {
+  padding: 26px 26px 32px;
+  background: #fdfcf9;
+  box-shadow:
+    inset 1px 1px 2px rgb(60 50 40 / 0.2),
+    inset 0 0 0 1px rgb(0 0 0 / 0.04);
+}
+.g-life {
+  position: relative;
+  width: 300px;
+  height: 360px;
+  background: #fbf8f1;
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 2px rgb(140 130 115 / 0.22);
+}
+.g-life img,
+.g-life-live {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.g-life-marks path,
+.g-life-stems path {
+  --draw: clamp(0, (var(--d, 1) - var(--at)) / 0.07, 1);
+  fill: none;
+  stroke: #33312d;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--draw));
+}
+.g-life-marks .g-life-strike {
+  stroke: #4a4741;
+  stroke-width: 0.85;
+  opacity: 0.85;
+}
+.g-life-stems path {
+  stroke: #869774;
+  stroke-width: 1.05;
+}
+.g-life-leaf {
+  transform: scale(clamp(0, (var(--d, 1) - var(--at)) / 0.08, 1));
+}
+.g-life-leaf ellipse {
+  fill: #a8b894;
+  opacity: 0.85;
+}
+.g-flower {
+  transform: scale(clamp(0, (var(--d, 1) - var(--at)) / 0.08, 1));
+}
+.g-flower ellipse {
+  opacity: 0.76;
+}
+.g-flower-apricot ellipse {
+  fill: #ee9f72;
+}
+.g-flower-apricot .g-flower-heart {
+  fill: #c2663c;
+}
+.g-flower-peach ellipse {
+  fill: #f4be9a;
+}
+.g-flower-peach .g-flower-heart {
+  fill: #d2855a;
+}
+.g-flower-butter ellipse {
+  fill: #f1cd74;
+}
+.g-flower-butter .g-flower-heart {
+  fill: #bd8d35;
+}
+.g-flower-blue ellipse {
+  fill: #a7bbd6;
+}
+.g-flower-blue .g-flower-heart {
+  fill: #6a82a6;
+}
+.g-paper-grain {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: var(--grain) 0 0 / 120px;
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+/* ---------- Room 4 · Story 色域画 ---------- */
+.g-field {
+  position: relative;
+  width: 270px;
+  height: 415px;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.12),
+    0 4px 6px rgb(30 20 30 / 0.12),
+    0 36px 38px -24px rgb(30 20 30 / 0.56);
+}
+.g-field img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.g-field-glow {
+  position: absolute;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+}
+.g-field-glow-up {
+  left: 8%;
+  right: 8%;
+  top: 6%;
+  height: 51%;
+  background: radial-gradient(
+    ellipse 62% 56% at 50% 60%,
+    rgb(165 180 230 / 0.42),
+    transparent 76%
+  );
+  animation: g-breathe 14s ease-in-out infinite;
+}
+.g-field-glow-low {
+  left: 8%;
+  right: 8%;
+  top: 64%;
+  height: 30%;
+  background: radial-gradient(
+    ellipse 62% 62% at 50% 40%,
+    rgb(255 224 176 / 0.46),
+    transparent 76%
+  );
+  animation: g-breathe 14s -7s ease-in-out infinite;
+}
+.g-field-glow-seam {
+  left: 12%;
+  right: 12%;
+  top: 57.6%;
+  height: 3%;
+  background: radial-gradient(
+    closest-side,
+    rgb(255 232 194 / 0.85),
+    transparent
+  );
+  animation: g-seam 14s ease-in-out infinite;
+}
+@keyframes g-breathe {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes g-seam {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scaleX(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1.12);
+  }
+}
+
+/* ---------- 参观信息 ---------- */
+.g-visit {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(110px, 16vh, 180px) var(--gutter) clamp(90px, 14vh, 150px);
+}
+.g-visit h2 {
+  font-size: clamp(44px, 7.6vw, 124px);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+.g-visit h2 .g-phrase {
+  letter-spacing: 0;
+}
+.g-visit-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 clamp(24px, 4vw, 56px);
+  margin-top: clamp(64px, 10vh, 110px);
+}
+.g-visit-col {
+  padding-top: 20px;
+  border-top: 1px solid var(--ink);
+}
+.g-visit-col small {
+  color: var(--mute);
+  font-size: 12.5px;
+}
+.g-visit-plan small {
+  font: italic 400 15px/1 var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+.g-visit-col h3 {
+  margin-top: 14px;
+  font-size: clamp(20px, 1.8vw, 26px);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+.g-visit-col h3 span {
+  display: block;
+}
+.g-visit .g-label-links {
+  margin-top: 26px;
+}
+
+/* 平面图 */
+.g-plan svg {
+  display: block;
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  margin-top: 18px;
+  overflow: visible;
+}
+.g-plan-floor {
+  fill: #f3f1ec;
+}
+.g-plan-room {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 2;
+  transition: fill 0.3s;
+}
+.g-plan a {
+  outline: none;
+}
+.g-plan a:hover .g-plan-room {
+  fill: rgb(234 146 96 / 0.16);
+}
+.g-plan a:focus-visible .g-plan-room {
+  fill: rgb(234 146 96 / 0.16);
+  stroke: var(--ink);
+}
+.g-plan-no {
+  fill: var(--ink);
+  font-size: 19px;
+}
+.g-plan-name {
+  fill: var(--mute);
+  font: 500 11px var(--sans);
+}
+.g-plan-lobby {
+  fill: var(--mute);
+  font-size: 17px;
+}
+.g-plan-wall {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.2;
+  stroke-linecap: square;
+}
+.g-plan-route {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 0.1 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.g-plan-here {
+  fill: var(--accent);
+  transform-origin: 332px 167px;
+  animation: g-here 2.4s ease-in-out infinite;
+}
+@keyframes g-here {
+  50% {
+    transform: scale(1.35);
+  }
+}
+.g-plan-legend {
+  display: flex;
+  justify-content: space-between;
+  max-width: 380px;
+  margin-top: 12px;
+  color: var(--mute);
+  font-size: 12px;
+}
+.g-plan-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.g-plan-legend i {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ---------- 导览条 ---------- */
+.g-guide {
+  position: fixed;
+  z-index: 50;
+  left: var(--gutter);
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 5px 5px 16px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.07),
+    0 12px 28px -16px rgb(40 30 20 / 0.35);
+  color: var(--mute);
+  font-size: 14px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition:
+    opacity 0.4s,
+    visibility 0.4s,
+    transform 0.4s var(--ease);
+}
+.g-guide ol {
+  display: flex;
+  gap: 2px;
+}
+.g-guide a {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+.g-guide a:hover {
+  background: rgb(27 26 24 / 0.06);
+  color: var(--ink);
+}
+main[data-step='2'] .g-guide,
+main[data-step='3'] .g-guide,
+main[data-step='4'] .g-guide,
+main[data-step='5'] .g-guide,
+main[data-step='6'] .g-guide {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+main[data-step='2'] .g-guide li:nth-child(1) a,
+main[data-step='3'] .g-guide li:nth-child(2) a,
+main[data-step='4'] .g-guide li:nth-child(3) a,
+main[data-step='5'] .g-guide li:nth-child(4) a,
+main[data-step='6'] .g-guide li:nth-child(5) a {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ---------- 首屏右边：一行关键词与入口 ---------- */
+.g-keys-big {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 0;
+  color: var(--ink);
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.g-keys-big span + span::before {
+  content: '·';
+  margin: 0 12px;
+  color: var(--accent);
+}
+.g-intro {
+  max-width: 420px;
+}
+.g-intro .g-enter {
+  margin-top: 18px;
+}
+
+/* ---------- 工作室前言墙 ---------- */
+.g-studio {
+  padding: clamp(56px, 9vh, 96px) var(--gutter) 0;
+}
+.g-studio-wall {
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(56px, 8vw, 112px) clamp(24px, 6vw, 96px) clamp(56px, 7vw, 96px);
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse 46% 60% at 30% -10%,
+      rgb(255 255 253 / 0.95),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 40% 60% at 78% -14%,
+      rgb(255 255 253 / 0.8),
+      transparent 70%
+    ),
+    linear-gradient(#f1efea, #ebe9e3);
+  box-shadow: inset 0 -5px 0 rgb(40 34 26 / 0.12);
+}
+.g-studio-wall::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grain) 0 0 / 180px;
+  opacity: 0.32;
+  pointer-events: none;
+}
+.g-studio-kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  color: var(--mute);
+  font-size: 13px;
+}
+.g-studio-kicker .g-soft {
+  color: var(--ink-2);
+  font-size: 20px;
+}
+.g-studio-title {
+  max-width: 15em;
+  margin-top: clamp(22px, 3vw, 36px);
+  color: #262522;
+  font-size: clamp(32px, 4.4vw, 68px);
+  font-weight: 500;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.6);
+}
+.g-studio-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: clamp(28px, 5vw, 80px);
+  margin-top: clamp(40px, 5vw, 64px);
+  padding-top: 26px;
+  border-top: 1px solid rgb(27 26 24 / 0.16);
+}
+.g-studio-view {
+  display: flex;
+  gap: 12px;
+  color: var(--ink);
+  font-size: clamp(18px, 1.5vw, 22px);
+  font-weight: 500;
+  line-height: 1.6;
+}
+.g-studio-view i {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  margin-top: 0.62em;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.g-studio-text {
+  color: var(--ink-2);
+  font-size: clamp(15px, 1.1vw, 16.5px);
+  line-height: 1.9;
+  letter-spacing: 0.01em;
+}
+.g-studio-name {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---------- 导览里的 World：虚线框，表示还在筹备 ---------- */
+.g-rooms li[data-future='true'] strong {
+  color: var(--ink-2);
+}
+.g-rooms small .g-tag {
+  margin-left: 0;
+}
+.g-thumb-world {
+  background:
+    radial-gradient(
+      ellipse 50% 60% at 50% 30%,
+      rgb(255 255 253 / 0.9),
+      transparent 75%
+    ),
+    linear-gradient(#f1efea, #e9e7e1 74%, #cdbfa8 74%, #d9ccb6);
+  box-shadow:
+    inset 0 0 0 1px rgb(27 26 24 / 0.06),
+    inset 0 0 0 4px var(--paper),
+    inset 0 0 0 5px rgb(27 26 24 / 0.16);
+}
+.g-thumb-world .g-thumb-art {
+  top: 52%;
+  flex-direction: column;
+  gap: 0;
+}
+.g-thumb-world i:nth-child(1) {
+  width: 30px;
+  height: 18px;
+  border: 1px solid rgb(255 255 255 / 0.9);
+  background: linear-gradient(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.1));
+  box-shadow: inset 0 0 0 1px rgb(27 26 24 / 0.08);
+  clip-path: polygon(50% 0, 100% 40%, 100% 100%, 0 100%, 0 40%);
+}
+.g-thumb-world i:nth-child(2) {
+  width: 34px;
+  height: 9px;
+  background: linear-gradient(#fbfbf9, #ebe9e3);
+  box-shadow: 0 3px 3px -2px rgb(40 28 16 / 0.3);
+}
+.g-thumb-world i:nth-child(3) {
+  display: none;
+}
+
+/* ---------- 展签上 Tool 与 Work 的关系那一行 ---------- */
+.g-label-relation {
+  margin-top: 8px;
+  color: var(--mute);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.g-label-relation .g-tag {
+  margin-left: 6px;
+}
+
+/* ---------- Room 5 · World：还在筹备的展厅 ---------- */
+.g-world {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(120px, 20vh, 200px) var(--gutter) clamp(40px, 8vh, 96px);
+}
+.g-world-head {
+  display: grid;
+  gap: 22px;
+}
+.g-world-transition {
+  max-width: 18em;
+  color: #262522;
+  font-size: clamp(30px, 3.8vw, 58px);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+.g-world-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  align-items: end;
+  gap: clamp(32px, 6vw, 96px);
+  margin-top: clamp(40px, 6vw, 80px);
+  padding: clamp(40px, 6vw, 80px) clamp(20px, 5vw, 72px) 0;
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      ellipse 50% 70% at 36% -10%,
+      rgb(255 255 253 / 0.95),
+      transparent 70%
+    ),
+    linear-gradient(
+      #f1efea 0 82%,
+      #9f9584 82% calc(82% + 2px),
+      #ddd1bd calc(82% + 2px),
+      #cdbfa8
+    );
+  overflow: hidden;
+}
+.g-world-art {
+  display: flex;
+  justify-content: center;
+}
+.g-world-label {
+  justify-self: start;
+  margin-bottom: clamp(60px, 9vw, 120px);
+}
+.g-world-label .g-label-meta .g-tag {
+  margin-left: 0;
+}
+
+/* 展柜：白色基座上一只玻璃罩，里面是纸模型 */
+.g-vitrine {
+  position: relative;
+  width: min(460px, 100%);
+  margin: 0;
+}
+.g-vitrine-case {
+  position: relative;
+  padding: 26px 22px 6px;
+}
+.g-vitrine-glass {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgb(255 255 255 / 0.9);
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+  background:
+    linear-gradient(
+      115deg,
+      rgb(255 255 255 / 0.5) 0 8%,
+      transparent 14% 62%,
+      rgb(255 255 255 / 0.32) 66% 70%,
+      transparent 74%
+    ),
+    rgb(255 255 255 / 0.06);
+  box-shadow:
+    inset 0 0 0 1px rgb(27 26 24 / 0.06),
+    inset 0 30px 40px -30px rgb(255 255 255 / 0.9);
+  pointer-events: none;
+}
+.g-vitrine-plinth {
+  display: block;
+  height: clamp(90px, 12vw, 150px);
+  margin: 0 -6px;
+  background: linear-gradient(#fdfdfb, #f1f0ec 30%, #e6e4de);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    inset 0 -2px 0 rgb(40 34 26 / 0.08),
+    0 30px 30px -24px rgb(40 30 20 / 0.4);
+}
+.g-vitrine figcaption {
+  position: absolute;
+  right: 28px;
+  bottom: clamp(60px, 8vw, 110px);
+  color: var(--mute);
+  font-size: 11.5px;
+}
+.g-maquette {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.g-mq-top {
+  fill: #fdfdfb;
+}
+.g-mq-left {
+  fill: #e4e2dc;
+}
+.g-mq-right {
+  fill: #d3d0c8;
+}
+.g-maquette > .g-mq-top {
+  fill: #f7f6f2;
+}
+.g-mq-water {
+  fill: #e3e7ea;
+}
+.g-mq-pier-top {
+  fill: #fdfdfb;
+  stroke: #d3d0c8;
+  stroke-width: 0.6;
+}
+.g-mq-fog {
+  fill: url(#g-mq-fog);
+  opacity: 0.8;
+}
+.g-mq-tree {
+  fill: #e9ece4;
+  stroke: #cfd5c7;
+  stroke-width: 0.6;
+}
+.g-mq-lamp {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 3px rgb(234 146 96 / 0.9));
+}
+.g-mq-key path {
+  fill: #fdfdfb;
+  stroke: #b9b5ab;
+  stroke-width: 0.6;
+}
+.g-mq-key circle {
+  fill: #b9b5ab;
+}
+.g-mq-block {
+  transition: transform 0.8s var(--ease);
+}
+.g-world.is-lit .g-mq-block {
+  transform: translateY(-2px);
+}
+.g-world-art[data-reveal] .g-mq-block {
+  transition: transform 1.4s var(--ease);
+}
+.g-world-art:not(.is-in) .g-mq-block {
+  transform: translateY(10px);
+}
+.g-world-art:not(.is-in) .g-mq-block:nth-of-type(2) {
+  transform: translateY(16px);
+}
+.g-world-art:hover .g-mq-block {
+  transform: translateY(-4px);
+}
+.g-world-art:hover .g-mq-block:nth-of-type(2) {
+  transform: translateY(-7px);
+}
+.g-mq-lamp {
+  animation: g-lamp 3.6s ease-in-out infinite;
+}
+@keyframes g-lamp {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* ---------- 结尾 ---------- */
+.g-visit-lead {
+  max-width: 17em;
+  font-size: clamp(34px, 4.6vw, 72px) !important;
+  line-height: 1.22 !important;
+}
+.g-visit-also {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin-top: clamp(48px, 7vh, 72px);
+  padding-top: 18px;
+  border-top: 1px solid var(--hair);
+  color: var(--mute);
+  font-size: 13.5px;
+}
+.g-visit-also a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.g-visit-also a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+.g-plan-future {
+  fill: url(#g-plan-hatch);
+}
+.g-plan-hatch-line {
+  stroke: rgb(27 26 24 / 0.16);
+  stroke-width: 1.2;
+}
+.g-plan-wall-future {
+  stroke-dasharray: 4 4;
+  stroke-width: 1.4;
+}
+.g-plan-legend b {
+  display: block;
+  width: 12px;
+  height: 9px;
+  border: 1px dashed var(--ink);
+  background: repeating-linear-gradient(
+    45deg,
+    transparent 0 2px,
+    rgb(27 26 24 / 0.25) 2px 3px
+  );
+}
+.g-plan svg {
+  max-width: 460px;
+}
+.g-plan-legend {
+  max-width: 460px;
+}
+.g-plan-here {
+  transform-origin: 279px 222px;
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 900px) {
+  .g-hero,
+  .g-hall {
+    --e: 0;
+    --d: 1;
+    --lab: 1;
+    height: auto;
+  }
+  .g-mat,
+  .g-hero-caption {
+    display: none;
+  }
+  .g-hero .g-frame-view {
+    clip-path: none;
+  }
+  .g-masthead {
+    position: relative;
+    inset: auto;
+    height: auto;
+    display: block;
+    padding: 128px var(--gutter) 40px;
+    opacity: 1;
+    transform: none;
+  }
+  .g-title {
+    font-size: 24vw;
+  }
+  .g-intro {
+    margin-top: 24px;
+  }
+  .g-frame-view {
+    position: relative;
+    inset: auto;
+  }
+  .g-hall {
+    padding-bottom: 72px;
+  }
+  .g-vinyl {
+    width: auto;
+  }
+  .g-ai-headline {
+    font-size: 11vw;
+  }
+  .g-tri {
+    zoom: 0.5;
+    gap: 14px;
+  }
+  .g-wt {
+    width: min(520px, 100%);
+    zoom: 0.78;
+  }
+  .g-wt-card {
+    width: min(300px, 80%);
+  }
+  .g-life-frame {
+    zoom: 0.8;
+  }
+  .g-field {
+    zoom: 0.76;
+  }
+  .g-index-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .g-rooms a {
+    grid-template-columns: 22px 72px minmax(0, 1fr) 34px;
+    gap: 6px 14px;
+    padding: 18px 0;
+  }
+  .g-thumb {
+    width: 72px;
+    height: 52px;
+    grid-row: span 2;
+    grid-column: 2;
+    border-radius: 10px;
+  }
+  .g-thumb-art {
+    zoom: 0.8;
+  }
+  .g-rooms-no {
+    grid-row: span 2;
+  }
+  .g-rooms strong {
+    grid-column: 3;
+  }
+  .g-rooms-line {
+    grid-column: 3;
+    font-size: 13.5px;
+  }
+  .g-rooms small {
+    display: none;
+  }
+  .g-rooms-go {
+    grid-column: 4;
+    grid-row: 1 / span 2;
+  }
+  .g-studio-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .g-world-body {
+    grid-template-columns: minmax(0, 1fr);
+    padding-bottom: 40px;
+    background:
+      radial-gradient(
+        ellipse 60% 50% at 50% -10%,
+        rgb(255 255 253 / 0.95),
+        transparent 70%
+      ),
+      linear-gradient(#f1efea, #ebe9e3);
+  }
+  .g-world-label {
+    margin-bottom: 0;
+  }
+  .g-visit-cols {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 44px;
+  }
+  .g-visit-lead {
+    font-size: 9vw !important;
+  }
+  .g-guide {
+    display: none;
+  }
+}
+@media (max-width: 520px) {
+  .g-tri {
+    zoom: 0.44;
+  }
+  .g-wt {
+    zoom: 0.64;
+  }
+  .g-life-frame {
+    zoom: 0.72;
+  }
+}
+
+/* ---------- 减少动态：首屏停在画廊照片，展厅停在走近之后 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .g-hero {
+    --e: 0;
+    --d: 0;
+    height: auto;
+  }
+  .g-hall {
+    height: auto;
+  }
+  .g-world-art .g-mq-block {
+    transform: none !important;
+  }
+}

@@ -1,0 +1,144 @@
+/* 404：一间空着的白盒子，门口一道围绳，墙上一块小牌。前缀 g-missing- */
+
+.g-missing {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 96px var(--gutter) clamp(64px, 10vh, 120px);
+}
+.g-missing-room {
+  position: relative;
+  height: clamp(380px, 56svh, 600px);
+  overflow: hidden;
+  border-radius: 16px;
+}
+.g-missing-room .g-hang {
+  --zoom: 1.2;
+}
+.g-missing-sign {
+  display: grid;
+  gap: 6px;
+  padding: 16px 20px 14px;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.05),
+    0 10px 20px -12px rgb(40 30 20 / 0.32);
+  text-align: center;
+}
+.g-missing-sign span {
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.g-missing-sign small {
+  color: var(--mute);
+  font-size: 12px;
+}
+/* 围绳：两根黄铜立柱，中间一道垂下来的深色绳 */
+.g-missing-rope {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 9%;
+  display: flex;
+  align-items: flex-end;
+  width: min(420px, 56%);
+  height: 84px;
+  translate: -50% 0;
+  pointer-events: none;
+}
+.g-missing-rope i {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 8px;
+  height: 100%;
+  border-radius: 4px 4px 1px 1px;
+  background: linear-gradient(90deg, #a9864f, #e2c68f 45%, #9b7a46);
+  box-shadow: 0 10px 12px -6px rgb(40 30 20 / 0.45);
+}
+.g-missing-rope i::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: -3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f0dcae, #a9864f 70%);
+}
+.g-missing-rope i::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: -10px;
+  width: 28px;
+  height: 6px;
+  border-radius: 50%;
+  background: #9b7a46;
+}
+.g-missing-rope b {
+  display: block;
+  flex: 1;
+  align-self: flex-start;
+  height: 34px;
+  margin: 2px -2px 0;
+  border: 5px solid #2f2b33;
+  border-top: 0;
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+}
+.g-missing-copy {
+  max-width: 640px;
+  margin: clamp(36px, 6vh, 64px) auto 0;
+  text-align: center;
+}
+.g-missing-copy h1 {
+  font-size: clamp(32px, 3.6vw, 52px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.g-missing-copy p {
+  margin-top: 12px;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+.g-missing-copy .g-actions {
+  justify-content: center;
+  margin-top: 28px;
+}
+
+@media (max-width: 900px) {
+  .g-missing {
+    padding-top: 120px;
+  }
+  .g-missing-room {
+    height: auto;
+    overflow: visible;
+  }
+  .g-missing-room .g-wall {
+    padding: 72px 16px 88px;
+    background:
+      radial-gradient(
+        ellipse 60% 40% at 50% 0%,
+        rgb(255 255 255 / 0.9),
+        transparent 70%
+      ),
+      linear-gradient(
+        #f1efea 0 80%,
+        #9f9584 80% calc(80% + 2px),
+        #ddd1bd calc(80% + 2px),
+        #cdbfa8
+      );
+    border-radius: 16px;
+  }
+  .g-missing-room .g-hang {
+    display: flex;
+    justify-content: center;
+  }
+  .g-missing-rope {
+    bottom: 10px;
+    height: 56px;
+  }
+}

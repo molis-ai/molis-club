@@ -1,0 +1,337 @@
+/* 品牌一句话 · 第三轮九个方案的对比页，类名前缀 g-sl-
+   每个方案：说明牌 → 一段 300vh 的滚动，里面粘着一行字。一行字的骨架（We build、那一格、ware）由脚本按量好的宽度绝对定位，
+   各方案只画那一格里的东西。 */
+
+/* ---------- 页头 ---------- */
+.g-sl-intro {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 140px var(--gutter) 40px;
+}
+.g-sl-intro-kicker {
+  color: var(--mute);
+  font-size: 13px;
+}
+.g-sl-intro-kicker a {
+  border-bottom: 1px solid var(--hair);
+}
+.g-sl-intro h1 {
+  margin-top: 18px;
+  font-size: clamp(36px, 4.6vw, 68px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.g-sl-intro-text {
+  max-width: 660px;
+  margin-top: 20px;
+  color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1.8;
+}
+.g-sl-intro-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 28px;
+}
+.g-sl-intro-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  font-size: 14px;
+  transition: border-color 0.25s;
+}
+.g-sl-intro-list a:hover {
+  border-color: var(--ink);
+}
+
+/* ---------- 每个方案前的说明牌 ---------- */
+.g-sl-plate {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 56px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(100px, 16vh, 160px) var(--gutter) 36px;
+}
+.g-sl-plate-no {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.g-sl-plate-no span:first-child {
+  color: var(--mute);
+  font: italic 400 0.62em var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+.g-sl-plate-idea,
+.g-sl-plate-end {
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.85;
+}
+.g-sl-plate-end b {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--mute);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+/* ---------- 一段滚动：一行字粘在视口中间 ---------- */
+.g-sl-run {
+  position: relative;
+  height: 300vh;
+}
+.g-sl-pin {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  height: 100svh;
+  padding: 0 max(var(--gutter), 6vw);
+  overflow: hidden;
+}
+.g-sl-line {
+  position: relative;
+  width: 100%;
+  height: 1.1em;
+  color: #262522;
+  font-size: clamp(44px, 7vw, 136px);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+}
+.g-sl-ruler {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.g-sl-ruler > span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: pre;
+}
+.g-sl-lead,
+.g-sl-ware {
+  position: absolute;
+  bottom: 0;
+  white-space: pre;
+}
+.g-sl-group {
+  position: absolute;
+  inset: 0;
+}
+.g-sl-slot {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+.g-sl-item {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+.g-sl-soft {
+  font-weight: 500;
+}
+.g-sl-word {
+  font-weight: 700;
+  letter-spacing: -0.05em;
+}
+.g-sl-xe {
+  display: inline-flex;
+  align-items: baseline;
+}
+.g-sl-xe i {
+  padding-right: 0.04em;
+  color: var(--accent-ink);
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+  letter-spacing: 0;
+}
+.g-sl-xe b {
+  color: var(--mute);
+  font-weight: 500;
+}
+.g-sl-sep {
+  color: rgb(27 26 24 / 0.22);
+  font-weight: 400;
+}
+.g-sl-letters > span {
+  display: inline-block;
+  backface-visibility: hidden;
+}
+.g-sl-3d {
+  position: absolute;
+  inset: 0;
+  perspective: 4em;
+}
+.g-sl-3d .g-sl-letters {
+  perspective: 3em;
+}
+
+/* 01 打字机 */
+.g-sl-caret {
+  display: inline-block;
+  align-self: center;
+  width: 0.055em;
+  height: 0.78em;
+  margin-left: 0.05em;
+  background: var(--accent-ink);
+  animation: g-sl-blink 1.05s steps(1) infinite;
+}
+@keyframes g-sl-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* 02 翻牌、03 百叶窗 */
+.g-sl-flipx,
+.g-sl-slat {
+  backface-visibility: hidden;
+}
+.g-sl-flipx {
+  transform-origin: 50% 55%;
+}
+
+/* 04 跑马灯：那一格是一扇窗，左边渐隐，右边贴着 ware 切齐 */
+.g-sl-window {
+  position: absolute;
+  right: 0;
+  top: -0.25em;
+  bottom: -0.25em;
+  overflow: hidden;
+}
+.g-sl-stream {
+  position: absolute;
+  left: 100%;
+  bottom: 0.25em;
+  display: flex;
+  align-items: baseline;
+  white-space: pre;
+}
+
+/* 05 转轮 */
+.g-sl-drum {
+  position: absolute;
+  inset: -1.5em 0;
+  perspective: 7em;
+}
+.g-sl-face {
+  bottom: 1.5em;
+  backface-visibility: hidden;
+  transform-origin: 50% 55%;
+}
+
+/* 07 划改 */
+.g-sl-struck {
+  color: rgb(38 37 34 / calc(1 - var(--strike, 0) * 0.6));
+}
+.g-sl-struck::after {
+  content: '';
+  position: absolute;
+  left: -0.05em;
+  right: -0.05em;
+  top: 54%;
+  height: 0.05em;
+  background: var(--accent-ink);
+  transform: scaleX(var(--strike, 0));
+  transform-origin: left center;
+}
+.g-sl-note {
+  position: absolute;
+  right: 0;
+  bottom: 2.05em;
+  color: var(--accent-ink);
+  font-family: var(--serif);
+  font-size: 0.5em;
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.g-sl-landing {
+  transform-origin: right bottom;
+}
+
+/* 08 纵深：以贴着 ware 的那一点为消失点 */
+.g-sl-deep {
+  transform-origin: right 78%;
+}
+
+/* 09 遮盖 */
+.g-sl-bar {
+  position: absolute;
+  bottom: 0.12em;
+  height: 0.86em;
+  border-radius: 2px;
+  background: var(--ink);
+}
+.g-sl-rule {
+  position: absolute;
+  bottom: 0.04em;
+  height: 0.045em;
+  background: var(--accent);
+}
+
+.g-sl-after {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40vh;
+  color: var(--mute);
+  font: italic 400 22px var(--serif);
+}
+
+/* ---------- 窄屏：We build 在上一行 ---------- */
+@media (max-width: 900px) {
+  .g-sl-plate {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .g-sl-pin {
+    padding: 0 var(--gutter);
+  }
+  .g-sl-line {
+    height: 2.3em;
+    font-size: 11vw;
+  }
+}
+
+/* ---------- 减少动态：直接是最后的 x‑ware ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .g-sl-run {
+    height: 100svh;
+  }
+  .g-sl-caret {
+    animation: none;
+  }
+}

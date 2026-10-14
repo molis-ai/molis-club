@@ -1,0 +1,566 @@
+/* 团队：驻留艺术家。肖像用「中线挂法」挂成一面墙——画框大小与木色各不相同，画心落在同一条中线上，
+   展签排在同一条线上；每幅画顶上一盏画灯，走到墙前时一盏盏亮起，画框从微斜挂正。
+   悬停、键盘聚焦或点按肖像，翻出一张写着经历的便笺。类名前缀 g-about-，挂在根节点 .g-about-page 下。 */
+
+.g-about-page {
+  --about-wall:
+    radial-gradient(
+      ellipse 36% 50% at 20% -10%,
+      rgb(255 255 253 / 0.9),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 36% 50% at 50% -12%,
+      rgb(255 255 253 / 0.85),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 36% 50% at 80% -10%,
+      rgb(255 255 253 / 0.9),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 90% 80% at 50% 45%,
+      transparent 55%,
+      rgb(84 72 56 / 0.08)
+    ),
+    linear-gradient(#f1efea, #ebe9e3 70%, #e5e2db);
+}
+
+/* ---------- 门口的名牌 ---------- */
+.g-about-page .g-about-head {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: calc(64px + clamp(56px, 10vh, 120px)) var(--gutter) 0;
+}
+.g-about-page .g-about-kicker {
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+}
+.g-about-page .g-about-kicker .g-soft {
+  color: var(--ink-2);
+  font-size: 19px;
+}
+.g-about-page .g-about-head-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px 64px;
+  margin-top: clamp(20px, 3vw, 36px);
+}
+.g-about-page .g-about-head h1 {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  font-size: clamp(64px, 11vw, 172px);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+}
+.g-about-page .g-about-head h1 small {
+  color: var(--mute);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+}
+.g-about-page .g-about-intro {
+  max-width: 26em;
+  padding-bottom: 12px;
+  color: var(--ink-2);
+  font-size: clamp(15.5px, 1.2vw, 18px);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+/* ---------- 前言与肖像墙 ---------- */
+.g-about-page .g-about-gallery {
+  padding-top: clamp(80px, 12vh, 140px);
+}
+.g-about-page .g-about-opening {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 20px 64px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.g-about-page .g-about-opening h2 {
+  font-size: clamp(30px, 3.6vw, 56px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+.g-about-page .g-about-opening p {
+  max-width: 26em;
+  padding-bottom: 6px;
+  color: var(--ink-2);
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.85;
+}
+.g-about-page .g-about-wall {
+  /* 大框的宽度；中框、小框按比例；--line 是画心所在的那条中线占的高度 */
+  --wl: clamp(168px, 15vw, 224px);
+  --line: calc(var(--wl) * 1.14);
+  max-width: 1440px;
+  margin: clamp(40px, 6vh, 72px) auto 0;
+  padding: 0 var(--gutter);
+}
+.g-about-page .g-about-works {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(48px, 7vh, 80px) clamp(32px, 4vw, 64px);
+  padding: clamp(56px, 6vw, 96px) clamp(24px, 4vw, 72px) clamp(56px, 6vw, 88px);
+  overflow: hidden;
+  border-radius: 18px;
+  isolation: isolate;
+  background: var(--about-wall);
+  box-shadow: inset 0 -5px 0 rgb(40 34 26 / 0.1);
+}
+.g-about-page .g-about-works::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: var(--grain) 0 0 / 180px;
+  opacity: 0.3;
+  pointer-events: none;
+}
+.g-about-page .g-about-work {
+  --w: var(--wl);
+  position: relative;
+  width: max(var(--w), 168px);
+}
+.g-about-page .g-about-work[data-size='m'] {
+  --w: calc(var(--wl) * 0.8);
+}
+.g-about-page .g-about-work[data-size='s'] {
+  --w: calc(var(--wl) * 0.64);
+}
+.g-about-page .g-about-work:hover,
+.g-about-page .g-about-work:focus-within,
+.g-about-page .g-about-work[data-open='true'] {
+  z-index: 3;
+}
+.g-about-page .g-about-piece {
+  position: relative;
+}
+/* 画框所在的一段墙：画框在这段墙里上下居中，所以每一排的画心都在同一条线上 */
+.g-about-page .g-about-hang {
+  display: flex;
+  align-items: center;
+  height: var(--line);
+}
+.g-about-page .g-about-frame {
+  position: relative;
+  width: var(--w);
+  transition:
+    transform 1.4s var(--ease) var(--delay, 0s),
+    translate 0.5s var(--ease);
+}
+/* 挂上墙之前略微歪着，进入视口后挂正 */
+.g-about-page.is-ready .g-about-hang:not(.is-in) .g-about-frame {
+  transform: rotate(-1.6deg) translateY(-10px);
+}
+.g-about-page .g-about-frame img {
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+.g-about-page .g-about-blank {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  background: linear-gradient(#f7f5f0, #eeebe4);
+  color: rgb(27 26 24 / 0.26);
+  font-size: calc(var(--w) * 0.15);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+/* 画灯：一根黑色短灯杆，亮起时在画面上部留一片暖光 */
+.g-about-page .g-about-light {
+  position: absolute;
+  z-index: 2;
+  top: -17px;
+  left: 50%;
+  display: block;
+  width: 44%;
+  height: 7px;
+  border-radius: 4px;
+  background: linear-gradient(#4a4844, #262522);
+  box-shadow: 0 2px 3px rgb(0 0 0 / 0.18);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.g-about-page .g-about-light::before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  width: 2px;
+  height: 10px;
+  margin-left: -1px;
+  background: #2e2d2a;
+}
+.g-about-page .g-about-light i {
+  position: absolute;
+  top: 8px;
+  left: -60%;
+  right: -60%;
+  display: block;
+  height: calc(var(--w) * 0.9);
+  background: radial-gradient(
+    ellipse 50% 62% at 50% 0%,
+    rgb(255 247 228 / 0.5),
+    rgb(255 247 228 / 0.16) 50%,
+    transparent 76%
+  );
+  opacity: 0;
+  transition: opacity 1.4s var(--ease) calc(var(--delay, 0s) + 0.5s);
+}
+.g-about-page .g-about-hang.is-in .g-about-light i {
+  opacity: 1;
+}
+.g-about-page .g-about-open {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .g-about-page .g-about-work:hover .g-about-frame {
+    translate: 0 -4px;
+  }
+}
+
+/* 便笺：一张米白的小纸片，顶上一枚杏色图钉 */
+.g-about-page .g-about-note {
+  position: absolute;
+  z-index: 5;
+  top: calc(var(--line) - 22px);
+  left: calc(var(--w) / 2 - 150px);
+  width: 300px;
+  padding: 22px 22px 18px;
+  border-radius: 3px;
+  background: #fffdf7;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.06),
+    0 26px 44px -22px rgb(40 30 20 / 0.5);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.8;
+  text-wrap: pretty;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px) rotate(-3deg);
+  transform-origin: 50% 0;
+  transition:
+    opacity 0.3s var(--ease),
+    transform 0.5s var(--ease),
+    visibility 0s 0.3s;
+}
+.g-about-page .g-about-note::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 2px 3px rgb(120 60 20 / 0.35);
+}
+.g-about-page .g-about-work[data-open='true'] .g-about-note,
+.g-about-page .g-about-work:has(.g-about-open:focus-visible) .g-about-note {
+  opacity: 1;
+  visibility: visible;
+  transform: rotate(-1.2deg);
+  transition-delay: 0s;
+}
+@media (hover: hover) {
+  .g-about-page .g-about-work:hover .g-about-note {
+    opacity: 1;
+    visibility: visible;
+    transform: rotate(-1.2deg);
+    transition-delay: 0s;
+  }
+}
+.g-about-page .g-about-work[data-dismissed='true'] .g-about-note {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px) rotate(-3deg);
+}
+
+/* 展签：编号、名字、做什么、一句自己的话 */
+.g-about-page .g-about-label {
+  margin-top: 22px;
+}
+.g-about-page .g-about-label-no {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.g-about-page .g-about-label-no .g-soft {
+  color: var(--mute);
+  font-size: 15px;
+}
+.g-about-page .g-about-label-dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.g-about-page .g-about-label h3 {
+  margin-top: 6px;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.g-about-page .g-about-role {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.g-about-page .g-about-aside {
+  margin-top: 10px;
+  padding-left: 10px;
+  border-left: 1px solid rgb(27 26 24 / 0.2);
+  color: var(--mute);
+  font-size: 13px;
+  line-height: 1.65;
+}
+/* 还没写介绍的成员：展签上留一道空线 */
+.g-about-page .g-about-empty {
+  display: block;
+  width: 64%;
+  height: 1px;
+  margin-top: 16px;
+  background: rgb(27 26 24 / 0.16);
+}
+
+/* ---------- 职业经历 ---------- */
+.g-about-page .g-about-proof {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.5fr) minmax(0, 1.5fr);
+  align-items: center;
+  gap: 20px 48px;
+  max-width: 1440px;
+  margin: clamp(64px, 9vh, 104px) auto 0;
+  padding: 28px var(--gutter);
+  background:
+    linear-gradient(var(--ink), var(--ink)) 50% 0 /
+      calc(100% - 2 * var(--gutter)) 1px no-repeat,
+    linear-gradient(var(--hair), var(--hair)) 50% 100% /
+      calc(100% - 2 * var(--gutter)) 1px no-repeat;
+}
+.g-about-page .g-about-proof > p {
+  color: var(--mute);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+.g-about-page .g-about-logos {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: center;
+  gap: clamp(16px, 3vw, 42px);
+}
+.g-about-page .g-about-logos span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 48px;
+  filter: grayscale(1) contrast(1.1);
+  opacity: 0.7;
+  mix-blend-mode: multiply;
+  transition:
+    filter 0.4s,
+    opacity 0.4s;
+}
+.g-about-page .g-about-logos span:hover {
+  filter: none;
+  opacity: 1;
+}
+.g-about-page .g-about-logos img {
+  max-width: 100%;
+  height: auto;
+  max-height: 44px;
+  object-fit: contain;
+}
+.g-about-page .g-about-logos [data-kind='meituan'] img {
+  width: min(124px, 100%);
+}
+.g-about-page .g-about-logos [data-kind='douyin'] img {
+  width: min(132px, 100%);
+  aspect-ratio: 142 / 48;
+  object-fit: cover;
+}
+.g-about-page .g-about-logos [data-kind='didi'] img {
+  width: min(118px, 100%);
+  aspect-ratio: 126 / 48;
+  object-fit: cover;
+}
+.g-about-page .g-about-logos [data-kind='linkedin'] img {
+  width: 28px;
+  height: 28px;
+}
+.g-about-page .g-about-logos [data-kind='linkedin'] b {
+  color: #0a66c2;
+  font-size: 19px;
+  letter-spacing: -0.04em;
+}
+.g-about-page .g-about-logos [data-kind='red'] img {
+  width: min(90px, 100%);
+  aspect-ratio: 94 / 48;
+  object-fit: cover;
+}
+
+/* ---------- 我们怎样一起做事 ---------- */
+.g-about-page .g-about-practices {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(96px, 14vh, 160px) var(--gutter) clamp(32px, 6vh, 64px);
+}
+.g-about-page .g-about-practices > h2 {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--ink);
+  font-size: clamp(30px, 3.4vw, 52px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+.g-about-page .g-about-practice-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px clamp(24px, 4vw, 56px);
+  padding: 32px 0 40px;
+}
+.g-about-page .g-about-practice-list .g-soft {
+  color: var(--mute);
+  font-size: 18px;
+}
+.g-about-page .g-about-practice-list h3 {
+  margin-top: 10px;
+  font-size: clamp(19px, 1.6vw, 23px);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+.g-about-page .g-about-practice-list p {
+  margin-top: 10px;
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+/* ---------- 结尾 ---------- */
+.g-about-page .g-about-closing {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(96px, 14vh, 160px) var(--gutter) clamp(88px, 13vh, 140px);
+}
+.g-about-page .g-about-closing h2 {
+  font-size: clamp(36px, 5.2vw, 84px);
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: -0.03em;
+}
+.g-about-page .g-about-closing h2 .g-phrase {
+  display: block;
+}
+.g-about-page .g-about-closing-row {
+  margin-top: clamp(40px, 6vh, 64px);
+  padding-top: 22px;
+  border-top: 1px solid var(--ink);
+}
+
+/* ---------- 窄屏：两列的墙，每一格里画框居中挂在同一条线上 ---------- */
+@media (max-width: 900px) {
+  .g-about-page .g-about-head {
+    padding-top: calc(96px + 40px);
+  }
+  .g-about-page .g-about-head-row,
+  .g-about-page .g-about-opening {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  .g-about-page .g-about-proof {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .g-about-page .g-about-practice-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .g-about-page .g-about-works {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 44px 18px;
+    padding: 40px 18px 44px;
+    border-radius: 14px;
+  }
+  .g-about-page .g-about-work,
+  .g-about-page .g-about-work[data-size] {
+    width: auto;
+  }
+  .g-about-page .g-about-hang {
+    height: auto;
+    aspect-ratio: 1 / 1.2;
+    justify-content: center;
+  }
+  .g-about-page .g-about-frame {
+    width: 100%;
+  }
+  .g-about-page .g-about-work[data-size='m'] .g-about-frame {
+    width: 84%;
+  }
+  .g-about-page .g-about-work[data-size='s'] .g-about-frame {
+    width: 70%;
+  }
+  .g-about-page .g-about-blank {
+    font-size: 22px;
+  }
+  .g-about-page .g-about-light i {
+    height: 140px;
+  }
+  .g-about-page .g-about-note {
+    top: calc(100% - 22px);
+    left: 0;
+    width: min(290px, calc(100vw - 2 * var(--gutter) - 20px));
+  }
+  .g-about-page .g-about-work:nth-child(even) .g-about-note {
+    left: auto;
+    right: 0;
+  }
+  .g-about-page .g-about-label h3 {
+    font-size: 19px;
+  }
+  .g-about-page .g-about-logos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* 减少动态：画框直接挂正，画灯亮着 */
+@media (prefers-reduced-motion: reduce) {
+  .g-about-page.is-ready .g-about-hang:not(.is-in) .g-about-frame {
+    transform: none;
+  }
+  .g-about-page .g-about-light i {
+    opacity: 1;
+  }
+}

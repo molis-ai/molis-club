@@ -1,0 +1,329 @@
+/* 登录与账号：左边一间小小的白盒子，墙上一句话；右边一块白牌放表单。前缀 g-auth- */
+
+.g-auth {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  grid-template-rows: auto auto;
+  align-items: start;
+  gap: 20px clamp(28px, 4vw, 64px);
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 104px var(--gutter) clamp(64px, 10vh, 120px);
+}
+.g-auth-scene {
+  position: relative;
+  grid-row: 1;
+  height: clamp(460px, calc(100svh - 220px), 680px);
+  overflow: hidden;
+  border-radius: 16px;
+}
+.g-auth-scene .g-hang {
+  --zoom: 1.3;
+}
+.g-auth-wall p {
+  color: #2a2926;
+  font-size: clamp(34px, 3.6vw, 54px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.55);
+}
+.g-auth-wall em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+  letter-spacing: -0.01em;
+}
+.g-auth-note {
+  grid-column: 1;
+  grid-row: 2;
+  color: var(--mute);
+  font-size: 13px;
+}
+.g-auth-panel {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  padding: clamp(28px, 3.4vw, 48px);
+  border-radius: 6px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.05),
+    0 30px 60px -36px rgb(40 30 20 / 0.4);
+}
+
+/* 登录表单：沿用 LoginForm 的结构，换成美术馆的字和线 */
+.g-auth-panel .auth-panel {
+  padding: 0;
+}
+.g-auth-panel h1 {
+  font-size: clamp(28px, 2.6vw, 40px);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+}
+.g-auth-panel .auth-heading > p,
+.g-auth-panel .auth-panel > div > p,
+.g-auth-account > h1 + p {
+  margin-top: 12px;
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.75;
+}
+.g-auth-panel .social-buttons {
+  margin-top: 26px;
+}
+.g-auth-panel .social-buttons button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgb(27 26 24 / 0.2);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    box-shadow 0.25s;
+}
+.g-auth-panel .social-buttons button:hover:not(:disabled) {
+  background: rgb(27 26 24 / 0.04);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.g-auth-panel .auth-divider {
+  margin: 26px 0 8px;
+  color: var(--mute);
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+}
+.g-auth-panel .auth-divider::before,
+.g-auth-panel .auth-divider::after {
+  background: var(--hair);
+}
+.g-auth-panel .field {
+  gap: 8px;
+  margin: 0 0 20px;
+}
+.g-auth-panel .field > span {
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 500;
+}
+.g-auth-panel .field input {
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid rgb(27 26 24 / 0.16);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s,
+    background 0.25s;
+}
+.g .g-auth-panel .field input:is(:focus, :focus-visible) {
+  outline: none;
+  border-color: var(--ink);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgb(234 146 96 / 0.18);
+}
+.g-auth-panel .field input::placeholder {
+  color: var(--mute);
+  opacity: 0.8;
+}
+.g-auth-panel .consent {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  margin: 0 0 22px;
+  color: var(--ink-2);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+.g-auth-panel .consent input {
+  width: 18px;
+  height: 18px;
+  margin: 3px 0 0;
+  accent-color: var(--ink);
+}
+.g-auth-panel .consent a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.g .g-auth-panel .button.primary,
+.g .g-auth-panel button.g-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 24px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    color 0.25s;
+}
+.g .g-auth-panel button.g-btn-ghost {
+  background: transparent;
+  color: var(--ink);
+}
+.g .g-auth-panel .button.primary:hover:not(:disabled),
+.g .g-auth-panel button.g-btn:hover:not(:disabled) {
+  background: #3e3c38;
+  color: var(--paper);
+}
+.g .g-auth-panel .button.primary:disabled,
+.g .g-auth-panel button.g-btn:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+.g-auth-panel .auth-panel > div > .button {
+  margin-top: 22px;
+}
+.g-auth-panel .button.wide {
+  width: 100%;
+}
+.g-auth-panel .feedback {
+  margin-top: 14px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.g-auth-panel .error {
+  color: var(--accent-ink);
+}
+.g-auth-panel .auth-switch {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: 14px;
+}
+.g-auth-panel .auth-switch button {
+  padding: 4px 6px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 5px;
+  cursor: pointer;
+}
+.g-auth-panel .form-caption {
+  margin: 14px 0 0;
+  color: var(--mute);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+/* 账号：问候、邮箱签、两个去处，修改密码收起来 */
+.g-auth-account {
+  display: grid;
+  gap: 16px;
+}
+.g-auth-account > h1 + p {
+  margin-top: 0;
+}
+.g-auth-email {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+.g-auth-email span {
+  padding: 2px 10px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+.g-auth-small {
+  color: var(--mute);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.g-auth-purpose {
+  max-width: 34em;
+  color: var(--ink-2);
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.g-auth-password {
+  margin-top: 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--hair);
+}
+.g-auth-password summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 17px;
+  font-weight: 500;
+  list-style: none;
+  cursor: pointer;
+}
+.g-auth-password summary::-webkit-details-marker {
+  display: none;
+}
+.g-auth-password summary::after {
+  content: '+';
+  color: var(--accent-ink);
+  font-size: 24px;
+  line-height: 1;
+  transition: rotate 0.3s var(--ease);
+}
+.g-auth-password[open] summary::after {
+  rotate: 45deg;
+}
+.g-auth-password > p {
+  margin: 10px 0 20px;
+  color: var(--ink-2);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+.g-auth-success {
+  display: block;
+  margin-top: 12px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.g-auth-error {
+  min-height: 1px;
+  color: var(--accent-ink);
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .g-auth {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 120px;
+  }
+  /* 窄屏先给表单，那间小展厅不再出现 */
+  .g-auth-scene {
+    display: none;
+  }
+  .g-auth-panel {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .g-auth-note {
+    grid-row: 2;
+  }
+}

@@ -1,0 +1,2750 @@
+/* 白盒子美术馆官网 · 首页（第二版），类名前缀 g-h-
+   结构：首屏（大字标 + 展厅照片，往下走推向 A/I）→ 品牌一句话 → 展厅导览（五张卡牌）→
+   五间展厅（--d 是镜头推近的程度，--lab 是展签浮现的程度）→ 结尾与平面图。
+   展厅、展签、按钮、树影等公共部分在 gallery.css。作品的动画都把「结果」写成基础样式，
+   关键帧负责一轮里的过程，所以减少动态时停在结果上。 */
+
+/* ---------- 首屏：画廊官网的样子，往下走就进了展厅 ---------- */
+/* 首屏是一段 330vh 的滚动，两幕：
+   第一幕 --e 照片放大成视野、--d 镜头推到 A/I 墙前，停一会儿；
+   第二幕 --k（0…1，缓入缓出）镜头横移、走近墙右边的展签（--walk-x/y/z 由脚本量出），展签下面多出一行跑马灯；
+   --z 最后一段里镜头再往前挪一点，滚动时手上一直有回应。展签始终钉在墙上，动的是镜头。 */
+.g-h-hero {
+  --e: clamp(0, var(--p, 0) / 0.143, 1);
+  --d: clamp(0, (var(--p, 0) - 0.087) / 0.296, 1);
+  --s2: clamp(0, (var(--p, 0) - 0.46) / 0.2, 1);
+  --k: calc(var(--s2) * var(--s2) * (3 - 2 * var(--s2)));
+  --z: clamp(0, (var(--p, 0) - 0.66) / 0.34, 1);
+  --pan-x: calc(var(--k) * var(--walk-x, 0px));
+  --pan-y: calc(var(--k) * var(--walk-y, 0px));
+  --push: calc(var(--k) * var(--walk-z, 0px) + var(--z) * 110px);
+  --top: clamp(236px, 31svh, 300px);
+  --base: clamp(34px, 5.4svh, 56px);
+  height: 330vh;
+}
+.g-h-hero .g-room {
+  --vy: calc(
+    (var(--top) + 100svh - var(--base)) / 2 * (1 - var(--e)) + 46svh * var(--e)
+  );
+}
+.g-h-view {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(
+    calc(var(--top) * (1 - var(--e))) calc(var(--gutter) * (1 - var(--e)))
+      calc(var(--base) * (1 - var(--e))) calc(var(--gutter) * (1 - var(--e)))
+      round calc(14px * (1 - var(--e)))
+  );
+}
+.g-h-view .g-room {
+  animation: g-h-fade 1.8s 0.25s ease both;
+}
+.g-h-mat {
+  position: absolute;
+  z-index: 3;
+  display: block;
+  background: var(--paper);
+}
+.g-h-mat-top {
+  inset: 0 0 auto;
+  height: var(--top);
+  transform: translateY(calc(var(--e) * -100%));
+}
+.g-h-mat-base {
+  inset: auto 0 0;
+  height: var(--base);
+  transform: translateY(calc(var(--e) * 100%));
+}
+.g-h-mat-left,
+.g-h-mat-right {
+  top: 0;
+  bottom: 0;
+  width: var(--gutter);
+}
+.g-h-mat-left {
+  left: 0;
+  transform: translateX(calc(var(--e) * -100%));
+}
+.g-h-mat-right {
+  right: 0;
+  transform: translateX(calc(var(--e) * 100%));
+}
+.g-h-masthead {
+  position: absolute;
+  z-index: 4;
+  top: 64px;
+  left: var(--gutter);
+  right: var(--gutter);
+  height: calc(var(--top) - 64px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  padding-bottom: 22px;
+  opacity: calc(1 - var(--e) * 1.6);
+  transform: translateY(calc(var(--e) * var(--top) * -0.6));
+}
+.g-h-title {
+  margin-left: -0.04em;
+  font-size: clamp(60px, min(11.8vw, calc((var(--top) - 104px) * 1.12)), 190px);
+  font-weight: 500;
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  animation: g-h-rise 1.4s var(--ease) both;
+}
+/* 右边只有三个关键词，杏色圆点隔开 */
+.g-h-keys {
+  display: flex;
+  flex-wrap: wrap;
+  padding-bottom: 6px;
+  color: var(--ink);
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  animation: g-h-rise 1.4s 0.15s var(--ease) both;
+}
+.g-h-keys span + span::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: 0.2em;
+}
+.g-h-caption {
+  position: absolute;
+  z-index: 4;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 0;
+  height: var(--base);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--mute);
+  font-size: 12px;
+  opacity: calc(1 - var(--e) * 3);
+  pointer-events: none;
+}
+.g-h-caption em {
+  font: italic 400 13.5px var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+@keyframes g-h-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes g-h-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* 墙上的 A/I 词组：一件墙面文字作品，哑光的刻字 */
+.g-h-vinyl {
+  width: 460px;
+}
+.g-h-ai-headline {
+  color: #2a2926;
+  font-size: 64px;
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.55);
+}
+.g-h-ai-words {
+  all: unset;
+  display: inline-flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.g-h-ai-words:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 8px;
+}
+.g-h-ai-row {
+  display: inline-flex;
+  white-space: nowrap;
+}
+.g-h-ai-headline[data-animated='true'] .g-h-ai-letter {
+  opacity: 0;
+}
+.g-h-label-hero {
+  width: 232px;
+}
+.g-label-title {
+  margin-top: 2px;
+  font-size: 18px;
+  line-height: 1.3;
+}
+/* ---------- 第二幕：走到展签前 ---------- */
+/* A/I 随镜头移出画面左边，同时淡一些，让视线落在展签上 */
+.g-h-vinyl {
+  opacity: calc(1 - var(--k) * 0.7);
+}
+/* 展签是一张有厚度的薄卡：底边一道 2px 的纸边，和墙之间只有贴近的接触阴影；树影也从它上面扫过 */
+.g-h-label-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+  box-shadow:
+    0 0 0 0.5px rgb(60 52 40 / 0.07),
+    0 1px 1px rgb(60 52 40 / 0.1),
+    0 2px 0 -0.5px #e4e0d8,
+    0 7px 12px -9px rgb(40 30 20 / 0.3);
+}
+.g-h-label-hero::after {
+  content: '';
+  position: absolute;
+  inset: -40% -60%;
+  background-image: var(--g-leaves-near, none);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  mix-blend-mode: multiply;
+  opacity: 0.11;
+  pointer-events: none;
+  transform-origin: 80% 0;
+  animation: g-sway-near 9s ease-in-out infinite alternate;
+}
+/* 展签上是这句话和落款；第二幕在两者之间多出一行跑马灯 */
+.g-h-label-not {
+  margin-top: 0;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+.g-h-label-not em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+  letter-spacing: 0;
+}
+/* 跑马灯：Warm ware · Human ware · … 从左往右流，在最右端固定的 x‑ware 前面渐隐；16 秒一圈 */
+.g-h-mq {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  max-height: calc(var(--k) * 2.7em);
+  margin-top: calc(var(--k) * 10px);
+  padding-top: calc(var(--k) * 9px);
+  overflow: hidden;
+  border-top: 1px solid rgb(27 26 24 / calc(var(--k) * 0.12));
+  color: var(--mute);
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: nowrap;
+  opacity: calc(var(--k) * 1.6 - 0.4);
+}
+.g-h-mq-window {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 14%,
+    #000 62%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 14%,
+    #000 62%,
+    transparent
+  );
+}
+.g-h-mq-track {
+  display: inline-flex;
+  animation: g-h-mq 16s linear infinite;
+}
+/* x‑ware：这一行里唯一不动的，x 轻轻地放大缩小 */
+.g-h-mq-end {
+  flex: none;
+  color: var(--ink);
+  font-weight: 600;
+}
+.g-h-mq-end em {
+  display: inline-block;
+  padding-right: 0.04em;
+  color: var(--accent-ink);
+  font: italic 400 1.16em var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+  transform-origin: 50% 65%;
+  animation: g-h-x-breathe 3.6s ease-in-out infinite;
+}
+@keyframes g-h-x-breathe {
+  50% {
+    transform: scale(1.14);
+  }
+}
+/* 落款：右下角，像签名 */
+.g-h-label-sign {
+  margin-top: 12px;
+  color: var(--ink-2);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: right;
+}
+.g-h-label-sign::before {
+  content: '— ';
+  color: var(--mute);
+  font-weight: 400;
+}
+.g-h-mq-run {
+  display: inline-flex;
+}
+.g-h-mq-item b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.g-h-mq-dot {
+  margin: 0 0.6em;
+  color: rgb(27 26 24 / 0.3);
+  font-style: normal;
+}
+@keyframes g-h-mq {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* ---------- 展厅导览：五张卡牌 ---------- */
+.g-h-index {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(96px, 14vh, 160px) var(--gutter) 24px;
+}
+.g-h-index-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--ink);
+}
+.g-h-index-head h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  font-size: clamp(44px, 6.4vw, 96px);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+.g-h-index-head h2 small {
+  color: var(--mute);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+}
+.g-h-index-head p {
+  color: var(--mute);
+  font: italic 400 16px/1 var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+.g-h-deck {
+  --gap: clamp(12px, 1.3vw, 20px);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--gap);
+  margin-top: clamp(40px, 6vh, 64px);
+}
+/* 整副牌一起出现：先叠在中间一摞，再依次发到各自的位置 */
+.g.is-ready .g-h-deck[data-reveal]:not(.is-in) {
+  opacity: 1;
+  transform: none;
+}
+.g-h-deck > li {
+  position: relative;
+  z-index: calc(5 - var(--i));
+  transition:
+    transform 1.1s var(--ease) calc(160ms + var(--i) * 90ms),
+    opacity 0.6s ease calc(var(--i) * 60ms);
+}
+.g.is-ready .g-h-deck:not(.is-in) > li {
+  transform: translateX(calc((2 - var(--i)) * (100% + var(--gap))))
+    translateY(calc(24px - var(--i) * 3px))
+    rotate(calc((var(--i) - 2) * 2.6deg));
+}
+.g-h-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 14px 14px 16px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.07),
+    0 1px 2px rgb(40 30 20 / 0.06),
+    0 18px 34px -24px rgb(40 30 20 / 0.42);
+  transform: perspective(900px) translateY(var(--lift, 0px))
+    rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition:
+    transform 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+.g-h-card:hover {
+  --lift: -10px;
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.09),
+    0 2px 4px rgb(40 30 20 / 0.06),
+    0 34px 46px -26px rgb(40 30 20 / 0.5);
+}
+.g-h-card:focus-visible {
+  outline-offset: 6px;
+  border-radius: 18px;
+}
+/* 牌面里面一圈细框 */
+.g-h-card::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 6px;
+  border: 1px solid rgb(27 26 24 / 0.08);
+  border-radius: 13px;
+  pointer-events: none;
+}
+.g-h-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 4px 0;
+  color: var(--mute);
+  font-size: 11px;
+}
+.g-h-card-top small,
+.g-h-card-top .g-tag {
+  margin-top: 3px;
+}
+/* 牌角点数 */
+.g-h-card-index {
+  display: inline-grid;
+  flex: none;
+  justify-items: center;
+  color: var(--ink);
+  line-height: 1;
+}
+.g-h-card-index small {
+  margin-top: 0 !important;
+  color: var(--mute);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.g-h-card-index b {
+  margin-top: 1px;
+  font: italic 400 30px/0.9 var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+.g-h-card-index-flip {
+  transform: rotate(180deg);
+}
+.g-h-card-index-flip b {
+  font-size: 22px;
+}
+.g-h-card-top small {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.g-h-card-top .g-tag {
+  font-size: 10.5px;
+}
+/* 牌面的画心：一小间白展厅，墙上挂着那件作品的缩影 */
+.g-h-card-art {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3.3;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 11px;
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 60% -10%,
+      rgb(255 254 250 / 0.95),
+      transparent 70%
+    ),
+    linear-gradient(
+      #f4f3ef 0 80%,
+      rgb(60 52 40 / 0.12) 80% calc(80% + 1px),
+      #e9e7e2 calc(80% + 1px),
+      #e2e0da
+    );
+}
+.g-h-card strong {
+  margin-top: 16px;
+  padding: 0 4px;
+  font-size: clamp(18px, 1.5vw, 22px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.g-h-card-line {
+  flex: 1;
+  margin-top: 6px;
+  padding: 0 4px;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+.g-h-card-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding: 10px 4px 0;
+  border-top: 1px solid var(--hair);
+  color: var(--mute);
+  font-size: 11.5px;
+}
+.g-h-card-foot .g-h-card-index-flip {
+  transition: transform 0.5s var(--ease);
+}
+.g-h-card:hover .g-h-card-foot .g-h-card-index-flip {
+  transform: rotate(180deg) translateY(3px);
+}
+/* 表面一道光，跟着鼠标走 */
+.g-h-card-sheen {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--gx, 50%) var(--gy, 0%),
+    rgb(255 236 214 / 0.42),
+    rgb(255 255 255 / 0) 46%
+  );
+  mix-blend-mode: multiply;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.g-h-card:hover .g-h-card-sheen {
+  opacity: 1;
+}
+/* World 还在筹备：虚线牌面 */
+.g-h-card[data-future] {
+  background: rgb(255 255 255 / 0.5);
+  box-shadow: none;
+  outline: 1px dashed rgb(27 26 24 / 0.32);
+  outline-offset: -1px;
+}
+.g-h-card[data-future]:hover {
+  box-shadow: 0 30px 40px -30px rgb(40 30 20 / 0.35);
+}
+.g-h-card[data-future] .g-h-card-art {
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 6px,
+      rgb(27 26 24 / 0.035) 6px 7px
+    ),
+    linear-gradient(#f4f3ef 0 80%, #e9e7e2 80%);
+}
+
+/* 缩影：每张牌四个小块，都用 CSS 画 */
+.g-h-mini {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.g-h-mini i {
+  position: absolute;
+  display: block;
+}
+/* Work：一块亮着的灯箱，悬停时助理递上一张小卡 */
+.g-h-mini-work i:nth-child(1) {
+  left: 20%;
+  top: 15%;
+  width: 60%;
+  height: 50%;
+  border: 2px solid #2e2d2a;
+  border-radius: 4px;
+  background: #fffdf9;
+  box-shadow:
+    0 0 22px 6px rgb(255 248 236 / 0.95),
+    0 8px 12px -8px rgb(0 0 0 / 0.35);
+}
+.g-h-mini-work i:nth-child(2) {
+  left: calc(20% + 2px);
+  top: calc(15% + 2px);
+  width: 14%;
+  height: calc(50% - 4px);
+  background: #f0ede7;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 50% 3px;
+  background-position: 50% 32%;
+  background-repeat: no-repeat;
+}
+.g-h-mini-work i:nth-child(3) {
+  left: 40%;
+  top: 24%;
+  width: 30%;
+  height: 4px;
+  border-radius: 2px;
+  background: #3a3936;
+  box-shadow:
+    0 9px 0 #ddd8cf,
+    -0px 17px 0 #e6e2da;
+  transform-origin: left;
+}
+.g-h-mini-work i:nth-child(4) {
+  left: 50%;
+  top: 41%;
+  width: 26%;
+  height: 18%;
+  border-radius: 4px;
+  background: #fff;
+  background-image:
+    linear-gradient(#cfcac1, #cfcac1), linear-gradient(var(--ink), var(--ink));
+  background-size:
+    70% 2px,
+    32% 4px;
+  background-position:
+    20% 30%,
+    20% 76%;
+  background-repeat: no-repeat;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.06),
+    0 4px 8px -3px rgb(0 0 0 / 0.28);
+  transform-origin: 80% 100%;
+}
+.g-h-card:hover .g-h-mini-work i:nth-child(3) {
+  animation: g-h-mini-type 1.2s steps(6) both;
+}
+.g-h-card:hover .g-h-mini-work i:nth-child(4) {
+  animation: g-h-mini-pop 0.7s 0.5s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+/* Tool：墙上两行字，悬停时杏色记号划过去、动作条弹出 */
+.g-h-mini-tool i:nth-child(1),
+.g-h-mini-tool i:nth-child(2) {
+  left: 16%;
+  height: 6px;
+  border-radius: 3px;
+  background: #34332f;
+}
+.g-h-mini-tool i:nth-child(1) {
+  top: 28%;
+  width: 66%;
+}
+.g-h-mini-tool i:nth-child(2) {
+  top: calc(28% + 14px);
+  width: 44%;
+}
+.g-h-mini-tool i:nth-child(3) {
+  z-index: -1;
+  left: 34%;
+  top: calc(28% - 4px);
+  width: 48%;
+  height: 14px;
+  border-radius: 3px;
+  background: rgb(234 146 96 / 0.45);
+  transform-origin: left;
+}
+.g-h-mini-tool i:nth-child(4) {
+  left: 52%;
+  top: calc(28% + 32px);
+  width: 34%;
+  height: 16px;
+  border-radius: 6px;
+  background: var(--ink);
+  background-image:
+    linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.5)),
+    linear-gradient(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.5));
+  background-size:
+    26% 8px,
+    20% 3px,
+    20% 3px;
+  background-position:
+    10% 50%,
+    56% 50%,
+    90% 50%;
+  background-repeat: no-repeat;
+  transform-origin: 0 0;
+}
+.g-h-mini-tool i:nth-child(4)::after {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: -14px;
+  width: 11px;
+  height: 14px;
+  background: var(--ink);
+  clip-path: polygon(0 0, 100% 64%, 52% 64%, 34% 100%, 0 80%);
+}
+.g-h-card:hover .g-h-mini-tool i:nth-child(3) {
+  animation: g-h-mini-mark 0.8s var(--ease) both;
+}
+.g-h-card:hover .g-h-mini-tool i:nth-child(4) {
+  animation: g-h-mini-pop 0.6s 0.7s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+/* Life：一幅海边的小水彩，旁边一张钉着的便笺；悬停时云散开 */
+.g-h-mini-life i:nth-child(1) {
+  left: 13%;
+  top: 20%;
+  width: 42%;
+  height: 40%;
+  border: 3px solid #fff;
+  background: linear-gradient(
+    #c4d1df 0 40%,
+    #ead8cb 56%,
+    #93abc1 56% 72%,
+    #efe0cb 72%
+  );
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.05),
+    0 8px 12px -8px rgb(30 20 10 / 0.4);
+}
+.g-h-mini-life i:nth-child(2) {
+  left: calc(13% + 7px);
+  top: calc(20% + 6px);
+  width: calc(42% - 14px);
+  height: 30%;
+  background:
+    radial-gradient(
+      ellipse 40% 50% at 30% 50%,
+      rgb(236 237 240 / 0.95),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 46% 50% at 74% 40%,
+      rgb(230 232 236 / 0.95),
+      transparent 70%
+    );
+}
+.g-h-mini-life i:nth-child(3) {
+  left: 61%;
+  top: 18%;
+  width: 26%;
+  height: 50%;
+  background: #fffdf7;
+  background-image: repeating-linear-gradient(
+    transparent 0 7px,
+    #e3ded4 7px 8px
+  );
+  background-size: 70% 60%;
+  background-position: 50% 70%;
+  background-repeat: no-repeat;
+  box-shadow: 0 8px 12px -8px rgb(30 20 10 / 0.4);
+  transform: rotate(3deg);
+}
+.g-h-mini-life i:nth-child(4) {
+  left: calc(74% - 4px);
+  top: calc(18% - 3px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 2px 2px rgb(0 0 0 / 0.25);
+}
+.g-h-card:hover .g-h-mini-life i:nth-child(2) {
+  animation: g-h-mini-clear 1.4s var(--ease) both;
+}
+/* Story：暮蓝与暖沙两块色面，悬停时中间那道缝亮起来 */
+.g-h-mini-story i:nth-child(1) {
+  left: 39%;
+  top: 11%;
+  width: 22%;
+  height: 60%;
+  border-radius: 1px;
+  background: linear-gradient(
+    #5b68a0 0 55%,
+    #2e2943 55% 61%,
+    #d7a672 61% 96%,
+    #2e2943 96%
+  );
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.15),
+    0 10px 14px -8px rgb(30 20 30 / 0.5);
+}
+.g-h-mini-story i:nth-child(2) {
+  left: 41%;
+  top: calc(11% + 60% * 0.575);
+  width: 18%;
+  height: 2px;
+  border-radius: 2px;
+  background: #fbe7c6;
+  box-shadow: 0 0 6px 2px rgb(251 231 198 / 0.7);
+  opacity: 0.6;
+  transition:
+    opacity 0.6s,
+    box-shadow 0.6s;
+}
+.g-h-card:hover .g-h-mini-story i:nth-child(2) {
+  opacity: 1;
+  box-shadow: 0 0 16px 6px rgb(251 231 198 / 0.95);
+}
+.g-h-mini-story i:nth-child(n + 3) {
+  display: none;
+}
+/* World：地上一座白色展台，玻璃罩里一件小模型 */
+.g-h-mini-world i:nth-child(1) {
+  left: 35%;
+  top: 50%;
+  width: 30%;
+  height: 32%;
+  background: linear-gradient(#fbfaf7, #eeece7);
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.05),
+    7px 0 0 #e2dfd8,
+    0 10px 12px -6px rgb(30 20 10 / 0.2);
+}
+.g-h-mini-world i:nth-child(2) {
+  left: 37%;
+  top: 18%;
+  width: 26%;
+  height: 32%;
+  border: 1px solid rgb(140 150 155 / 0.45);
+  background: linear-gradient(
+    120deg,
+    rgb(255 255 255 / 0.8),
+    rgb(255 255 255 / 0.1) 50%,
+    rgb(255 255 255 / 0.5)
+  );
+}
+.g-h-mini-world i:nth-child(3) {
+  left: 43%;
+  top: 32%;
+  width: 14%;
+  height: 12%;
+  background: #fdfdfb;
+  clip-path: polygon(50% 0, 100% 30%, 100% 70%, 50% 100%, 0 70%, 0 30%);
+  box-shadow: inset -6px -4px 0 #d8d5ce;
+  transition: transform 0.6s var(--ease);
+}
+.g-h-mini-world i:nth-child(4) {
+  left: 47%;
+  top: 30%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px 2px rgb(234 146 96 / 0.6);
+}
+.g-h-card:hover .g-h-mini-world i:nth-child(3) {
+  transform: translateY(-4px);
+}
+@keyframes g-h-mini-type {
+  from {
+    transform: scaleX(0.1);
+  }
+}
+@keyframes g-h-mini-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+@keyframes g-h-mini-mark {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes g-h-mini-clear {
+  to {
+    opacity: 0;
+    transform: scaleX(1.5);
+  }
+}
+
+/* ---------- 展厅 ---------- */
+.g-h-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px 24px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(120px, 22vh, 220px) var(--gutter) 30px;
+}
+.g-h-entry-no {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+  color: var(--mute);
+  font-size: 12.5px;
+}
+.g-h-entry-no span:first-child {
+  color: var(--ink-2);
+  font: italic 400 18px var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+.g-h-entry-name {
+  font-size: clamp(40px, 5.4vw, 84px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.g-h-entry-meta {
+  padding-bottom: 8px;
+  color: var(--mute);
+  font-size: 13px;
+}
+.g-h-hall {
+  --d: clamp(0, (var(--p, 0) - 0.02) / 0.6, 1);
+  --lab: clamp(0, (var(--d) - 0.55) / 0.3, 1);
+  height: 250vh;
+}
+.g-h-hall .g-stage {
+  border-top: 1px solid var(--paper);
+}
+/* 走到墙跟前：推镜推到正墙几乎占满视野，两侧只露一窄条侧墙，展签的字才看得清 */
+.g-h-hall .g-room {
+  --T: 1280;
+}
+.g.is-ready .g-h-hall .g-label {
+  opacity: var(--lab, 1);
+  transform: translateY(calc((1 - var(--lab, 1)) * 10px));
+}
+.g.is-ready .g-h-hall .g-label:focus-within {
+  opacity: 1;
+  transform: none;
+}
+.g-h-relation {
+  margin-top: 8px;
+  color: var(--mute);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.g-h-relation .g-tag {
+  margin-left: 6px;
+}
+
+/* 演示：右下角一个暂停钮，鼠标移上去才出现；暂停或离开视口时动画停住 */
+.g-h-demo {
+  position: relative;
+  margin: 0;
+}
+.g-h-demo-toggle {
+  position: absolute;
+  z-index: 5;
+  right: -12px;
+  bottom: -12px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.92);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.1),
+    0 4px 10px -4px rgb(0 0 0 / 0.2);
+  color: var(--ink-2);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.g-h-demo:hover .g-h-demo-toggle,
+.g-h-demo-toggle:focus-visible,
+.g-h-demo-toggle[aria-pressed='true'] {
+  opacity: 1;
+}
+.g-h-demo[data-running='false'] *,
+.g-h-demo[data-running='false'] *::before,
+.g-h-demo[data-running='false'] *::after {
+  animation-play-state: paused !important;
+}
+
+/* ---------- Room 1 · Work 灯箱 ---------- */
+/* 一块背光的灯箱：黑铝细框，屏幕自己发光，把墙面也照亮一圈 */
+.g-h-lb {
+  width: 560px;
+}
+.g-h-lb-frame {
+  padding: 7px;
+  border-radius: 11px;
+  background: linear-gradient(150deg, #3b3a37, #222120);
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.25),
+    0 2px 3px rgb(0 0 0 / 0.16),
+    0 36px 46px -30px rgb(30 22 14 / 0.6),
+    0 0 110px 24px rgb(255 250 240 / 0.8);
+}
+.g-h-lb-screen {
+  position: relative;
+  display: grid;
+  grid-template-columns: 122px minmax(0, 1fr);
+  height: 346px;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #fffefb;
+}
+.g-h-lb-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 90% 60% at 50% 0%,
+      rgb(255 255 255 / 0.4),
+      transparent 70%
+    ),
+    linear-gradient(118deg, rgb(255 255 255 / 0.22), transparent 34%);
+  box-shadow: inset 0 0 28px rgb(255 236 210 / 0.45);
+  pointer-events: none;
+}
+.g-h-lb-dock {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 9px;
+  border-right: 1px solid rgb(27 26 24 / 0.06);
+  background: #f4f2ed;
+}
+.g-h-lb-project {
+  margin: 0 5px 10px;
+  font-size: 11.5px;
+  font-weight: 650;
+}
+/* 插件随镜头推近一块块拼上：随你生长 */
+.g-h-lb-plugin {
+  --on: clamp(0, (var(--d, 1) - 0.2 - var(--k) * 0.08) * 7, 1);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 7px;
+  border-radius: 7px;
+  color: var(--ink-2);
+  font-size: 11px;
+  opacity: var(--on);
+  transform: translateX(calc((1 - var(--on)) * -18px))
+    scale(calc(0.9 + var(--on) * 0.1));
+  transform-origin: left center;
+}
+.g-h-lb-plugin i {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: #d9d4cb;
+}
+.g-h-lb-plugin:nth-of-type(1) i {
+  background: #c5d1bc;
+}
+.g-h-lb-plugin:nth-of-type(3) i {
+  background: #c3cedb;
+}
+.g-h-lb-plugin:nth-of-type(4) i {
+  background: #e4d2b4;
+}
+.g-h-lb-plugin:nth-of-type(5) i {
+  background: #d2c9de;
+}
+.g-h-lb-plugin[data-on] {
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  color: var(--ink);
+  font-weight: 600;
+}
+.g-h-lb-plugin[data-on] i {
+  background: var(--accent);
+}
+.g-h-lb-page {
+  position: relative;
+  padding: 16px 20px;
+}
+.g-h-lb-crumb {
+  color: var(--mute);
+  font-size: 10.5px;
+}
+.g-h-lb-crumb span {
+  margin: 0 3px;
+  opacity: 0.5;
+}
+.g-h-lb-head {
+  margin-top: 12px;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.g-h-lb-typed {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  margin-top: 8px;
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.g-h-lb-typed span {
+  display: inline-block;
+  width: 15em;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: g-h-lb-type 12s infinite;
+}
+.g-h-lb-typed i {
+  flex: none;
+  width: 1.5px;
+  height: 15px;
+  margin-left: 1px;
+  background: var(--accent);
+  animation: g-h-blink 1s steps(1) infinite;
+}
+.g-h-lb-fed {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+}
+.g-h-lb-fed li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #f6f4ef;
+  font-size: 11.5px;
+  animation: g-h-lb-fed 12s var(--ease) infinite both;
+}
+.g-h-lb-fed li:nth-child(2) {
+  animation-delay: 0.22s;
+}
+.g-h-lb-fed li:nth-child(3) {
+  animation-delay: 0.44s;
+}
+.g-h-lb-fed small {
+  flex: none;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgb(195 206 219 / 0.6);
+  color: #4c596a;
+  font-size: 10px;
+}
+.g-h-lb-rule {
+  display: block;
+  width: 92%;
+  height: 7px;
+  margin-top: 14px;
+  border-radius: 4px;
+  background: #efece6;
+}
+.g-h-lb-rule-short {
+  width: 58%;
+  margin-top: 8px;
+}
+/* 助理递上的操作卡：在需要的那一环出现，点一下就执行 */
+.g-h-lb-card {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 226px;
+  padding: 11px 12px 10px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.06),
+    0 14px 26px -12px rgb(40 30 20 / 0.38);
+  animation: g-h-lb-card 12s var(--ease) infinite;
+}
+.g-h-lb-who {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+.g-h-lb-who i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f8cfa6, var(--accent));
+}
+.g-h-lb-who span {
+  color: var(--mute);
+  font-weight: 400;
+}
+.g-h-lb-text {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+.g-h-lb-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 9px;
+  color: var(--mute);
+  font-size: 11px;
+}
+.g-h-lb-run {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 13px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 500;
+  animation: g-h-lb-run 12s infinite;
+}
+.g-h-lb-ripple {
+  position: absolute;
+  right: 190px;
+  bottom: 21px;
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+  animation: g-h-lb-ripple 12s ease-out infinite;
+}
+.g-h-lb-cursor {
+  position: absolute;
+  right: 185px;
+  bottom: 15px;
+  color: var(--ink);
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.2));
+  transform-origin: 4px 3px;
+  opacity: 0;
+  animation: g-h-lb-cursor 12s var(--ease) infinite;
+}
+.g-h-lb-toast {
+  position: absolute;
+  left: 20px;
+  bottom: 16px;
+  display: inline-flex;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 11px;
+  opacity: 0;
+  animation: g-h-lb-toast 12s var(--ease) infinite;
+}
+.g-h-lb-toast span {
+  opacity: 0.6;
+}
+/* 一轮 12 秒：打字 → 卡片出现 → 光标点「执行」→ 三条反馈带着出处落进来 → 提示建好待办 */
+@keyframes g-h-lb-type {
+  0% {
+    width: 0;
+    animation-timing-function: steps(15, end);
+  }
+  16%,
+  100% {
+    width: 15em;
+  }
+}
+@keyframes g-h-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes g-h-lb-card {
+  0%,
+  17% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  22%,
+  42% {
+    opacity: 1;
+    transform: none;
+  }
+  47%,
+  100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}
+@keyframes g-h-lb-run {
+  0%,
+  36% {
+    transform: none;
+    background: var(--ink);
+  }
+  38% {
+    transform: scale(0.9);
+    background: var(--accent-ink);
+  }
+  41%,
+  100% {
+    transform: none;
+    background: var(--accent-ink);
+  }
+}
+@keyframes g-h-lb-ripple {
+  0%,
+  37% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  37.5% {
+    opacity: 0.7;
+    transform: scale(0.4);
+  }
+  45%,
+  100% {
+    opacity: 0;
+    transform: scale(2.3);
+  }
+}
+@keyframes g-h-lb-cursor {
+  0%,
+  22% {
+    opacity: 0;
+    transform: translate(130px, 70px);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(110px, 60px);
+  }
+  34% {
+    transform: none;
+  }
+  37% {
+    transform: scale(0.84);
+  }
+  40% {
+    transform: none;
+  }
+  46% {
+    opacity: 1;
+    transform: none;
+  }
+  54%,
+  100% {
+    opacity: 0;
+    transform: translate(40px, 50px);
+  }
+}
+@keyframes g-h-lb-fed {
+  0%,
+  47% {
+    opacity: 0;
+    transform: translateY(-8px);
+    background: rgb(234 146 96 / 0.24);
+  }
+  52% {
+    opacity: 1;
+    transform: none;
+    background: rgb(234 146 96 / 0.24);
+  }
+  64%,
+  94% {
+    opacity: 1;
+    transform: none;
+    background: #f6f4ef;
+  }
+  98%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+@keyframes g-h-lb-toast {
+  0%,
+  62% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  66%,
+  90% {
+    opacity: 1;
+    transform: none;
+  }
+  95%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+/* ---------- Room 2 · Tool 墙面文字 ---------- */
+/* 墙上直接刻着一句英文；一只真正在动的光标拖选、松开，动作条弹出，按下「翻译」，译文卡贴上墙 */
+.g-h-tw {
+  width: 600px;
+}
+.g-h-tw-wall {
+  position: relative;
+}
+.g-h-tw-url {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mute);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+.g-h-tw-url::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: currentColor;
+}
+.g-h-tw-en {
+  margin-top: 16px;
+  color: #262522;
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 1.28;
+  letter-spacing: -0.025em;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.6);
+}
+.g-h-tw-en mark {
+  padding: 0 0.04em;
+  border-radius: 3px;
+  background-image: linear-gradient(
+    rgb(234 146 96 / 0.38),
+    rgb(234 146 96 / 0.38)
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  animation: g-h-tw-mark 10s infinite;
+}
+/* 动作条：Molis Tool 在光标旁弹出的三个动作 */
+.g-h-tw-chips {
+  position: absolute;
+  z-index: 2;
+  left: min(calc(var(--ex, 300px) + 10px), calc(100% - 180px));
+  top: calc(var(--ey, 120px) + 30px);
+  display: flex;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--ink);
+  box-shadow: 0 16px 28px -14px rgb(30 22 14 / 0.55);
+  animation: g-h-tw-chips 10s var(--ease) infinite;
+}
+.g-h-tw-chips span {
+  padding: 6px 12px;
+  border-radius: 9px;
+  color: #fff;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.g-h-tw-chips span:first-child {
+  animation: g-h-tw-chip 10s infinite;
+}
+/* 译文卡：纸胶带贴在墙上 */
+.g-h-tw-card {
+  position: relative;
+  width: 330px;
+  margin: 38px 0 0 auto;
+  padding: 20px 20px 14px;
+  background: #fffdf8;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.06),
+    0 18px 28px -18px rgb(40 30 20 / 0.42);
+  transform: rotate(-1.2deg);
+  animation: g-h-tw-card 10s var(--ease) infinite;
+}
+.g-h-tw-card small {
+  display: block;
+  color: var(--mute);
+  font-size: 10.5px;
+}
+.g-h-tw-card small:first-of-type {
+  color: var(--accent-ink);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.g-h-tw-card p {
+  margin: 6px 0 10px;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.g-h-tw-tape {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 84px;
+  height: 20px;
+  margin-left: -42px;
+  background: rgb(238 224 198 / 0.78);
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.05);
+  transform: rotate(2.4deg);
+}
+.g-h-tw-ripple {
+  position: absolute;
+  left: var(--cx, 0);
+  top: var(--cy, 0);
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+  animation: g-h-tw-ripple 10s ease-out infinite;
+}
+.g-h-tw-cursor {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  margin: -6px 0 0 -8px;
+  color: var(--ink);
+  filter: drop-shadow(0 3px 4px rgb(0 0 0 / 0.2));
+  transform: translate(var(--cx, 0), var(--cy, 0));
+  transform-origin: 8px 6px;
+  animation: g-h-tw-cursor 10s var(--ease) infinite;
+}
+/* 一轮 10 秒：滑进来 → 按住拖过那句 → 松开，动作条弹出 → 移到「翻译」按下去 → 译文卡贴上墙 */
+@keyframes g-h-tw-cursor {
+  0% {
+    opacity: 0;
+    transform: translate(calc(var(--sx) + 190px), calc(var(--sy) + 170px));
+  }
+  5% {
+    opacity: 1;
+  }
+  14% {
+    transform: translate(var(--sx), var(--sy));
+  }
+  17% {
+    transform: translate(var(--sx), var(--sy)) scale(0.86);
+    animation-timing-function: linear;
+  }
+  36% {
+    transform: translate(var(--ex), var(--ey)) scale(0.86);
+  }
+  39%,
+  47% {
+    transform: translate(var(--ex), var(--ey));
+  }
+  57% {
+    transform: translate(var(--cx), var(--cy));
+  }
+  60% {
+    transform: translate(var(--cx), var(--cy)) scale(0.82);
+  }
+  63% {
+    transform: translate(var(--cx), var(--cy));
+  }
+  78% {
+    opacity: 1;
+    transform: translate(calc(var(--cx) + 80px), calc(var(--cy) + 96px));
+  }
+  88%,
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--cx) + 80px), calc(var(--cy) + 96px));
+  }
+}
+@keyframes g-h-tw-mark {
+  0%,
+  17% {
+    background-position: 0 0;
+    background-size: 0% 100%;
+    animation-timing-function: linear;
+  }
+  36% {
+    background-position: 0 0;
+    background-size: 100% 100%;
+  }
+  90% {
+    background-position: 100% 0;
+    background-size: 100% 100%;
+  }
+  96%,
+  100% {
+    background-position: 100% 0;
+    background-size: 0% 100%;
+  }
+}
+@keyframes g-h-tw-chips {
+  0%,
+  39% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  43%,
+  66% {
+    opacity: 1;
+    transform: none;
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@keyframes g-h-tw-chip {
+  0%,
+  59% {
+    background: transparent;
+  }
+  60%,
+  68% {
+    background: var(--accent-ink);
+  }
+  72%,
+  100% {
+    background: transparent;
+  }
+}
+@keyframes g-h-tw-ripple {
+  0%,
+  60% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  60.5% {
+    opacity: 0.8;
+    transform: scale(0.35);
+  }
+  68%,
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+@keyframes g-h-tw-card {
+  0%,
+  64% {
+    opacity: 0;
+    transform: translateY(-16px) rotate(-5deg);
+  }
+  70%,
+  90% {
+    opacity: 1;
+    transform: rotate(-1.2deg);
+  }
+  95%,
+  100% {
+    opacity: 0;
+    transform: rotate(-1.2deg);
+  }
+}
+
+/* ---------- Room 3 · Life 双联画 ---------- */
+.g-h-ld-pair {
+  display: flex;
+  align-items: center;
+  gap: 44px;
+}
+/* 白漆木框 + 宽白卡纸，里面一幅傍晚海边的水彩 */
+.g-h-ld-painting {
+  padding: 10px;
+  background: linear-gradient(145deg, #ffffff, #f3f1ec);
+  box-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 0.04),
+    0 1px 1px rgb(0 0 0 / 0.1),
+    0 4px 6px rgb(30 20 10 / 0.08),
+    0 32px 38px -26px rgb(30 20 10 / 0.48);
+}
+.g-h-ld-window {
+  position: relative;
+  padding: 26px 26px 32px;
+  background: #fff;
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.12);
+}
+.g-h-ld-window img {
+  display: block;
+  width: 300px;
+  height: 225px;
+}
+/* 阴天的云：天放晴的那一步，云往两边散开 */
+.g-h-ld-clouds {
+  position: absolute;
+  left: 26px;
+  top: 26px;
+  width: 300px;
+  height: 225px;
+  overflow: hidden;
+  background: linear-gradient(
+    rgb(164 172 184 / 0.5),
+    rgb(164 172 184 / 0.26) 58%,
+    rgb(164 172 184 / 0.08)
+  );
+  opacity: 0;
+  pointer-events: none;
+  animation: g-h-ld-tint 16s ease-in-out infinite;
+}
+.g-h-ld-clouds::before,
+.g-h-ld-clouds::after {
+  content: '';
+  position: absolute;
+  background: radial-gradient(
+    closest-side,
+    rgb(240 241 244 / 0.98),
+    rgb(236 238 242 / 0.7) 55%,
+    transparent
+  );
+}
+.g-h-ld-clouds::before {
+  left: -16%;
+  top: 2%;
+  width: 78%;
+  height: 46%;
+  animation: g-h-ld-cloud-l 16s ease-in-out infinite;
+}
+.g-h-ld-clouds::after {
+  right: -18%;
+  top: 10%;
+  width: 82%;
+  height: 48%;
+  animation: g-h-ld-cloud-r 16s ease-in-out infinite;
+}
+/* 它写给你的便笺：记着你说过的话，一步步走到出发 */
+.g-h-ld-note {
+  position: relative;
+  width: 256px;
+  padding: 22px 20px 16px;
+  background: #fffdf7;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.06),
+    0 20px 28px -20px rgb(40 30 20 / 0.45);
+  transform: rotate(1.4deg);
+}
+.g-h-ld-pin {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 13px;
+  height: 13px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    #f8c79a,
+    var(--accent) 55%,
+    #c26c3a
+  );
+  box-shadow: 0 3px 4px -1px rgb(0 0 0 / 0.32);
+}
+.g-h-ld-tab {
+  color: var(--mute);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.g-h-ld-quote {
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+.g-h-ld-note ol {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed rgb(27 26 24 / 0.18);
+}
+.g-h-ld-note li {
+  position: relative;
+  padding: 4px 6px 4px 20px;
+  border-radius: 6px;
+  color: var(--ink-2);
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+.g-h-ld-note li::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 0.82em;
+  width: 7px;
+  height: 7px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+}
+.g-h-ld-note li em {
+  margin-left: 4px;
+  padding: 0 5px;
+  border: 1px dashed rgb(27 26 24 / 0.3);
+  border-radius: 999px;
+  color: var(--mute);
+  font-size: 9.5px;
+  font-style: normal;
+  white-space: nowrap;
+}
+.g-h-ld-note li:nth-child(1) {
+  animation: g-h-ld-s0 16s ease infinite;
+}
+.g-h-ld-note li:nth-child(2) {
+  animation: g-h-ld-s1 16s ease infinite;
+}
+.g-h-ld-note li:nth-child(3) {
+  animation: g-h-ld-s2 16s ease infinite;
+}
+.g-h-ld-note li:nth-child(4) {
+  animation: g-h-ld-s3 16s ease infinite;
+}
+/* 一轮 16 秒：记着 → 天放晴、它想到了（云散开）→ 给几个方案 → 你确认后才准备 */
+@keyframes g-h-ld-s0 {
+  0%,
+  2% {
+    opacity: 0.32;
+    background: transparent;
+  }
+  5%,
+  21% {
+    opacity: 1;
+    background: rgb(234 146 96 / 0.12);
+  }
+  24%,
+  92% {
+    opacity: 0.6;
+    background: transparent;
+  }
+  98%,
+  100% {
+    opacity: 0.32;
+  }
+}
+@keyframes g-h-ld-s1 {
+  0%,
+  22% {
+    opacity: 0.32;
+    background: transparent;
+  }
+  25%,
+  42% {
+    opacity: 1;
+    background: rgb(234 146 96 / 0.12);
+  }
+  45%,
+  92% {
+    opacity: 0.6;
+    background: transparent;
+  }
+  98%,
+  100% {
+    opacity: 0.32;
+  }
+}
+@keyframes g-h-ld-s2 {
+  0%,
+  43% {
+    opacity: 0.32;
+    background: transparent;
+  }
+  46%,
+  62% {
+    opacity: 1;
+    background: rgb(234 146 96 / 0.12);
+  }
+  65%,
+  92% {
+    opacity: 0.6;
+    background: transparent;
+  }
+  98%,
+  100% {
+    opacity: 0.32;
+  }
+}
+@keyframes g-h-ld-s3 {
+  0%,
+  63% {
+    opacity: 0.32;
+    background: transparent;
+  }
+  66%,
+  88% {
+    opacity: 1;
+    background: rgb(234 146 96 / 0.12);
+  }
+  91%,
+  92% {
+    opacity: 0.6;
+    background: transparent;
+  }
+  98%,
+  100% {
+    opacity: 0.32;
+  }
+}
+@keyframes g-h-ld-tint {
+  0%,
+  26% {
+    opacity: 1;
+  }
+  38%,
+  92% {
+    opacity: 0;
+  }
+  98%,
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes g-h-ld-cloud-l {
+  0%,
+  26% {
+    opacity: 1;
+    transform: none;
+  }
+  40%,
+  92% {
+    opacity: 0;
+    transform: translateX(-60%);
+  }
+  93% {
+    opacity: 0;
+    transform: none;
+  }
+  98%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes g-h-ld-cloud-r {
+  0%,
+  26% {
+    opacity: 1;
+    transform: none;
+  }
+  40%,
+  92% {
+    opacity: 0;
+    transform: translateX(60%);
+  }
+  93% {
+    opacity: 0;
+    transform: none;
+  }
+  98%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Room 4 · Story 色域画 ---------- */
+.g-h-field {
+  position: relative;
+  display: block;
+  width: 270px;
+  height: 415px;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.12),
+    0 4px 6px rgb(30 20 30 / 0.12),
+    0 36px 38px -24px rgb(30 20 30 / 0.56);
+}
+.g-h-field img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.g-h-field-glow,
+.g-h-field-door {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+.g-h-field-up {
+  left: 8%;
+  right: 8%;
+  top: 6%;
+  height: 51%;
+  background: radial-gradient(
+    ellipse 62% 56% at 50% 60%,
+    rgb(165 180 230 / 0.42),
+    transparent 76%
+  );
+  opacity: 0;
+  animation: g-h-breathe 14s ease-in-out infinite;
+}
+.g-h-field-low {
+  left: 8%;
+  right: 8%;
+  top: 64%;
+  height: 30%;
+  background: radial-gradient(
+    ellipse 62% 62% at 50% 40%,
+    rgb(255 224 176 / 0.46),
+    transparent 76%
+  );
+  opacity: 0;
+  animation: g-h-breathe 14s -7s ease-in-out infinite;
+}
+/* 中间那道缝：走得越近越亮，像门缝里透出来的光，最后溢到墙上 */
+.g-h-field-door {
+  left: 10%;
+  right: 10%;
+  top: 57%;
+  height: 4%;
+  background: radial-gradient(
+    closest-side,
+    rgb(255 236 200 / 0.95),
+    rgb(255 226 180 / 0.4) 60%,
+    transparent
+  );
+  opacity: calc(0.3 + var(--d, 1) * 0.7);
+  transform: scaleX(calc(0.85 + var(--d, 1) * 0.3))
+    scaleY(calc(0.8 + var(--d, 1) * 0.9));
+  box-shadow: 0 0 calc(var(--d, 1) * 60px) calc(var(--d, 1) * 18px)
+    rgb(255 228 186 / calc(var(--d, 1) * 0.35));
+}
+@keyframes g-h-breathe {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ---------- Room 5 · World 展台上的方案模型 ---------- */
+/* 墙上的字和展签挂大一点（墙上只有它们）；镜头推得浅一些，展台留在镜头前面 */
+.g-h-hall-world {
+  --fit: 1.2;
+}
+.g-h-hall-world .g-room {
+  --T: 700;
+}
+/* 墙上只有一句过渡和展签，放在右上；展台立在左前方的地上 */
+.g-h-hall-world .g-hang {
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 7% 9% 0 0;
+}
+.g-h-hall-world .g-group {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 34px;
+}
+.g-h-hall-world .g-group::before {
+  inset: -30% -20% -20%;
+}
+.g-h-world-text {
+  width: 380px;
+  color: #2a2926;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.42;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.6);
+}
+.g-h-world-text .g-phrase {
+  display: block;
+}
+/* 展台：一个立在地上的白色方块，正面、侧面、顶面，脚下一圈淡淡的影子。
+   尺寸按视口的高和宽里较小的那一边算（矮或窄的窗口里展台也跟着小），免得挡住墙上的字和展签 */
+.g-h-plinth {
+  --u: min(1svh, 0.64vw);
+  --pw: calc(var(--u) * 42);
+  --ph: calc(var(--u) * 28);
+  --pd: calc(var(--u) * 30);
+  --vw: calc(var(--u) * 38);
+  --gd: calc(var(--u) * 22);
+  position: absolute;
+  left: 24%;
+  bottom: 0;
+  display: block;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: translateZ(-1150px);
+}
+.g-h-plinth > i,
+.g-h-plinth-piece {
+  position: absolute;
+  display: block;
+  font-style: normal;
+}
+.g-h-plinth-front {
+  left: calc(var(--pw) / -2);
+  bottom: 0;
+  width: var(--pw);
+  height: var(--ph);
+  transform-style: preserve-3d;
+  background: linear-gradient(#fbfaf7, #f1efea 80%, #ebe9e3);
+  box-shadow:
+    inset 0 0 0 1px rgb(60 52 40 / 0.05),
+    inset 0 -2px 0 rgb(60 52 40 / 0.06);
+}
+.g-h-plinth-front::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: var(--pd);
+  height: 100%;
+  background: linear-gradient(to right, #e7e4dd, #dedbd3);
+  transform-origin: 0 50%;
+  transform: rotateY(90deg);
+}
+.g-h-plinth-front b {
+  position: absolute;
+  left: calc(var(--u) * 2.4);
+  bottom: calc(var(--u) * 2.2);
+  color: var(--mute);
+  font-size: max(11px, calc(var(--u) * 1.7));
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+.g-h-plinth-top {
+  left: calc(var(--pw) / -2);
+  bottom: var(--ph);
+  width: var(--pw);
+  height: var(--pd);
+  transform-origin: 50% 100%;
+  transform: rotateX(90deg);
+  background:
+    radial-gradient(
+      ellipse 70% 60% at 50% 60%,
+      rgb(255 255 255 / 0.9),
+      transparent 80%
+    ),
+    #f6f5f1;
+}
+.g-h-plinth-shadow {
+  left: calc(var(--pw) * -0.72);
+  bottom: 1px;
+  width: calc(var(--pw) * 1.44);
+  height: calc(var(--pd) * 1.6);
+  transform-origin: 50% 100%;
+  transform: translateZ(calc(var(--pd) * 0.27)) rotateX(90deg);
+  background: radial-gradient(
+    ellipse 50% 46% at 50% 56%,
+    rgb(60 50 40 / 0.2),
+    rgb(60 50 40 / 0.08) 60%,
+    transparent 76%
+  );
+}
+/* 玻璃罩：立在展台顶面中间；模型画在罩子的中间那一层 */
+.g-h-plinth-piece {
+  left: calc(var(--vw) / -2);
+  bottom: var(--ph);
+  width: var(--vw);
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--pd) / -2));
+}
+.g-h-vitrine {
+  position: relative;
+  display: block;
+  padding: calc(var(--u) * 3.4) calc(var(--u) * 1.8) calc(var(--u) * 0.8);
+  transform-style: preserve-3d;
+}
+/* 模型的画布四周留白多，裁掉一些，让模型撑满罩子 */
+.g-h-vitrine .g-wpage-model {
+  position: relative;
+  width: 128%;
+  margin: -6% -14% -3%;
+}
+.g-h-vitrine-glass {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border: 1px solid rgb(255 255 255 / 0.95);
+  background: linear-gradient(
+    112deg,
+    rgb(255 255 255 / 0.32),
+    rgb(255 255 255 / 0.04) 38%,
+    rgb(255 255 255 / 0.2) 56%,
+    rgb(255 255 255 / 0.02) 70%
+  );
+  box-shadow:
+    inset 0 0 0 1px rgb(150 160 165 / 0.22),
+    0 0 0 0.5px rgb(120 130 135 / 0.3);
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--gd) / 2));
+  pointer-events: none;
+}
+/* 罩子的右侧和顶面：两片往里延伸的玻璃 */
+.g-h-vitrine-glass::before,
+.g-h-vitrine-glass::after {
+  content: '';
+  position: absolute;
+  border: 1px solid rgb(255 255 255 / 0.9);
+  background: linear-gradient(rgb(255 255 255 / 0.18), rgb(255 255 255 / 0.04));
+  box-shadow: inset 0 0 0 1px rgb(150 160 165 / 0.18);
+}
+.g-h-vitrine-glass::before {
+  left: 100%;
+  top: -1px;
+  bottom: -1px;
+  width: var(--gd);
+  transform-origin: 0 50%;
+  transform: rotateY(90deg);
+}
+.g-h-vitrine-glass::after {
+  left: -1px;
+  right: -1px;
+  top: 0;
+  height: var(--gd);
+  transform-origin: 50% 0;
+  transform: rotateX(-90deg);
+}
+/* 模型一块块升起，三面小旗竖起来：进了这一间才开始 */
+.g-h-plinth .g-wpage-block {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s var(--ease),
+    transform 1.1s var(--ease);
+}
+.g-h-plinth .g-wpage-block:first-of-type {
+  opacity: 1;
+  transform: none;
+}
+.g-h-plinth .g-wpage-block:nth-of-type(2) {
+  transition-delay: 0.1s;
+}
+.g-h-plinth .g-wpage-block:nth-of-type(3) {
+  transition-delay: 0.2s;
+}
+.g-h-plinth .g-wpage-block:nth-of-type(4) {
+  transition-delay: 0.3s;
+}
+.g-h-plinth .g-wpage-block:nth-of-type(5) {
+  transition-delay: 0.4s;
+}
+.g-h-plinth .g-wpage-block:nth-of-type(6) {
+  transition-delay: 0.5s;
+}
+.g-h-plinth .g-wpage-block:nth-of-type(7) {
+  transition-delay: 0.6s;
+}
+.g-h-plinth .g-wpage-block:nth-of-type(n + 8) {
+  transition-delay: 0.7s;
+}
+.g-h-flag {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.6s var(--ease) calc(1.1s + var(--k) * 0.22s),
+    transform 0.8s var(--ease) calc(1.1s + var(--k) * 0.22s);
+}
+.g-h-flag line {
+  stroke: var(--ink-2);
+  stroke-width: 1;
+}
+.g-h-flag rect {
+  fill: #fff;
+  stroke: rgb(27 26 24 / 0.25);
+  stroke-width: 0.8;
+}
+.g-h-flag text {
+  fill: var(--ink);
+  font: 500 11px var(--sans);
+}
+main[data-step='6'] .g-h-plinth .g-wpage-block,
+main[data-step='6'] .g-h-flag,
+main[data-step='7'] .g-h-plinth .g-wpage-block,
+main[data-step='7'] .g-h-flag {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- 结尾 ---------- */
+.g-h-visit {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(110px, 16vh, 180px) var(--gutter) clamp(90px, 14vh, 150px);
+}
+.g-h-visit-lead {
+  max-width: 17em;
+  font-size: clamp(34px, 4.6vw, 72px);
+  font-weight: 500;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+}
+.g-h-visit-lead .g-phrase {
+  letter-spacing: 0;
+}
+.g-h-visit-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 clamp(24px, 4vw, 56px);
+  margin-top: clamp(64px, 10vh, 110px);
+}
+.g-h-visit-col {
+  padding-top: 20px;
+  border-top: 1px solid var(--ink);
+}
+.g-h-visit-col small {
+  color: var(--mute);
+  font-size: 12.5px;
+}
+.g-h-visit-plan small {
+  font: italic 400 15px/1 var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+.g-h-visit-col h3 {
+  margin-top: 14px;
+  font-size: clamp(20px, 1.8vw, 26px);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+.g-h-visit-col h3 span {
+  display: block;
+}
+.g-h-visit .g-label-links {
+  margin-top: 26px;
+}
+.g-h-visit-also {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin-top: clamp(48px, 7vh, 72px);
+  padding-top: 18px;
+  border-top: 1px solid var(--hair);
+  color: var(--mute);
+  font-size: 13.5px;
+}
+.g-h-visit-also a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.g-h-visit-also a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+/* 平面图 */
+.g-h-plan svg {
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  margin-top: 18px;
+  overflow: visible;
+}
+.g-h-plan-floor {
+  fill: #f3f1ec;
+}
+.g-h-plan-room {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 2;
+  transition: fill 0.3s;
+}
+.g-h-plan a {
+  outline: none;
+}
+.g-h-plan a:hover .g-h-plan-room,
+.g-h-plan a:focus-visible .g-h-plan-room {
+  fill: rgb(234 146 96 / 0.16);
+}
+.g-h-plan a:focus-visible .g-h-plan-room {
+  stroke: var(--ink);
+}
+.g-h-plan-future {
+  fill: url(#g-h-plan-hatch);
+}
+.g-h-plan-hatch-line {
+  stroke: rgb(27 26 24 / 0.16);
+  stroke-width: 1.2;
+}
+.g-h-plan-no {
+  fill: var(--ink);
+  font: italic 400 19px var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+.g-h-plan-name {
+  fill: var(--mute);
+  font: 500 11px var(--sans);
+}
+.g-h-plan-lobby {
+  fill: var(--mute);
+  font: italic 400 17px var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+.g-h-plan-wall {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.2;
+  stroke-linecap: square;
+}
+.g-h-plan-wall-future {
+  stroke-dasharray: 4 4;
+  stroke-width: 1.4;
+}
+.g-h-plan-route {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 0.1 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.g-h-plan-here {
+  fill: var(--accent);
+  transform-origin: 279px 222px;
+  animation: g-h-here 2.4s ease-in-out infinite;
+}
+@keyframes g-h-here {
+  50% {
+    transform: scale(1.35);
+  }
+}
+.g-h-plan-legend {
+  display: flex;
+  justify-content: space-between;
+  max-width: 460px;
+  margin-top: 12px;
+  color: var(--mute);
+  font-size: 12px;
+}
+.g-h-plan-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.g-h-plan-legend i {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.g-h-plan-legend b {
+  display: block;
+  width: 12px;
+  height: 9px;
+  border: 1px dashed var(--ink);
+  background: repeating-linear-gradient(
+    45deg,
+    transparent 0 2px,
+    rgb(27 26 24 / 0.25) 2px 3px
+  );
+}
+
+/* ---------- 导览条：在五间展厅里才出现 ---------- */
+.g-h-guide {
+  position: fixed;
+  z-index: 50;
+  left: var(--gutter);
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 5px 5px 16px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.07),
+    0 12px 28px -16px rgb(40 30 20 / 0.35);
+  color: var(--mute);
+  font-size: 14px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition:
+    opacity 0.4s,
+    visibility 0.4s,
+    transform 0.4s var(--ease);
+}
+.g-h-guide > span {
+  font-family: var(--serif);
+  font-style: italic;
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+.g-h-guide ol {
+  display: flex;
+  gap: 2px;
+}
+.g-h-guide a {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+.g-h-guide a:hover {
+  background: rgb(27 26 24 / 0.06);
+  color: var(--ink);
+}
+main[data-step='2'] .g-h-guide,
+main[data-step='3'] .g-h-guide,
+main[data-step='4'] .g-h-guide,
+main[data-step='5'] .g-h-guide,
+main[data-step='6'] .g-h-guide {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+main[data-step='2'] .g-h-guide li:nth-child(1) a,
+main[data-step='3'] .g-h-guide li:nth-child(2) a,
+main[data-step='4'] .g-h-guide li:nth-child(3) a,
+main[data-step='5'] .g-h-guide li:nth-child(4) a,
+main[data-step='6'] .g-h-guide li:nth-child(5) a {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ---------- 墙上的比例 ---------- */
+@media (max-width: 1140px) {
+  .g-h-deck {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 236px;
+    margin-right: calc(var(--gutter) * -1);
+    margin-left: calc(var(--gutter) * -1);
+    padding: 10px var(--gutter) 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .g-h-deck > li {
+    scroll-snap-align: start;
+    scroll-margin-left: var(--gutter);
+  }
+}
+
+/* ---------- 窄屏：每间展厅是一面平的墙 ---------- */
+@media (max-width: 900px) {
+  .g-h-hero,
+  .g-h-hall {
+    --e: 0;
+    --d: 1;
+    --lab: 1;
+    height: auto;
+  }
+  .g-h-mat,
+  .g-h-caption {
+    display: none;
+  }
+  .g-h-view {
+    position: relative;
+    inset: auto;
+    clip-path: none;
+  }
+  .g-h-masthead {
+    position: relative;
+    inset: auto;
+    height: auto;
+    display: block;
+    padding: 128px var(--gutter) 40px;
+    opacity: 1;
+    transform: none;
+  }
+  .g-h-title {
+    font-size: 24vw;
+  }
+  .g-h-keys {
+    margin-top: 24px;
+  }
+  .g-h-hall {
+    padding-bottom: 72px;
+  }
+  .g-h-vinyl {
+    width: auto;
+  }
+  .g-h-ai-headline {
+    font-size: 11vw;
+  }
+  /* 窄屏没有推镜：A/I 照常，展签直接是第二幕的内容，不移动不放大 */
+  .g-h-hero {
+    --s2: 1;
+    --z: 0;
+  }
+  .g-h-vinyl {
+    opacity: 1;
+  }
+  .g-h-label-hero {
+    width: auto;
+  }
+  .g-h-label-hero::after {
+    display: none;
+  }
+  .g-h-label-not {
+    font-size: 26px;
+  }
+  .g-h-mq {
+    font-size: 15px;
+  }
+  .g-h-index-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  /* 作品缩小，挂在一面平墙上 */
+  .g-h-lb {
+    width: 560px;
+    zoom: 0.6;
+  }
+  .g-h-tw {
+    width: min(560px, 100%);
+    zoom: 0.72;
+  }
+  .g-h-ld-pair {
+    flex-direction: column;
+    gap: 34px;
+    zoom: 0.86;
+  }
+  .g-h-field {
+    zoom: 0.76;
+  }
+  .g-h-world-text {
+    width: auto;
+    font-size: 24px;
+  }
+  .g-h-hall-world .g-hang {
+    padding: 0;
+  }
+  .g-h-hall-world .g-group {
+    align-items: stretch;
+    gap: 0;
+  }
+  .g-h-hall-world .g-art {
+    padding-bottom: 32px;
+  }
+  /* 展台在窄屏上不再立在三维地面上：模型放在一块白色底座上，排在墙面文字后面 */
+  .g-h-hall-world .g-cam {
+    display: flex;
+    flex-direction: column;
+  }
+  .g-h-plinth {
+    order: 2;
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: auto;
+    height: auto;
+    margin: 0 var(--gutter);
+    padding: 0 0 18px;
+    border-bottom: 14px solid #f1efea;
+    transform: none;
+  }
+  .g-h-plinth-shadow,
+  .g-h-plinth-top,
+  .g-h-plinth-front::after {
+    display: none !important;
+  }
+  .g-h-plinth-front {
+    position: static !important;
+    width: auto;
+    height: auto;
+    order: 2;
+    background: none;
+    box-shadow: none;
+  }
+  .g-h-plinth-front b {
+    display: none;
+  }
+  .g-h-plinth-piece {
+    position: relative !important;
+    left: auto;
+    bottom: auto;
+    width: auto;
+    transform: none;
+  }
+  .g-h-vitrine-glass {
+    transform: none;
+  }
+  .g-h-vitrine-glass::before,
+  .g-h-vitrine-glass::after {
+    display: none;
+  }
+  .g-h-vitrine .g-wpage-model {
+    width: 100%;
+    margin: 0;
+  }
+  .g-h-plinth .g-wpage-block,
+  .g-h-flag {
+    opacity: 1;
+    transform: none;
+  }
+  .g-h-visit-cols {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 44px;
+  }
+  .g-h-visit-lead {
+    font-size: 9vw;
+  }
+  .g-h-guide {
+    display: none;
+  }
+}
+@media (max-width: 520px) {
+  .g-h-lb {
+    zoom: 0.54;
+  }
+  .g-h-tw {
+    zoom: 0.62;
+  }
+  .g-h-ld-pair {
+    zoom: 0.8;
+  }
+}
+
+/* ---------- 减少动态：首屏停在画廊照片，一句话停在 x‑ware，展厅停在走近之后 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .g-h-hero {
+    --e: 0;
+    --d: 0;
+    --s2: 1;
+    --z: 0;
+    height: auto;
+  }
+  .g-h-vinyl {
+    opacity: 1;
+  }
+  .g-h-hall {
+    --d: 1;
+    --lab: 1;
+    height: auto;
+  }
+  .g.is-ready .g-h-deck:not(.is-in) > li {
+    opacity: 1;
+    transform: none;
+  }
+  .g-h-plinth .g-wpage-block,
+  .g-h-flag {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .g-h-tw-cursor,
+  .g-h-lb-cursor {
+    opacity: 0;
+  }
+}

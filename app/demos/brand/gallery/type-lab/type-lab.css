@@ -1,0 +1,358 @@
+/* 字体方向对比页，类名前缀 g-tl-
+   版式、颜色、展厅都用首页原样（home.css），这里只换字：
+   - 根节点上的 --latin / --sans / --serif 决定正文、界面与点缀；
+   - --tl-display 是英文大字（大字标、Products），--tl-head 是中文大句与关键词，--tl-name 是产品名；
+   - 每套字体的字重、字距、字号系数不同，写成同名变量，规则只写一遍。 */
+
+.g.g-tl {
+  --tl-display: var(--sans);
+  --tl-display-w: 500;
+  --tl-display-ls: -0.045em;
+  --tl-display-fvs: normal;
+  --tl-k: 1;
+  --tl-head: var(--sans);
+  --tl-head-w: 500;
+  --tl-head-ls: -0.02em;
+  --tl-sub-w: 500;
+  --tl-keys-w: 500;
+  --tl-keys-ls: 0.04em;
+  --tl-name: var(--sans);
+  --tl-name-w: 600;
+  --tl-name-ls: -0.02em;
+  --tl-name-k: 1;
+}
+
+/* 1 现行：Figtree（不跟右下角 Aa 的选择走） */
+.g.g-tl.g-tl-a {
+  --latin: var(--font-g-figtree);
+}
+
+/* 2 画册：Instrument Serif 做标题，中文标题宋体，小字仍是 Figtree */
+.g.g-tl.g-tl-b {
+  --latin: var(--font-g-figtree);
+  --serif: var(--font-tl-instrument), var(--font-tl-song), serif;
+  --tl-display: var(--font-tl-instrument), var(--font-tl-song), serif;
+  --tl-display-w: 400;
+  --tl-display-ls: -0.025em;
+  --tl-k: 1.24;
+  --tl-head: var(--font-tl-instrument), var(--font-tl-song), 'Songti SC', serif;
+  --tl-head-w: 500;
+  --tl-head-ls: 0.01em;
+  --tl-sub-w: 500;
+  --tl-keys-w: 500;
+  --tl-keys-ls: 0.14em;
+  --tl-name: var(--font-tl-instrument), var(--font-tl-song), serif;
+  --tl-name-w: 400;
+  --tl-name-ls: 0;
+  --tl-name-k: 1.36;
+}
+
+/* 3 手札：Fraunces 柔边正体（SOFT 拉满），中文全用文楷 */
+.g.g-tl.g-tl-c {
+  --sans: var(--font-g-serif), var(--font-tl-kai), 'Kaiti SC', serif;
+  --tl-display: var(--font-g-serif), var(--font-tl-kai), serif;
+  --tl-display-w: 330;
+  --tl-display-ls: -0.035em;
+  --tl-display-fvs: 'SOFT' 100, 'WONK' 0, 'opsz' 144;
+  --tl-k: 1.04;
+  --tl-head: var(--font-g-serif), var(--font-tl-kai), 'Kaiti SC', serif;
+  --tl-head-w: 400;
+  --tl-head-ls: 0.02em;
+  --tl-sub-w: 400;
+  --tl-keys-w: 400;
+  --tl-keys-ls: 0.12em;
+  --tl-name: var(--font-g-serif), var(--font-tl-kai), serif;
+  --tl-name-w: 450;
+  --tl-name-ls: -0.01em;
+  --tl-name-k: 1.12;
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+
+/* 4 留白：Jost 细体，字距放开，中文苹方细体 */
+.g.g-tl.g-tl-d {
+  --latin: var(--font-tl-jost);
+  --serif: var(--font-tl-jost), 'PingFang SC', sans-serif;
+  --tl-display-w: 300;
+  --tl-display-ls: -0.02em;
+  --tl-k: 1.02;
+  --tl-head-w: 300;
+  --tl-head-ls: 0.06em;
+  --tl-sub-w: 300;
+  --tl-keys-w: 300;
+  --tl-keys-ls: 0.24em;
+  --tl-name-w: 400;
+  --tl-name-ls: 0.02em;
+  --tl-name-k: 1.05;
+}
+.g.g-tl.g-tl-d .g-h-index-head h2 small,
+.g.g-tl.g-tl-d .g-h-card-index small,
+.g.g-tl.g-tl-d .g-h-visit-col small {
+  letter-spacing: 0.22em;
+}
+
+/* 5 当代：Bricolage Grotesque，大字略窄（wdth 92）、用细体，点缀用同一字体的细体，不用斜体 */
+.g.g-tl.g-tl-e {
+  --latin: var(--font-tl-bricolage);
+  --serif: var(--font-tl-bricolage), 'PingFang SC', sans-serif;
+  --tl-display-w: 300;
+  --tl-display-ls: -0.025em;
+  --tl-display-fvs: 'wdth' 92, 'opsz' 96;
+  --tl-k: 1.1;
+  --tl-head-w: 500;
+  --tl-head-ls: -0.01em;
+  --tl-sub-w: 500;
+  --tl-keys-w: 500;
+  --tl-keys-ls: 0.06em;
+  --tl-name-w: 550;
+  --tl-name-ls: -0.015em;
+  --tl-name-k: 1.08;
+}
+.g.g-tl.g-tl-e
+  :is(
+    .g-label-title,
+    .g-h-caption em,
+    .g-h-index-head p,
+    .g-h-card-index b,
+    .g-h-visit-plan small,
+    .g-h-plan-no,
+    .g-h-plan-lobby
+  ) {
+  font-style: normal;
+  font-weight: 300;
+}
+
+/* ---------- 把上面的变量用到首页的三段上 ---------- */
+
+/* 首屏停在第一帧：不推镜，区块就是一屏高 */
+.g-h-hero.g-tl-hero {
+  height: auto;
+}
+.g-tl .g-h-title {
+  font-family: var(--tl-display);
+  font-size: calc(
+    clamp(60px, min(11.8vw, calc((var(--top) - 104px) * 1.12)), 190px) *
+      var(--tl-k)
+  );
+  font-weight: var(--tl-display-w);
+  letter-spacing: var(--tl-display-ls);
+  font-variation-settings: var(--tl-display-fvs);
+}
+.g-tl .g-h-ai-headline {
+  font-family: var(--tl-display);
+  font-weight: var(--tl-display-w);
+  font-variation-settings: var(--tl-display-fvs);
+}
+.g-tl .g-h-keys {
+  font-family: var(--tl-head);
+  font-weight: var(--tl-keys-w);
+  letter-spacing: var(--tl-keys-ls);
+}
+.g-tl .g-h-index-head h2 > span {
+  font-family: var(--tl-display);
+  font-size: calc(1em * var(--tl-k));
+  font-weight: var(--tl-display-w);
+  letter-spacing: var(--tl-display-ls);
+  font-variation-settings: var(--tl-display-fvs);
+}
+.g-tl .g-h-index-head h2 small {
+  font-family: var(--tl-head);
+}
+.g-tl .g-h-card strong {
+  font-family: var(--tl-name);
+  font-size: calc(clamp(18px, 1.5vw, 22px) * var(--tl-name-k));
+  font-weight: var(--tl-name-w);
+  letter-spacing: var(--tl-name-ls);
+}
+.g-tl .g-h-visit-lead {
+  font-family: var(--tl-head);
+  font-weight: var(--tl-head-w);
+  letter-spacing: var(--tl-head-ls);
+}
+.g-tl .g-h-visit-col h3 {
+  font-family: var(--tl-head);
+  font-weight: var(--tl-sub-w);
+}
+/* 页面右下角的 Aa 只换现行这一套的拉丁字体，这里用不上 */
+.g-tl .g-fontdock {
+  display: none;
+}
+/* 留出底部切换条的位置 */
+.g-tl .g-colophon {
+  padding-bottom: 180px;
+}
+
+@media (max-width: 900px) {
+  .g-tl .g-h-title {
+    font-size: calc(23vw * min(var(--tl-k), 1.12));
+  }
+}
+
+/* ---------- 底部的切换条 ---------- */
+.g-tl-dock {
+  position: fixed;
+  z-index: 80;
+  left: 50%;
+  bottom: 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px 20px;
+  width: min(820px, calc(100vw - 32px));
+  padding: 14px 14px 14px 22px;
+  border-radius: 22px;
+  background: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.08),
+    0 22px 44px -22px rgb(40 30 20 / 0.4);
+  color: var(--ink);
+  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-variation-settings: normal;
+  letter-spacing: 0;
+  transform: translateX(-50%);
+}
+.g-tl-about {
+  min-width: 0;
+}
+.g-tl-about-name {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.g-tl-about-name b {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+  transform: translateY(-1px);
+}
+.g-tl-about-mood {
+  margin-top: 5px;
+  color: var(--ink-2);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.g-tl-about-fonts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  margin: 7px 0 0;
+  color: var(--mute);
+  font-size: 11.5px;
+}
+.g-tl-about-fonts div {
+  display: flex;
+  gap: 5px;
+}
+.g-tl-about-fonts dd {
+  margin: 0;
+  color: var(--ink);
+}
+.g-tl-switch {
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.g-tl-switch button {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  width: 64px;
+  padding: 9px 4px 8px;
+  border: 0;
+  border-radius: 14px;
+  background: none;
+  color: var(--mute);
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    color 0.25s;
+}
+.g-tl-switch button:hover {
+  background: rgb(27 26 24 / 0.05);
+  color: var(--ink);
+}
+.g-tl-switch button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.g-tl-switch small {
+  display: flex;
+  gap: 3px;
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.g-tl-switch small span {
+  opacity: 0.55;
+}
+/* 每个按钮上的「Aa 字」用自己那套字体，不跟当前方向走 */
+.g-tl-sample {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  font-size: 22px;
+  line-height: 1;
+}
+.g-tl-sample span + span {
+  font-size: 17px;
+}
+.g-tl-sample-a {
+  font-family: var(--font-g-figtree), 'PingFang SC', sans-serif;
+  font-weight: 500;
+}
+.g-tl-sample-b {
+  font-family: var(--font-tl-instrument), var(--font-tl-song), serif;
+  font-size: 26px;
+  font-weight: 500;
+}
+.g-tl-sample-c {
+  font-family: var(--font-g-serif), var(--font-tl-kai), serif;
+  font-weight: 400;
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+.g-tl-sample-d {
+  font-family: var(--font-tl-jost), 'PingFang SC', sans-serif;
+  font-weight: 300;
+}
+.g-tl-sample-e {
+  font-family: var(--font-tl-bricolage), 'PingFang SC', sans-serif;
+  font-weight: 350;
+  font-variation-settings:
+    'wdth' 92,
+    'opsz' 96;
+}
+@media (max-width: 760px) {
+  .g-tl-dock {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 12px;
+  }
+  .g-tl-about {
+    padding: 0 6px;
+  }
+  .g-tl-about-mood {
+    display: none;
+  }
+  .g-tl-switch {
+    justify-content: space-between;
+  }
+  .g-tl-switch button {
+    width: auto;
+    flex: 1;
+  }
+}

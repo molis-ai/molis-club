@@ -1,0 +1,711 @@
+/* 联系页：美术馆的前台。一面带吊灯的墙、一截柜台，柜台上立着一本访客留言簿（表单）；
+   下面是参观须知式的隐私说明。类名前缀 g-contact-，不写裸元素选择器。 */
+
+/* ---------- 前台 ---------- */
+.g-contact {
+  padding: 88px var(--gutter) 0;
+}
+.g-contact-desk {
+  --counter: clamp(96px, 13vh, 132px);
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(32px, 5vw, 96px);
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(56px, 8vw, 120px) clamp(24px, 5.6vw, 96px) 0;
+  overflow: hidden;
+  border-radius: 18px;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      ellipse 40% 55% at 22% -12%,
+      rgb(255 255 253 / 0.95),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 50% 70% at 72% -18%,
+      rgb(255 255 253 / 0.7),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 90% 80% at 50% 40%,
+      transparent 55%,
+      rgb(84 72 56 / 0.08)
+    ),
+    linear-gradient(#f2f0eb, #ebe9e3 70%, #e5e2db);
+}
+/* 墙面的胶片颗粒 */
+.g-contact-desk::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: var(--grain) 0 0 / 180px;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* 吊灯：一根细线、一只墨色灯罩，灯光落在留言簿上；在簿子上写字时灯更亮一点 */
+.g-contact-lamp {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 73%;
+  display: block;
+  width: 84px;
+  margin-left: -42px;
+}
+.g-contact-lamp i {
+  display: block;
+}
+.g-contact-lamp-cord {
+  width: 1px;
+  height: clamp(18px, 3vw, 40px);
+  margin: 0 auto;
+  background: rgb(27 26 24 / 0.5);
+}
+.g-contact-lamp-shade {
+  position: relative;
+  width: 84px;
+  height: 30px;
+  border-radius: 42px 42px 6px 6px;
+  background: linear-gradient(#3a3835, #1f1e1c 80%);
+  box-shadow: 0 6px 10px -6px rgb(0 0 0 / 0.4);
+}
+.g-contact-lamp-shade::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -3px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff6e6;
+  box-shadow: 0 0 18px 6px rgb(255 238 210 / 0.75);
+  transition: box-shadow 0.8s var(--ease);
+}
+.g-contact-glow {
+  position: absolute;
+  z-index: -1;
+  top: 20px;
+  left: 73%;
+  display: block;
+  width: min(820px, 70%);
+  height: 92%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse 50% 46% at 50% 18%,
+    rgb(255 248 236 / 0.95),
+    rgb(255 244 228 / 0.45) 48%,
+    transparent 78%
+  );
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 0.9s var(--ease);
+}
+.g-contact-desk:focus-within .g-contact-glow {
+  opacity: 1;
+}
+.g-contact-desk:focus-within .g-contact-lamp-shade::after {
+  box-shadow: 0 0 26px 10px rgb(255 232 196 / 0.95);
+}
+
+/* 柜台：浅橡木的台面，下面一块白色的柜体 */
+.g-contact-counter {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+  height: var(--counter);
+}
+.g-contact-counter i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: block;
+}
+.g-contact-counter-top {
+  top: 0;
+  height: 14px;
+  background:
+    linear-gradient(rgb(255 250 240 / 0.6), transparent 40%),
+    linear-gradient(90deg, #d9c8ad, #ccb898 40%, #d6c3a6 70%, #c9b493);
+  box-shadow:
+    0 1px 0 rgb(120 96 64 / 0.35),
+    0 10px 18px -8px rgb(60 44 26 / 0.35);
+}
+.g-contact-counter-front {
+  top: 14px;
+  bottom: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 calc(25% - 1px),
+      rgb(27 26 24 / 0.06) calc(25% - 1px) 25%
+    ),
+    linear-gradient(#f7f6f2, #ecebe6);
+}
+
+/* 柜台上的小立牌 */
+.g-contact-sign {
+  position: absolute;
+  z-index: 1;
+  left: clamp(24px, 5.6vw, 96px);
+  bottom: calc(var(--counter) - 2px);
+  display: block;
+  padding: 9px 16px 8px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(#fff, #f6f4ef);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.08),
+    0 8px 14px -10px rgb(40 30 20 / 0.5);
+  color: var(--ink-2);
+  font: italic 400 15px/1 var(--serif);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+
+/* 左边：来意与一句话 */
+.g-contact-intro {
+  position: relative;
+  z-index: 1;
+  align-self: start;
+  padding-bottom: calc(var(--counter) + 72px);
+}
+.g-contact-kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+  color: var(--mute);
+  font-size: 13px;
+}
+.g-contact-kicker .g-soft {
+  color: var(--ink-2);
+  font-size: 19px;
+}
+.g-contact-title {
+  margin-top: clamp(26px, 3.4vw, 44px);
+  color: #262522;
+  font-size: clamp(36px, 4.2vw, 64px);
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: -0.03em;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.6);
+}
+.g-contact-title .g-phrase {
+  display: block;
+}
+.g-contact-lede {
+  max-width: 26em;
+  margin-top: clamp(22px, 2.6vw, 32px);
+  color: var(--ink-2);
+  font-size: clamp(15.5px, 1.2vw, 18px);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+/* ---------- 访客留言簿：一页装订好的纸，左边一道书脊，叠着下面几页 ---------- */
+.g-contact-book {
+  position: relative;
+  z-index: 2;
+  align-self: end;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 0 calc(var(--counter) - 54px) auto;
+  padding: clamp(26px, 3vw, 40px) clamp(24px, 3.2vw, 48px)
+    clamp(26px, 3vw, 38px) clamp(40px, 4.4vw, 68px);
+  border-radius: 3px 10px 10px 3px;
+  background:
+    linear-gradient(90deg, rgb(110 90 60 / 0.12), transparent 26px),
+    linear-gradient(#fffdf9, #fdfaf3);
+  box-shadow:
+    inset 1px 0 0 rgb(110 90 60 / 0.18),
+    0 1px 0 #f1ece2,
+    0 3px 0 -1px #fdfaf3,
+    0 4px 0 -1px #e4ddd0,
+    0 6px 0 -2px #fbf8f1,
+    0 7px 0 -2px #ddd5c6,
+    0 44px 60px -40px rgb(40 30 20 / 0.55),
+    0 18px 30px -24px rgb(40 30 20 / 0.3);
+}
+/* 书脊上的一排装订线 */
+.g-contact-book::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 16px;
+  width: 1px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgb(110 90 60 / 0.35) 0 7px,
+    transparent 7px 14px
+  );
+}
+.g.is-ready .g-contact-book[data-reveal]:not(.is-in) {
+  transform: translateY(26px) rotate(-0.4deg);
+}
+.g-contact-book-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ink);
+  color: var(--mute);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.g-contact-book-head .g-soft {
+  color: var(--ink-2);
+  font-size: 18px;
+  letter-spacing: 0;
+}
+
+/* 表单：像留言簿上印好的几栏 */
+.g-contact-form {
+  display: grid;
+  gap: 26px;
+  margin-top: 24px;
+}
+.g-contact-roles {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.g-contact-roles legend,
+.g-contact-field label {
+  padding: 0;
+  color: var(--mute);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.g-contact-role-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.g-contact-role {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+}
+.g-contact-role input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.g-contact-role span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 15px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(27 26 24 / 0.18);
+  color: var(--ink-2);
+  font-size: 13.5px;
+  font-weight: 500;
+  transition:
+    background 0.25s,
+    color 0.25s,
+    box-shadow 0.25s;
+}
+.g-contact-role span::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(27 26 24 / 0.2);
+  transition: background 0.25s;
+}
+.g-contact-role:hover span {
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.g-contact-role input:checked + span {
+  background: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+  color: var(--paper);
+}
+.g-contact-role input:checked + span::before {
+  background: var(--accent);
+}
+.g-contact-role input:focus-visible + span {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.g-contact-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px 28px;
+}
+.g-contact-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+/* 输入框是留言簿上的一道横线；聚焦时线变成墨色，下面衬一道杏色的光 */
+.g-contact-field input,
+.g-contact-field textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 0 8px;
+  border: 0;
+  border-bottom: 1px solid rgb(27 26 24 / 0.28);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.6;
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s;
+}
+.g-contact-field textarea {
+  display: block;
+  min-height: calc(32px * 5 + 8px);
+  padding: 4px 0 0;
+  border-bottom: 0;
+  line-height: 32px;
+  resize: vertical;
+  /* 横格纸：线跟着行高，滚动时一起走 */
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 31px,
+    rgb(27 26 24 / 0.16) 31px 32px
+  );
+  background-attachment: local;
+  background-position: 0 4px;
+}
+.g-contact-field input::placeholder,
+.g-contact-field textarea::placeholder {
+  color: var(--mute);
+  opacity: 0.75;
+}
+.g-contact .g-contact-field input:focus-visible,
+.g-contact .g-contact-field input:focus,
+.g-contact .g-contact-field textarea:focus-visible,
+.g-contact .g-contact-field textarea:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 1px 0 var(--ink);
+}
+.g-contact .g-contact-field textarea:focus,
+.g-contact .g-contact-field textarea:focus-visible {
+  box-shadow:
+    inset 0 -1px 0 var(--ink),
+    -10px 0 0 -8px var(--accent);
+}
+.g-contact .g-contact-field input:focus,
+.g-contact .g-contact-field input:focus-visible {
+  box-shadow:
+    0 1px 0 var(--ink),
+    0 10px 14px -12px rgb(234 146 96 / 0.9);
+}
+.g-contact-field:focus-within label {
+  color: var(--ink);
+}
+.g-contact-hint {
+  margin-top: 4px;
+  color: var(--accent-ink);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.g-contact-checks {
+  display: grid;
+  gap: 12px;
+}
+.g-contact-check {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  color: var(--ink-2);
+  font-size: 13.5px;
+  line-height: 1.7;
+  cursor: pointer;
+}
+.g-contact-check input {
+  width: 17px;
+  height: 17px;
+  margin: 3px 0 0;
+  accent-color: var(--ink);
+  cursor: pointer;
+}
+
+.g-contact-send {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+}
+.g-contact-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 28px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    color 0.25s,
+    transform 0.25s var(--ease);
+}
+.g-contact-submit:hover:not(:disabled) {
+  background: transparent;
+  color: var(--ink);
+}
+.g-contact-submit:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+.g-contact-error {
+  color: var(--accent-ink);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.g-contact-error:empty {
+  display: none;
+}
+.g-contact-note {
+  padding-top: 14px;
+  border-top: 1px solid var(--hair);
+  color: var(--mute);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+.g-contact-note a {
+  margin-left: 6px;
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+/* 收到了：留言簿上盖一枚杏色的章 */
+.g-contact-done {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+  min-height: 420px;
+  align-content: center;
+  padding: 24px 0 8px;
+}
+.g-contact-stamp {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 8px;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  color: var(--accent-ink);
+  box-shadow: inset 0 0 0 5px rgb(234 146 96 / 0.12);
+  transform: rotate(-8deg);
+  animation: g-contact-stamp 0.7s var(--ease) both;
+}
+@keyframes g-contact-stamp {
+  from {
+    opacity: 0;
+    transform: rotate(-14deg) scale(1.3);
+  }
+}
+.g-contact-done h2 {
+  font-size: clamp(32px, 3.4vw, 48px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.g-contact-done h2:focus {
+  outline: none;
+}
+.g-contact-done h2:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 6px;
+}
+.g-contact-done p {
+  max-width: 30em;
+  color: var(--ink-2);
+  font-size: 15.5px;
+  line-height: 1.8;
+}
+.g-contact-done-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+/* ---------- 隐私说明：参观须知 ---------- */
+.g-contact-privacy {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(32px, 5vw, 96px);
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(96px, 14vh, 160px)
+    calc(var(--gutter) + clamp(24px, 5.6vw, 96px)) clamp(96px, 14vh, 150px);
+  scroll-margin-top: 72px;
+}
+.g-contact-privacy-head {
+  align-self: start;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+}
+.g-contact-privacy-head .g-soft {
+  color: var(--ink-2);
+  font-size: 18px;
+}
+.g-contact-privacy-head h2 {
+  position: relative;
+  display: inline-block;
+  margin-top: 18px;
+  font-size: clamp(32px, 3.6vw, 54px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+/* 从页尾的「隐私」跳过来时，标题下面亮一道杏色的线 */
+.g-contact-privacy-head h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.9s var(--ease) 0.2s;
+}
+.g-contact-privacy:target .g-contact-privacy-head h2::after {
+  transform: scaleX(1);
+}
+.g-contact-privacy-list {
+  border-top: 1px solid var(--ink);
+}
+.g-contact-privacy-list li {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 16px;
+  padding: 22px 0 24px;
+  border-bottom: 1px solid var(--hair);
+}
+.g-contact-privacy-list .g-soft {
+  color: var(--mute);
+  font-size: 20px;
+  line-height: 1.4;
+}
+.g-contact-privacy-list p {
+  color: var(--ink-2);
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+/* ---------- 窄屏：墙、留言簿、柜台从上往下排 ---------- */
+@media (max-width: 1100px) {
+  .g-contact-lamp,
+  .g-contact-glow {
+    left: 68%;
+  }
+}
+@media (max-width: 900px) {
+  .g-contact {
+    padding-top: 104px;
+  }
+  .g-contact-desk {
+    --counter: 84px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+    padding: 48px 20px 0;
+    border-radius: 14px;
+  }
+  .g-contact-intro {
+    padding-bottom: 0;
+  }
+  .g-contact-lamp {
+    top: auto;
+    left: auto;
+    right: 28px;
+    margin: 0;
+    display: none;
+  }
+  .g-contact-glow {
+    top: auto;
+    bottom: 0;
+    left: 50%;
+    width: 120%;
+    height: 70%;
+  }
+  .g-contact-sign {
+    display: none;
+  }
+  .g-contact-book {
+    max-width: none;
+    margin: 0 0 calc(var(--counter) - 36px);
+    padding: 26px 20px 26px 34px;
+  }
+  .g-contact-book::before {
+    left: 12px;
+  }
+  .g-contact-privacy {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+    scroll-margin-top: 100px;
+  }
+}
+@media (max-width: 560px) {
+  .g-contact-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .g-contact-desk {
+    padding: 40px 16px 0;
+  }
+  .g-contact-book {
+    padding: 22px 16px 24px 30px;
+  }
+  .g-contact-book::before {
+    left: 11px;
+  }
+  .g-contact-privacy-list li {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+  .g-contact-done {
+    min-height: 320px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .g.is-ready .g-contact-book[data-reveal]:not(.is-in) {
+    transform: none;
+  }
+}

@@ -1,0 +1,772 @@
+/* 白盒子美术馆官网 · 文章（阅览室）
+   目录是一本展览图录：一道墨线、柔边斜体的编号、大字标题，一行一篇，悬停时这一行像被墙上的灯照亮。
+   文章页开篇是一面标题墙，往下是安静的阅读模式：左边粘住的目录，正文一栏合适的行长，没有视差、不逐段隐藏。
+   类名一律 g-essay- 前缀；客户端跳转后这份样式还在文档里，所以不写裸元素选择器、不改 g- 公共类。
+   gallery.css 用 `.g p`、`.g h2` 清掉了外边距，这里涉及外边距的规则都带上 `.g ` 前缀压过它。 */
+
+/* ---------- 目录：展览图录 ---------- */
+.g-essay-index {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: calc(64px + clamp(56px, 11vh, 128px)) var(--gutter)
+    clamp(96px, 15vh, 176px);
+}
+.g-essay-head {
+  display: grid;
+  gap: clamp(32px, 5vw, 64px);
+}
+.g-essay-head-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+  color: var(--mute);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+}
+.g-essay-head-top .g-soft {
+  color: var(--ink-2);
+  font-size: 18px;
+  letter-spacing: 0;
+}
+.g-essay-head-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 24px;
+  font-size: clamp(72px, 12vw, 188px);
+  font-weight: 500;
+  line-height: 0.84;
+  letter-spacing: -0.055em;
+}
+.g-essay-head-title small {
+  color: var(--mute);
+  font-size: clamp(15px, 1.2vw, 18px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.24em;
+}
+
+.g .g-essay-list {
+  margin-top: clamp(64px, 9vw, 128px);
+  border-top: 1px solid var(--hair);
+}
+.g-essay-list > li {
+  border-bottom: 1px solid var(--hair);
+}
+.g-essay-entry {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns:
+    clamp(64px, 7.4vw, 120px) minmax(0, 1.25fr) minmax(0, 1fr)
+    48px;
+  align-items: start;
+  gap: 20px clamp(24px, 3.4vw, 56px);
+  padding: clamp(44px, 5.4vw, 80px) 0 clamp(40px, 5vw, 72px);
+}
+/* 墙上的灯：一块浅墙色的面板，顶上一片柔光；悬停或聚焦时亮起 */
+.g-essay-entry::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 12px calc(var(--gutter) * -0.5);
+  border-radius: 16px;
+  background:
+    radial-gradient(
+      ellipse 36% 90% at 26% -24%,
+      rgb(255 255 253 / 0.95),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 30% 90% at 74% -30%,
+      rgb(255 255 253 / 0.75),
+      transparent 70%
+    ),
+    linear-gradient(#f2f0eb, #ebe9e3);
+  opacity: 0;
+  transition:
+    opacity 0.6s var(--ease),
+    box-shadow 0.3s;
+}
+.g-essay-entry:hover::before,
+.g-essay-entry:has(.g-essay-entry-link:focus-visible)::before {
+  opacity: 1;
+}
+/* 键盘聚焦时，焦点框画在整行亮起的面板上 */
+.g .g-essay-entry-link:focus-visible {
+  outline: none;
+}
+.g-essay-entry:has(.g-essay-entry-link:focus-visible)::before {
+  box-shadow: 0 0 0 1.5px var(--ink);
+}
+.g-essay-entry-no {
+  padding-top: 0.12em;
+  color: var(--mute);
+  font-size: clamp(30px, 3.4vw, 54px);
+  line-height: 1;
+}
+.g-essay-entry-title {
+  display: grid;
+}
+/* 标题链接用伪元素铺满整行，整行一点就进文章 */
+.g-essay-entry-link {
+  display: grid;
+  gap: clamp(12px, 1.4vw, 20px);
+}
+.g-essay-entry-link::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+}
+.g-essay-entry-main {
+  color: #262522;
+  font-size: clamp(46px, 6vw, 100px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  transition: transform 0.6s var(--ease);
+}
+.g-essay-entry-sub {
+  color: var(--ink-2);
+  font-size: clamp(17px, 1.55vw, 23px);
+  font-weight: 400;
+  line-height: 1.5;
+}
+.g-essay-entry:hover .g-essay-entry-main,
+.g-essay-entry:has(.g-essay-entry-link:focus-visible) .g-essay-entry-main {
+  transform: translateX(8px);
+}
+.g-essay-entry-side {
+  display: grid;
+  gap: 18px;
+  align-self: end;
+  padding-bottom: 4px;
+}
+.g-essay-entry-text {
+  max-width: 24em;
+  color: var(--ink-2);
+  font-size: clamp(15px, 1.2vw, 17.5px);
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+  text-wrap: pretty;
+}
+.g-essay-entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  row-gap: 4px;
+  color: var(--mute);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+.g-essay-entry-meta > span::before {
+  content: '·';
+  margin: 0 9px;
+}
+/* 作者名浮在铺满的链接上面，单独去公众号 */
+.g-essay-author {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgb(27 26 24 / 0.3);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition:
+    color 0.25s,
+    text-decoration-color 0.25s;
+}
+.g-essay-author:hover {
+  color: var(--accent-ink);
+  text-decoration-color: currentColor;
+}
+.g-essay-entry-go {
+  justify-self: end;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgb(27 26 24 / 0.05);
+  color: var(--ink-2);
+  transition:
+    background 0.3s,
+    color 0.3s,
+    transform 0.45s var(--ease);
+}
+.g-essay-entry:hover .g-essay-entry-go,
+.g-essay-entry:has(.g-essay-entry-link:focus-visible) .g-essay-entry-go {
+  background: var(--ink);
+  color: var(--paper);
+  transform: rotate(45deg);
+}
+
+/* ---------- 文章页开篇：一面标题墙 ---------- */
+.g-essay-open {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 92px var(--gutter) 0;
+}
+.g-essay-titlewall {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(28px, 3.4vw, 48px) clamp(24px, 6vw, 96px)
+    clamp(36px, 5vw, 72px);
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      ellipse 30% 62% at 20% -12%,
+      rgb(255 255 253 / 0.95),
+      rgb(255 255 253 / 0.3) 48%,
+      transparent 74%
+    ),
+    radial-gradient(
+      ellipse 30% 62% at 50% -14%,
+      rgb(255 255 253 / 0.85),
+      rgb(255 255 253 / 0.25) 48%,
+      transparent 74%
+    ),
+    radial-gradient(
+      ellipse 30% 62% at 80% -12%,
+      rgb(255 255 253 / 0.9),
+      rgb(255 255 253 / 0.3) 48%,
+      transparent 74%
+    ),
+    radial-gradient(
+      ellipse 90% 80% at 50% 40%,
+      transparent 56%,
+      rgb(84 72 56 / 0.08)
+    ),
+    linear-gradient(#f1efea, #ebe9e3 70%, #e6e3dc);
+  box-shadow: inset 0 -5px 0 rgb(40 34 26 / 0.12);
+}
+/* 墙面的颗粒 */
+.g-essay-titlewall::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grain) 0 0 / 180px;
+  opacity: 0.32;
+  pointer-events: none;
+}
+.g-essay-open-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 18px;
+  color: var(--mute);
+  font-size: 13px;
+}
+.g-essay-open-no {
+  color: var(--ink-2);
+  font-size: 18px;
+}
+.g-essay-open-back {
+  border-bottom: 1px solid rgb(27 26 24 / 0.2);
+  color: var(--ink-2);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition:
+    color 0.25s,
+    border-color 0.25s;
+}
+.g-essay-open-back:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.g-essay-open-room {
+  margin-left: auto;
+  font-size: 15px;
+}
+.g .g-essay-open-title {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(14px, 1.8vw, 26px);
+  margin-top: clamp(48px, 7vw, 104px);
+}
+.g-essay-open-main {
+  color: #262522;
+  font-size: clamp(60px, 10.6vw, 168px);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.6);
+}
+.g-essay-open-sub {
+  color: var(--ink-2);
+  font-size: clamp(20px, 2.3vw, 34px);
+  font-weight: 400;
+  line-height: 1.4;
+}
+.g .g-essay-open-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px 64px;
+  margin-top: clamp(40px, 5vw, 72px);
+  padding-top: 26px;
+  border-top: 1px solid rgb(27 26 24 / 0.16);
+}
+.g-essay-open-lead {
+  max-width: 24em;
+  color: var(--ink);
+  font-size: clamp(17px, 1.55vw, 22px);
+  font-weight: 500;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+/* 展签：沿用公共的 g-label 白牌，只调宽度 */
+.g-label.g-essay-label {
+  flex: none;
+  width: 264px;
+}
+.g-essay-label-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.g-essay-label-author svg {
+  color: var(--mute);
+  transition:
+    color 0.25s,
+    transform 0.3s var(--ease);
+}
+.g-essay-label-author:hover svg {
+  color: var(--accent-ink);
+  transform: translate(2px, -2px);
+}
+.g-essay-label-meta {
+  display: flex;
+  flex-wrap: wrap;
+}
+.g-essay-label-meta > span + span::before {
+  content: '·';
+  margin: 0 8px;
+  color: var(--mute);
+}
+
+/* ---------- 阅读模式：左边目录，正文一栏 ---------- */
+.g-essay-sheet {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 40rem) minmax(0, 1fr);
+  column-gap: clamp(32px, 5vw, 88px);
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(72px, 11vh, 128px) var(--gutter) clamp(96px, 15vh, 168px);
+}
+/* 阅读进度：视口最上沿一道很细的杏色线；读完（或减少动态）时隐去 */
+.g-essay-progress {
+  position: fixed;
+  z-index: 61;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  opacity: clamp(0, (1 - var(--p, 0)) * 400, 1);
+  pointer-events: none;
+}
+.g-essay-toc {
+  grid-column: 1;
+  grid-row: 1;
+  position: sticky;
+  top: 104px;
+  align-self: start;
+  display: grid;
+  gap: 14px;
+  width: min(100%, 236px);
+}
+.g-essay-toc-label {
+  color: var(--mute);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+}
+.g-essay-toc ol {
+  border-top: 1px solid var(--ink);
+}
+.g-essay-toc li {
+  border-bottom: 1px solid var(--hair);
+}
+.g-essay-toc a {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: baseline;
+  padding: 10px 0;
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.5;
+  transition: color 0.25s;
+}
+.g-essay-toc a i {
+  color: var(--mute);
+  font-size: 14px;
+  transition: color 0.25s;
+}
+.g-essay-toc a span {
+  transition: transform 0.4s var(--ease);
+}
+.g-essay-toc a:hover {
+  color: var(--ink);
+}
+.g-essay-toc a:hover span {
+  transform: translateX(3px);
+}
+/* 正在读的一节：字变黑，编号换成杏色 */
+.g-essay-toc a[aria-current] {
+  color: var(--ink);
+  font-weight: 600;
+}
+.g-essay-toc a[aria-current] i {
+  color: var(--accent-ink);
+}
+
+/* 正文：系统黑体，40rem 一栏（约 35 个汉字），两倍行距 */
+.g-essay-body {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  color: var(--ink-2);
+  font-size: clamp(17px, 1.24vw, 18.5px);
+  line-height: 2;
+  letter-spacing: 0.012em;
+}
+.g .g-essay-body > * + * {
+  margin-top: 1.25em;
+}
+.g-essay-p {
+  text-align: justify;
+}
+.g-essay-body strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+/* 小标题像一块小名牌：一道墨线、柔边斜体的编号，下面是标题 */
+.g .g-essay-body > .g-essay-h2 {
+  margin-top: 3.4em;
+}
+.g-essay-h2 {
+  display: grid;
+  gap: 14px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
+  scroll-margin-top: 104px;
+  color: var(--ink);
+  font-size: clamp(26px, 2.3vw, 34px);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.g-essay-h2-no {
+  color: var(--mute);
+  font-size: 17px;
+  line-height: 1;
+  letter-spacing: 0;
+}
+.g .g-essay-body > .g-essay-h2 + * {
+  margin-top: 1.1em;
+}
+.g .g-essay-body > .g-essay-h3 {
+  margin-top: 2.2em;
+}
+.g-essay-h3 {
+  scroll-margin-top: 104px;
+  color: var(--ink);
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.g-essay-quote {
+  margin: 0;
+  padding: 2px 0 2px 18px;
+  border-left: 1px solid var(--accent);
+  color: var(--mute);
+  font-size: 15px;
+  line-height: 1.9;
+}
+.g .g-essay-body > .g-essay-rule {
+  margin-block: 3.2em;
+}
+.g-essay-rule {
+  width: 48px;
+  height: 1px;
+  border: 0;
+  background: var(--ink);
+}
+/* 墙面文字：原文里独立成段的一句判断，放大、前面一个杏色圆点，宽屏上探进右边的留白 */
+.g .g-essay-body > .g-essay-walltext {
+  margin-block: 1.9em;
+}
+.g-essay-walltext {
+  position: relative;
+  padding-left: 28px;
+  color: var(--ink);
+  font-size: clamp(21px, 1.9vw, 28px);
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+.g-essay-walltext::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.66em;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+/* 参考依据：小字，柔边斜体的编号 */
+.g-essay-ol {
+  counter-reset: g-essay-ref;
+  color: var(--mute);
+  font-size: 13.5px;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.g-essay-ol > li {
+  counter-increment: g-essay-ref;
+  display: grid;
+  grid-template-columns: 2.4em minmax(0, 1fr);
+}
+.g .g-essay-ol > li + li {
+  margin-top: 0.7em;
+}
+.g-essay-ol > li::before {
+  content: counter(g-essay-ref, decimal-leading-zero);
+  color: var(--ink-2);
+  font-family: var(--serif);
+  font-style: italic;
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 0;
+}
+
+/* ---------- 封底：接着读另一篇，下面一行去处 ---------- */
+.g-essay-end {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 var(--gutter) clamp(72px, 11vh, 120px);
+}
+.g-essay-next {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 20px 32px;
+  padding: clamp(28px, 3.6vw, 52px) clamp(24px, 6vw, 96px)
+    clamp(36px, 4.6vw, 64px);
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      ellipse 34% 70% at 24% -16%,
+      rgb(255 255 253 / 0.9),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 30% 70% at 72% -18%,
+      rgb(255 255 253 / 0.75),
+      transparent 72%
+    ),
+    linear-gradient(#f0eee9, #ebe9e3 70%, #e5e2db);
+  box-shadow: inset 0 -5px 0 rgb(40 34 26 / 0.12);
+}
+/* 悬停时墙上的灯更亮一点 */
+.g-essay-next::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 60% 90% at 40% -10%,
+    rgb(255 255 253 / 0.9),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+.g-essay-next::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: var(--grain) 0 0 / 180px;
+  opacity: 0.32;
+  pointer-events: none;
+}
+.g-essay-next:hover::before,
+.g-essay-next:focus-visible::before {
+  opacity: 1;
+}
+.g-essay-next-top {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--mute);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+}
+.g-essay-next-top .g-soft {
+  color: var(--ink-2);
+  font-size: 18px;
+  letter-spacing: 0;
+}
+.g .g-essay-next-title {
+  display: grid;
+  gap: clamp(12px, 1.4vw, 20px);
+  margin-top: clamp(28px, 4vw, 56px);
+}
+.g-essay-next-main {
+  color: #262522;
+  font-size: clamp(48px, 8vw, 128px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  transition: transform 0.6s var(--ease);
+}
+.g-essay-next-sub {
+  color: var(--ink-2);
+  font-size: clamp(17px, 1.8vw, 26px);
+  font-weight: 400;
+  line-height: 1.45;
+}
+.g-essay-next-go {
+  display: grid;
+  place-items: center;
+  width: clamp(52px, 4.6vw, 68px);
+  aspect-ratio: 1;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  background: rgb(27 26 24 / 0.06);
+  color: var(--ink);
+  transition:
+    background 0.3s,
+    color 0.3s,
+    transform 0.45s var(--ease);
+}
+.g-essay-next:hover .g-essay-next-main {
+  transform: translateX(8px);
+}
+.g-essay-next:hover .g-essay-next-go {
+  background: var(--ink);
+  color: var(--paper);
+  transform: translateX(4px);
+}
+.g .g-essay-links {
+  margin-top: clamp(24px, 3vw, 36px);
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1100px) {
+  .g-essay-sheet {
+    grid-template-columns: minmax(0, 200px) minmax(0, 40rem);
+    justify-content: center;
+  }
+}
+@media (min-width: 1101px) {
+  .g-essay-walltext {
+    width: calc(100% + min(14vw, 200px));
+  }
+}
+@media (max-width: 900px) {
+  .g-essay-index {
+    padding-top: 136px;
+  }
+  .g-essay-entry {
+    grid-template-columns: minmax(0, 1fr) 44px;
+    gap: 18px 16px;
+  }
+  .g-essay-entry-no {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .g-essay-entry-title,
+  .g-essay-entry-side {
+    grid-column: 1 / -1;
+  }
+  .g-essay-entry-go {
+    grid-column: 2;
+    grid-row: 1;
+    width: 44px;
+    height: 44px;
+  }
+  .g-essay-open {
+    padding-top: 112px;
+  }
+  .g .g-essay-open-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .g-label.g-essay-label {
+    width: auto;
+  }
+  /* 目录不再粘住，放在正文前面 */
+  .g-essay-sheet {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(48px, 8vw, 72px);
+    max-width: calc(40rem + 2 * var(--gutter));
+    padding-top: clamp(48px, 8vw, 72px);
+  }
+  .g-essay-toc {
+    position: static;
+    width: auto;
+  }
+  .g-essay-body {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .g-essay-h2,
+  .g-essay-h3 {
+    scroll-margin-top: 120px;
+  }
+}
+@media (max-width: 560px) {
+  .g-essay-open-room {
+    display: none;
+  }
+  .g-essay-p {
+    text-align: start;
+  }
+  .g-essay-walltext {
+    padding-left: 22px;
+  }
+  .g-essay-next {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .g-essay-next-go {
+    display: none;
+  }
+}
+
+/* ---------- 减少动态：进度线不出现，悬停不位移 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .g-essay-progress {
+    display: none;
+  }
+  .g-essay-entry:hover .g-essay-entry-main,
+  .g-essay-entry:has(.g-essay-entry-link:focus-visible) .g-essay-entry-main,
+  .g-essay-next:hover .g-essay-next-main,
+  .g-essay-next:hover .g-essay-next-go,
+  .g-essay-toc a:hover span {
+    transform: none;
+  }
+}
