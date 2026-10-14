@@ -1,0 +1,202 @@
+{
+  "seaside-hero": {
+    "width": 2200,
+    "height": 1467,
+    "avg": "#dbcfbc",
+    "src": "/site/seaside-hero-2200.webp",
+    "srcset": [
+      [
+        "/site/seaside-hero-1280.webp",
+        1280
+      ],
+      [
+        "/site/seaside-hero-1920.webp",
+        1920
+      ],
+      [
+        "/site/seaside-hero-2200.webp",
+        2200
+      ]
+    ]
+  },
+  "seaside-ware": {
+    "width": 2200,
+    "height": 1473,
+    "avg": "#666965",
+    "src": "/site/seaside-ware-2200.webp",
+    "srcset": [
+      [
+        "/site/seaside-ware-1280.webp",
+        1280
+      ],
+      [
+        "/site/seaside-ware-1920.webp",
+        1920
+      ],
+      [
+        "/site/seaside-ware-2200.webp",
+        2200
+      ]
+    ]
+  },
+  "home-garden": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#a29f92",
+    "src": "/site/home-garden-1672.webp",
+    "srcset": [
+      [
+        "/site/home-garden-960.webp",
+        960
+      ],
+      [
+        "/site/home-garden-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "work-studio": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#a5a198",
+    "src": "/site/work-studio-1672.webp",
+    "srcset": [
+      [
+        "/site/work-studio-800.webp",
+        800
+      ],
+      [
+        "/site/work-studio-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "tool-light": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#a69b8f",
+    "src": "/site/tool-light-1672.webp",
+    "srcset": [
+      [
+        "/site/tool-light-800.webp",
+        800
+      ],
+      [
+        "/site/tool-light-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "life-shore": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#a8b3bb",
+    "src": "/site/life-shore-1672.webp",
+    "srcset": [
+      [
+        "/site/life-shore-800.webp",
+        800
+      ],
+      [
+        "/site/life-shore-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "world-woods": {
+    "width": 2200,
+    "height": 1467,
+    "avg": "#746e47",
+    "src": "/site/world-woods-1800.webp",
+    "srcset": [
+      [
+        "/site/world-woods-900.webp",
+        900
+      ],
+      [
+        "/site/world-woods-1800.webp",
+        1800
+      ]
+    ]
+  },
+  "enterprise-colonnade": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#aba090",
+    "src": "/site/enterprise-colonnade-1672.webp",
+    "srcset": [
+      [
+        "/site/enterprise-colonnade-960.webp",
+        960
+      ],
+      [
+        "/site/enterprise-colonnade-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "community-line": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#aea8a3",
+    "src": "/site/community-line-1672.webp",
+    "srcset": [
+      [
+        "/site/community-line-800.webp",
+        800
+      ],
+      [
+        "/site/community-line-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "community-sketch": {
+    "width": 2200,
+    "height": 1650,
+    "avg": "#5a6343",
+    "src": "/site/community-sketch-1800.webp",
+    "srcset": [
+      [
+        "/site/community-sketch-900.webp",
+        900
+      ],
+      [
+        "/site/community-sketch-1800.webp",
+        1800
+      ]
+    ]
+  },
+  "about-window": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#b7bab9",
+    "src": "/site/about-window-1672.webp",
+    "srcset": [
+      [
+        "/site/about-window-960.webp",
+        960
+      ],
+      [
+        "/site/about-window-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "contact-door": {
+    "width": 1024,
+    "height": 1536,
+    "avg": "#ced1d8",
+    "src": "/site/contact-door-1024.webp",
+    "srcset": [
+      [
+        "/site/contact-door-600.webp",
+        600
+      ],
+      [
+        "/site/contact-door-1024.webp",
+        1024
+      ]
+    ]
+  }
+}

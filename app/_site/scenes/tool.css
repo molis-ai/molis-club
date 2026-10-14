@@ -1,0 +1,133 @@
+/* Molis Tool 的演示画面：最空的一页。几乎全白，只有手边这一点内容和光标。 */
+
+.tl {
+  padding: 6cqw;
+  background: var(--white);
+}
+.tl svg {
+  width: 1.05em;
+  height: 1.05em;
+  flex: none;
+  stroke-width: 1.6;
+}
+
+/* ---------- 首页 case：活动信息 → 动作条 → 日程草稿 ---------- */
+.tl-page {
+  position: relative;
+  max-width: 34em;
+  display: grid;
+  gap: 0.7em;
+}
+.tl-url {
+  font-size: 0.8em;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.tl-h {
+  font-size: 1.7em;
+  font-weight: 300;
+  line-height: 1.3;
+}
+.tl-p {
+  max-width: 30em;
+  line-height: 2;
+  color: var(--ink-2);
+}
+.tl-sel {
+  padding: 0.1em 0;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  color: var(--ink);
+}
+.tl-anchor {
+  position: relative;
+  display: block;
+  height: 0;
+  margin-left: 42%;
+}
+.tl-bar {
+  position: absolute;
+  left: 2.6em;
+  top: 0.2em;
+  z-index: 5;
+  display: inline-flex;
+  gap: 0.15em;
+  padding: 0.3em;
+  border-radius: 10px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.08),
+    0 14px 30px -16px rgb(var(--shade) / 0.5);
+  white-space: nowrap;
+  transform-origin: 0 0;
+}
+.tl-bar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.35em 0.7em;
+  border-radius: 7px;
+  font-size: 0.9em;
+  color: var(--ink-2);
+}
+.tl-bar span[data-on] {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+.tl-draft {
+  position: absolute;
+  right: 6cqw;
+  bottom: 6cqw;
+  width: min(56%, 24em);
+  display: grid;
+  gap: 0.7em;
+  padding: 1.1em 1.2em;
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.08),
+    0 24px 44px -26px rgb(var(--shade) / 0.5);
+}
+.tl-draft-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.tl-draft dl {
+  display: grid;
+  gap: 0.2em;
+}
+.tl-draft dl div {
+  display: grid;
+  grid-template-columns: 3.4em minmax(0, 1fr);
+  gap: 0.6em;
+  padding: 0.25em 0;
+  border-bottom: 1px solid var(--hair);
+}
+.tl-draft dt {
+  color: var(--mute);
+  font-size: 0.88em;
+}
+.tl-draft-foot {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+}
+
+@container (max-width: 520px) {
+  .tl {
+    padding: 5cqw;
+    font-size: 12px;
+  }
+  .tl-anchor {
+    margin-left: 18%;
+  }
+  .tl-bar span:nth-child(n + 3) {
+    display: none;
+  }
+  .tl-draft {
+    left: 5cqw;
+    right: 5cqw;
+    width: auto;
+  }
+}
