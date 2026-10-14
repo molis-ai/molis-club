@@ -1,0 +1,245 @@
+/* Molis Work 页：演示区是木色的桌面与植物绿；标志性交互「把这件工作交给谁」。 */
+
+.m-work {
+  --stage: #efe8dc;
+}
+.m-work .m-sig-box {
+  background: #f4efe6;
+}
+.hf-note {
+  margin-top: 12px;
+}
+
+/* ---------- 把这件工作交给谁 ---------- */
+.hf {
+  --wood: #f1e9dc;
+  --wood-2: #e6dac7;
+  --leaf: #4f6e48;
+  --leaf-wash: rgb(79 110 72 / 0.13);
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+  gap: clamp(20px, 3vw, 48px);
+  align-items: start;
+}
+.hf svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  stroke-width: 1.6;
+}
+.hf-home {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+.hf-zone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.hf-slot {
+  min-height: 210px;
+  border: 1px dashed rgb(27 26 24 / 0.22);
+  border-radius: var(--r-panel);
+}
+.hf-card-wrap {
+  position: relative;
+  z-index: 2;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+.hf-card-wrap[data-dragging] {
+  cursor: grabbing;
+  z-index: 10;
+}
+.hf-card {
+  display: grid;
+  gap: 12px;
+  padding: 18px 20px 20px;
+  border-radius: var(--r-panel);
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.07),
+    0 18px 36px -26px rgb(var(--shade) / 0.5);
+}
+.hf-card-name {
+  display: grid;
+  gap: 2px;
+}
+.hf-card-name b {
+  font: 400 18px/1.4 var(--sans);
+}
+.hf-card-name span {
+  font-size: 13px;
+  color: var(--mute);
+}
+.hf-card-label {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.14em;
+  color: var(--mute);
+}
+.hf-card ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.hf-card li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: var(--wood);
+  font-size: 13px;
+  color: var(--ink);
+}
+.hf-card li small {
+  grid-column: 2;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+/* 交出去时，附件依次跟上 */
+.hf-card:not([data-holder='start']) li {
+  animation: hf-follow 0.7s var(--ease) both;
+  animation-delay: calc(0.18s + var(--i) * 90ms);
+}
+@keyframes hf-follow {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+.hf-back {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  min-height: 3.2em;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.hf-back b {
+  font-weight: 500;
+  color: var(--ink);
+}
+.hf-home .hf-card-wrap {
+  animation: none;
+}
+.hf-lanes {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.hf-lane {
+  border-radius: var(--r-panel);
+  background: rgb(255 255 255 / 0.62);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  transition:
+    background-color 0.4s var(--ease),
+    box-shadow 0.4s var(--ease);
+}
+.hf-lane[data-here] {
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+}
+.hf-pick {
+  all: unset;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 56px;
+  padding: 10px 16px;
+  border-radius: var(--r-panel);
+  cursor: pointer;
+}
+.hf-pick span:nth-child(2) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+}
+.hf-pick b {
+  font: 400 16px/1.4 var(--sans);
+}
+.hf-pick small {
+  font-size: 12.5px;
+  color: var(--mute);
+}
+.hf-pick-go {
+  font-size: 13px;
+  color: var(--mute);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 0.3s,
+    transform 0.4s var(--ease);
+}
+.hf-pick:hover .hf-pick-go,
+.hf-pick:focus-visible .hf-pick-go {
+  opacity: 1;
+  transform: none;
+}
+.hf-pick[aria-pressed='true'] .hf-pick-go {
+  opacity: 0;
+}
+.hf-pick:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+}
+.hf-lane-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: 16px;
+  align-items: center;
+  padding: 0 16px 16px;
+}
+.hf-resume {
+  display: grid;
+  gap: 4px;
+  padding-left: 14px;
+  border-left: 2px solid var(--leaf);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-2);
+  animation: m-page-in 0.6s var(--ease) 0.5s both;
+}
+.hf-resume span {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.14em;
+  color: var(--leaf);
+}
+.hf-reset {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+@media (max-width: 900px) {
+  .hf {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hf-lane-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hf-slot {
+    min-height: 72px;
+  }
+  .hf-card-wrap {
+    touch-action: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hf-card li,
+  .hf-resume {
+    animation: none !important;
+  }
+}

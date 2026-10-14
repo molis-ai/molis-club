@@ -51,6 +51,7 @@ export function Reel({
   onPause,
   view = '16 / 10',
   footer,
+  bare = false,
 }: {
   name: string;
   segments: Segment[];
@@ -60,6 +61,8 @@ export function Reel({
   onPause: () => void;
   view?: string;
   footer?: ReactNode;
+  /** 只要画面和底部一行，不要上面的说明（产品页手机上用） */
+  bare?: boolean;
 }) {
   const [now, setNow] = useState(0);
   // 服务端与没有 JS 时停在结果上；开始播时从第一步演起
@@ -112,7 +115,7 @@ export function Reel({
   const current = segments[now];
   return (
     <div className="m-reel">
-      <div className="m-reel-cap" aria-live="polite">
+      <div className="m-reel-cap" aria-live="polite" hidden={bare}>
         <span className="m-no" aria-hidden="true">
           {pad(now + 1)}
         </span>

@@ -612,7 +612,7 @@ const goal: Scene = {
           结论与周四的要求一致
         </li>
         <li>
-          <i className="m-tick" />
+          <i className="m-tick" style={at(99)} />
           C 公司口径待你确认
         </li>
       </ul>
@@ -650,7 +650,7 @@ const away: Scene = {
             </span>
           </li>
           <li className="m-v" style={at(2)}>
-            <span className="m-tick" />
+            <span className="m-tick" style={at(99)} />
             <span>
               07:00 D 公司昨晚发布了新版本<small>要不要加进报告，需要你定</small>
             </span>

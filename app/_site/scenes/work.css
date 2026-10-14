@@ -152,20 +152,24 @@
   rotate: 0deg;
 }
 .wk-scatter[data-step='1'] .wk-bit[data-k='tab'] {
-  left: 18%;
-  top: 22%;
+  left: 10%;
+  top: 24%;
 }
 .wk-scatter[data-step='1'] .wk-bit[data-k='chat'] {
-  left: 40%;
-  top: 18%;
+  left: 46%;
+  top: 14%;
+}
+.wk-scatter[data-step='1'] .wk-bit[data-k='todo'] {
+  left: 36%;
+  top: 42%;
 }
 .wk-scatter[data-step='1'] .wk-bit[data-k='doc'] {
-  left: 22%;
-  top: 60%;
+  left: 16%;
+  top: 62%;
 }
 .wk-scatter[data-step='1'] .wk-bit[data-k='ai'] {
-  left: 48%;
-  top: 64%;
+  left: 52%;
+  top: 68%;
 }
 /* 第三步：收进同一张工作台 */
 .wk-scatter[data-step='2'] .wk-bit {
@@ -236,6 +240,7 @@
 }
 .wk-arrange .wk-main {
   display: grid;
+  align-content: start;
 }
 .wk-arrange .wk-main > .wk-shelf,
 .wk-arrange .wk-main > .wk-search {

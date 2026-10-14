@@ -198,5 +198,32 @@
         1024
       ]
     ]
+  },
+  "story-sky": {
+    "width": 1280,
+    "height": 720,
+    "avg": "#a3abb3",
+    "src": "/site/story-sky.mp4",
+    "poster": "/site/story-sky-poster.webp",
+    "rate": 0.35,
+    "srcset": []
+  },
+  "about-painting": {
+    "width": 960,
+    "height": 540,
+    "avg": "#625441",
+    "src": "/site/about-painting.mp4",
+    "poster": "/site/about-painting-poster.webp",
+    "rate": 0.8,
+    "srcset": []
+  },
+  "about-coast": {
+    "width": 1280,
+    "height": 720,
+    "avg": "#7b8280",
+    "src": "/site/about-coast.mp4",
+    "poster": "/site/about-coast-poster.webp",
+    "rate": 0.6,
+    "srcset": []
   }
 }
