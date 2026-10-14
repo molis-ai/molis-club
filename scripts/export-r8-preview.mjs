@@ -1,5 +1,7 @@
 // 把第八轮首页方向（入口、五个版本与选图板）导出成一个不依赖服务器的静态预览包，用来分享给别人看。
 // 用法：先 npm run build（取编译好的全站基础样式），再 node scripts/export-r8-preview.mjs。
+// 输出的是完整网页，可以直接放到 Cloudflare Pages 这类静态托管；加 --artifact 时入口页只写正文，
+// 由 claude.ai artifact 包上文档骨架。
 // 输出到 outputs/r8-share/：所有页面平铺在同一层，资源一律用相对路径，放到任何静态托管下都能打开。
 // 第八轮以外的站内链接（产品页、文章、联系等）在预览里不可点，提示「预览里没有这一页」。
 // 只含展示组件与图片视频，不含后端、数据库、用户数据或凭据。
@@ -12,6 +14,7 @@ const root = process.cwd();
 const output = resolve(root, 'outputs/r8-share');
 const sources = resolve(root, 'outputs/r8-share-source');
 const R8 = '/demos/brand/r8';
+const forArtifact = process.argv.includes('--artifact');
 
 const pages = [
   ['index', '', 'Molis AI 第八轮'],
@@ -122,9 +125,9 @@ createRoot(document.getElementById('root')).render(<Page />);
 <style>:root{--font-r8-jost:'Jost';--font-r8-soft:'Fraunces'}body{margin:0;background:#f6f2ec}</style>`;
     const body = `<div id="root"></div>
 <script src="assets/${name}.js" defer></script>`;
-    // 入口页由托管方包上文档骨架；其余页面是完整的独立文档
+    // 发布成 artifact 时入口页由托管方包上文档骨架；其余情况每页都是完整的独立文档
     const html =
-      name === 'index'
+      forArtifact && name === 'index'
         ? `${head}\n${body}\n`
         : `<!doctype html><html lang="zh-CN"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -135,6 +138,12 @@ ${body}
 `;
     await writeFile(resolve(output, `${name}.html`), html);
   }
+
+  // 评审用的预览，不让搜索引擎收录
+  await writeFile(
+    resolve(output, 'robots.txt'),
+    'User-agent: *\nDisallow: /\n',
+  );
 
   // 第八轮自己的影像整目录带上（选图板的路径是运行时拼出来的），其余按引用到的逐个复制
   await cp(resolve(root, 'public/images/r8'), resolve(output, 'images/r8'), {
