@@ -886,6 +886,137 @@ html:not(.js) .m-com-stage + .m-com-stage {
   justify-content: space-between;
   gap: 8px 12px;
 }
+/* 几个网页动效：方法页那六个演示搬进工作台——和 niul.ai、DropAgent 同一个粗墨线画框、同一个比例，
+   里面的卡片、折叠、旁注也换成墨线 + 硬投影；英文名右边已经有，演示下面不再重复 */
+.m-com-stage .m-mth-demo-stage {
+  aspect-ratio: 16 / 11;
+  min-height: 0;
+  border: var(--line);
+  border-radius: 14px;
+  background: var(--cream);
+}
+.m-com-stage .m-mth-demo-bar {
+  justify-content: flex-end;
+}
+.m-com-stage .m-mth-demo-bar > .m-caption {
+  display: none;
+}
+.m-com-stage .m-mth-demo-bar button {
+  border: 1.5px solid var(--ink);
+  background: var(--white);
+  box-shadow: none;
+  transition:
+    translate 0.3s var(--bounce),
+    box-shadow 0.3s var(--bounce);
+}
+.m-com-stage .m-mth-demo-bar button:hover:not(:disabled) {
+  translate: 0 -2px;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.m-com-stage .m-mth-stagger > span,
+.m-com-stage .m-mth-underline a {
+  font-weight: 400;
+}
+.m-com-stage .m-mth-stagger em {
+  box-shadow: inset 0 -0.3em 0 var(--accent-wash);
+}
+.m-com-stage .m-mth-underline a::after {
+  height: 3px;
+  border-radius: 2px;
+}
+.m-com-stage .m-mth-accordion {
+  display: grid;
+  gap: 10px;
+}
+.m-com-stage .m-mth-accordion details {
+  padding: 0 16px;
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  background: var(--white);
+  transition: box-shadow 0.3s var(--bounce);
+}
+.m-com-stage .m-mth-accordion details[open] {
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.m-com-stage .m-mth-accordion summary {
+  padding: 12px 0;
+}
+.m-com-stage .m-mth-accordion summary svg {
+  color: var(--ink);
+}
+.m-com-stage .m-mth-accordion details p {
+  padding-bottom: 14px;
+}
+.m-com-stage .m-mth-snap {
+  grid-auto-columns: 62%;
+  padding: 18px;
+  scroll-padding-inline: 18px;
+}
+.m-com-stage .m-mth-snap > div {
+  min-height: 0;
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.m-com-stage .m-mth-snap strong {
+  font-weight: 400;
+}
+/* 粘性定位：铺满画框在框里滚；章节名是一张杏色小签，停在上面；底边淡出，看得出下面还有 */
+.m-com-stage .m-mth-sticky {
+  position: absolute;
+  inset: 0;
+  height: auto;
+  padding: 0 18px;
+}
+/* 底边的淡出用一层盖上去的渐变（滚动容器上加 mask 会让被推走的标签露到框外） */
+.m-com-stage .m-mth-demo-sticky .m-mth-demo-stage::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, var(--cream));
+  pointer-events: none;
+}
+.m-com-stage .m-mth-sticky section {
+  grid-template-columns: 4.6em minmax(0, 1fr);
+  gap: 12px;
+}
+.m-com-stage .m-mth-sticky section + section {
+  border-top: 2px dashed var(--hair-2);
+}
+.m-com-stage .m-mth-sticky strong {
+  top: 12px;
+  justify-self: start;
+  margin-top: 12px;
+  padding: 1px 10px 2px;
+  border: 1.5px solid var(--ink);
+  border-radius: 8px;
+  background: var(--accent);
+  box-shadow: 2px 2px 0 var(--ink);
+  font-size: 17px;
+}
+.m-com-stage .m-mth-sticky p {
+  padding: 14px 0 24px;
+}
+/* 最后一段下面留出空白，「创造」才滚得到顶上，看得见上一章的标签被推走、新标签接上 */
+.m-com-stage .m-mth-sticky section:last-child p:last-child {
+  padding-bottom: 136px;
+}
+.m-com-stage .m-mth-grid {
+  gap: 14px;
+}
+.m-com-stage .m-mth-grid > div {
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.m-com-stage .m-mth-grid strong {
+  font-size: var(--t-keys);
+}
+.m-com-stage .m-mth-grid aside {
+  border-left: 3px solid var(--accent);
+}
+
 .m-com-how-lead {
   display: grid;
   gap: 2px;
@@ -2034,6 +2165,17 @@ html:not(.js) .m-com-stage + .m-com-stage {
   }
 }
 @media (max-width: 560px) {
+  /* 窄屏：动效演示框按比例会太矮，改成定高（不用最小高度，否则比例会把框撑宽） */
+  .m-com-stage .m-mth-demo-stage {
+    aspect-ratio: auto;
+    height: 280px;
+  }
+  .m-com-stage .m-mth-grid > div {
+    padding: 16px;
+  }
+  .m-com-stage .m-mth-grid strong {
+    font-size: 15px;
+  }
   /* 窄屏：纸角的数字交给提示条，票根缩一点，别压住第四个颜料点 */
   .js .m-com-paper-cap .num {
     display: none;

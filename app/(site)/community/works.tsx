@@ -164,7 +164,7 @@ export function WebStage() {
             </button>
           ))}
         </fieldset>
-        <MethodDemo key={entry.slug} entry={entry} />
+        <MethodDemo key={entry.slug} entry={entry} tour />
       </Layer>
       <Layer label={ui.how} kind="how">
         <p className="m-com-how-lead">

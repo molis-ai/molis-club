@@ -25,6 +25,7 @@ import { CopyPrompt } from './copy';
 // 方法（网页与动效）的现场演示：六种效果就画在一张浅纸上，可以重播、动手滚动或切换；
 // 外部组件只给来源卡；详情页的实验台把示例、时长和 Prompt 放在一起。
 // 演示的基础样式就是完成的样子：没有 JS、减少动态时直接看到结果。演示里的句子是示例文字（沿用旧方法页）。
+// 社区工作台里借用同一套演示，画风由 community.css 换成粗墨线。
 
 /** 第一次进入视口才开始播放（错落入场） */
 function useSeen<T extends HTMLElement>() {
@@ -47,6 +48,7 @@ export function MethodDemo({
   duration = 700,
   compact = false,
   lab = false,
+  tour = false,
 }: {
   entry: KnowledgeEntry;
   duration?: number;
@@ -54,12 +56,47 @@ export function MethodDemo({
   compact?: boolean;
   /** 在详情页的实验台上（下划线示例链到页内的用法） */
   lab?: boolean;
+  /** 社区工作台：粘性定位进入视口后自己慢慢滚一遍（访客一动手就停），也能重播 */
+  tour?: boolean;
 }) {
   const [replay, setReplay] = useState(0);
   const [single, setSingle] = useState(false);
   const [edge, setEdge] = useState({ start: true, end: false });
   const [stage, seen] = useSeen<HTMLDivElement>();
   const rail = useRef<HTMLElement>(null);
+  const sticky = useRef<HTMLElement>(null);
+  const touring = tour && entry.slug === 'sticky' && (seen || replay > 0);
+  useEffect(() => {
+    const node = sticky.current;
+    if (!touring || !node) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let frame = 0;
+    node.scrollTop = 0;
+    // 滚到下一章的标签刚好顶上去、接住上一章为止
+    const last = node.lastElementChild;
+    const span = Math.min(
+      node.scrollHeight - node.clientHeight,
+      last
+        ? last.getBoundingClientRect().top - node.getBoundingClientRect().top
+        : Infinity,
+    );
+    const begin = performance.now() + 600;
+    const stop = () => cancelAnimationFrame(frame);
+    const tick = (now: number) => {
+      const t = Math.min(1, Math.max(0, (now - begin) / 4200));
+      node.scrollTop = span * (t < 0.5 ? 2 * t * t : 1 - (2 - 2 * t) ** 2 / 2);
+      if (t < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    const events = ['wheel', 'pointerdown', 'touchstart', 'keydown'] as const;
+    events.forEach((name) =>
+      node.addEventListener(name, stop, { passive: true }),
+    );
+    return () => {
+      stop();
+      events.forEach((name) => node.removeEventListener(name, stop));
+    };
+  }, [touring, replay]);
   if (isResourceEntry(entry)) return null;
   const playing = seen || replay > 0;
   const move = (direction: number) => {
@@ -83,7 +120,11 @@ export function MethodDemo({
     </button>
   );
   let controls: ReactNode = null;
-  if (entry.slug === 'stagger' || entry.slug === 'underline')
+  if (
+    entry.slug === 'stagger' ||
+    entry.slug === 'underline' ||
+    (tour && entry.slug === 'sticky')
+  )
     controls = replayButton;
   if (entry.slug === 'asymmetric-grid')
     controls = (
@@ -197,6 +238,7 @@ export function MethodDemo({
         {entry.slug === 'sticky' && (
           <section
             className="m-mth-sticky"
+            ref={sticky}
             tabIndex={0}
             aria-label="粘性定位滚动示例"
           >
