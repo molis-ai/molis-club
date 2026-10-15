@@ -251,28 +251,23 @@
 }
 .m-pend-progress {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 32px var(--col-gap);
+  gap: clamp(28px, 4.5vh, 44px);
+  max-width: 60rem;
   margin-left: calc((100% + var(--col-gap)) / 12 * 2);
 }
-.m-pend-progress > div {
+.m-pend-progress .m-hn-block {
+  min-height: 46px;
+  padding: 10px 16px;
+  font-size: var(--t-ui);
+}
+.m-pend-now {
   display: grid;
-  align-content: start;
-  gap: 12px;
+  gap: 8px;
   padding-top: 16px;
   border-top: 1px solid var(--hair-2);
-}
-.m-pend-progress dt {
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-  color: var(--mute);
-}
-.m-pend-progress dd {
-  display: grid;
-  gap: 0.8em;
   color: var(--ink-2);
 }
-.m-pend-progress dd .m-actions {
+.m-pend-now .m-actions {
   margin-top: 6px;
 }
 .m-pend-relation {
@@ -309,9 +304,6 @@
   .m-pend-progress,
   .m-pend-relation {
     margin-left: 0;
-  }
-  .m-pend-progress {
-    grid-template-columns: minmax(0, 1fr);
   }
   .m-pend-go .m-actions {
     padding-left: 0;

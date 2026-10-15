@@ -1,6 +1,11 @@
 import type { ReactNode } from 'react';
 import type { Product } from '../../../content/site/products';
+import {
+  progressBlocks,
+  progressLabels,
+} from '../../../content/site/progress';
 import { pad, Phrases, Status, Window, type Vars } from '../ui';
+import { Fold, HaveNot, Paragraphs } from '../viz/viz';
 
 // 产品页共用的骨架。不能变的：顶栏、页尾、字阶、网格边距、标签与诚实标注、按钮链接、缓动；
 // 能变的：演示区主色调、画面形状、页面节奏、标志性交互——产品特色只放在演示区和窗里。
@@ -114,7 +119,7 @@ export type Progress = {
 };
 
 /**
- * 固定收尾：适合这样的时刻 → 当前进展（已经有的 / 还没有的 / 现在怎么体验）
+ * 固定收尾：适合这样的时刻 → 当前进展（一条用块搭的进度：已经有的 / 还没有的；现在怎么体验；原句收起）
  * → 和其他产品的关系（只在有关系的页）→ 去处。
  */
 export function ProductEnding({
@@ -156,35 +161,25 @@ export function ProductEnding({
         <p className="m-pend-stage" data-reveal>
           {product.stageNote}
         </p>
-        <dl className="m-pend-progress">
-          <div data-reveal>
-            <dt>已经有的</dt>
-            <dd>
-              {progress.have.map((text) => (
-                <p key={text}>{text}</p>
-              ))}
-            </dd>
+        <div className="m-pend-progress">
+          <HaveNot
+            have={progressBlocks[product.id].have}
+            notYet={progressBlocks[product.id].notYet}
+            labels={progressLabels}
+          />
+          <div className="m-pend-now" data-reveal>
+            <p className="m-kicker">{progressLabels.now}</p>
+            {progress.now.text.map((text) => (
+              <p key={text}>{text}</p>
+            ))}
+            {progress.now.links ? (
+              <div className="m-actions">{progress.now.links}</div>
+            ) : null}
           </div>
-          <div data-reveal style={{ '--delay': '90ms' } as Vars}>
-            <dt>还没有的</dt>
-            <dd>
-              {progress.notYet.map((text) => (
-                <p key={text}>{text}</p>
-              ))}
-            </dd>
-          </div>
-          <div data-reveal style={{ '--delay': '180ms' } as Vars}>
-            <dt>现在怎么体验</dt>
-            <dd>
-              {progress.now.text.map((text) => (
-                <p key={text}>{text}</p>
-              ))}
-              {progress.now.links ? (
-                <div className="m-actions">{progress.now.links}</div>
-              ) : null}
-            </dd>
-          </div>
-        </dl>
+          <Fold summary={progressLabels.full}>
+            <Paragraphs items={[...progress.have, ...progress.notYet]} />
+          </Fold>
+        </div>
       </Part>
       {relation ? (
         <Part no={no++} kicker="和其他产品的关系" title={relation.title}>
