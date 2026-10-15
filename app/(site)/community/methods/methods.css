@@ -1,0 +1,1171 @@
+/* =====================================================================
+   社区 · 方法：方法目录、方法详情、艺术家 Skill 详情，以及社区各页共用的「带走」动作与网页动效演示。
+   白房子的写法：近白的纸、细字、1px 线、留白；演示画在一张浅纸上，Prompt 摊开在白卡上。
+   类名前缀 m-mth-（方法）与 m-com-（社区共用）；只读 site.css 的令牌。
+   ===================================================================== */
+
+/* ---------- 只在有 JS 时出现的控件；没有 JS 时出现的说明 ---------- */
+html:not(.js) .m-com-js {
+  display: none !important;
+}
+.js .m-com-nojs {
+  display: none !important;
+}
+
+/* ---------- 带走：复制、下载，做完后的一句话 ---------- */
+.m-com-act {
+  padding: 0 0 2px;
+  white-space: nowrap;
+}
+.m-com-act small {
+  font-size: var(--t-label);
+  color: var(--mute);
+  letter-spacing: 0.04em;
+}
+.m-com-copy,
+.m-com-download {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+}
+.m-com-status {
+  display: block;
+  min-height: 1.6em;
+  font-size: var(--t-small);
+  line-height: 1.6;
+  color: var(--mute);
+}
+.m-com-status:empty {
+  min-height: 0;
+}
+.m-com-after {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  color: var(--ink-2);
+  animation: m-mth-in 0.6s var(--ease) both;
+}
+.m-com-after a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--accent-ink);
+}
+.m-com-manual {
+  width: 100%;
+  min-height: 7em;
+  padding: 10px 12px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-inset);
+  background: var(--white);
+  font-size: var(--t-small);
+  line-height: 1.7;
+  resize: vertical;
+}
+@keyframes m-mth-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* ---------- 细滑杆：一道 1px 的线，一颗墨色的点 ---------- */
+.m-com-slider {
+  width: 100%;
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+.m-com-slider::-webkit-slider-runnable-track {
+  height: 1px;
+  background: var(--hair-2);
+}
+.m-com-slider::-moz-range-track {
+  height: 1px;
+  background: var(--hair-2);
+}
+.m-com-slider::-webkit-slider-thumb {
+  width: 15px;
+  height: 15px;
+  margin-top: -7px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 4px var(--paper);
+  -webkit-appearance: none;
+  transition: transform 0.3s var(--ease);
+}
+.m-com-slider::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 4px var(--paper);
+}
+.m-com-slider:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.m-com-slider:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-com-slider::-webkit-slider-thumb {
+    transition: none;
+  }
+}
+
+/* ---------- 摊开的 Prompt：白卡上一段可以选中的字 ---------- */
+.m-mth-copy {
+  display: grid;
+  gap: 10px;
+}
+.m-mth-copy textarea {
+  width: 100%;
+  min-height: 15em;
+  padding: 16px 18px;
+  border: 0;
+  border-radius: var(--r-inset);
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  font-size: var(--t-small);
+  line-height: 1.85;
+  color: var(--ink-2);
+  resize: vertical;
+}
+.m-mth-copy textarea:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+}
+.m-mth-copy-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin-top: 6px;
+}
+
+/* =====================================================================
+   网页与动效的现场演示：一张浅纸（--paper-2），上面是这个效果本身
+   ===================================================================== */
+.m-mth-demo {
+  --mth-d: 700ms;
+  --mth-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  display: grid;
+  gap: 10px;
+}
+.m-mth-demo-stage {
+  position: relative;
+  display: grid;
+  min-height: 300px;
+  overflow: hidden;
+  border-radius: var(--r-panel);
+  background: var(--paper-2);
+}
+.m-mth-demo[data-compact] .m-mth-demo-stage {
+  min-height: 260px;
+}
+.m-mth-demo-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 30px;
+}
+.m-mth-demo-bar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  font-size: var(--t-small);
+  letter-spacing: 0.04em;
+  transition: box-shadow 0.3s var(--ease);
+}
+.m-mth-demo-bar button:hover:not(:disabled) {
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.m-mth-demo-bar button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.m-mth-demo-arrows {
+  display: inline-flex;
+  gap: 6px;
+}
+.m-mth-demo-arrows button {
+  width: 28px;
+  padding: 0;
+  justify-content: center;
+}
+
+/* 错落入场：同组内容从下方 12px 归位，相邻错开 90ms；基础样式就是完成的样子 */
+.m-mth-stagger {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 4px;
+  padding: clamp(24px, 3vw, 40px);
+}
+.m-mth-stagger > span {
+  font: 300 var(--t-h2) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-mth-stagger em {
+  font-style: normal;
+  box-shadow: inset 0 -0.18em 0 var(--accent-wash);
+}
+.m-mth-stagger > p {
+  margin-top: 12px;
+  font-size: var(--t-ui);
+  color: var(--mute);
+}
+.m-mth-stagger[data-playing] > * {
+  animation: m-mth-rise var(--mth-d) var(--mth-ease) backwards;
+}
+.m-mth-stagger[data-playing] > :nth-child(2) {
+  animation-delay: 90ms;
+}
+.m-mth-stagger[data-playing] > :nth-child(3) {
+  animation-delay: 180ms;
+}
+@keyframes m-mth-rise {
+  from {
+    opacity: 0.35;
+    transform: translateY(12px);
+  }
+}
+
+/* 下划线展开：基础下划线一直在，悬停或聚焦时一条杏橙细线从左画到右 */
+.m-mth-underline {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 16px;
+  padding: clamp(24px, 3vw, 40px);
+}
+.m-mth-underline a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 300 var(--t-h2) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-decoration-color: var(--hair-2);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 10px;
+}
+.m-mth-underline a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -11px;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--mth-d) var(--mth-ease);
+}
+.m-mth-underline a:is(:hover, :focus-visible)::after,
+.m-mth-underline[data-playing] a::after {
+  transform: scaleX(1);
+}
+.m-mth-underline[data-playing] a::after {
+  animation: m-mth-draw var(--mth-d) var(--mth-ease) both;
+}
+@keyframes m-mth-draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+.m-mth-underline p {
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+.m-mth-underline a {
+  white-space: nowrap;
+}
+.m-mth-demo[data-compact] .m-mth-underline a,
+.m-mth-demo[data-compact] .m-mth-stagger > span {
+  font-size: var(--t-h3);
+  font-weight: 400;
+}
+.m-mth-demo[data-compact] .m-mth-grid strong {
+  font-size: var(--t-keys);
+}
+
+/* 折叠展开：原生 details，展开时内容轻轻浮上来 */
+.m-mth-accordion {
+  align-self: center;
+  padding: clamp(18px, 2.6vw, 32px);
+}
+.m-mth-accordion details {
+  border-bottom: 1px solid var(--hair-2);
+}
+.m-mth-accordion details:first-child {
+  border-top: 1px solid var(--hair-2);
+}
+.m-mth-accordion summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 0;
+  font: 400 var(--t-keys) / 1.5 var(--sans);
+  letter-spacing: 0.03em;
+  list-style: none;
+  cursor: pointer;
+}
+.m-mth-accordion summary::-webkit-details-marker {
+  display: none;
+}
+.m-mth-accordion summary svg {
+  flex: none;
+  color: var(--mute);
+  transition: rotate var(--mth-d) var(--mth-ease);
+}
+.m-mth-accordion details[open] summary svg {
+  rotate: 45deg;
+}
+.m-mth-accordion details p {
+  padding-bottom: 18px;
+  font-size: var(--t-ui);
+  line-height: 1.85;
+  color: var(--ink-2);
+}
+.m-mth-accordion details[open] p {
+  animation: m-mth-rise var(--mth-d) var(--mth-ease) backwards;
+}
+
+/* 滚动吸附：一排白卡，停下时对齐，露出下一张 */
+.m-mth-snap {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 74%;
+  gap: 12px;
+  padding: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--hair-2) transparent;
+}
+.m-mth-snap > div {
+  display: grid;
+  align-content: end;
+  gap: 2px;
+  min-height: 170px;
+  padding: 20px 22px;
+  border-radius: var(--r-inset);
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
+  scroll-snap-align: start;
+}
+.m-mth-snap span {
+  font: italic 300 var(--t-ui) / 1.4 var(--latin);
+  color: var(--mute);
+}
+.m-mth-snap strong {
+  font: 300 var(--t-h2) / 1.3 var(--sans);
+}
+.m-mth-snap p {
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+
+/* 粘性定位：在浅纸里滚动，章节名停在上面，这一章读完再一起离开 */
+.m-mth-sticky {
+  height: 300px;
+  overflow-y: auto;
+  padding: 0 clamp(18px, 2.4vw, 28px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--hair-2) transparent;
+}
+.m-mth-demo[data-compact] .m-mth-sticky {
+  height: 260px;
+}
+.m-mth-sticky section {
+  display: grid;
+  grid-template-columns: 4.5em minmax(0, 1fr);
+  gap: 16px;
+}
+.m-mth-sticky section + section {
+  border-top: 1px solid var(--hair);
+}
+.m-mth-sticky strong {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  padding-top: 22px;
+  font: 400 var(--t-h3) / 1.4 var(--sans);
+}
+.m-mth-sticky p {
+  padding: 24px 0 40px;
+  font-size: var(--t-ui);
+  line-height: 1.8;
+  color: var(--ink-2);
+}
+
+/* 不对称分栏：主栏和旁注 2:1，切成单列时旁注落到下面 */
+.m-mth-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-content: center;
+  gap: 16px;
+  padding: clamp(18px, 2.4vw, 32px);
+  transition: none;
+}
+.m-mth-grid[data-single] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.m-mth-grid > div {
+  display: grid;
+  gap: 4px;
+  padding: 20px 22px;
+  border-radius: var(--r-inset);
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
+}
+.m-mth-grid em {
+  font: italic 300 var(--t-ui) / 1.4 var(--latin);
+  color: var(--mute);
+}
+.m-mth-grid strong {
+  font: 400 var(--t-h3) / 1.4 var(--sans);
+}
+.m-mth-grid p {
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+.m-mth-grid aside {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 4px 0 4px 14px;
+  border-left: 1px solid var(--accent);
+}
+.m-mth-grid aside span {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--accent-ink);
+}
+.m-mth-grid aside p {
+  font-size: var(--t-small);
+  line-height: 1.7;
+}
+
+/* 外部组件来源卡 */
+.m-mth-source {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 14px;
+  min-height: 260px;
+  padding: clamp(22px, 2.6vw, 32px);
+  border-radius: var(--r-panel);
+  background: var(--paper-2);
+}
+.m-mth-source > p:not(.m-tagline) {
+  max-width: 32em;
+  color: var(--ink-2);
+  line-height: 1.85;
+}
+
+/* =====================================================================
+   方法目录 /community/methods
+   ===================================================================== */
+.m-mth-hero {
+  padding-bottom: clamp(40px, 7vh, 72px);
+}
+.m-mth-trail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin-bottom: clamp(28px, 5vh, 48px);
+  font-size: var(--t-small);
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.m-mth-trail a {
+  color: var(--ink-2);
+}
+.m-mth-trail a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+.m-mth-trail [aria-current] {
+  color: var(--mute);
+}
+.m-mth-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 18px;
+}
+.m-mth-head > * {
+  grid-column: 1 / span 8;
+}
+.m-mth-h1 {
+  font: 300 var(--t-h1) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-mth-h1 i {
+  display: block;
+  margin-top: 6px;
+  font: italic 300 var(--t-h3) / 1.4 var(--latin);
+  color: var(--mute);
+  letter-spacing: 0;
+}
+.m-mth-lead {
+  max-width: 36em;
+  font: 300 var(--t-lead) / 1.9 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+.m-mth-fine {
+  max-width: 40em;
+  font-size: var(--t-small);
+  line-height: 1.8;
+  color: var(--mute);
+}
+
+/* 工具条：粘在顶栏下面；没有 JS 时是一个普通的 GET 表单 */
+.m-mth-tools {
+  position: sticky;
+  top: var(--header);
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 28px;
+  padding: 14px 0;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--hair);
+  background: var(--paper);
+}
+.m-mth-filters {
+  order: -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.m-mth-filters button,
+.m-com-pick button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hair);
+  font-size: var(--t-small);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  transition:
+    box-shadow 0.3s var(--ease),
+    background-color 0.3s var(--ease);
+}
+.m-mth-filters button:hover,
+.m-com-pick button:hover {
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  color: var(--ink);
+}
+.m-mth-filters button[aria-pressed='true'],
+.m-com-pick button[aria-pressed='true'] {
+  background: var(--accent-wash);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--ink);
+}
+.m-mth-filters small {
+  font-size: var(--t-label);
+  color: var(--mute);
+}
+.m-mth-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 260px;
+  max-width: 420px;
+}
+.m-mth-search svg {
+  position: absolute;
+  left: 2px;
+  color: var(--mute);
+  pointer-events: none;
+}
+.m-mth-search input {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 4px 0 28px;
+  border: 0;
+  border-bottom: 1px solid var(--hair-2);
+  border-radius: 0;
+  background: transparent;
+  font-size: var(--t-ui);
+  transition: border-color 0.3s var(--ease);
+}
+.m-mth-search input:focus {
+  outline: none;
+  border-bottom-color: var(--ink);
+}
+.m-mth-search input::placeholder {
+  color: var(--mute);
+}
+.m-mth-search button {
+  flex: none;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+.js .m-mth-search button {
+  display: none;
+}
+.m-mth-count {
+  margin-left: auto;
+  font-size: var(--t-small);
+  color: var(--mute);
+  font-variant-numeric: tabular-nums;
+}
+
+.m-mth-body {
+  padding-bottom: clamp(80px, 14vh, 160px);
+}
+.m-mth-back {
+  margin-top: clamp(56px, 9vh, 96px);
+  padding-top: 16px;
+  border-top: 1px solid var(--hair);
+}
+
+/* 一类方法：一行标题 + 网格 */
+.m-mth-group {
+  padding-top: clamp(48px, 8vh, 88px);
+}
+.m-mth-group-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-bottom: 28px;
+}
+.m-mth-group-head h2 {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  font: 300 var(--t-h2) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-mth-group-head h2 .m-no {
+  font-size: var(--t-ui);
+}
+.m-mth-group-head p {
+  max-width: 34em;
+  font-size: var(--t-small);
+  line-height: 1.8;
+  color: var(--mute);
+}
+.m-mth-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: clamp(32px, 4vw, 48px) var(--col-gap);
+}
+.m-mth-card {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+.m-mth-card-art {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-inset);
+  background: var(--paper-2);
+}
+.m-mth-card-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 1.2s var(--ease);
+}
+.m-mth-card-art:hover img {
+  scale: 1.03;
+}
+.m-mth-cover {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 10px;
+  height: 100%;
+  padding: 0 clamp(20px, 2.4vw, 32px);
+}
+.m-mth-cover em {
+  display: grid;
+  font: italic 300 var(--t-h2) / 1.15 var(--latin);
+  color: var(--ink);
+}
+.m-mth-cover p {
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+.m-mth-card-body {
+  display: grid;
+  gap: 6px;
+}
+.m-mth-card-body h3 {
+  font: 400 var(--t-h3) / 1.45 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-mth-card-body h3 a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+.m-mth-card-body > p {
+  color: var(--ink-2);
+  line-height: 1.85;
+}
+.m-mth-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: 4px 22px;
+  margin-top: 6px;
+}
+.m-mth-share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-top: clamp(28px, 4vh, 40px);
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+
+/* 组件来源：按分组的一张索引表 */
+.m-mth-source-group + .m-mth-source-group {
+  margin-top: clamp(32px, 5vh, 48px);
+}
+.m-mth-source-group h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink);
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.m-mth-rows a {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 3fr) minmax(0, 6fr) 20px;
+  align-items: baseline;
+  gap: 6px var(--col-gap);
+  padding: 16px 0;
+  border-bottom: 1px solid var(--hair);
+  transition: background-color 0.3s var(--ease);
+}
+.m-mth-rows a:hover {
+  background: rgb(27 26 24 / 0.025);
+}
+.m-mth-rows b {
+  font-weight: 400;
+  font-size: var(--t-body);
+}
+.m-mth-rows i {
+  font: italic 300 var(--t-ui) / 1.5 var(--latin);
+  color: var(--mute);
+}
+.m-mth-rows p {
+  font-size: var(--t-small);
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.m-mth-rows svg {
+  color: var(--mute);
+  transition: transform 0.45s var(--ease);
+}
+.m-mth-rows a:hover svg {
+  transform: translate(2px, -2px);
+  color: var(--ink);
+}
+.m-mth-guide {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px var(--col-gap);
+  margin-bottom: clamp(32px, 5vh, 48px);
+}
+.m-mth-guide p {
+  font-size: var(--t-small);
+  line-height: 1.85;
+  color: var(--ink-2);
+}
+.m-mth-guide .m-mth-caveat {
+  grid-column: 1 / -1;
+  padding-left: 14px;
+  border-left: 1px solid var(--accent);
+  color: var(--mute);
+}
+
+/* 搜不到：一句话 + 回去的路 */
+.m-mth-empty {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  padding: clamp(56px, 10vh, 112px) 0;
+}
+.m-mth-empty strong {
+  font: 300 var(--t-h2) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-mth-empty p {
+  color: var(--mute);
+}
+.m-mth-empty .m-btn {
+  margin-top: 12px;
+}
+.m-mth-disclosure {
+  margin-top: 18px;
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+
+/* =====================================================================
+   方法详情与艺术家 Skill 详情
+   ===================================================================== */
+.m-mth-detail {
+  padding-bottom: clamp(80px, 14vh, 160px);
+}
+.m-mth-github {
+  display: grid;
+  gap: 12px;
+  max-width: var(--read);
+  margin-top: clamp(40px, 7vh, 72px);
+}
+.m-mth-github > p:first-child {
+  color: var(--ink-2);
+  line-height: 1.9;
+}
+.m-mth-detail .m-mth-head .m-tagline {
+  margin-bottom: 4px;
+}
+.m-mth-lab {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+.m-mth-lab-demo {
+  display: grid;
+  gap: 16px;
+}
+.m-mth-lab-demo .m-mth-demo-stage {
+  min-height: clamp(300px, 34vw, 420px);
+}
+.m-mth-duration {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+.m-mth-duration output {
+  min-width: 5em;
+  text-align: right;
+  color: var(--mute);
+}
+.m-mth-help {
+  font-size: var(--t-small);
+  line-height: 1.8;
+  color: var(--mute);
+}
+.m-mth-prompt {
+  display: grid;
+  gap: 12px;
+  padding: clamp(22px, 2.6vw, 34px);
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
+}
+.m-mth-prompt-title {
+  font: 300 var(--t-h2) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-mth-prompt > p {
+  font-size: var(--t-ui);
+  line-height: 1.85;
+  color: var(--ink-2);
+}
+
+/* 读的部分：什么时候用 / 留意什么 / 来源 */
+.m-mth-reading {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 40px;
+}
+.m-mth-reading > section {
+  grid-column: span 4;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair);
+}
+.m-mth-reading h2 {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.m-mth-reading p {
+  font-size: var(--t-read);
+  line-height: 1.95;
+  color: var(--ink-2);
+}
+.m-mth-reading aside p {
+  font-size: var(--t-small);
+}
+.m-mth-reading aside {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+}
+
+/* 接着看：一张索引 */
+.m-mth-related h2 {
+  margin-bottom: 18px;
+  font: 300 var(--t-h2) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-mth-related ul {
+  border-top: 1px solid var(--ink);
+}
+.m-mth-related a {
+  display: grid;
+  grid-template-columns: 3em minmax(0, 1fr) minmax(0, 1fr) 20px;
+  align-items: baseline;
+  gap: 12px var(--col-gap);
+  padding: 18px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.m-mth-related b {
+  font: 400 var(--t-keys) / 1.4 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-mth-related i {
+  font: italic 300 var(--t-ui) / 1.4 var(--latin);
+  color: var(--mute);
+}
+.m-mth-related svg {
+  color: var(--mute);
+  transition: transform 0.45s var(--ease);
+}
+.m-mth-related a:hover svg {
+  transform: translate(2px, -2px);
+  color: var(--ink);
+}
+.m-mth-related a:hover b {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+
+/* 艺术家 Skill 详情：左边试样（整张，不裁），右边它怎样组织创作 */
+.m-mth-spread {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+.m-mth-sample {
+  display: grid;
+  gap: 12px;
+}
+.m-mth-sample-view {
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 3vw, 40px);
+  border-radius: var(--r-panel);
+  background: var(--paper-2);
+}
+.m-mth-sample-view img {
+  width: auto;
+  max-height: min(70vh, 640px);
+  border-radius: 4px;
+  filter: var(--grade);
+}
+.m-mth-sample figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+.m-mth-sample-cover {
+  display: grid;
+  align-content: center;
+  gap: 16px;
+  min-height: clamp(320px, 40vw, 520px);
+  padding: clamp(28px, 4vw, 56px);
+  border-radius: var(--r-panel);
+  background: var(--paper-2);
+}
+.m-mth-sample-cover em {
+  display: grid;
+  font: italic 300 var(--t-display) / 1.05 var(--latin);
+  letter-spacing: -0.01em;
+}
+.m-mth-sample-cover p {
+  color: var(--mute);
+}
+.m-mth-method {
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+}
+.m-mth-method h2 {
+  font: 300 var(--t-h2) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-mth-steps {
+  width: 100%;
+  border-top: 1px solid var(--hair);
+}
+.m-mth-steps li {
+  display: grid;
+  grid-template-columns: 2.4em minmax(0, 1fr);
+  gap: 2px 8px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.m-mth-steps .m-no {
+  grid-row: span 2;
+  padding-top: 5px;
+}
+.m-mth-steps b {
+  font-weight: 500;
+}
+.m-mth-steps p {
+  color: var(--ink-2);
+  line-height: 1.85;
+}
+.m-mth-use {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+.m-mth-use-text {
+  display: grid;
+  gap: 18px;
+}
+.m-mth-use-text h2 {
+  font: 300 var(--t-h2) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-mth-use-text > p {
+  color: var(--ink-2);
+  line-height: 1.95;
+}
+.m-mth-install li {
+  display: grid;
+  grid-template-columns: 2.4em minmax(0, 1fr);
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hair);
+  color: var(--ink-2);
+}
+.m-mth-install {
+  border-top: 1px solid var(--hair);
+}
+.m-mth-install .m-no {
+  padding-top: 4px;
+}
+
+.m-mth-block {
+  padding-top: clamp(64px, 10vh, 120px);
+}
+
+@media (max-width: 900px) {
+  .m-mth-head > * {
+    grid-column: 1 / -1;
+  }
+  .m-mth-lab,
+  .m-mth-spread,
+  .m-mth-use {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .m-mth-reading > section {
+    grid-column: 1 / -1;
+  }
+  .m-mth-rows a {
+    grid-template-columns: minmax(0, 1fr) 20px;
+  }
+  .m-mth-rows a > :not(svg) {
+    grid-column: 1;
+  }
+  .m-mth-rows svg {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .m-mth-guide {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .m-mth-related a {
+    grid-template-columns: 2.4em minmax(0, 1fr) 20px;
+  }
+  .m-mth-related i {
+    grid-column: 2;
+  }
+  .m-mth-related svg {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .m-mth-tools {
+    position: static;
+  }
+  .m-mth-count {
+    margin-left: 0;
+  }
+}
+
+/* ---------- 减少动态：停在完成的样子 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .m-mth-demo *,
+  .m-mth-demo *::after,
+  .m-com-after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .m-mth-card-art img {
+    transition: none;
+  }
+}
+
+/* ---------- 打印：Prompt 与正文都留下，控件不印 ---------- */
+@media print {
+  .m-mth-tools,
+  .m-com-js,
+  .m-mth-demo-bar {
+    display: none !important;
+  }
+}

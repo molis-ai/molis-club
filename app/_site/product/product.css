@@ -1,0 +1,331 @@
+/* 产品页共用的骨架：首屏、主线（左文右图、画面钉住）、固定收尾。各产品只改 --stage 等演示区的变量。 */
+
+.m-reel-cap[hidden] {
+  display: none;
+}
+
+/* ---------- 首屏 ---------- */
+.m-phero {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  align-items: end;
+  padding-bottom: clamp(56px, 10vh, 120px);
+}
+.m-phero-copy {
+  grid-column: 1 / span 6;
+  display: grid;
+  gap: clamp(14px, 2.4vh, 24px);
+  padding-bottom: clamp(8px, 4vh, 48px);
+}
+.m-phero-name {
+  margin-top: clamp(8px, 2vh, 24px);
+  font: 300 var(--t-display) / 1 var(--sans);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+.m-phero-title {
+  max-width: 15em;
+  font: 300 var(--t-h2) / 1.45 var(--sans);
+  letter-spacing: 0.05em;
+  font-feature-settings: 'palt' 1;
+}
+.m-phero-what {
+  max-width: 28em;
+  font-weight: 500;
+  line-height: 1.85;
+}
+.m-phero-aside {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin-top: 8px;
+}
+.m-phero-window {
+  grid-column: 8 / -1;
+  max-height: calc(100svh - var(--header) - 120px);
+}
+.m-phero-window .m-window-frame {
+  max-height: calc(100svh - var(--header) - 150px);
+  width: 100%;
+}
+@media (max-width: 900px) {
+  .m-phero {
+    row-gap: 40px;
+  }
+  .m-phero-copy,
+  .m-phero-window {
+    grid-column: 1 / -1;
+  }
+  .m-phero-window {
+    max-height: none;
+  }
+  .m-phero-window .m-window-frame {
+    --ratio: 4 / 3.4 !important;
+    max-height: none;
+  }
+  .m-phero-name {
+    white-space: normal;
+  }
+}
+
+/* ---------- 主线：左文右图 ---------- */
+.m-chapters {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  max-width: calc(var(--wrap) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: var(--section-top) var(--gutter) var(--section-bottom);
+}
+.m-chapters-text {
+  grid-column: 1 / span 5;
+  grid-row: 1;
+}
+.m-chapters-stage {
+  grid-column: 6 / -1;
+  grid-row: 1;
+  display: none;
+}
+.m-ch {
+  padding-bottom: clamp(48px, 10vh, 120px);
+}
+.m-ch + .m-ch {
+  padding-top: clamp(24px, 6vh, 64px);
+  border-top: 1px solid var(--hair);
+}
+.m-ch-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding-top: 20px;
+  margin-bottom: 18px;
+}
+.m-ch:first-child .m-ch-meta {
+  border-top: 1px solid var(--ink);
+}
+.m-ch-title {
+  margin-bottom: 18px;
+  font: 300 var(--t-h2) / 1.42 var(--sans);
+  letter-spacing: 0.05em;
+}
+.m-ch-prose {
+  display: grid;
+  gap: 1em;
+  max-width: 34em;
+  color: var(--ink-2);
+}
+.m-ch-prose p {
+  line-height: 1.95;
+}
+.m-ch-steps {
+  display: grid;
+  margin-top: clamp(24px, 4vh, 40px);
+  border-top: 1px solid var(--hair);
+}
+.m-ch-steps li {
+  display: grid;
+  grid-template-columns: 1.6em minmax(0, 1fr);
+  gap: 10px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hair);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--mute);
+  transition: color 0.5s var(--ease);
+}
+.m-ch-steps li .m-no {
+  font-size: 14px;
+  color: var(--mute);
+}
+.m-ch-steps li[data-on] {
+  color: var(--ink);
+}
+.m-ch-steps li[data-on] .m-no {
+  color: var(--accent-ink);
+}
+.m-ch-inline {
+  margin: 4px 0 24px;
+}
+.m-ch-inline .m-reel-view {
+  --view: 4 / 4.4;
+}
+
+/* 有 JS 的宽屏：画面钉在右边，文字一步一步走过去 */
+@media (min-width: 901px) {
+  .js .m-chapters-stage {
+    display: block;
+  }
+  .js .m-ch-inline {
+    display: none;
+  }
+  .js .m-ch-steps li {
+    min-height: 30vh;
+    align-content: start;
+  }
+  .js .m-ch-steps li:last-child {
+    min-height: 40vh;
+  }
+}
+.m-stage-pin {
+  position: sticky;
+  top: calc(var(--header) + 5vh);
+  display: grid;
+  gap: 14px;
+}
+.m-stage-cap {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 14px;
+  min-height: 3.4em;
+  font: 400 15px/1.6 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-stage-view {
+  position: relative;
+  aspect-ratio: var(--view, 16 / 10);
+  max-height: calc(100svh - var(--header) - 200px);
+  width: 100%;
+  border-radius: var(--r-panel);
+  background: var(--stage, var(--paper-2));
+  overflow: hidden;
+  isolation: isolate;
+}
+.m-stage-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.m-stage-dots {
+  display: flex;
+  gap: 6px;
+}
+.m-stage-dots i {
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--hair);
+  transition: background-color 0.5s var(--ease);
+}
+.m-stage-dots i[data-on] {
+  background: var(--ink);
+}
+@media (max-width: 900px) {
+  .m-chapters-text {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- 固定收尾 ---------- */
+.m-pend-stagehead {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.m-pend-stagehead::before {
+  content: '';
+  width: 0.22em;
+  height: 0.22em;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.m-pend-stagehead[data-concept]::before {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+.m-part {
+  padding-block: var(--section-top) 0;
+}
+.m-pend-fit .m-head {
+  margin-bottom: 0;
+}
+.m-pend-stage {
+  max-width: 34em;
+  margin: 0 0 clamp(32px, 5vh, 56px) calc((100% + var(--col-gap)) / 12 * 2);
+  font: 300 var(--t-lead) / 1.9 var(--sans);
+  color: var(--ink-2);
+}
+.m-pend-progress {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px var(--col-gap);
+  margin-left: calc((100% + var(--col-gap)) / 12 * 2);
+}
+.m-pend-progress > div {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair-2);
+}
+.m-pend-progress dt {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.m-pend-progress dd {
+  display: grid;
+  gap: 0.8em;
+  color: var(--ink-2);
+}
+.m-pend-progress dd .m-actions {
+  margin-top: 6px;
+}
+.m-pend-relation {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  max-width: 40em;
+  margin-left: calc((100% + var(--col-gap)) / 12 * 2);
+  color: var(--ink-2);
+}
+.m-pend-formula {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.4em;
+  font: 300 var(--t-h1) / 1.1 var(--sans);
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.m-pend-formula i {
+  font-style: normal;
+  color: var(--accent);
+}
+.m-pend-go {
+  padding-block: clamp(56px, 9vh, 104px) var(--section-bottom);
+}
+.m-pend-go .m-actions {
+  padding-top: 24px;
+  border-top: 1px solid var(--ink);
+  padding-left: calc((100% + var(--col-gap)) / 12 * 2);
+}
+@media (max-width: 900px) {
+  .m-pend-stage,
+  .m-pend-progress,
+  .m-pend-relation {
+    margin-left: 0;
+  }
+  .m-pend-progress {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .m-pend-go .m-actions {
+    padding-left: 0;
+  }
+}
+
+/* ---------- 标志性交互的公共外壳 ---------- */
+.m-sig {
+  max-width: calc(var(--wrap) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: var(--section-top) var(--gutter) 0;
+}
+.m-sig-box {
+  border-radius: var(--r-card);
+  background: var(--stage, var(--paper-2));
+  padding: clamp(20px, 3vw, 44px);
+}

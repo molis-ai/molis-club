@@ -1,0 +1,305 @@
+/* 演示画面的公共样式。画面是一张有比例的「屏」，里面按 --s（第几步）决定谁出现。
+   字号随画面宽度走（容器查询单位），首页舞台、产品页、手机上都是同一套比例。 */
+
+.m-sc {
+  --s: 0;
+  position: relative;
+  container-type: inline-size;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-size: clamp(10.5px, 2.15cqw, 15px);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+/* ---------- 按步显隐：--at 起出现，--until 起退场 ---------- */
+.m-v {
+  --on: clamp(0, calc(var(--s) - var(--at, 0) + 1), 1);
+  --off: clamp(0, calc(var(--until, 99) - var(--s)), 1);
+  --shown: calc(var(--on) * var(--off));
+  opacity: var(--shown);
+  translate: 0 calc((1 - var(--shown)) * 0.7em);
+  transition:
+    opacity 0.6s var(--ease) var(--d, 0ms),
+    translate 0.8s var(--ease) var(--d, 0ms);
+}
+/* 弹出：从略小一点的地方展开 */
+.m-v[data-pop] {
+  translate: none;
+  scale: calc(0.94 + 0.06 * var(--shown));
+  transition:
+    opacity 0.5s var(--ease) var(--d, 0ms),
+    scale 0.7s var(--ease) var(--d, 0ms);
+}
+/* 只淡入淡出，不移动 */
+.m-v[data-fade] {
+  translate: none;
+}
+/* 退场后不占位置（列表里新的一项顶上来） */
+.m-v[data-collapse] {
+  display: grid;
+  grid-template-rows: calc(var(--shown) * 1fr);
+  transition:
+    opacity 0.5s var(--ease) var(--d, 0ms),
+    grid-template-rows 0.7s var(--ease) var(--d, 0ms);
+}
+.m-v[data-collapse] > * {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* 同一个位置上前后换一段字：子元素叠在同一格 */
+.m-stack {
+  display: inline-grid;
+}
+.m-stack > * {
+  grid-area: 1 / 1;
+}
+
+/* 高亮：一笔淡杏橙从左扫到右（改动看得见） */
+.m-hl {
+  --on: clamp(0, calc(var(--s) - var(--at, 0) + 1), 1);
+  background: linear-gradient(var(--accent-wash), var(--accent-wash)) 0 0 /
+    calc(var(--on) * 100%) 100% no-repeat;
+  border-radius: 3px;
+  transition: background-size 0.9s var(--ease) var(--d, 0ms);
+}
+/* 勾：先是空圈，到第 --at 步勾上 */
+.m-tick {
+  --on: clamp(0, calc(var(--s) - var(--at, 0) + 1), 1);
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 1.25em;
+  height: 1.25em;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  background: rgb(27 26 24 / calc(var(--on) * 0.86));
+  color: #fff;
+  transition: background-color 0.5s var(--ease) var(--d, 0ms);
+}
+.m-tick svg {
+  width: 0.72em;
+  height: 0.72em;
+  opacity: var(--on);
+  transition: opacity 0.4s var(--ease) var(--d, 0ms);
+}
+/* 进度：一道细线按步走 */
+.m-bar {
+  --on: clamp(0, calc(var(--s) - var(--at, 0) + 1), 1);
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background:
+    linear-gradient(var(--ink), var(--ink)) 0 0 / calc(var(--on) * 100%) 100%
+      no-repeat,
+    var(--hair);
+  transition: background-size 1.1s var(--ease) var(--d, 0ms);
+}
+
+/* ---------- 光标：放在要点的元素里，从右下方滑过来；按下时一圈涟漪 ---------- */
+.m-cursor.m-v {
+  position: absolute;
+  z-index: 20;
+  left: var(--cx);
+  top: var(--cy);
+  width: 16px;
+  height: 20px;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgb(var(--shade) / 0.25));
+  translate: calc((1 - var(--shown)) * 18px) calc((1 - var(--shown)) * 22px);
+  transition:
+    opacity 0.4s var(--ease) var(--d, 0ms),
+    translate 0.7s var(--ease) var(--d, 0ms);
+}
+.m-cursor i {
+  position: absolute;
+  left: -9px;
+  top: -9px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  opacity: 0;
+}
+.m-sc[data-press] .m-cursor i {
+  animation: m-press 0.7s var(--ease) 0.6s both;
+}
+@keyframes m-press {
+  from {
+    opacity: 0.9;
+    scale: 0.3;
+  }
+  to {
+    opacity: 0;
+    scale: 1.4;
+  }
+}
+
+/* ---------- 画面里的小部件 ---------- */
+.m-sc-win {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.07),
+    0 18px 40px -26px rgb(var(--shade) / 0.4);
+}
+.m-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.2em 0.7em;
+  border-radius: 999px;
+  background: var(--paper-2);
+  font-size: 0.86em;
+  line-height: 1.5;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.m-chip[data-tone='accent'] {
+  background: var(--accent-wash);
+  color: var(--accent-ink);
+}
+.m-chip[data-tone='ink'] {
+  background: var(--ink);
+  color: #fff;
+}
+.m-chip[data-tone='line'] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+}
+.m-dot {
+  display: inline-block;
+  flex: none;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.m-ln {
+  display: block;
+  height: 0.5em;
+  border-radius: 0.25em;
+  background: var(--faint);
+}
+.m-ln[data-ink] {
+  background: rgb(27 26 24 / 0.7);
+}
+.m-mini {
+  font-size: 0.82em;
+  line-height: 1.5;
+  color: var(--mute);
+}
+.m-sc b {
+  font-weight: 500;
+}
+
+/* ---------- 演示外壳：画面 + 底部的段落细线 + 诚实标注 + 暂停 ---------- */
+.m-reel {
+  display: grid;
+  gap: 14px;
+}
+.m-reel-cap {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 14px;
+  min-height: 3em;
+}
+.m-reel-cap .m-no {
+  font-size: 14px;
+}
+.m-reel-cap p {
+  font: 400 15px/1.6 var(--sans);
+  letter-spacing: 0.04em;
+  font-feature-settings: 'palt' 1;
+}
+.m-reel-view {
+  position: relative;
+  aspect-ratio: var(--view, 16 / 10);
+  border-radius: var(--r-panel);
+  background: var(--stage, var(--paper-2));
+  overflow: hidden;
+  isolation: isolate;
+}
+.m-reel-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.6s var(--ease),
+    visibility 0.6s;
+}
+.m-reel-scene[data-now] {
+  opacity: 1;
+  visibility: visible;
+}
+.m-reel-bottom {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.m-segs {
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.m-seg {
+  all: unset;
+  flex: 1;
+  display: block;
+  padding: 10px 0;
+  cursor: pointer;
+}
+.m-seg i {
+  position: relative;
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--hair);
+  overflow: hidden;
+}
+.m-seg b {
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform-origin: left;
+  transform: scaleX(var(--fill, 0));
+}
+.m-seg[aria-pressed='true'] i {
+  background: var(--hair-2);
+}
+.m-seg:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.m-reel-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+/* ---------- 减少动态：没有过渡，直接停在每一步的结果上 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .m-sc *,
+  .m-sc *::before,
+  .m-sc *::after,
+  .m-reel-scene {
+    transition: none !important;
+    animation: none !important;
+  }
+  .m-cursor {
+    display: none;
+  }
+}

@@ -1,0 +1,123 @@
+/* Molis World 页：一张绘图桌。演示区是浅格纸、铅笔线、虚线框；故意保留未完成的样子。 */
+
+.m-world {
+  --stage: #fbfaf6;
+  --pencil: #5d5a54;
+  --pencil-2: #a39f96;
+}
+.m-world .m-stage-view,
+.m-world .m-reel-view {
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.m-world .m-sig-box {
+  background:
+    linear-gradient(rgb(27 26 24 / 0.05) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, rgb(27 26 24 / 0.05) 1px, transparent 1px) 0 0 / 22px
+      22px,
+    #fbfaf6;
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.wd-try-note {
+  margin-top: 12px;
+}
+
+/* ---------- 把一个地方放进小岛 ---------- */
+.wd-try {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(24px, 4vw, 64px);
+  align-items: center;
+}
+.wd-try-form {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+}
+.wd-try-form label {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.wd-try-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+.wd-try-row input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  border-radius: 0;
+  background: transparent;
+  font-size: 16px;
+}
+.wd-try-row input:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+}
+.wd-try-picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+.wd-try-picks .m-link:disabled {
+  color: var(--mute);
+  cursor: default;
+}
+.wd-try-said {
+  min-height: 1.8em;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.wd-try-map {
+  position: relative;
+}
+.wd-try-map .wd-island {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.wd-try-pin {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  transform: translate(-50%, -100%);
+  animation: wd-drawn 0.7s var(--ease) both;
+}
+.wd-try-pin svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: var(--accent-ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.wd-try-pin b {
+  padding: 1px 8px;
+  border: 1px dashed var(--pencil-2);
+  border-radius: 4px;
+  background: #fbfaf6;
+  font-weight: 400;
+  font-size: 13px;
+  white-space: nowrap;
+}
+@keyframes wd-drawn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -80%) scale(0.9);
+  }
+}
+@media (max-width: 900px) {
+  .wd-try {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wd-try-pin {
+    animation: none;
+  }
+}

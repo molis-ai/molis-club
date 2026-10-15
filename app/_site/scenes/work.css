@@ -1,0 +1,725 @@
+/* Molis Work 的演示画面：像一张真的工作台。主色是木色（侧栏、桌面）与植物绿（成功、插件），界面本身仍是白纸。 */
+
+.wk {
+  --wood: #f1e9dc;
+  --wood-2: #e6dac7;
+  --wood-ink: #6e5638;
+  --leaf: #4f6e48;
+  --leaf-wash: rgb(79 110 72 / 0.13);
+  padding: 4.2cqw;
+}
+.wk .m-tick {
+  background: rgb(79 110 72 / calc(var(--on) * 0.92));
+}
+.wk .m-chip[data-tone='green'] {
+  background: var(--leaf-wash);
+  color: var(--leaf);
+}
+.wk svg {
+  width: 1.05em;
+  height: 1.05em;
+  flex: none;
+  stroke-width: 1.6;
+}
+
+/* ---------- 工作台外框 ---------- */
+.wk-win {
+  inset: 4.2cqw;
+  grid-template-columns: minmax(0, 27%) minmax(0, 1fr);
+}
+.wk-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  padding: 1.1em 0.9em;
+  background: var(--wood);
+  color: var(--wood-ink);
+}
+.wk-project {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.6em;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.wk-side ul {
+  display: grid;
+  gap: 0.15em;
+}
+.wk-side li {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.28em 0.5em;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.wk-side li[data-on] {
+  background: rgb(255 255 255 / 0.75);
+  color: var(--ink);
+}
+.wk-side li[data-new] {
+  background: rgb(255 255 255 / 0.55);
+}
+.wk-side-label {
+  margin-top: auto;
+  padding: 0.6em 0.5em 0.2em;
+  font-size: 0.78em;
+  letter-spacing: 0.12em;
+  color: var(--wood-ink);
+  opacity: 0.8;
+}
+.wk-personal li {
+  opacity: 0.86;
+}
+.wk-main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9em;
+  min-width: 0;
+  padding: 1.1em 1.4em;
+}
+.wk-crumb {
+  font-size: 0.82em;
+  letter-spacing: 0.08em;
+  color: var(--mute);
+}
+.wk-grown {
+  background: var(--leaf-wash);
+  color: var(--leaf) !important;
+}
+
+/* ---------- 开场：碎片收拢 ---------- */
+.wk-scatter {
+  display: grid;
+  place-items: center;
+}
+.wk-bits {
+  position: absolute;
+  inset: 0;
+}
+.wk-bit {
+  --dx: 0;
+  --dy: 0;
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em 0.85em;
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.08),
+    0 10px 22px -16px rgb(var(--shade) / 0.5);
+  white-space: nowrap;
+  transition:
+    left 1s var(--ease),
+    top 1s var(--ease),
+    opacity 0.7s var(--ease),
+    rotate 1s var(--ease),
+    scale 1s var(--ease);
+}
+.wk-bit[data-k='tab'] {
+  left: 6%;
+  top: 10%;
+  rotate: -3deg;
+}
+.wk-bit[data-k='chat'] {
+  left: 46%;
+  top: 6%;
+  rotate: 2deg;
+}
+.wk-bit[data-k='doc'] {
+  left: 10%;
+  top: 70%;
+  rotate: 2.5deg;
+}
+.wk-bit[data-k='ai'] {
+  left: 58%;
+  top: 76%;
+  rotate: -2deg;
+}
+.wk-bit[data-k='todo'] {
+  left: 30%;
+  top: 40%;
+  rotate: -1deg;
+}
+/* 第二步：碎片往中间靠拢 */
+.wk-scatter[data-step='1'] .wk-bit {
+  rotate: 0deg;
+}
+.wk-scatter[data-step='1'] .wk-bit[data-k='tab'] {
+  left: 10%;
+  top: 24%;
+}
+.wk-scatter[data-step='1'] .wk-bit[data-k='chat'] {
+  left: 46%;
+  top: 14%;
+}
+.wk-scatter[data-step='1'] .wk-bit[data-k='todo'] {
+  left: 36%;
+  top: 42%;
+}
+.wk-scatter[data-step='1'] .wk-bit[data-k='doc'] {
+  left: 16%;
+  top: 62%;
+}
+.wk-scatter[data-step='1'] .wk-bit[data-k='ai'] {
+  left: 52%;
+  top: 68%;
+}
+/* 第三步：收进同一张工作台 */
+.wk-scatter[data-step='2'] .wk-bit {
+  left: 38%;
+  top: 42%;
+  opacity: 0;
+  scale: 0.8;
+  rotate: 0deg;
+}
+.wk-gather {
+  position: relative;
+  inset: auto;
+  display: block;
+  width: min(78%, 30em);
+  padding: 1.3em 1.5em;
+  background: var(--white);
+}
+.wk-gather::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.4em;
+  border-radius: 12px 0 0 12px;
+  background: var(--wood-2);
+}
+.wk-gather ul {
+  display: grid;
+  gap: 0.55em;
+}
+.wk-gather li {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding-bottom: 0.55em;
+  border-bottom: 1px solid var(--hair);
+}
+.wk-gather li:last-child {
+  border: 0;
+  padding: 0;
+}
+
+/* ---------- 布置工作台 ---------- */
+.wk-shelf {
+  display: grid;
+  gap: 0.8em;
+}
+.wk-shelf-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5em;
+}
+.wk-shelf-grid span {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.65em 0.7em;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--hair);
+  color: var(--mute);
+}
+.wk-shelf-grid span[data-picked] {
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--wood-2);
+  background: var(--wood);
+}
+.wk-shelf-grid .m-tick {
+  margin-left: auto;
+}
+.wk-arrange .wk-main {
+  display: grid;
+  align-content: start;
+}
+.wk-arrange .wk-main > .wk-shelf,
+.wk-arrange .wk-main > .wk-search {
+  grid-area: 2 / 1;
+}
+.wk-search {
+  display: grid;
+  align-content: start;
+  gap: 0.8em;
+}
+.wk-search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.6em 0.9em;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+}
+.wk-search ul {
+  display: grid;
+}
+.wk-search li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.6em 0.2em;
+  border-bottom: 1px solid var(--hair);
+}
+.wk-search li b {
+  background: var(--accent-wash);
+  font-weight: 400;
+  border-radius: 3px;
+}
+.wk-search small {
+  color: var(--mute);
+  font-size: 0.82em;
+}
+
+/* ---------- 你和 AI，接着同一份内容 ---------- */
+.wk-doc {
+  display: grid;
+  gap: 0.7em;
+}
+.wk-doc-title {
+  font-size: 1.15em;
+  font-weight: 500;
+}
+.wk-ai {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-top: 0.4em;
+  font-size: 0.88em;
+  color: var(--mute);
+}
+.wk-outline {
+  display: grid;
+  gap: 0.35em;
+  padding-left: 0.2em;
+}
+.wk-outline li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6em;
+  width: fit-content;
+  padding: 0.1em 0.3em;
+}
+.wk-mine {
+  border-bottom: 1px solid var(--ink);
+}
+.wk-you {
+  font-size: 0.78em;
+}
+.wk-handoff {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  margin-top: 0.4em;
+}
+.wk-take {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35em 1.1em;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  transition:
+    background-color 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+.wk-take[data-on] {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* ---------- 插件接力 ---------- */
+.wk-chain {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7em;
+}
+.wk-relay-more .wk-chain {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.wk-card {
+  display: grid;
+  align-content: start;
+  gap: 0.5em;
+  padding: 0.8em;
+  border-radius: 9px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.wk-card > p:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  font-size: 0.85em;
+  color: var(--mute);
+}
+.wk-card ul {
+  display: grid;
+  gap: 0.3em;
+}
+.wk-card li {
+  padding: 0.1em 0.3em;
+  font-size: 0.9em;
+}
+.wk-card table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86em;
+  text-align: center;
+}
+.wk-card td {
+  padding: 0.18em 0;
+  border-bottom: 1px solid var(--hair);
+}
+.wk-card tr:first-child td {
+  color: var(--mute);
+}
+.wk-slide {
+  display: grid;
+  gap: 0.35em;
+  padding: 0.7em;
+  border-radius: 6px;
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
+  aspect-ratio: 16 / 10;
+  align-content: start;
+}
+.wk-slide span {
+  font-size: 0.72em;
+  color: var(--mute);
+}
+.wk-slide b {
+  font-size: 0.95em;
+}
+.wk-slide i {
+  display: block;
+  height: 0.42em;
+  border-radius: 0.2em;
+  background: var(--faint);
+}
+.wk-slide i:nth-of-type(2) {
+  width: 70%;
+}
+.wk-slide i:nth-of-type(3) {
+  width: 84%;
+}
+.wk-event {
+  display: grid;
+  font-size: 0.86em;
+  color: var(--mute);
+}
+.wk-event b {
+  color: var(--ink);
+}
+.wk-results {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6em;
+}
+.wk-results li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2em 0.5em;
+  padding: 0.6em 0.7em;
+  border-radius: 8px;
+  background: var(--leaf-wash);
+}
+.wk-results small {
+  flex-basis: 100%;
+  padding-left: 1.75em;
+  font-size: 0.78em;
+  color: var(--leaf);
+}
+.wk-proof {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-top: auto;
+  padding: 0.7em 0.9em;
+  border-radius: 8px;
+  background: var(--leaf-wash);
+  font-size: 0.92em;
+}
+
+/* ---------- 长出自己的工具 ---------- */
+.wk-ask {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+}
+.wk-build {
+  display: grid;
+  gap: 0.7em;
+  padding: 1em 1.1em;
+  border-radius: 10px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.wk-build-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.wk-build-head svg {
+  color: var(--leaf);
+}
+.wk-build ul {
+  display: grid;
+  gap: 0.4em;
+}
+.wk-build li {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.wk-build .m-bar {
+  background:
+    linear-gradient(var(--leaf), var(--leaf)) 0 0 / calc(var(--on) * 100%) 100%
+      no-repeat,
+    var(--hair);
+}
+.wk-grow-done {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.4em 0.9em;
+  border-radius: 999px;
+  background: var(--leaf-wash);
+  color: var(--leaf);
+  font-size: 0.9em;
+}
+
+/* ---------- 一起讨论 ---------- */
+.wk-talk-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 1em;
+  min-height: 0;
+}
+.wk-slide-big {
+  align-self: start;
+}
+.wk-thread {
+  display: grid;
+  align-content: start;
+  gap: 0.6em;
+  padding: 0.8em;
+  border-radius: 9px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.wk-thread-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  font-size: 0.85em;
+  color: var(--mute);
+}
+.wk-msg {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.55em;
+  font-size: 0.92em;
+}
+.wk-face {
+  display: grid;
+  place-items: center;
+  width: 1.8em;
+  height: 1.8em;
+  border-radius: 50%;
+  background: var(--wood-2);
+  font-size: 0.82em;
+}
+.wk-face[data-me] {
+  background: var(--ink);
+  color: #fff;
+}
+.wk-quote {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin-bottom: 0.2em;
+  padding-left: 0.5em;
+  border-left: 2px solid var(--accent);
+  font-size: 0.86em;
+  color: var(--mute);
+}
+.wk-thread .m-chip {
+  width: fit-content;
+}
+.wk-conclusion {
+  padding: 0.5em 0.7em;
+  border-radius: 7px;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  font-size: 0.92em;
+}
+
+/* ---------- 有记录也有依据 ---------- */
+.wk-goal-list {
+  display: grid;
+  gap: 0.15em;
+}
+.wk-goal-list div {
+  display: grid;
+  grid-template-columns: 5em minmax(0, 1fr);
+  gap: 0.8em;
+  padding: 0.45em 0;
+  border-bottom: 1px solid var(--hair);
+}
+.wk-goal-list dt {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  color: var(--mute);
+  font-size: 0.9em;
+}
+.wk-goal-list dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+}
+.wk-agent {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.6em 0.9em;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.92em;
+}
+.wk-check {
+  display: grid;
+  gap: 0.35em;
+}
+.wk-check li {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.wk-goal .wk-main > .wk-agent,
+.wk-goal .wk-main > .wk-check {
+  grid-area: 3 / 1;
+}
+.wk-goal .wk-main {
+  display: grid;
+  align-content: start;
+}
+
+/* ---------- 你不在的时候 ---------- */
+.wk-away {
+  display: grid;
+}
+.wk-night {
+  inset: 4.2cqw 30% 4.2cqw 4.2cqw;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1.2em 1.4em;
+  background: #f2f1ee;
+}
+.wk-off {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em 0.8em;
+}
+.wk-night-log {
+  display: grid;
+  gap: 0.6em;
+}
+.wk-night-log li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.6em;
+  align-items: start;
+}
+.wk-night-log small {
+  display: block;
+  font-size: 0.82em;
+  color: var(--mute);
+}
+.wk-inbox {
+  inset: auto 4.2cqw 4.2cqw auto;
+  width: min(52%, 22em);
+  display: grid;
+  gap: 0.55em;
+  padding: 1.1em 1.2em;
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.08),
+    0 24px 44px -24px rgb(var(--shade) / 0.5);
+}
+.wk-inbox-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 0.9em;
+}
+.wk-inbox-q {
+  font-size: 1.08em;
+}
+.wk-inbox-act {
+  display: flex;
+  gap: 0.5em;
+}
+
+/* ---------- 窄的画面（手机）：侧栏收起，卡片竖着排 ---------- */
+@container (max-width: 520px) {
+  .wk {
+    font-size: 11.5px;
+    padding: 3cqw;
+  }
+  .wk-win {
+    inset: 3cqw;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .wk-side {
+    display: none;
+  }
+  .wk-main {
+    padding: 1em 1.1em;
+  }
+  .wk-chain,
+  .wk-relay-more .wk-chain {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .wk-chain > :nth-child(n + 4) {
+    display: none;
+  }
+  .wk-results {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .wk-talk-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .wk-slide-big {
+    display: none;
+  }
+  .wk-night {
+    inset: 3cqw 3cqw 40% 3cqw;
+  }
+  .wk-inbox {
+    inset: auto 3cqw 3cqw 3cqw;
+    width: auto;
+  }
+  .wk-shelf-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .wk-bit {
+    font-size: 0.95em;
+  }
+}

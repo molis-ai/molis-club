@@ -1,0 +1,202 @@
+/* Molis Story 的演示画面：窗里面可以深、可以浓。黄昏的深蓝，纸页是暖的。 */
+
+.st {
+  --night: #232a44;
+  --night-2: #313a5c;
+  --dawn: #e9c9a5;
+  --page: #f6efe2;
+  padding: 6cqw;
+  background: var(--night);
+  color: #f5efe6;
+}
+
+/* ---------- 首页 case：彼处 ---------- */
+.st-elsewhere {
+  display: grid;
+  place-items: center;
+}
+.st-elsewhere > * {
+  grid-area: 1 / 1;
+}
+.st-if {
+  display: grid;
+  gap: 0.8em;
+  text-align: center;
+}
+.st-world {
+  font-size: 0.86em;
+  letter-spacing: 0.18em;
+  color: var(--dawn);
+}
+.st-if-line {
+  font-size: 1.6em;
+  font-weight: 300;
+  line-height: 1.5;
+}
+.st-book {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: min(84%, 34em);
+  aspect-ratio: 16 / 9.5;
+  perspective: 1200px;
+}
+.st-page {
+  display: grid;
+  align-content: start;
+  gap: 0.6em;
+  padding: 1.3em 1.2em;
+  background: var(--page);
+  color: #2d2a26;
+  box-shadow: 0 20px 40px -24px rgb(0 0 0 / 0.6);
+}
+.st-page small {
+  font-size: 0.8em;
+  letter-spacing: 0.14em;
+  color: #8a6f52;
+}
+.st-page p {
+  font-size: 1.02em;
+  line-height: 1.7;
+}
+.st-page .m-ln {
+  background: #e4d9c6;
+}
+.st-page-l {
+  border-radius: 6px 0 0 6px;
+}
+.st-page-r {
+  position: relative;
+  padding: 0;
+  border-radius: 0 6px 6px 0;
+  transform-style: preserve-3d;
+}
+.st-leaf-front,
+.st-leaf-back {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: start;
+  gap: 0.6em;
+  padding: 1.3em 1.2em;
+  border-radius: 0 6px 6px 0;
+  background: var(--page);
+  backface-visibility: hidden;
+  transition: opacity 0.6s var(--ease) 0.35s;
+}
+.st-leaf-back {
+  opacity: 0;
+}
+.st-page-r[data-turn] .st-leaf-front {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.st-page-r[data-turn] .st-leaf-back {
+  opacity: 1;
+}
+.st-page-r::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0 6px 6px 0;
+  background: var(--page);
+  transform-origin: left;
+  transform: rotateY(0deg);
+  opacity: 0;
+  pointer-events: none;
+}
+.st-page-r[data-turn]::after {
+  animation: st-turn 0.9s var(--ease) both;
+}
+@keyframes st-turn {
+  from {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
+  to {
+    opacity: 0.2;
+    transform: rotateY(-170deg);
+  }
+}
+.st-return {
+  display: grid;
+  gap: 0.8em;
+  width: min(80%, 30em);
+  text-align: center;
+}
+.st-return small {
+  font-size: 0.86em;
+  letter-spacing: 0.14em;
+  color: var(--dawn);
+}
+.st-typed {
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid rgb(245 239 230 / 0.4);
+  font-size: 1.35em;
+  font-weight: 300;
+}
+.st-typed span {
+  display: inline-block;
+  clip-path: inset(0 0 0 0);
+}
+.st-elsewhere[data-step='3'] .st-typed span {
+  animation: st-type 1.3s steps(12, end) 0.3s both;
+}
+@keyframes st-type {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+/* 此处：回到白纸的一角，带回来的东西排成清单 */
+.st-here {
+  align-self: end;
+  justify-self: stretch;
+  display: grid;
+  gap: 0.6em;
+  padding: 1.1em 1.3em;
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.st-here-head {
+  font-size: 0.86em;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+}
+.st-here ul {
+  display: grid;
+}
+.st-here li {
+  display: grid;
+  grid-template-columns: 6em minmax(0, 1fr);
+  gap: 0.8em;
+  padding: 0.45em 0;
+  border-top: 1px solid var(--hair);
+}
+.st-here li span {
+  font-size: 0.86em;
+  color: var(--mute);
+}
+.st-here li:first-child {
+  background: var(--accent-wash);
+  border-radius: 4px;
+}
+
+@container (max-width: 520px) {
+  .st {
+    padding: 5cqw;
+    font-size: 12px;
+  }
+  .st-book {
+    width: 100%;
+  }
+  .st-here li {
+    grid-template-columns: 5.5em minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-page-r::after {
+    display: none;
+  }
+}

@@ -5,7 +5,7 @@ import { folioMembers } from '../content/folio-team.ts';
 
 // 企业合作页「做这件事的人」只用团队页上已经写着的个人经历（A8）。
 
-test('every evidence quote is taken verbatim from that member on the team page', () => {
+void test('every evidence quote is taken verbatim from that member on the team page', () => {
   const { people, services } = folioCooperation;
   const serviceIds = services.map((service) => service.id);
   assert.deepEqual(
@@ -24,7 +24,7 @@ test('every evidence quote is taken verbatim from that member on the team page',
     }
 });
 
-test('evidence claims no client work, results or numbers beyond tenure', () => {
+void test('evidence claims no client work, results or numbers beyond tenure', () => {
   const text = JSON.stringify(folioCooperation.people);
   for (const phrase of [
     '为客户',

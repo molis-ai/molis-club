@@ -8,7 +8,7 @@ import {
   relatedKnowledge,
 } from '../content/knowledge.ts';
 
-test('motion prompt carries the selected duration, local context placeholders and reduced-motion requirement', () => {
+void test('motion prompt carries the selected duration, local context placeholders and reduced-motion requirement', () => {
   const entry = knowledge.find((item) => item.slug === 'stagger');
   const prompt = knowledgePrompt(entry, 1100);
   assert.match(prompt, /单次动效时长：1100ms/);
@@ -17,7 +17,7 @@ test('motion prompt carries the selected duration, local context placeholders an
   assert.match(prompt, /prefers-reduced-motion/);
   assert.match(prompt, /应用位置：\[补充页面或组件\]/);
 });
-test('layout prompts preserve their specific behavior without exposing irrelevant animation timing', () => {
+void test('layout prompts preserve their specific behavior without exposing irrelevant animation timing', () => {
   const entry = knowledge.find((item) => item.slug === 'scroll-snap');
   const prompt = knowledgePrompt(entry, 1100);
   assert.match(prompt, /overflow-x: auto/);
@@ -25,7 +25,7 @@ test('layout prompts preserve their specific behavior without exposing irrelevan
   assert.doesNotMatch(prompt, /单次动效时长/);
   assert.match(prompt, /前后按钮/);
 });
-test('component resources are 24 unique catalog entries with official sources', () => {
+void test('component resources are 24 unique catalog entries with official sources', () => {
   const seen = new Set();
   for (const entry of knowledge) {
     assert.equal(seen.has(entry.slug), false, `duplicate slug ${entry.slug}`);
@@ -37,21 +37,15 @@ test('component resources are 24 unique catalog entries with official sources', 
   }
   const resources = knowledge.filter(isResourceEntry);
   assert.equal(resources.length, 24);
-  assert.equal(
-    resources.filter((entry) => entry.group === 'micro').length,
-    12,
-  );
-  assert.equal(
-    resources.filter((entry) => entry.group === 'polish').length,
-    6,
-  );
+  assert.equal(resources.filter((entry) => entry.group === 'micro').length, 12);
+  assert.equal(resources.filter((entry) => entry.group === 'polish').length, 6);
   assert.equal(
     resources.filter((entry) => entry.group === 'inspiration').length,
     6,
   );
   assert.ok(!isResourceEntry(knowledge[0]));
 });
-test('search finds resources by natural terms and the component category lists all 24', () => {
+void test('search finds resources by natural terms and the component category lists all 24', () => {
   const toast = filterKnowledge(knowledge, 'toast', '全部');
   assert.ok(toast.some((entry) => entry.slug === 'sonner'));
   const fluid = filterKnowledge(knowledge, '流体', '全部');
@@ -61,7 +55,7 @@ test('search finds resources by natural terms and the component category lists a
   assert.equal(filterKnowledge(knowledge, '', '组件资源').length, 24);
   assert.equal(filterKnowledge(knowledge, '', '动效百科').length, 3);
 });
-test('resource prompts ask for selective adoption without fake motion timing', () => {
+void test('resource prompts ask for selective adoption without fake motion timing', () => {
   const entry = knowledge.find((item) => item.slug === 'animata');
   const prompt = knowledgePrompt(entry, 1100);
   assert.doesNotMatch(prompt, /单次动效时长/);
@@ -72,10 +66,12 @@ test('resource prompts ask for selective adoption without fake motion timing', (
   assert.match(prompt, /https:\/\/animata\.design\//);
   assert.match(prompt, /实际需求：\[说明要改进的控件或反馈\]/);
 });
-test('related entries stay in the same family and do not dump the whole catalog', () => {
+void test('related entries stay in the same family and do not dump the whole catalog', () => {
   const sonner = knowledge.find((item) => item.slug === 'sonner');
   const related = relatedKnowledge(sonner);
   assert.ok(related.length <= 4);
-  assert.ok(related.every((item) => isResourceEntry(item) && item.group === 'polish'));
+  assert.ok(
+    related.every((item) => isResourceEntry(item) && item.group === 'polish'),
+  );
   assert.ok(!related.some((item) => item.slug === 'sonner'));
 });

@@ -1,0 +1,444 @@
+/* =====================================================================
+   文章：列表页像图录目录；文章页是阅读版式（约 35 个汉字一行、行距 2），
+   一条细细的阅读进度线，可以干净地打印。没有配图、没有视差。
+   ===================================================================== */
+
+/* ---------- 列表页 ---------- */
+.m-essays-title {
+  grid-column: 3 / span 9;
+}
+.m-essays-list {
+  padding-bottom: var(--section-bottom);
+}
+.m-essays-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 20px;
+  padding-block: clamp(36px, 6vh, 64px);
+  border-top: 1px solid var(--hair);
+}
+.m-essays-item:last-child {
+  border-bottom: 1px solid var(--hair);
+}
+.m-essays-no {
+  grid-column: 1 / span 2;
+  font: italic 300 var(--t-h1) / 1 var(--latin);
+  letter-spacing: -0.01em;
+  color: var(--mute);
+}
+.m-essays-copy {
+  grid-column: 3 / span 6;
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+}
+.m-essays-name {
+  font: inherit;
+}
+.m-essays-name a::after {
+  /* 整行都能点 */
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.m-essays-name a:focus-visible {
+  outline: none;
+}
+.m-essays-item:has(a:focus-visible) {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+  border-radius: var(--r-label);
+}
+.m-essays-main {
+  display: inline;
+  padding-bottom: 2px;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px
+    no-repeat;
+  font: 300 var(--t-h1) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+  transition: background-size 0.6s var(--ease);
+}
+.m-essays-item:hover .m-essays-main {
+  background-size: 100% 1px;
+}
+.m-essays-sub {
+  display: block;
+  margin-top: 10px;
+  font: 400 var(--t-h3) / 1.6 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+}
+.m-essays-excerpt,
+.m-essay-excerpt {
+  max-width: 34em;
+  font-size: var(--t-lead);
+  line-height: 1.95;
+  color: var(--ink-2);
+}
+.m-essays-meta {
+  grid-column: 10 / span 3;
+  display: grid;
+  align-content: end;
+  justify-items: start;
+  gap: 2px;
+  font-size: var(--t-small);
+  line-height: 1.9;
+  color: var(--mute);
+}
+.m-essays-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  color: var(--ink);
+  font-size: var(--t-ui);
+  letter-spacing: 0.04em;
+}
+.m-essays-go svg {
+  transition: transform 0.45s var(--ease);
+}
+.m-essays-item:hover .m-essays-go svg {
+  transform: translateX(3px);
+}
+@media (max-width: 900px) {
+  .m-essays-title,
+  .m-essays-no,
+  .m-essays-copy,
+  .m-essays-meta {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- 文章页：顶栏下的阅读进度线（没有 JS 时不出现） ---------- */
+.m-essay-progress {
+  display: none;
+}
+.js .m-essay-progress {
+  position: fixed;
+  top: var(--header);
+  left: 0;
+  right: 0;
+  z-index: 48;
+  display: block;
+  height: 2px;
+  pointer-events: none;
+}
+.m-essay-progress span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* ---------- 文章页：标题 ---------- */
+.m-essay-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 22px;
+}
+.m-essay-head > * {
+  grid-column: 3 / -1;
+}
+.m-essay-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+}
+.m-essay-back {
+  font-size: var(--t-small);
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.m-essay-back::before {
+  content: '← ';
+}
+.m-essay-back:hover {
+  color: var(--ink);
+}
+.m-essay-title {
+  display: block;
+}
+.m-essay-main {
+  display: block;
+  font: 300 var(--t-display) / 1.12 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-essay-sub {
+  display: block;
+  margin-top: 0.7em;
+  font: 400 var(--t-h3) / 1.6 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+}
+.m-essay-byline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
+  font-size: var(--t-small);
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.m-essay-byline span:first-child {
+  color: var(--ink);
+}
+.m-essay-byline span + span::before {
+  content: '·';
+  margin-inline: 12px;
+  color: var(--faint);
+}
+
+/* ---------- 文章页：目录（左两栏）与正文（阅读栏） ---------- */
+.m-essay-layout {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  padding-block: clamp(48px, 8vh, 96px) var(--section-bottom);
+}
+.m-essay-toc {
+  grid-column: 1 / span 2;
+  grid-row: 1;
+  align-self: start;
+  position: sticky;
+  top: calc(var(--header) + 40px);
+  display: grid;
+  gap: 12px;
+}
+.m-essay-toc ol {
+  display: grid;
+  gap: 2px;
+  counter-reset: toc;
+}
+.m-essay-toc li {
+  counter-increment: toc;
+}
+.m-essay-toc a {
+  display: flex;
+  gap: 10px;
+  padding: 4px 0;
+  font-size: var(--t-small);
+  line-height: 1.6;
+  color: var(--mute);
+  transition: color 0.3s var(--ease);
+}
+.m-essay-toc a::before {
+  content: counter(toc, decimal-leading-zero);
+  flex: none;
+  min-width: 1.6em;
+  font: italic 400 12px/1.85 var(--latin);
+  font-variant-numeric: tabular-nums;
+}
+.m-essay-toc li[data-back] {
+  counter-increment: none;
+  margin-top: 8px;
+}
+.m-essay-toc li[data-back] a::before {
+  content: '';
+}
+.m-essay-toc a:hover,
+.m-essay-toc a[aria-current] {
+  color: var(--ink);
+}
+.m-essay-toc a[aria-current]::before {
+  color: var(--accent-ink);
+}
+
+.m-essay-body {
+  grid-column: 3 / span 8;
+  grid-row: 1;
+  max-width: var(--read);
+  font-size: var(--t-read);
+  line-height: 2;
+  color: var(--ink);
+  counter-reset: section;
+}
+.m-essay-body > * + * {
+  margin-top: 1.15em;
+}
+.m-essay-body p {
+  line-height: 2;
+}
+.m-essay-body strong {
+  font-weight: 500;
+}
+.m-essay-body h2 {
+  margin-top: 2.8em;
+  font: 400 var(--t-h3) / 1.6 var(--sans);
+  letter-spacing: 0.04em;
+  counter-increment: section;
+}
+.m-essay-body h2::before {
+  content: counter(section, decimal-leading-zero);
+  display: block;
+  margin-bottom: 0.3em;
+  font: italic 400 14px/1.6 var(--latin);
+  letter-spacing: 0;
+  color: var(--accent-ink);
+  font-variant-numeric: tabular-nums;
+}
+.m-essay-body h2:first-child {
+  margin-top: 0;
+}
+.m-essay-body h2 + * {
+  margin-top: 0.9em;
+}
+.m-essay-body h3 {
+  margin-top: 2em;
+  font: 500 var(--t-read) / 1.8 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-essay-body blockquote {
+  padding-left: 1.1em;
+  border-left: 1px solid var(--accent);
+  color: var(--ink-2);
+}
+.m-essay-body ol,
+.m-essay-body ul {
+  display: grid;
+  gap: 0.5em;
+  padding-left: 2em;
+}
+.m-essay-body ol {
+  list-style: decimal;
+}
+.m-essay-body ul {
+  list-style: '— ';
+}
+.m-essay-body li::marker {
+  font: italic 400 0.86em var(--latin);
+  color: var(--mute);
+}
+.m-essay-body em:lang(en) {
+  font-style: italic;
+}
+.m-essay-body code {
+  padding: 0.1em 0.35em;
+  border-radius: var(--r-label);
+  background: var(--paper-2);
+  font:
+    0.88em/1 ui-monospace,
+    'SF Mono',
+    Menlo,
+    monospace;
+}
+.m-essay-body hr {
+  width: 4em;
+  margin-block: 3.2em 2.4em;
+  border: 0;
+  border-top: 1px solid var(--hair-2);
+}
+/* 分隔线之后是附注：小一号、不编节号 */
+.m-essay-body hr ~ * {
+  font-size: var(--t-small);
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+.m-essay-body hr ~ h2 {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+  counter-increment: none;
+}
+.m-essay-body hr ~ h2::before {
+  content: none;
+}
+
+/* ---------- 文章页：接着读 ---------- */
+.m-essay-end {
+  padding-bottom: var(--section-bottom);
+}
+.m-essay-next {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+  margin-left: calc((100% - 11 * var(--col-gap)) / 6 + 2 * var(--col-gap));
+  padding-top: 24px;
+  border-top: 1px solid var(--ink);
+}
+.m-essay-nextlink .m-essay-main {
+  font-size: var(--t-h1);
+  line-height: 1.3;
+}
+.m-essay-nextlink .m-essay-sub {
+  margin-top: 0.4em;
+}
+.m-essay-nextlink:hover .m-essay-main {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+@media (max-width: 1100px) {
+  .m-essay-toc {
+    display: none;
+  }
+  .m-essay-body {
+    grid-column: 3 / -1;
+  }
+}
+@media (max-width: 900px) {
+  .m-essay-head > *,
+  .m-essay-body {
+    grid-column: 1 / -1;
+  }
+  .m-essay-next {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-essays-main,
+  .m-essays-go svg,
+  .m-essay-toc a {
+    transition: none;
+  }
+}
+
+/* ---------- 打印：只留标题与正文（署名跟着标题），链接后写出地址 ---------- */
+@media print {
+  .m:has(.m-essay) .m-footer,
+  .m-essay-progress {
+    display: none !important;
+  }
+  .m-essay-head,
+  .m-essay-layout {
+    display: block;
+    padding: 0;
+  }
+  .m-essay-main {
+    font-size: 26pt;
+  }
+  .m-essay-sub {
+    font-size: 14pt;
+  }
+  .m-essay-byline {
+    margin: 12pt 0 24pt;
+    padding-top: 8pt;
+    border-top-color: #000;
+  }
+  .m-essay-body {
+    max-width: none;
+    font-size: 11pt;
+    line-height: 1.9;
+    color: #000;
+  }
+  .m-essay-body h2,
+  .m-essay-body h3 {
+    break-after: avoid;
+  }
+  .m-essay-body p,
+  .m-essay-body li {
+    orphans: 3;
+    widows: 3;
+  }
+  .m-essay-body a[href]::after {
+    content: '（' attr(href) '）';
+    font-size: 0.85em;
+  }
+}

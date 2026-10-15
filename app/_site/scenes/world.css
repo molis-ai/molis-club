@@ -1,0 +1,293 @@
+/* Molis World 的演示画面：一张绘图桌。浅格纸、铅笔线、虚线框，故意保留未完成的样子。 */
+
+.wd {
+  --pencil: #5d5a54;
+  --pencil-2: #a39f96;
+  --grid: rgb(27 26 24 / 0.05);
+  padding: 5cqw;
+  background:
+    linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 22px 22px,
+    #fbfaf6;
+  color: var(--ink);
+}
+.wd svg {
+  overflow: visible;
+}
+.wd-island {
+  width: 100%;
+  height: auto;
+}
+.wd-shoal {
+  fill: none;
+  stroke: var(--pencil-2);
+  stroke-width: 1;
+  stroke-dasharray: 4 5;
+}
+.wd-land {
+  fill: rgb(234 146 96 / 0.06);
+  stroke: var(--pencil);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+.wd-hatch {
+  fill: none;
+  stroke: var(--pencil-2);
+  stroke-width: 0.9;
+}
+.wd-title {
+  position: absolute;
+  left: 5cqw;
+  top: 4cqw;
+  font: italic 300 0.95em/1.4 var(--latin);
+  letter-spacing: 0.04em;
+  color: var(--mute);
+}
+.wd-title:lang(zh),
+.wd-title {
+  font-style: normal;
+}
+
+/* ---------- 首页 case：面馆 ---------- */
+.wd-home {
+  position: absolute;
+  left: 5cqw;
+  bottom: 10cqw;
+  width: 54%;
+}
+.wd-place,
+.wd-gift {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  gap: 0.2em;
+  font-size: 0.86em;
+  white-space: nowrap;
+}
+.wd-place svg,
+.wd-gift svg {
+  width: 2.6em;
+  height: auto;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.wd-place b,
+.wd-gift b {
+  padding: 0.1em 0.6em;
+  border: 1px dashed var(--pencil-2);
+  border-radius: 4px;
+  background: #fbfaf6;
+  font-weight: 400;
+}
+.wd-noodle-shop {
+  left: 20%;
+  top: 12%;
+}
+.wd-steam {
+  stroke: var(--accent) !important;
+}
+.wd-gift {
+  left: 60%;
+  top: 36%;
+}
+.wd-gift svg {
+  width: 1.8em;
+  stroke: var(--accent-ink);
+}
+.wd-door {
+  position: absolute;
+  right: -2%;
+  top: 4%;
+  padding: 0.1em 0.5em;
+  border-left: 1.5px solid var(--ink);
+  font-size: 0.82em;
+  color: var(--ink-2);
+}
+.wd-route {
+  position: absolute;
+  left: 46%;
+  top: 22%;
+  width: 34%;
+  height: auto;
+}
+.wd-route path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.4;
+  stroke-dasharray: 3 5;
+  stroke-linecap: round;
+}
+.wd-far {
+  position: absolute;
+  right: 5cqw;
+  top: 10cqw;
+  width: 26%;
+  display: grid;
+  justify-items: center;
+  gap: 0.2em;
+  text-align: center;
+}
+.wd-far b {
+  font-weight: 400;
+}
+.wd-far small {
+  font-size: 0.8em;
+  color: var(--mute);
+}
+.wd-island-far .wd-land {
+  fill: rgb(91 104 160 / 0.07);
+}
+.wd-foot {
+  position: absolute;
+  right: 5cqw;
+  bottom: 6cqw;
+  max-width: 44%;
+  font-size: 0.95em;
+  color: var(--ink-2);
+  text-align: right;
+}
+
+@container (max-width: 520px) {
+  .wd {
+    font-size: 12px;
+  }
+  .wd-home {
+    width: 78%;
+    bottom: 26cqw;
+  }
+  .wd-route {
+    left: 52%;
+    top: 16%;
+    width: 30%;
+  }
+  .wd-far {
+    width: 34%;
+    top: 12cqw;
+  }
+  .wd-foot {
+    left: 5cqw;
+    max-width: none;
+    text-align: left;
+  }
+}
+
+/* ---------- World 页的主线画面 ---------- */
+.wd-seed-island {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  width: min(68%, 34em);
+  transform: translate(-50%, -50%);
+}
+.wd-seed-shop {
+  left: 26%;
+  top: 14%;
+}
+.wd-memo {
+  position: absolute;
+  left: 52%;
+  top: 6%;
+  padding: 0.3em 0.7em;
+  border: 1px dashed var(--pencil-2);
+  border-radius: 4px;
+  background: #fbfaf6;
+  font-size: 0.86em;
+  color: var(--ink-2);
+  rotate: 2deg;
+}
+.wd-props {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  width: 26%;
+  height: auto;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+.wd-lamp {
+  fill: var(--accent);
+  stroke: none;
+}
+.wd-meet {
+  display: grid;
+  place-items: center;
+}
+.wd-nodes {
+  position: relative;
+  width: min(84%, 40em);
+  aspect-ratio: 100 / 60;
+}
+.wd-node {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  gap: 0.2em;
+  width: 34%;
+  padding: 0.8em 0.9em;
+  border: 1px dashed var(--pencil-2);
+  border-radius: 6px;
+  background: #fbfaf6;
+}
+.wd-node b {
+  font: 300 1.4em/1.2 var(--latin);
+}
+.wd-node small {
+  font-size: 0.82em;
+  color: var(--mute);
+}
+.wd-node[data-k='life'] {
+  left: 0;
+  top: 8%;
+}
+.wd-node[data-k='story'] {
+  right: 0;
+  top: 8%;
+}
+.wd-node[data-k='world'] {
+  left: 50%;
+  top: 56%;
+  translate: -50% 0;
+  border-style: solid;
+  border-color: var(--ink);
+}
+.wd-links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.wd-links path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 0.5;
+  stroke-dasharray: 1.4 1.6;
+  vector-effect: non-scaling-stroke;
+}
+.wd-pending {
+  position: absolute;
+  left: 5cqw;
+  right: 5cqw;
+  bottom: 5cqw;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6em 1em;
+  font-size: 0.95em;
+  color: var(--ink-2);
+}
+@container (max-width: 520px) {
+  .wd-seed-island {
+    width: 86%;
+  }
+  .wd-node {
+    width: 44%;
+  }
+  .wd-node small {
+    display: none;
+  }
+}

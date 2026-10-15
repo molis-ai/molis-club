@@ -1,0 +1,453 @@
+/* Molis Tool 的演示画面：最空的一页。几乎全白，只有手边这一点内容和光标。 */
+
+.tl {
+  padding: 6cqw;
+  background: var(--white);
+}
+.tl svg {
+  width: 1.05em;
+  height: 1.05em;
+  flex: none;
+  stroke-width: 1.6;
+}
+
+/* ---------- 首页 case：活动信息 → 动作条 → 日程草稿 ---------- */
+.tl-page {
+  position: relative;
+  max-width: 34em;
+  display: grid;
+  gap: 0.7em;
+}
+.tl-url {
+  font-size: 0.8em;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.tl-h {
+  font-size: 1.7em;
+  font-weight: 300;
+  line-height: 1.3;
+}
+.tl-p {
+  max-width: 30em;
+  line-height: 2;
+  color: var(--ink-2);
+}
+.tl-sel {
+  padding: 0.1em 0;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  color: var(--ink);
+}
+.tl-anchor {
+  position: relative;
+  display: block;
+  height: 0;
+  margin-left: 42%;
+}
+.tl-bar {
+  position: absolute;
+  left: 2.6em;
+  top: 0.2em;
+  z-index: 5;
+  display: inline-flex;
+  gap: 0.15em;
+  padding: 0.3em;
+  border-radius: 10px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.08),
+    0 14px 30px -16px rgb(var(--shade) / 0.5);
+  white-space: nowrap;
+  transform-origin: 0 0;
+}
+.tl-bar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.35em 0.7em;
+  border-radius: 7px;
+  font-size: 0.9em;
+  color: var(--ink-2);
+}
+.tl-bar span[data-on] {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+.tl-draft {
+  position: absolute;
+  right: 6cqw;
+  bottom: 6cqw;
+  width: min(56%, 24em);
+  display: grid;
+  gap: 0.7em;
+  padding: 1.1em 1.2em;
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.08),
+    0 24px 44px -26px rgb(var(--shade) / 0.5);
+}
+.tl-draft-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.tl-draft dl {
+  display: grid;
+  gap: 0.2em;
+}
+.tl-draft dl div {
+  display: grid;
+  grid-template-columns: 3.4em minmax(0, 1fr);
+  gap: 0.6em;
+  padding: 0.25em 0;
+  border-bottom: 1px solid var(--hair);
+}
+.tl-draft dt {
+  color: var(--mute);
+  font-size: 0.88em;
+}
+.tl-draft-foot {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+}
+
+@container (max-width: 520px) {
+  .tl {
+    padding: 5cqw;
+    font-size: 12px;
+  }
+  .tl-anchor {
+    margin-left: 18%;
+  }
+  .tl-bar span:nth-child(n + 3) {
+    display: none;
+  }
+  .tl-draft {
+    left: 5cqw;
+    right: 5cqw;
+    width: auto;
+  }
+}
+
+/* ---------- Tool 页的主线画面 ---------- */
+.tl-where {
+  flex: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  padding: 0.05em 0.6em;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  font-size: 0.78em;
+  letter-spacing: 0.08em;
+  color: var(--mute);
+}
+.tl-where[data-ai] {
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--accent-ink);
+}
+
+/* 开场：老路四步 vs 一步 */
+.tl-old {
+  display: grid;
+  align-content: center;
+  gap: 1.6em;
+}
+.tl-old-text {
+  font-size: 1.25em;
+  line-height: 1.9;
+  white-space: pre-wrap;
+}
+.tl-old-path {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+.tl-old-path li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.4em 0.9em 0.4em 0.45em;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  color: var(--ink-2);
+}
+.tl-old-path li span {
+  display: grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  background: var(--paper-2);
+  font-size: 0.85em;
+}
+.tl-old-anchor {
+  position: relative;
+  display: block;
+  height: 0;
+  margin-left: 30%;
+}
+.tl-old-anchor .tl-bar {
+  top: -1.6em;
+}
+.tl-old-done {
+  display: grid;
+  gap: 0.6em;
+}
+.tl-clean {
+  font-size: 1.25em;
+}
+.tl-old-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--ink-2);
+}
+.tl-old-meta .tl-where {
+  margin-left: 0.4em;
+}
+.tl-old-done ~ .tl-old-text,
+.tl-old[data-step='2'] .tl-old-text {
+  opacity: 0.25;
+  transition: opacity 0.6s var(--ease);
+}
+
+/* 眼前的小事 */
+.tl-small {
+  padding: 4cqw;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1em;
+  align-content: center;
+}
+.tl-task {
+  display: grid;
+  align-content: start;
+  gap: 0.8em;
+  padding: 1.1em;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--hair);
+  transition: box-shadow 0.5s var(--ease);
+}
+.tl-task[data-on] {
+  box-shadow:
+    inset 0 0 0 1px var(--hair-2),
+    0 16px 30px -24px rgb(var(--shade) / 0.5);
+}
+.tl-task-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 0.95em;
+  white-space: nowrap;
+}
+.tl-task-body {
+  display: grid;
+  gap: 0.4em;
+}
+.tl-task-body s {
+  color: var(--mute);
+  white-space: pre;
+}
+.tl-pages {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.3em;
+}
+.tl-pages span {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 4;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  font-size: 0.78em;
+  color: var(--mute);
+}
+.tl-pages span[data-pick] {
+  background: var(--accent-wash);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--accent-ink);
+}
+.tl-photo {
+  display: grid;
+  gap: 0.5em;
+  font-size: 0.92em;
+  color: var(--ink-2);
+}
+.tl-photo-img {
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+  background: url('/site/tool-light-800.webp') 50% 50% / cover;
+}
+
+/* 结果接着用 */
+.tl-chain {
+  display: grid;
+  align-content: center;
+  gap: 1.3em;
+}
+.tl-chain-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.tl-node {
+  display: grid;
+  justify-items: start;
+  gap: 0.15em;
+  flex: 1;
+  min-width: 0;
+  padding: 0.8em 0.9em;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+}
+.tl-node b {
+  font-weight: 400;
+}
+.tl-node small {
+  font-size: 0.78em;
+  color: var(--mute);
+}
+.tl-arrow {
+  flex: none;
+  color: var(--mute);
+}
+.tl-table {
+  width: min(100%, 26em);
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.tl-table td {
+  padding: 0.35em 0.6em;
+  border-bottom: 1px solid var(--hair);
+}
+.tl-table tr:first-child td {
+  color: var(--mute);
+  font-size: 0.86em;
+}
+.tl-flag {
+  background: var(--accent-wash);
+  color: var(--accent-ink);
+  transition: background-color 0.5s var(--ease);
+}
+.tl-chain-note {
+  font-size: 0.9em;
+  color: var(--ink-2);
+}
+
+/* 收起来再回来 */
+.tl-later {
+  padding-top: 0;
+}
+.tl-menubar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.2em;
+  margin: 0 -6cqw 2.4em;
+  padding: 0.5em 6cqw;
+  background: var(--paper-2);
+  box-shadow: inset 0 -1px 0 var(--hair);
+}
+.tl-menubar-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 1.8em;
+  height: 1.5em;
+  border-radius: 5px;
+}
+.tl-later[data-step='1'] .tl-menubar-icon,
+.tl-later[data-step='2'] .tl-menubar-icon {
+  background: rgb(27 26 24 / 0.08);
+}
+.tl-later-away {
+  font-size: 1.15em;
+  color: var(--ink-2);
+}
+.tl-continue {
+  position: absolute;
+  right: 6cqw;
+  top: 3.4em;
+  width: min(60%, 24em);
+  display: grid;
+  gap: 0.6em;
+  padding: 1em 1.1em;
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.08),
+    0 22px 40px -26px rgb(var(--shade) / 0.5);
+  transform-origin: 90% 0;
+}
+.tl-continue-head {
+  font-size: 0.85em;
+  letter-spacing: 0.14em;
+  color: var(--mute);
+}
+.tl-continue ul {
+  display: grid;
+}
+.tl-continue li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.6em;
+  align-items: center;
+  padding: 0.5em 0.4em;
+  border-radius: 7px;
+  transition: background-color 0.5s var(--ease);
+}
+.tl-continue li[data-on] {
+  background: var(--paper-2);
+}
+.tl-continue small {
+  display: block;
+  font-size: 0.78em;
+  color: var(--mute);
+}
+.tl-source {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding-top: 0.6em;
+  border-top: 1px solid var(--hair);
+  font-size: 0.86em;
+  color: var(--ink-2);
+}
+
+@container (max-width: 520px) {
+  .tl-small {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: 0.6em;
+  }
+  .tl-task {
+    padding: 0.8em;
+  }
+  .tl-photo-img {
+    aspect-ratio: 16 / 7;
+  }
+  .tl-chain,
+  .tl-old {
+    align-content: start;
+    gap: 1em;
+  }
+  .tl-chain-row {
+    flex-wrap: wrap;
+  }
+  .tl-arrow {
+    display: none;
+  }
+  .tl-node {
+    flex-basis: 40%;
+  }
+  .tl-continue {
+    left: 5cqw;
+    right: 5cqw;
+    width: auto;
+  }
+}

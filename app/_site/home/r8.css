@@ -1,0 +1,772 @@
+/* ===== 从第八轮首页迁来：首屏、Warmware、胶片、缩略图（类名 m- 改为 m-） ===== */
+/* ---------- 首屏的公共部分：字标、A/I 词组、关键词 ---------- */
+.m-hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+.m-mark {
+  margin: 0;
+  font: 300 var(--t-mark) / 0.86 var(--sans);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+.m-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.9em;
+  margin: 0;
+  font: 300 var(--t-keys) / 1.4 var(--sans);
+  letter-spacing: 0.24em;
+  color: var(--ink-2);
+}
+.m-keys span + span::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin: 0 0.9em 0.24em 0;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: middle;
+}
+.m-ai-headline {
+  font: 300 clamp(34px, 4.1vw, 62px) / 1.04 var(--sans);
+  letter-spacing: -0.01em;
+  color: var(--ai-ink, var(--ink));
+}
+.m-ai-words {
+  all: unset;
+  display: inline-flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.m-ai-words:focus-visible {
+  outline: 1.5px solid currentColor;
+  outline-offset: 8px;
+}
+.m-ai-row {
+  display: inline-flex;
+  white-space: nowrap;
+}
+.m-ai-row > span:first-child {
+  color: var(--ai-initial, var(--accent-ink));
+  font-weight: 400;
+}
+.m-ai-headline[data-animated='true'] .m-ai-letter {
+  opacity: 0;
+}
+
+/* ---------- We build Warmware / Beyond Software ---------- */
+.m-ware {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+  padding: clamp(96px, 14vh, 160px) var(--gutter) clamp(72px, 10vh, 120px);
+  isolation: isolate;
+}
+.m-ware-inner {
+  position: relative;
+  width: 100%;
+  max-width: var(--wrap);
+  margin: 0 auto;
+}
+.m-ware-kicker {
+  display: flex;
+  gap: 14px;
+  margin: 0 0 clamp(24px, 3.6vh, 40px);
+  font: 500 11.5px/1.4 var(--sans);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.m-ware-kicker span + span {
+  letter-spacing: 0.16em;
+}
+/* 这一句是作品字，不进字阶：比展示标题再大一档 */
+.m-ware-line {
+  position: relative;
+  margin: 0;
+  font: 300 clamp(48px, 7.6vw, 128px) / 1.06 var(--sans);
+  letter-spacing: -0.02em;
+  color: var(--ware-ink, var(--ink));
+}
+.m-ware-row {
+  display: block;
+  white-space: nowrap;
+}
+.m-ware-slot {
+  all: unset;
+  position: relative;
+  display: inline-block;
+  vertical-align: bottom;
+  height: 1.06em;
+  color: var(--ware-pre, var(--accent-ink));
+  white-space: nowrap;
+  cursor: pointer;
+  transition: width 0.9s var(--ease);
+}
+.m-ware-pre {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: inline-block;
+  white-space: nowrap;
+}
+/* 量宽度之前：词留在文档流里撑出宽度 */
+.m-ware-slot:not([style]) .m-ware-pre[data-state='still'],
+.m-ware-slot:not([style]) .m-ware-pre[data-state='in'] {
+  position: static;
+}
+.m-ware-tail {
+  white-space: nowrap;
+}
+/* 手机上一行放不下最长的 Intelligentware：We build 单独一行，字也收一档 */
+@media (max-width: 640px) {
+  .m-ware-line {
+    font-size: clamp(36px, 13vw, 64px);
+  }
+  .m-ware-we {
+    display: block;
+  }
+}
+/* 第二行整句斜体，靠页面右侧：先说做什么，再在另一头说「软件之外」 */
+.m-ware-row-2 {
+  margin-top: 0.04em;
+  font-style: italic;
+  text-align: right;
+}
+/* Beyond Software 里的 Soft：换成柔边的斜体衬线，字面上就是「软」 */
+.m-ware-soft {
+  font-family: var(--font-soft), Georgia, serif;
+  font-style: italic;
+  font-weight: 300;
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 1,
+    'opsz' 144;
+  letter-spacing: -0.01em;
+  padding-right: 0.02em;
+}
+.m-ware-measure {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.m-ware-pause {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.m-ware-ch {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+
+/* 对焦：新词从虚到实，旧词虚掉 */
+.m-ware[data-motion='focus'] [data-state='in'] .m-ware-ch {
+  animation: m-focus-in 0.95s var(--ease) both;
+  animation-delay: calc(140ms + var(--i) * 45ms);
+}
+.m-ware[data-motion='focus'] [data-state='out'] .m-ware-ch {
+  animation: m-focus-out 0.6s ease-in both;
+  animation-delay: calc(var(--i) * 25ms);
+}
+@keyframes m-focus-in {
+  from {
+    opacity: 0;
+    filter: blur(14px);
+    transform: scale(1.06);
+  }
+}
+@keyframes m-focus-out {
+  to {
+    opacity: 0;
+    filter: blur(12px);
+  }
+}
+
+/* 被风带起：旧词像蒲公英一样往右上飘走，新词从左边落定 */
+.m-ware[data-motion='breeze'] [data-state='in'] .m-ware-ch {
+  animation: m-breeze-in 0.95s var(--ease) both;
+  animation-delay: calc(160ms + var(--i) * 55ms);
+}
+.m-ware[data-motion='breeze'] [data-state='out'] .m-ware-ch {
+  animation: m-breeze-out 0.8s cubic-bezier(0.4, 0, 0.7, 0.4) both;
+  animation-delay: calc(var(--i) * 40ms);
+}
+@keyframes m-breeze-in {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+    transform: translate(-0.22em, 0.14em) rotate(-9deg);
+  }
+}
+@keyframes m-breeze-out {
+  to {
+    opacity: 0;
+    filter: blur(2px);
+    transform: translate(0.2em, -0.5em) rotate(14deg);
+  }
+}
+
+/* 升起：旧词像云一样往上散开，新词从下面浮上来 */
+.m-ware[data-motion='rise'] [data-state='in'] .m-ware-ch {
+  animation: m-rise-in 1s var(--ease) both;
+  animation-delay: calc(140ms + var(--i) * 50ms);
+}
+.m-ware[data-motion='rise'] [data-state='out'] .m-ware-ch {
+  animation: m-rise-out 0.7s ease-in both;
+  animation-delay: calc(var(--i) * 35ms);
+}
+@keyframes m-rise-in {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(0.45em);
+  }
+}
+@keyframes m-rise-out {
+  to {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(-0.5em);
+  }
+}
+
+.m-ware-about {
+  max-width: 30em;
+  margin-top: clamp(28px, 4.6vh, 52px);
+}
+.m-ware-studio {
+  max-width: 21em;
+  margin: 0 0 14px;
+  text-wrap: balance;
+  font: 300 var(--t-h3) / 1.6 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+.m-ware-view {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: var(--mute);
+}
+
+/* ---------- 写实影像：一卷胶片与结尾的影像 ---------- */
+.m-film {
+  position: relative;
+}
+.m-film-media {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: #3a3833;
+}
+.m-footage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  /* 三段影像来自不同摄影师，统一一套轻微的调色，放在一起不跳（各方向覆盖 --grade） */
+  filter: var(--grade, none);
+}
+/* 照片：40 秒推近一点、再退回来，像呼吸 */
+.m-still[data-playing] {
+  animation: m-breathe 40s ease-in-out infinite alternate;
+}
+.m-still[data-flip] {
+  rotate: y 180deg;
+}
+@keyframes m-breathe {
+  to {
+    scale: 1.07;
+  }
+}
+/* 往下读，镜头极慢地推近一点；读到那句话时溶进第二段 */
+.m-film-a {
+  transform: scale(calc(1.02 + var(--pin, 0) * 0.06));
+}
+.m-film-b {
+  transform: scale(calc(1.08 - var(--pin, 0) * 0.06));
+}
+.m-film-b {
+  opacity: clamp(0, (var(--pin, 0) - 0.3) / 0.26, 1);
+}
+.m-film-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      rgb(var(--film-tint) / 0.34),
+      rgb(var(--film-tint) / 0.06) 26%,
+      rgb(var(--film-tint) / 0.08) 62%,
+      rgb(var(--film-tint) / 0.4)
+    ),
+    rgb(var(--film-tint) / 0.1);
+}
+/* 压在影像上的字：白字，杏橙换成亮一档 */
+.m-film-content,
+.m-close[data-tone='dark'] .m-close-body {
+  --ink: #fff;
+  --ink-2: rgb(255 255 255 / 0.9);
+  --mute: rgb(255 255 255 / 0.76);
+  --hair: rgb(255 255 255 / 0.32);
+  --accent-ink: #ffd2b3;
+  --accent-wash: rgb(255 255 255 / 0.16);
+  --ware-pre: #ffd7bc;
+  --ai-initial: #ffd2b3;
+  --close-ink: #fff;
+  color: #fff;
+  text-shadow: 0 1px 24px rgb(0 0 0 / 0.16);
+}
+.m-film-content {
+  position: relative;
+  z-index: 1;
+  margin-top: -100vh;
+  margin-top: -100svh;
+}
+.m-film-content :focus-visible {
+  outline-color: #fff;
+}
+.m-real-hero {
+  height: 100vh;
+  height: 100svh;
+  min-height: 560px;
+  overflow: visible;
+  isolation: auto;
+}
+.m-real-copy {
+  position: absolute;
+  inset: 0 var(--gutter);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 3.4vh, 36px);
+  padding-bottom: 6vh;
+  text-align: center;
+}
+.m-real-copy .m-mark {
+  font-size: clamp(64px, 13vw, 210px);
+  color: #fff;
+}
+.m-real-copy .m-ai-headline {
+  color: rgb(255 255 255 / 0.94);
+}
+.m-real-foot {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: clamp(22px, 4vh, 40px);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.m-real-foot .m-keys {
+  color: rgb(255 255 255 / 0.86);
+  font-size: clamp(14px, 1.1vw, 16px);
+}
+.m-film-toggle {
+  all: unset;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.5);
+  cursor: pointer;
+}
+.m-film-toggle:hover {
+  background: rgb(255 255 255 / 0.14);
+}
+.m-film-toggle:focus-visible {
+  outline: 1.5px solid #fff;
+  outline-offset: 3px;
+}
+.m-film .m-ware {
+  background: transparent;
+}
+/* 压在影像上时，那句话和中文说明都靠左，右边留给画面；左边压一层柔和的暗。
+   这层暗钉在画面上（不随字滚动，不会有一道横边扫过去），跟着画面交接一起浮现。 */
+.m-film-scrim::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: var(--swap, 0);
+  background: linear-gradient(
+    90deg,
+    rgb(var(--film-tint) / 0.4),
+    rgb(var(--film-tint) / 0.12) 42%,
+    rgb(var(--film-tint) / 0.08) 58%,
+    rgb(var(--film-tint) / 0.3)
+  );
+}
+/* 首屏：字后面一团很淡的暗，让字在亮处也立得住 */
+.m-real-copy::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  z-index: -1;
+  width: min(1100px, 90vw);
+  height: 70vh;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(var(--film-tint) / 0.32),
+    rgb(var(--film-tint) / 0)
+  );
+  transform: translate(-50%, -50%);
+}
+.m-real-copy .m-ai-headline {
+  text-shadow: 0 1px 18px rgb(0 0 0 / 0.3);
+}
+
+/* ---------- 缩略图 ---------- */
+.m-th {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.m-th * {
+  transform-box: fill-box;
+}
+.m-th-ink {
+  fill: var(--ink);
+}
+.m-th-faint {
+  fill: var(--faint);
+}
+.m-th-accent {
+  fill: var(--accent);
+}
+.m-th-light {
+  fill: rgb(255 255 255 / 0.55);
+}
+.m-th-paper {
+  fill: #fffdf8;
+}
+.m-th-card {
+  fill: #fff;
+  filter: drop-shadow(0 3px 3px rgb(var(--shade) / 0.22));
+}
+.m-th-glow {
+  fill: #fff8ea;
+  filter: blur(5px);
+  opacity: 0.9;
+}
+.m-th-win {
+  fill: #fffdf9;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.m-th-side {
+  fill: #efe9df;
+}
+.m-th-mark {
+  fill: var(--accent);
+  opacity: 0.42;
+  transform-origin: left center;
+}
+.m-th-cursor {
+  fill: var(--ink);
+  stroke: #fff;
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.m-th-photo,
+.m-th-note {
+  filter: drop-shadow(0 4px 4px rgb(var(--shade) / 0.18));
+}
+.m-th-photo {
+  transform: rotate(-2deg);
+  transform-origin: center;
+}
+.m-th-note {
+  transform: rotate(3deg);
+  transform-origin: center;
+}
+.m-th-sun {
+  fill: #f6c592;
+}
+.m-th-clouds {
+  fill: #f2f2f2;
+  filter: blur(1.2px);
+}
+.m-th-side-win {
+  fill: #cfc8bd;
+}
+.m-th-dusk {
+  fill: #e1c39e;
+}
+.m-th-frame {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.8;
+}
+.m-th-sill {
+  fill: var(--ink);
+}
+.m-th-lamp {
+  fill: #f7c98d;
+  filter: drop-shadow(0 0 2px #f7c98d);
+}
+.m-th-dot {
+  fill: var(--ink);
+}
+.m-th-bubble {
+  transform-origin: 0% 100%;
+}
+.m-th-shadow {
+  fill: rgb(var(--shade) / 0.12);
+  filter: blur(1.5px);
+}
+.m-th-soil {
+  fill: #d8cbb5;
+}
+.m-th-grass {
+  fill: #cfd9bd;
+}
+.m-th-line {
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+.m-th-roof {
+  fill: var(--accent);
+}
+.m-th-trunk {
+  fill: #8d7a64;
+}
+.m-th-leaf {
+  fill: var(--sage);
+}
+.m-th-leaf-2 {
+  fill: #b7c59f;
+}
+.m-th-tower {
+  fill: var(--story);
+}
+.m-th-pole {
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+.m-th-flag {
+  fill: var(--accent);
+}
+.m-th-route {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 0.9;
+  stroke-dasharray: 1.6 2.2;
+  opacity: 0.5;
+}
+.m-th-grow {
+  transform-origin: 50% 100%;
+}
+
+/* 选中的那一行，缩略图动一下 */
+.m-prow[data-active] .m-th-type {
+  animation: m-th-type 1.1s steps(7) both;
+}
+.m-prow[data-active] .m-th-pop {
+  animation: m-th-pop 0.6s 0.6s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+.m-th-pop,
+.m-th-type {
+  transform-origin: left center;
+}
+.m-th-pop {
+  transform-origin: 90% 100%;
+}
+.m-prow[data-active] .m-th-mark {
+  animation: m-th-type 0.7s var(--ease) both;
+}
+.m-th-bar {
+  transform-origin: 0 0;
+}
+.m-prow[data-active] .m-th-bar {
+  animation: m-th-pop 0.55s 0.55s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+.m-prow[data-active] .m-th-clouds {
+  animation: m-th-clear 1.4s 0.2s var(--ease) both;
+}
+.m-prow[data-active] .m-th-bubble {
+  animation: m-th-pop 0.55s 0.35s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+.m-prow[data-active] .m-th-dot {
+  animation: m-th-blink 1.2s 0.9s ease-in-out infinite;
+}
+.m-prow[data-active] .m-th-dot:nth-of-type(2) {
+  animation-delay: 1.05s;
+}
+.m-prow[data-active] .m-th-dot:nth-of-type(3) {
+  animation-delay: 1.2s;
+}
+.m-prow[data-active] .m-th-grow {
+  animation: m-th-grow 0.7s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  animation-delay: calc(0.1s + var(--k) * 0.18s);
+}
+@keyframes m-th-type {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes m-th-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+@keyframes m-th-clear {
+  to {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+}
+@keyframes m-th-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+@keyframes m-th-grow {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scale(0.6);
+  }
+}
+
+/* =====================================================================
+   丝滑的过渡与质感（第五稿）
+   滚动进度由 useR8Motion 缓动地写进 --pin / --p（滚轮一格一格地跳，画面连续地滑）。
+   每一处过渡都用 S 形曲线（smoothstep：t² × (3 − 2t)），开头和收尾都是慢的。
+   ===================================================================== */
+
+/* ---------- 影像：载好再淡入，不再先露出一块暗色 ---------- */
+.js .m-footage {
+  opacity: 0;
+  transition: opacity 1.4s var(--ease);
+}
+.m-footage[data-ready] {
+  opacity: 1;
+}
+
+/* ---------- 一卷胶片：首屏 → 那句话 ---------- */
+.m-film {
+  /* 首屏的字退场 */
+  --out: clamp(0, (var(--pin, 0) - 0.02) / 0.34, 1);
+  --out-s: calc(var(--out) * var(--out) * (3 - 2 * var(--out)));
+  /* 两段画面交接 */
+  --sw: clamp(0, (var(--pin, 0) - 0.24) / 0.36, 1);
+  --swap: calc(var(--sw) * var(--sw) * (3 - 2 * var(--sw)));
+  /* 那句话登场 */
+  --in: clamp(0, (var(--pin, 0) - 0.3) / 0.3, 1);
+  --in-s: calc(var(--in) * var(--in) * (3 - 2 * var(--in)));
+  /* 末尾产品的纸页升上来时，画面沉下去一点（--dim 是颜色令牌，这里叫 --sink） */
+  --sink: clamp(0, (var(--pin, 0) - 0.84) / 0.16, 1);
+}
+.m-film-media {
+  background: var(--film-ground, #c9bfb2);
+}
+.m-film-a {
+  transform: scale(calc(1.02 + var(--pin, 0) * 0.07));
+}
+.m-film-b {
+  transform: scale(calc(1.09 - var(--swap) * 0.06));
+  opacity: 0;
+}
+.m-film-b[data-ready] {
+  opacity: var(--swap);
+  transition: none;
+}
+/* 首屏第一次出现：画面从虚到实（对焦），字依次浮上来 */
+.m-film-a[data-ready] {
+  animation: m-arrive 2.2s var(--ease) backwards;
+}
+.m-film-a.m-still[data-ready][data-playing] {
+  animation:
+    m-arrive 2.2s var(--ease) backwards,
+    m-breathe 40s ease-in-out infinite alternate;
+}
+@keyframes m-arrive {
+  from {
+    opacity: 0;
+    filter: var(--grade, saturate(1)) blur(12px);
+  }
+  to {
+    opacity: 1;
+    filter: var(--grade, saturate(1)) blur(0);
+  }
+}
+.m-real-copy > *,
+.m-real-foot {
+  animation: m-rise 1.6s var(--ease) backwards;
+}
+.m-real-copy > :nth-child(1) {
+  animation-delay: 0.25s;
+}
+.m-real-copy > :nth-child(2) {
+  animation-delay: 0.55s;
+}
+.m-real-foot {
+  animation-delay: 0.85s;
+}
+@keyframes m-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+/* 往下读：首屏的字慢慢淡出、比滚动略快地往上走 */
+.m-real-copy {
+  opacity: calc(1 - var(--out-s));
+  transform: translateY(calc(var(--out-s) * -5vh));
+}
+.m-real-foot {
+  opacity: calc(1 - var(--out-s));
+}
+/* 那句话：跟着画面交接，从淡到实、从低一点的地方落定 */
+.m-film .m-ware-inner {
+  opacity: calc(0.1 + 0.9 * var(--in-s));
+  transform: translateY(calc((1 - var(--in-s)) * 6vh));
+}
+/* 末尾：画面暗一点，好像退到纸页后面 */
+.m-film-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--film-tint) / 0.45);
+  opacity: var(--sink);
+  pointer-events: none;
+}
+/* 给纸页升上来留出位置 */
+.m-film .m-ware {
+  padding-bottom: calc(clamp(72px, 10vh, 120px) + 16vh);
+}
+
+/* ---------- 产品：一张纸页从画面下面升上来 ---------- */
+.m-film + .m-products {
+  z-index: 2;
+  margin-top: -16vh;
+  border-radius: 36px 36px 0 0;
+  background: var(--paper);
+  box-shadow: 0 -30px 70px -40px rgb(var(--shade) / 0.55);
+}
