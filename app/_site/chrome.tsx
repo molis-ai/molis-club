@@ -28,8 +28,8 @@ import {
 const pad = (n: number) => String(n).padStart(2, '0');
 
 const aboutLinks = [
-  { href: ABOUT, label: nav.aboutItems.about, line: nav.aboutLines.about },
   { href: TEAM, label: nav.aboutItems.team, line: nav.aboutLines.team },
+  { href: ABOUT, label: nav.aboutItems.about, line: nav.aboutLines.about },
   { href: ESSAYS, label: nav.aboutItems.essays, line: nav.aboutLines.essays },
   { href: ALONG, label: nav.aboutItems.along, line: nav.aboutLines.along },
 ];

@@ -8,15 +8,15 @@ export const nav = {
   community: '社区',
   about: '关于',
   aboutItems: {
-    about: '关于我们',
-    team: '团队',
+    team: '认识我们',
+    about: '我们相信什么',
     essays: '文章',
     along: '沿途',
   },
   /** 下拉里关于各项的一行说明 */
   aboutLines: {
-    about: '我们是谁、相信什么',
-    team: '一群同类，一起创造',
+    team: '八个人、来时路，和我们想做的事',
+    about: '六条信念，和我们怎样要求自己',
     essays: '《人的尺度》《落地主义》',
     along: '那些具体的尝试',
   },

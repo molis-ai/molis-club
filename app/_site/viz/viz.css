@@ -1,0 +1,69 @@
+/* 用画面讲内容的公共部件：展开看全文。
+   只读 .m 上的令牌（颜色、字号、圆角、缓动），不另起外观；换一套令牌，这些结构照样成立。 */
+
+/* ---------- 展开看全文 ---------- */
+.m-fold {
+  border-top: 1px solid var(--hair);
+}
+.m-fold > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding-right: 4px;
+  font: 400 var(--t-small) / 1.4 var(--sans);
+  letter-spacing: 0.06em;
+  color: var(--mute);
+  cursor: pointer;
+  list-style: none;
+  transition: color 0.3s var(--ease);
+}
+.m-fold > summary::-webkit-details-marker {
+  display: none;
+}
+.m-fold > summary:hover {
+  color: var(--ink);
+}
+.m-fold > summary svg {
+  transition: transform 0.4s var(--ease);
+}
+.m-fold[open] > summary svg {
+  transform: rotate(180deg);
+}
+.m-fold-body {
+  display: grid;
+  gap: 0.9em;
+  max-width: var(--read);
+  padding: 4px 0 24px;
+  font-size: var(--t-body);
+  line-height: 1.95;
+  color: var(--ink-2);
+}
+.m-fold[open] .m-fold-body {
+  animation: m-fold-in 0.5s var(--ease) both;
+}
+@keyframes m-fold-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-fold[open] .m-fold-body {
+    animation: none;
+  }
+}
+
+@media print {
+  .m-fold::details-content {
+    content-visibility: visible;
+    display: block;
+  }
+  .m-fold-body {
+    display: grid !important;
+  }
+  .m-fold > summary {
+    display: none;
+  }
+}

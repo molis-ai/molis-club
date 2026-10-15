@@ -235,6 +235,534 @@
       ]
     ]
   },
+  "team-table": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#494131",
+    "src": "/site/team-table-1672.webp",
+    "srcset": [
+      [
+        "/site/team-table-960.webp",
+        960
+      ],
+      [
+        "/site/team-table-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "team-sketchbook": {
+    "width": 1536,
+    "height": 1024,
+    "avg": "#908981",
+    "src": "/site/team-sketchbook-1536.webp",
+    "srcset": [
+      [
+        "/site/team-sketchbook-800.webp",
+        800
+      ],
+      [
+        "/site/team-sketchbook-1536.webp",
+        1536
+      ]
+    ]
+  },
+  "team-wind": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#94938f",
+    "src": "/site/team-wind-1672.webp",
+    "srcset": [
+      [
+        "/site/team-wind-960.webp",
+        960
+      ],
+      [
+        "/site/team-wind-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "team-island": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#998166",
+    "src": "/site/team-island-1672.webp",
+    "srcset": [
+      [
+        "/site/team-island-800.webp",
+        800
+      ],
+      [
+        "/site/team-island-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "ex-painter-water": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#4f5458",
+    "src": "/site/ex-painter-water-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-painter-water-800.webp",
+        800
+      ],
+      [
+        "/site/ex-painter-water-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-painter-blossom": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#4f4841",
+    "src": "/site/ex-painter-blossom-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-painter-blossom-800.webp",
+        800
+      ],
+      [
+        "/site/ex-painter-blossom-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-young-artist": {
+    "width": 2400,
+    "height": 1350,
+    "avg": "#7b6d5e",
+    "src": "/site/ex-young-artist-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-young-artist-800.webp",
+        800
+      ],
+      [
+        "/site/ex-young-artist-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-room-plants": {
+    "width": 2400,
+    "height": 1631,
+    "avg": "#636260",
+    "src": "/site/ex-room-plants-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-room-plants-800.webp",
+        800
+      ],
+      [
+        "/site/ex-room-plants-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-desk-forest": {
+    "width": 2400,
+    "height": 1460,
+    "avg": "#7c7f67",
+    "src": "/site/ex-desk-forest-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-desk-forest-800.webp",
+        800
+      ],
+      [
+        "/site/ex-desk-forest-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-car-sea": {
+    "width": 2400,
+    "height": 1707,
+    "avg": "#7c7d7f",
+    "src": "/site/ex-car-sea-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-car-sea-800.webp",
+        800
+      ],
+      [
+        "/site/ex-car-sea-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-shore-person": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#98aab0",
+    "src": "/site/ex-shore-person-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-shore-person-800.webp",
+        800
+      ],
+      [
+        "/site/ex-shore-person-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-window-sun": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#6e6750",
+    "src": "/site/ex-window-sun-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-window-sun-800.webp",
+        800
+      ],
+      [
+        "/site/ex-window-sun-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-dancer": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#2f241a",
+    "src": "/site/ex-dancer-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-dancer-800.webp",
+        800
+      ],
+      [
+        "/site/ex-dancer-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-window-blinds": {
+    "width": 2400,
+    "height": 1597,
+    "avg": "#4e4837",
+    "src": "/site/ex-window-blinds-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-window-blinds-800.webp",
+        800
+      ],
+      [
+        "/site/ex-window-blinds-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-field-flowers": {
+    "width": 2400,
+    "height": 1610,
+    "avg": "#929d82",
+    "src": "/site/ex-field-flowers-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-field-flowers-800.webp",
+        800
+      ],
+      [
+        "/site/ex-field-flowers-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-viewer": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#888888",
+    "src": "/site/ex-viewer-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-viewer-800.webp",
+        800
+      ],
+      [
+        "/site/ex-viewer-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-field-arms": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#aaab99",
+    "src": "/site/ex-field-arms-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-field-arms-800.webp",
+        800
+      ],
+      [
+        "/site/ex-field-arms-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-paper-plane": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#cfcdc1",
+    "src": "/site/ex-paper-plane-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-paper-plane-800.webp",
+        800
+      ],
+      [
+        "/site/ex-paper-plane-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-skylight": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#a3abb0",
+    "src": "/site/ex-skylight-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-skylight-800.webp",
+        800
+      ],
+      [
+        "/site/ex-skylight-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-dawn-field": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#625146",
+    "src": "/site/ex-dawn-field-2000.webp",
+    "srcset": [
+      [
+        "/site/ex-dawn-field-1280.webp",
+        1280
+      ],
+      [
+        "/site/ex-dawn-field-2000.webp",
+        2000
+      ]
+    ]
+  },
+  "ex-handlebar": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#4f332f",
+    "src": "/site/ex-handlebar-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-handlebar-800.webp",
+        800
+      ],
+      [
+        "/site/ex-handlebar-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-balloon": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#7c7456",
+    "src": "/site/ex-balloon-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-balloon-800.webp",
+        800
+      ],
+      [
+        "/site/ex-balloon-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-cyclist": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#7f7e73",
+    "src": "/site/ex-cyclist-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-cyclist-800.webp",
+        800
+      ],
+      [
+        "/site/ex-cyclist-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-dawn-bird": {
+    "width": 2400,
+    "height": 1350,
+    "avg": "#706344",
+    "src": "/site/ex-dawn-bird-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-dawn-bird-800.webp",
+        800
+      ],
+      [
+        "/site/ex-dawn-bird-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-field-grass": {
+    "width": 2400,
+    "height": 1591,
+    "avg": "#b6b596",
+    "src": "/site/ex-field-grass-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-field-grass-800.webp",
+        800
+      ],
+      [
+        "/site/ex-field-grass-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-writer": {
+    "width": 2400,
+    "height": 3600,
+    "avg": "#4b4944",
+    "src": "/site/ex-writer-1200.webp",
+    "srcset": [
+      [
+        "/site/ex-writer-640.webp",
+        640
+      ],
+      [
+        "/site/ex-writer-1200.webp",
+        1200
+      ]
+    ]
+  },
+  "ex-cloud-watch": {
+    "width": 2400,
+    "height": 3607,
+    "avg": "#788d96",
+    "src": "/site/ex-cloud-watch-1200.webp",
+    "srcset": [
+      [
+        "/site/ex-cloud-watch-640.webp",
+        640
+      ],
+      [
+        "/site/ex-cloud-watch-1200.webp",
+        1200
+      ]
+    ]
+  },
+  "ex-wax-seal": {
+    "width": 2400,
+    "height": 3600,
+    "avg": "#755746",
+    "src": "/site/ex-wax-seal-1200.webp",
+    "srcset": [
+      [
+        "/site/ex-wax-seal-640.webp",
+        640
+      ],
+      [
+        "/site/ex-wax-seal-1200.webp",
+        1200
+      ]
+    ]
+  },
+  "ex-eggshell": {
+    "width": 2400,
+    "height": 3200,
+    "avg": "#676e5c",
+    "src": "/site/ex-eggshell-1200.webp",
+    "srcset": [
+      [
+        "/site/ex-eggshell-640.webp",
+        640
+      ],
+      [
+        "/site/ex-eggshell-1200.webp",
+        1200
+      ]
+    ]
+  },
+  "ex-white-door": {
+    "width": 2400,
+    "height": 3200,
+    "avg": "#9d9d9d",
+    "src": "/site/ex-white-door-1200.webp",
+    "srcset": [
+      [
+        "/site/ex-white-door-640.webp",
+        640
+      ],
+      [
+        "/site/ex-white-door-1200.webp",
+        1200
+      ]
+    ]
+  },
+  "ex-night-desk": {
+    "width": 2400,
+    "height": 3600,
+    "avg": "#212829",
+    "src": "/site/ex-night-desk-1200.webp",
+    "srcset": [
+      [
+        "/site/ex-night-desk-640.webp",
+        640
+      ],
+      [
+        "/site/ex-night-desk-1200.webp",
+        1200
+      ]
+    ]
+  },
+  "ex-seed-hands": {
+    "width": 2400,
+    "height": 3600,
+    "avg": "#62666b",
+    "src": "/site/ex-seed-hands-1200.webp",
+    "srcset": [
+      [
+        "/site/ex-seed-hands-640.webp",
+        640
+      ],
+      [
+        "/site/ex-seed-hands-1200.webp",
+        1200
+      ]
+    ]
+  },
+  "ex-plan-sketch": {
+    "width": 2400,
+    "height": 3600,
+    "avg": "#7a7469",
+    "src": "/site/ex-plan-sketch-1200.webp",
+    "srcset": [
+      [
+        "/site/ex-plan-sketch-640.webp",
+        640
+      ],
+      [
+        "/site/ex-plan-sketch-1200.webp",
+        1200
+      ]
+    ]
+  },
   "contact-door": {
     "width": 1024,
     "height": 1536,
