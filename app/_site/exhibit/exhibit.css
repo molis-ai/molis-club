@@ -1,0 +1,359 @@
+/* =====================================================================
+   「关于」四间展厅（content/site/exhibit.ts）：同一场展，每间一种墙色、同一套展签。
+   参考 noguchi.org 与 normcph.com：大图、小字、说明像墙上的展签；每一屏放得下（按视口高度收图）。
+   ===================================================================== */
+
+/* ---------- 墙色：整页（连顶栏、页尾）换成这一间的墙 ---------- */
+.m:has(.ex[data-room='people']) {
+  --paper: var(--wall-people);
+  --paper-2: var(--wall-people-2);
+}
+.m:has(.ex[data-room='light']) {
+  --paper: var(--wall-light);
+  --paper-2: var(--wall-light-2);
+}
+.m:has(.ex[data-room='read']) {
+  --paper: var(--wall-read);
+  --paper-2: var(--wall-read-2);
+}
+.m:has(.ex[data-room='road']) {
+  --paper: var(--wall-road);
+  --paper-2: var(--wall-road-2);
+}
+
+/* ---------- 一屏：至少一个视口高，内容竖向居中 ---------- */
+.ex-screen {
+  min-height: calc(100svh - var(--header));
+  display: grid;
+  align-content: center;
+  padding-block: clamp(28px, 6.5vh, 72px);
+}
+.ex-screen + .ex-screen {
+  border-top: 1px solid var(--hair);
+}
+
+/* 开场：顶栏下面一屏，名牌一行在上，展厅名与开场展品在下 */
+.ex-open {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  row-gap: clamp(20px, 4vh, 44px);
+  padding-top: calc(var(--header) + clamp(16px, 3.4vh, 36px));
+  padding-bottom: clamp(24px, 5vh, 56px);
+}
+
+.ex-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+}
+
+/* ---------- 名牌：关于 Molis AI · 展厅 01 / 04 · 主题 · 人 ---------- */
+.ex-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px 32px;
+}
+.ex-meta-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+  font: 500 var(--t-label) / 1.6 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.ex-meta-of {
+  color: var(--mute);
+}
+.ex-meta-en {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+}
+
+/* ---------- 平面图：几间屋子连成一排，墙是 1px 墨线，门洞是墙上一段空白 ---------- */
+.ex-plan ol {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  width: min(100%, 440px);
+}
+.ex-plan li {
+  position: relative;
+}
+.ex-plan li + li {
+  margin-left: -1px;
+}
+/* 两间之间的门洞 */
+.ex-plan li + li::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 32%;
+  width: 1px;
+  height: 36%;
+  background: var(--paper);
+}
+.ex-plan a {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 1px;
+  height: 100%;
+  min-height: 62px;
+  padding: 8px 10px 9px;
+  border: 1px solid var(--ink-2);
+  font-size: 11.5px;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+  color: var(--mute);
+  transition:
+    background-color 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+.ex-plan a:hover {
+  color: var(--ink);
+}
+.ex-plan a:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 3px;
+}
+.ex-plan [data-here] a {
+  color: var(--ink);
+  background: var(--accent-wash);
+}
+.ex-plan-no {
+  font: italic 300 12px/1.2 var(--latin);
+  color: var(--accent-ink);
+}
+.ex-plan-here {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  color: var(--accent-ink);
+}
+.ex-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ---------- 展厅名与展签里的字：小、细、留白多 ---------- */
+.ex-h1 {
+  font: 300 var(--t-h1) / 1.2 var(--sans);
+  letter-spacing: 0.06em;
+}
+.ex-note {
+  margin-top: clamp(12px, 2.2vh, 22px);
+  font: 300 var(--t-lead) / 1.85 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+.ex-kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: clamp(10px, 2vh, 18px);
+  font: 500 var(--t-label) / 1.6 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.ex-kicker .m-no {
+  font-size: 13px;
+}
+.ex-kicker [lang='en'] {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+}
+.ex-h2 {
+  font: 300 var(--t-h2) / 1.45 var(--sans);
+  letter-spacing: 0.04em;
+}
+.ex-h3 {
+  font: 300 var(--t-h3) / 1.55 var(--sans);
+  letter-spacing: 0.04em;
+}
+.ex-text {
+  font: 400 var(--t-ui) / 1.95 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+.ex-text + .ex-text {
+  margin-top: 0.7em;
+}
+
+/* 展览信息：一行一个数 */
+.ex-facts {
+  display: grid;
+  margin-top: clamp(18px, 3.4vh, 34px);
+  border-top: 1px solid var(--hair-2);
+}
+.ex-facts div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.ex-facts dt {
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+.ex-facts dd {
+  font: 300 17px/1.3 var(--latin);
+  color: var(--ink);
+}
+
+/* ---------- 展品：框 + 展签 ---------- */
+.ex-work {
+  gap: 10px;
+  align-content: start;
+}
+.ex-work .m-window-frame {
+  max-height: var(--max-h, none);
+}
+.ex-work[data-fill] .m-window-frame {
+  width: 100%;
+}
+.ex-work .ex-label {
+  display: grid;
+  justify-content: start;
+  gap: 1px;
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: 0.03em;
+}
+.ex-label-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.ex-no {
+  font: italic 300 12.5px/1 var(--latin);
+  color: var(--accent-ink);
+}
+.ex-title {
+  font-size: 13px;
+  color: var(--ink);
+}
+.ex-medium {
+  color: var(--mute);
+}
+.ex-tell {
+  display: block;
+  max-width: 30em;
+  margin-top: 8px;
+  font: 400 14px/1.9 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+/* 不是图的展品（线描、互动装置）：只有展签 */
+.ex-label-solo {
+  display: grid;
+  gap: 1px;
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: 0.03em;
+}
+
+/* ---------- 下一个展厅 ---------- */
+.ex-next {
+  padding-block: clamp(40px, 9vh, 96px) clamp(36px, 7vh, 80px);
+}
+.ex-next-link {
+  display: grid;
+  grid-template-columns: minmax(120px, 220px) 1fr auto;
+  align-items: center;
+  gap: clamp(16px, 3vw, 44px);
+  padding: 18px 0;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--hair);
+}
+.ex-next-thumb {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--r-label);
+  background: var(--avg, var(--paper-2));
+}
+.ex-next-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: var(--grade);
+  transition: scale 1.2s var(--ease);
+}
+.ex-next-link:hover .ex-next-thumb img {
+  scale: 1.04;
+}
+.ex-next-text {
+  display: grid;
+  gap: 4px;
+}
+.ex-next-kicker,
+.ex-next-theme {
+  font: 500 var(--t-label) / 1.6 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.ex-next-theme [lang='en'] {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+}
+.ex-next-name {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font: 300 var(--t-h2) / 1.3 var(--sans);
+  letter-spacing: 0.05em;
+}
+.ex-next-name .num {
+  font: italic 300 0.55em/1 var(--latin);
+  color: var(--accent-ink);
+}
+.ex-next-arrow {
+  color: var(--mute);
+  transition:
+    translate 0.5s var(--ease),
+    color 0.5s var(--ease);
+}
+.ex-next-link:hover .ex-next-arrow {
+  translate: 6px 0;
+  color: var(--ink);
+}
+.ex-next-link:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+}
+
+@media (max-width: 760px) {
+  .ex-screen {
+    min-height: 0;
+    padding-block: 56px;
+  }
+  .ex-open {
+    min-height: 0;
+  }
+  .ex-meta {
+    flex-direction: column;
+  }
+  .ex-plan ol {
+    width: 100%;
+  }
+  /* 四间挤在一行：格子里的留白收一点，「我们相信什么」不折行 */
+  .ex-plan a {
+    padding-inline: 7px;
+    letter-spacing: 0;
+  }
+  .ex-next-link {
+    grid-template-columns: 96px 1fr auto;
+  }
+}

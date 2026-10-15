@@ -1,48 +1,27 @@
-// 关于页的界面文字。正文全部来自 content/site/studio.ts（docs/studio-intro.md 第 1、2 章原句）；
-// 这里只放两类东西：
-// 1. 从原句里切出来的片段（用代码切，保证一字不差）；
-// 2. 新写的界面文字：小标签、图注、去处，以及「三种媒介，同一个动作」里的示意内容（代码与文字都是示意，不是产品事实）。
+// 关于页「我们相信什么」＝「关于」展厅 02（主题：光）。我们是谁、从哪来、接下来去哪在展厅 01「认识我们」。
+// 正文全部来自 content/site/studio.ts（docs/studio-intro.md 第 1、2 章原句）；
+// 这里只放新写的界面文字：小标签、几个数的说明，以及「三种媒介，同一个动作」里的示意内容（代码与文字都是示意，不是产品事实）。
+// 展品标题、替代文字与署名在 exhibit.ts。
+// 例外是 title：「我们相信什么」就是底稿 1.4 的小标题。
 
 import { studio } from './studio';
 
-// ---------- 从原句里切出来的片段 ----------
-
-const intro = studio.standard.intro;
-const firstStop = intro.indexOf('。') + 1;
-
-/** 1.3 第一句：「Molis AI 是一间做 AI 产品的工作室。」（首屏大标题） */
-export const aboutName = intro.slice(0, firstStop);
-/** 1.3 第二句：我们关心技术怎样进入具体的日常：……（首屏导语） */
-export const aboutCare = intro.slice(firstStop);
-
-// ---------- 新写的界面文字 ----------
-
 export const aboutUi = {
   kicker: '关于我们',
-  heroCaption: 'Someone at the window, looking out',
-  heroAlt: '白色的展厅里，一整面落地窗，一个人站在窗前，远远看着窗外的树和天。',
-
-  who: '我们是谁',
-  enterprise: '企业合作',
-  community: '去社区看看',
-
-  from: '从哪来',
-  meetTeam: '认识这群人',
+  /** 底稿 1.4 的小标题，当这一页的大标题 */
+  title: '我们相信什么',
+  /** 开场的三个数 */
+  facts: { beliefs: '信念', practice: '产品里的选择', demands: '要求自己' },
 
   changed: '什么变了',
+  whole: '读这一节的前两段',
   essay: '读《人的尺度》',
 
   believe: 'What we believe',
-  believeTitle: '我们相信什么',
+  beliefsTitle: '六条信念',
 
   practice: '落到产品里',
   demands: '要求自己',
-
-  next: '接下来去哪',
-  coastCaption: 'Sunrise, a coastline, moving forward',
-
-  /** 结尾三扇门：一句话沿用顶栏「关于」下拉里的说明 */
-  doorsLabel: '继续走走',
 };
 
 /** 「三种媒介，同一个动作」：作画、写代码、改文字并排，地位相同，一起走过起稿 → 修改 → 完成（新写，示意） */

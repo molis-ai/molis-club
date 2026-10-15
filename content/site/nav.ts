@@ -8,15 +8,15 @@ export const nav = {
   community: '社区',
   about: '关于',
   aboutItems: {
-    about: '关于我们',
-    team: '团队',
+    team: '认识我们',
+    about: '我们相信什么',
     essays: '文章',
     along: '沿途',
   },
   /** 下拉里关于各项的一行说明 */
   aboutLines: {
-    about: '我们是谁、相信什么',
-    team: '一群同类，一起创造',
+    team: '八个人、来时路，和我们想做的事',
+    about: '六条信念，和我们怎样要求自己',
     essays: '《人的尺度》《落地主义》',
     along: '那些具体的尝试',
   },
@@ -37,10 +37,6 @@ export const footer = {
   methods: '方法目录',
   privacy: '隐私说明',
   github: 'GitHub',
-  copyright: '© 2026 Molis AI',
-  /** 版权说明：字体、配图来源与 AI 生成说明 */
-  fonts: '字体：Jost 与 Fraunces（SIL Open Font License），中文用系统苹方。',
-  images:
-    '配图：Mixkit、Unsplash 的免费授权素材；部分配图由 AI 生成。画面里的人不是团队成员或用户。',
+  // 版权、字体与配图来源那一段，负责人 2026-10-16 从页尾删去
   updated: '本页最近修改',
 };

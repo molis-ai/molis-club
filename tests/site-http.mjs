@@ -58,8 +58,7 @@ for (const path of pages) {
     );
   for (const href of ['/work', '/tool', '/life', '/story', '/world'])
     assert(page.includes(`href="${href}"`), `${path}: product link ${href}`);
-  // 页尾：版权说明与本页最近修改
-  assert.match(page, /部分配图由 AI 生成/, `${path}: image credit`);
+  // 页尾：本页最近修改
   assert.match(
     page,
     /本页最近修改(<!-- -->)?：<time dateTime="\d{4}-\d{2}-\d{2}">/,

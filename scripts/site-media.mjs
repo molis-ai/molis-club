@@ -112,6 +112,109 @@ const images = [
     widths: [960, 1672],
     quality: 76,
   },
+  // 团队「认识我们」（负责人 2026-10-15 定的六屏）：品牌图库原图，不用雾感版。
+  // 首屏长桌（椅子各不相同）、来时路的速写本、黑客与画家「风的手稿」、想做的事的手作小岛；
+  // 结尾海边的孩子沿用 life-shore，不另出一份
+  {
+    key: 'team-table',
+    src: 'public/r8-materials-v1/images/business-a.png',
+    widths: [960, 1672],
+    quality: 76,
+  },
+  {
+    key: 'team-sketchbook',
+    src: 'public/r8-materials-v1/images/story-a.png',
+    widths: [800, 1536],
+    quality: 76,
+  },
+  {
+    key: 'team-wind',
+    src: 'public/r8-materials-v1/images/home-b.png',
+    widths: [960, 1672],
+    quality: 76,
+  },
+  {
+    key: 'team-island',
+    src: 'public/r8-materials-v1/images/world-a.png',
+    widths: [800, 1672],
+    quality: 76,
+  },
+  // 关于的三个展厅（负责人 2026-10-15 从 Unsplash 第三轮候选里挑的 21 张，免费授权，取 2400 宽；
+  // 摄影者署名与展签写在 content/site/exhibit.ts）。展厅三的开场图是横幅，多出一档宽的
+  ...[
+    { key: 'ex-painter-water', id: '1780007193348-bd21e473dbf7' },
+    { key: 'ex-painter-blossom', id: '1557178908-438a334af016' },
+    { key: 'ex-young-artist', id: '1752649937079-91226d0b5084' },
+    { key: 'ex-room-plants', id: '1768076954980-e387a18d0b2a' },
+    { key: 'ex-desk-forest', id: '1758383965264-b871a14bfff5' },
+    { key: 'ex-car-sea', id: '1488204900407-c88697235ac5' },
+    { key: 'ex-shore-person', id: '1700748881202-3c6e94c3b1ce' },
+    { key: 'ex-window-sun', id: '1714153760214-5e86aa688fc3' },
+    { key: 'ex-dancer', id: '1529229504105-4ea795dcbf59' },
+    { key: 'ex-window-blinds', id: '1775129341637-ba2163ddd944' },
+    { key: 'ex-field-flowers', id: '1761745806972-9fba05b07b2a' },
+    { key: 'ex-viewer', id: '1578730186202-89a8d433e519' },
+    { key: 'ex-field-arms', id: '1762515303947-cef3ea72386d' },
+    { key: 'ex-paper-plane', id: '1630218891212-fa9fbaf4c218' },
+    { key: 'ex-skylight', id: '1774021793820-40681dd5ef4c' },
+    {
+      key: 'ex-dawn-field',
+      id: '1764900318742-029074f3bbf5',
+      widths: [1280, 2000],
+    },
+    { key: 'ex-handlebar', id: '1475666675596-cca2035b3d79' },
+    { key: 'ex-balloon', id: '1778236262726-452ab6686b0f' },
+    { key: 'ex-cyclist', id: '1519583272095-6433daf26b6e' },
+    { key: 'ex-dawn-bird', id: '1772868609645-cb249538601e' },
+    { key: 'ex-field-grass', id: '1632061046569-e38a8b90ee0d' },
+    // 沿途目录的八组各挂一张（负责人 2026-10-16 从第四轮候选里挑的），竖幅、只占四栏宽
+    { key: 'ex-writer', id: '1685661241913-84a6468c8ff2', widths: [640, 1200] },
+    {
+      key: 'ex-cloud-watch',
+      id: '1712260101910-f046c92195ef',
+      widths: [640, 1200],
+    },
+    {
+      key: 'ex-wax-seal',
+      id: '1774891937648-68c7bfd6d035',
+      widths: [640, 1200],
+    },
+    {
+      key: 'ex-eggshell',
+      id: '1789516154634-2ee2350bc9e5',
+      widths: [640, 1200],
+    },
+    {
+      key: 'ex-white-door',
+      id: '1547304206-e2e68bae3729',
+      widths: [640, 1200],
+    },
+    {
+      key: 'ex-night-desk',
+      id: '1634021086770-12b626224f7a',
+      widths: [640, 1200],
+    },
+    {
+      key: 'ex-seed-hands',
+      id: '1689601256066-7d31d73dbe46',
+      widths: [640, 1200],
+    },
+    {
+      key: 'ex-plan-sketch',
+      id: '1599420186985-5c3d1a038e84',
+      widths: [640, 1200],
+    },
+    // 展厅 03「文章」（负责人 2026-10-16 让我从第四轮候选里挑的）
+    { key: 'ex-library-window', id: '1782530707382-fdb15bf93789' },
+    { key: 'ex-sun-table', id: '1776090188043-402fc41c4f5d' },
+    { key: 'ex-hand-book', id: '1589793241881-37eef79add7d' },
+    { key: 'ex-workbench', id: '1724182507700-bccac8d02859' },
+  ].map(({ key, id, widths = [800, 1600] }) => ({
+    key,
+    src: `public/images/r8/picks/unsplash-photo-${id}-2400.jpg`,
+    widths,
+    quality: 76,
+  })),
   {
     key: 'contact-door',
     src: 'public/images/r8/afternoon-hero-girl-b.png',

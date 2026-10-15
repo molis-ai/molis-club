@@ -1,0 +1,247 @@
+/* =====================================================================
+   沿途的河（沿途页与团队页「来时路」共用，along-map.tsx 引入）：
+   54 件尝试从八个源头流到七个去处。点按去处分几种样子：流进产品（杏橙实心）、Lab（墨色实心）、
+   设计里（空心圈）、已归档（淡灰）、各自留着（灰）。索引里的小点、去处签用同一套。
+   ===================================================================== */
+
+/* ---------- 去处的样子（河、索引共用） ---------- */
+.m-along,
+.m-river-box {
+  --f-product: var(--accent);
+  --f-lab: var(--ink);
+  --f-archived: var(--faint);
+  --f-rest: var(--mute);
+}
+[data-flow='work'],
+[data-flow='tool'],
+[data-flow='story'] {
+  --f: var(--f-product);
+}
+[data-flow='lab'] {
+  --f: var(--f-lab);
+}
+[data-flow='design'] {
+  --f: transparent;
+  --f-line: var(--ink);
+}
+[data-flow='archived'] {
+  --f: var(--f-archived);
+}
+[data-flow='rest'] {
+  --f: var(--f-rest);
+}
+
+/* =====================================================================
+   河
+   ===================================================================== */
+.m-river {
+  padding-bottom: clamp(56px, 10vh, 112px);
+}
+.m-river-box {
+  position: relative;
+  width: 100%;
+}
+.m-river-box[data-variant='narrow'] {
+  display: none;
+}
+@media (max-width: 759px) {
+  .m-river-box[data-variant='wide'] {
+    display: none;
+  }
+  .m-river-box[data-variant='narrow'] {
+    display: block;
+  }
+}
+.m-river-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.m-river-bar {
+  fill: var(--ink);
+}
+.m-river-bar[data-flow] {
+  fill: var(--f, var(--ink));
+  stroke: var(--f-line, none);
+  stroke-width: 1;
+}
+.m-river-line {
+  fill: none;
+  stroke: var(--hair-2);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transition:
+    stroke 0.35s var(--ease),
+    opacity 0.35s var(--ease);
+}
+.m-river-thread[data-flow='work'] .m-river-line,
+.m-river-thread[data-flow='tool'] .m-river-line,
+.m-river-thread[data-flow='story'] .m-river-line {
+  stroke: rgb(234 146 96 / 0.6);
+}
+.m-river-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 10;
+  pointer-events: stroke;
+}
+.m-river-dot {
+  fill: var(--f);
+  stroke: var(--f-line, none);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+.m-river-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.m-river-thread {
+  transition: opacity 0.35s var(--ease);
+}
+.m-river-thread[data-dim] {
+  opacity: 0.14;
+}
+.m-river-thread:hover .m-river-line {
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.m-river-bar[data-on] {
+  fill: var(--accent);
+}
+
+/* 演一遍：线一条条画出来，点沿线走（点的位置由 along-map.tsx 写） */
+.js .m-river-box:not([data-state]) .m-river-line,
+.m-river-box[data-state='ready'] .m-river-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.js .m-river-box:not([data-state]) .m-river-dot,
+.js .m-river-box:not([data-state]) .m-river-ring,
+.m-river-box[data-state='ready'] .m-river-ring,
+.m-river-box[data-state='run'] .m-river-ring {
+  opacity: 0;
+}
+.m-river-box[data-state='run'] .m-river-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.33, 1, 0.68, 1)
+    var(--d, 0ms);
+}
+.m-river-box[data-state='done'] .m-river-ring {
+  opacity: 1;
+  transition: opacity 0.6s var(--ease);
+}
+
+/* 源头与去处的字：压在河的两边，不压在线上 */
+.m-river-source,
+.m-river-sink {
+  position: absolute;
+  translate: 0 -50%;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  min-height: 28px;
+  align-items: center;
+  padding: 0 4px;
+  border: 0;
+  border-radius: var(--r-label);
+  background: transparent;
+  font: 400 13px / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 0.3s var(--ease),
+    background-color 0.3s var(--ease);
+}
+.m-river-source:hover,
+.m-river-sink:hover,
+.m-river-source:focus-visible,
+.m-river-sink:focus-visible {
+  color: var(--ink);
+  background: var(--paper-2);
+}
+.m-river-sink[aria-pressed='true'] {
+  color: var(--ink);
+  background: var(--accent-wash);
+}
+.m-river-sink::before {
+  content: '';
+  flex: none;
+  align-self: center;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--f);
+  box-shadow: inset 0 0 0 1.2px var(--f-line, transparent);
+}
+.m-river-no {
+  font: italic 300 12.5px/1 var(--latin);
+  color: var(--accent-ink);
+}
+.m-river-count {
+  font: italic 300 12.5px/1 var(--latin);
+  color: var(--mute);
+}
+.m-river-box[data-variant='narrow'] .m-river-source,
+.m-river-box[data-variant='narrow'] .m-river-sink {
+  gap: 5px;
+  min-height: 24px;
+  padding: 0 2px;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+.m-river-box[data-variant='narrow'] .m-river-sink::before {
+  width: 7px;
+  height: 7px;
+}
+.m-river-notes {
+  display: grid;
+  gap: 4px;
+  max-width: 48em;
+  margin-top: 22px;
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--mute);
+}
+.m-river-notes p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.m-river-key {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent) 3.5px, transparent 4px);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-river-line,
+  .m-river-thread,
+  .m-river-source,
+  .m-river-sink {
+    transition: none;
+  }
+  .js .m-river-box .m-river-line {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+  .js .m-river-box .m-river-dot,
+  .js .m-river-box .m-river-ring {
+    opacity: 1 !important;
+  }
+}
+
+@media print {
+  .m-river {
+    break-inside: avoid;
+  }
+}

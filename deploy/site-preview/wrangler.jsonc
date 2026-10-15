@@ -1,0 +1,25 @@
+// Molis AI 官网静态预览（https://molis-ai-preview.molis-club.workers.dev）的部署配置。
+// 只有静态文件：没有服务器代码（不写 main），没有数据库、存储或任何绑定。
+// 静态包由 npm run build:site-preview 导出到仓库的 outputs/site-preview/。
+//
+// wrangler 只能在这个目录里跑，而且每次都显式写 --config，先 --dry-run 看一遍：
+//   cd deploy/site-preview
+//   npx wrangler deploy --config wrangler.jsonc --dry-run
+//   （应只列出静态文件、没有任何绑定；确认无误再去掉 --dry-run 上传）
+//
+// 绝不在仓库根目录跑 wrangler deploy，也不跑任何 wrangler pages 命令：
+// 构建会在根目录留下 .wrangler/deploy/config.json，指向 dist/server/wrangler.json（带数据库绑定的整站配置）；
+// wrangler 4.13x 没拿到 --config 时会顺着上层目录读到它，还会自动配置：自己构建项目、注册 workers.dev 子域名。
+// 显式写 --config 时这两件事都不会发生。
+{
+  "name": "molis-ai-preview",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": "../../outputs/site-preview",
+    // 找不到的地址给导出的 404.html；/community 与 /community/ 都落到 community.html
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+  },
+}

@@ -13,6 +13,7 @@ import {
 } from '../../../../content/site/essays';
 import { ESSAYS, essayHref } from '../../../_site/routes';
 import { More, type Vars } from '../../../_site/ui';
+import { RoomMeta } from '../../../_site/exhibit/exhibit';
 import { EssayBlocks, parseEssay } from '../markdown';
 import { ReadingProgress } from '../progress';
 import '../essays.css';
@@ -52,6 +53,7 @@ function Title({ title, as: Tag }: { title: string; as: 'h1' | 'span' }) {
 
 // 文章页：阅读版式。约 35 个汉字一行（阅读栏 40rem、--t-read 字号）、行距 2；
 // 左两栏是本篇目录（宽屏时贴着走），顶栏下一条细细的阅读进度线；没有配图、没有视差。
+// 仍在展厅 03「文章」里：同一面月白的墙、同一块名牌，标题用展厅的字阶（负责人 2026-10-16 定）。
 // 打印时只留标题与正文（署名跟着标题），链接后面写出地址。
 export default async function EssayPage({ params }: Props) {
   const { slug } = await params;
@@ -74,7 +76,7 @@ export default async function EssayPage({ params }: Props) {
   };
 
   return (
-    <article className="m-essay">
+    <article className="m-essay ex" data-room="read">
       <script
         type="application/ld+json"
         // oxlint-disable-next-line react/no-danger -- 本站自己的静态数据，转义了 <
@@ -85,6 +87,7 @@ export default async function EssayPage({ params }: Props) {
       <ReadingProgress target="essay-body" toc="essay-toc" />
 
       <header className="m-wrap m-top m-essay-head">
+        <RoomMeta room="read" />
         <p className="m-essay-kicker m-rise m-noprint">
           <Link className="m-essay-back" href={ESSAYS}>
             {essayUi.all}

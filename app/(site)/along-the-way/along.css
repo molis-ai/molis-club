@@ -1,40 +1,118 @@
 /* =====================================================================
-   沿途：一本图录的索引页。没有配图；细线分行，条目号用 Jost 细斜体，
-   标签在左两栏，名字 / 它关心的问题 / 现在在哪 三栏偏右。
+   展厅 04「沿途」· 主题：路。晨雾色的墙（--wall-road，在 exhibit.css 里换墙）。
+   开场 · 一路上 · 一条河与目录 · 结尾；河与去处的颜色在 river.css。展签与平面图在 exhibit.css。
    ===================================================================== */
 
-/* ---------- 首屏：标题、两段导语、一个超大的件数 ---------- */
-.m-along-head {
-  margin-bottom: clamp(48px, 9vh, 104px);
-}
-.m-along-intro {
+/* ---------- 开场：一张横幅的黎明，下面是展厅名与三个数 ---------- */
+.al-open {
   display: grid;
-  gap: 0.9em;
+  align-content: end;
+  row-gap: clamp(18px, 3.4vh, 34px);
 }
-.m-along-total {
-  grid-column: 11 / -1;
-  grid-row: 2 / span 2;
-  align-self: end;
+.al-open-text {
+  align-items: end;
+}
+.al-open-title {
+  grid-column: 1 / span 6;
+}
+.al-open-facts {
+  grid-column: 9 / -1;
+}
+.al-open-facts .ex-facts {
+  margin-top: 0;
+}
+
+/* ---------- 一路上：四张一字排开，第二、四张往下错一点，像一路走过去 ---------- */
+.al-legs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  align-items: start;
+  margin-top: clamp(14px, 3vh, 30px);
+}
+.al-legs li:nth-child(even) {
+  margin-top: clamp(20px, 6vh, 64px);
+}
+.al-legs .ex-tell {
+  font-size: 13.5px;
+  line-height: 1.85;
+}
+
+/* ---------- 河：标题与展签一行，河按视口高度收窄，一屏放得下 ---------- */
+.m-river-head {
+  align-items: end;
+  row-gap: 10px;
+  margin-bottom: clamp(14px, 3vh, 30px);
+}
+.m-river-head-title {
+  grid-column: 1 / span 8;
+}
+.m-river-head > .ex-label-solo {
+  grid-column: 10 / -1;
   justify-self: end;
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin: 0;
 }
-.m-along-total .num {
-  font: italic 300 var(--t-display) / 0.9 var(--latin);
-  letter-spacing: -0.02em;
+.m-river .m-river-box[data-variant='wide'] {
+  max-width: min(100%, 96svh);
+  margin-inline: auto;
 }
-.m-along-total small {
-  font: 400 var(--t-ui) / 1 var(--sans);
-  letter-spacing: 0.12em;
-  color: var(--mute);
+/* 三条说明排成一行，河下面只占两行高 */
+.m-river .m-river-notes {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  max-width: none;
+  margin-top: clamp(12px, 2.4vh, 22px);
 }
+.m-river .m-river-notes p {
+  align-items: flex-start;
+}
+.m-along-catalog {
+  padding-top: clamp(24px, 5vh, 56px);
+  border-top: 1px solid var(--hair);
+}
+
+/* ---------- 结尾：风吹过草 ---------- */
+.al-end {
+  align-items: center;
+}
+.al-end-work {
+  grid-column: 1 / span 7;
+}
+.al-end-text {
+  grid-column: 9 / -1;
+}
+.al-end-text .m-actions {
+  margin-top: clamp(16px, 3vh, 28px);
+}
+
 @media (max-width: 900px) {
-  .m-along-total {
+  .al-open-title,
+  .al-open-facts,
+  .m-river-head-title,
+  .m-river-head > .ex-label-solo,
+  .al-end-work,
+  .al-end-text {
     grid-column: 1 / -1;
-    grid-row: auto;
+  }
+  .m-river-head > .ex-label-solo {
     justify-self: start;
+  }
+  .al-legs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 28px;
+  }
+  .al-end {
+    row-gap: 28px;
+  }
+  .m-river .m-river-notes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 560px) {
+  .al-legs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .al-legs li:nth-child(even) {
+    margin-top: 0;
   }
 }
 
@@ -107,89 +185,229 @@
   }
 }
 
-/* ---------- 三栏的栏名（只给看的人，读屏从每格的隐藏前缀读到） ---------- */
-.m-along-columns,
-.m-along-row {
+/* =====================================================================
+   目录：八组，每组一面墙——一张图（贴着走）和一列展签，左右交替。
+   每件一行：小示意图 · 英文名 · 去处 / 一句话看懂；点开是原名与附录原文。字号跟展签一档。
+   ===================================================================== */
+.al-g {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--col-gap);
-}
-.m-along-columns {
-  padding-bottom: 10px;
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-  color: var(--mute);
-}
-.m-along-columns span:nth-child(1) {
-  grid-column: 3 / span 3;
-}
-.m-along-columns span:nth-child(2) {
-  grid-column: 6 / span 4;
-}
-.m-along-columns span:nth-child(3) {
-  grid-column: 10 / span 3;
-}
-
-/* ---------- 每一组：一道墨线、A.n、组名 ---------- */
-.m-along-group + .m-along-group {
-  margin-top: clamp(48px, 8vh, 88px);
-}
-.m-along-ghead {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 10px;
-  padding: 18px 0 clamp(20px, 3vh, 32px);
-  border-top: 1px solid var(--ink);
-}
-.m-along-gmeta {
-  grid-column: 1 / span 2;
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  padding-top: 0.55em;
-}
-.m-along-gcount {
-  font: 400 12.5px/1 var(--sans);
-  letter-spacing: 0.08em;
-  color: var(--mute);
-}
-.m-along-ghead h2 {
-  grid-column: 3 / span 8;
-  font: 300 var(--t-h2) / 1.4 var(--sans);
-  letter-spacing: 0.04em;
-}
-
-/* ---------- 每一件：一行 ---------- */
-.m-along-row {
-  row-gap: 6px;
-  padding-block: 18px 20px;
+  align-items: start;
+  padding-block: clamp(28px, 6vh, 64px);
   border-top: 1px solid var(--hair);
+  scroll-margin-top: calc(var(--header) + 60px);
 }
-.m-along-no {
-  grid-column: 1 / span 2;
-  padding-top: 0.15em;
-  font: italic 400 14px/1.6 var(--latin);
+.al-g-pic {
+  grid-column: 1 / span 4;
+  grid-row: 1;
+  position: sticky;
+  top: calc(var(--header) + 84px);
+}
+.al-g-body {
+  grid-column: 6 / -1;
+  grid-row: 1;
+}
+.al-g[data-side='right'] .al-g-pic {
+  grid-column: 9 / -1;
+}
+.al-g[data-side='right'] .al-g-body {
+  grid-column: 1 / span 7;
+}
+.al-g-pic {
+  --max-h: calc(100svh - var(--header) - 200px);
+}
+.al-g-wait {
+  max-height: var(--max-h);
+}
+/* 图还没选定时：一块淡底，只写组号 */
+.al-g-wait {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--r-inset);
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  font: italic 300 28px/1 var(--latin);
   color: var(--mute);
 }
-.m-along-name {
-  grid-column: 3 / span 3;
-  font: 400 var(--t-keys) / 1.5 var(--sans);
-  letter-spacing: 0.01em;
-  text-wrap: pretty;
+
+.al-g-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--mute);
 }
-.m-along-alias {
+.al-g-meta .m-no {
+  font-size: 14px;
+}
+.al-g-head .ex-h2 {
+  margin-top: 8px;
+}
+.m-along-spread {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.m-along-pip {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--f);
+  box-shadow: inset 0 0 0 1px var(--f-line, transparent);
+}
+
+.al-list {
+  margin-top: clamp(14px, 2.8vh, 26px);
+  border-top: 1px solid var(--hair-2);
+}
+.al-row {
+  border-bottom: 1px solid var(--hair);
+}
+.al-sum {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 22px;
+  align-items: center;
+  column-gap: 16px;
+  padding: clamp(7px, 1.2vh, 11px) 0;
+  cursor: pointer;
+  list-style: none;
+}
+.al-sum::-webkit-details-marker {
+  display: none;
+}
+.al-sum:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: var(--r-label);
+}
+
+/* 小示意图（glyphs.tsx）：墨线、不填色，一个杏色小点；停在设计里的那组线是虚的 */
+.gl {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.35s var(--ease);
+}
+.gl .gl-dot {
+  fill: var(--accent);
+  stroke: none;
+}
+.gl .gl-paper {
+  fill: var(--paper);
+}
+.al-row[data-flow='design'] .gl {
+  stroke-dasharray: 2.2 1.9;
+}
+.al-sum:hover .gl {
+  stroke: var(--ink);
+}
+
+.al-main {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.al-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+}
+.al-name {
+  font: 400 15px/1.5 var(--sans);
+  letter-spacing: 0.02em;
+  transition: color 0.35s var(--ease);
+}
+.al-sum:hover .al-name {
+  color: var(--accent-ink);
+}
+.al-flow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--mute);
+  white-space: nowrap;
+}
+.al-flow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--f);
+  box-shadow: inset 0 0 0 1px var(--f-line, transparent);
+}
+.al-plain {
+  font-size: 13px;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
   color: var(--ink-2);
+}
+.al-toggle {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: var(--mute);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  transition:
+    rotate 0.4s var(--ease),
+    color 0.3s var(--ease);
+}
+.al-sum:hover .al-toggle {
+  color: var(--ink);
+}
+.al-row details[open] .al-toggle {
+  rotate: 180deg;
+}
+.al-more {
+  display: grid;
+  gap: 10px;
+  padding: 2px 0 16px calc(30px + 16px);
+  font-size: 12.5px;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+.al-row details[open] .al-more {
+  animation: al-more-in 0.5s var(--ease) both;
+}
+@keyframes al-more-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+.al-more dl {
+  display: grid;
+  gap: 6px;
+}
+.al-more dl div {
+  display: grid;
+  grid-template-columns: 7em minmax(0, 1fr);
+  gap: 12px;
+}
+.al-more dt {
+  color: var(--mute);
 }
 .m-along-here {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-left: 10px;
-  font: 400 12.5px/1 var(--sans);
-  letter-spacing: 0.08em;
+  gap: 5px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
   color: var(--accent-ink);
-  vertical-align: 0.15em;
   white-space: nowrap;
 }
 .m-along-here::before {
@@ -199,26 +417,11 @@
   border-radius: 50%;
   background: var(--accent);
 }
-.m-along-ask {
-  grid-column: 6 / span 4;
-  color: var(--ink-2);
-  line-height: 1.85;
-}
-.m-along-now {
-  grid-column: 10 / span 3;
-  display: grid;
-  align-content: start;
-  gap: 4px;
-  font-size: var(--t-small);
-  line-height: 1.8;
-  color: var(--mute);
-}
 .m-along-meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 2px 14px;
-  margin-top: 4px;
+  gap: 2px 16px;
 }
 .m-along-tag {
   display: inline-flex;
@@ -230,103 +433,79 @@
 }
 .m-along-tag::before {
   content: '';
-  width: 5px;
-  height: 5px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
 }
 .m-along-meta .m-link {
   min-height: 28px;
   font-size: var(--t-small);
 }
 
-@media (max-width: 1100px) {
-  .m-along-columns {
-    display: none;
+@media (max-width: 900px) {
+  .al-g-pic,
+  .al-g[data-side='right'] .al-g-pic {
+    position: static;
+    grid-column: 1 / -1;
+    margin-bottom: 24px;
   }
-  .m-along-name {
-    grid-column: 3 / -1;
+  .al-g-body,
+  .al-g[data-side='right'] .al-g-body {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
-  .m-along-ask {
-    grid-column: 3 / span 6;
+  .al-g-pic {
+    --max-h: none;
   }
-  .m-along-now {
-    grid-column: 9 / span 4;
+  .al-g-pic .m-window-frame,
+  .al-g-wait {
+    aspect-ratio: 3 / 2;
   }
 }
-@media (max-width: 760px) {
-  .m-along-row {
-    grid-template-columns: 2.6rem minmax(0, 1fr);
+@media (max-width: 560px) {
+  .al-sum {
+    grid-template-columns: 26px minmax(0, 1fr) 22px;
     column-gap: 12px;
   }
-  .m-along-no {
-    grid-column: 1;
-    grid-row: 1 / span 3;
+  .gl {
+    width: 26px;
+    height: 26px;
   }
-  .m-along-name,
-  .m-along-ask,
-  .m-along-now {
-    grid-column: 2;
+  .al-flow {
+    margin-left: 0;
+    width: 100%;
   }
-  .m-along-ghead h2,
-  .m-along-gmeta {
-    grid-column: 1 / -1;
+  .al-more {
+    padding-left: 0;
   }
-  .m-along-gmeta {
-    padding-top: 0;
+  .al-more dl div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
   }
-}
-
-/* ---------- 空状态 ---------- */
-.m-along-empty {
-  display: grid;
-  justify-items: start;
-  gap: 10px;
-  padding: clamp(48px, 10vh, 96px) 0;
-  border-top: 1px solid var(--ink);
-}
-.m-along-empty p {
-  font: 300 var(--t-h2) / 1.4 var(--sans);
-  letter-spacing: 0.04em;
 }
 
 /* ---------- 结尾：附录 A 最后一段 ---------- */
-.m-along-outro {
-  padding-block: clamp(88px, 14vh, 160px) var(--section-bottom);
-}
-.m-along-outro-inner {
-  display: grid;
-  justify-items: start;
-  gap: 28px;
-  max-width: 40rem;
-  margin-left: calc((100% - 11 * var(--col-gap)) / 6 + 2 * var(--col-gap));
-  padding-top: 24px;
-  border-top: 1px solid var(--hair);
-}
-.m-along-outro-inner p {
-  font: 400 var(--t-h3) / 1.9 var(--sans);
-  letter-spacing: 0.04em;
-  color: var(--ink);
-}
-@media (max-width: 900px) {
-  .m-along-outro-inner {
-    margin-left: 0;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .m-along-filter button {
+    transition: none;
+  }
+  .al-row details[open] .al-more {
+    animation: none;
+  }
+  .gl,
+  .al-name,
+  .al-toggle {
     transition: none;
   }
 }
 
 @media print {
-  .m-along-bar,
-  .m-along-outro .m-link {
+  .m-along-bar {
     display: none !important;
   }
-  .m-along-row,
-  .m-along-ghead {
+  .al-row,
+  .al-g-head {
     break-inside: avoid;
   }
   .m-along-meta .m-link::after {

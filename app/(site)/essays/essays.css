@@ -1,114 +1,160 @@
 /* =====================================================================
-   文章：列表页像图录目录；文章页是阅读版式（约 35 个汉字一行、行距 2），
-   一条细细的阅读进度线，可以干净地打印。没有配图、没有视差。
+   展厅 03「文章」· 主题：问。月白的墙（--wall-read，在 exhibit.css 里换墙）。
+   列表页是一间展厅：开场、为什么写、两篇各一屏左右交替；字阶与另外三间一样（ex-h1 / ex-h2 / ex-note / ex-text）。
+   文章页仍是阅读版式（约 35 个汉字一行、行距 2），顶上挂同一块展厅名牌，标题用展厅的字阶；
+   一条细细的阅读进度线，可以干净地打印。
    ===================================================================== */
 
-/* ---------- 列表页 ---------- */
-.m-essays-title {
-  grid-column: 3 / span 9;
+/* ---------- 开场：字在左，书架之间的窗在右 ---------- */
+.es-open {
+  align-items: end;
 }
-.m-essays-list {
-  padding-bottom: var(--section-bottom);
+.es-open-text {
+  grid-column: 1 / span 5;
+  padding-bottom: 4px;
 }
-.m-essays-item {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 20px;
-  padding-block: clamp(36px, 6vh, 64px);
-  border-top: 1px solid var(--hair);
+.es-open-work {
+  grid-column: 8 / -1;
 }
-.m-essays-item:last-child {
-  border-bottom: 1px solid var(--hair);
+
+/* ---------- 为什么写：长桌在左，字在右 ---------- */
+.es-why {
+  align-items: center;
 }
-.m-essays-no {
-  grid-column: 1 / span 2;
-  font: italic 300 var(--t-h1) / 1 var(--latin);
-  letter-spacing: -0.01em;
-  color: var(--mute);
+.es-why-work {
+  grid-column: 1 / span 5;
 }
-.m-essays-copy {
-  grid-column: 3 / span 6;
-  display: grid;
-  justify-items: start;
-  gap: 14px;
+.es-why-text {
+  grid-column: 7 / span 5;
 }
-.m-essays-name {
-  font: inherit;
+.es-why-rest {
+  max-width: 30em;
+  margin-top: clamp(14px, 2.6vh, 24px);
 }
-.m-essays-name a::after {
-  /* 整行都能点 */
-  content: '';
-  position: absolute;
-  inset: 0;
+
+/* ---------- 两篇：展品与字左右交替 ---------- */
+.es-piece {
+  align-items: center;
 }
-.m-essays-name a:focus-visible {
-  outline: none;
+.es-piece-work {
+  grid-column: 1 / span 5;
+  grid-row: 1;
 }
-.m-essays-item:has(a:focus-visible) {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 4px;
-  border-radius: var(--r-label);
+.es-piece-text {
+  grid-column: 7 / -1;
+  grid-row: 1;
 }
-.m-essays-main {
-  display: inline;
+.es-piece[data-side='right'] .es-piece-work {
+  grid-column: 8 / -1;
+}
+.es-piece[data-side='right'] .es-piece-text {
+  grid-column: 1 / span 6;
+}
+.es-title a {
   padding-bottom: 2px;
   background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px
     no-repeat;
-  font: 300 var(--t-h1) / 1.3 var(--sans);
-  letter-spacing: 0.04em;
   transition: background-size 0.6s var(--ease);
 }
-.m-essays-item:hover .m-essays-main {
+.es-title a:hover {
   background-size: 100% 1px;
 }
-.m-essays-sub {
-  display: block;
-  margin-top: 10px;
-  font: 400 var(--t-h3) / 1.6 var(--sans);
-  letter-spacing: 0.04em;
+.es-sub {
+  margin-top: 6px;
+}
+.es-byline {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: clamp(12px, 2vh, 18px);
+  font-size: var(--t-small);
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.es-byline span:first-child {
+  color: var(--ink);
+}
+.es-byline span + span::before {
+  content: '·';
+  margin-inline: 12px;
+  color: var(--faint);
+}
+/* 本篇目录：两栏，点哪一节直接读到那一节 */
+.es-toc {
+  margin-top: clamp(16px, 3vh, 28px);
+  padding-top: 12px;
+  border-top: 1px solid var(--hair-2);
+}
+.es-toc-label {
+  margin-bottom: 6px;
+  font: 500 var(--t-label) / 1.6 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.es-toc ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 28px;
+  counter-reset: es-toc;
+}
+.es-toc li {
+  counter-increment: es-toc;
+}
+.es-toc a {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 3px 0;
+  font-size: var(--t-ui);
+  line-height: 1.7;
+  letter-spacing: 0.03em;
   color: var(--ink-2);
 }
-.m-essays-excerpt,
+.es-toc a::before {
+  content: counter(es-toc, decimal-leading-zero);
+  min-width: 1.6em;
+  font: italic 400 12px/1.7 var(--latin);
+  color: var(--accent-ink);
+}
+.es-toc a:hover {
+  color: var(--ink);
+}
+.es-piece-text .m-actions {
+  margin-top: clamp(18px, 3.4vh, 32px);
+}
+
+@media (max-width: 900px) {
+  .es-open-text,
+  .es-open-work,
+  .es-why-work,
+  .es-why-text,
+  .es-piece-work,
+  .es-piece-text,
+  .es-piece[data-side='right'] .es-piece-work,
+  .es-piece[data-side='right'] .es-piece-text {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+  .es-open,
+  .es-why,
+  .es-piece {
+    row-gap: 28px;
+  }
+  .es-open-work {
+    order: -1;
+  }
+}
+@media (max-width: 560px) {
+  .es-toc ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* 文章页结尾「接着读」下的摘句 */
 .m-essay-excerpt {
   max-width: 34em;
   font-size: var(--t-lead);
   line-height: 1.95;
   color: var(--ink-2);
-}
-.m-essays-meta {
-  grid-column: 10 / span 3;
-  display: grid;
-  align-content: end;
-  justify-items: start;
-  gap: 2px;
-  font-size: var(--t-small);
-  line-height: 1.9;
-  color: var(--mute);
-}
-.m-essays-go {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 10px;
-  color: var(--ink);
-  font-size: var(--t-ui);
-  letter-spacing: 0.04em;
-}
-.m-essays-go svg {
-  transition: transform 0.45s var(--ease);
-}
-.m-essays-item:hover .m-essays-go svg {
-  transform: translateX(3px);
-}
-@media (max-width: 900px) {
-  .m-essays-title,
-  .m-essays-no,
-  .m-essays-copy,
-  .m-essays-meta {
-    grid-column: 1 / -1;
-  }
 }
 
 /* ---------- 文章页：顶栏下的阅读进度线（没有 JS 时不出现） ---------- */
@@ -143,6 +189,14 @@
 .m-essay-head > * {
   grid-column: 3 / -1;
 }
+/* 顶上挂同一块展厅名牌，位置与另外几间的开场一样 */
+.m-top.m-essay-head {
+  padding-top: calc(var(--header) + clamp(16px, 3.4vh, 36px));
+}
+.m-essay-head > .ex-meta {
+  grid-column: 1 / -1;
+  margin-bottom: clamp(20px, 5vh, 56px);
+}
 .m-essay-kicker {
   display: flex;
   flex-wrap: wrap;
@@ -165,14 +219,14 @@
 }
 .m-essay-main {
   display: block;
-  font: 300 var(--t-display) / 1.12 var(--sans);
-  letter-spacing: 0.03em;
+  font: 300 var(--t-h1) / 1.2 var(--sans);
+  letter-spacing: 0.06em;
 }
 .m-essay-sub {
   display: block;
-  margin-top: 0.7em;
-  font: 400 var(--t-h3) / 1.6 var(--sans);
-  letter-spacing: 0.04em;
+  margin-top: clamp(10px, 1.8vh, 18px);
+  font: 300 var(--t-lead) / 1.85 var(--sans);
+  letter-spacing: 0.03em;
   color: var(--ink-2);
 }
 .m-essay-byline {
@@ -362,8 +416,8 @@
   border-top: 1px solid var(--ink);
 }
 .m-essay-nextlink .m-essay-main {
-  font-size: var(--t-h1);
-  line-height: 1.3;
+  font: 300 var(--t-h2) / 1.45 var(--sans);
+  letter-spacing: 0.04em;
 }
 .m-essay-nextlink .m-essay-sub {
   margin-top: 0.4em;
@@ -393,8 +447,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .m-essays-main,
-  .m-essays-go svg,
+  .es-title a,
   .m-essay-toc a {
     transition: none;
   }
@@ -403,6 +456,7 @@
 /* ---------- 打印：只留标题与正文（署名跟着标题），链接后写出地址 ---------- */
 @media print {
   .m:has(.m-essay) .m-footer,
+  .m-essay .ex-meta,
   .m-essay-progress {
     display: none !important;
   }

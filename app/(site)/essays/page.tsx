@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 import { pageMetadata } from '../../../lib/site';
 import {
   AUTHOR,
@@ -11,7 +10,15 @@ import {
   splitTitle,
 } from '../../../content/site/essays';
 import { ESSAYS, essayHref } from '../../_site/routes';
-import { pad, Phrases, type Vars } from '../../_site/ui';
+import { Btn, pad, Phrases, type Vars } from '../../_site/ui';
+import {
+  Facts,
+  NextRoom,
+  RoomMeta,
+  roomOf,
+  Work,
+} from '../../_site/exhibit/exhibit';
+import { parseEssay } from './markdown';
 import './essays.css';
 
 export const metadata = pageMetadata(
@@ -20,72 +27,192 @@ export const metadata = pageMetadata(
   ESSAYS,
 );
 
-// 文章：像一本图录的目录。左边超大的斜体篇号，中间标题与一句摘句，右边作者、篇幅与入口；没有配图。
-export default function EssaysPage() {
+// 展厅 03「文章」· 主题：问（负责人 2026-10-16 定：文章也是「关于」这场展里的一间，月白的墙）。
+// 开场（书架之间的窗，2.2 的那句当副题）· 为什么写（摊开的长桌，2.2 第一段的两句原句）·
+// 两篇各一屏、左右交替（一件展品，展签下是本篇摘句；标题、副标题、篇幅、本篇目录、读全文）· 下一个展厅。
+// 每屏一个视口放得下。
+
+/** 两篇各配一件（展品编号接着开场两件往下数） */
+const works: Record<
+  string,
+  { name: 'ex-hand-book' | 'ex-workbench'; focus: string }
+> = {
+  'human-scale': { name: 'ex-hand-book', focus: '50% 42%' },
+  idealism: { name: 'ex-workbench', focus: '40% 50%' },
+};
+
+/** 按句号、问号切句 */
+const sentences = (text: string) =>
+  text.match(/[^。？！]+[。？！]?/g) ?? [text];
+
+const HUMAN_SCALE = '《人的尺度》';
+
+/** 把原句里的《人的尺度》换成去文章的链接，其余一字不动 */
+function WithEssayLink({ text }: { text: string }) {
+  const [before, after] = text.split(HUMAN_SCALE);
+  if (after === undefined) return <>{text}</>;
   return (
-    <div className="m-essays">
-      <header className="m-wrap m-top">
-        <div className="m-head">
-          <p className="m-head-meta m-rise">
-            <span className="m-kicker">{essaysPage.kicker}</span>
-          </p>
-          <h1
-            className="m-head-title m-essays-title m-rise"
-            style={{ '--delay': '80ms' } as Vars}
-          >
-            <Phrases text={essaysPage.title} />
-          </h1>
-          <p
-            className="m-head-lead m-rise"
-            style={{ '--delay': '160ms' } as Vars}
-          >
-            {essaysPage.lead}
-          </p>
+    <>
+      {before}
+      <Link className="m-inline" href={essayHref('human-scale')}>
+        {HUMAN_SCALE}
+      </Link>
+      {after}
+    </>
+  );
+}
+
+const shelf = essays.map((story) => {
+  const { headings } = parseEssay(story.body);
+  return {
+    story,
+    ...splitTitle(story.title),
+    ...essayLength(story.body),
+    // 分隔线之后的附注（例如参考依据）不算小节
+    headings: headings.filter((heading) => !heading.back),
+  };
+});
+
+export default function EssaysPage() {
+  const [hook, ...rest] = sentences(essaysPage.lead);
+
+  return (
+    <div className="ex es" data-room="read">
+      {/* 开场：书架之间的一扇窗 */}
+      <header className="ex-open m-wrap">
+        <RoomMeta room="read" />
+        <div className="ex-grid es-open">
+          <div className="es-open-text">
+            <h1 className="ex-h1 m-rise" style={{ '--delay': '60ms' } as Vars}>
+              {roomOf('read').name}
+            </h1>
+            <p
+              className="ex-note m-rise"
+              style={{ '--delay': '120ms' } as Vars}
+            >
+              {essaysPage.title}
+            </p>
+            <div className="m-rise" style={{ '--delay': '180ms' } as Vars}>
+              <Facts
+                items={[
+                  { label: essayUi.facts.essays, value: essays.length },
+                  {
+                    label: essayUi.facts.sections,
+                    value: shelf.reduce(
+                      (sum, item) => sum + item.headings.length,
+                      0,
+                    ),
+                  },
+                  {
+                    label: essayUi.facts.minutes,
+                    value: shelf.reduce((sum, item) => sum + item.minutes, 0),
+                  },
+                ]}
+              />
+            </div>
+          </div>
+          <Work
+            name="ex-library-window"
+            no="01"
+            ratio="4 / 5"
+            focus="50% 40%"
+            maxH="60svh"
+            sizes="(max-width: 900px) 100vw, 40vw"
+            eager
+            className="es-open-work"
+          />
         </div>
       </header>
 
-      <ol className="m-wrap m-essays-list">
-        {essays.map((story, index) => {
-          const { main, sub } = splitTitle(story.title);
-          const { words, minutes } = essayLength(story.body);
-          return (
-            <li
-              key={story.slug}
-              className="m-essays-item"
-              data-reveal
-              style={{ '--delay': `${index * 90}ms` } as Vars}
-            >
-              <span className="m-essays-no num" aria-hidden="true">
-                {pad(index + 1)}
-              </span>
-              <div className="m-essays-copy">
-                <p className="m-kicker">{story.label}</p>
-                <h2 className="m-essays-name">
-                  <Link href={essayHref(story.slug)}>
-                    <span className="m-essays-main">{main}</span>
-                    {sub ? (
-                      <>
-                        <span className="sr-only">：</span>
-                        <span className="m-essays-sub">{sub}</span>
-                      </>
-                    ) : null}
-                  </Link>
-                </h2>
-                <p className="m-essays-excerpt">{excerpts[story.slug]}</p>
-              </div>
-              <p className="m-essays-meta">
-                <span>{AUTHOR}</span>
-                <span className="num">{essayUi.words(words)}</span>
-                <span className="num">{essayUi.minutes(minutes)}</span>
-                <span className="m-essays-go" aria-hidden="true">
-                  {essayUi.read}
-                  <ArrowRight size={13} />
-                </span>
+      {/* 为什么写：摊开的长桌 */}
+      <section className="ex-screen m-wrap" aria-labelledby="es-why-title">
+        <div className="ex-grid es-why">
+          <Work
+            name="ex-sun-table"
+            no="02"
+            ratio="4 / 5"
+            focus="50% 55%"
+            maxH="64svh"
+            sizes="(max-width: 900px) 100vw, 36vw"
+            className="es-why-work"
+          />
+          <div className="es-why-text" data-reveal>
+            <p className="ex-kicker">{essayUi.why}</p>
+            <h2 className="ex-h2" id="es-why-title">
+              <Phrases text={hook} />
+            </h2>
+            {rest.length ? (
+              <p className="ex-text es-why-rest">
+                <WithEssayLink text={rest.join('')} />
               </p>
-            </li>
-          );
-        })}
-      </ol>
+            ) : null}
+          </div>
+        </div>
+      </section>
+
+      {/* 两篇：左右交替，一篇一屏 */}
+      {shelf.map((item, index) => {
+        const { story, main, sub, words, minutes, headings } = item;
+        const href = essayHref(story.slug);
+        const work = works[story.slug];
+        const id = `es-${story.slug}`;
+        return (
+          <section
+            key={story.slug}
+            className="ex-screen m-wrap"
+            aria-labelledby={id}
+          >
+            <div
+              className="ex-grid es-piece"
+              data-side={index % 2 ? 'right' : 'left'}
+            >
+              {work ? (
+                <Work
+                  name={work.name}
+                  no={pad(index + 3)}
+                  ratio="4 / 5"
+                  focus={work.focus}
+                  maxH="60svh"
+                  sizes="(max-width: 900px) 100vw, 36vw"
+                  className="es-piece-work"
+                >
+                  {excerpts[story.slug]}
+                </Work>
+              ) : null}
+              <div className="es-piece-text" data-reveal>
+                <p className="ex-kicker">
+                  <span className="m-no">{pad(index + 1)}</span>
+                  {story.label}
+                </p>
+                <h2 className="ex-h2 es-title" id={id}>
+                  <Link href={href}>{main}</Link>
+                </h2>
+                {sub ? <p className="ex-note es-sub">{sub}</p> : null}
+                <p className="es-byline">
+                  <span>{AUTHOR}</span>
+                  <span className="num">{essayUi.words(words)}</span>
+                  <span className="num">{essayUi.minutes(minutes)}</span>
+                </p>
+                <nav className="es-toc" aria-label={`${main} · ${essayUi.toc}`}>
+                  <p className="es-toc-label">{essayUi.toc}</p>
+                  <ol>
+                    {headings.map((heading) => (
+                      <li key={heading.id}>
+                        <a href={`${href}#${heading.id}`}>{heading.text}</a>
+                      </li>
+                    ))}
+                  </ol>
+                </nav>
+                <div className="m-actions">
+                  <Btn href={href}>{essayUi.read}</Btn>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      })}
+
+      <NextRoom from="read" />
     </div>
   );
 }
