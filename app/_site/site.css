@@ -607,12 +607,31 @@ body:has(.m) .skip-link {
 .m-header.is-scrolled {
   box-shadow: 0 1px 0 var(--hair);
 }
-/* 首页前两屏：压在画面上，透明、白字 */
+/* 首页前两屏与结尾：压在画面上，透明、白字 */
 .m-header[data-over='film'] {
   background: transparent;
   box-shadow: none;
   color: #fff;
   text-shadow: 0 1px 14px rgb(0 0 0 / 0.22);
+}
+/* 压在画面上往下读时，顶栏下面垫一层渐隐的模糊（第八轮）：
+   滚上来的字和卡片在顶栏下面柔和地化开，不和导航叠在一起 */
+.m-header::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 -28px;
+  z-index: -1;
+  background: linear-gradient(rgb(16 20 28 / 0.18), transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  mask-image: linear-gradient(#000 45%, transparent);
+  -webkit-mask-image: linear-gradient(#000 45%, transparent);
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+  pointer-events: none;
+}
+.m-header.is-scrolled[data-over='film']::before {
+  opacity: 1;
 }
 .m-logo {
   display: inline-flex;

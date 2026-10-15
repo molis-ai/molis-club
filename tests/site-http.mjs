@@ -80,9 +80,19 @@ assert.match(home, /We build/);
 assert.match(home, /Beyond/);
 for (const stage of ['开源开发中', '开发中', '原型探索中', '概念设计'])
   assert(home.includes(stage), `home stage ${stage}`);
-assert.match(home, /有自己的判断，也有把它做成的本事。/);
+// 「我们相信」与「这些产品怎样联系」不放首页（负责人 2026-10-15）
+assert(
+  !home.includes('有自己的判断，也有把它做成的本事。'),
+  'no beliefs on home',
+);
+assert(!home.includes('这些产品怎样联系'), 'no product relations on home');
+assert.match(home, /目前如何了解与体验/);
+assert.match(home, /查看开源代码/);
+// 结尾：过渡句与企业合作、社区、关于我们三个去处
+assert.match(home, /让口味相近的人/);
+for (const path of ['/enterprise', '/community', '/about'])
+  assert(home.includes(`href="${path}"`), `home closing links ${path}`);
 assert.match(home, /技术，回到人的尺度。/);
-assert.match(home, /查看 Molis Work 开源代码/);
 assert(!home.includes('安装 Molis Work 开源版'), 'no install promise on home');
 assert.match(home, new RegExp(`rel="canonical" href="${canonicalOrigin}/?"`));
 

@@ -115,6 +115,11 @@ const images = [
 
 /** 视频：src 是重新编码后的文件；rate 是播放速度（延时素材放慢到让人静下来的速度） */
 const videos = [
+  // 首页首屏的天空：只留前 7.6 秒（再往后积云底部转暗、乌云压上来），比 Story 页再放慢一档；
+  // 第四屏的画室：美术馆午后那段原样 1280 宽。这两段用系统自带的 avconvert 直接截取
+  // （PresetPassthrough，不重新编码），封面帧沿用 story-sky / about-painting 的同一帧。
+  { key: 'home-sky', rate: 0.24 },
+  { key: 'home-painting', rate: 0.8 },
   { key: 'story-sky', rate: 0.35 },
   { key: 'about-painting', rate: 0.8 },
   { key: 'about-coast', rate: 0.6 },

@@ -1,88 +1,120 @@
+'use client';
 import Link from 'next/link';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, Pause, Play } from 'lucide-react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { homeClosing } from '../../../content/site/home';
-import { WORK_GITHUB } from '../../../content/site/products';
-import { ALONG, ESSAYS } from '../routes';
-import { mediaOf, Phrases, type Vars } from '../ui';
+import media from '../media.json';
+import { useReducedMotion, useVisible } from '../motion';
+import { ABOUT, COMMUNITY, ENTERPRISE } from '../routes';
 
-// 首页第五段：结尾。一句大字「技术，回到人的尺度。」；白展厅的天窗通向花园，画面从一道窄缝开到满幅（读 --p），
-// 「始终好奇，持续创造。」像画家落款签在窗的右下角；下面三列纯文字去处，最后一行「也可以」。
+// 首页第四屏：结尾（第八轮的结尾，负责人 2026-10-15 重新配过）。
+// 一整屏是第八轮美术馆午后那段画室：午后的光里，有人对着画架画静物；画面从产品列表的纸面里像一扇窗慢慢打开（读 --p）。
+// 过渡句「让口味相近的人认出彼此。」和三张磨砂玻璃卡片都在这一块画面里，整段不超过一屏：
+// 企业合作、社区、关于我们。整张卡片都是链接；鼠标停上去，卡片浮起、玻璃亮一档、一道光扫过，其余两张退后一点。
+// 视频静音、不进读屏；进入视口才载入，离开视口或页面隐藏时暂停；减少动态时停在封面帧；右下角可以暂停。
+
+const href = { enterprise: ENTERPRISE, community: COMMUNITY, about: ABOUT };
+
+const clip = media['home-painting'] as {
+  src: string;
+  poster: string;
+  rate: number;
+  avg: string;
+};
+
 export function Closing() {
-  const image = mediaOf('home-garden');
   const close = homeClosing;
+  const section = useRef<HTMLElement>(null);
+  const video = useRef<HTMLVideoElement>(null);
+  const near = useVisible(section, 0.01);
+  const reduced = useReducedMotion();
+  const [paused, setPaused] = useState<boolean | null>(null);
+  const stopped = paused === null ? reduced : paused;
+  const playing = near && !stopped;
+
+  useEffect(() => {
+    const node = video.current;
+    if (!node) return;
+    // 第一次靠近才载入视频；之前只有封面帧
+    if (near && !node.getAttribute('src')) node.setAttribute('src', clip.src);
+    node.defaultPlaybackRate = clip.rate;
+    node.playbackRate = clip.rate;
+    if (playing) void node.play().catch(() => {});
+    else node.pause();
+  }, [near, playing]);
+
   return (
     <section
+      ref={section}
       className="m-close"
+      data-scene
+      data-tone="film"
       aria-labelledby="m-close-title"
-      data-tone="paper"
+      style={{ '--close-ground': clip.avg } as CSSProperties}
     >
-      <h2 id="m-close-title" className="m-close-lead m-wrap" data-reveal>
-        <Phrases text={close.lead} />
-      </h2>
-      <figure
-        className="m-close-window"
-        data-scene
-        style={{ '--avg': image.avg } as Vars}
-      >
-        <div className="m-close-frame">
-          <img
-            src={image.src}
-            srcSet={image.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
-            sizes="100vw"
-            width={image.width}
-            height={image.height}
-            alt={close.alt}
-            loading="lazy"
-            decoding="async"
-          />
-          <p className="m-close-sign">{close.signature}</p>
-        </div>
-        <figcaption className="m-wrap">
-          <span className="m-caption" lang="en">
-            {close.caption}
-          </span>
-        </figcaption>
-      </figure>
-      <div className="m-wrap">
-        <ul className="m-close-paths">
+      <div className="m-close-media" aria-hidden="true">
+        <video
+          ref={video}
+          className="m-close-footage"
+          poster={clip.poster}
+          muted
+          loop
+          playsInline
+          preload="none"
+          tabIndex={-1}
+        />
+        <span className="m-close-veil" />
+      </div>
+
+      <div className="m-close-body">
+        <h2 id="m-close-title" className="m-close-lead" data-reveal>
+          {close.lead.map((line) => (
+            <span key={line}>{line}</span>
+          ))}
+        </h2>
+        <ul className="m-close-cards">
           {close.paths.map((path, index) => (
             <li
-              key={path.label}
+              key={path.id}
               data-reveal
-              style={{ '--delay': `${index * 90}ms` } as Vars}
+              style={{ '--delay': `${index * 90}ms` } as CSSProperties}
             >
-              <p className="m-kicker">{path.label}</p>
-              <p className="m-close-text">
-                <Phrases text={path.text} />
-              </p>
-              <Link className="m-link" href={path.href} data-dir="right">
-                {path.link}
-                <ArrowRight size={13} aria-hidden="true" />
+              <Link className="m-card" href={href[path.id]}>
+                <span className="m-card-head">
+                  <b lang="en">{String(index + 1).padStart(2, '0')}</b>
+                  <span>
+                    {path.label}
+                    <i lang="en"> · {path.en}</i>
+                  </span>
+                </span>
+                <span className="m-card-title">
+                  {path.title.map((line) => (
+                    <span key={line}>{line}</span>
+                  ))}
+                </span>
+                <span className="m-card-go">
+                  <span>{path.link}</span>
+                  <ArrowRight size={15} aria-hidden="true" />
+                </span>
               </Link>
             </li>
           ))}
         </ul>
-        <p className="m-close-also" data-reveal>
-          <span>{close.also.label}</span>
-          <a
-            className="m-link"
-            href={WORK_GITHUB}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {close.also.github}
-            <ArrowUpRight size={13} aria-hidden="true" />
-          </a>
-          <Link className="m-link" href={ESSAYS} data-dir="right">
-            {close.also.essays}
-            <ArrowRight size={13} aria-hidden="true" />
-          </Link>
-          <Link className="m-link" href={ALONG} data-dir="right">
-            {close.also.along}
-            <ArrowRight size={13} aria-hidden="true" />
-          </Link>
-        </p>
       </div>
+
+      <button
+        type="button"
+        className="m-film-toggle m-close-toggle"
+        aria-pressed={stopped}
+        aria-label={stopped ? close.play : close.pause}
+        onClick={() => setPaused(!stopped)}
+      >
+        {stopped ? (
+          <Play size={11} fill="currentColor" aria-hidden="true" />
+        ) : (
+          <Pause size={11} fill="currentColor" aria-hidden="true" />
+        )}
+      </button>
     </section>
   );
 }

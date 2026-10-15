@@ -247,6 +247,24 @@
       ]
     ]
   },
+  "home-sky": {
+    "width": 1280,
+    "height": 720,
+    "avg": "#a3abb3",
+    "src": "/site/home-sky.mp4",
+    "poster": "/site/home-sky-poster.webp",
+    "rate": 0.24,
+    "srcset": []
+  },
+  "home-painting": {
+    "width": 960,
+    "height": 540,
+    "avg": "#625441",
+    "src": "/site/home-painting.mp4",
+    "poster": "/site/home-painting-poster.webp",
+    "rate": 0.8,
+    "srcset": []
+  },
   "story-sky": {
     "width": 1280,
     "height": 720,
