@@ -210,21 +210,3 @@ export function Clothesline() {
     </div>
   );
 }
-
-/** 结尾：小家伙坐在沙滩窗的右下角，手里是访客调的那朵花 */
-export function EndMascot() {
-  const flower = useFlower();
-  return (
-    <div className="m-com-end-sit" aria-hidden="true">
-      <Mascot
-        pose="sit"
-        hold={
-          <FlowerArt
-            flower={{ ...flower, count: Math.min(flower.count, 16) }}
-            size={46}
-          />
-        }
-      />
-    </div>
-  );
-}

@@ -135,22 +135,6 @@
       ]
     ]
   },
-  "community-line": {
-    "width": 1672,
-    "height": 941,
-    "avg": "#aea8a3",
-    "src": "/site/community-line-1672.webp",
-    "srcset": [
-      [
-        "/site/community-line-800.webp",
-        800
-      ],
-      [
-        "/site/community-line-1672.webp",
-        1672
-      ]
-    ]
-  },
   "community-table": {
     "width": 1672,
     "height": 941,

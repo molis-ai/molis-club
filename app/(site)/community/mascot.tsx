@@ -47,7 +47,7 @@ function useEyes() {
   return ref;
 }
 
-export type Pose = 'peek' | 'sign' | 'sit';
+export type Pose = 'peek' | 'sign' | 'sit' | 'walk';
 
 const BODY =
   'M60 23 C93 23 106 51 106 85 C106 118 88 133 60 133 C32 133 14 118 14 85 C14 51 27 23 60 23 Z';
@@ -85,10 +85,17 @@ const arms: Record<Pose, ReactNode> = {
       <path d="M16 96 Q8 92 6 80" />
     </>
   ),
+  // 一只手往后拖着一根小棍，棍尖在地上画线
+  walk: (
+    <>
+      <path d="M104 96 Q114 104 110 116" />
+      <path d="M16 98 Q6 104 2 112" />
+    </>
+  ),
 };
 
 /**
- * pose：peek 探头（下半身由父级的纸挡住）、sign 举牌、sit 坐着。
+ * pose：peek 探头（下半身由父级的纸挡住）、sign 举牌、sit 坐着、walk 拖着小棍走路（结尾画沙上的线）。
  * sign 是牌子上的字；hold 是坐着时手里拿的东西（例如访客调的那朵花的缩小版）。
  */
 export function Mascot({
@@ -135,7 +142,7 @@ export function Mascot({
         <path className="m-mascot-line" d="M60 23 C60 13 63 8 69 6" />
         <circle className="m-mascot-bulb" cx="71" cy="6" r="6" />
       </g>
-      {pose === 'sign' ? (
+      {pose === 'sign' || pose === 'walk' ? (
         <g className="m-mascot-feet">
           <ellipse cx="45" cy="135" rx="10" ry="5" />
           <ellipse cx="75" cy="135" rx="10" ry="5" />
@@ -146,6 +153,9 @@ export function Mascot({
           <ellipse cx="38" cy="134" rx="11" ry="5" transform="rotate(-14 38 134)" />
           <ellipse cx="82" cy="134" rx="11" ry="5" transform="rotate(14 82 134)" />
         </g>
+      ) : null}
+      {pose === 'walk' ? (
+        <path className="m-mascot-line m-mascot-stick" d="M4 110 L-30 140" />
       ) : null}
       <path className="m-mascot-body" d={BODY} />
       <g className="m-mascot-line m-mascot-arms">{arms[pose]}</g>

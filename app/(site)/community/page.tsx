@@ -13,7 +13,8 @@ import { mediaOf, Phrases, type Vars } from '../../_site/ui';
 import { Acts } from './acts';
 import { Bench } from './bench';
 import { FlowerToy } from './flower';
-import { Clothesline, EndMascot } from './line';
+import { Clothesline } from './line';
+import { Ending } from './end';
 import '../../_site/demo/demo.css';
 import './methods/methods.css';
 import './community.css';
@@ -28,7 +29,8 @@ export const metadata = pageMetadata(
 // ① 首屏就是玩具：纸上那朵「一朵好奇」，小家伙从纸后面探头举牌；票根就是下载。
 // ② 满幅照片：围桌的人，桌上有小牛摆件和带触角的玩偶（比稿 D1）。
 // ③ 工作台：四件作品，先玩 / 看怎么做 / 带走。④ 方法目录：铅笔插画 + 搜索 + 三个抽屉。
-// ⑤ 满幅照片：树下挂着各自的颜色。⑥ 晾衣绳：访客自己那朵花、三张签、空夹子。⑦ 结尾：沙上那道线。
+// ⑤ 满幅照片：树下挂着各自的颜色。⑥ 晾衣绳：访客自己那朵花、三张签、空夹子。
+// ⑦ 结尾：画出来的沙上那道线，小家伙沿线走完，三个停靠点各写一段那句话。
 // 比白房子的其它页更活泼：粗墨线、硬投影、票根、印章、举牌的小家伙（比稿 E1 的画风），但顶栏、页尾、字体不变。
 
 const ui = communityUi;
@@ -104,7 +106,7 @@ function Frame({
   note,
   className,
 }: {
-  name: 'community-blocks' | 'community-line';
+  name: 'community-blocks';
   alt: string;
   ratio: string;
   focus: string;
@@ -344,36 +346,8 @@ export default function CommunityPage() {
         <Clothesline />
       </section>
 
-      {/* ⑦ 结尾：沙上那道线，那句话顺着线走到贝壳 */}
-      <section className="m-com-end m-wrap" id="end" aria-label={community.closing}>
-        <div className="m-com-end-window">
-          <Frame
-            name="community-line"
-            alt={ui.end.alt}
-            ratio="21 / 9"
-            focus="50% 62%"
-            sizes="(max-width: 900px) 100vw, 1328px"
-            caption={ui.end.caption}
-            className="m-com-end-frame"
-          />
-          <EndMascot />
-        </div>
-        <p className="m-com-closing">
-          {community.closing.match(/[^，。]+[，。]/g)?.map((part, i) => (
-            <span
-              key={part}
-              data-reveal
-              style={{ '--i': i, '--delay': `${i * 160}ms` } as Vars}
-            >
-              {part}
-            </span>
-          ))}
-        </p>
-        <p className="m-com-progress" data-reveal>
-          <b>{community.progressLabel}</b>
-          {ui.end.progress}
-        </p>
-      </section>
+      {/* ⑦ 结尾：小家伙沿沙上那道线走完，那句话写在线下 */}
+      <Ending />
     </div>
   );
 }

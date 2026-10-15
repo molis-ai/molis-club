@@ -194,8 +194,8 @@ export const communityUi = {
     },
   ],
   end: {
-    caption: 'A line in the sand, a shell at the end',
-    alt: '退潮后的沙滩上，有人用手指画了一道弯弯的线，线的尽头放着一枚贝壳。',
+    /** 线尽头那个空画框（点了去分享） */
+    share: '你的放这里',
     /** 压缩自「当前进展」 */
     progress: '社区目前以工作室自己的作品与方法为主，用户作品展示仍在起步。',
   },
