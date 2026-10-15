@@ -1,0 +1,144 @@
+{
+  "home-b": {
+    "src": "/r10/play/home-b-1672.webp",
+    "srcset": [
+      [
+        "/r10/play/home-b-960.webp",
+        960
+      ],
+      [
+        "/r10/play/home-b-1672.webp",
+        1672
+      ]
+    ],
+    "width": 1672,
+    "height": 941,
+    "color": "#9f9d99"
+  },
+  "work-a": {
+    "src": "/r10/play/work-a-1672.webp",
+    "srcset": [
+      [
+        "/r10/play/work-a-960.webp",
+        960
+      ],
+      [
+        "/r10/play/work-a-1672.webp",
+        1672
+      ]
+    ],
+    "width": 1672,
+    "height": 941,
+    "color": "#887f74"
+  },
+  "tool-a": {
+    "src": "/r10/play/tool-a-1672.webp",
+    "srcset": [
+      [
+        "/r10/play/tool-a-960.webp",
+        960
+      ],
+      [
+        "/r10/play/tool-a-1672.webp",
+        1672
+      ]
+    ],
+    "width": 1672,
+    "height": 941,
+    "color": "#a9a198"
+  },
+  "life-a": {
+    "src": "/r10/play/life-a-1672.webp",
+    "srcset": [
+      [
+        "/r10/play/life-a-960.webp",
+        960
+      ],
+      [
+        "/r10/play/life-a-1672.webp",
+        1672
+      ]
+    ],
+    "width": 1672,
+    "height": 941,
+    "color": "#8c8579"
+  },
+  "story-a": {
+    "src": "/r10/play/story-a-1536.webp",
+    "srcset": [
+      [
+        "/r10/play/story-a-960.webp",
+        960
+      ],
+      [
+        "/r10/play/story-a-1536.webp",
+        1536
+      ]
+    ],
+    "width": 1536,
+    "height": 1024,
+    "color": "#9c958f"
+  },
+  "world-a": {
+    "src": "/r10/play/world-a-1672.webp",
+    "srcset": [
+      [
+        "/r10/play/world-a-960.webp",
+        960
+      ],
+      [
+        "/r10/play/world-a-1672.webp",
+        1672
+      ]
+    ],
+    "width": 1672,
+    "height": 941,
+    "color": "#988a79"
+  },
+  "work-b": {
+    "src": "/r10/play/work-b-1536.webp",
+    "srcset": [
+      [
+        "/r10/play/work-b-960.webp",
+        960
+      ],
+      [
+        "/r10/play/work-b-1536.webp",
+        1536
+      ]
+    ],
+    "width": 1536,
+    "height": 1024,
+    "color": "#8c7e74"
+  },
+  "onboarding-zh": {
+    "src": "/r10/play/onboarding-zh.webp",
+    "width": 1440,
+    "height": 1000
+  },
+  "feed-zh": {
+    "src": "/r10/play/feed-zh.webp",
+    "width": 1440,
+    "height": 1000
+  },
+  "goals-zh": {
+    "src": "/r10/play/goals-zh.webp",
+    "width": 1440,
+    "height": 1000
+  },
+  "home-zh": {
+    "src": "/r10/play/home-zh.webp",
+    "width": 1440,
+    "height": 1000
+  },
+  "home-dark-zh": {
+    "src": "/r10/play/home-dark-zh.webp",
+    "width": 1440,
+    "height": 1000
+  },
+  "phone-zh": {
+    "src": "/r10/play/phone-zh.webp",
+    "width": 390,
+    "height": 844
+  }
+}

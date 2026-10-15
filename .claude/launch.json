@@ -28,6 +28,15 @@
         "3100"
       ],
       "port": 3100
+    },
+    {
+      "name": "r10-play",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "VINEXT_NO_DEV_LOCK=1 exec /Users/creamiex/.local/share/claude-guard-runtime/node-v24.21.0-darwin-x64/bin/node node_modules/vinext/dist/cli.js dev --port 5246"
+      ],
+      "port": 5246
     }
   ]
 }

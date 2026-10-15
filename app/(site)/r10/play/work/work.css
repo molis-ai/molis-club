@@ -1,0 +1,495 @@
+/* =====================================================================
+   play · Work 页：主角是「三天」（苔绿），配角是「浅色 / 深色」（夜蓝）。
+   画面全是真实截图：只裁切、放大、打光，不改内容。
+   ===================================================================== */
+
+/* ---------- 名字屏 ---------- */
+.pl-name {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 20px;
+  min-height: 100svh;
+  max-width: 1328px;
+  margin: 0 auto;
+  padding: 120px var(--gutter);
+}
+.pl-name-mark {
+  font: 300 var(--t-display) / 1 var(--latin);
+  letter-spacing: 0.005em;
+}
+.pl-name-head {
+  margin-top: 8px;
+  font: 300 var(--t-h2) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.pl-name-what {
+  font: 500 var(--t-lead) / 1.8 var(--sans);
+  color: var(--ink-2);
+}
+.pl-name-tag {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 28px;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.pl-name-stage::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--accent, #ea9260);
+  vertical-align: 0.08em;
+}
+
+/* ---------- 玩具屏的版式（三天、浅 / 深共用） ---------- */
+.pl-three {
+  min-height: 100svh;
+  padding: calc(64px + clamp(20px, 4vh, 48px)) var(--gutter)
+    clamp(28px, 5vh, 56px);
+}
+.pl-thread,
+.pl-wipe {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: auto 1fr;
+  column-gap: var(--col-gap);
+  max-width: 1328px;
+  margin: 0 auto;
+}
+.pl-thread-head,
+.pl-wipe-head {
+  grid-column: 1 / span 3;
+  grid-row: 1;
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+.pl-thread-line {
+  font: 300 clamp(24px, 2.2vw, 32px) / 1.45 var(--sans);
+  letter-spacing: 0.04em;
+}
+.pl-nb {
+  display: inline-block;
+  white-space: nowrap;
+}
+.pl-thread-sub {
+  font-size: var(--t-ui);
+  line-height: 2;
+  color: var(--mute);
+}
+.pl-thread-sub .pl-key {
+  font-weight: 500;
+}
+.pl-bench,
+.pl-wipe-frame {
+  grid-column: 4 / -1;
+  grid-row: 1 / span 2;
+  justify-self: end;
+  min-width: 0;
+  width: min(100%, calc((100svh - 220px) * 1.44));
+}
+
+/* ---------- 每一格的说明 ---------- */
+.pl-say-work {
+  grid-column: 1 / span 3;
+  grid-row: 2;
+  align-self: end;
+  display: grid;
+  padding-bottom: 92px;
+}
+.pl-stop {
+  grid-area: 1 / 1;
+  display: grid;
+  gap: 10px;
+  align-content: end;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.4s var(--ease),
+    transform 0.55s var(--ease);
+}
+.pl-stop[data-on] {
+  opacity: 1;
+  transform: none;
+}
+.pl-stop-when {
+  font: 300 clamp(30px, 2.8vw, 44px) / 1 var(--latin);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.pl-stop .pl-cap {
+  color: var(--moss-ink);
+}
+.pl-stop-text {
+  font: 300 var(--t-h3) / 1.55 var(--sans);
+  letter-spacing: 0.03em;
+}
+.pl-stop-chapter {
+  font-size: 12.5px;
+  color: var(--mute);
+}
+.pl-stop-chapter::before {
+  content: '— ';
+}
+.pl-stop-count {
+  grid-area: 2 / 1;
+  margin-top: 22px;
+  font: italic 300 13px / 1 var(--latin);
+  letter-spacing: 0.12em;
+  color: var(--mute);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 画面：真实截图 + 镜头 + 光框 ---------- */
+.pl-frame {
+  position: relative;
+  aspect-ratio: 1440 / 1000;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #ebeae7;
+  box-shadow:
+    0 0 0 1px rgb(39 36 31 / 0.08),
+    0 40px 80px -48px rgb(60 44 24 / 0.45);
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.pl-frame:active {
+  cursor: grabbing;
+}
+.pl-cam {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.pl-shot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.pl-phone {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #e8e1d3;
+}
+.pl-phone img {
+  width: auto;
+  height: 92%;
+  border-radius: 26px;
+  box-shadow:
+    0 0 0 1px rgb(39 36 31 / 0.1),
+    0 30px 60px -30px rgb(60 44 24 / 0.5);
+  pointer-events: none;
+}
+.pl-spot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1.5px solid var(--moss);
+  border-radius: 10px;
+  box-shadow: 0 0 0 200vmax rgb(241 236 226 / 0.6);
+  pointer-events: none;
+  will-change: transform, width, height;
+}
+.pl-frame-hint {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgb(39 36 31 / 0.74);
+  color: #f6f1e7;
+  font: 500 11px / 1 var(--sans);
+  letter-spacing: 0.16em;
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+.pl-frame-hint[data-gone] {
+  opacity: 0;
+}
+
+/* ---------- 时间尺：三天 ---------- */
+.pl-days {
+  position: relative;
+  height: 64px;
+  margin: 18px 6px 0;
+  cursor: pointer;
+  touch-action: none;
+}
+.pl-days-line,
+.pl-days-fill {
+  position: absolute;
+  top: 22px;
+  left: 0;
+  height: 1px;
+}
+.pl-days-line {
+  right: 0;
+  background: var(--hair-2);
+}
+.pl-days-fill {
+  top: 21px;
+  height: 3px;
+  width: calc(var(--tx) * 100%);
+  border-radius: 2px;
+  background: var(--moss);
+}
+.pl-days-tick {
+  position: absolute;
+  top: 22px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--moss);
+  border-radius: 50%;
+  background: var(--pl-paper);
+  transform: translate(-50%, -50%);
+  transition:
+    background-color 0.3s,
+    transform 0.4s var(--ease);
+}
+.pl-days-tick[data-past],
+.pl-days-tick[data-on] {
+  background: var(--moss);
+}
+.pl-days-label {
+  position: absolute;
+  top: 38px;
+  transform: translateX(-50%);
+  font: italic 300 13px / 1 var(--latin);
+  letter-spacing: 0.06em;
+  color: var(--mute);
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+.pl-days-label[data-on] {
+  color: var(--moss-ink);
+  font-weight: 400;
+}
+.pl-knob {
+  position: absolute;
+  top: 22px;
+  left: calc(var(--tx) * 100%);
+  width: 24px;
+  height: 24px;
+  border: 6px solid var(--pl-paper);
+  border-radius: 50%;
+  background: var(--moss);
+  box-shadow:
+    0 0 0 1px var(--moss),
+    0 6px 16px -6px rgb(60 80 40 / 0.6);
+  transform: translate(-50%, -50%);
+  cursor: grab;
+}
+.pl-knob:focus-visible {
+  outline: 1.5px solid var(--moss-ink);
+  outline-offset: 4px;
+}
+.pl-honest {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--mute);
+}
+.pl-honest .pl-tag {
+  margin: 0 8px 0 0;
+}
+
+/* ---------- 浅色 / 深色 ---------- */
+.pl-wipe {
+  --w: 0;
+}
+.pl-wipe-frame {
+  position: relative;
+  aspect-ratio: 1440 / 1000;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow:
+    0 0 0 1px rgb(39 36 31 / 0.08),
+    0 40px 80px -48px rgb(30 34 48 / 0.5);
+  cursor: ew-resize;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.pl-wipe-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.pl-wipe-dark {
+  clip-path: inset(0 calc((1 - var(--w)) * 100%) 0 0);
+}
+.pl-wipe-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--w) * 100%);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--dusk);
+  box-shadow: 0 0 18px 2px rgb(77 100 136 / 0.35);
+}
+.pl-wipe-line:focus-visible {
+  outline: 1.5px solid var(--dusk-ink);
+  outline-offset: 3px;
+}
+.pl-wipe-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  border: 7px solid #f1ece2;
+  border-radius: 50%;
+  background: var(--dusk);
+  box-shadow: 0 8px 20px -8px rgb(20 26 40 / 0.6);
+  transform: translate(-50%, -50%);
+}
+.pl-wipe-tag {
+  position: absolute;
+  bottom: 14px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font: 500 11px / 1 var(--sans);
+  letter-spacing: 0.2em;
+  pointer-events: none;
+}
+.pl-wipe-tag-l {
+  left: 14px;
+  background: rgb(241 236 226 / 0.14);
+  color: #ece6da;
+  opacity: clamp(0, (var(--w) - 0.08) * 8, 1);
+}
+.pl-wipe-tag-r {
+  right: 14px;
+  background: rgb(39 36 31 / 0.08);
+  color: var(--ink-2);
+  opacity: clamp(0, (0.92 - var(--w)) * 8, 1);
+}
+.pl-wipe .pl-honest {
+  grid-column: 4 / -1;
+  grid-row: 3;
+  justify-self: end;
+  width: min(100%, calc((100svh - 220px) * 1.44));
+}
+
+/* ---------- 还在路上的、进展与去处 ---------- */
+.pl-ahead {
+  max-width: 1328px;
+  margin: 0 auto;
+  padding: clamp(96px, 16vh, 168px) var(--gutter) clamp(96px, 14vh, 140px);
+}
+.pl-ahead-list {
+  margin-top: 28px;
+  border-bottom: 1px solid var(--hair);
+}
+.pl-ahead-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  align-items: baseline;
+  padding: 20px 0 18px;
+  border-top: 1px solid var(--hair);
+  font: 300 var(--t-h3) / 1.5 var(--sans);
+  letter-spacing: 0.03em;
+}
+.pl-ahead-list .pl-tag {
+  margin: 0;
+  font-size: 12px;
+  color: var(--mute);
+}
+.pl-now {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px var(--col-gap);
+  margin-top: clamp(64px, 10vh, 112px);
+}
+.pl-now h3 {
+  margin-bottom: 14px;
+}
+.pl-now li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--ink-2);
+}
+.pl-go {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 32px;
+  align-items: center;
+  margin-top: clamp(48px, 8vh, 80px);
+  font-size: 14px;
+}
+.pl-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  letter-spacing: 0.06em;
+  transition: background-color 0.3s;
+}
+.pl-btn:hover {
+  background: #000;
+}
+
+@media (max-width: 959px) {
+  .pl-thread,
+  .pl-wipe {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+  }
+  .pl-thread-head,
+  .pl-wipe-head,
+  .pl-bench,
+  .pl-wipe-frame,
+  .pl-say-work,
+  .pl-wipe .pl-honest {
+    grid-column: 1;
+    grid-row: auto;
+    width: 100%;
+  }
+  .pl-bench,
+  .pl-wipe-frame {
+    margin-top: 24px;
+  }
+  .pl-bench {
+    order: 2;
+  }
+  .pl-say-work {
+    order: 3;
+    padding-bottom: 0;
+    margin-top: 18px;
+    min-height: 210px;
+    align-self: start;
+  }
+  .pl-stop {
+    align-content: start;
+  }
+  .pl-stop-count {
+    margin-top: 12px;
+  }
+  .pl-now {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pl-frame-hint {
+    right: 8px;
+    bottom: 8px;
+  }
+}
