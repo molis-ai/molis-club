@@ -212,7 +212,7 @@ export function Work({
   );
 }
 
-/** 展厅尽头：去下一个展厅（最后一间回到第一间）。来源与「画面里的人不是团队成员」写在全站页尾 */
+/** 展厅尽头：去下一个展厅（最后一间回到第一间）。原写在全站页尾的配图来源说明，负责人 2026-10-16 删去 */
 export function NextRoom({ from }: { from: RoomId }) {
   const order = rooms.map((room) => room.id);
   const next = order[(order.indexOf(from) + 1) % order.length];

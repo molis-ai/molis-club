@@ -352,10 +352,6 @@ export function Footer() {
           </nav>
         </div>
         <div className="m-footer-base">
-          <p>
-            {footer.copyright}。{footer.fonts}
-            {footer.images}
-          </p>
           {date ? (
             <p>
               {footer.updated}：<time dateTime={date}>{date}</time>

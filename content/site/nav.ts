@@ -37,10 +37,6 @@ export const footer = {
   methods: '方法目录',
   privacy: '隐私说明',
   github: 'GitHub',
-  copyright: '© 2026 Molis AI',
-  /** 版权说明：字体、配图来源与 AI 生成说明 */
-  fonts: '字体：Jost 与 Fraunces（SIL Open Font License），中文用系统苹方。',
-  images:
-    '配图：Mixkit、Unsplash 的免费授权素材；部分配图由 AI 生成。画面里的人不是团队成员或用户。',
+  // 版权、字体与配图来源那一段，负责人 2026-10-16 从页尾删去
   updated: '本页最近修改',
 };
