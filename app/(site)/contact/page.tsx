@@ -10,7 +10,7 @@ const c = contactPage;
 export const metadata = pageMetadata(c.title, c.description, CONTACT);
 
 // 联系：左边一扇竖窗（白展厅里有人穿过门洞），右边表单。地址栏 ?topic= 预选来意（见 content/site/contact.ts），
-// 提交后给「回到来处」的路。处理方式照实写：存进团队私密收件箱，不公开，目前不会自动回信。
+// 提交后给「回到来处」的路。处理方式照实写，并画成一条三步小图：你写下几句 → 存进团队私密收件箱，不公开 → 目前不会自动回信。
 // 窄屏上顺序是：标题 → 门洞（裁成横幅）→ 表单 → 处理方式。
 export default function ContactPage() {
   return (
@@ -57,6 +57,14 @@ export default function ContactPage() {
           <h2 id="contact-note-title" className="m-kicker">
             {c.handlingTitle}
           </h2>
+          <ol className="m-contact-flow" data-reveal>
+            {c.flow.map((step, index) => (
+              <li key={step} style={{ '--i': index } as Vars}>
+                <span className="m-contact-flow-dot" aria-hidden="true" />
+                {step}
+              </li>
+            ))}
+          </ol>
           <ul>
             {c.handling.map((line) => (
               <li key={line}>{line}</li>

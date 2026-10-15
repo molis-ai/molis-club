@@ -56,11 +56,11 @@
   line-height: 1.8;
   color: var(--ink-2);
 }
-.m-contact-note li {
+.m-contact-note ul li {
   position: relative;
   padding-left: 16px;
 }
-.m-contact-note li::before {
+.m-contact-note ul li::before {
   content: '';
   position: absolute;
   top: 0.8em;
@@ -69,6 +69,60 @@
   height: 4px;
   border-radius: 50%;
   background: var(--mute);
+}
+
+/* 这张表会去哪：三个点一根线，从「你」走到「收件箱」，最后一站是空心的（不会自动回信） */
+.m-contact-flow {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--col-gap);
+  padding-top: 22px;
+}
+.m-contact-flow::before {
+  content: '';
+  position: absolute;
+  top: 27.5px;
+  left: 5px;
+  right: calc((100% - 2 * var(--col-gap)) / 3 - 5px);
+  height: 1px;
+  background: var(--hair-2);
+  transform-origin: left center;
+}
+.js .m-contact-flow:not(.is-in)::before {
+  transform: scaleX(0);
+}
+.js .m-contact-flow::before {
+  transition: transform 1.2s var(--ease) 0.3s;
+}
+.m-contact-flow li {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  font-size: var(--t-small);
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.m-contact-flow-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 4px var(--paper);
+}
+.m-contact-flow li:nth-child(2) .m-contact-flow-dot {
+  background: var(--accent);
+}
+.m-contact-flow li:last-child .m-contact-flow-dot {
+  background: var(--paper);
+  box-shadow:
+    0 0 0 4px var(--paper),
+    inset 0 0 0 1.2px var(--mute);
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .m-contact-flow:not(.is-in)::before {
+    transform: none;
+  }
 }
 
 /* 窄屏：标题 → 门洞（裁成横幅）→ 表单 → 处理方式 */
