@@ -633,6 +633,17 @@ body:has(.m) .skip-link {
 .m-header.is-scrolled[data-over='film']::before {
   opacity: 1;
 }
+/* 压在明亮的建筑照片上（企业合作的首屏）：透明、墨字，往下读时垫一层纸色的模糊 */
+.m-header[data-over='light'] {
+  background: transparent;
+  box-shadow: none;
+}
+.m-header[data-over='light']::before {
+  background: linear-gradient(rgb(251 250 247 / 0.5), transparent);
+}
+.m-header.is-scrolled[data-over='light']::before {
+  opacity: 1;
+}
 .m-logo {
   display: inline-flex;
   align-items: center;

@@ -125,6 +125,15 @@
 .m-ware-tail {
   white-space: nowrap;
 }
+/* 手机上一行放不下最长的 Intelligentware：We build 单独一行，字也收一档 */
+@media (max-width: 640px) {
+  .m-ware-line {
+    font-size: clamp(36px, 13vw, 64px);
+  }
+  .m-ware-we {
+    display: block;
+  }
+}
 /* 第二行整句斜体，靠页面右侧：先说做什么，再在另一头说「软件之外」 */
 .m-ware-row-2 {
   margin-top: 0.04em;

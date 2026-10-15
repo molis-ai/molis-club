@@ -61,13 +61,30 @@ const images = [
     widths: [900, 1800],
     quality: 68,
   },
-  // 其余各页
+  // 企业合作（负责人 2026-10-15 选的三张）：
+  // 首屏满幅：挂满小画的白色长廊，尽头一扇亮窗（第八轮选图板 B1，Unsplash @leovamexican；
+  // 选图板那张只有 900 宽，负责人同意后从 Unsplash 另取 2400 宽的同一张，免费授权）；
+  // 结尾配表单：窗边摊着手稿的木桌（品牌图库雾感调色版）。路线之后原有一屏白柱廊，负责人 2026-10-15 删去；
+  // 合作路线开头：一双手在木桌上组装一件小木工具（品牌图库 M11 雾感调色版，负责人 2026-10-15 要求给这一屏配图）
   {
-    key: 'enterprise-colonnade',
-    src: 'public/r8-candidates-v2/images/work-v2-a.png',
-    widths: [960, 1672],
+    key: 'enterprise-gallery',
+    src: 'public/images/r8/picks/unsplash-photo-1766128867459-064fcbfa8781-2400.jpg',
+    widths: [1280, 1920, 2400],
     quality: 76,
   },
+  {
+    key: 'enterprise-desk',
+    src: 'public/r8-materials-mist-v1/images/work-a.png',
+    widths: [800, 1672],
+    quality: 78,
+  },
+  {
+    key: 'enterprise-hands',
+    src: 'public/r8-materials-mist-v1/images/work-b.png',
+    widths: [800, 1536],
+    quality: 78,
+  },
+  // 其余各页
   // 社区（负责人 2026-10-15 定的方向）：结尾沙上那道线改成画出来的，不再用照片；「带点什么走」满幅是比稿 D1 那张围桌的人
   // （桌上有小牛摆件和带触角的小玩偶）；「再带点什么回来」满幅是品牌图库社区 A 雾感版（树下挂着各自的颜色）；
   // 方法目录配比稿 E1 的铅笔插画（两只手沿虚线摆小房子）。原来孩子写生那张不再用

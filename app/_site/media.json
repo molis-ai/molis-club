@@ -119,19 +119,55 @@
       ]
     ]
   },
-  "enterprise-colonnade": {
-    "width": 1672,
-    "height": 941,
-    "avg": "#aba090",
-    "src": "/site/enterprise-colonnade-1672.webp",
+  "enterprise-gallery": {
+    "width": 2400,
+    "height": 1600,
+    "avg": "#c3b8b1",
+    "src": "/site/enterprise-gallery-2400.webp",
     "srcset": [
       [
-        "/site/enterprise-colonnade-960.webp",
-        960
+        "/site/enterprise-gallery-1280.webp",
+        1280
       ],
       [
-        "/site/enterprise-colonnade-1672.webp",
+        "/site/enterprise-gallery-1920.webp",
+        1920
+      ],
+      [
+        "/site/enterprise-gallery-2400.webp",
+        2400
+      ]
+    ]
+  },
+  "enterprise-desk": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#857c71",
+    "src": "/site/enterprise-desk-1672.webp",
+    "srcset": [
+      [
+        "/site/enterprise-desk-800.webp",
+        800
+      ],
+      [
+        "/site/enterprise-desk-1672.webp",
         1672
+      ]
+    ]
+  },
+  "enterprise-hands": {
+    "width": 1536,
+    "height": 1024,
+    "avg": "#8c7e75",
+    "src": "/site/enterprise-hands-1536.webp",
+    "srcset": [
+      [
+        "/site/enterprise-hands-800.webp",
+        800
+      ],
+      [
+        "/site/enterprise-hands-1536.webp",
+        1536
       ]
     ]
   },

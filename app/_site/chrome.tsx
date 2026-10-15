@@ -22,7 +22,7 @@ import {
 } from './routes';
 
 // 顶栏与页尾。顶栏固定在上方：平时是实心的纸，滚动后下面出现一道细线；
-// 首页前两屏压在画面上时透明、白字（读 [data-tone="film"]）。两个下拉和窄屏菜单都用 <details>，没有 JS 也能打开；
+// 首页前两屏压在画面上时透明、白字（读 [data-tone="film"]）；压在明亮的建筑照片上时透明、墨字（[data-tone="light"]）。两个下拉和窄屏菜单都用 <details>，没有 JS 也能打开；
 // 有 JS 时补上点外面、按 Esc、换页时收起。
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -83,12 +83,13 @@ function useCloseDetails(path: string) {
   return ref;
 }
 
+type Tone = 'film' | 'light' | 'paper';
+/** 首屏是满幅照片的页：服务端渲染时就按压在照片上画（没有 JS 时也是这个样子） */
+const topTone: Record<string, Tone> = { '/': 'film', [ENTERPRISE]: 'light' };
+
 /** 顶栏下面压着的是画面还是纸：读顶栏中线下方最近的 [data-tone] */
 function useTone(path: string) {
-  // 服务端渲染时首页先当作压在画面上（没有 JS 时也是这个样子）
-  const [tone, setTone] = useState<'film' | 'paper'>(
-    path === '/' ? 'film' : 'paper',
-  );
+  const [tone, setTone] = useState<Tone>(topTone[path] ?? 'paper');
   const [scrolled, setScrolled] = useState(false);
   useLayoutEffect(() => {
     let frame = 0;
@@ -99,7 +100,8 @@ function useTone(path: string) {
         .elementsFromPoint(window.innerWidth / 2, 40)
         .map((node) => node.closest('[data-tone]'))
         .find(Boolean);
-      setTone(under?.getAttribute('data-tone') === 'film' ? 'film' : 'paper');
+      const next = under?.getAttribute('data-tone');
+      setTone(next === 'film' || next === 'light' ? next : 'paper');
     };
     const request = () => {
       if (!frame) frame = requestAnimationFrame(read);

@@ -1,20 +1,12 @@
-import Link from 'next/link';
 import { ArrowDown } from 'lucide-react';
 import { pageMetadata } from '../../../lib/site';
-import { enterprise, type Member } from '../../../content/site/enterprise';
-import { ContactForm } from '../../_site/contact-form';
-import { ENTERPRISE, TEAM } from '../../_site/routes';
-import {
-  Btn,
-  More,
-  Note,
-  pad,
-  Phrases,
-  SectionHead,
-  Window,
-  type Vars,
-} from '../../_site/ui';
-import { Path } from './path';
+import { enterprise } from '../../../content/site/enterprise';
+import { ENTERPRISE } from '../../_site/routes';
+import { mediaOf, Phrases, Window, type Vars } from '../../_site/ui';
+import { Explore } from './explore';
+import { People } from './people';
+import { EnterpriseForm, PickProvider, Slips } from './pick';
+import { Route } from './course';
 import './enterprise.css';
 
 const e = enterprise;
@@ -25,258 +17,157 @@ export const metadata = pageMetadata(
   ENTERPRISE,
 );
 
-// 企业合作：全站秩序感最强的一页。一切对齐 12 栏网格，区块之间只用 1px 线分隔，编号一路数下去。
-// 首屏一句话 + 一扇宽窗（长石廊，尽头一棵树）；01 五个问题；02 合作路径（5.3 三步，5.2 四项服务是路径上的四站），
-// 标志性交互：选一个最像你们的问题，路径上亮出建议起点；03 内部探索（不是客户案例）；04 做这件事的人；05 表单。
+// 企业合作（负责人 2026-10-15 定的六屏）：一张满幅照片开场，之后是纸面；每屏一句主句，不放「展开看全文」。
+// ① 满幅照片：挂满小画的白色长廊，尽头一扇亮窗；一句标题、一行往下读的钩子。
+// ② 你们卡在哪：五张纸条，每张一幅会动的小图；选一张，页面回一句「你们希望……」和建议起点。
+// ③ 合作路线：开头一屏配图（一双手在做一件小工具）；四站一条线，宽屏钉住，点沿线走，「留在团队手里」的架子一件件摆满。
+// ④ 做这件事的人：满幅的白墙转角，墙脚四张卡写团队的四项能力（不按人分）。⑤ 我们也在亲自探索：三栏，盖章「不是客户案例」。
+// ⑥ 窗边的书桌与表单：选过的问题已经写在第一行。
+// （路线之后原有一屏柱廊照片，负责人 2026-10-15 删去。）
+// 首屏照片很亮，字用墨色，顶栏透明（data-tone="light"）。
 
-function Face({ member }: { member: Member }) {
-  if (member.photo)
-    return (
-      <span className="m-ent-face">
-        <img
-          src={member.photo.src}
-          width={member.photo.width}
-          height={member.photo.height}
-          alt=""
-          loading="lazy"
-          decoding="async"
-        />
-      </span>
-    );
+/** 满幅照片：铺满一屏，载入前铺平均色，极慢地推近 */
+function Plate({
+  name,
+  alt,
+  focus,
+  eager = false,
+}: {
+  name: 'enterprise-gallery';
+  alt: string;
+  focus: string;
+  eager?: boolean;
+}) {
+  const image = mediaOf(name);
   return (
-    <span className="m-ent-face m-ent-face-mark" aria-hidden="true">
-      {member.name.slice(0, 1)}
-    </span>
-  );
-}
-
-/** 成员句以名字开头：名字加粗、链到团队页这个人的卡片 */
-function MemberLine({ member }: { member: Member }) {
-  const rest = member.text.startsWith(member.name)
-    ? member.text.slice(member.name.length)
-    : member.text;
-  return (
-    <li className="m-ent-member">
-      <Face member={member} />
-      <p>
-        <Link className="m-ent-who" href={`${TEAM}#${member.id}`}>
-          {member.name}
-        </Link>
-        {rest}
-      </p>
-    </li>
+    <div className="m-plate" style={{ '--avg': image.avg } as Vars}>
+      <img
+        src={image.src}
+        srcSet={image.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
+        sizes="100vw"
+        width={image.width}
+        height={image.height}
+        alt={alt}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={eager ? 'high' : undefined}
+        decoding="async"
+        style={{ objectPosition: focus }}
+      />
+    </div>
   );
 }
 
 export default function EnterprisePage() {
+  const [titleA, titleB] = e.title.split('，');
   return (
     <div className="m-ent">
-      {/* 首屏 */}
-      <header className="m-ent-hero m-wrap m-top">
-        <p className="m-tagline" data-reveal>
-          <b>{e.metaTitle}</b>
-          {e.tags.map((tag) => (
-            <span key={tag}>{tag}</span>
-          ))}
-        </p>
-        <h1
-          className="m-ent-title"
-          data-reveal
-          style={{ '--delay': '80ms' } as Vars}
+      <PickProvider>
+        {/* ① 首屏 */}
+        <header className="m-ent-hero" data-tone="light">
+          <Plate
+            name="enterprise-gallery"
+            alt={e.hero.alt}
+            focus="50% 46%"
+            eager
+          />
+          <div className="m-ent-hero-body">
+            <p className="m-tagline m-rise">
+              <b>{e.hero.kicker}</b>
+              {e.tags.map((tag) => (
+                <span key={tag}>{tag}</span>
+              ))}
+            </p>
+            <h1
+              className="m-ent-title m-rise"
+              style={{ '--delay': '120ms' } as Vars}
+            >
+              <span>{titleA}，</span>
+              <span>{titleB}</span>
+            </h1>
+            <a
+              className="m-ent-hint m-rise"
+              href="#where"
+              style={{ '--delay': '320ms' } as Vars}
+            >
+              {e.hero.hint}
+              <ArrowDown size={14} aria-hidden="true" />
+            </a>
+          </div>
+        </header>
+
+        {/* ② 你们卡在哪 */}
+        <section
+          className="m-ent-where m-wrap"
+          id="where"
+          aria-labelledby="ent-where-title"
         >
-          <Phrases text={e.title} />
-        </h1>
-        <div
-          className="m-ent-hero-go m-actions"
-          data-reveal
-          style={{ '--delay': '160ms' } as Vars}
+          <header className="m-ent-where-head" data-reveal>
+            <p className="m-kicker">{e.questions.kicker}</p>
+            <h2 className="m-ent-ask" id="ent-where-title">
+              {e.hook.ask}
+            </h2>
+          </header>
+          <Slips />
+        </section>
+
+        {/* ③ 合作路线 */}
+        <section
+          className="m-ent-path"
+          id="path"
+          aria-labelledby="ent-path-title"
         >
-          <Btn href="#talk">{e.go.talk}</Btn>
-          <a className="m-link" href="#path" data-dir="down">
-            {e.go.path}
-            <ArrowDown size={13} aria-hidden="true" />
-          </a>
-        </div>
-        <Window
-          className="m-ent-hero-window"
-          name="enterprise-colonnade"
-          ratio="21 / 9"
-          focus="50% 42%"
-          sizes="(max-width: 1440px) 100vw, 1440px"
-          eager
-          alt={e.window.alt}
-          caption={<span lang="en">{e.window.caption}</span>}
-        />
-      </header>
+          {/* 路线开头单独一屏：左边那一句，右边一双手在做一件小工具 */}
+          <header className="m-ent-path-head m-wrap">
+            <div className="m-ent-path-copy" data-reveal>
+              <p className="m-kicker">{e.path.kicker}</p>
+              <h2 className="m-ent-path-line" id="ent-path-title">
+                <Phrases text={e.path.line} />
+              </h2>
+            </div>
+            <Window
+              className="m-ent-path-window"
+              name="enterprise-hands"
+              ratio="3 / 2"
+              focus="50% 45%"
+              sizes="(max-width: 900px) 100vw, 56vw"
+              alt={e.path.alt}
+            />
+          </header>
+          <Route />
+        </section>
 
-      <section className="m-ent-intro m-wrap" aria-label={e.metaTitle}>
-        <div className="m-ent-intro-text" data-reveal>
-          {e.intro.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-        </div>
-      </section>
+        {/* ④ 做这件事的人 */}
+        <People />
 
-      {/* 01 · 5.1 可以从这些问题开始 */}
-      <section
-        className="m-ent-sec m-wrap"
-        id="questions"
-        aria-labelledby="ent-q-title"
-      >
-        <SectionHead
-          no="01"
-          kicker={e.questions.kicker}
-          title={<Phrases text={e.questions.title} />}
-          id="ent-q-title"
-          size="h2"
-        />
-        <ol className="m-ent-questions">
-          {e.questions.items.map((question, index) => (
-            <li key={question.id} className="m-ent-question" data-reveal>
-              <span className="m-ent-qno num" lang="en" aria-hidden="true">
-                {pad(index + 1)}
-              </span>
-              <h3 className="m-ent-qtitle">
-                <Phrases text={question.title} />
-              </h3>
-              <div className="m-ent-qtext">
-                {question.paragraphs.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
+        {/* ⑤ 我们也在亲自探索 */}
+        <Explore />
 
-      {/* 02 · 5.3 合作路径，5.2 四项服务是路径上的四站 */}
-      <section
-        className="m-ent-sec m-wrap"
-        id="path"
-        aria-labelledby="ent-path-title"
-      >
-        <SectionHead
-          no="02"
-          kicker={e.path.kicker}
-          title={<Phrases text={e.path.title} />}
-          lead={<p>{e.path.lead}</p>}
-          id="ent-path-title"
-          size="h2"
-        />
-        <Path />
-      </section>
-
-      {/* 03 · 5.4 内部探索：不是客户案例 */}
-      <section
-        className="m-ent-sec m-wrap"
-        id="explore"
-        aria-labelledby="ent-explore-title"
-      >
-        <SectionHead
-          no="03"
-          kicker={e.explore.kicker}
-          title={<Phrases text={e.explore.title} />}
-          lead={e.explore.lead.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-          id="ent-explore-title"
-          size="h2"
-        />
-        <div className="m-ent-table">
-          <p className="m-ent-table-head" aria-hidden="true">
-            <span />
-            {e.explore.head.map((label) => (
-              <span key={label}>{label}</span>
-            ))}
-          </p>
-          <ul className="m-ent-rows">
-            {e.explore.rows.map((row) => (
-              <li key={row.name} className="m-ent-row" data-reveal>
-                <div className="m-ent-row-name">
-                  <h3 lang="en">{row.name}</h3>
-                  <Note>{e.explore.tag}</Note>
-                </div>
-                <dl className="m-ent-row-cells">
-                  <div>
-                    <dt>{e.explore.head[0]}</dt>
-                    <dd className="m-strong">{row.question}</dd>
-                  </div>
-                  <div>
-                    <dt>{e.explore.head[1]}</dt>
-                    <dd>{row.exploration}</dd>
-                  </div>
-                  <div>
-                    <dt>{e.explore.head[2]}</dt>
-                    <dd>
-                      <span className="m-status">{row.stage}</span>
-                      <span className="m-ent-row-note">{row.stageNote}</span>
-                    </dd>
-                  </div>
-                </dl>
-              </li>
-            ))}
-          </ul>
-          <p className="m-ent-table-end">{e.explore.closing}</p>
-        </div>
-      </section>
-
-      {/* 04 · 5.5 做这件事的人 */}
-      <section
-        className="m-ent-sec m-wrap"
-        id="people"
-        aria-labelledby="ent-people-title"
-      >
-        <SectionHead
-          no="04"
-          kicker={e.people.kicker}
-          title={<Phrases text={e.people.title} />}
-          lead={e.people.lead.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-          id="ent-people-title"
-          size="h2"
-        />
-        <ol className="m-ent-groups">
-          {e.people.groups.map((group, index) => (
-            <li key={group.title} className="m-ent-group" data-reveal>
-              <span className="m-ent-qno num" lang="en" aria-hidden="true">
-                {pad(index + 1)}
-              </span>
-              <h3 className="m-ent-group-title">
-                <Phrases text={group.title} />
-              </h3>
-              <ul className="m-ent-members">
-                {group.members.map((member) => (
-                  <MemberLine key={member.id} member={member} />
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ol>
-        <div className="m-ent-people-end">
-          <p>{e.people.note}</p>
-          <More href={TEAM}>{e.people.link}</More>
-        </div>
-      </section>
-
-      {/* 05 · 表单：来意固定为企业合作 */}
-      <section
-        className="m-ent-sec m-ent-talk m-wrap"
-        id="talk"
-        aria-labelledby="ent-talk-title"
-      >
-        <SectionHead
-          no="05"
-          kicker={e.talk.kicker}
-          title={<Phrases text={e.talk.title} />}
-          lead={<p>{e.talk.lead}</p>}
-          id="ent-talk-title"
-          size="h2"
-        />
-        <div className="m-ent-form">
-          <ContactForm fixed="enterprise" titleAs="h3" idPrefix="ent" />
-        </div>
-      </section>
+        {/* ⑥ 聊聊：窗边的书桌，表单第一行写着选过的问题 */}
+        <section
+          className="m-ent-talk m-wrap"
+          id="talk"
+          aria-labelledby="ent-talk-title"
+        >
+          <Window
+            className="m-ent-talk-window"
+            name="enterprise-desk"
+            ratio="4 / 5"
+            focus="40% 62%"
+            sizes="(max-width: 900px) 100vw, 40vw"
+            alt={e.talk.alt}
+          />
+          <div className="m-ent-talk-body">
+            <header className="m-ent-talk-head" data-reveal>
+              <p className="m-kicker">{e.talk.kicker}</p>
+              <h2 className="m-ent-talk-title" id="ent-talk-title">
+                {e.talk.title}
+              </h2>
+              <p className="m-ent-talk-lead">{e.talk.lead}</p>
+            </header>
+            <EnterpriseForm />
+          </div>
+        </section>
+      </PickProvider>
     </div>
   );
 }

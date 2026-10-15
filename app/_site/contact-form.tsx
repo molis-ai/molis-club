@@ -76,12 +76,15 @@ export function ContactForm({
   fixed,
   titleAs: Title = 'h2',
   idPrefix = 'cf',
+  seed,
 }: {
   /** 固定的来意（企业合作页用）：不给选，也不读地址栏 */
   fixed?: Intent;
   /** 成功标题的层级：联系页是 h2，嵌在一节里时用 h3 */
   titleAs?: 'h2' | 'h3';
   idPrefix?: string;
+  /** 页面上替访客写好的第一句（企业合作页：选过的问题）；访客改过就以访客为准 */
+  seed?: string;
 }) {
   const path = usePathname() ?? CONTACT;
   const urlTopic = useSyncExternalStore(noSubscription, readTopic, serverTopic);
@@ -109,7 +112,7 @@ export function ContactForm({
       : intent && intent === preset?.intent
         ? (preset.idea ?? '')
         : '';
-  const idea = typedIdea ?? presetIdea;
+  const idea = typedIdea ?? (seed || presetIdea);
   const sharing = intent === 'share';
 
   const [busy, setBusy] = useState(false);

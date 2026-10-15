@@ -1,662 +1,2534 @@
-/* 企业合作页：全站秩序感最强的一页。
-   一切对齐 12 栏网格：编号在左两栏，标题从第 3 栏起；区块之间只有 1px 线；没有装饰。
-   标志性交互「选一个最像你们的问题」只换颜色与描边，不做位移。 */
+/* =====================================================================
+   企业合作（负责人 2026-10-15 定的六屏）
+   ① 长廊（满幅照片）· ② 你们卡在哪 · ③ 合作路线 · ④ 人 · ⑤ 内部探索 · ⑥ 书桌与表单。
+   每屏一句主句，动的东西都在演示意思；颜色、字号只读 site.css 的令牌。
+   ===================================================================== */
 
-/* ---------- 首屏：一句话 + 一扇 21:9 的宽窗 ---------- */
-.m-ent-hero {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: clamp(18px, 3vh, 32px);
-  align-items: end;
+.m-ent {
+  position: relative;
 }
-.m-ent-hero .m-tagline {
-  grid-column: 1 / -1;
+
+/* ---------- 满幅照片：铺满一屏，载入前铺平均色 ---------- */
+.m-plate {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  background: var(--avg, var(--paper-2));
+}
+.m-plate img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  /* 建筑照片的调色：暖一点、对比低一点，像雾里的白房子 */
+  filter: sepia(0.07) saturate(0.95) contrast(0.95) brightness(1.02);
+}
+
+/* =====================================================================
+   ① 首屏：挂满小画的白色长廊，尽头一扇亮窗。墨色大字压在亮的地面上
+   ===================================================================== */
+.m-ent-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+}
+/* 极慢地推近，像慢慢走进长廊 */
+.m-ent-hero .m-plate img {
+  transform-origin: 52% 42%;
+  animation: m-ent-push 26s linear both;
+}
+@keyframes m-ent-push {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 1.08;
+  }
+}
+/* 一层纸色的雾：底下与左边浓一点，墨字读得清；底边和下面的纸接成一片 */
+.m-ent-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      to top,
+      var(--paper) 0%,
+      rgb(251 250 247 / 0.86) 14%,
+      rgb(251 250 247 / 0.4) 36%,
+      rgb(251 250 247 / 0) 56%
+    ),
+    linear-gradient(to right, rgb(251 250 247 / 0.5), rgb(251 250 247 / 0) 52%),
+    linear-gradient(rgb(251 250 247 / 0.42), rgb(251 250 247 / 0) 18%);
+  pointer-events: none;
+}
+.m-ent-hero-body {
+  align-self: end;
+  display: grid;
+  justify-items: start;
+  gap: clamp(18px, 3vh, 30px);
+  width: 100%;
+  max-width: calc(var(--wrap) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: calc(var(--header) + 48px) var(--gutter) clamp(36px, 7vh, 80px);
 }
 .m-ent-title {
-  grid-column: 1 / span 9;
-  font: 300 var(--t-display) / 1.2 var(--sans);
-  letter-spacing: 0.02em;
-}
-.m-ent-hero-go {
-  grid-column: 10 / -1;
-  justify-content: flex-end;
-  padding-bottom: 0.5em;
-}
-.m-ent-hero-window {
-  grid-column: 1 / -1;
-  margin-top: clamp(12px, 4vh, 48px);
-}
-/* 图注是英文：细斜体（Window 的图注默认按中文排） */
-.m-ent .m-caption [lang='en'] {
-  font-style: italic;
-  font-weight: 300;
-  font-size: var(--t-ui);
-}
-
-.m-ent-intro {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  padding-top: clamp(56px, 9vh, 104px);
-}
-.m-ent-intro-text {
-  grid-column: 3 / span 7;
-  display: grid;
-  gap: 1.1em;
-  font-size: var(--t-lead);
-  line-height: 1.95;
+  font: 300 clamp(40px, 5.6vw, 90px) / 1.24 var(--sans);
   letter-spacing: 0.03em;
-  color: var(--ink-2);
-}
-.m-ent-intro-text p:last-child {
   color: var(--ink);
 }
-
-.m-ent-sec {
-  padding-top: var(--section-top);
+.m-ent-title span {
+  display: block;
 }
-.m-ent-talk {
-  padding-bottom: var(--section-bottom);
+/* 第二句往右退一步，和首页结尾那句同一个写法 */
+.m-ent-title span + span {
+  padding-left: 1.6em;
 }
-
-/* ---------- 01 五个问题：编号 · 问题 · 说明，三栏对齐 ---------- */
-.m-ent-question,
-.m-ent-group {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 14px;
-  padding: clamp(24px, 4vh, 40px) 0;
-  border-top: 1px solid var(--hair);
-}
-.m-ent-question:last-child,
-.m-ent-group:last-child {
-  border-bottom: 1px solid var(--hair);
-}
-.m-ent-qno {
-  grid-column: 1 / span 2;
-  font: italic 300 var(--t-h3) / 1.45 var(--latin);
-  letter-spacing: 0;
-  color: var(--accent-ink);
-}
-.m-ent-qtitle,
-.m-ent-group-title {
-  grid-column: 3 / span 4;
-  font: 400 var(--t-h3) / 1.55 var(--sans);
-  letter-spacing: 0.04em;
-}
-.m-ent-qtext {
-  grid-column: 8 / -1;
-  display: grid;
-  gap: 0.9em;
-  line-height: 1.95;
+.m-ent-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
   color: var(--ink-2);
+  font: 400 var(--t-ui) / 1.4 var(--sans);
+  letter-spacing: 0.12em;
+  transition: color 0.4s var(--ease);
+}
+.m-ent-hint:hover {
+  color: var(--ink);
+}
+.m-ent-hint svg {
+  animation: m-ent-nudge 2.2s var(--ease) 1.6s 3;
+}
+@keyframes m-ent-nudge {
+  40% {
+    translate: 0 4px;
+  }
 }
 
-/* ---------- 02 合作路径：选问题 → 亮出建议起点 ---------- */
-.m-ent-pick {
+/* =====================================================================
+   ② 你们卡在哪：五张摊在桌上的纸条
+   ===================================================================== */
+.m-ent-where {
+  padding-block: clamp(56px, 10vh, 120px) var(--section-bottom);
+}
+.m-ent-where-head {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 18px;
-  padding-bottom: clamp(36px, 6vh, 64px);
+  gap: 14px;
+  margin-bottom: clamp(36px, 6vh, 64px);
 }
-/* 没有 JS 时选不了：整排藏起来，四站照常完整可读 */
-html:not(.js) .m-ent-pick {
-  display: none;
+.m-ent-ask {
+  font: 300 clamp(36px, 4.4vw, 64px) / 1.2 var(--sans);
+  letter-spacing: 0.02em;
 }
-.m-ent-pick-set {
-  grid-column: 3 / -1;
+.m-ent-pick {
+  margin: 0;
+}
+.m-ent-slips {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 22px);
   min-width: 0;
   margin: 0;
   padding: 0;
   border: 0;
 }
-.m-ent-pick-legend {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 14px;
-  margin-bottom: 14px;
-  padding: 0;
-  font-size: var(--t-ui);
-  letter-spacing: 0.06em;
-  color: var(--ink-2);
-}
-.m-ent-pick-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.m-ent-pick-item {
+.m-ent-slip {
+  --tilt: 0deg;
+  --lift: 0px;
   position: relative;
-  display: inline-flex;
-}
-.m-ent-pick-item input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-.m-ent-pick-item > span {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 0 18px 0 14px;
-  border-radius: var(--r-pill);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 18px;
+  padding: 12px 12px 18px;
+  border-radius: 10px;
   background: var(--white);
-  box-shadow: inset 0 0 0 1px var(--hair-2);
-  font: 400 var(--t-ui) / 1.3 var(--sans);
-  letter-spacing: 0.04em;
-  color: var(--ink-2);
-  transition:
-    box-shadow 0.3s var(--ease),
-    color 0.3s var(--ease);
-}
-.m-ent-pick-no {
-  font: italic 300 var(--t-small) / 1 var(--latin);
-  letter-spacing: 0;
-  color: var(--mute);
-}
-.m-ent-pick-item:hover > span {
-  color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--mute);
-}
-.m-ent-pick-item input:checked + span {
-  color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--ink);
-}
-.m-ent-pick-item input:checked + span .m-ent-pick-no {
-  color: var(--accent-ink);
-}
-.m-ent-pick-item input:focus-visible + span {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 4px;
-}
-.m-ent-advice {
-  grid-column: 3 / -1;
-  display: grid;
-  align-content: start;
-  gap: 6px;
-  min-height: 6.5em;
-}
-.m-ent-advice-line {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 14px;
-}
-.m-ent-advice-line b {
-  font: 400 var(--t-h3) / 1.5 var(--sans);
-  letter-spacing: 0.03em;
-}
-.m-ent-advice-label {
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-  color: var(--accent-ink);
-}
-.m-ent-advice-why {
-  flex-basis: 100%;
-  font-size: var(--t-ui);
-  line-height: 1.8;
-  color: var(--ink-2);
-}
-.m-ent-advice-idle {
-  padding-top: 0.3em;
-  font-size: var(--t-ui);
-  color: var(--mute);
-}
-
-/* 三步是三段，四站在三段下面；同一排的「路轨」与卡片顶边对齐（subgrid） */
-.m-ent-stages {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: clamp(48px, 7vh, 72px);
-}
-.m-ent-stage {
-  display: grid;
-  grid-row: span 2;
-  grid-template-rows: subgrid;
-  row-gap: clamp(24px, 3.5vh, 36px);
-}
-.m-ent-stage[data-span='2'] {
-  grid-column: span 2;
-}
-.m-ent-stage-head {
-  display: grid;
-  align-content: start;
-  gap: 12px;
-}
-.m-ent-roman {
-  font: italic 300 var(--t-h3) / 1 var(--latin);
-  letter-spacing: 0.02em;
-  color: var(--accent-ink);
-}
-.m-ent-stage-title {
-  max-width: 16em;
-  font: 400 var(--t-h3) / 1.55 var(--sans);
-  letter-spacing: 0.03em;
-}
-.m-ent-stage-text {
-  display: grid;
-  gap: 0.8em;
-  max-width: 36em;
-  font-size: var(--t-ui);
-  line-height: 1.9;
-  color: var(--ink-2);
-}
-.m-ent-stops {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  column-gap: var(--col-gap);
-}
-.m-ent-stage[data-span='2'] .m-ent-stops {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.m-ent-stop {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 14px;
-}
-/* 路轨：一道墨线穿过四站，每站一个圆点；建议起点是实心杏橙，「接着」是杏橙空心 */
-.m-ent-rail {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 10px;
-  padding-top: 20px;
-}
-.m-ent-rail::before {
-  content: '';
-  position: absolute;
-  top: 4px;
-  left: 0;
-  right: calc(-1 * var(--col-gap));
-  height: 1px;
-  background: var(--ink);
-}
-.m-ent-stage:last-child .m-ent-stop:last-child .m-ent-rail::before {
-  right: 0;
-}
-.m-ent-rail::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--paper);
-  box-shadow: inset 0 0 0 1px var(--ink);
-  transition:
-    background-color 0.4s var(--ease),
-    box-shadow 0.4s var(--ease);
-}
-.m-ent-stop-name,
-.m-ent-flag {
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-  color: var(--mute);
-}
-.m-ent-flag {
-  color: var(--accent-ink);
-}
-.m-ent-flag::before {
-  content: '·';
-  margin-right: 10px;
-  color: var(--faint);
-}
-.m-ent-card {
-  display: grid;
-  align-content: start;
-  gap: 14px;
-  padding: 22px 22px 10px;
-  border-radius: var(--r-panel);
-  background-color: var(--white);
-  box-shadow: 0 0 0 1px var(--hair);
-  transition:
-    box-shadow 0.4s var(--ease),
-    background-color 0.4s var(--ease);
-}
-.m-ent-service {
-  font: 400 var(--t-h3) / 1.45 var(--sans);
-  letter-spacing: 0.03em;
-}
-.m-ent-dl > div {
-  display: grid;
-  gap: 4px;
-  padding: 12px 0 14px;
-  border-top: 1px solid var(--hair);
-}
-.m-ent-dl dt {
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-  color: var(--mute);
-}
-.m-ent-dl dd {
-  font-size: var(--t-ui);
-  line-height: 1.85;
-  color: var(--ink-2);
-  transition: color 0.4s var(--ease);
-}
-.m-ent-service {
-  transition: color 0.4s var(--ease);
-}
-.m-ent-stop[data-mark='start'] .m-ent-rail::after {
-  background: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-wash);
-}
-.m-ent-stop[data-mark='next'] .m-ent-rail::after {
-  box-shadow: inset 0 0 0 1.5px var(--accent);
-}
-.m-ent-stop[data-mark='start'] .m-ent-card {
-  background-image: linear-gradient(var(--accent-wash), var(--accent-wash));
-  box-shadow: 0 0 0 1px var(--accent);
-}
-.m-ent-stop[data-mark='next'] .m-ent-card {
-  box-shadow: none;
-  outline: 1px dashed var(--accent);
-  outline-offset: -1px;
-}
-/* 选了问题之后，其余各站退后一档（只换成辅助色，对比度仍 ≥4.5:1） */
-.m-ent-path[data-picked] .m-ent-stop:not([data-mark]) .m-ent-card {
-  background-color: transparent;
-}
-.m-ent-path[data-picked] .m-ent-stop:not([data-mark]) .m-ent-service,
-.m-ent-path[data-picked] .m-ent-stop:not([data-mark]) dd {
-  color: var(--mute);
-}
-.m-ent-term {
-  padding: 0 1px;
-  background: none;
-  color: var(--ink);
   box-shadow:
-    inset 0 -0.4em var(--accent-wash),
-    inset 0 -1px var(--accent);
+    0 0 0 1px var(--hair),
+    0 16px 30px -26px rgb(var(--shade) / 0.5);
+  cursor: pointer;
+  rotate: var(--tilt);
+  translate: 0 var(--lift);
+  scale: var(--shrink, 1);
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    rotate 0.7s var(--ease),
+    translate 0.7s var(--ease),
+    scale 0.7s var(--ease),
+    opacity 0.6s var(--ease),
+    box-shadow 0.7s var(--ease);
 }
-
-/* ---------- 03 内部探索：一张对齐的表 ---------- */
-.m-ent-table-head,
-.m-ent-row {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
+/* 有 JS 时纸条也逐张浮上来：浮现用 transform，摆放用 rotate / translate，两套不打架 */
+.js .m .m-ent-slip[data-reveal] {
+  transition:
+    opacity 1.1s var(--ease) var(--delay, 0ms),
+    transform 1.3s var(--ease) var(--delay, 0ms),
+    rotate 0.7s var(--ease),
+    translate 0.7s var(--ease),
+    scale 0.7s var(--ease),
+    box-shadow 0.7s var(--ease);
 }
-.m-ent-table-head {
-  padding-bottom: 12px;
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-  color: var(--mute);
+/* 像随手摊在桌上：每张歪一点 */
+.m-ent-slip:nth-of-type(1) {
+  --tilt: -1.2deg;
 }
-.m-ent-table-head span:nth-child(1) {
-  grid-column: 1 / span 2;
+.m-ent-slip:nth-of-type(2) {
+  --tilt: 0.8deg;
 }
-.m-ent-table-head span:nth-child(2) {
-  grid-column: 3 / span 3;
+.m-ent-slip:nth-of-type(3) {
+  --tilt: -0.5deg;
 }
-.m-ent-table-head span:nth-child(3) {
-  grid-column: 6 / span 4;
+.m-ent-slip:nth-of-type(4) {
+  --tilt: 1.1deg;
 }
-.m-ent-table-head span:nth-child(4) {
-  grid-column: 10 / span 3;
+.m-ent-slip:nth-of-type(5) {
+  --tilt: -0.9deg;
 }
-.m-ent-row {
-  row-gap: 16px;
-  padding: clamp(24px, 4vh, 36px) 0;
-  border-top: 1px solid var(--hair);
-}
-.m-ent-row:last-child {
-  border-bottom: 1px solid var(--hair);
-}
-.m-ent-row-name {
-  grid-column: 1 / span 2;
-  display: grid;
-  align-content: start;
-  justify-items: start;
-  gap: 12px;
-}
-.m-ent-row-name h3 {
-  font: 300 var(--t-h2) / 1.1 var(--latin);
-  letter-spacing: -0.01em;
-}
-.m-ent-row-name .m-note {
-  white-space: normal;
-}
-.m-ent-row-cells {
-  grid-column: 3 / -1;
-  display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 16px;
-}
-.m-ent-row-cells > div:nth-child(1) {
-  grid-column: span 3;
-}
-.m-ent-row-cells > div:nth-child(2) {
-  grid-column: span 4;
-}
-.m-ent-row-cells > div:nth-child(3) {
-  grid-column: span 3;
-}
-.m-ent-row-cells dt {
+.m-ent-slip input {
   position: absolute;
   width: 1px;
   height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
 }
-.m-ent-row-cells dd {
-  line-height: 1.9;
-  color: var(--ink-2);
+.m-ent-slip:has(input:focus-visible) {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
 }
-.m-ent-row-cells dd.m-strong {
-  color: var(--ink);
+/* 停在上面或选中（data-on）：这张浮起来、摆正，其余退后；没有 JS 时看单选框 */
+.m-ent-slip[data-on],
+html:not(.js) .m-ent-slip:has(input:checked) {
+  --tilt: 0deg;
+  --lift: -10px;
+  box-shadow:
+    0 0 0 1px var(--ink),
+    0 30px 48px -30px rgb(var(--shade) / 0.6);
 }
-.m-ent-row-note {
-  display: block;
-  margin-top: 8px;
-  font-size: var(--t-ui);
-  line-height: 1.85;
+.m-ent-slips[data-any] .m-ent-slip:not([data-on]) {
+  --shrink: 0.97;
+  opacity: 0.55;
 }
-.m-ent-table-end {
-  max-width: calc(var(--read) + (100% + var(--col-gap)) / 6);
-  margin-top: 28px;
-  padding-left: calc((100% + var(--col-gap)) / 6);
-  color: var(--ink-2);
-  line-height: 1.95;
+/* 选定的那张：顶边一道杏橙，预览别的纸条时也留着 */
+.m-ent-slip::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 18px;
+  right: 18px;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s var(--ease);
+}
+.m-ent-slip[data-picked]::before,
+html:not(.js) .m-ent-slip:has(input:checked)::before {
+  transform: scaleX(1);
+}
+.m-ent-slip-text {
+  display: grid;
+  align-content: end;
+  gap: 8px;
+  padding-inline: 6px;
+}
+.m-ent-slip-no {
+  font: italic 300 14px/1 var(--latin);
+  color: var(--accent-ink);
+}
+.m-ent-slip-name {
+  font: 400 clamp(17px, 1.45vw, 22px) / 1.45 var(--sans);
+  letter-spacing: 0.03em;
+  text-wrap: balance;
 }
 
-/* ---------- 04 做这件事的人：四类能力配成员头像 ---------- */
-.m-ent-members {
+/* ---------- 纸条上的小图：线描，墨色细线、白色的面、一点杏橙，画在一块浅底上 ---------- */
+.m-sym {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 212 / 124;
+  overflow: hidden;
+  border-radius: 7px;
+  background: var(--paper-2);
+  font-family: var(--sans);
+}
+.m-sym text {
+  fill: var(--ink-2);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+}
+.m-sym .m-sym-note {
+  fill: var(--mute);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+.m-sym g,
+.m-sym circle,
+.m-sym rect,
+.m-sym path,
+.m-sym text {
+  transition:
+    translate 0.9s var(--ease),
+    rotate 0.9s var(--ease),
+    scale 0.9s var(--ease),
+    opacity 0.6s var(--ease),
+    fill 0.6s var(--ease),
+    stroke 0.6s var(--ease);
+}
+
+/* 不确定从哪投入：候选悬在一张空图上方；停上去时落进「价值 × 成本」的图里，运营落在值得先做的那一角 */
+.m-sym-grid circle {
+  fill: rgb(27 26 24 / 0.16);
+}
+.m-sym-axis {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.6;
+}
+.m-sym-sweet {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 0.8;
+  stroke-dasharray: 2.5 2.5;
+  opacity: 0;
+}
+.m-sym .m-sym-pt {
+  translate: var(--x0) var(--y0);
+  transition: translate 0.9s var(--ease) calc(var(--i) * 70ms);
+}
+.m-sym-dot {
+  fill: var(--white);
+  stroke: var(--ink-2);
+  stroke-width: 1.2;
+}
+.m-sym-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.js .m-ent-slip.is-in:not([data-on]) .m-sym-bob {
+  animation: m-sym-bob 2.4s ease-in-out calc(var(--i) * -0.5s) 4 alternate;
+}
+@keyframes m-sym-bob {
+  to {
+    translate: 0 4px;
+  }
+}
+.m-ent-slip[data-on] .m-sym-pt {
+  translate: var(--x1) var(--y1);
+}
+.m-ent-slip[data-on] .m-sym-sweet {
+  opacity: 1;
+}
+.m-ent-slip[data-on] .m-sym-pt[data-best] .m-sym-dot {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+.m-ent-slip[data-on] .m-sym-pt[data-best] .m-sym-word {
+  fill: var(--accent-ink);
+}
+.m-ent-slip[data-on] .m-sym-pt[data-best] .m-sym-ring {
+  animation: m-sym-ring 1.8s ease-out 0.8s 3;
+}
+@keyframes m-sym-ring {
+  from {
+    opacity: 0.9;
+    scale: 0.5;
+  }
+  to {
+    opacity: 0;
+    scale: 1.4;
+  }
+}
+
+/* 人手已经排满：一天塞了四件事，最后一件滑出底线；停上去时第二件交出去，剩下的刚好放下 */
+.m-sym-day {
+  fill: var(--white);
+  stroke: var(--hair-2);
+  stroke-width: 1;
+}
+.m-sym-edge {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+.m-sym .m-sym-task {
+  translate: 46px var(--y);
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+}
+.m-sym-task rect {
+  fill: var(--paper-2);
+  stroke: var(--hair-2);
+  stroke-width: 0.8;
+}
+.m-sym .m-sym-task text {
+  font-size: 9.5px;
+}
+.m-sym .m-sym-task[data-i='3'] {
+  rotate: 5deg;
+}
+.m-sym-task[data-i='3'] rect {
+  fill: color-mix(in srgb, var(--accent) 16%, var(--white));
+  stroke: var(--accent);
+}
+.js .m-ent-slip.is-in .m-sym-task {
+  animation: m-sym-drop 0.7s var(--ease) calc(0.3s + var(--i) * 0.25s) backwards;
+}
+.js .m-ent-slip.is-in:not([data-on]) .m-sym-task[data-i='3'] {
+  animation:
+    m-sym-drop 0.7s var(--ease) 1.05s backwards,
+    m-sym-slip 1.1s ease-in-out 1.9s 3;
+}
+@keyframes m-sym-drop {
+  from {
+    opacity: 0;
+    translate: 46px calc(var(--y) - 14px);
+  }
+}
+@keyframes m-sym-slip {
+  50% {
+    rotate: 9deg;
+  }
+}
+.m-sym-tray rect {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0;
+}
+.m-sym-tray path {
+  fill: var(--accent);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  scale: 0.4;
+}
+.m-ent-slip[data-on] .m-sym-tray rect {
+  opacity: 1;
+}
+.m-ent-slip[data-on] .m-sym-tray path {
+  opacity: 1;
+  scale: 1;
+  transition-delay: 0.5s;
+}
+.m-ent-slip[data-on] .m-sym-task[data-i='1'] {
+  translate: 136px 38px;
+}
+.m-ent-slip[data-on] .m-sym-task[data-i='1'] rect {
+  fill: var(--white);
+  stroke: var(--accent);
+}
+.m-ent-slip[data-on] .m-sym-task[data-i='2'] {
+  translate: 46px 39px;
+}
+.m-ent-slip[data-on] .m-sym-task[data-i='3'] {
+  translate: 46px 65px;
+  rotate: 0deg;
+}
+.m-ent-slip[data-on] .m-sym-task[data-i='3'] rect {
+  fill: var(--paper-2);
+  stroke: var(--hair-2);
+}
+
+/* 资料经验拼不起来：三块拼图散着；停上去时咬合成一整块 */
+.m-sym .m-sym-piece {
+  transform-box: fill-box;
+  transform-origin: center;
+  translate: var(--dx) var(--dy);
+  rotate: var(--r);
+  transition:
+    translate 1s var(--ease) calc(var(--i) * 80ms),
+    rotate 1s var(--ease) calc(var(--i) * 80ms);
+}
+.m-sym-piece-face {
+  fill: var(--white);
+  stroke: var(--ink-2);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+.m-sym-piece-icon {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-sym .m-sym-piece text {
+  font-size: 9px;
+}
+.js .m-ent-slip.is-in:not([data-on]) .m-sym-piece {
+  animation: m-sym-drift 3.2s ease-in-out calc(var(--i) * -1.1s) 3 alternate;
+}
+@keyframes m-sym-drift {
+  to {
+    translate: calc(var(--dx) + 3px) calc(var(--dy) + 4px);
+  }
+}
+.m-ent-slip[data-on] .m-sym-piece {
+  translate: 0 0;
+  rotate: 0deg;
+}
+.m-ent-slip[data-on] .m-sym-piece-face {
+  fill: color-mix(in srgb, var(--accent) 12%, var(--white));
+}
+.m-ent-slip[data-on] .m-sym-piece-icon {
+  stroke: var(--accent-ink);
+}
+
+/* 想法停在演示里：标着「演示」的虚线窗口，回音一直在「输入中」；停上去时窗口变实，后续步骤一件件完成 */
+.m-sym-win {
+  fill: var(--white);
+  stroke: var(--ink-2);
+  stroke-width: 1.1;
+  stroke-dasharray: 4 3.5;
+}
+.m-sym-bar {
+  fill: none;
+  stroke: var(--hair-2);
+  stroke-width: 1;
+}
+.m-sym-light {
+  fill: var(--faint);
+}
+.m-sym-tag rect {
+  fill: var(--white);
+  stroke: var(--ink-2);
+  stroke-width: 0.9;
+  stroke-dasharray: 2.5 2;
+}
+.m-sym .m-sym-tag text {
+  fill: var(--mute);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+.m-sym-say rect {
+  fill: var(--ink);
+}
+.m-sym .m-sym-say text {
+  fill: var(--paper);
+  font-size: 10px;
+}
+.m-sym-wait rect {
+  fill: var(--paper-2);
+}
+.m-sym-wait circle {
+  fill: var(--mute);
+}
+.js .m-ent-slip.is-in:not([data-on]) .m-sym-wait circle {
+  animation: m-sym-blink 1.2s ease-in-out calc(var(--i) * 0.2s) 5;
+}
+@keyframes m-sym-blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+.m-sym .m-sym-step {
+  opacity: 0;
+  translate: -4px 0;
+  transition:
+    opacity 0.5s var(--ease) calc(0.3s + var(--i) * 0.3s),
+    translate 0.6s var(--ease) calc(0.3s + var(--i) * 0.3s);
+}
+.m-sym-step circle {
+  fill: var(--accent);
+}
+.m-sym-tick {
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-sym-line {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.m-ent-slip[data-on] .m-sym-win {
+  stroke: var(--ink);
+  stroke-dasharray: none;
+}
+.m-ent-slip[data-on] .m-sym-tag,
+.m-ent-slip[data-on] .m-sym-wait {
+  opacity: 0;
+}
+.m-ent-slip[data-on] .m-sym-step {
+  opacity: 1;
+  translate: 0 0;
+}
+.m-ent-slip[data-on] .m-sym-light:first-of-type {
+  fill: var(--accent);
+}
+
+/* 想让整个团队会用 AI：一排人只亮着一个，方法在他那里；停上去时从他往两边一个个亮起来 */
+.m-sym-person circle,
+.m-sym-person path {
+  fill: var(--faint);
+}
+.m-sym .m-sym-person circle,
+.m-sym .m-sym-person path {
+  transition: fill 0.6s var(--ease) calc(var(--i) * 130ms);
+}
+.m-sym-person[data-lit] circle,
+.m-sym-person[data-lit] path,
+.m-ent-slip[data-on] .m-sym-person circle,
+.m-ent-slip[data-on] .m-sym-person path {
+  fill: var(--accent);
+}
+.m-sym-floor {
+  fill: none;
+  stroke: var(--hair-2);
+  stroke-width: 1;
+}
+.m-sym-tip rect {
+  fill: var(--accent-wash);
+}
+.m-sym .m-sym-tip text {
+  fill: var(--accent-ink);
+  font-size: 9.5px;
+}
+.m-sym-tip path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+.m-sym-glow {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.js .m-ent-slip.is-in:not([data-on]) .m-sym-glow {
+  animation: m-sym-ring 2s ease-out 0.6s 3;
+}
+
+/* ---------- 回应：停在哪张就显出哪张的，点一下选定；几条叠在同一格，高度按最长的留好 ---------- */
+.m-ent-replies {
+  display: grid;
+  margin-top: clamp(36px, 5vh, 56px);
+  padding-top: 24px;
+  border-top: 1px solid var(--ink);
+}
+.m-ent-replies > * {
+  grid-area: 1 / 1;
+}
+.m-ent-reply-idle {
+  color: var(--mute);
+  font: 300 var(--t-lead) / 1.7 var(--sans);
+  letter-spacing: 0.04em;
+  transition: opacity 0.4s var(--ease);
+}
+.m-ent-reply {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 22px;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 8px;
+  transition:
+    opacity 0.4s var(--ease),
+    translate 0.6s var(--ease),
+    visibility 0s linear 0.4s;
+}
+.m-ent-pick[data-show='where'] .m-ent-reply[data-for='where'],
+.m-ent-pick[data-show='busy'] .m-ent-reply[data-for='busy'],
+.m-ent-pick[data-show='knowledge'] .m-ent-reply[data-for='knowledge'],
+.m-ent-pick[data-show='product'] .m-ent-reply[data-for='product'],
+.m-ent-pick[data-show='team'] .m-ent-reply[data-for='team'],
+.m-ent-pick:not([data-show]):has(input[value='where']:checked)
+  .m-ent-reply[data-for='where'],
+.m-ent-pick:not([data-show]):has(input[value='busy']:checked)
+  .m-ent-reply[data-for='busy'],
+.m-ent-pick:not([data-show]):has(input[value='knowledge']:checked)
+  .m-ent-reply[data-for='knowledge'],
+.m-ent-pick:not([data-show]):has(input[value='product']:checked)
+  .m-ent-reply[data-for='product'],
+.m-ent-pick:not([data-show]):has(input[value='team']:checked)
+  .m-ent-reply[data-for='team'] {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition:
+    opacity 0.5s var(--ease),
+    translate 0.7s var(--ease),
+    visibility 0s;
+}
+.m-ent-pick[data-show] .m-ent-reply-idle,
+.m-ent-pick:has(input:checked) .m-ent-reply-idle {
+  opacity: 0;
+}
+.m-ent-reply-heard {
+  grid-column: 1 / span 6;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+.m-ent-reply-title {
+  color: var(--mute);
+  font: 400 var(--t-small) / 1.7 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-ent-reply-wish {
+  font: 400 var(--t-keys) / 1.75 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-reply-start {
+  grid-column: 8 / -1;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+.m-ent-reply-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-ink);
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+}
+.m-ent-reply-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.m-ent-reply-station {
+  font: 400 var(--t-keys) / 1.5 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-reply-then {
+  margin: 0 10px;
+  color: var(--mute);
+  font-size: var(--t-small);
+  letter-spacing: 0.1em;
+}
+.m-ent-reply-why {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  line-height: 1.85;
+}
+
+/* =====================================================================
+   ③ 合作路线：四站一条线，架子一件件摆满
+   ===================================================================== */
+.m-ent-path {
+  padding-bottom: var(--section-bottom);
+}
+/* 开头一屏：左边那一句（三个短句各占一行），右边一张 3:2 的图；矮屏上图跟着收小，整屏装得下 */
+.m-ent-path-head {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 88px);
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: calc(var(--header) + clamp(16px, 6vh, 64px))
+    clamp(16px, 6vh, 64px);
+}
+.m-ent-path-copy {
+  display: grid;
+  gap: 14px;
+}
+.m-ent-path-line {
+  max-width: 34em;
+  font: 300 var(--t-h2) / 1.55 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-ent-path-line .m-phrase {
+  display: block;
+}
+.m-ent-path-window {
+  justify-self: end;
+  width: min(
+    100%,
+    calc((100svh - var(--header) - 2 * clamp(16px, 6vh, 64px)) * 1.5)
+  );
+}
+@media (max-width: 900px) {
+  /* 窄屏：那一句在上，图在下，不再撑满一屏 */
+  .m-ent-path-head {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    padding-block: var(--section-top) clamp(32px, 6vh, 56px);
+  }
+  .m-ent-path-window {
+    justify-self: stretch;
+    width: 100%;
+  }
+}
+.m-ent-route {
+  /* 点走到第几站：--pin 由 useSiteMotion 写在这一段上；0.76 之后是架子摆满后停的一截（同 course.tsx 的 END） */
+  --run: clamp(0, var(--pin, 0) / 0.76, 1);
+  position: relative;
+}
+.m-ent-route-stick {
+  display: grid;
+  gap: clamp(32px, 5vh, 56px);
+  width: 100%;
+  max-width: calc(var(--wrap) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+.m-ent-rail {
+  display: none;
+}
+
+/* 一站：左边站名，右边适合谁、做什么、我们的约定 */
+.m-ent-station {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 18px;
+  padding-block: 28px;
+  border-top: 1px solid var(--hair-2);
+}
+.m-ent-station-head {
+  grid-column: 1 / span 5;
+}
+.m-ent-station-body {
   grid-column: 7 / -1;
   display: grid;
   gap: 18px;
+  align-content: start;
 }
-.m-ent-member {
+.m-ent-station-where {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--mute);
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+}
+.m-ent-station-where .num {
+  font: italic 300 15px/1 var(--latin);
+  letter-spacing: 0;
+  color: var(--accent-ink);
+}
+.m-ent-station-name {
+  margin-top: 12px;
+  font: 300 var(--t-h2) / 1.35 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-station-dl {
   display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
-  column-gap: 16px;
-  align-items: start;
+  gap: 12px;
 }
-.m-ent-member p {
-  padding-top: 10px;
-  line-height: 1.9;
-  color: var(--ink-2);
-}
-.m-ent-face {
+/* 适合 / 做什么 / 我们约定：同一套两栏、同一档字，标签和正文按基线对齐 */
+.m-ent-station-dl > div {
   display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  overflow: hidden;
-  border-radius: 50%;
-  background: var(--paper-2);
-  box-shadow: 0 0 0 1px var(--hair);
-}
-.m-ent-face img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: var(--grade);
-}
-.m-ent-face-mark {
-  font: 300 var(--t-h3) / 1 var(--sans);
-  color: var(--ink-2);
-}
-.m-ent-who {
-  margin-right: 0.15em;
-  padding-bottom: 1px;
-  font-weight: 500;
-  color: var(--ink);
-  background:
-    linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat,
-    linear-gradient(var(--hair-2), var(--hair-2)) 0 100% / 100% 1px no-repeat;
-  transition: background-size 0.55s var(--ease);
-}
-.m-ent-who:hover {
-  background-size:
-    100% 1px,
-    100% 1px;
-}
-.m-ent-people-end {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 12px;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 16px;
   align-items: baseline;
-  margin-top: 24px;
 }
-.m-ent-people-end p {
-  grid-column: 3 / span 6;
+.m-ent-station-dl dt {
+  color: var(--mute);
+  font: 500 var(--t-label) / 1.6 var(--sans);
+  letter-spacing: 0.16em;
+}
+.m-ent-station-dl dd {
+  color: var(--ink-2);
+  font: 400 var(--t-body) / 1.85 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-station-dl [data-kind='promise'] {
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hair);
+}
+.m-ent-station-dl [data-kind='promise'] dt {
+  color: var(--accent-ink);
+}
+.m-ent-station-dl [data-kind='promise'] dd {
+  color: var(--ink);
+}
+.m-ent-forms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.m-ent-forms > span {
+  padding: 1px 9px;
+  border-radius: var(--r-pill);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  color: var(--mute);
   font-size: var(--t-small);
-  line-height: 1.8;
+  line-height: 1.7;
+  transition:
+    background-color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease),
+    color 0.5s var(--ease);
+}
+.m-ent-forms > span[data-hit] {
+  background: var(--accent-wash);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--ink);
+}
+.m-ent-flag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--accent-wash);
+  color: var(--accent-ink);
+  font: 500 11.5px/1.3 var(--sans);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+/* 架子：四张卡，各是一小段「做出来」的动画（keeps.tsx）。卡跟着鼠标轻轻倾斜，带一道反光 */
+.m-ent-shelf {
+  display: grid;
+  gap: 14px;
+}
+.m-ent-shelf-title {
+  color: var(--mute);
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  transition: color 0.6s var(--ease);
+}
+.m-ent-shelf-slots {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--col-gap);
+}
+.m-ent-slot {
+  perspective: 900px;
+}
+.m-keep {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 12px 12px 16px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 22px 40px -32px rgb(var(--shade) / 0.55);
+  color: var(--ink-2);
+  text-align: center;
+  cursor: pointer;
+  overflow: hidden;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))
+    translateY(var(--lift, 0px));
+  transform-style: preserve-3d;
+  transition:
+    transform 0.7s var(--ease),
+    box-shadow 0.7s var(--ease),
+    background-color 0.6s var(--ease),
+    opacity 0.6s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+/* 反光：一团柔光跟着鼠标走 */
+.m-keep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 0%),
+    rgb(255 255 255 / 0.55),
+    rgb(255 255 255 / 0) 42%
+  );
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+  pointer-events: none;
+}
+.m-keep:hover {
+  --lift: -4px;
+  transition:
+    transform 0.25s ease-out,
+    box-shadow 0.7s var(--ease),
+    background-color 0.6s var(--ease),
+    opacity 0.6s var(--ease);
+  box-shadow:
+    0 0 0 1px var(--hair-2),
+    0 30px 50px -30px rgb(var(--shade) / 0.6);
+}
+.m-keep:hover::after {
+  opacity: 1;
+}
+.m-keep:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+}
+/* 顶边一道杏橙：走到的那一站 */
+.m-keep::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s var(--ease);
+}
+.m-keep-art {
+  display: block;
+  width: 100%;
+  height: clamp(150px, 24vh, 220px);
+  border-radius: 10px;
+  background: var(--paper-2);
+}
+.m-keep-name {
+  padding-inline: 4px;
+  font-size: var(--t-small);
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- 四件东西的画法：静止就是做好的样子；data-play 时从头演一遍 ---------- */
+.m-keep-art .m-k-shade {
+  flood-color: rgb(var(--shade));
+  flood-opacity: 0.13;
+}
+.m-k-paper {
+  fill: var(--white);
+}
+.m-k-fold,
+.m-k-cell,
+.m-k-field,
+.m-k-box {
+  fill: none;
+  stroke: var(--hair-2);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.m-k-field {
+  fill: var(--paper);
+}
+.m-k-box {
+  stroke: var(--ink-2);
+  stroke-width: 1.1;
+}
+.m-k-ink {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.m-k-thin {
+  fill: none;
+  stroke: var(--hair-2);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.m-k-line {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.m-k-dot {
+  fill: var(--faint);
+}
+.m-k-hot,
+.m-k-button,
+.m-k-node {
+  fill: var(--accent);
+}
+.m-k-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.4;
+}
+.m-k-stamp circle {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 1.2;
+}
+.m-k-stamp path,
+.m-k-fix,
+.m-k-tick {
+  fill: none;
+  stroke: var(--accent-ink);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-k-light {
+  fill: var(--faint);
+}
+.m-k-type {
+  fill: var(--ink-2);
+}
+.m-k-caret {
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  opacity: 0;
+}
+.m-k-arrow {
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-k-ripple {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.2;
+  opacity: 0;
+}
+.m-k-ok {
+  fill: var(--accent-wash);
+}
+.m-k-clip {
+  fill: var(--ink);
+}
+.m-k-mark {
+  fill: var(--paper-2);
+}
+.m-k-check {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-k-bad {
+  fill: none;
+  stroke: var(--accent-ink);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.m-k-lens {
+  opacity: 0;
+  translate: 82px 40px;
+}
+.m-k-lens circle {
+  fill: rgb(255 255 255 / 0.45);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.m-k-lens path {
+  stroke: var(--ink);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+}
+.m-k-tick-ink {
+  fill: none;
+  stroke: var(--accent-ink);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-k-draw {
+  stroke-dasharray: 1;
+}
+.m-keep-art .m-k-card {
+  translate: var(--tx) var(--ty);
+  rotate: var(--r);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.m-keep-art :is(.m-k-pop, .m-k-stamp, .m-k-press, .m-k-ripple, .m-k-type) {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.m-keep-art .m-k-type {
+  transform-origin: left center;
+}
+
+/* 演一遍：每个零件按自己的 --d 依次出场 */
+[data-play] .m-k-rise {
+  animation: m-k-rise 0.8s var(--ease) var(--d) both;
+}
+[data-play] .m-k-fade {
+  animation: m-k-fade 0.6s var(--ease) var(--d) both;
+}
+[data-play] .m-k-draw {
+  animation: m-k-draw 0.7s var(--ease) var(--d) both;
+}
+[data-play] .m-k-pop,
+[data-play] .m-k-stamp {
+  animation: m-k-pop 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) var(--d) both;
+}
+[data-play] .m-k-type {
+  animation: m-k-type 0.25s ease-out var(--d) both;
+}
+[data-play] .m-k-caret {
+  animation: m-k-caret 1.2s steps(1) 0.35s 1;
+}
+[data-play] .m-k-press {
+  animation: m-k-press 0.4s var(--ease) var(--d) both;
+}
+[data-play] .m-k-ripple {
+  animation: m-k-ripple 0.9s ease-out 1.2s both;
+}
+[data-play] .m-k-row {
+  animation: m-k-row 0.6s var(--ease) var(--d) both;
+}
+[data-play] .m-k-bad {
+  animation: m-k-bad 0.5s var(--ease) var(--d) both;
+}
+[data-play] .m-k-fix {
+  animation: m-k-fade 0.5s var(--ease) calc(var(--d) + 0.15s) both;
+}
+[data-play] .m-k-lens {
+  animation: m-k-lens 1.9s cubic-bezier(0.45, 0, 0.3, 1) 0.4s both;
+}
+[data-play] .m-k-card {
+  animation: m-k-fan 0.9s var(--ease) 0.25s both;
+}
+[data-play] .m-k-node {
+  animation: m-k-node 0.5s var(--ease) var(--d) both;
+}
+@keyframes m-k-rise {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+@keyframes m-k-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes m-k-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+@keyframes m-k-pop {
+  from {
+    opacity: 0;
+    scale: 0.2;
+  }
+}
+@keyframes m-k-type {
+  from {
+    scale: 0 1;
+  }
+}
+@keyframes m-k-caret {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  25%,
+  75%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes m-k-press {
+  50% {
+    scale: 0.86;
+  }
+}
+@keyframes m-k-ripple {
+  from {
+    opacity: 0.9;
+    scale: 0.4;
+  }
+  to {
+    opacity: 0;
+    scale: 1.3;
+  }
+}
+@keyframes m-k-row {
+  from {
+    opacity: 0;
+    translate: -10px 0;
+  }
+}
+/* 复测前先是 ✕，扫过之后变成 ✓ */
+@keyframes m-k-bad {
+  0%,
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes m-k-lens {
+  0% {
+    opacity: 0;
+    translate: 82px 30px;
+  }
+  12% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+    translate: 82px 128px;
+  }
+  100% {
+    opacity: 0;
+    translate: 82px 136px;
+  }
+}
+/* 一叠卡片从中间散开 */
+@keyframes m-k-fan {
+  from {
+    translate: 87px 44px;
+    rotate: 0deg;
+  }
+}
+@keyframes m-k-node {
+  from {
+    fill: var(--white);
+  }
+}
+.m-k-node {
+  stroke: var(--ink-2);
+  stroke-width: 1.1;
+}
+.m-ent-route-end {
+  font: 300 var(--t-h1) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+/* ---------- 钉住：宽屏、够高、不减少动态时（course.tsx 加 data-live） ---------- */
+.m-ent-route[data-live] {
+  height: 420vh;
+}
+.m-ent-route[data-live] .m-ent-route-stick {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: clamp(16px, 3vh, 32px);
+  padding-top: calc(var(--header) + clamp(20px, 5vh, 56px));
+  padding-bottom: clamp(24px, 5vh, 48px);
+}
+.m-ent-route[data-live] .m-ent-rail {
+  display: block;
+  position: relative;
+  height: 64px;
+  margin-inline: 8px;
+}
+.m-ent-rail-line,
+.m-ent-rail-fill {
+  position: absolute;
+  left: 0;
+  top: 30px;
+  height: 1px;
+}
+.m-ent-rail-line {
+  right: 0;
+  background: var(--hair-2);
+}
+.m-ent-rail-fill {
+  width: calc(var(--run) * 100%);
+  background: var(--ink);
+}
+.m-ent-rail-dot {
+  position: absolute;
+  z-index: 1;
+  top: 30px;
+  left: calc(var(--run) * 100%);
+  width: 12px;
+  height: 12px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 6px var(--accent-wash);
+}
+.m-ent-rail-stop {
+  position: absolute;
+  top: 0;
+  left: calc(var(--i) / 3 * 100%);
+  width: 0;
+  height: 64px;
+}
+.m-ent-rail-stop::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 30px;
+  width: 9px;
+  height: 9px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 1px var(--ink);
+  transition:
+    background-color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+.m-ent-rail-stop[data-ahead]::after {
+  background: var(--paper);
+  box-shadow: 0 0 0 1px var(--hair-2);
+}
+.m-ent-rail-where,
+.m-ent-rail-stop .m-ent-flag {
+  position: absolute;
+  left: 0;
+  translate: calc(var(--i) / 3 * -100%) 0;
+  white-space: nowrap;
+}
+.m-ent-rail-where {
+  top: 0;
+  color: var(--ink);
+  font: 500 var(--t-small) / 1.4 var(--sans);
+  letter-spacing: 0.14em;
+  transition: color 0.5s var(--ease);
+}
+.m-ent-rail-stop[data-ahead] .m-ent-rail-where {
   color: var(--mute);
 }
-.m-ent-people-end .m-link {
-  grid-column: 10 / -1;
-  justify-self: end;
+.m-ent-rail-stop .m-ent-flag {
+  top: 42px;
 }
 
-/* ---------- 05 表单 ---------- */
-.m-ent-form {
+/* 站点那一格：只显出走到的那一站 */
+.m-ent-route[data-live] .m-ent-rail {
+  grid-row: 1;
+}
+.m-ent-route[data-live] .m-ent-shelf {
+  grid-row: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+}
+/* 钉住时，架子把站点下面空出来的高度用上：卡最高 400，矮屏上跟着缩；标题始终贴着卡 */
+.m-ent-route[data-live] .m-ent-shelf-slots {
+  flex: 0 1 400px;
+  min-height: 0;
+}
+.m-ent-route[data-live] .m-ent-slot {
+  display: grid;
+  min-height: 0;
+}
+.m-ent-route[data-live] .m-keep {
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: 100%;
+}
+.m-ent-route[data-live] .m-keep-art {
+  height: 100%;
+  min-height: 110px;
+}
+.m-ent-route[data-live] .m-ent-stations {
+  grid-row: 2;
+  grid-column: 1;
+  display: grid;
+  grid-template-areas: 'one';
+  align-items: start;
+  min-height: 0;
+  padding-top: clamp(8px, 2vh, 24px);
+}
+.m-ent-route[data-live] .m-ent-station {
+  grid-area: one;
+  padding-block: 0;
+  border-top: 0;
+  opacity: 0;
+  translate: 0 18px;
+  visibility: hidden;
+  transition:
+    opacity 0.6s var(--ease),
+    translate 0.8s var(--ease),
+    visibility 0s linear 0.6s;
+}
+.m-ent-route[data-live] .m-ent-station[data-shown] {
+  opacity: 1;
+  translate: 0 0;
+  visibility: visible;
+  transition:
+    opacity 0.8s var(--ease) 0.1s,
+    translate 1s var(--ease) 0.1s,
+    visibility 0s;
+}
+.m-ent-route[data-live] .m-ent-station-name {
+  margin-top: 8px;
+  font-size: clamp(24px, 2.2vw, 34px);
+  line-height: 1.35;
+}
+/* 架子摆满：那一句回到站点那一格 */
+.m-ent-route[data-live] .m-ent-route-end {
+  grid-row: 2;
+  grid-column: 1;
+  align-self: center;
+  font-size: clamp(30px, 3.4vw, 52px);
+  line-height: 1.25;
+  opacity: 0;
+  translate: 0 18px;
+  transition:
+    opacity 0.9s var(--ease),
+    translate 1.1s var(--ease);
+}
+.m-ent-route[data-live][data-done]:not([data-peek]) .m-ent-route-end {
+  opacity: 1;
+  translate: 0 0;
+}
+/* 停在架子上的卡：线上那一站的名字用杏橙标出来 */
+.m-ent-route[data-peek] .m-ent-rail-stop[data-shown] .m-ent-rail-where {
+  color: var(--accent-ink);
+}
+/* 「这一站」的卡：滚动走到的那一张，或鼠标正停着的那一张（data-shown）——描墨边、顶上一道杏橙、浮起一点。
+   鼠标停在别的卡上时，滚动走到的那张先退回普通的样子 */
+.m-ent-slot[data-current] .m-keep,
+.m-ent-route[data-peek] .m-ent-slot[data-shown] .m-keep {
+  --lift: -6px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px var(--ink),
+    0 30px 50px -30px rgb(var(--shade) / 0.6);
+}
+.m-ent-slot[data-current] .m-keep::before,
+.m-ent-route[data-peek] .m-ent-slot[data-shown] .m-keep::before {
+  transform: scaleX(1);
+}
+.m-ent-route[data-peek] .m-ent-slot[data-current]:not([data-shown]) .m-keep {
+  --lift: 0px;
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 22px 40px -32px rgb(var(--shade) / 0.55);
+}
+.m-ent-route[data-peek]
+  .m-ent-slot[data-current]:not([data-shown])
+  .m-keep::before {
+  transform: scaleX(0);
+}
+/* 还没走到的是虚线空位，里面的画淡成影子；鼠标停上去就整张显出来、演一遍 */
+.m-ent-slot[data-ahead]:not([data-shown]) .m-keep {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+}
+.m-ent-slot[data-ahead]:not([data-shown]) .m-keep-art {
+  background: transparent;
+  outline: 1px dashed var(--hair-2);
+  outline-offset: -1px;
+}
+.m-ent-slot .m-keep-art > :not(defs) {
+  transition: opacity 0.5s var(--ease);
+}
+.m-ent-slot[data-ahead]:not([data-shown]) .m-keep-art > :not(defs) {
+  opacity: 0.18;
+}
+.m-ent-slot[data-ahead]:not([data-shown]) .m-keep-name {
+  color: var(--mute);
+}
+.m-ent-route[data-live][data-done] .m-ent-shelf-title {
+  color: var(--accent-ink);
+}
+
+/* =====================================================================
+   ④ 做这件事的人：满幅的白墙转角（C5），墙脚四张半透明的卡
+   ===================================================================== */
+.m-ent-people {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--paper-2);
+}
+.m-ent-people-photo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--avg, var(--paper-2));
+}
+/* 图比这一屏高出一截、顶边对齐：天窗和那道光留在屏里，地板裁掉一点；跟着鼠标只左右错开 */
+.m-ent-people-photo img {
+  width: 100%;
+  height: 112%;
+  object-fit: cover;
+  object-position: 62% 0%;
+  scale: 1.04;
+  transform-origin: 50% 0%;
+  translate: calc(var(--px, 0) * -12px) 0;
+  transition: translate 1.6s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+/* 左上铺一层纸色，标题读得清；右边留出天窗与那道光 */
+.m-ent-people-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      100deg,
+      rgb(251 250 247 / 0.82) 0%,
+      rgb(251 250 247 / 0.55) 38%,
+      rgb(251 250 247 / 0) 66%
+    ),
+    linear-gradient(
+      180deg,
+      rgb(251 250 247 / 0) 55%,
+      rgb(251 250 247 / 0.35) 100%
+    );
+}
+/* 标题、四张卡、页脚聚在一起，整组在一屏里上下居中；标题和卡之间只留一段适中的空 */
+.m-ent-people-body {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  align-content: center;
+  gap: clamp(14px, 4vh - 12px, 36px);
+  width: 100%;
+  padding-block: calc(var(--header) + clamp(16px, 9vh - 40px, 80px))
+    clamp(20px, 6vh - 16px, 56px);
+}
+.m-ent-people-head {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: 40em;
+}
+.m-ent-people-title {
+  font: 300 var(--t-h2) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-ent-people-lead {
+  max-width: 38em;
+  color: var(--ink-2);
+  font-size: var(--t-body);
+  line-height: 1.85;
+  letter-spacing: 0.02em;
+}
+
+/* 四张卡：半透明的纸，透出后面的墙；停上去浮起、倾斜，顶边一道杏橙，能力点依次亮起来 */
+.m-ent-caps {
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 20px);
+  margin: clamp(40px, 13vh - 40px, 120px) 0 0;
+  padding: 0;
+  list-style: none;
+  perspective: 1000px;
+}
+/* 四张卡共用五行（阶段、标题、做什么、能力点、背书）：哪张多一行字，同一行的其他卡跟着留出位置，细线对齐 */
+.m-cap {
+  position: relative;
+  display: grid;
+  grid-row: span 5;
+  grid-template-rows: subgrid;
+  align-content: start;
+  gap: 10px;
+  padding: clamp(18px, 2.4vh, 24px) clamp(16px, 1.5vw, 22px)
+    clamp(18px, 2.4vh, 24px);
+  border-radius: 14px;
+  background: rgb(251 250 247 / 0.62);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.7),
+    0 0 0 1px var(--hair),
+    0 24px 40px -32px rgb(var(--shade) / 0.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  backdrop-filter: blur(16px) saturate(1.1);
+  overflow: hidden;
+  /* 卡上全是字，倾斜只取架子卡片的一半不到，字不发虚 */
+  transform: rotateX(calc(var(--rx, 0deg) * 0.4))
+    rotateY(calc(var(--ry, 0deg) * 0.4)) translateY(var(--lift, 0px));
+  transition:
+    transform 0.7s var(--ease),
+    background-color 0.6s var(--ease),
+    box-shadow 0.7s var(--ease),
+    opacity 1s var(--ease) calc(0.15s + var(--i) * 0.12s),
+    translate 1.2s var(--ease) calc(0.15s + var(--i) * 0.12s);
+}
+/* 一排卡各自依次浮上来；外层不跟着淡入（半透明的外层会让卡后面的模糊失效） */
+.js .m .m-ent-caps[data-reveal]:not(.is-in) {
+  opacity: 1;
+  transform: none;
+}
+.js .m-ent-caps:not(.is-in) .m-cap {
+  opacity: 0;
+  translate: 0 16px;
+}
+/* 反光：一团柔光跟着鼠标走，垫在字的下面 */
+.m-cap::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 0%),
+    rgb(255 255 255 / 0.7),
+    rgb(255 255 255 / 0) 45%
+  );
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+  pointer-events: none;
+}
+.m-cap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 22px;
+  right: 22px;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s var(--ease);
+}
+.m-cap:hover {
+  --lift: -6px;
+  background: rgb(251 250 247 / 0.86);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.8),
+    0 0 0 1px var(--hair-2),
+    0 34px 54px -34px rgb(var(--shade) / 0.6);
+  transition:
+    transform 0.25s ease-out,
+    background-color 0.6s var(--ease),
+    box-shadow 0.7s var(--ease),
+    opacity 1s var(--ease),
+    translate 1.2s var(--ease);
+}
+.m-cap:hover::after {
+  opacity: 1;
+}
+.m-cap:hover::before {
+  transform: scaleX(1);
+}
+/* 01 · 诊断：流程里的这一步 */
+.m-cap-stage {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--accent-ink);
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+}
+.m-cap-stage span {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+}
+.m-cap-stage span::after {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  margin-left: 10px;
+  background: currentColor;
+  opacity: 0.5;
+  vertical-align: 0.3em;
+}
+.m-cap-title {
+  font: 400 clamp(17px, 1.35vw, 20px) / 1.45 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-cap-does {
+  color: var(--ink-2);
+  font-size: 13.5px;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+}
+/* 团队经历背书：卡底，上面一道细线，小标题单独一行 */
+.m-cap-record {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hair);
+  color: var(--ink-2);
+  font-size: 12.5px;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+}
+.m-cap-record span {
+  color: var(--mute);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+}
+.m-cap-points {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.m-cap-points li {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.5);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  color: var(--ink-2);
+  font-size: 12.5px;
+  line-height: 1.6;
+  letter-spacing: 0.03em;
+  transition:
+    background-color 0.45s var(--ease),
+    box-shadow 0.45s var(--ease),
+    color 0.45s var(--ease);
+}
+.m-cap:hover .m-cap-points li {
+  background: var(--accent-wash);
+  box-shadow: inset 0 0 0 1px rgb(234 146 96 / 0.35);
+  color: var(--accent-ink);
+  transition-delay: calc(0.1s + var(--j) * 0.08s);
+}
+
+.m-ent-people-end {
+  grid-row: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 32px;
+}
+.m-ent-people-end p {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  line-height: 1.8;
+}
+
+/* 窄屏：照片收成上方一条，往下渐变进纸色；四张卡两两一排 */
+@media (max-width: 900px) {
+  .m-ent-people {
+    min-height: 0;
+    background: var(--paper);
+  }
+  .m-ent-people-photo {
+    bottom: auto;
+    height: min(52vh, 440px);
+  }
+  .m-ent-people-photo img {
+    height: 100%;
+    object-position: 78% 40%;
+    translate: none;
+  }
+  .m-ent-people-photo::after {
+    background: linear-gradient(
+      180deg,
+      rgb(251 250 247 / 0.15) 0%,
+      rgb(251 250 247 / 0.5) 55%,
+      var(--paper) 100%
+    );
+  }
+  .m-ent-people-body {
+    grid-template-rows: none;
+    padding-block: clamp(120px, 26vh, 220px) var(--section-bottom);
+  }
+  .m-ent-caps,
+  .m-ent-people-end {
+    grid-row: auto;
+  }
+  .m-ent-caps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* 手机：四张卡排成一行，左右滑 */
+@media (max-width: 700px) {
+  .m-ent-caps {
+    display: flex;
+    gap: 12px;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 4px var(--gutter) 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  .m-ent-caps::-webkit-scrollbar {
+    display: none;
+  }
+  .m-cap {
+    flex: 0 0 min(272px, 76vw);
+    scroll-snap-align: start;
+  }
+}
+
+/* =====================================================================
+   ⑤ 我们也在亲自探索：一屏，三张插件卡（会作为 Molis Work 的官方插件推出）
+   ===================================================================== */
+.m-ent-explore {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  /* 留白跟着屏幕高度走：矮屏上收紧，整屏仍装得下 */
+  gap: clamp(20px, 7vh - 24px, 64px);
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: calc(var(--header) + clamp(12px, 8vh - 40px, 64px))
+    clamp(24px, 8vh - 32px, 96px);
+}
+.m-ent-explore-head {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+}
+.m-ent-explore-title {
+  font: 300 var(--t-h2) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+}
+/* 会作为 Molis Work 的官方插件推出：前面一枚小小的插件图标 */
+.m-ent-explore-plugin {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-2);
+  font-size: var(--t-body);
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+}
+.m-ent-plug {
+  position: relative;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1.2px var(--ink-2);
+}
+.m-ent-plug::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 1.5px;
+  background: var(--accent);
+}
+
+/* 三张插件卡：白纸、细边、一点影子，卡里留足空 */
+.m-ent-labs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 32px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.m-ent-lab,
+.js .m .m-ent-lab[data-reveal] {
+  transition:
+    opacity 1.1s var(--ease) var(--delay, 0ms),
+    transform 1.3s var(--ease) var(--delay, 0ms),
+    translate 0.5s var(--ease),
+    box-shadow 0.6s var(--ease);
+}
+.m-ent-lab {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 18px;
+  padding: clamp(20px, 2.2vw, 28px);
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 24px 40px -34px rgb(var(--shade) / 0.5);
+}
+.m-ent-lab-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.m-ent-lab-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  color: var(--ink);
+  font: 400 15px/1 var(--latin);
+}
+.m-ent-lab-name {
+  font: 300 clamp(22px, 1.8vw, 26px) / 1 var(--latin);
+  letter-spacing: 0;
+}
+.m-ent-lab-top .m-status {
+  margin-left: auto;
+}
+.m-ent-lab-q {
+  min-height: 3.5em;
+  color: var(--ink-2);
+  font-size: var(--t-body);
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+}
+.m-ent-lab-stage {
+  position: relative;
+}
+.m-ent-lab-figure {
+  position: relative;
+  margin: 0;
+  padding: 34px 14px 14px;
+  border-radius: var(--r-inset);
+  background: var(--paper-2);
+}
+.m-ent-lab-figure figcaption {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+/* 已有 / 还没有：宽屏上压在示意上，停到卡上才浮出来 */
+.m-ent-hn {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  margin: 0;
+  padding: 20px;
+  border-radius: var(--r-inset);
+  background: rgb(255 255 255 / 0.93);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  translate: 0 8px;
+  pointer-events: none;
+  transition:
+    opacity 0.4s var(--ease),
+    translate 0.6s var(--ease);
+}
+.m-ent-lab:hover {
+  translate: 0 -4px;
+  box-shadow:
+    0 0 0 1px var(--hair-2),
+    0 32px 50px -34px rgb(var(--shade) / 0.6);
+}
+.m-ent-lab:hover .m-ent-hn {
+  opacity: 1;
+  translate: 0 0;
+  /* 先看示意重画一遍，画完再浮出来 */
+  transition-delay: 2.4s;
+}
+.m-ent-hn > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.m-ent-hn dt {
+  width: 5em;
+  color: var(--mute);
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.14em;
+}
+.m-ent-hn dd {
+  padding: 4px 10px;
+  border-radius: var(--r-label);
+  font-size: var(--t-small);
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+}
+.m-ent-hn [data-kind='have'] dd {
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--ink);
+  color: var(--ink);
+}
+.m-ent-hn [data-kind='not'] dd {
+  border: 1px dashed rgb(27 26 24 / 0.3);
+  color: var(--mute);
+}
+/* 页脚：一枚章，旁边是 5.4 那句 */
+.m-ent-explore-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  color: var(--mute);
+  font-size: var(--t-small);
+  line-height: 1.8;
+}
+/* 章：虚线框、杏橙字，歪一点 */
+.m-ent-stamp {
+  padding: 5px 12px;
+  border: 1px dashed var(--accent-ink);
+  border-radius: var(--r-label);
+  color: var(--accent-ink);
+  font: 500 12px/1.4 var(--sans);
+  letter-spacing: 0.12em;
+  rotate: -3deg;
+}
+/* 窄屏与触屏：没有悬停，「已有 / 还没有」直接排在示意下面 */
+@media (max-width: 1100px), (hover: none) {
+  .m-ent-hn {
+    position: static;
+    margin-top: 16px;
+    padding: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    opacity: 1;
+    translate: none;
+    pointer-events: auto;
+  }
+  .js .m-ent-lab .m-ent-hn dd {
+    transition:
+      opacity 0.6s var(--ease) calc(0.6s + var(--i) * 0.12s),
+      translate 0.8s var(--ease) calc(0.6s + var(--i) * 0.12s);
+  }
+  .js .m-ent-lab:not(.is-in) .m-ent-hn dd {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+@media (max-width: 1100px) {
+  .m-ent-explore {
+    min-height: 0;
+    padding-block: var(--section-top) var(--section-bottom);
+  }
+}
+
+/* ---------- 三张示意：同路线架子上那四件的画法；静止就是画好的样子，data-play 时从头画一遍 ---------- */
+.m-lab-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.m-lab-art .m-k-shade {
+  flood-color: rgb(var(--shade));
+  flood-opacity: 0.12;
+}
+/* 还没画过的先空着（卡进入视口才画；没有 JS 时直接是画好的样子） */
+.js .m-lab-art:not([data-play]) > :not(defs) {
+  opacity: 0;
+}
+.m-x-text {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  fill: var(--mute);
+}
+.m-x-text[data-ink] {
+  fill: var(--ink-2);
+}
+.m-x-text[data-accent] {
+  fill: var(--accent-ink);
+  font-size: 10.5px;
+}
+.m-x-text[data-light] {
+  fill: var(--white);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+}
+.m-x-text[data-strong] {
+  fill: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+}
+.m-x-card {
+  fill: var(--white);
+  stroke: var(--hair);
+  stroke-width: 1;
+}
+.m-x-report {
+  fill: var(--white);
+  stroke: var(--ink);
+  stroke-width: 1.1;
+}
+.m-x-hair,
+.m-x-thin,
+.m-x-ink,
+.m-x-line,
+.m-x-accent,
+.m-x-icon,
+.m-x-tick,
+.m-x-tick-light,
+.m-x-lock,
+.m-x-beam,
+.m-x-call,
+.m-x-back,
+.m-x-cite,
+.m-x-glow,
+.m-x-fence,
+.m-x-fence-hot {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-x-hair {
+  stroke: var(--hair-2);
+  stroke-width: 1.1;
+}
+.m-x-thin {
+  stroke: var(--hair-2);
+  stroke-width: 1.8;
+}
+.m-x-ink {
+  stroke: var(--ink);
+  stroke-width: 2.2;
+}
+.m-x-line {
+  stroke: var(--faint);
+  stroke-width: 3.4;
+}
+.m-x-accent,
+.m-x-lock {
+  stroke: var(--accent);
+  stroke-width: 1.3;
+}
+.m-x-lock {
+  stroke: var(--accent-ink);
+  stroke-width: 1.1;
+}
+.m-x-icon {
+  stroke: var(--ink-2);
+  stroke-width: 1;
+}
+.m-x-step {
+  fill: var(--white);
+  stroke: var(--ink-2);
+  stroke-width: 1;
+}
+.m-x-tick {
+  stroke: var(--accent-ink);
+  stroke-width: 1.6;
+}
+.m-x-tick-light {
+  stroke: var(--white);
+  stroke-width: 1.8;
+}
+.m-x-typed,
+.m-x-bar {
+  fill: var(--faint);
+}
+.m-x-bar[data-hot],
+.m-x-dot,
+.m-x-tag {
+  fill: var(--accent);
+}
+.m-x-mark,
+.m-x-read {
+  fill: var(--accent-wash);
+}
+.m-x-badge {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 1.1;
+}
+.m-x-light {
+  fill: var(--faint);
+}
+.m-x-slot {
+  fill: var(--paper);
+  stroke: var(--hair-2);
+  stroke-width: 1;
+}
+.m-x-btn {
+  fill: var(--white);
+  stroke: var(--ink-2);
+  stroke-width: 1;
+}
+/* 被按下的那一项软件能力：画完是杏橙的，里面一个白勾 */
+.m-x-btn.m-k-node {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+.m-x-agent {
+  fill: var(--ink);
+}
+.m-x-beam {
+  stroke: var(--accent);
+  stroke-width: 1.2;
+}
+.m-x-call {
+  stroke: var(--ink-2);
+  stroke-width: 1.3;
+}
+.m-x-back {
+  stroke: var(--accent);
+  stroke-width: 1.2;
+}
+.m-x-cite {
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-dasharray: 2 2.6;
+}
+.m-x-glow {
+  stroke: var(--accent);
+  stroke-width: 1.3;
+}
+.m-x-fence {
+  stroke: var(--accent);
+  stroke-width: 1.1;
+  stroke-dasharray: 4 4;
+}
+/* 调用穿过权限和业务规则时，那一圈亮一下（静止时不在） */
+.m-x-fence-hot {
+  stroke: var(--accent);
+  stroke-width: 2.4;
+  opacity: 0;
+}
+.m-x-knock {
+  fill: var(--paper-2);
+}
+.m-x-run,
+.m-x-ripple {
+  opacity: 0;
+}
+.m-x-run {
+  fill: var(--accent);
+}
+.m-x-ripple {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.2;
+}
+.m-x-blink {
+  fill: var(--ink-2);
+}
+/* 纸片与稿件：静止的位置与角度写在 --tx / --ty / --r 上 */
+.m-x-place {
+  translate: var(--tx) var(--ty);
+  rotate: var(--r);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.m-lab-art
+  :is(.m-k-pop, .m-k-press, .m-x-ripple, .m-x-sweep, .m-k-type, .m-x-grow) {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.m-lab-art :is(.m-x-sweep, .m-k-type) {
+  transform-origin: left center;
+}
+.m-lab-art .m-x-grow {
+  transform-origin: bottom;
+}
+[data-play] .m-x-gather {
+  animation: m-x-gather 0.9s var(--ease) var(--d) both;
+}
+[data-play] .m-x-run {
+  animation: m-x-run 0.6s cubic-bezier(0.45, 0, 0.3, 1) var(--d) both;
+}
+[data-play] .m-x-sweep {
+  animation: m-k-type 0.5s var(--ease) var(--d) both;
+}
+[data-play] .m-x-grow {
+  animation: m-x-grow 0.6s var(--ease) var(--d) both;
+}
+[data-play] .m-x-blink {
+  animation: m-x-blink 0.6s ease-in-out var(--d) 3 both;
+}
+[data-play] .m-x-ripple {
+  animation: m-k-ripple 0.9s ease-out var(--d) both;
+}
+/* 被按下的那一项：从白底墨框变成杏橙 */
+[data-play] .m-x-btn.m-k-node {
+  animation: m-x-hit 0.4s var(--ease) var(--d) both;
+}
+[data-play] .m-x-fence-hot {
+  animation: m-x-flash 0.9s var(--ease) var(--d) both;
+}
+@keyframes m-x-gather {
+  from {
+    opacity: 0;
+    translate: calc(var(--tx) + var(--fx)) calc(var(--ty) + var(--fy));
+    rotate: calc(var(--r) + var(--fr));
+  }
+}
+@keyframes m-x-run {
+  0% {
+    opacity: 0;
+    translate: var(--fx) 0;
+  }
+  20%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: 0 0;
+  }
+}
+@keyframes m-x-hit {
+  from {
+    fill: var(--white);
+    stroke: var(--ink-2);
+  }
+}
+@keyframes m-x-grow {
+  from {
+    scale: 1 0;
+  }
+}
+@keyframes m-x-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+@keyframes m-x-flash {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.55;
+  }
+}
+
+/* =====================================================================
+   ⑥ 聊聊：窗边的书桌，表单第一行写着选过的问题
+   ===================================================================== */
+.m-ent-talk {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--col-gap);
+  row-gap: 40px;
+  align-items: start;
+  padding-block: var(--section-top) var(--section-bottom);
 }
-.m-ent-form > * {
-  grid-column: 3 / span 7;
+.m-ent-talk-window {
+  grid-column: 1 / span 5;
+  position: sticky;
+  top: calc(var(--header) + 24px);
+}
+.m-ent-talk-body {
+  grid-column: 7 / -1;
+  display: grid;
+  gap: 32px;
+}
+.m-ent-talk-head {
+  display: grid;
+  gap: 14px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ink);
+}
+.m-ent-talk-title {
+  font: 300 var(--t-h1) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-ent-talk-lead {
+  color: var(--ink-2);
+  font: 300 var(--t-lead) / 1.8 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-seeded {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--accent-ink);
+  font-size: var(--t-small);
+  letter-spacing: 0.04em;
+}
+.m-ent-seeded::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  translate: 0 -1px;
+  border-radius: 50%;
+  background: var(--accent);
 }
 
-/* ---------- 窄一些：路径两列，表格换行 ---------- */
-@media (max-width: 1200px) {
-  .m-ent-stages {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+/* =====================================================================
+   窄屏
+   ===================================================================== */
+@media (max-width: 1100px) {
+  .m-ent-slips {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  .m-ent-stage:nth-child(2) .m-ent-rail::before {
-    right: 0;
+  .m-ent-labs {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 640px;
   }
-  .m-ent-row-name {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 8px 16px;
-  }
-  .m-ent-row-cells {
-    grid-column: 1 / -1;
-  }
-  .m-ent-table-head {
-    display: none;
-  }
-  .m-ent-row-cells dt {
-    position: static;
-    width: auto;
-    height: auto;
-    overflow: visible;
-    clip: auto;
-    white-space: normal;
-    margin-bottom: 4px;
-    font: 500 var(--t-label) / 1.4 var(--sans);
-    letter-spacing: 0.16em;
-    color: var(--mute);
-  }
-  .m-ent-table-end {
-    padding-left: 0;
+  .m-ent-lab-q {
+    min-height: 0;
   }
 }
 @media (max-width: 900px) {
-  .m-ent-title,
-  .m-ent-hero-go,
-  .m-ent-intro-text,
-  .m-ent-qtitle,
-  .m-ent-qtext,
-  .m-ent-group-title,
-  .m-ent-members,
-  .m-ent-pick-set,
-  .m-ent-advice,
-  .m-ent-people-end p,
-  .m-ent-people-end .m-link,
-  .m-ent-form > * {
+  .m-ent-reply-heard,
+  .m-ent-reply-start,
+  .m-ent-station-head,
+  .m-ent-station-body,
+  .m-ent-talk-window,
+  .m-ent-talk-body {
     grid-column: 1 / -1;
   }
-  .m-ent-qno {
-    grid-column: 1 / -1;
+  .m-ent-talk-window {
+    position: static;
+    max-width: 520px;
   }
-  .m-ent-hero-go,
-  .m-ent-people-end .m-link {
-    justify-content: flex-start;
-    justify-self: start;
-  }
-  .m-ent-row-cells > div:nth-child(n) {
-    grid-column: 1 / -1;
-  }
-}
-@media (max-width: 760px) {
-  .m-ent-stages {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .m-ent-stage[data-span='2'] {
-    grid-column: auto;
-  }
-  .m-ent-stage[data-span='2'] .m-ent-stops {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 28px;
-  }
-  .m-ent-rail::before {
-    right: 0 !important;
+  .m-ent-shelf-slots {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 32px;
   }
 }
 @media (max-width: 700px) {
-  .m-ent-title {
-    font-size: var(--t-h1);
-    line-height: 1.32;
+  /* 手机上纸条排成一行，左右滑；每张够宽，小图不缩 */
+  .m-ent-slips {
+    display: flex;
+    gap: 12px;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 16px var(--gutter) 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
   }
-  .m-ent-hero-window .m-window-frame {
-    --ratio: 4 / 3 !important;
+  .m-ent-slips::-webkit-scrollbar {
+    display: none;
+  }
+  .m-ent-slip {
+    flex: 0 0 min(240px, 72vw);
+    scroll-snap-align: start;
+  }
+  .m-ent-title span + span {
+    padding-left: 0;
+  }
+  .m-ent-station-dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
   }
 }
 
-/* 减少动态：选中直接落在结果上，不做颜色过渡 */
+/* ---------- 减少动态：每处停在完整的结果 ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .m-ent-rail::after,
-  .m-ent-card,
-  .m-ent-service,
-  .m-ent-dl dd,
-  .m-ent-pick-item > span {
-    transition: none;
+  .m-ent-hero .m-plate img,
+  .m-ent-hint svg,
+  .m-sym,
+  .m-sym *,
+  .m-keep-art *,
+  .m-lab-art *,
+  .m-ent-pick .m-ent-reply {
+    animation: none !important;
   }
-}
-@media print {
-  .m-ent-pick,
-  .m-ent-talk {
-    display: none;
+  .m-ent-slip,
+  .m-sym *,
+  .m-ent-reply,
+  .m-keep {
+    transition: none !important;
+  }
+  .m-keep {
+    transform: none !important;
+  }
+  .m-cap {
+    transform: none !important;
+  }
+  .m-ent-people-photo img {
+    translate: none;
+  }
+  .js .m-ent-caps:not(.is-in) .m-cap,
+  .js .m-ent-lab:not(.is-in) .m-ent-hn dd {
+    opacity: 1;
+    translate: none;
   }
 }
