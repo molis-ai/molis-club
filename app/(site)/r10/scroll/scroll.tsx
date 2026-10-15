@@ -80,6 +80,12 @@ const scenes: Scene[] = [
   },
 ];
 
+/** '2 / 1' → 2：照片的宽高比，算宽度用 */
+const ratioOf = (ratio: string) => {
+  const [w, h] = ratio.split('/').map(Number);
+  return w / h;
+};
+
 const hrefOf = (id: ProductId) =>
   id === 'work' ? SCROLL_WORK : productHref[id];
 
@@ -182,7 +188,12 @@ function Segment({
     >
       <figure
         className="sc-pic"
-        style={{ '--ratio': scene.ratio } as CSSProperties}
+        style={
+          {
+            '--ratio': scene.ratio,
+            '--r': ratioOf(scene.ratio),
+          } as CSSProperties
+        }
       >
         <div className="sc-pic-frame">
           <Photo
