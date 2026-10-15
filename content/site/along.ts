@@ -31,8 +31,36 @@ export type AlongItem = {
 export type AlongGroup = {
   no: string;
   title: string;
+  /** 河图源头上的短名（新写，取自组名） */
+  short: string;
   items: AlongItem[];
 };
+
+/**
+ * 河图的去处：每件只流到一处。按附录原文：写明并入哪件产品的流进那件产品（同时是独立应用的另加一道圈）；
+ * 留在 Lab、停在设计里、已归档的各归各处；附录没写明去处的，一律「各自留着」——
+ * 附录 A 最后一段说每项探索都各自留下了一点具体的东西，这一句对它们都成立，不替它们另编阶段。
+ */
+export type Flow = 'work' | 'tool' | 'story' | 'lab' | 'design' | 'archived' | 'rest';
+
+export const flows: Flow[] = [
+  'work',
+  'tool',
+  'story',
+  'lab',
+  'design',
+  'archived',
+  'rest',
+];
+
+export function flowOf(item: AlongItem): Flow {
+  if (item.where.includes('merged') && item.into)
+    return item.into.toLowerCase() as Flow;
+  if (item.where.includes('lab')) return 'lab';
+  if (item.where.includes('design')) return 'design';
+  if (item.where.includes('archived')) return 'archived';
+  return 'rest';
+}
 
 const GH = 'https://github.com/molis-ai';
 
@@ -45,6 +73,8 @@ export const along = {
     '把 Molis 的仓库摊开，会看见许多不同的名字。它们有的围绕工作里一件难办的事，有的来自生活中的一个小需要，还有的想把一段想象变成可以亲自走进去的体验。',
     '这些探索走到了不同的地方：有些做出了独立应用，有些留下了可玩的原型，有些停在设计与研究里。沿着它们各自关心的问题，可以看见工作室更具体的一面。',
   ],
+  /** 附录 A 第二段第一句：首屏的一句 */
+  hook: '这些探索走到了不同的地方：有些做出了独立应用，有些留下了可玩的原型，有些停在设计与研究里。',
   /** 附录 A 最后一段 */
   outro:
     '每项探索都留下了一点具体的东西：一段实现、一种交互、一份设计，或一个尚未回答的问题。它们让“我们想做什么”有了可以看见、可以讨论，也可以继续改变的样子。',
@@ -52,6 +82,32 @@ export const along = {
 
 /** 界面文字（新写） */
 export const alongUi = {
+  /** 河图 */
+  river: (n: number) => `${n} 件尝试流到了哪里`,
+  riverNote: '一个点是一件尝试。点一处去处，下面只看流到那里的；鼠标停在线上能看到名字。',
+  restNote: '「各自留着」：附录没写它们并进哪里，每一件都各自留下了一段实现、一种交互、一份设计，或一个尚未回答的问题。',
+  appMark: '带圈的点：也有独立应用',
+  flow: {
+    work: '流进 Molis Work',
+    tool: '流进 Molis Tool',
+    story: '流进 Molis Story',
+    lab: '留在 Lab',
+    design: '停在设计里',
+    archived: '已归档',
+    rest: '各自留着',
+  } satisfies Record<Flow, string>,
+  flowShort: {
+    work: 'Work',
+    tool: 'Tool',
+    story: 'Story',
+    lab: 'Lab',
+    design: '设计里',
+    archived: '归档',
+    rest: '各自留着',
+  } satisfies Record<Flow, string>,
+  app: '也有独立应用',
+  fullIntro: '展开看全文',
+  more: '现在在哪',
   count: '件',
   columns: { name: '名字', ask: '它关心的问题', now: '现在在哪' },
   filterLabel: '按现在在哪筛选',
@@ -78,6 +134,7 @@ export const alongGroups: AlongGroup[] = [
   {
     no: 'A.1',
     title: '工作里的问题，总有具体的样子',
+    short: '工作里的问题',
     items: [
       {
         name: 'mage-helper',
@@ -142,6 +199,7 @@ export const alongGroups: AlongGroup[] = [
   {
     no: 'A.2',
     title: '做决定之前，先把事情看清楚',
+    short: '做决定之前',
     items: [
       {
         name: 'Alchemist',
@@ -193,6 +251,7 @@ export const alongGroups: AlongGroup[] = [
   {
     no: 'A.3',
     title: '一段工作交出去之后',
+    short: '交出去之后',
     items: [
       {
         name: 'GoalBoard',
@@ -264,6 +323,7 @@ export const alongGroups: AlongGroup[] = [
   {
     no: 'A.4',
     title: '把目光移向工作之外',
+    short: '工作之外',
     items: [
       {
         name: 'CookToday',
@@ -291,6 +351,7 @@ export const alongGroups: AlongGroup[] = [
   {
     no: 'A.5',
     title: '有些想法，值得亲自走进去',
+    short: '亲自走进去',
     items: [
       {
         name: '云海来客',
@@ -363,6 +424,7 @@ export const alongGroups: AlongGroup[] = [
   {
     no: 'A.6',
     title: '一个愿望，也可以成为一件作品',
+    short: '愿望成作品',
     items: [
       {
         name: '午夜造物局',
@@ -421,6 +483,7 @@ export const alongGroups: AlongGroup[] = [
   {
     no: 'A.7',
     title: '把方法、经验和作品交到更多人手里',
+    short: '交给更多人',
     items: [
       {
         name: 'README Craft',
@@ -483,6 +546,7 @@ export const alongGroups: AlongGroup[] = [
   {
     no: 'A.8',
     title: '还有一些问题，停在设计里',
+    short: '设计里的问题',
     items: [
       {
         name: 'Aether',
