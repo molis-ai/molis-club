@@ -63,6 +63,13 @@ export function essayLength(body: string) {
   };
 }
 
+/** 本篇的小标题（## 开头的行），列表页排成一条「本篇脉络」；参考依据不算 */
+export function essaySections(body: string) {
+  return (body.match(/^## .+$/gm) ?? [])
+    .map((line) => line.slice(3).trim())
+    .filter((title) => !title.includes('参考'));
+}
+
 /** 下一篇：按列表顺序轮转 */
 export function nextEssay(slug: string) {
   const index = essays.findIndex((story) => story.slug === slug);

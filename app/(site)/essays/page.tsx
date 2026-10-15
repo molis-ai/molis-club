@@ -4,6 +4,7 @@ import { pageMetadata } from '../../../lib/site';
 import {
   AUTHOR,
   essayLength,
+  essaySections,
   essays,
   essaysPage,
   essayUi,
@@ -20,7 +21,8 @@ export const metadata = pageMetadata(
   ESSAYS,
 );
 
-// 文章：像一本图录的目录。左边超大的斜体篇号，中间标题与一句摘句，右边作者、篇幅与入口；没有配图。
+// 文章：像一本图录的目录。左边超大的斜体篇号，中间标题与一句摘句（文章自己的问题，当勾子），
+// 下面一条「本篇脉络」：这篇的小标题串成一条线，一眼看出它怎么走；右边作者、篇幅与入口；没有配图。
 export default function EssaysPage() {
   return (
     <div className="m-essays">
@@ -73,6 +75,13 @@ export default function EssaysPage() {
                 </h2>
                 <p className="m-essays-excerpt">{excerpts[story.slug]}</p>
               </div>
+              <ol className="m-essays-spine" aria-label={essayUi.toc}>
+                {essaySections(story.body).map((title, at) => (
+                  <li key={title} style={{ '--i': at } as Vars}>
+                    {title}
+                  </li>
+                ))}
+              </ol>
               <p className="m-essays-meta">
                 <span>{AUTHOR}</span>
                 <span className="num">{essayUi.words(words)}</span>

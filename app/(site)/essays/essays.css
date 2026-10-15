@@ -77,6 +77,54 @@
   line-height: 1.95;
   color: var(--ink-2);
 }
+.m-essays-item .m-essays-excerpt {
+  font: 300 var(--t-h3) / 1.75 var(--sans);
+  letter-spacing: 0.03em;
+}
+/* 本篇脉络：小标题串成一条线；停在这一篇上，点一个接一个亮起来 */
+.m-essays-spine {
+  grid-column: 3 / span 8;
+  grid-row: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 0;
+  font-size: var(--t-small);
+  letter-spacing: 0.04em;
+  color: var(--mute);
+}
+.m-essays-spine li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: color 0.4s var(--ease) calc(var(--i) * 70ms);
+}
+.m-essays-spine li::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.2px currentColor;
+  transition: background-color 0.4s var(--ease) calc(var(--i) * 70ms);
+}
+.m-essays-spine li + li {
+  margin-left: 10px;
+}
+.m-essays-spine li + li::after {
+  order: -1;
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: var(--hair-2);
+}
+.m-essays-item:hover .m-essays-spine li {
+  color: var(--ink);
+}
+.m-essays-item:hover .m-essays-spine li::before {
+  background: var(--accent);
+  box-shadow: none;
+}
 .m-essays-meta {
   grid-column: 10 / span 3;
   display: grid;
@@ -106,8 +154,12 @@
   .m-essays-title,
   .m-essays-no,
   .m-essays-copy,
+  .m-essays-spine,
   .m-essays-meta {
     grid-column: 1 / -1;
+  }
+  .m-essays-spine {
+    grid-row: auto;
   }
 }
 
@@ -395,7 +447,9 @@
 @media (prefers-reduced-motion: reduce) {
   .m-essays-main,
   .m-essays-go svg,
-  .m-essay-toc a {
+  .m-essay-toc a,
+  .m-essays-spine li,
+  .m-essays-spine li::before {
     transition: none;
   }
 }
