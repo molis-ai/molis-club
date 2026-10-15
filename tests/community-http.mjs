@@ -29,8 +29,9 @@ assert.match(community, /niul\.ai/);
 assert.match(community, /DropAgent/);
 assert.match(community, /AI 创作试样/);
 assert(community.includes('href="/community/methods"'));
+// 晾衣绳上的「分享给我们」预选分享主题；按作品的 share-* 入口在访客动过手之后才出现
 assert(
-  community.includes('href="/contact?topic=share-'),
+  /href="\/contact\?topic=(creator|share-[a-z]+)"/.test(community),
   'share entry preselects the contact topic',
 );
 

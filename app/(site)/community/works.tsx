@@ -9,24 +9,50 @@ import {
   type TechniqueEntry,
 } from '../../../content/knowledge';
 import {
-  community,
+  appendixTools,
   communityUi,
   demos,
+  DROPAGENT_RELEASE,
+  DROPAGENT_REPO,
+  NIUL_REPO,
   skillZipKb,
   works,
 } from '../../../content/site/community';
 import { at, Canvas, Cursor } from '../../_site/demo/demo';
 import { useReducedMotion, useVisible } from '../../_site/motion';
-import { artistHref, METHODS, methodHref } from '../../_site/routes';
+import {
+  artistHref,
+  METHODS,
+  methodHref,
+  productHref,
+} from '../../_site/routes';
 import { More, Note, pad, artistImage } from '../../_site/ui';
-import { CopyAction, SkillDownload } from './copy';
 import { MethodDemo } from './method-demo';
-import { Col } from './parts';
+import { TicketCopy, TicketLink } from './ticket';
 
-// 作品行里需要状态的部分：Artist Skill 与网页动效「选一个，三栏一起换」；niul.ai 与 DropAgent 的示意演示。
+// 工作台右边那张纸：每件作品三层——先玩（作品本身）/ 看怎么做（或「想解决什么」）/ 带走（票根）。
+// Artist Skill 与网页动效「选一个，三层一起换」；niul.ai 与 DropAgent 是示意演示。
 // 没有 JS 时停在第一项、演示停在完整的结果上；减少动态时演示不播，停在设计好的那一帧。
 
-const cols = communityUi.cols;
+const ui = communityUi.bench;
+
+/** 一层：左边一行小标签，右边内容 */
+function Layer({
+  label,
+  kind,
+  children,
+}: {
+  label: string;
+  kind: 'play' | 'how' | 'take';
+  children: ReactNode;
+}) {
+  return (
+    <div className="m-com-layer" data-layer={kind}>
+      <h4 className="m-com-layer-label">{label}</h4>
+      <div className="m-com-layer-body">{children}</div>
+    </div>
+  );
+}
 
 // ---------- Artist Skill：AI 试样 / 方法三步 / 下载 ----------
 
@@ -35,50 +61,43 @@ const builder = artistSkills.find(
   (skill) => skill.slug === 'art-style-skill-builder',
 );
 
-export function ArtistCols() {
+export function ArtistStage() {
   const [index, setIndex] = useState(0);
   const skill = samples[index];
   const t = works.artist;
   return (
     <>
-      <Col label={cols.play} kind="play">
-        <fieldset className="m-com-pick m-com-js">
-          <legend className="sr-only">{t.pick}</legend>
-          {samples.map((item, i) => (
-            <button
-              key={item.slug}
-              type="button"
-              aria-pressed={i === index}
-              onClick={() => setIndex(i)}
-            >
-              {item.name.split(' · ')[1] ?? item.name}
-            </button>
-          ))}
-        </fieldset>
+      <Layer label={ui.play} kind="play">
         <figure className="m-com-sample">
           <div className="m-com-sample-view">
             <img
               key={skill.slug}
-              {...artistImage(skill.slug, skill)}
+              {...artistImage(skill.slug, skill, '(max-width: 900px) 90vw, 420px')}
               alt={skill.imageAlt}
               loading="lazy"
               decoding="async"
             />
           </div>
           <figcaption>
-            <span className="m-com-sample-name">
-              {skill.name}
-              <i lang="en">{skill.english}</i>
-            </span>
+            <fieldset className="m-com-pick m-com-js">
+              <legend className="sr-only">{t.pick}</legend>
+              {samples.map((item, i) => (
+                <button
+                  key={item.slug}
+                  type="button"
+                  aria-pressed={i === index}
+                  onMouseEnter={() => setIndex(i)}
+                  onClick={() => setIndex(i)}
+                >
+                  {item.name.split(' · ')[1] ?? item.name}
+                </button>
+              ))}
+            </fieldset>
             <Note>{t.sampleNote}</Note>
           </figcaption>
         </figure>
-      </Col>
-      <Col label={cols.how} kind="how">
-        <p className="m-com-how-lead">
-          <b>{skill.medium}</b>
-          {skill.description}
-        </p>
+      </Layer>
+      <Layer label={ui.how} kind="how">
         <ol className="m-com-steps">
           {skill.method.map((step, i) => (
             <li key={step.title}>
@@ -90,31 +109,30 @@ export function ArtistCols() {
             </li>
           ))}
         </ol>
-      </Col>
-      <Col label={cols.take} kind="take">
-        <div className="m-com-take">
-          <SkillDownload
-            slug={skill.slug}
-            kb={skillZipKb[skill.slug]}
-            label={t.download}
-            solid
-          />
-          <More href={artistHref(skill.slug)}>{t.detail}</More>
+      </Layer>
+      <Layer label={ui.take} kind="take">
+        <TicketLink
+          href={`/downloads/artists/${skill.slug}.zip`}
+          download
+          title={t.download}
+          meta={`${skill.name} · zip ${skillZipKb[skill.slug] ?? ''} KB`}
+          no="No.02"
+          done={'已开始下载。'}
+          topic="share-artist"
+        />
+        <p className="m-com-take-links">
+          <More href={artistHref(skill.slug)}>{ui.detail}</More>
           {builder ? (
-            <div className="m-com-take-more">
-              <p className="m-kicker">{t.builderLabel}</p>
-              <p>{community.methods.artist[1]}</p>
-              <SkillDownload
-                slug={builder.slug}
-                kb={skillZipKb[builder.slug]}
-                label={t.builderDownload}
-              />
-              <More href={artistHref(builder.slug)}>{t.detail}</More>
-            </div>
+            <a
+              className="m-link"
+              href={`/downloads/artists/${builder.slug}.zip`}
+              download
+            >
+              {t.builderDownload}
+            </a>
           ) : null}
-          <p className="m-com-fine">{community.methods.tools}</p>
-        </div>
-      </Col>
+        </p>
+      </Layer>
     </>
   );
 }
@@ -125,13 +143,13 @@ const techniques = knowledge.filter(
   (entry): entry is TechniqueEntry => !isResourceEntry(entry),
 );
 
-export function WebCols() {
+export function WebStage() {
   const [slug, setSlug] = useState(techniques[0].slug);
   const entry = techniques.find((item) => item.slug === slug) ?? techniques[0];
   const t = works.web;
   return (
     <>
-      <Col label={cols.play} kind="play">
+      <Layer label={ui.play} kind="play">
         <fieldset className="m-com-pick m-com-js">
           <legend className="sr-only">{t.pick}</legend>
           {techniques.map((item) => (
@@ -139,6 +157,7 @@ export function WebCols() {
               key={item.slug}
               type="button"
               aria-pressed={item.slug === entry.slug}
+              onMouseEnter={() => setSlug(item.slug)}
               onClick={() => setSlug(item.slug)}
             >
               {item.name}
@@ -146,28 +165,120 @@ export function WebCols() {
           ))}
         </fieldset>
         <MethodDemo key={entry.slug} entry={entry} />
-      </Col>
-      <Col label={cols.how} kind="how">
+      </Layer>
+      <Layer label={ui.how} kind="how">
         <p className="m-com-how-lead">
           <b>{entry.name}</b>
           <i lang="en">{entry.english}</i>
         </p>
         <p className="m-com-how-text">{entry.description}</p>
-        <p className="m-kicker m-com-recipe-label">{t.recipe}</p>
-        <p className="m-com-recipe">{entry.recipe}</p>
-      </Col>
-      <Col label={cols.take} kind="take">
-        <div className="m-com-take">
-          <CopyAction
-            id="web-prompt"
-            text={knowledgePrompt(entry)}
-            label={t.copy}
-            topic="share-method"
-          />
-          <More href={methodHref(entry.slug)}>{t.detail}</More>
+        <p className="m-com-how-text">
+          <span className="m-com-how-key">{t.use}</span>
+          {entry.use}
+        </p>
+      </Layer>
+      <Layer label={ui.take} kind="take">
+        <TicketCopy
+          text={knowledgePrompt(entry)}
+          title={t.copy}
+          meta={t.copyMeta}
+          no="No.03"
+          topic="share-method"
+        />
+        <p className="m-com-take-links">
+          <More href={methodHref(entry.slug)}>{ui.detail}</More>
           <More href={`${METHODS}?type=web`}>{t.all}</More>
-        </div>
-      </Col>
+        </p>
+      </Layer>
+    </>
+  );
+}
+
+// ---------- niul.ai 与 DropAgent：演示 / 想解决什么 / 项目入口 ----------
+
+export function NiulStage() {
+  const t = works.niul;
+  return (
+    <>
+      <Layer label={ui.play} kind="play">
+        <NiulDemo />
+      </Layer>
+      <Layer label={ui.why} kind="how">
+        <p className="m-com-why-big">{t.lead}</p>
+        <p className="m-com-how-text">{appendixTools.niul[3]}</p>
+      </Layer>
+      <Layer label={ui.go} kind="take">
+        <TicketLink
+          href={NIUL_REPO}
+          external
+          title={t.repo}
+          meta={t.repoMeta}
+          no="No.04"
+        />
+        <p className="m-com-take-links">
+          <More href={productHref.tool}>{works.drop.tool}</More>
+        </p>
+        <p className="m-com-fine">{ui.tool}</p>
+      </Layer>
+    </>
+  );
+}
+
+export function DropStage() {
+  const t = works.drop;
+  const [hold, setHold] = useState<number | null>(null);
+  // 鼠标在三步之间挪动时不让演示在缝隙里跳回自动播放
+  const leave = useRef(0);
+  const pin = (i: number) => {
+    window.clearTimeout(leave.current);
+    setHold(i);
+  };
+  const release = () => {
+    window.clearTimeout(leave.current);
+    leave.current = window.setTimeout(() => setHold(null), 160);
+  };
+  useEffect(() => () => window.clearTimeout(leave.current), []);
+  return (
+    <>
+      <Layer label={ui.play} kind="play">
+        <DropDemo hold={hold} />
+      </Layer>
+      <Layer label={ui.why} kind="how">
+        <p className="m-com-why-big">{appendixTools.drop[0]}</p>
+        <ol className="m-com-drop-steps">
+          {demos.drop.steps.map((step, i) => (
+            <li key={step}>
+              <button
+                type="button"
+                aria-pressed={hold === i}
+                onMouseEnter={() => pin(i)}
+                onFocus={() => pin(i)}
+                onMouseLeave={release}
+                onBlur={release}
+              >
+                <span className="m-no">{pad(i + 1)}</span>
+                {step}
+              </button>
+            </li>
+          ))}
+        </ol>
+      </Layer>
+      <Layer label={ui.go} kind="take">
+        <TicketLink
+          href={DROPAGENT_RELEASE}
+          external
+          title={t.download}
+          meta={t.system}
+          no="No.05"
+        />
+        <p className="m-com-take-links">
+          <More href={DROPAGENT_REPO} external>
+            {t.repo}
+          </More>
+          <More href={productHref.tool}>{t.tool}</More>
+        </p>
+        <p className="m-com-fine">{ui.tool}</p>
+      </Layer>
     </>
   );
 }
@@ -184,6 +295,7 @@ function DemoShell({
   ms,
   label,
   className,
+  hold = null,
   foot,
   children,
 }: {
@@ -192,6 +304,8 @@ function DemoShell({
   ms: number;
   label: string;
   className: string;
+  /** 外面指着哪一步：停在那一步，不播 */
+  hold?: number | null;
   foot?: (step: number) => ReactNode;
   children: (step: number) => ReactNode;
 }) {
@@ -200,7 +314,7 @@ function DemoShell({
   const reduced = useReducedMotion();
   const [paused, setPaused] = useState(false);
   const [beat, setBeat] = useState(rest);
-  const running = visible && !reduced && !paused;
+  const running = visible && !reduced && !paused && hold === null;
   useEffect(() => {
     if (!running) return;
     const id = window.setInterval(
@@ -210,7 +324,7 @@ function DemoShell({
     return () => window.clearInterval(id);
   }, [running, steps, ms]);
   // 减少动态：不播，停在设计好的那一拍
-  const step = reduced ? rest : beat;
+  const step = hold ?? (reduced ? rest : beat);
   return (
     <figure
       ref={ref}
@@ -335,25 +449,16 @@ export function NiulDemo() {
 
 // ---------- DropAgent：放下材料 → 在副本上处理 → 取走新结果 ----------
 
-export function DropDemo() {
+export function DropDemo({ hold = null }: { hold?: number | null }) {
   const t = demos.drop;
   return (
     <DemoShell
       steps={3}
       rest={2}
       ms={2800}
+      hold={hold}
       label={t.label}
       className="m-com-drop"
-      foot={(now) => (
-        <ol className="m-com-demo-steps">
-          {t.steps.map((step, i) => (
-            <li key={step} data-on={i <= now || undefined}>
-              <span className="m-no">{pad(i + 1)}</span>
-              {step}
-            </li>
-          ))}
-        </ol>
-      )}
     >
       {(now) => (
         <Canvas step={now} className="m-com-drop-sc" press={[0]}>

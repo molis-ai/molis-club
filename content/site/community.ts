@@ -100,43 +100,105 @@ export const appendixTools = {
   both: 'DropAgent 和牛来都已有独立桌面应用，材料处理、Agent 动态与提醒的部分场景，也在 Molis Tool 中继续完善。',
 };
 
-/** 新写：页面上的标签、按钮与说明 */
+/**
+ * 新写 / 压缩：页面上的标签、按钮与说明（负责人 2026-10-15 定的「来 → 走 → 回来」七屏）。
+ * 标「压缩」的句子由第 6 章或附录 A.1 的原句压短，事实不变；其余是界面文字。
+ */
 export const communityUi = {
   kicker: '社区',
-  heroTags: ['作品，连同做法'],
-  heroCaption: 'A line in the sand, a shell at the end',
-  heroAlt: '退潮后的沙滩上，有人用手指画了一道弯弯的线，线的尽头放着一枚贝壳。',
-  worksKicker: '作品，连同做法',
-  cols: {
+  tag: '作品，连同做法',
+  /** 页边竖排的三幕，就是结尾那句话的三段 */
+  acts: ['带着好奇来', '带点什么走', '再带点什么回来'],
+  hero: {
+    next: '往下：四件作品，各自连着做法',
+    sign: '拖一拖',
+    hintX: '左右拖 · 重复',
+    hintY: '上下拖 · 展开',
+    /** 读屏与键盘：花本身就是一个可以调的控件 */
+    keys: '在花上拖动，或用方向键：左右改重复次数，上下改展开程度。',
+    ticket: '带走这一朵',
+    ticketMeta: 'SVG · 不用登录',
+    grow: '看它怎么长出来',
+    growing: '一个椭圆 → 重复 → 展开',
+  },
+  table: {
+    /** 压缩自「作品，连同做法」 */
+    line: '每件作品，都连着它的做法。',
+    caption: 'Around one table',
+    note: '氛围图',
+    alt: '一张长木桌边坐着四个人，正传看一张画稿；桌上有一只小牛摆件和一个带触角的小玩偶。',
+  },
+  bench: {
+    pick: '选一件作品',
     play: '先玩',
     how: '看怎么做',
-    take: '带走',
-    demo: '演示',
     why: '想解决什么',
+    take: '带走',
     go: '项目入口',
+    detail: '看完整方法',
+    /** 压缩自附录 A.1 末句 */
+    tool: '这部分场景也在 Molis Tool 中继续完善',
   },
-  methodsKicker: '方法目录',
-  methodsOpen: '打开方法目录',
-  backKicker: '带回来',
-  sketchCaption: 'Sketching together, a dog at their feet',
-  sketchAlt: '林边的空地上，几个人围坐在画板前写生，脚边趴着一只狗。',
-  ways: [
+  methods: {
+    /** 压缩自第 6.2 节标题 */
+    title: ['看懂一种做法，', '做出自己的版本。'],
+    caption: 'Make your own version',
+    note: '插画',
+    alt: '铅笔插画：两只手把几座纸做的小房子沿着虚线摆好。',
+    search: '试试「莫奈」或「toast」',
+    searchLabel: '搜索方法目录',
+    go: '搜索',
+    open: '打开方法目录',
+    more: '还有',
+  },
+  back: {
+    /** 压缩自第 6.3 节第一段 */
+    line: '再带点什么回来。',
+    lead: '做了一张图、一个网页，或改出更适合自己的做法，都欢迎带回来。',
+    caption: 'Colors on one line',
+    note: '氛围图',
+    alt: '院子里一棵树下拉着一根绳，挂着几块各自染色的布，两个人站在旁边看。',
+  },
+  wall: {
+    kicker: '大家做的',
+    title: '你做的，也可以挂上来。',
+    /** 压缩自第 6.3 节第三段 */
+    lead: '分享先交给工作室；作者明确同意展示的，会连同创作说明挂在这根绳上。',
+    mine: '你刚才调的那一朵',
+    mineDefault: '还是默认那一朵',
+    mineNote: '只在你的屏幕上',
+    mineShare: '挂到社区？分享给我们',
+    mineTry: '也可以先去调一朵',
+    sign: '第一份，挂在这里',
+    empty: '只挂作者明确同意展示的作品。',
+    emptyNow: '现在还空着。',
+  },
+  /** 绳上的三张签（压缩自第 6.3 节） */
+  tags: [
     {
-      title: '顺手带回来',
-      text: '下载一朵花、一个 Skill，或复制一段 Prompt 之后，提示里会多一句「也发给我们一份」。',
-      link: '先去调一朵花',
+      title: '一件作品，或一段过程',
+      text: '附上链接，讲讲原本想做什么、改了哪里。',
+      link: '分享给我们',
+      topic: 'creator',
     },
-    { title: '一件作品，或一段过程', link: '分享给我们' },
-    { title: '还没有作品', link: '说说试得怎么样' },
+    {
+      title: '还没有作品也没关系',
+      text: '哪里顺手、哪里卡住，都可以告诉我们。',
+      link: '说说试得怎么样',
+      topic: 'feedback',
+    },
+    {
+      title: '在 GitHub 一起改',
+      text: '补充研究资料，改进 Artist Skill 的方法。',
+      link: 'Artist Skill 仓库',
+    },
   ],
-  wallTitle: '大家做的',
-  wallEmpty: '这里还空着。',
-  wallEmptyNote:
-    '我们没有拿自己做的来充数。第一批同意展示的分享，会出现在这里。',
-  wallFirst: '成为第一份',
-  githubTitle: '在 GitHub 一起改',
-  githubRepo: 'Artist Skill 仓库',
-  githubOrg: 'Molis AI 的 GitHub',
+  end: {
+    caption: 'A line in the sand, a shell at the end',
+    alt: '退潮后的沙滩上，有人用手指画了一道弯弯的线，线的尽头放着一枚贝壳。',
+    /** 压缩自「当前进展」 */
+    progress: '社区目前以工作室自己的作品与方法为主，用户作品展示仍在起步。',
+  },
   share: '也发给我们一份',
 };
 
@@ -146,12 +208,6 @@ export const works = {
     name: '一朵好奇',
     form: '小实验',
     stage: '可以直接玩',
-    mirror: {
-      untouched: '这朵还是默认的样子。',
-      touched: '这是你刚才调的那一朵。',
-      hint: '页首那朵可以直接调：拖「重复」和「展开」，换一种颜色。',
-      back: '回到那朵花',
-    },
     steps: [
       // 沿用 content/folio-community.ts 的「怎么做的」
       {
@@ -185,12 +241,14 @@ export const works = {
     share: '调出了喜欢的一朵？分享给我们',
     /** 交给 AI 的提示词：照着这朵花现在的做法写（新写，改自旧社区页） */
     prompt:
-      '用 SVG 做一朵可以交互的线条花：以画面中心为原点，把一个椭圆旋转、重复若干次。加两个滑杆：一个控制重复次数（1 到 36），一个从 0 到 100 同时改变椭圆的短轴和旋转的总角度；提供四种线条颜色和 SVG 下载。保留清楚的控件标签、键盘操作和减少动态效果支持。不需要连接 AI 或后端。',
+      '用 SVG 做一朵可以交互的线条花：以画面中心为原点，把一个椭圆旋转、重复若干次。在花上左右拖动改重复次数（1 到 36），上下拖动从 0 到 100 同时改变椭圆的短轴和旋转的总角度，方向键也能调；提供四种线条颜色和 SVG 下载。保留清楚的读屏说明和减少动态效果支持。不需要连接 AI 或后端。',
   },
   artist: {
     name: 'Artist Skill',
     form: '创作方法',
     stage: '可以下载',
+    /** 压缩自第 6.2 节 */
+    lead: '把对光线、色彩、构图和叙事的观察，整理成交给 AI 的创作指引。',
     sampleNote: 'AI 创作试样 · 非艺术家原作',
     pick: '选一种观看',
     download: '下载这个 Skill',
@@ -202,6 +260,10 @@ export const works = {
     name: '几个网页动效',
     form: '方法',
     stage: '现场演示',
+    /** 压缩自第 6.2 节 */
+    lead: '看一段文字怎样出现、一个按钮怎样回应，再带走相应的 Prompt。',
+    copyMeta: '交给你的 AI 编程工具',
+    use: '什么时候用',
     pick: '选一个效果',
     recipe: '做法',
     copy: '复制 Prompt',
@@ -213,12 +275,17 @@ export const works = {
     alias: '牛来',
     form: '独立桌面应用',
     stage: '公开仓库',
+    /** 压缩自附录 A.1 */
+    lead: '当几个 Agent 同时工作，抬眼就能知道谁需要回应。',
     repo: '在 GitHub 看 niul.ai',
+    repoMeta: '公开仓库 · 独立桌面应用',
   },
   drop: {
     name: 'DropAgent',
     form: '独立桌面应用',
     stage: '已发布 0.2.0',
+    /** 压缩自附录 A.1 */
+    lead: '一份 PDF、一张截图或一个网页：放下材料，在副本上处理，再取走新结果。',
     download: '查看项目与下载',
     system: 'macOS 14 及以上 · Apple Silicon',
     repo: 'GitHub 仓库',

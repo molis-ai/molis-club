@@ -151,19 +151,51 @@
       ]
     ]
   },
-  "community-sketch": {
-    "width": 2200,
-    "height": 1650,
-    "avg": "#5a6343",
-    "src": "/site/community-sketch-1800.webp",
+  "community-table": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#81766a",
+    "src": "/site/community-table-1672.webp",
     "srcset": [
       [
-        "/site/community-sketch-900.webp",
-        900
+        "/site/community-table-1280.webp",
+        1280
       ],
       [
-        "/site/community-sketch-1800.webp",
-        1800
+        "/site/community-table-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "community-colors": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#898272",
+    "src": "/site/community-colors-1672.webp",
+    "srcset": [
+      [
+        "/site/community-colors-1280.webp",
+        1280
+      ],
+      [
+        "/site/community-colors-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "community-blocks": {
+    "width": 1536,
+    "height": 1024,
+    "avg": "#e8e2db",
+    "src": "/site/community-blocks-1536.webp",
+    "srcset": [
+      [
+        "/site/community-blocks-800.webp",
+        800
+      ],
+      [
+        "/site/community-blocks-1536.webp",
+        1536
       ]
     ]
   },

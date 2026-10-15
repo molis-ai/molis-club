@@ -74,11 +74,26 @@ const images = [
     widths: [800, 1672],
     quality: 70,
   },
+  // 社区（负责人 2026-10-15 定的方向）：沙上那道线挪到结尾的宽窗；「带点什么走」满幅是比稿 D1 那张围桌的人
+  // （桌上有小牛摆件和带触角的小玩偶）；「再带点什么回来」满幅是品牌图库社区 A 雾感版（树下挂着各自的颜色）；
+  // 方法目录配比稿 E1 的铅笔插画（两只手沿虚线摆小房子）。原来孩子写生那张不再用
   {
-    key: 'community-sketch',
-    src: 'public/images/r8/park-ware.jpg',
-    widths: [900, 1800],
-    quality: 66,
+    key: 'community-table',
+    src: 'public/images/atelier/makers-studio.jpg',
+    widths: [1280, 1672],
+    quality: 74,
+  },
+  {
+    key: 'community-colors',
+    src: 'public/r8-materials-mist-v1/images/community-a.png',
+    widths: [1280, 1672],
+    quality: 76,
+  },
+  {
+    key: 'community-blocks',
+    src: 'public/images/line-engineering.jpg',
+    widths: [800, 1536],
+    quality: 80,
   },
   {
     key: 'about-window',

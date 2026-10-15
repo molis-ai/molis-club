@@ -60,17 +60,22 @@ export function FlowerArt({
   live = false,
   label,
   className,
+  size,
 }: {
   flower: Flower;
   live?: boolean;
   /** 给读屏的一句；不给就当装饰 */
   label?: string;
   className?: string;
+  /** 放进另一张 SVG 里（例如小家伙手里）时，要写明宽高 */
+  size?: number;
 }) {
   const color = flowerColors[flower.color].value;
   return (
     <svg
       viewBox={`0 0 ${SIZE} ${SIZE}`}
+      width={size}
+      height={size}
       className={className}
       role={label ? 'img' : undefined}
       aria-label={label}

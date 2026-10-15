@@ -23,7 +23,7 @@ export function ShareAfter({ text, topic }: { text: string; topic: string }) {
 
 type CopyState = 'idle' | 'copied' | 'manual';
 
-async function writeClipboard(text: string) {
+export async function writeClipboard(text: string) {
   try {
     await navigator.clipboard.writeText(text);
     return true;
