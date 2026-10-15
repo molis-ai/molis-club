@@ -1,5 +1,5 @@
-/* 关于我们：白房子里的一页长信。正文偏中（从第 3 栏开始），标签在左两栏；
-   一处大胆的决定是六条信念的超大编号与「三种媒介，同一个动作」三栏并排；一句话打破网格（「我们想在产品里寻找这些答案。」）。 */
+/* 关于我们（visual-storyboard 第 4 节）：先给四个问题，再讲来路；每一节先一个画面、一两句，原文收在「展开看全文」。
+   滚动驱动的画面读 --p（useSiteMotion 写入），没有时按 1 算＝完整的结果；减少动态时也直接是结果。 */
 
 .ab {
   --ab-cols: repeat(12, minmax(0, 1fr));
@@ -14,13 +14,29 @@
 .ab-sec[id] {
   scroll-margin-top: calc(24px - var(--section-top));
 }
+.ab-body {
+  display: grid;
+  grid-template-columns: var(--ab-cols);
+  column-gap: var(--col-gap);
+  row-gap: 18px;
+  margin-top: clamp(24px, 4vh, 40px);
+}
+.ab-body > * {
+  grid-column: 3 / span 7;
+  max-width: var(--read);
+}
+.ab-body > .m-link {
+  justify-self: start;
+}
 
-/* ---------- 首屏：窗前远眺的人 ---------- */
+/* =====================================================================
+   首屏：四个问题 → 四件产品；World 更远
+   ===================================================================== */
 .ab-hero {
   display: grid;
   grid-template-columns: var(--ab-cols);
   column-gap: var(--col-gap);
-  row-gap: clamp(16px, 2.6vh, 26px);
+  row-gap: clamp(14px, 2.4vh, 24px);
 }
 .ab-hero > .m-kicker {
   grid-column: 1 / span 2;
@@ -31,139 +47,220 @@
   font: 300 var(--t-h1) / 1.3 var(--sans);
   letter-spacing: 0.03em;
 }
-.ab-lead {
-  grid-column: 3 / span 7;
+.ab-care {
+  grid-column: 3 / span 8;
+  font: 300 var(--t-lead) / 1.9 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+.ab-qa {
+  grid-column: 3 / -1;
+  border-top: 1px solid var(--hair);
+}
+.ab-qa-link {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(48px, 2fr) minmax(0, 4fr);
+  align-items: center;
+  gap: var(--col-gap);
+  min-height: clamp(58px, 8vh, 76px);
+  border-bottom: 1px solid var(--hair);
+}
+.ab-qa-q {
+  font: 300 var(--t-h3) / 1.5 var(--sans);
+  letter-spacing: 0.04em;
+}
+/* 问题和产品之间一根线，从问题这头画过去 */
+.ab-qa-line {
+  position: relative;
+  height: 1px;
+  background: var(--hair-2);
+  transform-origin: left center;
+  animation: ab-draw 0.9s var(--ease) var(--delay, 0ms) both;
+}
+.ab-qa-line::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+@keyframes ab-draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+.ab-qa-a {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+}
+.ab-qa-name {
+  font: 400 var(--t-h3) / 1.4 var(--latin);
+  letter-spacing: 0.01em;
+  background: linear-gradient(currentColor 0 0) left bottom / 0 1px no-repeat;
+  padding-bottom: 2px;
+  transition: background-size 0.55s var(--ease);
+}
+.ab-qa-link:hover .ab-qa-name {
+  background-size: 100% 1px;
+}
+.ab-qa-far .ab-qa-q {
+  color: var(--mute);
+}
+.ab-qa-far .ab-qa-line {
+  background: none;
+  border-top: 1px dashed var(--mute);
+  height: 0;
+}
+.ab-qa-far .ab-qa-line::after {
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1.2px var(--mute);
+  top: -4px;
+}
+.ab-qa-far .ab-qa-name {
+  color: var(--ink-2);
+}
+.ab-hero-more {
+  grid-column: 3 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px 32px;
+}
+.ab-hero-more .m-fold {
+  flex: 1 1 24em;
+  max-width: var(--read);
+  border-top: 0;
 }
 .ab-hero-window {
   grid-column: 1 / -1;
   margin-top: clamp(24px, 5vh, 56px);
 }
 
-/* ---------- 正文的两种栏：读的段落从第 3 栏开始，约 40rem ---------- */
-.ab-body,
-.ab-together {
+/* =====================================================================
+   01 从哪来：六种经历汇到 Molis
+   ===================================================================== */
+.ab-from {
+  --k: clamp(0, calc((var(--p, 1) - 0.22) / 0.34), 1);
   display: grid;
   grid-template-columns: var(--ab-cols);
   column-gap: var(--col-gap);
-  row-gap: 24px;
+  align-items: center;
 }
-.ab-body > *,
-.ab-together > * {
-  grid-column: 3 / span 7;
-  max-width: var(--read);
+.ab-from-words {
+  grid-column: 3 / span 5;
+  align-self: center;
+  display: grid;
+  gap: 18px;
 }
-.ab-body > .m-link {
-  justify-self: start;
+.ab-from-big {
+  font: 300 var(--t-h2) / 1.4 var(--sans);
+  letter-spacing: 0.03em;
 }
-.ab-prose p,
-.ab-together > p {
-  font-size: var(--t-read);
-  line-height: 2;
-}
-.ab-together > p {
+.ab-from-line {
+  font: 300 var(--t-h3) / 1.7 var(--sans);
+  letter-spacing: 0.03em;
   color: var(--ink-2);
 }
-
-/* ---------- 01 我们是谁：四个问题，对上四件产品 ---------- */
-.ab-who {
-  border-top: 1px solid var(--hair);
+.ab-gather {
+  grid-column: 8 / -1;
+  position: relative;
+  height: clamp(360px, 52vh, 480px);
 }
-.ab-who-row,
-.ab-far {
+.ab-gather-word,
+.ab-gather-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+.ab-gather-word {
+  --a: calc(var(--i) * 60deg - 90deg);
+  --r: calc(min(230px, 40vw) - (min(230px, 40vw) - 96px) * var(--k));
+  translate: calc(-50% + cos(var(--a)) * var(--r))
+    calc(-50% + sin(var(--a)) * var(--r));
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  font-size: var(--t-small);
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.ab-gather-core {
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent-wash) calc(var(--k) * 100%), transparent);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--accent) calc(var(--k) * 100%), var(--hair));
+  font: 400 var(--t-h3) / 1 var(--latin);
+  letter-spacing: 0.02em;
+  scale: calc(0.82 + 0.18 * var(--k));
+}
+
+/* =====================================================================
+   02 什么变了：越来越多想法被做出来，圈住值得做的一个
+   ===================================================================== */
+.ab-ideas {
+  --k: clamp(0, calc((var(--p, 1) - 0.18) / 0.42), 1);
   display: grid;
   grid-template-columns: var(--ab-cols);
   column-gap: var(--col-gap);
   row-gap: 14px;
-  align-items: start;
-  padding: clamp(24px, 4.4vh, 40px) 0;
-  border-bottom: 1px solid var(--hair);
 }
-.ab-q {
-  grid-column: 1 / span 6;
-  font: 300 var(--t-h2) / 1.45 var(--sans);
-  letter-spacing: 0.04em;
-  font-feature-settings: 'palt' 1;
-}
-.ab-arrow {
-  grid-column: 7;
-  justify-self: center;
-  font: 300 var(--t-h2) / 1.45 var(--latin);
-  color: var(--mute);
-  transition: translate 0.5s var(--ease);
-}
-.ab-who-row:hover .ab-arrow {
-  translate: 4px 0;
-}
-.ab-a {
-  grid-column: 8 / -1;
+.ab-ideas-grid {
+  grid-column: 3 / -1;
   display: grid;
-  justify-items: start;
-  gap: 10px;
-  padding-top: 0.4em;
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+  gap: 22px 8px;
+  padding-block: 12px;
 }
-.ab-a-text {
-  line-height: 1.95;
-  color: var(--ink-2);
-}
-.ab-a-text > [lang='en'] {
-  font-weight: 500;
-  color: var(--ink);
-}
-/* World 更远：一道虚线伸过去，状态签是空心圆点 */
-.ab-far {
-  border-bottom: 0;
-}
-.ab-far-line {
-  grid-column: 1 / span 7;
+.ab-idea {
+  --on: clamp(0, calc(var(--k) * 48 - var(--i)), 1);
   position: relative;
-  height: 1px;
-  margin-top: 1.05em;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--hair-2) 0 6px,
-    transparent 6px 12px
-  );
+  justify-self: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ink) calc(var(--on) * 100%), transparent);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  scale: calc(0.7 + 0.3 * var(--on));
 }
-.ab-far-line::after {
+.ab-idea[data-chosen]::after {
   content: '';
   position: absolute;
-  right: 0;
-  top: -3px;
-  width: 7px;
-  height: 7px;
+  inset: -7px;
   border-radius: 50%;
-  box-shadow: inset 0 0 0 1.2px var(--accent);
-  background: var(--paper);
+  box-shadow: 0 0 0 1.5px var(--accent);
+  opacity: clamp(0, calc((var(--k) - 0.94) * 16), 1);
+  scale: calc(1.6 - 0.6 * clamp(0, calc((var(--k) - 0.94) * 16), 1));
 }
-.ab-together {
-  margin-top: clamp(40px, 8vh, 88px);
+.ab-idea[data-chosen] {
+  background: color-mix(in srgb, var(--accent) calc(var(--on) * 100%), transparent);
 }
-@media (max-width: 900px) {
-  .ab-q,
-  .ab-a {
-    grid-column: 1 / -1;
-  }
-  .ab-arrow {
-    display: none;
-  }
-  .ab-a {
-    padding-top: 0;
-  }
-  .ab-far-line {
-    grid-column: 1 / span 6;
-    margin-top: 0;
-  }
+.ab-ideas-note {
+  grid-column: 3 / span 8;
+  font-size: 12.5px;
+  color: var(--mute);
 }
-
-/* ---------- 03 什么变了：最后一句打破网格 ---------- */
 .ab-big {
-  margin: clamp(48px, 9vh, 104px) 0 clamp(32px, 5vh, 56px);
+  margin: clamp(40px, 8vh, 88px) 0 0;
+  padding-left: calc((100% - 11 * var(--col-gap)) / 12 * 2 + 2 * var(--col-gap));
   font: 300 var(--t-h1) / 1.35 var(--sans);
   letter-spacing: 0.04em;
   text-wrap: balance;
 }
 
-/* ---------- 04 三种媒介，同一个动作 ---------- */
+/* ---------- 03 三种媒介，同一个动作 ---------- */
 .ab-trio {
   display: grid;
   gap: clamp(20px, 3.4vh, 36px);
@@ -448,184 +545,207 @@ html:not(.js) .ab-trio-ctl {
   }
 }
 
-/* ---------- 05 我们相信什么：超大编号 ---------- */
-.ab-beliefs {
-  border-top: 1px solid var(--hair);
-}
-.ab-beliefs li {
+/* =====================================================================
+   04 我们相信什么：六句是一张目录，点哪条展开哪条
+   ===================================================================== */
+.ab-bel {
   display: grid;
   grid-template-columns: var(--ab-cols);
   column-gap: var(--col-gap);
-  row-gap: 14px;
+  row-gap: 28px;
   align-items: start;
-  padding: clamp(28px, 5.4vh, 52px) 0;
+}
+.ab-bel-list {
+  grid-column: 1 / span 7;
+  display: grid;
+  border-top: 1px solid var(--hair);
+}
+.ab-bel-tab {
+  display: grid;
+  grid-template-columns: 3.4em minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px;
+  min-height: 64px;
+  padding: 14px 12px 14px 0;
+  border: 0;
   border-bottom: 1px solid var(--hair);
+  background: none;
+  text-align: left;
+  color: var(--mute);
+  transition: color 0.35s var(--ease);
+}
+.ab-bel-tab:hover {
+  color: var(--ink-2);
+}
+.ab-bel-tab[aria-selected='true'] {
+  color: var(--ink);
 }
 .ab-bel-no {
-  grid-column: 1 / span 2;
-  font: italic 300 var(--t-h1) / 0.9 var(--latin);
-  letter-spacing: -0.02em;
-  color: var(--mute);
-  font-variant-numeric: tabular-nums;
+  font: italic 300 var(--t-h3) / 1 var(--latin);
+  letter-spacing: 0;
+  color: var(--faint);
+  transition: color 0.35s var(--ease);
+}
+.ab-bel-tab[aria-selected='true'] .ab-bel-no {
+  color: var(--accent-ink);
 }
 .ab-bel-title {
-  grid-column: 3 / span 4;
-  font: 400 var(--t-h3) / 1.6 var(--sans);
-  letter-spacing: 0.04em;
+  font: 300 var(--t-h2) / 1.4 var(--sans);
+  letter-spacing: 0.03em;
+  text-wrap: balance;
+}
+.ab-bel-panels {
+  grid-column: 9 / -1;
+  display: grid;
+  gap: 32px;
+  position: sticky;
+  top: calc(var(--header) + 32px);
+}
+.ab-bel-panel {
+  display: grid;
+  gap: 12px;
+}
+.js .ab-bel-panel:not([data-on]) {
+  display: none;
+}
+.js .ab-bel-panel[data-on] {
+  animation: m-fold-in 0.5s var(--ease) both;
+}
+.ab-bel-panel-no {
+  font: italic 300 var(--t-display) / 0.9 var(--latin);
+  letter-spacing: -0.02em;
+  color: var(--accent-ink);
+}
+html:not(.js) .ab-bel-panel-no {
+  font-size: var(--t-h2);
 }
 .ab-bel-text {
-  grid-column: 7 / -1;
-  max-width: var(--read);
+  font-size: var(--t-read);
   line-height: 2;
   color: var(--ink-2);
 }
-@media (max-width: 900px) {
-  .ab-bel-no,
-  .ab-bel-title,
-  .ab-bel-text {
-    grid-column: 1 / -1;
-  }
-  .ab-bel-no {
-    font-size: var(--t-h2);
-  }
-}
 
-/* ---------- 06 落到产品里：一张安静的表 ---------- */
-.ab-table-wrap {
-  display: grid;
-  grid-template-columns: var(--ab-cols);
-  column-gap: var(--col-gap);
-}
-.ab-table {
-  grid-column: 3 / -1;
-  width: 100%;
-  border-collapse: collapse;
-}
-.ab-table th,
-.ab-table td {
-  padding: 20px 0;
-  border-bottom: 1px solid var(--hair);
-  text-align: left;
-  vertical-align: top;
-}
-.ab-table thead th {
-  padding: 0 0 12px;
-  border-bottom: 1px solid var(--ink);
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-  color: var(--mute);
-}
-.ab-table tbody th {
-  width: 36%;
-  padding-right: var(--col-gap);
-  font: 500 var(--t-body) / 1.85 var(--sans);
-  letter-spacing: 0.04em;
-}
-.ab-table td {
-  line-height: 1.95;
-  color: var(--ink-2);
-}
-@media (max-width: 900px) {
-  .ab-table {
-    grid-column: 1 / -1;
-  }
-}
-@media (max-width: 640px) {
-  .ab-table thead {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-  }
-  .ab-table tr {
-    display: grid;
-    gap: 6px;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--hair);
-  }
-  .ab-table tbody tr:first-child {
-    border-top: 1px solid var(--ink);
-  }
-  .ab-table th,
-  .ab-table td,
-  .ab-table tbody th {
-    display: block;
-    width: auto;
-    padding: 0;
-    border: 0;
-  }
-}
-
-/* ---------- 07 我们怎样要求自己 ---------- */
-.ab-demands {
+/* =====================================================================
+   05 落到产品里 · 要求自己
+   ===================================================================== */
+.ab-practice {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(32px, 5vh, 48px) var(--col-gap);
+  gap: var(--col-gap);
+}
+.ab-practice li {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+}
+.ab-practice-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ab-practice-tags span {
+  padding: 2px 10px;
+  border-radius: var(--r-pill);
+  background: var(--accent-wash);
+  font: 400 12.5px / 1.6 var(--latin);
+  letter-spacing: 0.04em;
+  color: var(--accent-ink);
+}
+.ab-practice h3 {
+  font: 400 var(--t-h3) / 1.5 var(--sans);
+  letter-spacing: 0.03em;
+}
+.ab-practice p:last-child {
+  font-size: var(--t-small);
+  line-height: 1.85;
+  color: var(--ink-2);
+}
+.ab-demands {
+  display: grid;
+  gap: 18px;
+  margin-top: clamp(48px, 8vh, 88px);
+}
+.ab-demands-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 18px;
+  font: 300 var(--t-h2) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.ab-demands ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--col-gap);
 }
 .ab-demands li {
   display: grid;
   align-content: start;
-  gap: 12px;
-  padding-top: 18px;
-  border-top: 1px solid var(--ink);
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hair-2);
 }
-.ab-demands h3 {
-  font: 400 var(--t-h3) / 1.55 var(--sans);
-  letter-spacing: 0.04em;
+.ab-demand {
+  font: 300 var(--t-h3) / 1.5 var(--sans);
+  letter-spacing: 0.03em;
 }
-.ab-demands p {
-  line-height: 1.95;
-  color: var(--ink-2);
-}
-@media (max-width: 1100px) {
-  .ab-demands {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 620px) {
-  .ab-demands {
-    grid-template-columns: minmax(0, 1fr);
-  }
+.ab-demands .m-fold {
+  max-width: var(--read);
 }
 
-/* ---------- 08 接下来去哪 ---------- */
-.ab-threads {
+/* =====================================================================
+   06 接下来去哪：一个人的一天
+   ===================================================================== */
+.ab-day {
+  --k: clamp(0, calc((var(--p, 1) - 0.2) / 0.4), 1);
   display: grid;
-  gap: clamp(32px, 6vh, 56px);
+  gap: clamp(24px, 4vh, 40px);
 }
-.ab-thread {
+.ab-day-bar {
   display: grid;
-  grid-template-columns: var(--ab-cols);
-  column-gap: var(--col-gap);
-  row-gap: 14px;
-  align-items: start;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 6px;
 }
-.ab-thread-line {
-  grid-column: 3 / span 4;
-  padding-top: 16px;
-  border-top: 1px solid var(--ink);
-  font: 400 var(--t-h3) / 1.55 var(--sans);
+.ab-day-part {
+  --fill: clamp(0, calc(var(--k) * 3 - var(--i)), 1);
+  display: grid;
+  gap: 10px;
+}
+.ab-day-label {
+  font: 300 var(--t-h2) / 1.2 var(--sans);
+  letter-spacing: 0.06em;
+  opacity: calc(0.3 + 0.7 * var(--fill));
+}
+.ab-day-fill {
+  height: 10px;
+  border-radius: var(--r-pill);
+  background:
+    linear-gradient(var(--ink), var(--ink)) left / calc(var(--fill) * 100%) 100% no-repeat,
+    var(--paper-2);
+}
+.ab-day-part:nth-child(2) .ab-day-fill {
+  background:
+    linear-gradient(var(--accent), var(--accent)) left / calc(var(--fill) * 100%) 100% no-repeat,
+    var(--paper-2);
+}
+.ab-day-part:nth-child(3) .ab-day-fill {
+  background:
+    linear-gradient(var(--ink-2), var(--ink-2)) left / calc(var(--fill) * 100%) 100% no-repeat,
+    var(--paper-2);
+}
+.ab-day-products {
+  font: 400 var(--t-small) / 1.4 var(--latin);
   letter-spacing: 0.04em;
+  color: var(--mute);
 }
-.ab-thread-body {
-  grid-column: 7 / -1;
-  display: grid;
-  gap: 1em;
-  max-width: var(--read);
-  padding-top: 16px;
-  border-top: 1px solid var(--hair);
-  line-height: 2;
-  color: var(--ink-2);
-}
-.ab-whole {
-  margin: clamp(48px, 9vh, 96px) 0 0;
-  padding-left: calc(
-    (100% - 11 * var(--col-gap)) / 12 * 2 + 2 * var(--col-gap)
-  );
+.ab-day-whole {
+  max-width: 32em;
+  padding-left: calc((100% - 11 * var(--col-gap)) / 12 * 2 + 2 * var(--col-gap));
   font: 300 var(--t-h2) / 1.6 var(--sans);
   letter-spacing: 0.04em;
-  max-width: 100%;
+  box-sizing: content-box;
 }
 .ab-coast {
   margin-top: clamp(48px, 9vh, 104px);
@@ -645,32 +765,108 @@ html:not(.js) .ab-trio-ctl {
 .ab-further-body {
   grid-column: 3 / span 7;
   display: grid;
-  gap: 24px;
+  gap: 20px;
 }
 .ab-question {
-  font: 400 var(--t-h3) / 1.7 var(--sans);
+  font: 300 var(--t-h3) / 1.8 var(--sans);
   letter-spacing: 0.03em;
 }
-.ab-further-body .m-prose p {
-  font-size: var(--t-read);
-  line-height: 2;
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1100px) {
+  .ab-practice,
+  .ab-demands ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 28px;
+  }
 }
 @media (max-width: 900px) {
-  .ab-thread-line,
-  .ab-thread-body,
+  .ab-hero > .m-kicker,
+  .ab-title,
+  .ab-care,
+  .ab-qa,
+  .ab-hero-more,
+  .ab-body > *,
+  .ab-from-words,
+  .ab-gather,
+  .ab-ideas-grid,
+  .ab-ideas-note,
+  .ab-bel-list,
+  .ab-bel-panels,
   .ab-further-title,
   .ab-further-body {
     grid-column: 1 / -1;
   }
-  .ab-thread-body {
+  .ab-hero > .m-kicker {
     padding-top: 0;
-    border-top: 0;
   }
-  .ab-whole {
+  .ab-qa-link {
+    grid-template-columns: minmax(0, 1fr) 40px;
+    grid-template-areas: 'q q' 'a line';
+    row-gap: 6px;
+    padding: 12px 0;
+  }
+  .ab-qa-q {
+    grid-area: q;
+  }
+  .ab-qa-a {
+    grid-area: a;
+  }
+  .ab-qa-line {
+    display: none;
+  }
+  .ab-gather {
+    height: 300px;
+    margin-top: 24px;
+  }
+  .ab-ideas-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    row-gap: 16px;
+  }
+  .ab-big,
+  .ab-day-whole {
     padding-left: 0;
   }
-  .ab-coast .m-window-frame {
-    aspect-ratio: 16 / 10;
+  /* 手机：目录与全文交错排，点哪条，全文就在那一条下面 */
+  .ab-bel {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .ab-bel-list,
+  .ab-bel-panels {
+    display: contents;
+  }
+  .ab-bel-tab {
+    order: calc(var(--i) * 2);
+  }
+  .ab-bel-panel {
+    order: calc(var(--i) * 2 + 1);
+    padding: 4px 0 22px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .ab-bel-panel-no {
+    display: none;
+  }
+  .ab-bel-panel-no {
+    font-size: var(--t-h1);
+  }
+}
+@media (max-width: 620px) {
+  .ab-practice,
+  .ab-demands ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ab-day-bar {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .ab-gather-word {
+    --r: calc(136px - 52px * var(--k));
+  }
+  .ab-gather-core {
+    width: 84px;
+    height: 84px;
   }
 }
 
@@ -741,21 +937,16 @@ html:not(.js) .ab-trio-ctl {
   transform: translateX(4px);
 }
 @media (max-width: 900px) {
-  .ab-hero > .m-kicker,
-  .ab-title,
-  .ab-lead,
-  .ab-body > *,
-  .ab-together > *,
   .ab-doors > .m-kicker,
   .ab-doors-title {
     grid-column: 1 / -1;
   }
-  .ab-hero > .m-kicker,
   .ab-doors > .m-kicker {
     padding-top: 0;
   }
-  .ab-hero-window .m-window-frame {
-    aspect-ratio: 4 / 5;
+  .ab-hero-window .m-window-frame,
+  .ab-coast .m-window-frame {
+    aspect-ratio: 16 / 10;
   }
   .ab-door-list {
     grid-template-columns: minmax(0, 1fr);
@@ -768,6 +959,15 @@ html:not(.js) .ab-trio-ctl {
 
 /* ---------- 减少动态：每处停在完整的结果，换步时不演入场 ---------- */
 @media (prefers-reduced-motion: reduce) {
+  .ab-from,
+  .ab-ideas,
+  .ab-day {
+    --p: 1 !important;
+  }
+  .ab-qa-line,
+  .js .ab-bel-panel[data-on] {
+    animation: none;
+  }
   .ab-line,
   .ab-sentence > * {
     animation: none;
@@ -775,7 +975,6 @@ html:not(.js) .ab-trio-ctl {
   .js .ab-trio .ab-paint.m-window .m-window-frame video,
   .ab-step,
   .ab-step-line::after,
-  .ab-arrow,
   .ab-door-label,
   .ab-door-arrow,
   .ab-sample {

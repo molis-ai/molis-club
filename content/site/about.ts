@@ -14,6 +14,8 @@ const firstStop = intro.indexOf('。') + 1;
 export const aboutName = intro.slice(0, firstStop);
 /** 1.3 第二句：我们关心技术怎样进入具体的日常：……（首屏导语） */
 export const aboutCare = intro.slice(firstStop);
+/** 1.3 第二句冒号之前：「我们关心技术怎样进入具体的日常：」（首屏四个问题的引子） */
+export const aboutCareLead = aboutCare.slice(0, aboutCare.indexOf('：') + 1);
 
 // ---------- 新写的界面文字 ----------
 
@@ -43,6 +45,24 @@ export const aboutUi = {
 
   /** 结尾三扇门：一句话沿用顶栏「关于」下拉里的说明 */
   doorsLabel: '继续走走',
+
+  /** 首屏：四个问题 → 四件产品；World 更远 */
+  further: '更远一点',
+  /** 从哪来：六种经历汇到 Molis（取自 2.1「有产品、数据、研发、架构，也有业务运营和客户工作」） */
+  fromWords: ['产品', '数据', '研发', '架构', '业务运营', '客户工作'],
+  /** 什么变了：越来越多想法被做出来（2.2 的意思压成一句） */
+  ideas: '一个念头，可以更早变成能亲手尝试的东西。',
+  ideasNote: '一格是一个想法：滚动时，越来越多被做了出来；最后圈住的那一个，是选出来值得做的。',
+  /** 一个人的一天：工作、生活、体验三条线索（2.3） */
+  day: [
+    { label: '工作', products: ['Work', 'Tool'] },
+    { label: '生活', products: ['Life'] },
+    { label: '体验', products: ['Story'] },
+  ],
+  /** 1.5 四种产品选择各落在哪件产品（按原文） */
+  practiceTags: [['Work'], ['Tool'], ['Life', 'Story'], ['社区']],
+  full: '展开看全文',
+  beliefsHint: '点一条，看全文',
 };
 
 /** 「三种媒介，同一个动作」：作画、写代码、改文字并排，地位相同，一起走过起稿 → 修改 → 完成（新写，示意） */

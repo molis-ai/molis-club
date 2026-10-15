@@ -7,10 +7,9 @@ import {
   products,
   type ProductId,
 } from '../../../content/site/products';
-import { homeProducts } from '../../../content/site/home';
 import { nav } from '../../../content/site/nav';
 import {
-  aboutCare,
+  aboutCareLead,
   aboutName,
   aboutUi,
   trio,
@@ -35,6 +34,8 @@ import {
   type Vars,
 } from '../../_site/ui';
 import { VideoWindow } from '../../_site/video';
+import { Fold, Paragraphs } from '../../_site/viz/viz';
+import { Beliefs } from './beliefs';
 import { Trio } from './trio';
 import './about.css';
 
@@ -44,9 +45,12 @@ export const metadata = pageMetadata(
   ABOUT,
 );
 
-// 关于我们：我们是谁、从哪来、什么变了、三种媒介同一个动作、六条信念、落到产品里、怎样要求自己、接下来去哪、三扇门。
-// 不画带年份的时间线。《黑客与画家》不靠口号，落在细节里：作画、写代码、改文字三栏并排、地位相同；
-// 信念与要求用同一套排印对待，不分「理性」和「感性」两种版式。
+// 关于我们（visual-storyboard 第 4 节）：先给读者四个自己会在心里回答的问题，再讲来路。
+// 首屏：四个问题逐行浮现，各自落到回答它的那件产品；World 更远，虚线。
+// 01 从哪来：六种经历汇到 Molis；02 什么变了：越来越多想法被做出来，圈住值得做的一个；
+// 03 三种媒介，同一个动作（演示）；04 六条信念：一张可点的目录；05 落到产品里 + 要求自己；
+// 06 接下来去哪：一个人的一天、海岸线、World 的那个问题；最后三扇门。
+// 原文段落都在，收在「展开看全文」里。不画带年份的时间线。
 
 const HUMAN_SCALE = '《人的尺度》';
 
@@ -92,150 +96,187 @@ function WithEssayLink({ text }: { text: string }) {
   );
 }
 
+/** 「我们曾是美团的同事。」：2.1 第一段的第一句 */
+const colleagues = story.origin.paragraphs[0].slice(
+  0,
+  story.origin.paragraphs[0].indexOf('。') + 1,
+);
+/** 2.2：「当越来越多想法……更重要。」 */
+const [changeBig] = story.change.paragraphs[2].split(/(?<=。)/);
+/** 2.3 最后一段：人的一天 */
+const wholeDay = story.toLife.paragraphs[story.toLife.paragraphs.length - 1];
+const [worldQuestion, ...worldRest] = story.further.paragraphs;
+/** 一格一个想法；填色按打乱的次序（29 与 48 互质，走一遍不重复），不是从左到右 */
+const IDEAS = 48;
+const CHOSEN = 33;
+
 export default function AboutPage() {
   const { standard } = studio;
-  const [lineWork, work, lineLife, life, experience, together] =
-    story.toLife.paragraphs;
-  const [question, ...further] = story.further.paragraphs;
-  const change = story.change.paragraphs;
-  const changeLast = change[change.length - 1];
-
   return (
     <div className="ab">
-      {/* 首屏：白房子里，一个人站在窗前往外看 */}
+      {/* 首屏：四个问题 → 四件产品 */}
       <header className="ab-hero m-wrap m-top">
-        <p className="m-kicker" data-reveal>
-          {aboutUi.kicker}
-        </p>
-        <h1 className="ab-title" data-reveal>
+        <p className="m-kicker m-rise">{aboutUi.kicker}</p>
+        <h1 className="ab-title m-rise" style={{ '--delay': '60ms' } as Vars}>
           <Phrases text={aboutName} />
         </h1>
         <p
-          className="ab-lead m-lead"
-          data-reveal
-          style={{ '--delay': '90ms' } as Vars}
+          className="ab-care m-rise"
+          style={{ '--delay': '140ms' } as Vars}
         >
-          {aboutCare}
+          {aboutCareLead}
         </p>
+        <ol className="ab-qa">
+          {nearIds.map((id, index) => {
+            const product = products[id];
+            return (
+              <li
+                key={id}
+                className="ab-qa-row m-rise"
+                style={{ '--delay': `${380 + index * 260}ms` } as Vars}
+              >
+                <Link href={productHref[id]} className="ab-qa-link">
+                  <span className="ab-qa-q">
+                    {standard.questions[id]}
+                    {index < nearIds.length - 1 ? '，' : '。'}
+                  </span>
+                  <span className="ab-qa-line" aria-hidden="true" />
+                  <span className="ab-qa-a">
+                    <span className="ab-qa-name" lang="en">
+                      {product.name}
+                    </span>
+                    <Status>{product.stage}</Status>
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+          <li
+            className="ab-qa-row ab-qa-far m-rise"
+            style={{ '--delay': `${380 + nearIds.length * 260}ms` } as Vars}
+          >
+            <Link href={productHref.world} className="ab-qa-link">
+              <span className="ab-qa-q">{aboutUi.further}</span>
+              <span className="ab-qa-line" aria-hidden="true" />
+              <span className="ab-qa-a">
+                <span className="ab-qa-name" lang="en">
+                  {products.world.name}
+                </span>
+                <Status concept>{products.world.stage}</Status>
+              </span>
+            </Link>
+          </li>
+        </ol>
+        <div className="ab-hero-more">
+          <Fold summary={aboutUi.full}>
+            <p>{standard.intro}</p>
+            <p>{standard.growing}</p>
+            {nearIds.map((id) => (
+              <p key={id}>
+                {products[id].name} {standard.products[id]}
+              </p>
+            ))}
+            <p>{standard.world}</p>
+            <p>{standard.together}</p>
+          </Fold>
+          <p className="m-actions">
+            <More href={ENTERPRISE}>{aboutUi.enterprise}</More>
+            <More href={COMMUNITY}>{aboutUi.community}</More>
+          </p>
+        </div>
         <Window
           name="about-window"
           ratio="21 / 9"
           focus="72% 56%"
           sizes="(max-width: 900px) 100vw, 1440px"
-          eager
           alt={aboutUi.heroAlt}
           caption={<span lang="en">{aboutUi.heroCaption}</span>}
           className="ab-hero-window"
         />
       </header>
 
-      {/* 01 我们是谁：四个问题，对上四件产品；World 更远 */}
-      <section className="ab-sec m-wrap" aria-labelledby="ab-who-title">
+      {/* 01 从哪来：六种经历汇到 Molis */}
+      <section
+        className="ab-sec m-wrap"
+        aria-labelledby="ab-from-title"
+      >
         <SectionHead
           no={pad(1)}
-          kicker={aboutUi.who}
-          id="ab-who-title"
-          title={<Phrases text={standard.growing} />}
-        />
-        <ol className="ab-who">
-          {nearIds.map((id, index) => {
-            const product = products[id];
-            return (
-              <li
-                key={id}
-                className="ab-who-row"
-                data-reveal
-                style={{ '--delay': `${index * 70}ms` } as Vars}
-              >
-                <p className="ab-q">
-                  {standard.questions[id]}
-                  {index < nearIds.length - 1 ? '，' : '。'}
-                </p>
-                <span className="ab-arrow" aria-hidden="true">
-                  →
-                </span>
-                <div className="ab-a">
-                  <p className="m-tagline">
-                    <span>{product.form}</span>
-                    <Status>{product.stage}</Status>
-                  </p>
-                  <p className="ab-a-text">
-                    <span lang="en">{product.name}</span>{' '}
-                    {standard.products[id]}
-                  </p>
-                  <More href={productHref[id]}>{homeProducts[id].more}</More>
-                </div>
-              </li>
-            );
-          })}
-        </ol>
-        <div className="ab-far" data-reveal>
-          <span className="ab-far-line" aria-hidden="true" />
-          <div className="ab-a">
-            <p className="m-tagline">
-              <span>{products.world.form}</span>
-              <Status concept>{products.world.stage}</Status>
-            </p>
-            <p className="ab-a-text">{standard.world}</p>
-            <More href={productHref.world}>{homeProducts.world.more}</More>
-          </div>
-        </div>
-        <div className="ab-together" data-reveal>
-          <p>{standard.together}</p>
-          <div className="m-actions">
-            <More href={ENTERPRISE}>{aboutUi.enterprise}</More>
-            <More href={COMMUNITY}>{aboutUi.community}</More>
-          </div>
-        </div>
-      </section>
-
-      {/* 02 从哪来 */}
-      <section className="ab-sec m-wrap" aria-labelledby="ab-from-title">
-        <SectionHead
-          no={pad(2)}
           kicker={aboutUi.from}
           id="ab-from-title"
           title={<Phrases text={story.origin.title} />}
         />
-        <div className="ab-body" data-reveal>
-          <div className="m-prose ab-prose">
-            {story.origin.paragraphs.map((text) => (
-              <p key={text}>{text}</p>
-            ))}
+        <div className="ab-from" data-scene>
+          <div className="ab-from-words">
+            <p className="ab-from-big">{colleagues}</p>
+            <p className="ab-from-line">
+              <Phrases text={story.origin.positions} />
+            </p>
           </div>
+          <div className="ab-gather" aria-hidden="true">
+            {aboutUi.fromWords.map((word, index) => (
+              <span
+                key={word}
+                className="ab-gather-word"
+                style={{ '--i': index } as Vars}
+              >
+                {word}
+              </span>
+            ))}
+            <span className="ab-gather-core" lang="en">
+              Molis
+            </span>
+          </div>
+        </div>
+        <div className="ab-body">
+          <Fold summary={aboutUi.full}>
+            <Paragraphs items={story.origin.paragraphs} />
+          </Fold>
           <More href={TEAM}>{aboutUi.meetTeam}</More>
         </div>
       </section>
 
-      {/* 03 什么变了：最后一句打破网格 */}
+      {/* 02 什么变了：越来越多想法被做出来，圈住值得做的那一个 */}
       <section className="ab-sec m-wrap" aria-labelledby="ab-change-title">
         <SectionHead
-          no={pad(3)}
+          no={pad(2)}
           kicker={aboutUi.changed}
           id="ab-change-title"
           title={<Phrases text={story.change.title} />}
+          lead={<p>{aboutUi.ideas}</p>}
         />
-        <div className="ab-body" data-reveal>
-          <div className="m-prose ab-prose">
-            {change.slice(0, -1).map((text) => (
+        <div className="ab-ideas" data-scene>
+          <ol className="ab-ideas-grid" aria-hidden="true">
+            {Array.from({ length: IDEAS }, (_, index) => (
+              <li
+                key={index}
+                className="ab-idea"
+                data-chosen={index === CHOSEN || undefined}
+                style={{ '--i': (index * 29) % IDEAS } as Vars}
+              />
+            ))}
+          </ol>
+          <p className="ab-ideas-note">{aboutUi.ideasNote}</p>
+        </div>
+        <p className="ab-big" data-reveal>
+          <Phrases text={changeBig} />
+        </p>
+        <div className="ab-body">
+          <Fold summary={aboutUi.full}>
+            {story.change.paragraphs.map((text) => (
               <p key={text}>
                 <WithEssayLink text={text} />
               </p>
             ))}
-          </div>
-        </div>
-        <p className="ab-big" data-reveal>
-          <Phrases text={changeLast} />
-        </p>
-        <div className="ab-body" data-reveal>
+          </Fold>
           <More href={essayHref('human-scale')}>{aboutUi.essay}</More>
         </div>
       </section>
 
-      {/* 04 三种媒介，同一个动作 */}
+      {/* 03 三种媒介，同一个动作 */}
       <section className="ab-sec m-wrap" aria-labelledby="ab-trio-title">
         <SectionHead
-          no={pad(4)}
+          no={pad(3)}
           kicker={trio.kicker}
           en
           id="ab-trio-title"
@@ -245,118 +286,110 @@ export default function AboutPage() {
         <Trio />
       </section>
 
-      {/* 05 我们相信什么：六条信念全文（首页「读完整的信念」链到这里） */}
+      {/* 04 我们相信什么：六句是一张目录（首页「读完整的信念」链到这里） */}
       <section
         className="ab-sec m-wrap"
         id="beliefs"
         aria-labelledby="ab-beliefs-title"
       >
         <SectionHead
-          no={pad(5)}
+          no={pad(4)}
           kicker={aboutUi.believe}
           en
           id="ab-beliefs-title"
           title={aboutUi.believeTitle}
           lead={<p>{standard.character}</p>}
         />
-        <ol className="ab-beliefs">
-          {studio.beliefs.map((belief, index) => (
-            <li key={belief.title} data-reveal>
-              <span className="ab-bel-no" aria-hidden="true" lang="en">
-                {pad(index + 1)}
-              </span>
-              <h3 className="ab-bel-title">
-                <Phrases text={belief.title} />
-              </h3>
-              <p className="ab-bel-text">{belief.text}</p>
-            </li>
-          ))}
-        </ol>
+        <Beliefs />
       </section>
 
-      {/* 06 这些信念怎样落到产品里 */}
+      {/* 05 落到产品里 · 要求自己 */}
       <section className="ab-sec m-wrap" aria-labelledby="ab-practice-title">
         <SectionHead
-          no={pad(6)}
+          no={pad(5)}
           kicker={aboutUi.practice}
           id="ab-practice-title"
           size="h2"
           title={<Phrases text={studio.practice.title} />}
           lead={<p>{studio.practice.lead}</p>}
         />
-        <div className="ab-table-wrap" data-reveal>
-          <table className="ab-table">
-            <thead>
-              <tr>
-                {studio.practice.head.map((text) => (
-                  <th key={text} scope="col">
-                    {text}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {studio.practice.rows.map((row) => (
-                <tr key={row.choice}>
-                  <th scope="row">{row.choice}</th>
-                  <td>{row.how}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* 07 我们怎样要求自己 */}
-      <section className="ab-sec m-wrap" aria-labelledby="ab-demands-title">
-        <SectionHead
-          no={pad(7)}
-          kicker={aboutUi.demands}
-          id="ab-demands-title"
-          size="h2"
-          title={<Phrases text={studio.demands.title} />}
-          lead={<p>{studio.demands.lead}</p>}
-        />
-        <ul className="ab-demands">
-          {studio.demands.items.map((item, index) => (
+        <ul className="ab-practice">
+          {studio.practice.rows.map((row, index) => (
             <li
-              key={item.title}
+              key={row.choice}
               data-reveal
-              style={{ '--delay': `${index * 70}ms` } as Vars}
+              style={{ '--delay': `${index * 80}ms` } as Vars}
             >
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
+              <p className="ab-practice-tags">
+                {aboutUi.practiceTags[index].map((tag) => (
+                  <span key={tag} lang="en">
+                    {tag}
+                  </span>
+                ))}
+              </p>
+              <h3>{row.choice}</h3>
+              <p>{row.how}</p>
             </li>
           ))}
         </ul>
+        <div className="ab-demands" data-reveal>
+          <h3 className="ab-demands-title">
+            <span className="m-kicker">{aboutUi.demands}</span>
+            <span>{studio.demands.title}</span>
+          </h3>
+          <ol>
+            {studio.demands.items.map((item, index) => (
+              <li key={item.title}>
+                <span className="m-no" aria-hidden="true">
+                  {pad(index + 1)}
+                </span>
+                <span className="ab-demand">{item.title}</span>
+              </li>
+            ))}
+          </ol>
+          <Fold summary={aboutUi.full}>
+            <p>{studio.demands.lead}</p>
+            {studio.demands.items.map((item) => (
+              <p key={item.title}>
+                <b className="m-strong">{item.title}</b>
+                {item.text}
+              </p>
+            ))}
+          </Fold>
+        </div>
       </section>
 
-      {/* 08 接下来去哪：工作、生活、体验三条线索；向前飞的海岸线；更远的构想 */}
+      {/* 06 接下来去哪：一个人的一天；海岸线；World 的那个问题 */}
       <section className="ab-sec m-wrap" aria-labelledby="ab-next-title">
         <SectionHead
-          no={pad(8)}
+          no={pad(6)}
           kicker={aboutUi.next}
           id="ab-next-title"
           title={<Phrases text={story.toLife.title} />}
         />
-        <div className="ab-threads">
-          <div className="ab-thread" data-reveal>
-            <p className="ab-thread-line">{lineWork}</p>
-            <div className="ab-thread-body">
-              <p>{work}</p>
-            </div>
-          </div>
-          <div className="ab-thread" data-reveal>
-            <p className="ab-thread-line">{lineLife}</p>
-            <div className="ab-thread-body">
-              <p>{life}</p>
-              <p>{experience}</p>
-            </div>
-          </div>
+        <div className="ab-day" data-scene>
+          <ol className="ab-day-bar">
+            {aboutUi.day.map((part, index) => (
+              <li
+                key={part.label}
+                className="ab-day-part"
+                style={{ '--i': index } as Vars}
+              >
+                <span className="ab-day-label">{part.label}</span>
+                <span className="ab-day-fill" aria-hidden="true" />
+                <span className="ab-day-products" lang="en">
+                  {part.products.map((name) => `Molis ${name}`).join(' · ')}
+                </span>
+              </li>
+            ))}
+          </ol>
+          <p className="ab-day-whole">{wholeDay}</p>
         </div>
-        <p className="ab-whole" data-reveal>
-          {together}
-        </p>
+        <div className="ab-body">
+          <Fold summary={aboutUi.full}>
+            <Paragraphs items={story.toLife.paragraphs.slice(0, -1)} />
+          </Fold>
+        </div>
         <VideoWindow
           name="about-coast"
           ratio="21 / 9"
@@ -369,12 +402,16 @@ export default function AboutPage() {
             <Phrases text={story.further.title} />
           </h3>
           <div className="ab-further-body" data-reveal>
-            <p className="ab-question">{question}</p>
-            <div className="m-prose">
-              {further.map((text) => (
-                <p key={text}>{text}</p>
-              ))}
-            </div>
+            <p className="ab-question">{worldQuestion}</p>
+            <p className="m-actions">
+              <More href={productHref.world}>
+                {products.world.name}
+              </More>
+              <Status concept>{products.world.stage}</Status>
+            </p>
+            <Fold summary={aboutUi.full}>
+              <Paragraphs items={worldRest} />
+            </Fold>
           </div>
         </div>
       </section>
