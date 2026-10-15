@@ -1,5 +1,6 @@
 // 产品页「当前进展」的块：把第 4 章各产品「当前进展」的原句拆成一块一块，一眼看出已经有的和还没有的。
-// 只拆词、不添事实：每一块都能在对应产品「当前进展」或第 3 章「当前阶段」的原句里找到出处（tests/site-copy.test.mjs 核对）。
+// 只拆词、不添事实：每一块去掉括号里的注以后，都能在对应产品的第 4 章小节或第 3 章里逐字找到（tests/site-copy.test.mjs 核对）；
+// 唯一的例外是 World「已经有的」那一块（新写：这一页本身就是它现在有的全部）。
 // 原句仍在各产品自己的模块里（workProgress 等），页面上收进「展开看原文」。
 
 import type { ProductId } from './products';
@@ -17,7 +18,7 @@ export const progressBlocks: Record<ProductId, Blocks> = {
       '团队空间',
       '多设备同步',
       '插件分享',
-      '新版正式安装包',
+      '正式安装包（新版）',
     ],
   },
   tool: {
@@ -26,8 +27,8 @@ export const progressBlocks: Record<ProductId, Blocks> = {
       '跨应用交互',
       '真实 AI',
       '系统服务',
-      '公开安装包',
-      '成为 Work 的基础能力（范围与时间未定）',
+      '安装包（尚未公开提供）',
+      '成为 Molis Work 的基础能力（范围与时间未定）',
     ],
   },
   life: {
