@@ -39,6 +39,7 @@ import { Col } from './parts';
 import { ArtistCols, DropDemo, NiulDemo, WebCols } from './works';
 import '../../_site/demo/demo.css';
 import './methods/methods.css';
+import { Fold } from '../../_site/viz/viz';
 import './community.css';
 
 export const metadata = pageMetadata(
@@ -108,6 +109,9 @@ function WorkRow({
   );
 }
 
+/** 结尾那句拆成三段：带着好奇来 / 带点什么走 / 再带点什么回来 */
+const loopParts = (community.closing.match(/[^，。]+/g) ?? []).slice(0, 3);
+
 export default function CommunityPage() {
   const t = community;
   const ui = communityUi;
@@ -175,11 +179,13 @@ export default function CommunityPage() {
           title={<Phrases text={t.try.title} />}
           id="works-title"
           lead={
-            <div className="m-prose">
+            <>
               <p>{t.try.lead}</p>
-              <p>{t.try.works}</p>
-              <p>{t.try.path.join('')}</p>
-            </div>
+              <Fold summary={ui.full}>
+                <p>{t.try.works}</p>
+                <p>{t.try.path.join('')}</p>
+              </Fold>
+            </>
           }
         />
         <ol className="m-com-works">
@@ -363,12 +369,14 @@ export default function CommunityPage() {
           ))}
         </ul>
         <div className="m-com-methods-foot" data-reveal>
-          <div className="m-prose">
-            <p>{t.methods.why.join('')}</p>
+          <div className="m-com-methods-note">
             <p>
               {t.methods.tools}
               {t.methods.disclosure}
             </p>
+            <Fold summary={ui.full}>
+              <p>{t.methods.why.join('')}</p>
+            </Fold>
           </div>
           <div className="m-actions">
             <Btn href={METHODS}>{ui.methodsOpen}</Btn>
@@ -398,6 +406,24 @@ export default function CommunityPage() {
           alt={ui.sketchAlt}
           caption={<span lang="en">{ui.sketchCaption}</span>}
         />
+        <div className="m-com-loopbox">
+          <div className="m-com-loop" data-reveal aria-hidden="true">
+            <svg viewBox="0 0 300 300" className="m-com-loop-ring">
+              <circle cx="150" cy="150" r="112" />
+              <path d="M247 94 l0 -9 M247 94 l-7.8 -4.5" />
+              <path d="M150 262 l7.8 -4.5 M150 262 l7.8 4.5" />
+              <path d="M53 94 l-7.8 4.5 M53 94 l0 9" />
+            </svg>
+            <span className="m-com-orbit">
+              <i />
+            </span>
+            {loopParts.map((part, i) => (
+              <span key={part} className="m-com-loop-node" data-at={i}>
+                <b>{part}</b>
+                <small>{ui.loop[i]}</small>
+              </span>
+            ))}
+          </div>
         <ol className="m-com-ways">
           <li data-reveal>
             <span className="m-no" aria-hidden="true">
@@ -427,6 +453,8 @@ export default function CommunityPage() {
             <More href={contactHref('feedback')}>{ui.ways[2].link}</More>
           </li>
         </ol>
+
+        </div>
 
         <div className="m-com-wall" aria-labelledby="wall-title">
           <div className="m-com-wall-head" data-reveal>

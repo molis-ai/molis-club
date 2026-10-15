@@ -129,6 +129,9 @@ export const communityUi = {
     { title: '一件作品，或一段过程', link: '分享给我们' },
     { title: '还没有作品', link: '说说试得怎么样' },
   ],
+  /** 「带回来」的回环：三段取自结尾那句（closing），下面的小字是新写 */
+  loop: ['先玩一件作品', '一份方法、一个 Skill 或一段 Prompt', '作品、过程，或一句试用感受'],
+  full: '展开看全文',
   wallTitle: '大家做的',
   wallEmpty: '这里还空着。',
   wallEmptyNote:

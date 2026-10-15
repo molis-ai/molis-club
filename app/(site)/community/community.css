@@ -875,20 +875,120 @@
 .m-com-back-window {
   margin-bottom: clamp(48px, 8vh, 88px);
 }
-.m-com-ways {
+/* 带回来：左边一个回环（带着好奇来 → 带点什么走 → 再带点什么回来），右边三种带回来的方式 */
+.m-com-loopbox {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--col-gap);
   row-gap: 40px;
+  align-items: center;
+}
+.m-com-loop {
+  grid-column: 1 / span 5;
+  position: relative;
+  width: min(100%, 420px);
+  aspect-ratio: 1;
+  justify-self: center;
+}
+.m-com-loop-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.m-com-loop-ring circle,
+.m-com-loop-ring path {
+  fill: none;
+  stroke: var(--hair-2);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.m-com-loop-ring path {
+  stroke: var(--mute);
+}
+/* 沿着回环走的一个点：转三圈停在顶上 */
+.m-com-orbit {
+  position: absolute;
+  inset: 12.67%;
+  border-radius: 50%;
+  /* 停在第一段弧的中间（右上），不躲在字后面 */
+  rotate: 60deg;
+}
+.m-com-orbit i {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-wash);
+}
+.js .m-com-loop.is-in .m-com-orbit {
+  animation: m-com-orbit 7s linear 0.6s 3;
+}
+@keyframes m-com-orbit {
+  from {
+    rotate: 60deg;
+  }
+  to {
+    rotate: calc(60deg + 1turn);
+  }
+}
+.m-com-loop-node {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  width: 12.5em;
+  translate: -50% -50%;
+  padding: 10px 8px;
+  border-radius: var(--r-inset);
+  background: var(--paper);
+  text-align: center;
+}
+.m-com-loop-node b {
+  font: 400 var(--t-keys) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-com-loop-node small {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--mute);
+}
+.m-com-loop-node[data-at='0'] {
+  top: 12.7%;
+  left: 50%;
+}
+.m-com-loop-node[data-at='1'] {
+  top: 68.7%;
+  left: 82.3%;
+}
+.m-com-loop-node[data-at='2'] {
+  top: 68.7%;
+  left: 17.7%;
+}
+.m-com-ways {
+  grid-column: 7 / -1;
+  display: grid;
+  row-gap: 28px;
 }
 .m-com-ways li {
-  grid-column: span 4;
   display: grid;
+  grid-template-columns: 2.6em minmax(0, 1fr);
   align-content: start;
   justify-items: start;
-  gap: 10px;
+  column-gap: 12px;
+  row-gap: 8px;
   padding-top: 16px;
   border-top: 1px solid var(--hair);
+}
+.m-com-ways li > .m-no {
+  grid-row: span 3;
+  padding-top: 0.4em;
 }
 .m-com-ways h3 {
   font: 400 var(--t-h3) / 1.45 var(--sans);
@@ -897,6 +997,14 @@
 .m-com-ways p {
   color: var(--ink-2);
   line-height: 1.9;
+}
+.m-com-methods-note {
+  display: grid;
+  gap: 8px;
+  max-width: var(--read);
+  font-size: var(--t-small);
+  line-height: 1.8;
+  color: var(--mute);
 }
 
 /* 大家做的：一面空着的墙，六个虚线格子，中间一句实话 */
@@ -1110,8 +1218,21 @@
     margin-bottom: 8px;
   }
   .m-com-counts li,
-  .m-com-ways li {
+  .m-com-loop,
+  .m-com-ways {
     grid-column: 1 / -1;
+  }
+  .m-com-loop-node {
+    width: 9.5em;
+  }
+  .m-com-loop-node small {
+    font-size: 11.5px;
+  }
+  .m-com-loop-node[data-at='1'] {
+    left: 76%;
+  }
+  .m-com-loop-node[data-at='2'] {
+    left: 24%;
   }
 }
 @media (max-width: 700px) {
@@ -1145,6 +1266,9 @@
 
 /* ---------- 减少动态：花直接是完整的，演示停在设计好的那一帧 ---------- */
 @media (prefers-reduced-motion: reduce) {
+  .js .m-com-loop.is-in .m-com-orbit {
+    animation: none;
+  }
   .js .m-com-sheet[data-intro] .m-com-petal,
   .m-com-sample-view img,
   .m-com-demo *,
