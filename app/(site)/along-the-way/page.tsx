@@ -5,7 +5,6 @@ import {
   alongUi,
   flowOf,
 } from '../../../content/site/along';
-import { rooms } from '../../../content/site/exhibit';
 import { ALONG, contactHref } from '../../_site/routes';
 import { Btn, pad, Phrases, type Vars } from '../../_site/ui';
 import {
@@ -13,6 +12,7 @@ import {
   Label,
   NextRoom,
   RoomMeta,
+  roomOf,
   Work,
 } from '../../_site/exhibit/exhibit';
 import { AlongMap } from './along-map';
@@ -32,7 +32,7 @@ export const metadata = pageMetadata(
 const sentences = (text: string) =>
   text.match(/[^。？！]+[。？！]?/g) ?? [text];
 
-// 展厅 03「沿途」· 主题：路（负责人 2026-10-15 定：「关于」做成一场展，这是第三间，晨雾色的墙）。
+// 展厅 04「沿途」· 主题：路（负责人 2026-10-15 定：「关于」做成一场展，这是最后一间，晨雾色的墙）。
 // 开场：一张横幅的黎明，展厅名、附录 A 的标题、三个数；
 // 一路上：四张照片一字排开、错落着走，展签上是附录 A 开头两段的四句（原句，一张一句）；
 // 一条河：54 件尝试从八组流到各自的去处（线描），下面是一件一行的目录，可按去处筛选；
@@ -80,7 +80,7 @@ export default function AlongPage() {
                 className="ex-h1 m-rise"
                 style={{ '--delay': '60ms' } as Vars}
               >
-                {rooms[2].name}
+                {roomOf('road').name}
               </h1>
               <p
                 className="ex-note m-rise"

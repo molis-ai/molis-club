@@ -204,6 +204,11 @@ const images = [
       id: '1599420186985-5c3d1a038e84',
       widths: [640, 1200],
     },
+    // 展厅 03「文章」（负责人 2026-10-16 让我从第四轮候选里挑的）
+    { key: 'ex-library-window', id: '1782530707382-fdb15bf93789' },
+    { key: 'ex-sun-table', id: '1776090188043-402fc41c4f5d' },
+    { key: 'ex-hand-book', id: '1589793241881-37eef79add7d' },
+    { key: 'ex-workbench', id: '1724182507700-bccac8d02859' },
   ].map(({ key, id, widths = [800, 1600] }) => ({
     key,
     src: `public/images/r8/picks/unsplash-photo-${id}-2400.jpg`,

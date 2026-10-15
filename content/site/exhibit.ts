@@ -1,6 +1,6 @@
-// 「关于」做成同一位作者的一场展（负责人 2026-10-15 定）：三个页面是三间主题不同的展厅——
-// 01 认识我们（人）· 02 我们相信什么（光）· 03 沿途（路）。参考 noguchi.org 与 normcph.com：
-// 大图、小字、展签式的说明，每间展厅一种墙色；三间用同一套展签、同一张平面图，走到头有「下一个展厅」。
+// 「关于」做成同一位作者的一场展（负责人 2026-10-15 定）：顶栏「关于」下的四个页面是四间主题不同的展厅——
+// 01 认识我们（人）· 02 我们相信什么（光）· 03 文章（问，2026-10-16 加）· 04 沿途（路）。参考 noguchi.org 与 normcph.com：
+// 大图、小字、展签式的说明，每间展厅一种墙色；四间用同一套展签、同一张平面图，走到头有「下一个展厅」。
 // 这里只放新写的界面文字：展厅名牌、展品标题、媒介与署名、替代文字。
 // 展品旁边「诉说」的那一句一律取自底稿原句（各页从 studio.ts、team.ts、along.ts 读，不在这里重写）。
 // 摄影来自 Unsplash（免费授权；署名 2026-10-15 在各张照片页核对），展签上只写摄影者的名字，来源写在全站页尾；
@@ -9,7 +9,7 @@
 
 import { nav } from './nav';
 
-export type RoomId = 'people' | 'light' | 'road';
+export type RoomId = 'people' | 'light' | 'read' | 'road';
 
 export type Room = {
   id: RoomId;
@@ -36,7 +36,14 @@ export const rooms: Room[] = [
     theme: '光',
     en: 'Light',
   },
-  { id: 'road', no: '03', name: nav.aboutItems.along, theme: '路', en: 'Road' },
+  {
+    id: 'read',
+    no: '03',
+    name: nav.aboutItems.essays,
+    theme: '问',
+    en: 'Questions',
+  },
+  { id: 'road', no: '04', name: nav.aboutItems.along, theme: '路', en: 'Road' },
 ];
 
 type Medium = 'photo' | 'ai' | 'drawing' | 'interactive';
@@ -263,6 +270,31 @@ export const pieces = {
     medium: 'photo',
     by: 'Ryan Ancill',
     alt: '工作台上摊着一张手绘的房屋草图，旁边是马克笔、胶带和打印出来的图纸。',
+  },
+  // 展厅 03 · 问（文章）：阅览室的窗、摊开的长桌，两篇各一件
+  'ex-library-window': {
+    title: '书架之间的窗',
+    medium: 'photo',
+    by: 'Jameson Berrios',
+    alt: '老图书馆里，一扇高高的窗夹在两排顶到天花板的深色书架之间，窗外的光是白的。',
+  },
+  'ex-sun-table': {
+    title: '摊开的长桌',
+    medium: 'photo',
+    by: 'LISK OBE',
+    alt: '昏暗的阅览室里，一张长木桌从近处伸向窗边，桌面上落着几块阳光。',
+  },
+  'ex-hand-book': {
+    title: '按住正在读的那一页',
+    medium: 'photo',
+    by: 'Kira Porotikova',
+    alt: '一只戴着红黑手绳的手按在摊开的书页上，斜进来的阳光照亮了半页字。',
+  },
+  'ex-workbench': {
+    title: '窗边的工作台',
+    medium: 'photo',
+    by: 'Nacho Gimeno Guerrero',
+    alt: '木工房里靠窗的工作台，台面上摆满锯、刨子和各种工具，窗外的光照进来。',
   },
 } satisfies Record<string, Piece>;
 

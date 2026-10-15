@@ -36,6 +36,9 @@ export const essayUi = {
   words: (n: number) => `约 ${n} 字`,
   minutes: (n: number) => `读完约 ${n} 分钟`,
   notFound: '没有这篇文章',
+  /** 展厅 03「文章」开场的三个数与「为什么写」一屏 */
+  facts: { essays: '文章', sections: '小节', minutes: '读完约（分钟）' },
+  why: '为什么写',
 };
 
 export const essays: Story[] = stories;

@@ -3,7 +3,6 @@ import { pageMetadata } from '../../../lib/site';
 import { members, team, teamUi, type Member } from '../../../content/site/team';
 import { story, studio } from '../../../content/site/studio';
 import { alongGroups, flowOf } from '../../../content/site/along';
-import { rooms } from '../../../content/site/exhibit';
 import {
   productIds,
   products,
@@ -27,7 +26,13 @@ import {
   Status,
   type Vars,
 } from '../../_site/ui';
-import { Facts, NextRoom, RoomMeta, Work } from '../../_site/exhibit/exhibit';
+import {
+  Facts,
+  NextRoom,
+  RoomMeta,
+  roomOf,
+  Work,
+} from '../../_site/exhibit/exhibit';
 import './team.css';
 
 export const metadata = pageMetadata(
@@ -73,7 +78,7 @@ const total = items.length;
 const intoProducts = items.filter((item) =>
   ['work', 'tool', 'story'].includes(flowOf(item)),
 ).length;
-const road = rooms[2];
+const road = roomOf('road');
 
 /** 「我们关心技术怎样进入具体的日常」：四个问题对上四件产品，World 更远 */
 const nearIds = productIds.filter((id) => id !== 'world') as Exclude<

@@ -763,6 +763,70 @@
       ]
     ]
   },
+  "ex-library-window": {
+    "width": 2160,
+    "height": 3232,
+    "avg": "#555657",
+    "src": "/site/ex-library-window-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-library-window-800.webp",
+        800
+      ],
+      [
+        "/site/ex-library-window-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-sun-table": {
+    "width": 2400,
+    "height": 3600,
+    "avg": "#1a1918",
+    "src": "/site/ex-sun-table-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-sun-table-800.webp",
+        800
+      ],
+      [
+        "/site/ex-sun-table-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-hand-book": {
+    "width": 2400,
+    "height": 4265,
+    "avg": "#53483f",
+    "src": "/site/ex-hand-book-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-hand-book-800.webp",
+        800
+      ],
+      [
+        "/site/ex-hand-book-1600.webp",
+        1600
+      ]
+    ]
+  },
+  "ex-workbench": {
+    "width": 2400,
+    "height": 3600,
+    "avg": "#40382f",
+    "src": "/site/ex-workbench-1600.webp",
+    "srcset": [
+      [
+        "/site/ex-workbench-800.webp",
+        800
+      ],
+      [
+        "/site/ex-workbench-1600.webp",
+        1600
+      ]
+    ]
+  },
   "contact-door": {
     "width": 1024,
     "height": 1536,

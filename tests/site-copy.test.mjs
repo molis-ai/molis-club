@@ -162,7 +162,7 @@ const media = JSON.parse(
   readFileSync(new URL('../app/_site/media.json', import.meta.url), 'utf8'),
 );
 
-void test('「关于」三间展厅：每件照片都有署名和压缩图，展厅名就是顶栏里的名字', () => {
+void test('「关于」四间展厅：每件照片都有署名和压缩图，展厅名就是顶栏里的名字', () => {
   for (const [key, piece] of Object.entries(pieces)) {
     if (piece.medium === 'photo' || piece.medium === 'ai') {
       assert.ok(media[key], `展品 ${key} 在 media.json 里没有压缩图`);
@@ -176,7 +176,7 @@ void test('「关于」三间展厅：每件照片都有署名和压缩图，展
     assert.ok(key in pieces, `${key} 压缩了，却没有展签`);
   assert.deepEqual(
     rooms.map((room) => room.name),
-    ['认识我们', '我们相信什么', '沿途'],
+    ['认识我们', '我们相信什么', '文章', '沿途'],
   );
 });
 

@@ -1,5 +1,5 @@
 /* =====================================================================
-   「关于」三间展厅（content/site/exhibit.ts）：同一场展，每间一种墙色、同一套展签。
+   「关于」四间展厅（content/site/exhibit.ts）：同一场展，每间一种墙色、同一套展签。
    参考 noguchi.org 与 normcph.com：大图、小字、说明像墙上的展签；每一屏放得下（按视口高度收图）。
    ===================================================================== */
 
@@ -11,6 +11,10 @@
 .m:has(.ex[data-room='light']) {
   --paper: var(--wall-light);
   --paper-2: var(--wall-light-2);
+}
+.m:has(.ex[data-room='read']) {
+  --paper: var(--wall-read);
+  --paper-2: var(--wall-read-2);
 }
 .m:has(.ex[data-room='road']) {
   --paper: var(--wall-road);
@@ -44,7 +48,7 @@
   column-gap: var(--col-gap);
 }
 
-/* ---------- 名牌：关于 Molis AI · 展厅 01 / 03 · 主题 · 人 ---------- */
+/* ---------- 名牌：关于 Molis AI · 展厅 01 / 04 · 主题 · 人 ---------- */
 .ex-meta {
   display: flex;
   flex-wrap: wrap;
@@ -68,11 +72,12 @@
   letter-spacing: 0.22em;
 }
 
-/* ---------- 平面图：三间屋子连成一排，墙是 1px 墨线，门洞是墙上一段空白 ---------- */
+/* ---------- 平面图：几间屋子连成一排，墙是 1px 墨线，门洞是墙上一段空白 ---------- */
 .ex-plan ol {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  width: min(100%, 330px);
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  width: min(100%, 440px);
 }
 .ex-plan li {
   position: relative;
@@ -342,6 +347,11 @@
   }
   .ex-plan ol {
     width: 100%;
+  }
+  /* 四间挤在一行：格子里的留白收一点，「我们相信什么」不折行 */
+  .ex-plan a {
+    padding-inline: 7px;
+    letter-spacing: 0;
   }
   .ex-next-link {
     grid-template-columns: 96px 1fr auto;

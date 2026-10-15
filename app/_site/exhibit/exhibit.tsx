@@ -8,16 +8,17 @@ import {
   type PieceKey,
   type RoomId,
 } from '../../../content/site/exhibit';
-import { ALONG, ABOUT, TEAM } from '../routes';
+import { ALONG, ABOUT, ESSAYS, TEAM } from '../routes';
 import { mediaOf, pad, type Vars } from '../ui';
 import './exhibit.css';
 
-// 「关于」三间展厅共用的部件（content/site/exhibit.ts）：展厅名牌与平面图、带展签的展品、去下一个展厅。
+// 「关于」四间展厅共用的部件（content/site/exhibit.ts）：展厅名牌与平面图、带展签的展品、去下一个展厅。
 // 都是服务端组件；展品沿用全站「窗」的开窗动效（.m-window[data-open]），载入前铺平均色。
 
 export const roomHref: Record<RoomId, string> = {
   people: TEAM,
   light: ABOUT,
+  read: ESSAYS,
   road: ALONG,
 };
 
@@ -25,12 +26,13 @@ export const roomHref: Record<RoomId, string> = {
 const cover: Record<RoomId, PieceKey & Parameters<typeof mediaOf>[0]> = {
   people: 'team-table',
   light: 'about-window',
+  read: 'ex-library-window',
   road: 'ex-dawn-field',
 };
 
-const roomOf = (id: RoomId) => rooms.find((room) => room.id === id)!;
+export const roomOf = (id: RoomId) => rooms.find((room) => room.id === id)!;
 
-/** 展厅平面图：三间屋子连成一排，门洞相通；当前这间铺一层杏色，点一下去别的展厅 */
+/** 展厅平面图：四间屋子连成一排，门洞相通；当前这间铺一层杏色，点一下去别的展厅 */
 export function Plan({ current }: { current: RoomId }) {
   return (
     <nav className="ex-plan" aria-label={exUi.plan}>
@@ -210,7 +212,7 @@ export function Work({
   );
 }
 
-/** 展厅尽头：去下一个展厅（第三间回到第一间）。来源与「画面里的人不是团队成员」写在全站页尾 */
+/** 展厅尽头：去下一个展厅（最后一间回到第一间）。来源与「画面里的人不是团队成员」写在全站页尾 */
 export function NextRoom({ from }: { from: RoomId }) {
   const order = rooms.map((room) => room.id);
   const next = order[(order.indexOf(from) + 1) % order.length];
