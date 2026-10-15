@@ -76,9 +76,12 @@ export function ContactForm({
   fixed,
   titleAs: Title = 'h2',
   idPrefix = 'cf',
+  seed,
 }: {
   /** 固定的来意（企业合作页用）：不给选，也不读地址栏 */
   fixed?: Intent;
+  /** 「想说的事」的开头（企业合作页把首屏选过的问题带进来）；访客动过就以访客为准 */
+  seed?: string;
   /** 成功标题的层级：联系页是 h2，嵌在一节里时用 h3 */
   titleAs?: 'h2' | 'h3';
   idPrefix?: string;
@@ -109,7 +112,7 @@ export function ContactForm({
       : intent && intent === preset?.intent
         ? (preset.idea ?? '')
         : '';
-  const idea = typedIdea ?? presetIdea;
+  const idea = typedIdea ?? (seed || presetIdea);
   const sharing = intent === 'share';
 
   const [busy, setBusy] = useState(false);

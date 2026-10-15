@@ -1,57 +1,6 @@
-/* 企业合作页：全站秩序感最强的一页。
-   一切对齐 12 栏网格：编号在左两栏，标题从第 3 栏起；区块之间只有 1px 线；没有装饰。
-   标志性交互「选一个最像你们的问题」只换颜色与描边，不做位移。 */
-
-/* ---------- 首屏：一句话 + 一扇 21:9 的宽窗 ---------- */
-.m-ent-hero {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: clamp(18px, 3vh, 32px);
-  align-items: end;
-}
-.m-ent-hero .m-tagline {
-  grid-column: 1 / -1;
-}
-.m-ent-title {
-  grid-column: 1 / span 9;
-  font: 300 var(--t-display) / 1.2 var(--sans);
-  letter-spacing: 0.02em;
-}
-.m-ent-hero-go {
-  grid-column: 10 / -1;
-  justify-content: flex-end;
-  padding-bottom: 0.5em;
-}
-.m-ent-hero-window {
-  grid-column: 1 / -1;
-  margin-top: clamp(12px, 4vh, 48px);
-}
-/* 图注是英文：细斜体（Window 的图注默认按中文排） */
-.m-ent .m-caption [lang='en'] {
-  font-style: italic;
-  font-weight: 300;
-  font-size: var(--t-ui);
-}
-
-.m-ent-intro {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  padding-top: clamp(56px, 9vh, 104px);
-}
-.m-ent-intro-text {
-  grid-column: 3 / span 7;
-  display: grid;
-  gap: 1.1em;
-  font-size: var(--t-lead);
-  line-height: 1.95;
-  letter-spacing: 0.03em;
-  color: var(--ink-2);
-}
-.m-ent-intro-text p:last-child {
-  color: var(--ink);
-}
+/* 企业合作页（visual-storyboard 第 1 节）：先让访客说出自己卡在哪，再给一条看得见的路。
+   只读 .m 上的令牌；画面靠结构、线、点和块，不靠装饰。
+   没有 JS、减少动态时：每处都是完整的结果（四站全亮、架子装满、小图示停在最后一帧）。 */
 
 .m-ent-sec {
   padding-top: var(--section-top);
@@ -59,81 +8,112 @@
 .m-ent-talk {
   padding-bottom: var(--section-bottom);
 }
+/* 图注是英文：细斜体 */
+.m-ent .m-caption [lang='en'] {
+  font-style: italic;
+  font-weight: 300;
+  font-size: var(--t-ui);
+}
 
-/* ---------- 01 五个问题：编号 · 问题 · 说明，三栏对齐 ---------- */
-.m-ent-question,
-.m-ent-group {
+/* =====================================================================
+   首屏：标题 + 一行三步 ｜ 你们卡在哪？+ 四站小路线
+   ===================================================================== */
+.m-ent-hero {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--col-gap);
-  row-gap: 14px;
-  padding: clamp(24px, 4vh, 40px) 0;
-  border-top: 1px solid var(--hair);
+  row-gap: clamp(28px, 5vh, 56px);
+  align-items: start;
 }
-.m-ent-question:last-child,
-.m-ent-group:last-child {
-  border-bottom: 1px solid var(--hair);
-}
-.m-ent-qno {
-  grid-column: 1 / span 2;
-  font: italic 300 var(--t-h3) / 1.45 var(--latin);
-  letter-spacing: 0;
-  color: var(--accent-ink);
-}
-.m-ent-qtitle,
-.m-ent-group-title {
-  grid-column: 3 / span 4;
-  font: 400 var(--t-h3) / 1.55 var(--sans);
-  letter-spacing: 0.04em;
-}
-.m-ent-qtext {
-  grid-column: 8 / -1;
+.m-ent-hero-copy {
+  grid-column: 1 / span 7;
   display: grid;
-  gap: 0.9em;
-  line-height: 1.95;
+  align-content: start;
+  gap: clamp(18px, 3vh, 28px);
+}
+.m-ent-title {
+  font: 300 var(--t-h1) / 1.28 var(--sans);
+  letter-spacing: 0.03em;
+}
+/* 一行三步：竖着三个点、一根细线，像路线的缩影 */
+.m-ent-steps {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  max-width: 30em;
+}
+.m-ent-steps::before {
+  content: '';
+  position: absolute;
+  left: 6.5px;
+  top: calc(4px + 0.85em);
+  bottom: calc(4px + 0.85em);
+  width: 1px;
+  background: var(--hair-2);
+}
+.m-ent-steps li {
+  position: relative;
+  padding: 4px 0 4px 26px;
+  font: 400 var(--t-lead) / 1.7 var(--sans);
+  letter-spacing: 0.03em;
   color: var(--ink-2);
 }
+.m-ent-steps li::before {
+  z-index: 1;
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: calc(4px + 0.85em - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1.2px var(--ink);
+}
+.m-ent-steps li:last-child::before {
+  background: var(--ink);
+}
+.m-ent-hero-fold {
+  max-width: 34em;
+}
+.m-ent-hero-hook {
+  grid-column: 8 / -1;
+}
+.m-ent-hero-window {
+  grid-column: 1 / -1;
+}
 
-/* ---------- 02 合作路径：选问题 → 亮出建议起点 ---------- */
-.m-ent-pick {
+/* ---------- 你们卡在哪？ ---------- */
+.m-ent-hook {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 18px;
-  padding-bottom: clamp(36px, 6vh, 64px);
+  gap: 22px;
+  padding: clamp(20px, 2.4vw, 32px);
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
 }
-/* 没有 JS 时选不了：整排藏起来，四站照常完整可读 */
-html:not(.js) .m-ent-pick {
-  display: none;
-}
-.m-ent-pick-set {
-  grid-column: 3 / -1;
+.m-ent-hook-set {
   min-width: 0;
   margin: 0;
   padding: 0;
   border: 0;
 }
-.m-ent-pick-legend {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 14px;
+.m-ent-hook-ask {
   margin-bottom: 14px;
   padding: 0;
-  font-size: var(--t-ui);
-  letter-spacing: 0.06em;
-  color: var(--ink-2);
+  font: 400 var(--t-h3) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
 }
-.m-ent-pick-list {
+.m-ent-hook-list {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
-.m-ent-pick-item {
+.m-ent-chip {
   position: relative;
   display: inline-flex;
 }
-.m-ent-pick-item input {
+.m-ent-chip input {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -142,96 +122,568 @@ html:not(.js) .m-ent-pick {
   opacity: 0;
   cursor: pointer;
 }
-.m-ent-pick-item > span {
+.m-ent-chip > span {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 0 18px 0 14px;
+  gap: 9px;
+  min-height: 42px;
+  padding: 0 16px 0 13px;
   border-radius: var(--r-pill);
-  background: var(--white);
   box-shadow: inset 0 0 0 1px var(--hair-2);
   font: 400 var(--t-ui) / 1.3 var(--sans);
   letter-spacing: 0.04em;
   color: var(--ink-2);
   transition:
     box-shadow 0.3s var(--ease),
-    color 0.3s var(--ease);
+    color 0.3s var(--ease),
+    background-color 0.3s var(--ease);
 }
-.m-ent-pick-no {
+.m-ent-chip-no {
   font: italic 300 var(--t-small) / 1 var(--latin);
   letter-spacing: 0;
   color: var(--mute);
 }
-.m-ent-pick-item:hover > span {
+.m-ent-chip:hover > span {
   color: var(--ink);
   box-shadow: inset 0 0 0 1px var(--mute);
 }
-.m-ent-pick-item input:checked + span {
-  color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--ink);
+.m-ent-chip input:checked + span {
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: none;
 }
-.m-ent-pick-item input:checked + span .m-ent-pick-no {
-  color: var(--accent-ink);
+.m-ent-chip input:checked + span .m-ent-chip-no {
+  color: var(--accent);
 }
-.m-ent-pick-item input:focus-visible + span {
+.m-ent-chip input:focus-visible + span {
   outline: 1.5px solid var(--ink);
   outline-offset: 4px;
 }
-.m-ent-advice {
-  grid-column: 3 / -1;
+
+/* ---------- 四站小路线：选了问题，亮出建议起点 ---------- */
+.m-ent-mini {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding-top: 26px;
+}
+.m-ent-mini::before {
+  content: '';
+  position: absolute;
+  top: 31px;
+  left: 5px;
+  right: calc((100% - 30px) / 4 - 5px);
+  height: 1px;
+  background: var(--hair-2);
+}
+.m-ent-mini-stop {
+  position: relative;
   display: grid;
   align-content: start;
-  gap: 6px;
-  min-height: 6.5em;
+  gap: 2px;
+  padding-top: 18px;
+  transition: opacity 0.4s var(--ease);
+}
+.m-ent-mini-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1.2px var(--ink-2);
+  transition:
+    background-color 0.4s var(--ease),
+    box-shadow 0.4s var(--ease),
+    transform 0.5s var(--ease);
+}
+.m-ent-mini-where {
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.14em;
+  color: var(--mute);
+}
+.m-ent-mini-name {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  text-wrap: balance;
+}
+.m-ent-mini-flag {
+  position: absolute;
+  top: -24px;
+  left: -2px;
+  display: none;
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.1em;
+  color: var(--accent-ink);
+  white-space: nowrap;
+}
+
+/* 建议：没选时一句提示；选了哪个，显示哪一块（没有 JS 也靠 :has 跟着变） */
+.m-ent-advice {
+  min-height: 2.6em;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair);
+}
+.m-ent-advice-idle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  font-size: var(--t-ui);
+  line-height: 1.8;
+  color: var(--mute);
+}
+.m-ent-advice-item {
+  display: none;
+  gap: 4px;
+  animation: m-ent-advice-in 0.5s var(--ease) both;
+}
+@keyframes m-ent-advice-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
 }
 .m-ent-advice-line {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 14px;
+  gap: 2px 12px;
 }
 .m-ent-advice-line b {
-  font: 400 var(--t-h3) / 1.5 var(--sans);
+  font: 400 var(--t-keys) / 1.5 var(--sans);
   letter-spacing: 0.03em;
 }
 .m-ent-advice-label {
   font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   color: var(--accent-ink);
 }
 .m-ent-advice-why {
-  flex-basis: 100%;
   font-size: var(--t-ui);
   line-height: 1.8;
   color: var(--ink-2);
 }
-.m-ent-advice-idle {
-  padding-top: 0.3em;
-  font-size: var(--t-ui);
-  color: var(--mute);
+.m-ent-advice .m-actions {
+  gap: 6px 20px;
+  margin-top: 4px;
 }
 
-/* 三步是三段，四站在三段下面；同一排的「路轨」与卡片顶边对齐（subgrid） */
-.m-ent-stages {
+.m-ent-hook:has(input:checked) .m-ent-advice-idle {
+  display: none;
+}
+.m-ent-hook:has(#pick-where:checked) [data-for='where'],
+.m-ent-hook:has(#pick-busy:checked) [data-for='busy'],
+.m-ent-hook:has(#pick-knowledge:checked) [data-for='knowledge'],
+.m-ent-hook:has(#pick-product:checked) [data-for='product'],
+.m-ent-hook:has(#pick-team:checked) [data-for='team'] {
+  display: grid;
+}
+.m-ent-hook:has(input:checked) .m-ent-mini-stop {
+  opacity: 0.42;
+}
+/* 建议起点 */
+:is(
+    .m-ent-hook:has(#pick-where:checked) [data-id='diagnose'],
+    .m-ent-hook:has(#pick-busy:checked) [data-id='build'],
+    .m-ent-hook:has(#pick-knowledge:checked) [data-id='build'],
+    .m-ent-hook:has(#pick-product:checked) [data-id='build'],
+    .m-ent-hook:has(#pick-team:checked) [data-id='train']
+  ) {
+  opacity: 1 !important;
+}
+:is(
+    .m-ent-hook:has(#pick-where:checked) [data-id='diagnose'],
+    .m-ent-hook:has(#pick-busy:checked) [data-id='build'],
+    .m-ent-hook:has(#pick-knowledge:checked) [data-id='build'],
+    .m-ent-hook:has(#pick-product:checked) [data-id='build'],
+    .m-ent-hook:has(#pick-team:checked) [data-id='train']
+  )
+  .m-ent-mini-dot {
+  background: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-wash);
+  transform: scale(1.15);
+}
+:is(
+    .m-ent-hook:has(#pick-where:checked) [data-id='diagnose'],
+    .m-ent-hook:has(#pick-busy:checked) [data-id='build'],
+    .m-ent-hook:has(#pick-knowledge:checked) [data-id='build'],
+    .m-ent-hook:has(#pick-product:checked) [data-id='build'],
+    .m-ent-hook:has(#pick-team:checked) [data-id='train']
+  )
+  [data-flag='start'] {
+  display: block;
+}
+/* 接着（只有「产品想有 AI 能力」→ 评估） */
+.m-ent-hook:has(#pick-product:checked) [data-id='assess'] {
+  opacity: 1;
+}
+.m-ent-hook:has(#pick-product:checked) [data-id='assess'] .m-ent-mini-dot {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+.m-ent-hook:has(#pick-product:checked) [data-id='assess'] [data-flag='next'] {
+  display: block;
+}
+
+/* =====================================================================
+   01 五个问题：五张小卡，每张一幅「卡住的样子」
+   ===================================================================== */
+.m-ent-cases {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(28px, 4vh, 40px) var(--col-gap);
+}
+.m-ent-case {
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto auto;
+  align-content: start;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+  scroll-margin-top: calc(var(--header) + 24px);
+}
+.m-ent-case-no {
+  margin-top: 8px;
+  font: italic 300 var(--t-ui) / 1 var(--latin);
+  letter-spacing: 0;
+  color: var(--accent-ink);
+}
+.m-ent-case-title {
+  font: 400 var(--t-keys) / 1.55 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-case-line {
+  font-size: var(--t-ui);
+  line-height: 1.85;
+  color: var(--ink-2);
+}
+.m-ent-case-end {
+  padding-top: 4px;
+}
+.m-ent-start {
+  cursor: pointer;
+}
+
+/* ---------- 小图示：共同的画布 ---------- */
+.m-sym {
+  position: relative;
+  height: 116px;
+  overflow: hidden;
+  border-radius: var(--r-inset);
+  background: var(--paper-2);
+  font: 400 12px/1.3 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+}
+.js .m-ent-case.is-in .m-sym * {
+  animation-delay: 0.5s;
+}
+
+/* 不确定从哪投入：问号在五个环节之间跳 */
+.m-sym-row {
+  position: absolute;
+  inset: auto 10px 18px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+}
+.m-sym-word {
+  display: grid;
+  place-items: center;
+  height: 30px;
+  border-radius: var(--r-label);
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  white-space: nowrap;
+}
+.m-sym-q {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-left: -13px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1.2px var(--accent);
+  font: italic 400 15px/1 var(--latin);
+  color: var(--accent-ink);
+}
+.js .m-ent-case.is-in .m-sym-q {
+  animation: m-sym-hop 5.2s var(--ease) 2;
+}
+@keyframes m-sym-hop {
+  0% {
+    left: 50%;
+  }
+  14% {
+    left: 12%;
+    transform: translateY(0);
+  }
+  10% {
+    transform: translateY(-10px);
+  }
+  30% {
+    left: 88%;
+  }
+  24% {
+    transform: translateY(-12px);
+  }
+  46% {
+    left: 31%;
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  64% {
+    left: 69%;
+  }
+  58% {
+    transform: translateY(-12px);
+  }
+  82%,
+  100% {
+    left: 50%;
+    transform: translateY(0);
+  }
+}
+
+/* 人手排满：一格「时间」装不下四件事，最后一件从底边漏出去 */
+.m-sym-busy {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  padding-top: 12px;
+}
+.m-sym-bar {
+  position: relative;
+  display: grid;
+  gap: 3px;
+  width: 64%;
+  height: 72px;
+  align-content: start;
+}
+.m-sym-task {
+  display: grid;
+  place-items: center;
+  height: 21px;
+  border-radius: var(--r-label);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 11.5px;
+  white-space: nowrap;
+  transform-origin: center top;
+}
+.m-sym-task:nth-child(4) {
+  background: transparent;
+  color: var(--accent-ink);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.m-sym-edge {
+  position: absolute;
+  top: 12px;
+  left: 18%;
+  right: 18%;
+  height: 72px;
+  border: 1px solid var(--hair-2);
+  border-bottom: 1.5px solid var(--accent);
+  border-radius: var(--r-label) var(--r-label) 0 0;
+  pointer-events: none;
+}
+.js .m-ent-case.is-in .m-sym-task {
+  animation: m-sym-drop 0.8s var(--ease) both;
+  animation-delay: calc(0.5s + var(--i) * 0.4s) !important;
+}
+@keyframes m-sym-drop {
+  from {
+    transform: translateY(-14px);
+    opacity: 0;
+  }
+}
+
+/* 资料经验拼不起来：三块碎片，虚线够不着彼此 */
+.m-sym-gaps {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.m-sym-gaps path {
+  fill: none;
+  stroke: var(--hair-2);
+  stroke-width: 1.2;
+  stroke-dasharray: 3 4;
+  vector-effect: non-scaling-stroke;
+}
+.m-sym-bit {
+  position: absolute;
+  padding: 6px 10px;
+  border-radius: var(--r-label);
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  white-space: nowrap;
+}
+.m-sym-bit[data-at='0'] {
+  top: 16px;
+  left: 8px;
+  rotate: -4deg;
+}
+.m-sym-bit[data-at='1'] {
+  top: 16px;
+  right: 8px;
+  rotate: 3deg;
+}
+.m-sym-bit[data-at='2'] {
+  bottom: 14px;
+  left: 50%;
+  translate: -50% 0;
+  rotate: -2deg;
+}
+.js .m-ent-case.is-in .m-sym-bit {
+  animation: m-sym-drift 3.2s ease-in-out 3 alternate;
+  animation-delay: calc(0.5s + var(--i) * 0.3s) !important;
+}
+@keyframes m-sym-drift {
+  50% {
+    transform: translate(calc((var(--i) - 1) * 6px), -4px);
+  }
+}
+
+/* 产品想有 AI 能力：一句需求在「演示」框里撞墙 */
+.m-sym-frame {
+  position: absolute;
+  inset: 16px 14px;
+  border: 1px dashed rgb(27 26 24 / 0.38);
+  border-radius: var(--r-label);
+}
+.m-sym-frame-label {
+  position: absolute;
+  top: -9px;
+  left: 10px;
+  padding: 0 6px;
+  background: var(--paper-2);
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.14em;
+  color: var(--mute);
+}
+.m-sym-say {
+  position: absolute;
+  top: 50%;
+  left: calc(100% - 8.6em);
+  translate: 0 -50%;
+  padding: 6px 11px;
+  border-radius: 12px 12px 12px 3px;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  white-space: nowrap;
+}
+.js .m-ent-case.is-in .m-sym-say {
+  animation: m-sym-bump 2.4s var(--ease) 3;
+}
+@keyframes m-sym-bump {
+  0% {
+    left: 8px;
+  }
+  62% {
+    left: calc(100% - 8.6em);
+    transform: none;
+  }
+  70% {
+    transform: scaleX(0.94);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  100% {
+    left: calc(100% - 8.6em);
+    transform: none;
+  }
+}
+
+/* 整个团队会用 AI：一排人里只有一个亮着 */
+.m-sym-team {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 10px;
+}
+.m-sym-people {
+  display: flex;
+  gap: 12px;
+}
+.m-sym-person {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.2px var(--mute);
+}
+.m-sym-person[data-lit] {
+  background: var(--accent);
+  box-shadow: none;
+}
+.m-sym-person[data-lit]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.2px var(--accent);
+  opacity: 0;
+}
+.js .m-ent-case.is-in .m-sym-person[data-lit]::after {
+  animation: m-sym-ring 2.2s var(--ease) 3;
+  animation-delay: 0.5s;
+}
+@keyframes m-sym-ring {
+  from {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+.m-sym-tip {
+  /* 「方法」气泡在亮着的那个人头顶：七个点、间距 12px，第二个点的中心 */
+  translate: -56px 0;
+  padding: 3px 9px;
+  border-radius: 10px 10px 10px 3px;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+}
+
+/* =====================================================================
+   02 合作路线：三步在上，四站在线，架子在下
+   ===================================================================== */
+.m-ent-route {
+  position: relative;
+}
+.m-ent-route-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   column-gap: var(--col-gap);
-  row-gap: clamp(48px, 7vh, 72px);
+  row-gap: 22px;
 }
 .m-ent-stage {
-  display: grid;
-  grid-row: span 2;
-  grid-template-rows: subgrid;
-  row-gap: clamp(24px, 3.5vh, 36px);
-}
-.m-ent-stage[data-span='2'] {
-  grid-column: span 2;
-}
-.m-ent-stage-head {
+  grid-row: 1;
   display: grid;
   align-content: start;
-  gap: 12px;
+  gap: 8px;
+  padding-bottom: 6px;
+  transition: opacity 0.6s var(--ease);
+}
+.m-ent-stage[data-stage='0'] {
+  grid-column: 1;
+}
+.m-ent-stage[data-stage='1'] {
+  grid-column: 2;
+}
+.m-ent-stage[data-stage='2'] {
+  grid-column: 3 / span 2;
 }
 .m-ent-roman {
   font: italic 300 var(--t-h3) / 1 var(--latin);
@@ -239,213 +691,236 @@ html:not(.js) .m-ent-pick {
   color: var(--accent-ink);
 }
 .m-ent-stage-title {
-  max-width: 16em;
-  font: 400 var(--t-h3) / 1.55 var(--sans);
+  max-width: 17em;
+  font: 400 var(--t-keys) / 1.5 var(--sans);
   letter-spacing: 0.03em;
 }
-.m-ent-stage-text {
+.m-ent-keys {
   display: grid;
-  gap: 0.8em;
-  max-width: 36em;
-  font-size: var(--t-ui);
-  line-height: 1.9;
+  gap: 3px;
+  max-width: 24em;
+}
+.m-ent-keys li {
+  position: relative;
+  padding-left: 14px;
+  font-size: var(--t-small);
+  line-height: 1.7;
   color: var(--ink-2);
 }
-.m-ent-stops {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  column-gap: var(--col-gap);
+.m-ent-keys li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.8em;
+  width: 6px;
+  height: 1px;
+  background: var(--mute);
 }
-.m-ent-stage[data-span='2'] .m-ent-stops {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.m-ent-stop {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 14px;
-}
-/* 路轨：一道墨线穿过四站，每站一个圆点；建议起点是实心杏橙，「接着」是杏橙空心 */
+
+/* 路轨：一根线、四个站点、一个沿线走的点（--pin） */
 .m-ent-rail {
+  --colw: calc((100% - 3 * var(--col-gap)) / 4);
+  --reach: min(1, calc(var(--pin, 1) / 0.82));
+  grid-row: 2;
+  grid-column: 1 / -1;
   position: relative;
+  height: 24px;
+}
+.m-ent-rail-line,
+.m-ent-rail-fill {
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  height: 1px;
+}
+.m-ent-rail-line {
+  right: calc(var(--colw) - 6px);
+  background: var(--hair-2);
+}
+.m-ent-rail-fill {
+  width: calc(var(--reach) * (100% - var(--colw)));
+  background: var(--ink);
+}
+.m-ent-rail-stop {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--i) * (var(--colw) + var(--col-gap)));
+  width: 13px;
+  height: 13px;
+  margin-top: -6.5px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 4px var(--paper);
+  transition:
+    background-color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+.m-ent-rail-stop[data-ahead] {
+  background: var(--paper);
+  box-shadow:
+    0 0 0 4px var(--paper),
+    inset 0 0 0 1.2px var(--mute);
+}
+.m-ent-rail-stop[data-mark='start'] {
+  background: var(--accent);
+  box-shadow:
+    0 0 0 4px var(--paper),
+    0 0 0 9px var(--accent-wash);
+}
+.m-ent-rail-stop[data-mark='next'] {
+  box-shadow:
+    0 0 0 4px var(--paper),
+    inset 0 0 0 2px var(--accent);
+}
+.m-ent-rail-dot {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--reach) * (100% - var(--colw)));
+  width: 21px;
+  height: 21px;
+  margin: -10.5px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow:
+    inset 0 0 0 1.5px var(--ink),
+    0 6px 14px -6px rgb(var(--shade) / 0.5);
+  display: none;
+}
+.m-ent-route[data-live] .m-ent-rail-dot {
+  display: block;
+}
+
+/* 四站 */
+.m-ent-station {
+  grid-row: 3;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  scroll-margin-top: calc(var(--header) + 24px);
+  transition: opacity 0.6s var(--ease);
+}
+.m-ent-station[data-station='0'] {
+  grid-column: 1;
+}
+.m-ent-station[data-station='1'] {
+  grid-column: 2;
+}
+.m-ent-station[data-station='2'] {
+  grid-column: 3;
+}
+.m-ent-station[data-station='3'] {
+  grid-column: 4;
+}
+.m-ent-station-where {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 10px;
-  padding-top: 20px;
-}
-.m-ent-rail::before {
-  content: '';
-  position: absolute;
-  top: 4px;
-  left: 0;
-  right: calc(-1 * var(--col-gap));
-  height: 1px;
-  background: var(--ink);
-}
-.m-ent-stage:last-child .m-ent-stop:last-child .m-ent-rail::before {
-  right: 0;
-}
-.m-ent-rail::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--paper);
-  box-shadow: inset 0 0 0 1px var(--ink);
-  transition:
-    background-color 0.4s var(--ease),
-    box-shadow 0.4s var(--ease);
-}
-.m-ent-stop-name,
-.m-ent-flag {
+  gap: 6px 12px;
   font: 500 var(--t-label) / 1.4 var(--sans);
   letter-spacing: 0.16em;
   color: var(--mute);
 }
+.m-ent-station-dot {
+  display: none;
+}
 .m-ent-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 9px;
+  border-radius: var(--r-pill);
+  background: var(--accent-wash);
   color: var(--accent-ink);
+  letter-spacing: 0.1em;
 }
-.m-ent-flag::before {
-  content: '·';
-  margin-right: 10px;
-  color: var(--faint);
-}
-.m-ent-card {
-  display: grid;
-  align-content: start;
-  gap: 14px;
-  padding: 22px 22px 10px;
-  border-radius: var(--r-panel);
-  background-color: var(--white);
-  box-shadow: 0 0 0 1px var(--hair);
-  transition:
-    box-shadow 0.4s var(--ease),
-    background-color 0.4s var(--ease);
-}
-.m-ent-service {
-  font: 400 var(--t-h3) / 1.45 var(--sans);
+.m-ent-station-name {
+  font: 400 var(--t-h3) / 1.4 var(--sans);
   letter-spacing: 0.03em;
 }
-.m-ent-dl > div {
+.m-ent-station-dl {
   display: grid;
-  gap: 4px;
-  padding: 12px 0 14px;
-  border-top: 1px solid var(--hair);
+  gap: 8px;
 }
-.m-ent-dl dt {
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
+.m-ent-station-dl > div {
+  display: grid;
+  grid-template-columns: 3.4em minmax(0, 1fr);
+  gap: 8px;
+}
+.m-ent-station-dl dt {
+  padding-top: 0.25em;
+  font: 500 var(--t-label) / 1.6 var(--sans);
+  letter-spacing: 0.12em;
   color: var(--mute);
 }
-.m-ent-dl dd {
-  font-size: var(--t-ui);
-  line-height: 1.85;
+.m-ent-station-dl dd {
+  font-size: var(--t-small);
+  line-height: 1.75;
   color: var(--ink-2);
-  transition: color 0.4s var(--ease);
 }
-.m-ent-service {
-  transition: color 0.4s var(--ease);
+.m-ent-forms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-left: calc(3.4em + 8px);
 }
-.m-ent-stop[data-mark='start'] .m-ent-rail::after {
-  background: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-wash);
-}
-.m-ent-stop[data-mark='next'] .m-ent-rail::after {
-  box-shadow: inset 0 0 0 1.5px var(--accent);
-}
-.m-ent-stop[data-mark='start'] .m-ent-card {
-  background-image: linear-gradient(var(--accent-wash), var(--accent-wash));
-  box-shadow: 0 0 0 1px var(--accent);
-}
-.m-ent-stop[data-mark='next'] .m-ent-card {
-  box-shadow: none;
-  outline: 1px dashed var(--accent);
-  outline-offset: -1px;
-}
-/* 选了问题之后，其余各站退后一档（只换成辅助色，对比度仍 ≥4.5:1） */
-.m-ent-path[data-picked] .m-ent-stop:not([data-mark]) .m-ent-card {
-  background-color: transparent;
-}
-.m-ent-path[data-picked] .m-ent-stop:not([data-mark]) .m-ent-service,
-.m-ent-path[data-picked] .m-ent-stop:not([data-mark]) dd {
+.m-ent-forms li {
+  padding: 2px 8px;
+  border-radius: var(--r-label);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  font-size: 12px;
+  line-height: 1.6;
   color: var(--mute);
+  transition:
+    box-shadow 0.4s var(--ease),
+    color 0.4s var(--ease);
 }
-.m-ent-term {
-  padding: 0 1px;
-  background: none;
+.m-ent-forms li[data-hit] {
+  color: var(--accent-ink);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+/* 选过问题：没被建议的站淡一点（不位移） */
+.m-ent-route[data-picked] .m-ent-station:not([data-mark]) .m-ent-station-name {
+  color: var(--ink-2);
+}
+.m-ent-station[data-mark] .m-ent-station-name {
   color: var(--ink);
-  box-shadow:
-    inset 0 -0.4em var(--accent-wash),
-    inset 0 -1px var(--accent);
 }
 
-/* ---------- 03 内部探索：一张对齐的表 ---------- */
-.m-ent-table-head,
-.m-ent-row {
+/* 架子：留在团队手里的 */
+.m-ent-shelf {
+  grid-row: 4;
+  grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-}
-.m-ent-table-head {
-  padding-bottom: 12px;
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-  color: var(--mute);
-}
-.m-ent-table-head span:nth-child(1) {
-  grid-column: 1 / span 2;
-}
-.m-ent-table-head span:nth-child(2) {
-  grid-column: 3 / span 3;
-}
-.m-ent-table-head span:nth-child(3) {
-  grid-column: 6 / span 4;
-}
-.m-ent-table-head span:nth-child(4) {
-  grid-column: 10 / span 3;
-}
-.m-ent-row {
-  row-gap: 16px;
-  padding: clamp(24px, 4vh, 36px) 0;
-  border-top: 1px solid var(--hair);
-}
-.m-ent-row:last-child {
-  border-bottom: 1px solid var(--hair);
-}
-.m-ent-row-name {
-  grid-column: 1 / span 2;
-  display: grid;
-  align-content: start;
-  justify-items: start;
   gap: 12px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
 }
-.m-ent-row-name h3 {
-  font: 300 var(--t-h2) / 1.1 var(--latin);
-  letter-spacing: -0.01em;
+.m-ent-shelf-title {
+  font: 400 var(--t-keys) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink);
 }
-.m-ent-row-name .m-note {
-  white-space: normal;
-}
-.m-ent-row-cells {
-  grid-column: 3 / -1;
+.m-ent-shelf-slots {
   display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   column-gap: var(--col-gap);
-  row-gap: 16px;
 }
-.m-ent-row-cells > div:nth-child(1) {
-  grid-column: span 3;
+.m-ent-slot {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 6px;
+  min-height: 84px;
+  padding: 12px;
+  border-radius: var(--r-inset);
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1px transparent;
+  transition:
+    background-color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
 }
-.m-ent-row-cells > div:nth-child(2) {
-  grid-column: span 4;
-}
-.m-ent-row-cells > div:nth-child(3) {
-  grid-column: span 3;
-}
-.m-ent-row-cells dt {
+.m-ent-slot-where {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -453,49 +928,218 @@ html:not(.js) .m-ent-pick {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
-.m-ent-row-cells dd {
-  line-height: 1.9;
+.m-ent-thing {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 4px 11px;
+  border-radius: var(--r-label);
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 6px 12px -10px rgb(var(--shade) / 0.6);
+  font-size: var(--t-small);
+  line-height: 1.5;
+  transition:
+    opacity 0.5s var(--ease) calc(var(--at, 0) * 110ms + 120ms),
+    transform 0.7s var(--ease) calc(var(--at, 0) * 110ms + 120ms);
+}
+.m-ent-slot[data-ahead] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  border: 0;
+  outline: 1px dashed transparent;
+}
+.m-ent-slot[data-ahead] .m-ent-thing {
+  opacity: 0;
+  transform: translateY(-18px);
+  transition-delay: 0s;
+}
+
+/* ---------- 钉住：宽屏、够高、不减少动态时（route.tsx 加 data-live） ---------- */
+.m-ent-route[data-live] {
+  height: calc(100svh + 210svh);
+}
+.m-ent-route[data-live] .m-ent-route-stick {
+  position: sticky;
+  top: var(--header);
+  height: calc(100svh - var(--header));
+  display: grid;
+  align-content: center;
+}
+.m-ent-route[data-live] [data-ahead]:is(.m-ent-stage, .m-ent-station) {
+  opacity: 0.28;
+}
+.m-ent-path-folds {
+  display: grid;
+  margin-top: clamp(28px, 5vh, 48px);
+}
+.m-ent-fold-part {
+  display: grid;
+  gap: 0.6em;
+}
+.m-ent-fold-part + .m-ent-fold-part {
+  margin-top: 0.6em;
+}
+
+/* =====================================================================
+   03 内部探索：三张卡，已有 / 还没有，盖「不是客户案例」
+   ===================================================================== */
+.m-ent-labs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(28px, 4vh, 40px) var(--col-gap);
+}
+.m-ent-lab {
+  display: grid;
+  grid-template-rows: auto auto auto auto 1fr auto;
+  gap: 14px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
+}
+.m-ent-lab-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 14px;
+}
+.m-ent-lab-head h3 {
+  font: 300 var(--t-h2) / 1.1 var(--latin);
+  letter-spacing: -0.01em;
+}
+.m-ent-lab-ask {
+  display: grid;
+  gap: 4px;
+}
+.m-ent-lab-ask > span:last-child {
+  font: 400 var(--t-keys) / 1.55 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-lab-line {
+  font-size: var(--t-small);
+  line-height: 1.8;
   color: var(--ink-2);
 }
-.m-ent-row-cells dd.m-strong {
-  color: var(--ink);
+.m-ent-lab .m-hn-block {
+  min-height: 34px;
+  padding: 5px 11px;
+  font-size: var(--t-small);
 }
-.m-ent-row-note {
-  display: block;
-  margin-top: 8px;
-  font-size: var(--t-ui);
-  line-height: 1.85;
-}
-.m-ent-table-end {
-  max-width: calc(var(--read) + (100% + var(--col-gap)) / 6);
-  margin-top: 28px;
-  padding-left: calc((100% + var(--col-gap)) / 6);
+.m-ent-labs-end {
+  max-width: var(--read);
+  margin-top: clamp(28px, 5vh, 48px);
   color: var(--ink-2);
   line-height: 1.95;
 }
 
-/* ---------- 04 做这件事的人：四类能力配成员头像 ---------- */
-.m-ent-members {
-  grid-column: 7 / -1;
-  display: grid;
-  gap: 18px;
+/* =====================================================================
+   04 做这件事的人：四个方位围着同一件事
+   ===================================================================== */
+.m-ent-compass {
+  position: relative;
 }
-.m-ent-member {
+.m-ent-compass-groups {
   display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
-  column-gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.m-ent-quad {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  min-height: 220px;
+  padding: clamp(24px, 3vw, 40px);
+}
+.m-ent-quad[data-at='0'] {
+  padding-right: 120px;
+  padding-bottom: 72px;
+  border-right: 1px solid var(--hair-2);
+  border-bottom: 1px solid var(--hair-2);
+}
+.m-ent-quad[data-at='1'] {
+  padding-left: 120px;
+  padding-bottom: 72px;
+  border-bottom: 1px solid var(--hair-2);
+}
+.m-ent-quad[data-at='2'] {
+  padding-right: 120px;
+  padding-top: 72px;
+  border-right: 1px solid var(--hair-2);
+}
+.m-ent-quad[data-at='3'] {
+  padding-left: 120px;
+  padding-top: 72px;
+}
+.m-ent-quad-title {
+  font: 400 var(--t-h3) / 1.45 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-quad-people {
+  display: grid;
+  gap: 14px;
+}
+.m-ent-person {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  column-gap: 14px;
   align-items: start;
 }
-.m-ent-member p {
-  padding-top: 10px;
-  line-height: 1.9;
+.m-ent-person p {
+  padding-top: 8px;
+  font-size: var(--t-small);
+  line-height: 1.8;
   color: var(--ink-2);
+}
+.m-ent-person p span {
+  margin-left: 0.6em;
+}
+.m-ent-compass-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 168px;
+  height: 168px;
+  margin: -84px 0 0 -84px;
+  padding: 24px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--ink);
+  text-align: center;
+  font: 400 var(--t-ui) / 1.6 var(--sans);
+  letter-spacing: 0.06em;
+}
+.js .m-ent-compass .m-ent-quad {
+  transition:
+    opacity 0.9s var(--ease) calc(var(--i) * 120ms + 200ms),
+    transform 1s var(--ease) calc(var(--i) * 120ms + 200ms);
+}
+.js .m-ent-compass:not(.is-in) .m-ent-quad {
+  opacity: 0;
+}
+.js .m-ent-compass:not(.is-in) .m-ent-quad[data-at='0'] {
+  transform: translate(14px, 14px);
+}
+.js .m-ent-compass:not(.is-in) .m-ent-quad[data-at='1'] {
+  transform: translate(-14px, 14px);
+}
+.js .m-ent-compass:not(.is-in) .m-ent-quad[data-at='2'] {
+  transform: translate(14px, -14px);
+}
+.js .m-ent-compass:not(.is-in) .m-ent-quad[data-at='3'] {
+  transform: translate(-14px, -14px);
+}
+.js .m .m-ent-compass[data-reveal]:not(.is-in) {
+  opacity: 1;
+  transform: none;
 }
 .m-ent-face {
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   overflow: hidden;
   border-radius: 50%;
   background: var(--paper-2);
@@ -508,11 +1152,10 @@ html:not(.js) .m-ent-pick {
   filter: var(--grade);
 }
 .m-ent-face-mark {
-  font: 300 var(--t-h3) / 1 var(--sans);
+  font: 300 var(--t-keys) / 1 var(--sans);
   color: var(--ink-2);
 }
 .m-ent-who {
-  margin-right: 0.15em;
   padding-bottom: 1px;
   font-weight: 500;
   color: var(--ink);
@@ -527,25 +1170,23 @@ html:not(.js) .m-ent-pick {
     100% 1px;
 }
 .m-ent-people-end {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 12px;
+  display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  margin-top: 24px;
+  justify-content: space-between;
+  gap: 12px 32px;
+  margin-top: 28px;
 }
 .m-ent-people-end p {
-  grid-column: 3 / span 6;
+  max-width: 40em;
   font-size: var(--t-small);
   line-height: 1.8;
   color: var(--mute);
 }
-.m-ent-people-end .m-link {
-  grid-column: 10 / -1;
-  justify-self: end;
-}
 
-/* ---------- 05 表单 ---------- */
+/* =====================================================================
+   05 表单
+   ===================================================================== */
 .m-ent-form {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -554,109 +1195,215 @@ html:not(.js) .m-ent-pick {
 .m-ent-form > * {
   grid-column: 3 / span 7;
 }
+.m-ent-seeded {
+  margin-bottom: 18px;
+  font-size: var(--t-small);
+  color: var(--accent-ink);
+}
 
-/* ---------- 窄一些：路径两列，表格换行 ---------- */
-@media (max-width: 1200px) {
-  .m-ent-stages {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+/* =====================================================================
+   窄屏
+   ===================================================================== */
+@media (min-width: 1101px) {
+  .m-ent-advice {
+    min-height: 7.6em;
   }
-  .m-ent-stage:nth-child(2) .m-ent-rail::before {
-    right: 0;
+}
+@media (max-width: 1280px) {
+  .m-ent-cases {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  .m-ent-row-name {
+}
+@media (max-width: 1100px) {
+  .m-ent-hero-copy,
+  .m-ent-hero-hook {
     grid-column: 1 / -1;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 8px 16px;
   }
-  .m-ent-row-cells {
-    grid-column: 1 / -1;
+  .m-ent-hero-hook {
+    max-width: 640px;
   }
-  .m-ent-table-head {
+  .m-ent-labs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .m-ent-lab {
+    max-width: 720px;
+  }
+}
+/* 路线竖着排：第一步、第一站、第二步、第二站……架子在最后 */
+@media (max-width: 999px) {
+  .m-ent-route-grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 18px;
+  }
+  .m-ent-stage,
+  .m-ent-station,
+  .m-ent-shelf {
+    grid-column: 1 !important;
+    grid-row: auto;
+  }
+  .m-ent-rail {
     display: none;
   }
-  .m-ent-row-cells dt {
+  .m-ent-stage {
+    padding-top: 18px;
+    border-top: 1px solid var(--hair);
+  }
+  .m-ent-stage[data-stage='0'] {
+    order: 1;
+    border-top: 0;
+    padding-top: 0;
+  }
+  .m-ent-station[data-station='0'] {
+    order: 2;
+  }
+  .m-ent-stage[data-stage='1'] {
+    order: 3;
+  }
+  .m-ent-station[data-station='1'] {
+    order: 4;
+  }
+  .m-ent-stage[data-stage='2'] {
+    order: 5;
+  }
+  .m-ent-station[data-station='2'] {
+    order: 6;
+  }
+  .m-ent-station[data-station='3'] {
+    order: 7;
+  }
+  .m-ent-shelf {
+    order: 8;
+  }
+  .m-ent-station {
+    position: relative;
+    padding: 4px 0 8px 26px;
+  }
+  .m-ent-station::before {
+    content: '';
+    position: absolute;
+    left: 5.5px;
+    top: 14px;
+    bottom: -18px;
+    width: 1px;
+    background: var(--hair-2);
+  }
+  .m-ent-station-dot {
+    position: absolute;
+    left: 0;
+    top: 6px;
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+  .m-ent-station[data-mark='start'] .m-ent-station-dot {
+    background: var(--accent);
+    box-shadow: 0 0 0 5px var(--accent-wash);
+  }
+  .m-ent-shelf-slots {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 8px;
+  }
+  .m-ent-slot {
+    min-height: 0;
+  }
+  .m-ent-slot-where {
     position: static;
     width: auto;
     height: auto;
     overflow: visible;
     clip: auto;
-    white-space: normal;
-    margin-bottom: 4px;
+    flex-basis: 100%;
     font: 500 var(--t-label) / 1.4 var(--sans);
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
     color: var(--mute);
   }
-  .m-ent-table-end {
+  .m-ent-forms {
     padding-left: 0;
   }
 }
 @media (max-width: 900px) {
-  .m-ent-title,
-  .m-ent-hero-go,
-  .m-ent-intro-text,
-  .m-ent-qtitle,
-  .m-ent-qtext,
-  .m-ent-group-title,
-  .m-ent-members,
-  .m-ent-pick-set,
-  .m-ent-advice,
-  .m-ent-people-end p,
-  .m-ent-people-end .m-link,
   .m-ent-form > * {
     grid-column: 1 / -1;
   }
-  .m-ent-qno {
-    grid-column: 1 / -1;
+  .m-ent-compass-groups {
+    grid-template-columns: minmax(0, 1fr);
   }
-  .m-ent-hero-go,
-  .m-ent-people-end .m-link {
-    justify-content: flex-start;
+  .m-ent-compass-center {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0 0 8px;
+    padding: 14px 18px;
+    border-radius: var(--r-pill);
     justify-self: start;
   }
-  .m-ent-row-cells > div:nth-child(n) {
-    grid-column: 1 / -1;
+  .m-ent-compass {
+    display: grid;
+  }
+  .m-ent-quad[data-at] {
+    min-height: 0;
+    padding: 22px 0 24px 18px;
+    border: 0;
+    border-left: 1px solid var(--hair-2);
   }
 }
 @media (max-width: 760px) {
-  .m-ent-stages {
+  .m-ent-cases {
     grid-template-columns: minmax(0, 1fr);
   }
-  .m-ent-stage[data-span='2'] {
-    grid-column: auto;
-  }
-  .m-ent-stage[data-span='2'] .m-ent-stops {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 28px;
-  }
-  .m-ent-rail::before {
-    right: 0 !important;
+  .m-ent-case {
+    grid-template-rows: none;
   }
 }
 @media (max-width: 700px) {
-  .m-ent-title {
-    font-size: var(--t-h1);
-    line-height: 1.32;
-  }
   .m-ent-hero-window .m-window-frame {
     --ratio: 4 / 3 !important;
   }
+  .m-ent-mini {
+    gap: 6px;
+  }
+  .m-ent-mini-name {
+    font-size: 11.5px;
+  }
+  .m-ent-hook {
+    padding: 18px 16px;
+  }
 }
 
-/* 减少动态：选中直接落在结果上，不做颜色过渡 */
+/* 减少动态：小图示停在最后一帧，选择不做过渡 */
 @media (prefers-reduced-motion: reduce) {
-  .m-ent-rail::after,
-  .m-ent-card,
-  .m-ent-service,
-  .m-ent-dl dd,
-  .m-ent-pick-item > span {
+  .js .m-ent-case.is-in .m-sym *,
+  .js .m-ent-case.is-in .m-sym-person[data-lit]::after,
+  .m-ent-advice-item {
+    animation: none !important;
+  }
+  .m-ent-chip > span,
+  .m-ent-mini-stop,
+  .m-ent-mini-dot,
+  .m-ent-stage,
+  .m-ent-station,
+  .m-ent-rail-stop,
+  .m-ent-slot,
+  .m-ent-thing,
+  .m-ent-forms li {
     transition: none;
+  }
+  .js .m-ent-compass:not(.is-in) .m-ent-quad {
+    opacity: 1;
+    transform: none;
   }
 }
 @media print {
-  .m-ent-pick,
-  .m-ent-talk {
+  .m-ent-hook,
+  .m-ent-talk,
+  .m-sym {
     display: none;
+  }
+  .m-ent-route,
+  .m-ent-route-stick {
+    height: auto !important;
+    position: static !important;
   }
 }
