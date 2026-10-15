@@ -1,355 +1,577 @@
-/* 团队页：一群同类，一起创造。白纸上八张白卡片；正面是方向与经历，背面（次一级的纸色）是本人的自述。
-   没有 JS：卡片的两面上下排开，都能读到；有 JS：两面叠在同一格里，按「自述」翻过去；
-   减少动态：不做三维翻转，直接换面。 */
+/* 团队页（visual-storyboard 第 2 节）：一张猜自述的卡、一张会汇流的来路点阵、一列名牌。
+   只读 .m 上的令牌。没有 JS、减少动态：点阵直接停在汇流以后（来路留下空心圈，Molis 一列八个实心点），
+   名牌照样能展开（details），猜自述的答案收在「揭晓」里。 */
 
-/* ---------- 首屏 ---------- */
+/* =====================================================================
+   首屏：标题 ｜ 这句是谁写的？
+   ===================================================================== */
 .tm-hero {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--col-gap);
-  row-gap: clamp(18px, 3vh, 28px);
-  padding-bottom: clamp(64px, 11vh, 128px);
+  row-gap: clamp(32px, 5vh, 56px);
+  align-items: start;
+  padding-bottom: clamp(48px, 9vh, 104px);
 }
-.tm-hero > .m-kicker {
-  grid-column: 1 / span 2;
-  padding-top: 1.2em;
+.tm-hero-copy {
+  grid-column: 1 / span 6;
+  display: grid;
+  gap: clamp(16px, 3vh, 26px);
 }
 .tm-title {
-  grid-column: 3 / -1;
-  font: 300 var(--t-display) / 1.22 var(--sans);
+  font: 300 var(--t-display) / 1.2 var(--sans);
   letter-spacing: 0.03em;
 }
 .tm-lead {
-  grid-column: 3 / span 6;
+  max-width: 30em;
 }
-@media (max-width: 900px) {
-  .tm-hero > .m-kicker,
-  .tm-title,
-  .tm-lead {
-    grid-column: 1 / -1;
-  }
-  .tm-hero > .m-kicker {
-    padding-top: 0;
-  }
+.tm-hero-guess {
+  grid-column: 8 / -1;
+  padding-top: 8px;
 }
 
-/* ---------- 成员 ---------- */
-.tm-people-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px 24px;
-  padding-top: 20px;
-  border-top: 1px solid var(--ink);
-  margin-bottom: clamp(28px, 5vh, 48px);
-}
-.tm-people-head .num {
-  margin-left: 6px;
-  font: italic 300 15px/1 var(--latin);
-  letter-spacing: 0;
-  color: var(--accent-ink);
-}
-.tm-note .m-note {
-  white-space: normal;
-}
-.tm-grid {
+/* ---------- 猜自述 ---------- */
+.tm-guess {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--col-gap);
-}
-.tm-grid > li {
-  display: grid;
-}
-@media (max-width: 1180px) {
-  .tm-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 620px) {
-  .tm-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-/* 卡片：白底，几乎无阴影；没有 JS 时就是一张卡片，正反两面上下排开 */
-.tm-card {
-  position: relative;
-  display: grid;
+  gap: 16px;
+  padding: clamp(22px, 2.6vw, 34px);
   border-radius: var(--r-card);
   background: var(--white);
   box-shadow: 0 0 0 1px var(--hair);
-  transition: box-shadow 0.4s var(--ease);
 }
-.tm-card:hover {
-  box-shadow: 0 0 0 1px var(--hair-2);
-}
-/* 从别处链过来（/team#xiejun）：那一张描一道杏橙细线 */
-.tm-card:target {
-  box-shadow: 0 0 0 1px var(--accent);
-}
-.tm-inner {
-  display: grid;
-  align-content: start;
-}
-.tm-face {
+.tm-guess-top {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: clamp(20px, 2vw, 28px);
-}
-.tm-back {
-  border-top: 1px dashed var(--hair-2);
-}
-
-.tm-top {
-  display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 8px;
+  align-items: baseline;
 }
-/* 头像：统一裁成圆、同一档轻调色；没有头像的用名字首字做字标 */
-.tm-avatar {
-  display: block;
-  flex: none;
-  width: 76px;
-  height: 76px;
-  overflow: hidden;
-  border-radius: 50%;
-  background: var(--paper-2);
+.tm-guess-count {
+  font: italic 300 var(--t-small) / 1 var(--latin);
+  color: var(--mute);
 }
-.tm-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: var(--grade);
+.tm-guess-quote {
+  min-height: 3.2em;
+  font: 300 var(--t-h2) / 1.45 var(--sans);
+  letter-spacing: 0.03em;
+  text-wrap: balance;
+  animation: tm-quote-in 0.6s var(--ease) both;
 }
-.tm-mark {
-  display: grid;
-  place-items: center;
-  background: var(--paper);
-  box-shadow: inset 0 0 0 1px var(--hair);
-  font: 300 var(--t-h2) / 1 var(--sans);
+@keyframes tm-quote-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.tm-guess-quote p {
+  margin-left: -0.5em;
+}
+.tm-guess-ask {
+  font-size: var(--t-ui);
+  letter-spacing: 0.06em;
   color: var(--ink-2);
-  user-select: none;
 }
-.tm-namebar {
+.tm-guess-names {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 2px 12px;
-}
-.tm-name {
-  font: 400 var(--t-h3) / 1.35 var(--sans);
-  letter-spacing: 0.06em;
-}
-.tm-role {
-  font: 400 12.5px/1.4 var(--sans);
-  letter-spacing: 0.1em;
-  color: var(--mute);
-}
-.tm-focus {
-  font: 500 var(--t-ui) / 1.7 var(--sans);
-  letter-spacing: 0.04em;
-}
-.tm-exp {
-  font-size: var(--t-ui);
-  line-height: 1.9;
-  color: var(--ink-2);
-}
-
-/* 背面：自述 */
-.tm-self {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-.tm-self .m-kicker {
-  display: inline-flex;
-  align-items: center;
   gap: 8px;
-  color: var(--accent-ink);
 }
-.tm-self .m-kicker::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-.tm-self-name {
-  font-size: var(--t-small);
-  letter-spacing: 0.08em;
-  color: var(--mute);
-}
-.tm-tags {
-  display: grid;
-  border-top: 1px solid var(--hair);
-}
-.tm-tags li {
-  padding: 10px 0;
-  text-wrap: pretty;
-  border-bottom: 1px solid var(--hair);
-  font: 400 var(--t-lead) / 1.65 var(--sans);
-  letter-spacing: 0.03em;
-}
-.tm-motto {
-  display: grid;
-  gap: 6px;
-  margin-top: 4px;
-}
-.tm-motto-text {
-  font: 400 var(--t-lead) / 1.6 var(--sans);
-}
-
-/* 翻面按钮：只在有 JS 时出现，叠在卡片左下角，不跟着翻 */
-.tm-turn {
-  display: none;
-}
-.js .tm-turn {
-  position: absolute;
-  left: clamp(20px, 2vw, 28px);
-  bottom: 20px;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 32px;
-  padding: 0 14px 0 12px;
+.tm-guess-name {
+  min-height: 40px;
+  padding: 0 16px;
   border: 0;
   border-radius: var(--r-pill);
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--hair-2);
-  color: var(--ink-2);
-  font: 400 var(--t-small) / 1 var(--sans);
-  letter-spacing: 0.1em;
+  font: 400 var(--t-ui) / 1 var(--sans);
+  letter-spacing: 0.06em;
+  color: var(--ink);
   transition:
     box-shadow 0.3s var(--ease),
     background-color 0.3s var(--ease),
-    color 0.3s var(--ease);
+    color 0.3s var(--ease),
+    opacity 0.3s var(--ease);
 }
-.js .tm-turn:hover {
-  color: var(--ink);
+.tm-guess-name:hover:not([aria-disabled]) {
   box-shadow: inset 0 0 0 1px var(--ink);
 }
-.js .tm-turn[aria-pressed='true'] {
-  color: var(--ink);
+.tm-guess-name[aria-disabled] {
+  cursor: default;
+}
+.tm-guess-name[data-state='wrong'] {
+  color: var(--mute);
+  text-decoration: line-through;
+  text-decoration-color: var(--accent);
+  opacity: 0.6;
+}
+.tm-guess-name[data-state='right'] {
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: none;
+  animation: tm-right 0.6s var(--ease);
+}
+@keyframes tm-right {
+  40% {
+    transform: scale(1.08);
+  }
+}
+.tm-guess[data-solved] .tm-guess-name:not([data-state='right']) {
+  opacity: 0.4;
+}
+.tm-guess-say {
+  min-height: 1.6em;
+  font-size: var(--t-ui);
+  color: var(--accent-ink);
+}
+.tm-guess-actions {
+  gap: 6px 22px;
+}
+.tm-guess-note {
+  padding-top: 12px;
+  border-top: 1px solid var(--hair);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--mute);
+}
+/* 没有 JS：名字与按钮不出现，答案在「揭晓」里 */
+.tm-guess-static {
+  display: none;
+}
+html:not(.js) .tm-guess-static {
+  display: block;
+}
+html:not(.js) .tm-guess-names,
+html:not(.js) .tm-guess-say,
+html:not(.js) .tm-guess-actions {
+  display: none;
+}
+.tm-guess-static summary {
+  cursor: pointer;
+  font-size: var(--t-ui);
+  color: var(--ink-2);
+}
+
+/* =====================================================================
+   01 来路：点阵汇流（--pin 由 useSiteMotion 写入，没有时按 1 算＝已经汇流）
+   ===================================================================== */
+.tm-origin {
+  position: relative;
+  padding-block: var(--section-top) 0;
+}
+.js .tm-origin {
+  height: 240svh;
+  padding: 0;
+}
+.tm-origin-stick {
+  display: grid;
+  align-content: center;
+  gap: clamp(20px, 3.4vh, 36px);
+}
+.js .tm-origin-stick {
+  position: sticky;
+  top: var(--header);
+  height: calc(100svh - var(--header));
+}
+.tm-origin {
+  /* 汇流进度：0 = 各在各的公司，1 = 都到了 Molis */
+  --k: clamp(0, calc((var(--pin, 1) - 0.1) / 0.55), 1);
+  /* 两句大字的交替 */
+  --swap: clamp(0, calc((var(--pin, 1) - 0.36) / 0.22), 1);
+}
+.tm-origin-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ink);
+}
+.tm-origin-words {
+  display: grid;
+  min-height: 2.9em;
+  font: 300 var(--t-h1) / 1.32 var(--sans);
+  letter-spacing: 0.03em;
+}
+.tm-origin-before,
+.tm-origin-after {
+  grid-area: 1 / 1;
+  align-self: start;
+}
+.tm-origin-before {
+  opacity: clamp(0, calc(1 - var(--swap) * 2), 1);
+  transform: translateY(calc(var(--swap) * -10px));
+}
+.tm-origin-after {
+  opacity: clamp(0, calc(var(--swap) * 2 - 1), 1);
+  transform: translateY(calc((1 - var(--swap)) * 12px));
+  font-size: var(--t-h2);
+  line-height: 1.5;
+  max-width: 24em;
+}
+
+.tm-matrix {
+  --name: 5.4em;
+  display: grid;
+  gap: 4px;
+}
+.tm-matrix-head,
+.tm-mrow {
+  display: grid;
+  grid-template-columns: var(--name) minmax(0, 1fr);
+  align-items: center;
+}
+.tm-matrix-cols,
+.tm-mrow-track {
+  position: relative;
+}
+.tm-matrix-cols {
+  height: 2.2em;
+}
+.tm-col {
+  position: absolute;
+  bottom: 0;
+  left: calc((var(--col) + 0.5) / var(--n) * 100%);
+  translate: -50% 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--mute);
+  white-space: nowrap;
+}
+.tm-col-molis {
+  font: 500 var(--t-ui) / 1 var(--latin);
+  letter-spacing: 0.04em;
+  color: var(--accent-ink);
+}
+.tm-matrix-rows {
+  position: relative;
+  display: grid;
+}
+/* 美团那一列先亮着（「我们曾是美团的同事」），汇流时让位给 Molis 那一列 */
+.tm-matrix-rows::before,
+.tm-matrix-rows::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--name) + (100% - var(--name)) * (var(--n) - 1) / var(--n));
+  width: calc((100% - var(--name)) / var(--n));
+  border-radius: var(--r-label);
   background: var(--accent-wash);
-  box-shadow: inset 0 0 0 1px rgb(234 146 96 / 0.45);
+  opacity: var(--k);
+  pointer-events: none;
 }
-.tm-turn svg {
-  transition: transform 0.7s var(--ease);
+.tm-matrix-rows::before {
+  left: var(--name);
+  opacity: calc(1 - var(--swap));
 }
-.tm-turn[aria-pressed='true'] svg {
+.tm-mrow {
+  height: 42px;
+  border-top: 1px solid var(--hair);
+}
+.tm-mrow:last-child {
+  border-bottom: 1px solid var(--hair);
+}
+.tm-mrow-name {
+  font-size: var(--t-small);
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+.tm-mrow-track {
+  height: 100%;
+}
+.tm-ring,
+.tm-dot {
+  position: absolute;
+  top: 50%;
+  width: 13px;
+  height: 13px;
+  margin: -6.5px 0 0 -6.5px;
+  border-radius: 50%;
+}
+.tm-ring {
+  left: calc((var(--col) + 0.5) / var(--n) * 100%);
+  box-shadow: inset 0 0 0 1.2px var(--mute);
+  opacity: calc(var(--k) * 0.8);
+}
+.tm-dot {
+  /* 每一行晚一点出发，像一个接一个走过来 */
+  --go: clamp(0, calc(var(--k) * 1.6 - var(--r) * 0.08), 1);
+  left: calc(
+    (var(--col) + (var(--n) - 1 - var(--col)) * var(--go) + 0.5) / var(--n) *
+      100%
+  );
+  z-index: 1;
+  background: color-mix(
+    in srgb,
+    var(--accent) calc(var(--go) * 100%),
+    var(--ink)
+  );
+}
+.tm-dot-here {
+  --go: 1;
+  background: var(--accent);
+}
+.tm-origin-note {
+  font-size: 12.5px;
+  color: var(--mute);
+}
+/* 没有 JS：两句上下都在，不交替 */
+html:not(.js) .tm-origin-before,
+html:not(.js) .tm-origin-after {
+  grid-area: auto;
+  opacity: 1;
+  transform: none;
+}
+
+/* =====================================================================
+   02 八个人：一行一个名牌，点开是经历与自述
+   ===================================================================== */
+.tm-people {
+  padding-top: var(--section-top);
+}
+.tm-rows {
+  border-bottom: 1px solid var(--hair);
+}
+.tm-row {
+  border-top: 1px solid var(--hair);
+  scroll-margin-top: calc(var(--header) + 16px);
+}
+.tm-row-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 32px;
+  align-items: center;
+  gap: var(--col-gap);
+  min-height: 76px;
+  padding: 14px 0;
+  list-style: none;
+  cursor: pointer;
+}
+div.tm-row-head {
+  cursor: default;
+}
+.tm-row-head::-webkit-details-marker {
+  display: none;
+}
+.tm-row-line {
+  display: grid;
+  grid-template-columns: 4em minmax(0, 3fr) minmax(0, 5fr);
+  align-items: baseline;
+  gap: 6px var(--col-gap);
+  font: inherit;
+}
+.tm-row-no {
+  font-size: var(--t-ui);
+}
+.tm-row-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+}
+.tm-name {
+  font: 300 var(--t-h2) / 1.2 var(--sans);
+  letter-spacing: 0.06em;
+}
+.tm-role {
+  font-size: var(--t-small);
+  letter-spacing: 0.08em;
+  color: var(--mute);
+}
+.tm-row-focus {
+  font: 400 var(--t-lead) / 1.6 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+.tm-row-toggle {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  color: var(--ink-2);
+  transition:
+    transform 0.4s var(--ease),
+    box-shadow 0.3s var(--ease);
+}
+summary.tm-row-head:hover .tm-row-toggle {
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.tm-row details[open] .tm-row-toggle {
   transform: rotate(180deg);
 }
-
-/* 有 JS：两面叠在同一格里，卡片的纸移到两面上；翻过去的那一面同时不进读屏 */
-.js .tm-card[data-flip] {
-  background: none;
-  box-shadow: none;
-  perspective: 1800px;
+.tm-row-body {
+  display: grid;
+  grid-template-columns: 4em minmax(0, 3fr) minmax(0, 5fr);
+  gap: 18px var(--col-gap);
+  padding: 0 calc(32px + var(--col-gap)) 28px 0;
 }
-.js .tm-card[data-flip] .tm-inner {
-  grid-template-rows: 1fr;
-  align-content: stretch;
-  transform-style: preserve-3d;
-  transition: transform 0.9s var(--ease);
+.tm-row details[open] .tm-row-body {
+  animation: tm-open 0.5s var(--ease) both;
 }
-.js .tm-card[data-flip][data-flipped] .tm-inner {
-  transform: rotateY(180deg);
+@keyframes tm-open {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 }
-.js .tm-card[data-flip] .tm-face {
-  grid-area: 1 / 1;
-  padding-bottom: 76px;
-  border-radius: var(--r-card);
-  background: var(--white);
-  box-shadow: 0 0 0 1px var(--hair);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transition:
-    visibility 0s linear 0.45s,
-    box-shadow 0.4s var(--ease);
+.tm-row-exp {
+  grid-column: 3;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  line-height: 1.95;
+  color: var(--ink-2);
 }
-.js .tm-card[data-flip] .tm-back {
-  transform: rotateY(180deg);
-  border-top: 0;
+.tm-row-self {
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+.tm-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tm-tags li {
+  padding: 4px 11px;
+  border-radius: var(--r-pill);
   background: var(--paper-2);
+  font-size: var(--t-small);
+  line-height: 1.6;
+  color: var(--ink);
 }
-.js .tm-card[data-flip]:not([data-flipped]) .tm-back,
-.js .tm-card[data-flip][data-flipped] .tm-front {
-  visibility: hidden;
+.tm-motto {
+  display: grid;
+  gap: 4px;
 }
-.js .tm-card[data-flip]:hover .tm-face {
-  box-shadow: 0 0 0 1px var(--hair-2);
-}
-.js .tm-card[data-flip]:target .tm-face {
-  box-shadow: 0 0 0 1px var(--accent);
+.tm-motto > span:last-child {
+  font: 300 var(--t-keys) / 1.5 var(--sans);
 }
 
-/* ---------- 结尾：从不同的位置出发 ---------- */
+/* =====================================================================
+   结尾
+   ===================================================================== */
 .tm-end {
+  display: grid;
+  gap: 22px;
   padding-block: var(--section-top) var(--section-bottom);
+}
+.tm-end-title {
+  max-width: 18em;
+  font: 300 var(--t-h1) / 1.35 var(--sans);
+  letter-spacing: 0.03em;
 }
 .tm-end-body {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 32px;
+  gap: 24px;
+  max-width: var(--read);
 }
-.tm-end-text {
-  grid-column: 3 / span 6;
-  font-size: var(--t-read);
-  line-height: 2;
-  color: var(--ink-2);
-}
-.tm-end-body .m-actions {
-  grid-column: 3 / span 8;
-}
-@media (max-width: 900px) {
-  .tm-end-text,
-  .tm-end-body .m-actions {
+
+/* =====================================================================
+   窄屏
+   ===================================================================== */
+@media (max-width: 1000px) {
+  .tm-hero-copy,
+  .tm-hero-guess {
     grid-column: 1 / -1;
   }
-}
-
-/* ---------- 减少动态：不做三维翻转，直接换面 ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .js .tm-card[data-flip] .tm-inner,
-  .js .tm-card[data-flip][data-flipped] .tm-inner {
-    transform: none;
-    transition: none;
-  }
-  .js .tm-card[data-flip] .tm-back {
-    transform: none;
-  }
-  .js .tm-card[data-flip] .tm-face,
-  .tm-card,
-  .js .tm-turn,
-  .tm-turn svg {
-    transition: none;
+  .tm-hero-guess {
+    max-width: 560px;
+    padding-top: 0;
   }
 }
-
-/* ---------- 打印：两面都印出来 ---------- */
-@media print {
-  .tm-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 760px) {
+  .tm-matrix {
+    --name: 3.6em;
   }
-  .tm-card {
-    break-inside: avoid;
+  .tm-matrix-cols {
+    height: 6.6em;
   }
-  .js .tm-card[data-flip] .tm-inner {
-    transform: none !important;
+  .tm-col {
+    writing-mode: vertical-rl;
+    translate: -50% 0;
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
   }
-  .js .tm-card[data-flip] .tm-face {
-    grid-area: auto;
-    padding-bottom: 20px;
-    transform: none !important;
-    visibility: visible !important;
+  .tm-col-molis {
+    font-size: 12.5px;
   }
-  .js .tm-turn {
+  .tm-mrow {
+    height: 30px;
+  }
+  .tm-mrow-name {
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
+  .tm-ring,
+  .tm-dot {
+    width: 9px;
+    height: 9px;
+    margin: -4.5px 0 0 -4.5px;
+  }
+  .tm-row-line,
+  .tm-row-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tm-row-line {
+    gap: 2px;
+  }
+  .tm-row-no {
     display: none;
+  }
+  .tm-row-body {
+    padding-right: 0;
+  }
+  .tm-row-exp,
+  .tm-row-self {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .tm-name {
+    font-size: var(--t-h3);
+  }
+  .tm-row-focus {
+    font-size: var(--t-ui);
+  }
+}
+
+/* 减少动态：点阵停在汇流以后，不钉住；猜对不跳 */
+@media (prefers-reduced-motion: reduce) {
+  .tm-origin {
+    --k: 1 !important;
+    --swap: 1 !important;
+  }
+  .tm-origin-before,
+  .tm-origin-after {
+    grid-area: auto;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .js .tm-origin {
+    height: auto;
+    padding-top: var(--section-top);
+  }
+  .js .tm-origin-stick {
+    position: static;
+    height: auto;
+  }
+  .tm-guess-quote,
+  .tm-guess-name[data-state='right'],
+  .tm-row details[open] .tm-row-body {
+    animation: none;
+  }
+}
+@media print {
+  .tm-hero-guess {
+    display: none;
+  }
+  .js .tm-origin,
+  .js .tm-origin-stick {
+    height: auto;
+    position: static;
   }
 }

@@ -1,9 +1,18 @@
+import { ChevronDown } from 'lucide-react';
 import { pageMetadata } from '../../../lib/site';
-import { members, team, teamUi, type Member } from '../../../content/site/team';
+import {
+  companies,
+  members,
+  origin,
+  team,
+  teamUi,
+  type Member,
+} from '../../../content/site/team';
 import { story } from '../../../content/site/studio';
 import { ABOUT, TEAM, contactHref } from '../../_site/routes';
 import { Btn, More, pad, Phrases, type Vars } from '../../_site/ui';
-import { FlipCard } from './flip';
+import { Fold } from '../../_site/viz/viz';
+import { Guess, OpenFromHash } from './guess';
 import './team.css';
 
 export const metadata = pageMetadata(
@@ -12,154 +21,236 @@ export const metadata = pageMetadata(
   TEAM,
 );
 
-// 团队：一群同类，一起创造。8 人按第 7 章的顺序；卡片正面是方向与经历，背面是标「自述」的个性标签。
-// 待补的内容不出现：没有标签就没有背面，杨鹏飞只显示名字与身份。
-// 头像只用团队本人的（统一裁成圆、同一档轻调色）；没有的用名字首字做字标。不用素材图里的人。
+// 团队（visual-storyboard 第 2 节）：先给一个记得住的画面，再让人读履历。
+// 首屏：标题 + 「这句是谁写的？」猜成员自述；
+// 来路：一行一个人、一列一家公司的点阵，往下滚，所有点滑进最后一列 Molis——「这些不同的经验聚在 Molis」；
+// 八个人：一行一个名牌（名字、身份、方向），点开是经历与自述；结尾一句「从不同的位置出发」。
+// 没有本人照片，不放头像，不用素材里的人；待补的内容不出现。
 
-/** 个性标签按原文的分号拆成一行一个，去掉句末的句号 */
+/** 个性标签按原文的分号拆开，去掉句末的句号 */
 const tagsOf = (tags: string) =>
   tags
     .split('；')
     .map((tag) => tag.replace(/。$/, ''))
     .filter(Boolean);
 
-function Avatar({ member }: { member: Member }) {
-  if (member.photo)
-    return (
-      <span className="tm-avatar">
-        <img
-          src={member.photo.src}
-          width={member.photo.width}
-          height={member.photo.height}
-          alt=""
-          loading="lazy"
-          decoding="async"
-        />
-      </span>
-    );
-  return (
-    <span className="tm-avatar tm-mark" aria-hidden="true">
-      {member.name.slice(0, 1)}
-    </span>
-  );
-}
+const MOLIS = companies.length;
 
-function Front({ member, index }: { member: Member; index: number }) {
+function Origin() {
   return (
-    <>
-      <div className="tm-top">
-        <Avatar member={member} />
-        <span className="m-no" aria-hidden="true">
-          {pad(index + 1)}
-        </span>
-      </div>
-      <div className="tm-namebar">
-        <h3 className="tm-name" id={`${member.id}-name`}>
-          {member.name}
-        </h3>
-        <span className="tm-role">{member.role}</span>
-      </div>
-      {member.focus ? <p className="tm-focus">{member.focus}</p> : null}
-      {member.experience ? <p className="tm-exp">{member.experience}</p> : null}
-    </>
-  );
-}
-
-function Back({ member }: { member: Member }) {
-  const [mottoLabel, motto] = member.motto?.split('：') ?? [];
-  return (
-    <>
-      <p className="tm-self">
-        <span className="m-kicker">{teamUi.self}</span>
-        <span className="tm-self-name">{member.name}</span>
-      </p>
-      <ul className="tm-tags">
-        {tagsOf(member.tags ?? '').map((tag) => (
-          <li key={tag}>{tag}</li>
-        ))}
-      </ul>
-      {motto ? (
-        <p className="tm-motto">
-          <span className="m-kicker">{mottoLabel}</span>
-          <span className="tm-motto-text">{motto.replace(/。$/, '')}</span>
+    <section
+      className="tm-origin"
+      data-scene
+      aria-labelledby="tm-origin-title"
+    >
+      <div className="tm-origin-stick m-wrap">
+        <p className="tm-origin-meta">
+          <span className="m-no" aria-hidden="true">
+            01
+          </span>
+          <span className="m-kicker">{origin.kicker}</span>
         </p>
+        <h2 className="tm-origin-words" id="tm-origin-title">
+          <span className="tm-origin-before">{origin.before}</span>
+          <span className="tm-origin-after">
+            <Phrases text={origin.after} />
+          </span>
+        </h2>
+        <div className="tm-matrix" style={{ '--n': MOLIS + 1 } as Vars}>
+          <p className="tm-matrix-head" aria-hidden="true">
+            <span className="tm-matrix-corner" />
+            <span className="tm-matrix-cols">
+              {companies.map((company, col) => (
+                <span
+                  key={company}
+                  className="tm-col"
+                  style={{ '--col': col } as Vars}
+                >
+                  {company}
+                </span>
+              ))}
+              <span
+                className="tm-col tm-col-molis"
+                lang="en"
+                style={{ '--col': MOLIS } as Vars}
+              >
+                {origin.molis}
+              </span>
+            </span>
+          </p>
+          <ul className="tm-matrix-rows">
+            {members.map((member, row) => {
+              const past = member.past ?? [];
+              return (
+                <li
+                  key={member.id}
+                  className="tm-mrow"
+                  style={{ '--r': row } as Vars}
+                >
+                  <span className="tm-mrow-name" aria-hidden="true">
+                    {member.name}
+                  </span>
+                  <span className="sr-only">
+                    {origin.label(member.name, past)}
+                  </span>
+                  <span className="tm-mrow-track" aria-hidden="true">
+                    {past.map((company) => (
+                      <span
+                        key={`ring-${company}`}
+                        className="tm-ring"
+                        style={
+                          { '--col': companies.indexOf(company) } as Vars
+                        }
+                      />
+                    ))}
+                    {past.map((company) => (
+                      <span
+                        key={`dot-${company}`}
+                        className="tm-dot"
+                        style={
+                          { '--col': companies.indexOf(company) } as Vars
+                        }
+                      />
+                    ))}
+                    {past.length ? null : (
+                      <span
+                        className="tm-dot tm-dot-here"
+                        style={{ '--col': MOLIS } as Vars}
+                      />
+                    )}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        <p className="tm-origin-note">{origin.note}</p>
+      </div>
+    </section>
+  );
+}
+
+function Row({ member, index }: { member: Member; index: number }) {
+  const [mottoLabel, motto] = member.motto?.split('：') ?? [];
+  const head = (
+    <>
+      <span className="tm-row-no m-no" aria-hidden="true">
+        {pad(index + 1)}
+      </span>
+      <span className="tm-row-name">
+        <span className="tm-name">{member.name}</span>
+        <span className="tm-role">{member.role}</span>
+      </span>
+      {member.focus ? (
+        <span className="tm-row-focus">{member.focus}</span>
       ) : null}
     </>
+  );
+  // 资料待补的成员：只有名字与身份，不展开
+  if (!member.experience)
+    return (
+      <li className="tm-row" id={member.id}>
+        <div className="tm-row-head">
+          <h3 className="tm-row-line">{head}</h3>
+        </div>
+      </li>
+    );
+  return (
+    <li className="tm-row" id={member.id}>
+      <details>
+        <summary className="tm-row-head">
+          <h3 className="tm-row-line">{head}</h3>
+          <span className="tm-row-toggle">
+            <span className="sr-only">{teamUi.more}</span>
+            <ChevronDown size={16} aria-hidden="true" />
+          </span>
+        </summary>
+        <div className="tm-row-body">
+          <div className="tm-row-exp">
+            <p className="m-kicker">{teamUi.experience}</p>
+            <p>{member.experience}</p>
+          </div>
+          {member.tags ? (
+            <div className="tm-row-self">
+              <p className="m-kicker">{teamUi.self}</p>
+              <ul className="tm-tags">
+                {tagsOf(member.tags).map((tag) => (
+                  <li key={tag}>{tag}</li>
+                ))}
+              </ul>
+              {motto ? (
+                <p className="tm-motto">
+                  <span className="m-kicker">{mottoLabel}</span>
+                  <span>{motto.replace(/。$/, '')}</span>
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      </details>
+    </li>
   );
 }
 
 export default function TeamPage() {
   return (
     <div className="tm">
+      <OpenFromHash />
       <header className="tm-hero m-wrap m-top">
-        <p className="m-kicker" lang="en" data-reveal>
-          {teamUi.kicker}
-        </p>
-        <h1 className="tm-title" data-reveal>
-          <Phrases text={team.title} />
-        </h1>
-        <p
-          className="tm-lead m-lead"
-          data-reveal
-          style={{ '--delay': '90ms' } as Vars}
-        >
-          {team.lead}
-        </p>
-      </header>
-
-      <section className="tm-people m-wrap" aria-labelledby="tm-people-title">
-        <div className="tm-people-head" data-reveal>
-          <h2 id="tm-people-title" className="m-kicker">
-            {teamUi.membersLabel}
-            <span className="num"> {pad(members.length)}</span>
-          </h2>
-          <p className="tm-note">
-            <span className="m-note">{teamUi.selfNote}</span>
+        <div className="tm-hero-copy">
+          <p className="m-kicker m-rise" lang="en">
+            {teamUi.kicker}
+          </p>
+          <h1 className="tm-title m-rise" style={{ '--delay': '80ms' } as Vars}>
+            <Phrases text={team.title} />
+          </h1>
+          <p
+            className="tm-lead m-lead m-rise"
+            style={{ '--delay': '160ms' } as Vars}
+          >
+            {team.lead}
           </p>
         </div>
-        <ol className="tm-grid">
+        <div
+          className="tm-hero-guess m-rise"
+          style={{ '--delay': '240ms' } as Vars}
+        >
+          <Guess />
+        </div>
+      </header>
+
+      <Origin />
+
+      <section className="tm-people m-wrap" aria-labelledby="tm-people-title">
+        <header className="m-head" data-size="h2" data-reveal>
+          <p className="m-head-meta">
+            <span className="m-no" aria-hidden="true">
+              02
+            </span>
+            <span className="m-kicker">{teamUi.pageTitle}</span>
+          </p>
+          <h2 className="m-head-title" id="tm-people-title">
+            {teamUi.membersLabel}
+          </h2>
+        </header>
+        <ol className="tm-rows">
           {members.map((member, index) => (
-            <li
-              key={member.id}
-              data-reveal
-              style={{ '--delay': `${(index % 4) * 70}ms` } as Vars}
-            >
-              {member.tags ? (
-                <FlipCard
-                  id={member.id}
-                  name={member.name}
-                  front={<Front member={member} index={index} />}
-                  back={<Back member={member} />}
-                />
-              ) : (
-                <article
-                  className="tm-card"
-                  id={member.id}
-                  aria-labelledby={`${member.id}-name`}
-                >
-                  <div className="tm-inner">
-                    <div className="tm-face tm-front">
-                      <Front member={member} index={index} />
-                    </div>
-                  </div>
-                </article>
-              )}
-            </li>
+            <Row key={member.id} member={member} index={index} />
           ))}
         </ol>
       </section>
 
       <section className="tm-end m-wrap" aria-labelledby="tm-end-title">
-        <header className="m-head" data-size="h2" data-reveal>
-          <p className="m-head-meta">
-            <span className="m-kicker">{teamUi.endKicker}</span>
-          </p>
-          <h2 className="m-head-title" id="tm-end-title">
-            <Phrases text={story.origin.positions} />
-          </h2>
-        </header>
+        <p className="m-kicker" data-reveal>
+          {teamUi.endKicker}
+        </p>
+        <h2 className="tm-end-title" id="tm-end-title" data-reveal>
+          <Phrases text={story.origin.positions} />
+        </h2>
         <div className="tm-end-body" data-reveal>
-          <p className="tm-end-text">{story.short}</p>
+          <Fold summary={teamUi.shortFold}>
+            <p>{story.short}</p>
+          </Fold>
           <div className="m-actions">
             <Btn href={contactHref()}>{teamUi.chat}</Btn>
             <More href={ABOUT}>{teamUi.about}</More>

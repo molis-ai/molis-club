@@ -4,6 +4,8 @@
 // （徐晶、杨鹏飞没有个性标签，所以没有背面；杨鹏飞只显示名字与身份）。
 // 个性标签是成员的玩笑自述，不作正式职务或职业排名；页面上标「自述」。
 // 照片只用团队本人的头像（public/images/daylight/team/），选用待负责人核对。
+// past（来路点阵里的公司）只取本人经历原文里写明的公司，tests/site-copy.test.mjs 逐个核对；
+// 猜自述的题库只用本人的个性标签或签名，去掉含本人名字的句子。
 
 export type MemberId =
   | 'yijun'
@@ -30,6 +32,8 @@ export type Member = {
   motto?: string;
   /** 本人头像；没有的用名字首字做字标 */
   photo?: { src: string; width: number; height: number };
+  /** 来路点阵：经历原文里写明的公司（按 companies 的写法） */
+  past?: string[];
 };
 
 export const team = {
@@ -42,6 +46,7 @@ export const members: Member[] = [
     id: 'yijun',
     name: '王一骏',
     role: '发起人',
+    past: ['美团', '字节', '滴滴', 'LinkedIn', '硅谷创业公司'],
     focus: '系统架构、产品与技术管理',
     experience:
       '曾在美团、字节、滴滴、LinkedIn 及硅谷创业公司的核心研发团队负责架构与管理，拥有多年复杂系统建设与技术管理经验，也在山禾、DataFun 分享实践。',
@@ -52,6 +57,7 @@ export const members: Member[] = [
     id: 'xujing',
     name: '徐晶',
     role: '联合创始人',
+    past: ['美团', '小红书', '英语流利说', 'Teambition'],
     focus: '业务策略、数据科学与 AI 应用',
     experience:
       '前美团、小红书、英语流利说和 Teambition 资深数据科学家。擅长从业务目标出发识别机会，将数据洞察转化为增长策略与产品方案，推动落地并取得业务结果。',
@@ -60,6 +66,7 @@ export const members: Member[] = [
     id: 'zhuangshi',
     name: '赵壮实',
     role: '联合创始人',
+    past: ['字节', '美团'],
     focus: 'AI 数据产品与复杂业务设计',
     experience:
       '复旦大学中文系，曾任字节、美团核心团队 AI 数据产品资深专家。《基于抖音数据管理及功能拓展》软著作者，关注数据产品与复杂业务设计，也在 DataFun、美团大学分享实践。',
@@ -71,6 +78,7 @@ export const members: Member[] = [
     id: 'xiejun',
     name: '谢俊',
     role: '联合创始人',
+    past: ['美团'],
     focus: 'AI Native 与 Agent 工程',
     experience:
       '8 年美团研发经验，长期深耕数据、计算、平台架构与复杂系统工程化，参与企业知识库、RAG 与 Agent 实践。目前聚焦 AI Agent、AI Coding 与 AI Native 软件架构，探索大模型在复杂任务与研发自动化中的应用。',
@@ -88,6 +96,7 @@ export const members: Member[] = [
     id: 'haozhe',
     name: '庄昊哲',
     role: '联合创始人',
+    past: ['美团'],
     focus: 'BI 研发',
     experience: '3 年美团 BI 研发经历，一直在探索新系统。',
     tags: '脆脆鲨；Molis AI 第一打手（打手总共 1 人）；日常写代码、健身、爬山。',
@@ -96,6 +105,7 @@ export const members: Member[] = [
     id: 'xinyi',
     name: '隋欣怡',
     role: '联合创始人',
+    past: ['美团', '字节', '小红书'],
     focus: '业务增长与客户共创',
     experience:
       '曾在美团、字节、小红书核心团队担任数据运营专家，对接过 100+ 客户团队。关注业务增长与客户共创，持续探索 AI 能力进入真实业务、产生实际价值的落点。',
@@ -107,6 +117,7 @@ export const members: Member[] = [
     id: 'jinqu',
     name: '靳曲',
     role: '联合创始人',
+    past: ['美团', '快手', '字节'],
     focus: '数据科学与 AI 工作流',
     experience:
       '前美团、快手、字节数据科学家。擅长以数据科学洞察业务，以 AI 重构工作流，让复杂决策更智能，让创新想法真正落地。',
@@ -114,19 +125,79 @@ export const members: Member[] = [
   },
 ];
 
+/** 来路点阵的列：按出现的人数排；最后一列是 Molis */
+export const companies = [
+  '美团',
+  '字节',
+  '小红书',
+  '滴滴',
+  'LinkedIn',
+  '硅谷创业公司',
+  '快手',
+  '英语流利说',
+  'Teambition',
+];
+
+/** 来路（新写的小标签；两句大字是 studio-intro 2.1 原句） */
+export const origin = {
+  kicker: '来路',
+  before: '我们曾是美团的同事。',
+  after:
+    '现在，这些不同的经验聚在 Molis，投入到一件共同的事里：创造我们真正想要的产品。',
+  molis: 'Molis',
+  /** 新写 */
+  note: '点只画本人写明的经历。',
+  label: (name: string, list: string[]) =>
+    list.length ? `${name}：${list.join('、')}，现在在 Molis` : `${name}：Molis`,
+};
+
+/**
+ * 首屏的勾子「这句自述是谁的？」：题目只用本人的个性标签或签名（第 7 章原文，去掉句末标点），
+ * 排除含本人名字的句子（「Google 可以搜到的女人（搜索：赵壮实 数据）」「叫我谢尊」），
+ * 也不收容易被当成真事或业绩来读的几句（炒股、「美团 AI 第一人」）。
+ */
+export const guess = {
+  kicker: '自述',
+  ask: '这句是谁写的？',
+  note: '自述是本人写的玩笑话，不作职务。',
+  right: (name: string) => `对，是${name}。`,
+  wrong: (name: string) => `不是${name}，再猜猜。`,
+  reveal: '揭晓',
+  answer: (name: string) => `是${name}。`,
+  next: '换一句',
+  see: (name: string) => `去看${name}的名牌`,
+  count: (at: number, total: number) => `${at} / ${total}`,
+  quotes: [
+    { text: '辞职之后，从北京骑车回南宁的男人', who: 'xiejun' },
+    { text: 'Molis AI 下一任 CEO（1/2）', who: 'xinyi' },
+    { text: '首席吹牛官', who: 'yijun' },
+    { text: 'Molis AI 第一打手（打手总共 1 人）', who: 'haozhe' },
+    { text: '天赋型情绪价值供应商', who: 'jinqu' },
+    { text: '为什么不愉快接受', who: 'zhuangshi' },
+    { text: '熬走了 10 任老板的研发', who: 'xiejun' },
+    { text: '首席心态崩盘官', who: 'yijun' },
+    { text: '社会时钟坚定反对派', who: 'jinqu' },
+    { text: '首席布道人', who: 'zhuangshi' },
+    { text: '普通话说得最好的广西人，广西话说得最好的北漂', who: 'xiejun' },
+    { text: '脆脆鲨', who: 'haozhe' },
+    { text: 'Molis AI 下一任 CEO（2/2）', who: 'jinqu' },
+    { text: '首席 Token 官', who: 'yijun' },
+  ] satisfies { text: string; who: MemberId }[],
+};
+
 /** 团队页上的界面文字（新写，不是底稿原句） */
 export const teamUi = {
   pageTitle: '团队',
   kicker: 'Team',
-  membersLabel: '成员',
-  /** 背面的标签 */
+  membersLabel: '八个人',
+  /** 名牌展开后的两块 */
+  experience: '经历',
+  more: '展开经历与自述',
+  /** 名牌里个性标签那一块 */
   self: '自述',
-  /** 写在卡片网格上方的一句诚实标注（新写） */
-  selfNote: '卡片背面是本人的自述：玩笑话，不作职务。',
-  /** 翻面按钮的读屏名称：「自述：王一骏」 */
-  flip: (name: string) => `自述：${name}`,
   /** 结尾的小标签与去处（新写） */
   endKicker: '我们的故事',
+  shortFold: '一段话版',
   about: '读我们的故事',
   chat: '聊一聊',
 };
