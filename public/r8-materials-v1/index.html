@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>物与光 · 12 个新方向 · Molis AI</title><style>
+:root{color-scheme:light;--paper:#f6f1e7;--card:#faf7ef;--ink:#332c25;--muted:#796f63;--line:#d9cfc1;--accent:#705943}
+*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.65}button,input,textarea{font:inherit}button,a,summary{-webkit-tap-highlight-color:transparent}button{color:inherit}a{color:inherit;text-underline-offset:4px}button:focus-visible,a:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:5px}button{cursor:pointer}button:disabled{cursor:default;opacity:.5}.wrap{max-width:1440px;margin:auto;padding:0 36px}.masthead{padding:24px 0 12px;border-bottom:1px solid var(--line)}.eyebrow{display:block;font-size:10px;line-height:1.2;letter-spacing:.13em;color:var(--muted)}h1{font-family:Georgia,"Songti SC","STSong",serif;font-size:32px;font-weight:400;letter-spacing:-.025em;line-height:1.2;margin:10px 0 7px}.intro{font-size:12px;line-height:1.5;max-width:850px;color:var(--muted);white-space:pre-line;margin:6px 0}.notice{font-size:12px;line-height:1.5;color:var(--muted);margin:7px 0 0}.references{display:flex;flex-wrap:wrap;gap:7px 19px;font-size:11px;margin-top:18px;color:var(--muted)}.selection{padding:10px 0 7px;border-bottom:1px solid var(--line)}.selection-head{display:flex;align-items:center;gap:12px}.selection h2{font-size:12px;font-weight:500;margin:0;white-space:nowrap}.selection-tools{display:flex;gap:7px;margin-left:auto;flex-shrink:0}.quiet-button{border:1px solid var(--line);background:transparent;border-radius:3px;padding:5px 10px;font-size:11px}.selection-tags{display:flex;gap:5px;flex-wrap:wrap;min-width:0;margin:0;flex:1}.selection-tags span{font-size:10px;background:#e9e0d3;border-radius:3px;padding:2px 7px}.selection-tags .empty{padding:2px 0;background:transparent;color:var(--muted)}.copy-field{display:block;width:100%;max-width:720px;min-height:42px;resize:vertical;border:1px solid var(--line);border-radius:3px;padding:9px 11px;background:var(--card);color:var(--ink);font-size:12px;line-height:1.6}.copy-help{font-size:11px;color:var(--muted);margin:4px 0 0}.copy-help:empty{display:none}.copy-details{font-size:10px;color:var(--muted);margin-top:4px}.copy-details summary,.brief-notes summary{cursor:pointer}.copy-details[open] .copy-field{margin-top:7px}.brief-notes .intro{max-width:850px}.filter-nav{display:flex;gap:5px;flex-wrap:wrap;padding:10px 0 7px}.filter-button{border:1px solid transparent;border-radius:20px;background:transparent;padding:4px 10px;font-size:11px;color:var(--muted)}.filter-button[aria-pressed="true"]{border-color:var(--line);background:#e9e0d3;color:var(--ink)}.results-count{font-size:10px;color:var(--muted);margin:0 0 10px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px 24px;padding-bottom:48px}.candidate{min-width:0}.candidate.feature{grid-column:1/-1}.card-top{display:flex;gap:12px;align-items:baseline;justify-content:space-between;margin-bottom:9px}.label{font-size:12px;font-weight:500;letter-spacing:.04em}.page-label{font-size:10px;color:var(--muted)}.image-button{display:block;width:100%;padding:0;border:0;background:#e8e1d6;border-radius:4px;overflow:hidden}.image-button img{display:block;width:100%;height:auto}.caption{padding-top:13px}.title-row{display:flex;justify-content:space-between;gap:14px;align-items:start}.caption h2{font-size:19px;font-family:Georgia,"Songti SC","STSong",serif;font-weight:400;line-height:1.45;margin:0}.like{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;font-size:11px;border:1px solid var(--line);border-radius:20px;background:transparent;padding:5px 11px}.like[aria-pressed="true"]{background:#e9ded0;border-color:#a18c74}.heart{font-size:16px;line-height:1}.description{font-size:13px;color:var(--muted);margin:9px 0;max-width:880px}.details-line{display:flex;gap:7px 16px;flex-wrap:wrap;font-size:10px;color:var(--muted)}.card-bottom{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:12px;font-size:11px;color:var(--muted)}.motion{margin:11px 0 0;font-size:11px;color:var(--muted)}.motion strong{font-weight:500;color:var(--accent)}footer{border-top:1px solid var(--line);padding:24px 0 38px;color:var(--muted);font-size:11px}footer p{max-width:900px}dialog{border:1px solid var(--line);border-radius:5px;padding:0;background:var(--paper);color:var(--ink);width:min(96vw,1600px);max-width:none;max-height:96svh;overflow:auto}dialog::backdrop{background:rgba(32,27,23,.82)}.dialog-head{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 18px}.dialog-title{font-size:13px;font-weight:500;margin:0}.dialog-close{border:0;background:transparent;font-size:24px;line-height:1;padding:4px 8px}.dialog-image-wrap{display:flex;align-items:center;justify-content:center;padding:0 18px;background:#eee8dd}.dialog-image{display:block;width:auto;height:auto;max-width:100%;max-height:73svh;object-fit:contain}.dialog-bottom{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:14px 18px;font-size:11px;color:var(--muted)}.dialog-arrows{display:flex;align-items:center;gap:12px}.dialog-arrow{border:1px solid var(--line);border-radius:3px;background:transparent;padding:5px 11px;font-size:16px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:760px){.wrap{padding:0 18px}.masthead{padding-top:24px}h1{font-size:28px}.grid{grid-template-columns:1fr;gap:29px}.candidate.feature{grid-column:auto}.selection-head{align-items:center;flex-wrap:wrap;gap:7px}.selection-tags{order:3;flex-basis:100%}.selection-tools{gap:7px}.filter-nav{gap:2px;padding-top:9px}.filter-button{padding:4px 8px}.caption h2{font-size:18px}.dialog-head,.dialog-bottom{padding:12px}.dialog-image-wrap{padding:0 8px}.dialog-image{max-height:70svh}.dialog-bottom{flex-wrap:wrap}.dialog-arrows{gap:8px}}
+</style></head>
+<body><div class="wrap">
+<header class="masthead"><span class="eyebrow">MOLIS AI / ORIGINAL IMAGE STUDIES</span><h1>物与光 · 12 个新方向</h1><p class="intro">从自然光、材料与人的使用出发，给不同页面各自的性格。</p>
+<p class="notice">AI 原创概念影像，非真实工作室、产品或客户现场；保留原始 PNG。</p></header>
+<section class="selection" aria-labelledby="selection-count"><div class="selection-head"><h2 id="selection-count">已喜欢 0 张</h2><div class="selection-tags" id="selection-tags" aria-live="polite"><span class="empty">点“喜欢”留下备选</span></div><div class="selection-tools"><button class="quiet-button" id="clear-button" type="button" disabled>清空</button><button class="quiet-button" id="copy-button" type="button" disabled>复制标签</button></div></div>
+<details id="copy-details" class="copy-details"><summary>手动复制标签</summary><label class="sr-only" for="copy-field">已选图片标签，可选中复制</label><textarea id="copy-field" class="copy-field" readonly rows="1" placeholder="例如 Home A、Work B、Life A"></textarea></details><p id="copy-status" class="copy-help" role="status"></p></section>
+<nav class="filter-nav" aria-label="按页面筛选"><button type="button" class="filter-button" data-page="all" aria-pressed="true">全部页面</button><button type="button" class="filter-button" data-page="首页" aria-pressed="false">首页</button><button type="button" class="filter-button" data-page="Work" aria-pressed="false">Work</button><button type="button" class="filter-button" data-page="Tool" aria-pressed="false">Tool</button><button type="button" class="filter-button" data-page="Life" aria-pressed="false">Life</button><button type="button" class="filter-button" data-page="Story" aria-pressed="false">Story</button><button type="button" class="filter-button" data-page="World" aria-pressed="false">World</button><button type="button" class="filter-button" data-page="企业合作" aria-pressed="false">企业合作</button><button type="button" class="filter-button" data-page="社区" aria-pressed="false">社区</button><button type="button" class="filter-button" data-page="关于" aria-pressed="false">关于</button><button type="button" class="filter-button" data-page="联系" aria-pressed="false">联系</button></nav><p class="results-count" id="results-count" aria-live="polite">全部页面 · 12 张候选</p>
+<main class="grid"><article class="candidate" id="home-a" data-page="首页">
+<div class="card-top"><span class="label">Home A</span><span class="page-label">页面用途 · 首页</span></div>
+<button type="button" class="image-button" data-id="home-a" aria-label="放大 Home A：林间有一间工作室"><img src="images/home-a.png" width="1672" height="941" alt="一间小工作室藏在松林与海岸之间，门向自然敞开。适合首页的沉浸首屏。" loading="lazy" decoding="async"></button>
+<div class="caption"><div class="title-row"><h2>林间有一间工作室</h2><button type="button" class="like" data-id="home-a" aria-label="喜欢 Home A" aria-pressed="false"><span class="heart" aria-hidden="true">♡</span><span class="like-text">喜欢</span></button></div>
+<p class="description">一间小工作室藏在松林与海岸之间，门向自然敞开。适合首页的沉浸首屏。</p><div class="details-line"><span>建筑与风景摄影</span><span>松绿 · 灰银木 · 沙白</span></div><p class="motion"><strong>慢动态设想</strong> · 只让远处松枝和海面极慢移动，木屋与机位保持稳定。</p>
+<div class="card-bottom"><span>1672 × 941 · PNG 原图</span><a href="images/home-a.png" target="_blank" rel="noopener">打开原图 ↗</a></div></div>
+</article>
+<article class="candidate" id="home-b" data-page="首页">
+<div class="card-top"><span class="label">Home B</span><span class="page-label">页面用途 · 首页</span></div>
+<button type="button" class="image-button" data-id="home-b" aria-label="放大 Home B：风的手稿"><img src="images/home-b.png" width="1672" height="941" alt="一台小小的风力画线装置，把看不见的风留在纸上。适合首页或理念段落。" loading="lazy" decoding="async"></button>
+<div class="caption"><div class="title-row"><h2>风的手稿</h2><button type="button" class="like" data-id="home-b" aria-label="喜欢 Home B" aria-pressed="false"><span class="heart" aria-hidden="true">♡</span><span class="like-text">喜欢</span></button></div>
+<p class="description">一台小小的风力画线装置，把看不见的风留在纸上。适合首页或理念段落。</p><div class="details-line"><span>器物与海岸摄影</span><span>雾蓝 · 暖纸 · 氧化黄铜</span></div><p class="motion"><strong>慢动态设想</strong> · 细布风帆极慢转动，铅笔轻微移动；不让纸面纹理漂移。</p>
+<div class="card-bottom"><span>1672 × 941 · PNG 原图</span><a href="images/home-b.png" target="_blank" rel="noopener">打开原图 ↗</a></div></div>
+</article>
+<article class="candidate" id="work-a" data-page="Work">
+<div class="card-top"><span class="label">Work A</span><span class="page-label">页面用途 · Work</span></div>
+<button type="button" class="image-button" data-id="work-a" aria-label="放大 Work A：接着做下去"><img src="images/work-a.png" width="1672" height="941" alt="纸上的修改、电脑与尚未完成的模型处在同一张桌上，留下可以接续的工作。" loading="lazy" decoding="async"></button>
+<div class="caption"><div class="title-row"><h2>接着做下去</h2><button type="button" class="like" data-id="work-a" aria-label="喜欢 Work A" aria-pressed="false"><span class="heart" aria-hidden="true">♡</span><span class="like-text">喜欢</span></button></div>
+<p class="description">纸上的修改、电脑与尚未完成的模型处在同一张桌上，留下可以接续的工作。</p><div class="details-line"><span>工作过程静物摄影</span><span>烟褐木 · 亚麻白 · 铅灰</span></div><p class="motion"><strong>慢动态设想</strong> · 窗帘和树影缓慢轻动，其余物件保持稳定。</p>
+<div class="card-bottom"><span>1672 × 941 · PNG 原图</span><a href="images/work-a.png" target="_blank" rel="noopener">打开原图 ↗</a></div></div>
+</article>
+<article class="candidate" id="work-b" data-page="Work">
+<div class="card-top"><span class="label">Work B</span><span class="page-label">页面用途 · Work</span></div>
+<button type="button" class="image-button" data-id="work-b" aria-label="放大 Work B：一毫米的判断"><img src="images/work-b.png" width="1536" height="1024" alt="把品味落实到一次微小调整：手、材料和结构的关系成为主角。" loading="lazy" decoding="async"></button>
+<div class="caption"><div class="title-row"><h2>一毫米的判断</h2><button type="button" class="like" data-id="work-b" aria-label="喜欢 Work B" aria-pressed="false"><span class="heart" aria-hidden="true">♡</span><span class="like-text">喜欢</span></button></div>
+<p class="description">把品味落实到一次微小调整：手、材料和结构的关系成为主角。</p><div class="details-line"><span>制作过程近景</span><span>浅木 · 暖灰 · 矿物蓝</span></div><p class="motion"><strong>慢动态设想</strong> · 手保持静止，仅让背景树影微动，避免复杂手部动作。</p>
+<div class="card-bottom"><span>1536 × 1024 · PNG 原图</span><a href="images/work-b.png" target="_blank" rel="noopener">打开原图 ↗</a></div></div>
+</article>
+<article class="candidate" id="tool-a" data-page="Tool">
+<div class="card-top"><span class="label">Tool A</span><span class="page-label">页面用途 · Tool</span></div>
+<button type="button" class="image-button" data-id="tool-a" aria-label="放大 Tool A：光的刻度"><img src="images/tool-a.png" width="1672" height="941" alt="轻巧、准确的一件小工具：玻璃、光线与一个可调整的细节。适合 Tool 的短促首屏。" loading="lazy" decoding="async"></button>
+<div class="caption"><div class="title-row"><h2>光的刻度</h2><button type="button" class="like" data-id="tool-a" aria-label="喜欢 Tool A" aria-pressed="false"><span class="heart" aria-hidden="true">♡</span><span class="like-text">喜欢</span></button></div>
+<p class="description">轻巧、准确的一件小工具：玻璃、光线与一个可调整的细节。适合 Tool 的短促首屏。</p><div class="details-line"><span>光学器物微距</span><span>石白 · 银 · 一线光谱</span></div><p class="motion"><strong>慢动态设想</strong> · 窗外薄云让折射光极轻微变柔，器物完全静止。</p>
+<div class="card-bottom"><span>1672 × 941 · PNG 原图</span><a href="images/tool-a.png" target="_blank" rel="noopener">打开原图 ↗</a></div></div>
+</article>
+<article class="candidate" id="life-a" data-page="Life">
+<div class="card-top"><span class="label">Life A</span><span class="page-label">页面用途 · Life</span></div>
+<button type="button" class="image-button" data-id="life-a" aria-label="放大 Life A：空出来的午后"><img src="images/life-a.png" width="1672" height="941" alt="生活给自己留下一段没有安排的时间。窗外的树、书和安静的人一起构成画面。" loading="lazy" decoding="async"></button>
+<div class="caption"><div class="title-row"><h2>空出来的午后</h2><button type="button" class="like" data-id="life-a" aria-label="喜欢 Life A" aria-pressed="false"><span class="heart" aria-hidden="true">♡</span><span class="like-text">喜欢</span></button></div>
+<p class="description">生活给自己留下一段没有安排的时间。窗外的树、书和安静的人一起构成画面。</p><div class="details-line"><span>生活叙事摄影</span><span>杏白 · 鼠尾草绿 · 雾蓝</span></div><p class="motion"><strong>慢动态设想</strong> · 纱帘、远处枝叶和衣角缓慢轻摆；人物保持自然坐姿。</p>
+<div class="card-bottom"><span>1672 × 941 · PNG 原图</span><a href="images/life-a.png" target="_blank" rel="noopener">打开原图 ↗</a></div></div>
+</article>
+<article class="candidate" id="story-a" data-page="Story">
+<div class="card-top"><span class="label">Story A</span><span class="page-label">页面用途 · Story</span></div>
+<button type="button" class="image-button" data-id="story-a" aria-label="放大 Story A：下一页，另一片海"><img src="images/story-a.png" width="1536" height="1024" alt="一本书像一段可带走的旅程。用真实纸张、印迹与光，让故事有可以触摸的入口。" loading="lazy" decoding="async"></button>
+<div class="caption"><div class="title-row"><h2>下一页，另一片海</h2><button type="button" class="like" data-id="story-a" aria-label="喜欢 Story A" aria-pressed="false"><span class="heart" aria-hidden="true">♡</span><span class="like-text">喜欢</span></button></div>
+<p class="description">一本书像一段可带走的旅程。用真实纸张、印迹与光，让故事有可以触摸的入口。</p><div class="details-line"><span>纸本叙事静物</span><span>墨蓝 · 棉纸白 · 潮汐绿</span></div><p class="motion"><strong>慢动态设想</strong> · 水面反光在纸边极慢游移；书页只轻轻起伏。</p>
+<div class="card-bottom"><span>1536 × 1024 · PNG 原图</span><a href="images/story-a.png" target="_blank" rel="noopener">打开原图 ↗</a></div></div>
+</article>
+<article class="candidate" id="world-a" data-page="World">
+<div class="card-top"><span class="label">World A</span><span class="page-label">页面用途 · World</span></div>
+<button type="button" class="image-button" data-id="world-a" aria-label="放大 World A：一座尚未命名的小岛"><img src="images/world-a.png" width="1672" height="941" alt="把想象做成可以拿在手里的地方。World 的画面更有玩心，仍保留手作材料与真实光线。" loading="lazy" decoding="async"></button>
+<div class="caption"><div class="title-row"><h2>一座尚未命名的小岛</h2><button type="button" class="like" data-id="world-a" aria-label="喜欢 World A" aria-pressed="false"><span class="heart" aria-hidden="true">♡</span><span class="like-text">喜欢</span></button></div>
+<p class="description">把想象做成可以拿在手里的地方。World 的画面更有玩心，仍保留手作材料与真实光线。</p><div class="details-line"><span>手工微缩景观摄影</span><span>苔绿 · 粉石 · 浅水蓝</span></div><p class="motion"><strong>慢动态设想</strong> · 只让窗外叶影缓慢掠过模型；模型与水道保持稳定。</p>
+<div class="card-bottom"><span>1672 × 941 · PNG 原图</span><a href="images/world-a.png" target="_blank" rel="noopener">打开原图 ↗</a></div></div>
+</article>
+<article class="candidate" id="business-a" data-page="企业合作">
+<div class="card-top"><span class="label">Business A</span><span class="page-label">页面用途 · 企业合作</span></div>
+<button type="button" class="image-button" data-id="business-a" aria-label="放大 Business A：把问题摊开"><img src="images/business-a.png" width="1672" height="941" alt="一张适合共同工作的桌子，问题和材料都能被看见。用于企业合作页的共建段落。" loading="lazy" decoding="async"></button>
+<div class="caption"><div class="title-row"><h2>把问题摊开</h2><button type="button" class="like" data-id="business-a" aria-label="喜欢 Business A" aria-pressed="false"><span class="heart" aria-hidden="true">♡</span><span class="like-text">喜欢</span></button></div>
+<p class="description">一张适合共同工作的桌子，问题和材料都能被看见。用于企业合作页的共建段落。</p><div class="details-line"><span>共创空间摄影</span><span>灰绿 · 胡桃木 · 纸白</span></div><p class="motion"><strong>慢动态设想</strong> · 玻璃外植物极慢轻摆，屋内纸张与桌椅保持稳定。</p>
+<div class="card-bottom"><span>1672 × 941 · PNG 原图</span><a href="images/business-a.png" target="_blank" rel="noopener">打开原图 ↗</a></div></div>
+</article>
+<article class="candidate" id="community-a" data-page="社区">
+<div class="card-top"><span class="label">Community A</span><span class="page-label">页面用途 · 社区</span></div>
+<button type="button" class="image-button" data-id="community-a" aria-label="放大 Community A：把各自的颜色挂在一起"><img src="images/community-a.png" width="1672" height="941" alt="两位创作者把各自做的小幅织物挂起来，让作品和做法一起被看见。" loading="lazy" decoding="async"></button>
+<div class="caption"><div class="title-row"><h2>把各自的颜色挂在一起</h2><button type="button" class="like" data-id="community-a" aria-label="喜欢 Community A" aria-pressed="false"><span class="heart" aria-hidden="true">♡</span><span class="like-text">喜欢</span></button></div>
+<p class="description">两位创作者把各自做的小幅织物挂起来，让作品和做法一起被看见。</p><div class="details-line"><span>户外共创纪实感</span><span>奶油白 · 陶粉 · 靛蓝 · 叶绿</span></div><p class="motion"><strong>慢动态设想</strong> · 小幅织物和枝叶轻缓摆动，人物停在观察作品的瞬间。</p>
+<div class="card-bottom"><span>1672 × 941 · PNG 原图</span><a href="images/community-a.png" target="_blank" rel="noopener">打开原图 ↗</a></div></div>
+</article>
+<article class="candidate" id="about-a" data-page="关于">
+<div class="card-top"><span class="label">About A</span><span class="page-label">页面用途 · 关于</span></div>
+<button type="button" class="image-button" data-id="about-a" aria-label="放大 About A：一盏灯，也是一种判断"><img src="images/about-a.png" width="1672" height="941" alt="技术被做成一件愿意长期相处的东西。用一盏原创小灯表达工作室对手艺、功能和品味的要求。" loading="lazy" decoding="async"></button>
+<div class="caption"><div class="title-row"><h2>一盏灯，也是一种判断</h2><button type="button" class="like" data-id="about-a" aria-label="喜欢 About A" aria-pressed="false"><span class="heart" aria-hidden="true">♡</span><span class="like-text">喜欢</span></button></div>
+<p class="description">技术被做成一件愿意长期相处的东西。用一盏原创小灯表达工作室对手艺、功能和品味的要求。</p><div class="details-line"><span>自然中的原创器物</span><span>苔绿 · 骨白 · 深棕 · 微暖光</span></div><p class="motion"><strong>慢动态设想</strong> · 周围细叶和纸面投影轻微摆动，灯光稳定不呼吸。</p>
+<div class="card-bottom"><span>1672 × 941 · PNG 原图</span><a href="images/about-a.png" target="_blank" rel="noopener">打开原图 ↗</a></div></div>
+</article>
+<article class="candidate" id="contact-a" data-page="联系">
+<div class="card-top"><span class="label">Contact A</span><span class="page-label">页面用途 · 联系</span></div>
+<button type="button" class="image-button" data-id="contact-a" aria-label="放大 Contact A：给你留了一个位置"><img src="images/contact-a.png" width="1672" height="941" alt="一扇开着的门、一张空椅，给第一次到访的人一个轻松的开始。" loading="lazy" decoding="async"></button>
+<div class="caption"><div class="title-row"><h2>给你留了一个位置</h2><button type="button" class="like" data-id="contact-a" aria-label="喜欢 Contact A" aria-pressed="false"><span class="heart" aria-hidden="true">♡</span><span class="like-text">喜欢</span></button></div>
+<p class="description">一扇开着的门、一张空椅，给第一次到访的人一个轻松的开始。</p><div class="details-line"><span>邀请感空间静物</span><span>浅杏 · 暖灰 · 陶土 · 淡蓝</span></div><p class="motion"><strong>慢动态设想</strong> · 门边薄帘和院中树影慢慢移动，杯子与椅子静止。</p>
+<div class="card-bottom"><span>1672 × 941 · PNG 原图</span><a href="images/contact-a.png" target="_blank" rel="noopener">打开原图 ↗</a></div></div>
+</article></main>
+<footer><details class="brief-notes"><summary>本轮说明与参考</summary><p class="intro">从自然光、材料与人的使用出发，给不同页面各自的性格。参考 Norm Architects 的空间与材质观，以及用户提供的参考板；以下均为 AI 生成的原创概念影像。</p><nav class="references" aria-label="参考资料"><span>参考</span><a href="https://normcph.com/project/norm-studio/" target="_blank" rel="noopener noreferrer">Norm Studio ↗</a><a href="https://normcph.com/" target="_blank" rel="noopener noreferrer">Norm Architects ↗</a></nav></details><p>点图片可放大查看完整场景；放大时可按 ← / → 切换当前筛选中的图片，按 Escape 关闭。喜欢记录仅保存在本机浏览器，不会发送给任何人。</p><p>回话时可以直接使用英文标签，如 Home A、Work B。慢动态文字仅为后续设想，此处展示静态 PNG 原图。</p></footer>
+</div>
+<dialog id="image-dialog" aria-labelledby="dialog-title"><div class="dialog-head"><h2 class="dialog-title" id="dialog-title">查看原图</h2><button type="button" class="dialog-close" id="dialog-close" aria-label="关闭放大图片">×</button></div><div class="dialog-image-wrap"><img class="dialog-image" id="dialog-image" alt="" width="1" height="1"></div><div class="dialog-bottom"><div class="dialog-arrows"><button type="button" class="dialog-arrow" id="dialog-prev" aria-label="上一张">←</button><span id="dialog-position" aria-live="polite"></span><button type="button" class="dialog-arrow" id="dialog-next" aria-label="下一张">→</button></div><a id="dialog-original" href="#" target="_blank" rel="noopener">打开原始 PNG ↗</a><span>← / → 切换 · Escape 关闭</span></div></dialog>
+<script id="board-data" type="application/json">{"images":[{"id":"home-a","label":"Home A","page":"首页","title":"林间有一间工作室","description":"一间小工作室藏在松林与海岸之间，门向自然敞开。适合首页的沉浸首屏。","image":"images/home-a.png","width":1672,"height":941,"type":"建筑与风景摄影","motion":"只让远处松枝和海面极慢移动，木屋与机位保持稳定。","sha256":"f78658bf1125a7dc4c0007ef76d0af51ea49323a1ed2c4f7ecef631f50097417","palette":"松绿 · 灰银木 · 沙白"},{"id":"home-b","label":"Home B","page":"首页","title":"风的手稿","description":"一台小小的风力画线装置，把看不见的风留在纸上。适合首页或理念段落。","image":"images/home-b.png","width":1672,"height":941,"type":"器物与海岸摄影","motion":"细布风帆极慢转动，铅笔轻微移动；不让纸面纹理漂移。","sha256":"5118edec44fc4b27f3ca121b491e127129d94617ec8dc8c51681b775821cb272","palette":"雾蓝 · 暖纸 · 氧化黄铜"},{"id":"work-a","label":"Work A","page":"Work","title":"接着做下去","description":"纸上的修改、电脑与尚未完成的模型处在同一张桌上，留下可以接续的工作。","image":"images/work-a.png","width":1672,"height":941,"type":"工作过程静物摄影","motion":"窗帘和树影缓慢轻动，其余物件保持稳定。","sha256":"3f5d362b936823e7401ec4b2874acf7c81b61ef044690378cb69a3ad899646c3","palette":"烟褐木 · 亚麻白 · 铅灰"},{"id":"work-b","label":"Work B","page":"Work","title":"一毫米的判断","description":"把品味落实到一次微小调整：手、材料和结构的关系成为主角。","image":"images/work-b.png","width":1536,"height":1024,"type":"制作过程近景","motion":"手保持静止，仅让背景树影微动，避免复杂手部动作。","sha256":"82f374fff04707f15a651899c647491128db8ed093d5c91880be2bbc6b4a1589","palette":"浅木 · 暖灰 · 矿物蓝"},{"id":"tool-a","label":"Tool A","page":"Tool","title":"光的刻度","description":"轻巧、准确的一件小工具：玻璃、光线与一个可调整的细节。适合 Tool 的短促首屏。","image":"images/tool-a.png","width":1672,"height":941,"type":"光学器物微距","motion":"窗外薄云让折射光极轻微变柔，器物完全静止。","sha256":"ee8e08f095dc7396e830668f14aaf84549d7645629450e9d82cdfba3a9e03b52","palette":"石白 · 银 · 一线光谱"},{"id":"life-a","label":"Life A","page":"Life","title":"空出来的午后","description":"生活给自己留下一段没有安排的时间。窗外的树、书和安静的人一起构成画面。","image":"images/life-a.png","width":1672,"height":941,"type":"生活叙事摄影","motion":"纱帘、远处枝叶和衣角缓慢轻摆；人物保持自然坐姿。","sha256":"8293fb14640e2520535eb4a0fde56e4c335d1ccb0b8fc6863dfa4de788ebde73","palette":"杏白 · 鼠尾草绿 · 雾蓝"},{"id":"story-a","label":"Story A","page":"Story","title":"下一页，另一片海","description":"一本书像一段可带走的旅程。用真实纸张、印迹与光，让故事有可以触摸的入口。","image":"images/story-a.png","width":1536,"height":1024,"type":"纸本叙事静物","motion":"水面反光在纸边极慢游移；书页只轻轻起伏。","sha256":"babf30d2279b308f224e249104cd8d6eb306ffc57eeed7f1f0d91d57dbb9d77f","palette":"墨蓝 · 棉纸白 · 潮汐绿"},{"id":"world-a","label":"World A","page":"World","title":"一座尚未命名的小岛","description":"把想象做成可以拿在手里的地方。World 的画面更有玩心，仍保留手作材料与真实光线。","image":"images/world-a.png","width":1672,"height":941,"type":"手工微缩景观摄影","motion":"只让窗外叶影缓慢掠过模型；模型与水道保持稳定。","sha256":"b471831558d0ad2d41949cc9a544cc2b2fafa13c8d1d87eeef41d78255ddc0ca","palette":"苔绿 · 粉石 · 浅水蓝"},{"id":"business-a","label":"Business A","page":"企业合作","title":"把问题摊开","description":"一张适合共同工作的桌子，问题和材料都能被看见。用于企业合作页的共建段落。","image":"images/business-a.png","width":1672,"height":941,"type":"共创空间摄影","motion":"玻璃外植物极慢轻摆，屋内纸张与桌椅保持稳定。","sha256":"63b8dc37eb515a0b78d344561a5c1e965db8b295a2b652494f6309e756cba4f0","palette":"灰绿 · 胡桃木 · 纸白"},{"id":"community-a","label":"Community A","page":"社区","title":"把各自的颜色挂在一起","description":"两位创作者把各自做的小幅织物挂起来，让作品和做法一起被看见。","image":"images/community-a.png","width":1672,"height":941,"type":"户外共创纪实感","motion":"小幅织物和枝叶轻缓摆动，人物停在观察作品的瞬间。","sha256":"93cf1930052b202c06c8e2b054c2843c8fb5af0e5c1c72d8a9aac12d96bf689a","palette":"奶油白 · 陶粉 · 靛蓝 · 叶绿"},{"id":"about-a","label":"About A","page":"关于","title":"一盏灯，也是一种判断","description":"技术被做成一件愿意长期相处的东西。用一盏原创小灯表达工作室对手艺、功能和品味的要求。","image":"images/about-a.png","width":1672,"height":941,"type":"自然中的原创器物","motion":"周围细叶和纸面投影轻微摆动，灯光稳定不呼吸。","sha256":"f137edbed270218094eadb576b2fc20c3d76fb5260b4ce2787c29db3238d5b17","palette":"苔绿 · 骨白 · 深棕 · 微暖光"},{"id":"contact-a","label":"Contact A","page":"联系","title":"给你留了一个位置","description":"一扇开着的门、一张空椅，给第一次到访的人一个轻松的开始。","image":"images/contact-a.png","width":1672,"height":941,"type":"邀请感空间静物","motion":"门边薄帘和院中树影慢慢移动，杯子与椅子静止。","sha256":"b715ca93bea297d3998b677bf207195351cf41dea2f1c1f875c58d3330ff9b9e","palette":"浅杏 · 暖灰 · 陶土 · 淡蓝"}],"storageKey":"molis-r8-materials-favorites-v1:14da71c44d3f25d5"}</script><script>
+'use strict';
+const payload = JSON.parse(document.getElementById('board-data').textContent);
+const images = payload.images;
+const byId = new Map(images.map(function(item) { return [item.id, item]; }));
+let favorites = new Set();
+let storageAvailable = true;
+try {
+  const saved = JSON.parse(localStorage.getItem(payload.storageKey) || '[]');
+  if (Array.isArray(saved)) favorites = new Set(saved.filter(function(id) { return byId.has(id); }));
+} catch (error) { storageAvailable = false; }
+let activePage = 'all';
+let openId = null;
+let returnFocus = null;
+const cards = Array.from(document.querySelectorAll('.candidate'));
+const dialog = document.getElementById('image-dialog');
+const largeImage = document.getElementById('dialog-image');
+const copyField = document.getElementById('copy-field');
+const copyStatus = document.getElementById('copy-status');
+const copyButton = document.getElementById('copy-button');
+const clearButton = document.getElementById('clear-button');
+function selectedItems() { return images.filter(function(item) { return favorites.has(item.id); }); }
+function updateSelection(save) {
+  const selected = selectedItems();
+  const tags = document.getElementById('selection-tags');
+  tags.replaceChildren();
+  if (!selected.length) {
+    const empty = document.createElement('span'); empty.className = 'empty';
+    empty.textContent = '点“喜欢”留下备选'; tags.appendChild(empty);
+  }
+  selected.forEach(function(item) { const tag = document.createElement('span'); tag.textContent = item.label; tags.appendChild(tag); });
+  document.getElementById('selection-count').textContent = '已喜欢 ' + selected.length + ' 张';
+  copyField.value = selected.map(function(item) { return item.label; }).join('、');
+  copyButton.disabled = selected.length === 0; clearButton.disabled = selected.length === 0;
+  document.querySelectorAll('.like').forEach(function(button) {
+    const selected = favorites.has(button.dataset.id);
+    button.setAttribute('aria-pressed', String(selected));
+    button.querySelector('.heart').textContent = selected ? '♥' : '♡';
+    button.querySelector('.like-text').textContent = selected ? '已喜欢' : '喜欢';
+  });
+  if (save) {
+    try { localStorage.setItem(payload.storageKey, JSON.stringify(Array.from(favorites))); }
+    catch (error) { storageAvailable = false; }
+  }
+  copyStatus.textContent = storageAvailable ? '' : '当前浏览器未允许保存，请复制标签留存。';
+}
+document.querySelectorAll('.like').forEach(function(button) {
+  button.addEventListener('click', function() {
+    const id = button.dataset.id;
+    if (favorites.has(id)) favorites.delete(id); else favorites.add(id);
+    updateSelection(true);
+  });
+});
+clearButton.addEventListener('click', function() { favorites.clear(); updateSelection(true); });
+copyButton.addEventListener('click', async function() {
+  if (!copyField.value) return;
+  try {
+    if (!navigator.clipboard || !navigator.clipboard.writeText) throw new Error('Clipboard unavailable');
+    await navigator.clipboard.writeText(copyField.value);
+    copyStatus.textContent = '已复制：' + copyField.value;
+  } catch (error) {
+    document.getElementById('copy-details').open = true;
+    copyField.focus(); copyField.select(); copyField.setSelectionRange(0, copyField.value.length);
+    copyStatus.textContent = '未能自动复制，标签文字已选中；请按 ⌘C / Ctrl+C，或使用系统复制菜单。';
+  }
+});
+function visibleImages() { return images.filter(function(item) { return activePage === 'all' || item.page === activePage; }); }
+document.querySelectorAll('.filter-button').forEach(function(button) {
+  button.addEventListener('click', function() {
+    activePage = button.dataset.page;
+    document.querySelectorAll('.filter-button').forEach(function(other) { other.setAttribute('aria-pressed', String(other === button)); });
+    cards.forEach(function(card) { card.hidden = activePage !== 'all' && card.dataset.page !== activePage; });
+    document.getElementById('results-count').textContent = (activePage === 'all' ? '全部页面' : activePage) + ' · ' + visibleImages().length + ' 张候选';
+  });
+});
+function showImage(id) {
+  const item = byId.get(id); if (!item) return;
+  openId = id;
+  largeImage.src = item.image; largeImage.alt = item.description;
+  largeImage.width = item.width; largeImage.height = item.height;
+  document.getElementById('dialog-title').textContent = item.label + ' · ' + item.title;
+  document.getElementById('dialog-original').href = item.image;
+  const list = visibleImages();
+  const index = list.findIndex(function(candidate) { return candidate.id === id; });
+  document.getElementById('dialog-position').textContent = (index + 1) + ' / ' + list.length;
+  document.getElementById('dialog-prev').disabled = list.length < 2;
+  document.getElementById('dialog-next').disabled = list.length < 2;
+}
+function moveImage(delta) {
+  const list = visibleImages(); if (!list.length) return;
+  const index = list.findIndex(function(item) { return item.id === openId; });
+  showImage(list[(index + delta + list.length) % list.length].id);
+}
+document.querySelectorAll('.image-button').forEach(function(button) {
+  button.addEventListener('click', function() { returnFocus = button; showImage(button.dataset.id); dialog.showModal(); });
+});
+document.getElementById('dialog-close').addEventListener('click', function() { dialog.close(); });
+document.getElementById('dialog-prev').addEventListener('click', function() { moveImage(-1); });
+document.getElementById('dialog-next').addEventListener('click', function() { moveImage(1); });
+dialog.addEventListener('click', function(event) { if (event.target === dialog) dialog.close(); });
+dialog.addEventListener('close', function() { openId = null; if (returnFocus) returnFocus.focus({preventScroll:true}); });
+dialog.addEventListener('keydown', function(event) {
+  if (event.key === 'ArrowLeft') { event.preventDefault(); moveImage(-1); }
+  if (event.key === 'ArrowRight') { event.preventDefault(); moveImage(1); }
+  if (event.key === 'Escape') { event.preventDefault(); dialog.close(); }
+});
+updateSelection(false);
+</script>
+</body></html>

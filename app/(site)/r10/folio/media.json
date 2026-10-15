@@ -1,0 +1,222 @@
+{
+  "shot-home": {
+    "src": "/r10/folio/shot-home-1440.webp",
+    "srcset": [
+      [
+        "/r10/folio/shot-home-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/shot-home-1440.webp",
+        1440
+      ]
+    ],
+    "width": 1440,
+    "height": 1000,
+    "color": "rgb(247 247 247)"
+  },
+  "shot-goals": {
+    "src": "/r10/folio/shot-goals-1440.webp",
+    "srcset": [
+      [
+        "/r10/folio/shot-goals-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/shot-goals-1440.webp",
+        1440
+      ]
+    ],
+    "width": 1440,
+    "height": 1000,
+    "color": "rgb(247 248 247)"
+  },
+  "shot-feed": {
+    "src": "/r10/folio/shot-feed-1440.webp",
+    "srcset": [
+      [
+        "/r10/folio/shot-feed-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/shot-feed-1440.webp",
+        1440
+      ]
+    ],
+    "width": 1440,
+    "height": 1000,
+    "color": "rgb(249 249 249)"
+  },
+  "shot-onboarding": {
+    "src": "/r10/folio/shot-onboarding-1440.webp",
+    "srcset": [
+      [
+        "/r10/folio/shot-onboarding-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/shot-onboarding-1440.webp",
+        1440
+      ]
+    ],
+    "width": 1440,
+    "height": 1000,
+    "color": "rgb(240 240 240)"
+  },
+  "shot-dark": {
+    "src": "/r10/folio/shot-dark-1440.webp",
+    "srcset": [
+      [
+        "/r10/folio/shot-dark-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/shot-dark-1440.webp",
+        1440
+      ]
+    ],
+    "width": 1440,
+    "height": 1000,
+    "color": "rgb(41 42 45)"
+  },
+  "shot-phone": {
+    "src": "/r10/folio/shot-phone-390.webp",
+    "srcset": [
+      [
+        "/r10/folio/shot-phone-390.webp",
+        390
+      ]
+    ],
+    "width": 390,
+    "height": 844,
+    "color": "rgb(237 237 236)"
+  },
+  "mist-home-a": {
+    "src": "/r10/folio/mist-home-a-1672.webp",
+    "srcset": [
+      [
+        "/r10/folio/mist-home-a-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/mist-home-a-1672.webp",
+        1672
+      ]
+    ],
+    "width": 1672,
+    "height": 941,
+    "color": "rgb(124 121 104)"
+  },
+  "mist-home-b": {
+    "src": "/r10/folio/mist-home-b-1672.webp",
+    "srcset": [
+      [
+        "/r10/folio/mist-home-b-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/mist-home-b-1672.webp",
+        1672
+      ]
+    ],
+    "width": 1672,
+    "height": 941,
+    "color": "rgb(159 157 153)"
+  },
+  "mist-work-a": {
+    "src": "/r10/folio/mist-work-a-1672.webp",
+    "srcset": [
+      [
+        "/r10/folio/mist-work-a-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/mist-work-a-1672.webp",
+        1672
+      ]
+    ],
+    "width": 1672,
+    "height": 941,
+    "color": "rgb(136 127 116)"
+  },
+  "mist-work-b": {
+    "src": "/r10/folio/mist-work-b-1672.webp",
+    "srcset": [
+      [
+        "/r10/folio/mist-work-b-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/mist-work-b-1672.webp",
+        1536
+      ]
+    ],
+    "width": 1536,
+    "height": 1024,
+    "color": "rgb(140 126 116)"
+  },
+  "mist-tool-a": {
+    "src": "/r10/folio/mist-tool-a-1672.webp",
+    "srcset": [
+      [
+        "/r10/folio/mist-tool-a-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/mist-tool-a-1672.webp",
+        1672
+      ]
+    ],
+    "width": 1672,
+    "height": 941,
+    "color": "rgb(169 161 152)"
+  },
+  "mist-life-a": {
+    "src": "/r10/folio/mist-life-a-1672.webp",
+    "srcset": [
+      [
+        "/r10/folio/mist-life-a-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/mist-life-a-1672.webp",
+        1672
+      ]
+    ],
+    "width": 1672,
+    "height": 941,
+    "color": "rgb(140 133 121)"
+  },
+  "mist-story-a": {
+    "src": "/r10/folio/mist-story-a-1672.webp",
+    "srcset": [
+      [
+        "/r10/folio/mist-story-a-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/mist-story-a-1672.webp",
+        1536
+      ]
+    ],
+    "width": 1536,
+    "height": 1024,
+    "color": "rgb(156 149 143)"
+  },
+  "mist-world-a": {
+    "src": "/r10/folio/mist-world-a-1672.webp",
+    "srcset": [
+      [
+        "/r10/folio/mist-world-a-960.webp",
+        960
+      ],
+      [
+        "/r10/folio/mist-world-a-1672.webp",
+        1672
+      ]
+    ],
+    "width": 1672,
+    "height": 941,
+    "color": "rgb(152 138 121)"
+  }
+}
