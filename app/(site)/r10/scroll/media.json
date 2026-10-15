@@ -1,0 +1,122 @@
+{
+  "work-a": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#857c71",
+    "src": "/r10/scroll/work-a-1672.webp",
+    "srcset": [
+      ["/r10/scroll/work-a-960.webp", 960],
+      ["/r10/scroll/work-a-1672.webp", 1672]
+    ]
+  },
+  "tool-a": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#a89f97",
+    "src": "/r10/scroll/tool-a-1672.webp",
+    "srcset": [
+      ["/r10/scroll/tool-a-960.webp", 960],
+      ["/r10/scroll/tool-a-1672.webp", 1672]
+    ]
+  },
+  "life-a": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#8d8579",
+    "src": "/r10/scroll/life-a-1672.webp",
+    "srcset": [
+      ["/r10/scroll/life-a-960.webp", 960],
+      ["/r10/scroll/life-a-1672.webp", 1672]
+    ]
+  },
+  "story-a": {
+    "width": 1536,
+    "height": 1024,
+    "avg": "#9c9590",
+    "src": "/r10/scroll/story-a-1536.webp",
+    "srcset": [
+      ["/r10/scroll/story-a-960.webp", 960],
+      ["/r10/scroll/story-a-1536.webp", 1536]
+    ]
+  },
+  "world-a": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#998b7a",
+    "src": "/r10/scroll/world-a-1672.webp",
+    "srcset": [
+      ["/r10/scroll/world-a-960.webp", 960],
+      ["/r10/scroll/world-a-1672.webp", 1672]
+    ]
+  },
+  "home-a": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#7c7968",
+    "src": "/r10/scroll/home-a-1672.webp",
+    "srcset": [
+      ["/r10/scroll/home-a-1200.webp", 1200],
+      ["/r10/scroll/home-a-1672.webp", 1672]
+    ]
+  },
+  "work-b": {
+    "width": 1536,
+    "height": 1024,
+    "avg": "#8c7e75",
+    "src": "/r10/scroll/work-b-1536.webp",
+    "srcset": [
+      ["/r10/scroll/work-b-1200.webp", 1200],
+      ["/r10/scroll/work-b-1536.webp", 1536]
+    ]
+  },
+  "work-onboarding": {
+    "width": 1440,
+    "height": 1000,
+    "avg": "#f0f0ef",
+    "src": "/r10/scroll/work-onboarding-1440.webp",
+    "srcset": [
+      ["/r10/scroll/work-onboarding-960.webp", 960],
+      ["/r10/scroll/work-onboarding-1440.webp", 1440]
+    ]
+  },
+  "work-home": {
+    "width": 1440,
+    "height": 1000,
+    "avg": "#f7f7f6",
+    "src": "/r10/scroll/work-home-1440.webp",
+    "srcset": [
+      ["/r10/scroll/work-home-960.webp", 960],
+      ["/r10/scroll/work-home-1440.webp", 1440]
+    ]
+  },
+  "work-feed": {
+    "width": 1440,
+    "height": 1000,
+    "avg": "#f9f9f9",
+    "src": "/r10/scroll/work-feed-1440.webp",
+    "srcset": [
+      ["/r10/scroll/work-feed-960.webp", 960],
+      ["/r10/scroll/work-feed-1440.webp", 1440]
+    ]
+  },
+  "work-goals": {
+    "width": 1440,
+    "height": 1000,
+    "avg": "#f7f7f7",
+    "src": "/r10/scroll/work-goals-1440.webp",
+    "srcset": [
+      ["/r10/scroll/work-goals-960.webp", 960],
+      ["/r10/scroll/work-goals-1440.webp", 1440]
+    ]
+  },
+  "work-dark": {
+    "width": 1440,
+    "height": 1000,
+    "avg": "#29292d",
+    "src": "/r10/scroll/work-dark-1440.webp",
+    "srcset": [
+      ["/r10/scroll/work-dark-960.webp", 960],
+      ["/r10/scroll/work-dark-1440.webp", 1440]
+    ]
+  }
+}
