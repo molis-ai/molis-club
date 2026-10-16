@@ -70,4 +70,6 @@ npm run test:http
 
 [产品范围](PRODUCT.md) · [视觉系统](DESIGN.md) · [整站体验与验收](specs/studio-flow/spec.md) · [内页需求与验收](specs/editorial-pages/spec.md) · [部署与成本](docs/DEPLOYMENT.md) · [登录配置](docs/AUTH-SETUP.md) · [产品分类](docs/PRODUCT-LINES.md) · [SEO/GEO](docs/DISCOVERY.md)
 
+[官网优化清单](docs/site-optimization-2026-10-16.md)（按优化对象分类，统一编号 01–19，后续改版依据）
+
 旧版原型与废弃方案已从工作树移除，需要回看时使用 Git 历史。
