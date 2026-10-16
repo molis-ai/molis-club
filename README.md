@@ -1,21 +1,28 @@
 # molis-club
 
-Molis AI 的代码仓库（molis-club）。我们的 AI 创作者社区网站：发现作品、理解创作过程，与做东西的人交流。
+Molis AI 官网的代码仓库（仓库名 molis-club；对外品牌始终是 Molis AI）。Molis AI 是一间围绕工作、生活与体验研发 AI 产品的工作室，官网介绍五件产品、企业合作、社区与工作室本身。
 
-现行网站直接位于仓库根目录。React + Vinext 提供页面与 API，Cloudflare Workers + D1 承载运行和数据，Better Auth 处理账号。
+单一 React + Vinext 应用，源码在仓库根目录。页面与接口跑在 Cloudflare Workers 上，数据在 D1，账号用 Better Auth。
 
-## 当前可用
+## 网站有什么
 
-- **作品发现**：10 个产品、3 项方案，按真实场景分类，标明当前阶段与可用入口。
-- **首页体验**：暖灰流动光影、简短工作室介绍、大字标与一个作品入口，随后是原围桌插画；光影回应鼠标，离开视口暂停，减少动态或图形不可用时显示静态背景。
-- **整站体验**：开放排版、减少重复文案，方案细节按需展开；页尾栏目在悬停或键盘聚焦时联动渐变、文字与插画。
-- **百科与 Skill**：6 个网页/动效条目支持搜索、实际演示和 Prompt 复制；24 个外部组件资源可检索并带走参考 Prompt；4 个艺术家系列 Skill 可下载到本地使用。
-- **社区与观点**：团队/作者介绍与作品、观点互相连接；栏目为社区、百科、产品、解决方案、观点。
-- **阅读与反馈**：《落地主义》《人的尺度》原文，登录后可在作品下留下持久化反馈。
-- **账号**：邮箱密码注册、登录、退出、会话与改密。
-- **联系**：私密合作表单；申请内容不公开展示。
+| 页面                                                 | 地址                                                             |
+| ---------------------------------------------------- | ---------------------------------------------------------------- |
+| 首页                                                 | `/`                                                              |
+| 五件产品                                             | `/work`、`/tool`、`/life`、`/story`、`/world`                    |
+| 企业合作                                             | `/enterprise`                                                    |
+| 社区、方法目录、艺术家 Skill                         | `/community`、`/community/methods`、`/community/methods/artists` |
+| 关于（四间展厅）：认识我们、我们相信什么、文章、沿途 | `/team`、`/about`、`/essays`、`/along-the-way`                   |
+| 联系、登录、账号、隐私说明                           | `/contact`、`/login`、`/account`、`/privacy`                     |
 
-当前是受访问权限保护的私有试用站。Google/GitHub 登录仍待 OAuth 凭据；邮箱验证、密码找回、创作者发布后台与社区治理尚未完成。
+- 后端只有三件事：邮箱密码账号（注册、登录、退出、改密）、联系表单（`/api/join`，内容只进团队私密收件箱）、留言（`/api/notes`）。
+- 还没开放的不摆出来：Google / GitHub 登录要等 OAuth 凭据；邮箱验证、找回密码的邮件还没做。
+- `/demos/**` 是历轮比稿的评审页，留作参照，不改；正式官网不从里面引用代码。
+
+## 在哪里能看到
+
+- **正式环境**：现有的私有 Sites 项目（`.openai/hosting.json`），受访问权限保护。继续复用，不新建项目或数据库。
+- **对外分享的预览**：<https://molis-ai-preview.molis-club.workers.dev>。这是静态快照：没有后端，联系表单和登录在页面上标明不会发出，不让搜索引擎收录。更新方法见下面「更新公开预览」。
 
 ## 本地运行
 
@@ -28,7 +35,7 @@ npm ci
 cp .dev.vars.example .dev.vars
 ```
 
-在 `.dev.vars` 填入至少 32 字符的随机 `BETTER_AUTH_SECRET`，本地 `BETTER_AUTH_URL` 保持 `http://localhost:3000`。可用 `openssl rand -hex 32` 生成随机值；不要提交真实凭据。
+在 `.dev.vars` 填入至少 32 字符的随机 `BETTER_AUTH_SECRET`（可用 `openssl rand -hex 32` 生成），本地 `BETTER_AUTH_URL` 保持 `http://localhost:3000`。不要提交真实凭据。
 
 首次启动前，构建本地 Worker 配置并按序初始化本地数据库：
 
@@ -41,35 +48,50 @@ npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/se
 npm run dev
 ```
 
-已有本地数据库时不要重复初始化迁移，只执行还没执行过的新文件。打开 [本地网站](http://localhost:3000)。本地数据保存在忽略的 `.wrangler/` 中，与生产数据库分开。
+已有本地数据库时不要重复执行迁移，只执行还没执行过的新文件。本地数据在忽略的 `.wrangler/state` 里，与正式数据库分开；它不是缓存，不要清掉。
 
-## 验证
+## 检查
 
 ```bash
-npm run check
+npm run check   # 类型检查
+npm run lint
 npm test
 npm run build
 # 另一个终端保持 npm run dev 运行
 npm run test:http
 ```
 
-`test:http` 仅用于本地开发服务，会创建本地测试账号并验证真实认证、留言持久化与页面发现路径。
+`test:http` 只对本地开发服务跑：会建本地测试账号，检查每一页、真实认证、留言与表单。
+
+## 日常维护
+
+- 改了页面：`npm run dates`，更新页尾的「本页最近修改」。
+- 换了配图：原图放进 `public/` 下的图库目录，在 `scripts/site-media.mjs` 里登记（写清来源和谁定的），再 `npm run media`，输出 `public/site/` 的 WebP 与 `app/_site/media.json`。
+- 更新公开预览：`npm run build:site-preview` 导出到 `outputs/site-preview/`，再进 `deploy/site-preview/` 按里面的说明上传。wrangler 只在那个目录里跑，每次显式写 `--config`，先 `--dry-run`；不要在仓库根目录跑 `wrangler deploy` 或任何 `wrangler pages` 命令。
 
 ## 代码结构
 
-| 目录 | 职责 |
-| --- | --- |
-| `app/` | 页面、共享界面和 API 路由 |
-| `content/` | 产品、方案、观点、百科与成员内容 |
-| `lib/` | 身份认证、元数据和社区写入规则 |
-| `db/`、`drizzle/` | 数据结构与迁移 |
-| `public/images/` | 当前网站使用的图片 |
-| `public/downloads/artists/` | 艺术家 Skill 分发包，更新来源见 docs/ARTIST-SKILL-SOURCES.md |
-| `tests/` | 业务与真实 HTTP 验证 |
-| `docs/` | 部署、认证和产品说明 |
+| 目录                            | 放什么                                                      |
+| ------------------------------- | ----------------------------------------------------------- |
+| `app/(site)/`                   | 正式官网的各页                                              |
+| `app/_site/`                    | 官网公共模块：顶栏页尾、动效、展厅部件、联系表单、图片清单  |
+| `app/api/`                      | 账号、联系表单、留言等接口                                  |
+| `app/demos/`                    | 历轮比稿的评审页（不改）                                    |
+| `content/site/`                 | 官网文案；产品事实以 `docs/studio-intro.md` 为准            |
+| `content/`                      | 方法目录、艺术家 Skill 与几页沿用的产品内容；其余给评审页用 |
+| `lib/`、`db/`、`drizzle/`       | 认证与写入规则、数据结构与迁移                              |
+| `public/site/`                  | 网站实际加载的压缩图                                        |
+| `public/images/`、`public/r8-*` | 原图与图库                                                  |
+| `public/downloads/artists/`     | 艺术家 Skill 分发包                                         |
+| `scripts/`                      | 配图压缩、页面日期、预览导出                                |
+| `deploy/site-preview/`          | 公开预览的上传配置                                          |
+| `tests/`                        | 单元测试与本地 HTTP 检查                                    |
 
-[产品范围](PRODUCT.md) · [视觉系统](DESIGN.md) · [整站体验与验收](specs/studio-flow/spec.md) · [内页需求与验收](specs/editorial-pages/spec.md) · [部署与成本](docs/DEPLOYMENT.md) · [登录配置](docs/AUTH-SETUP.md) · [产品分类](docs/PRODUCT-LINES.md) · [SEO/GEO](docs/DISCOVERY.md)
+## 文档
 
-[官网优化清单](docs/site-optimization-2026-10-16.md)（按优化对象分类，统一编号 01–19，后续改版依据）
+- [项目事实与约定](AGENTS.md) · [产品范围](PRODUCT.md) · [视觉系统](DESIGN.md)
+- [新站规格](specs/site-rebuild/spec.md) · [Work 产品页规格](specs/work-product-page/spec.md) · [官网优化清单](docs/site-optimization-2026-10-16.md)
+- [工作室介绍（文案事实来源）](docs/studio-intro.md) · [官方图库说明](docs/IMAGE-LIBRARY-BRIEF.md) · [图库原图与雾感版](docs/r8-materials-assets.md)
+- [部署与成本](docs/DEPLOYMENT.md) · [Cloudflare 自有账号部署](docs/CLOUDFLARE-DEPLOYMENT.md) · [登录配置](docs/AUTH-SETUP.md) · [艺术家 Skill 来源](docs/ARTIST-SKILL-SOURCES.md)
 
-旧版原型与废弃方案已从工作树移除，需要回看时使用 Git 历史。
+旧版原型、历轮方案和已废弃的文档已从工作区移出，需要回看时用 Git 历史。
