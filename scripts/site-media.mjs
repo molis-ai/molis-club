@@ -247,7 +247,20 @@ const videos = [
   // 首页首屏的天空：只留前 7.6 秒（再往后积云底部转暗、乌云压上来），比 Story 页再放慢一档；
   // 第四屏的画室：美术馆午后那段原样 1280 宽。这两段用系统自带的 avconvert 直接截取
   // （PresetPassthrough，不重新编码），封面帧沿用 story-sky / about-painting 的同一帧。
-  { key: 'home-sky', rate: 0.24 },
+  // 同一段天空按原慢速节奏插帧，生成方法见 prepare-home-sky.mjs；封面仍用原帧。
+  { key: 'home-sky', file: 'home-sky-smooth', rate: 1, posterTime: 0.5 / 0.24 },
+  // 第一条试片先以 0.55 倍节奏补到 30 fps，浏览器正常速度播放；循环位移仍待处理。
+  { key: 'home-seaside', file: 'home-seaside-calm', rate: 1, posterTime: 0 },
+  // B 独立使用 2x 重采样版本；封面沿用原尺寸，视频元数据以导出尺寸为准。
+  {
+    key: 'home-seaside-detail',
+    file: 'home-seaside-calm-detail',
+    posterKey: 'home-seaside',
+    width: 2352,
+    height: 1568,
+    rate: 1,
+    posterTime: 0,
+  },
   { key: 'home-painting', rate: 0.8 },
   { key: 'story-sky', rate: 0.35 },
   { key: 'about-painting', rate: 0.8 },
@@ -295,8 +308,9 @@ for (const image of images) {
 }
 
 for (const video of videos) {
-  const jpeg = path.join(out, `${video.key}-poster.jpg`);
-  const webp = path.join(out, `${video.key}-poster.webp`);
+  const posterKey = video.posterKey ?? video.key;
+  const jpeg = path.join(out, `${posterKey}-poster.jpg`);
+  const webp = path.join(out, `${posterKey}-poster.webp`);
   const exists = await stat(jpeg).catch(() => null);
   if (exists) {
     await sharp(jpeg).webp({ quality: 74, effort: 6 }).toFile(webp);
@@ -308,19 +322,20 @@ for (const video of videos) {
     .removeAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
-  const { size } = await stat(path.join(out, `${video.key}.mp4`));
+  const { size } = await stat(path.join(out, `${video.file ?? video.key}.mp4`));
   manifest[video.key] = {
-    width: meta.width,
-    height: meta.height,
+    width: video.width ?? meta.width,
+    height: video.height ?? meta.height,
     avg: `#${hex(data[0])}${hex(data[1])}${hex(data[2])}`,
-    src: `/site/${video.key}.mp4`,
-    poster: `/site/${video.key}-poster.webp`,
+    src: `/site/${video.file ?? video.key}.mp4`,
+    poster: `/site/${posterKey}-poster.webp`,
     rate: video.rate,
+    ...(video.posterTime === undefined ? {} : { posterTime: video.posterTime }),
     srcset: [],
   };
   console.log(
     video.key.padEnd(22),
-    `${meta.width}×${meta.height}`.padEnd(11),
+    `${manifest[video.key].width}×${manifest[video.key].height}`.padEnd(11),
     `${Math.round(size / 1024)}KB mp4`,
   );
 }

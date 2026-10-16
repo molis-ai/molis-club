@@ -33,9 +33,9 @@
     filter: var(--grade) blur(6px);
   }
 }
-.m-sky-poster,
-.m-sky-reel,
-.m-sky video {
+.m-film-poster,
+.m-film-reel,
+.m-loop-footage video {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -44,12 +44,60 @@
   object-fit: cover;
 }
 /* 视频能播了，从封面帧上淡进来 */
-.m-sky-reel {
+.m-film-reel {
   opacity: 0;
   transition: opacity 1.2s var(--ease);
 }
-.m-sky-reel[data-on] {
+.m-film-reel[data-on] {
   opacity: 1;
+}
+.m-seaside .m-film-poster,
+.m-seaside video {
+  object-position: 50% 60%;
+}
+/* 两个景别的地平线保持在约 52% 高度，避免换景时海面上下跳动。 */
+.m-seaside-bridge.m-film-b {
+  /* 原片已有暖色；避免再次降对比、提亮黑位及额外放大。A 保留原样供对比。 */
+  --grade: none;
+  transform: none;
+}
+.m-seaside-bridge .m-film-poster,
+.m-seaside-bridge video {
+  object-position: 50% 52%;
+}
+/* 只裁掉人物所在的右侧，最多显示原片左侧 630px。
+   通过宽度和 cover 自适应取景：竖屏沿用原来的画面比例，不再额外放大两倍。 */
+.m-seaside-bridge .m-bridge-waves {
+  width: calc(100% * 1176 / 630);
+  object-position: left 52%;
+}
+.m-ware-foot {
+  position: absolute;
+  left: var(--gutter);
+  bottom: calc(16vh + clamp(22px, 4vh, 40px));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.m-seaside-compare {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  border-radius: 999px;
+  background: rgb(16 24 36 / 0.18);
+}
+.m-seaside-compare a {
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: rgb(255 255 255 / 0.75);
+  font-size: 11px;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.m-seaside-compare a[aria-current='page'] {
+  background: rgb(255 255 255 / 0.2);
+  color: #fff;
 }
 @media (prefers-reduced-motion: reduce) {
   .js .m-film-a.m-sky {
@@ -65,6 +113,26 @@
       rgb(var(--film-tint) / 0.28)
     ),
     rgb(var(--film-tint) / calc(0.04 + 0.08 * var(--swap, 0)));
+}
+/* B 只减轻海边的整面遮罩；首屏沿用原值，白字后仍保留必要的暗部。 */
+.m-film[data-seaside='b'] .m-film-scrim {
+  background:
+    linear-gradient(
+      rgb(var(--film-tint) / 0.24),
+      rgb(var(--film-tint) / 0.03) 26%,
+      rgb(var(--film-tint) / 0.05) 62%,
+      rgb(var(--film-tint) / 0.28)
+    ),
+    rgb(var(--film-tint) / 0.04);
+}
+.m-film[data-seaside='b'] .m-film-scrim::after {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--film-tint) / 0.32),
+    rgb(var(--film-tint) / 0.08) 42%,
+    rgb(var(--film-tint) / 0.04) 58%,
+    rgb(var(--film-tint) / 0.16)
+  );
 }
 .m-ware-pause:focus-visible {
   position: static;
@@ -95,7 +163,6 @@
   justify-content: space-between;
   gap: 24px;
   padding-bottom: clamp(20px, 3vh, 32px);
-  border-bottom: 1px solid var(--ink);
 }
 .m-products-head h2 {
   display: flex;
@@ -117,7 +184,7 @@
   max-width: var(--wrap);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(360px, 0.8fr) minmax(0, 1.2fr);
+  grid-template-columns: minmax(300px, 0.65fr) minmax(0, 1.35fr);
   column-gap: clamp(28px, 4vw, 72px);
 }
 .m-prow {
@@ -125,7 +192,7 @@
   grid-row: var(--row);
   position: relative;
   display: grid;
-  grid-template-columns: 30px 100px minmax(0, 1fr) 22px;
+  grid-template-columns: 84px minmax(0, 1fr) 22px;
   align-items: center;
   gap: 0 20px;
   padding: 12px 0;
@@ -149,18 +216,10 @@
 .m-prow[data-active]::before {
   transform: scaleX(1);
 }
-.m-prow-no {
-  font: italic 300 15px/1 var(--latin);
-  color: var(--dim);
-  transition: color 0.35s;
-}
-.m-prow[data-active] .m-prow-no {
-  color: var(--accent-ink);
-}
 .m-prow-thumb {
   position: relative;
   display: block;
-  width: 100px;
+  width: 84px;
   aspect-ratio: 120 / 84;
   border-radius: 12px;
   background: var(--tile);
@@ -212,14 +271,14 @@
 
 @media (max-width: 1100px) {
   .m-plist {
-    grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.1fr);
+    grid-template-columns: minmax(260px, 0.65fr) minmax(0, 1.35fr);
   }
   .m-prow {
-    grid-template-columns: 24px 84px minmax(0, 1fr) 18px;
+    grid-template-columns: 70px minmax(0, 1fr) 18px;
     gap: 0 14px;
   }
   .m-prow-thumb {
-    width: 84px;
+    width: 70px;
   }
 }
 @media (max-width: 900px) {
@@ -239,9 +298,6 @@
   }
   .m-prow {
     grid-template-columns: 70px minmax(0, 1fr) 16px;
-  }
-  .m-prow-no {
-    display: none;
   }
   .m-prow-thumb {
     width: 70px;
@@ -433,16 +489,14 @@
 .m-card-go {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   justify-self: start;
-  gap: 8px;
-  padding-bottom: 3px;
-  font: 400 14px/1.4 var(--sans);
-  letter-spacing: 0.06em;
-  background:
-    linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat,
-    linear-gradient(rgb(255 255 255 / 0.32), rgb(255 255 255 / 0.32)) 0 100% /
-      100% 1px no-repeat;
-  transition: background-size 0.6s var(--ease);
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgb(255 255 255 / 0.6);
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.12);
+  transition: background-color 0.3s var(--ease);
 }
 .m-card-go svg {
   transition: transform 0.5s var(--ease);
@@ -465,9 +519,7 @@
 }
 .m-card:hover .m-card-go,
 .m-card:focus-visible .m-card-go {
-  background-size:
-    100% 1px,
-    100% 1px;
+  background: rgb(255 255 255 / 0.18);
 }
 .m-card:hover .m-card-go svg,
 .m-card:focus-visible .m-card-go svg {

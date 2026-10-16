@@ -895,9 +895,30 @@
     "width": 1280,
     "height": 720,
     "avg": "#a3abb3",
-    "src": "/site/home-sky.mp4",
+    "src": "/site/home-sky-smooth.mp4",
     "poster": "/site/home-sky-poster.webp",
-    "rate": 0.24,
+    "rate": 1,
+    "posterTime": 2.0833333333333335,
+    "srcset": []
+  },
+  "home-seaside": {
+    "width": 1176,
+    "height": 784,
+    "avg": "#e0d5c2",
+    "src": "/site/home-seaside-calm.mp4",
+    "poster": "/site/home-seaside-poster.webp",
+    "rate": 1,
+    "posterTime": 0,
+    "srcset": []
+  },
+  "home-seaside-detail": {
+    "width": 2352,
+    "height": 1568,
+    "avg": "#e0d5c2",
+    "src": "/site/home-seaside-calm-detail.mp4",
+    "poster": "/site/home-seaside-poster.webp",
+    "rate": 1,
+    "posterTime": 0,
     "srcset": []
   },
   "home-painting": {

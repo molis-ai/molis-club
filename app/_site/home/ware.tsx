@@ -1,5 +1,11 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+  type RefObject,
+} from 'react';
 import { studio } from '../../../content/site/studio';
 import { useReducedMotion, useVisible } from '../motion';
 
@@ -43,7 +49,15 @@ function Letters({ text }: { text: string }) {
   );
 }
 
-export function Ware({ motion = 'rise' }: { motion?: WareMotion }) {
+export function Ware({
+  motion = 'rise',
+  sectionRef,
+  footer,
+}: {
+  motion?: WareMotion;
+  sectionRef?: RefObject<HTMLElement | null>;
+  footer?: ReactNode;
+}) {
   const ref = useRef<HTMLElement>(null);
   const measure = useRef<HTMLSpanElement>(null);
   const visible = useVisible(ref, 0.4);
@@ -100,10 +114,15 @@ export function Ware({ motion = 'rise' }: { motion?: WareMotion }) {
 
   const word = wares[index];
   const copy = studio.ware;
+  // 只在语意停顿处断行，文案仍取同一份身份原文。
+  const studioBreak = copy.title.indexOf('研发');
 
   return (
     <section
-      ref={ref}
+      ref={(node) => {
+        ref.current = node;
+        if (sectionRef) sectionRef.current = node;
+      }}
       className="m-ware"
       data-motion={motion}
       aria-labelledby="m-ware-title"
@@ -170,11 +189,19 @@ export function Ware({ motion = 'rise' }: { motion?: WareMotion }) {
         >
           {paused ? '继续轮换 ware 前面的词' : '暂停轮换 ware 前面的词'}
         </button>
-        <div className="m-ware-about" data-reveal>
-          <p className="m-ware-studio">{copy.title}</p>
-          <p className="m-ware-view">{copy.view}</p>
+        <div className="m-ware-about" data-scene>
+          <p className="m-ware-studio">
+            {studioBreak > 0 ? (
+              <>
+                {copy.title.slice(0, studioBreak)}
+                <br />
+                {copy.title.slice(studioBreak)}
+              </>
+            ) : copy.title}
+          </p>
         </div>
       </div>
+      {footer ? <div className="m-ware-foot">{footer}</div> : null}
     </section>
   );
 }

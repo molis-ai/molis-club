@@ -33,14 +33,16 @@
   vertical-align: middle;
 }
 .m-ai-headline {
-  font: 300 clamp(34px, 4.1vw, 62px) / 1.04 var(--sans);
+  font: 300 clamp(24px, 4.1vw, 62px) / 1.04 var(--sans);
   letter-spacing: -0.01em;
   color: var(--ai-ink, var(--ink));
 }
 .m-ai-words {
   all: unset;
   display: inline-flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.24em;
   cursor: pointer;
 }
 .m-ai-words:focus-visible {
@@ -246,14 +248,28 @@
 }
 
 .m-ware-about {
+  position: relative;
+  top: clamp(20px, 2.8vh, 32px);
   max-width: 30em;
-  margin-top: clamp(28px, 4.6vh, 52px);
+  margin-top: clamp(48px, 7.5vh, 84px);
+  margin-left: clamp(24px, 2.5vw, 32px);
+}
+/* 跟随阅读：小字从视口底部约 94% 到 77% 的过程中逐渐显影。
+   复用自身 data-scene 的滚动进度，慢滑、快滑和回看都由滚动决定；不另设计时或位移。 */
+.js .m .m-ware-about[data-scene] {
+  --caption-in: clamp(0, (var(--p, 0) - 0.06) / 0.16, 1);
+  opacity: calc(var(--caption-in) * var(--caption-in) * (3 - 2 * var(--caption-in)));
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .m .m-ware-about[data-scene] {
+    opacity: 1;
+  }
 }
 .m-ware-studio {
-  max-width: 21em;
-  margin: 0 0 14px;
+  max-width: none;
+  margin: 0;
   text-wrap: balance;
-  font: 300 var(--t-h3) / 1.6 var(--sans);
+  font: 400 12px / 1.8 var(--sans);
   letter-spacing: 0.04em;
   color: var(--ink);
 }
@@ -355,19 +371,23 @@
 .m-real-copy {
   position: absolute;
   inset: 0 var(--gutter);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template-columns: max-content;
+  align-content: center;
+  align-items: start;
   justify-content: center;
   gap: clamp(20px, 3.4vh, 36px);
   padding-bottom: 6vh;
-  text-align: center;
+  text-align: left;
 }
 .m-real-copy .m-mark {
   font-size: clamp(64px, 13vw, 210px);
   color: #fff;
 }
 .m-real-copy .m-ai-headline {
+  /* 以字标宽度确定共同右边缘，换词不改变字标的位置。 */
+  contain: inline-size;
+  text-align: right;
   color: rgb(255 255 255 / 0.94);
 }
 .m-real-foot {

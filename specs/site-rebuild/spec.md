@@ -10,6 +10,8 @@
 - **理念**：Paul Graham《黑客与画家》（Hackers and Painters、Taste for Makers、The Word "Hacker"、Design and Research）。理念主要落在设计细节里，不靠文字口号。
 - **主题**：自然与人，不限于海边。
 
+> 2026-10-16 首页后续选择：首屏天空与 A/I 横排、二屏 B 海浪衔接和随滚动显现的小字、产品区精简及末屏箭头入口已由用户确认。首页以 `DESIGN.md` 的“2026-10-16 首页采用版”和 `docs/site-optimization-2026-10-16.md` 第 03–06 项为最新依据；本规格其余部分继续适用。
+
 ## 1. 已定、不动的部分
 
 - 首页第一屏（海边：两人沿海边走，`Molis AI` 字标 + A/I 换词 + 关键词）与第二屏（礁石边对海作画，We build {Warm}ware / Beyond Software + 1.2 短版），**连同画面**原样保留。

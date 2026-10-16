@@ -79,9 +79,12 @@ export function Closing() {
               data-reveal
               style={{ '--delay': `${index * 90}ms` } as CSSProperties}
             >
-              <Link className="m-card" href={href[path.id]}>
+              <Link
+                className="m-card"
+                href={href[path.id]}
+                aria-label={path.label}
+              >
                 <span className="m-card-head">
-                  <b lang="en">{String(index + 1).padStart(2, '0')}</b>
                   <span>
                     {path.label}
                     <i lang="en"> · {path.en}</i>
@@ -92,9 +95,8 @@ export function Closing() {
                     <span key={line}>{line}</span>
                   ))}
                 </span>
-                <span className="m-card-go">
-                  <span>{path.link}</span>
-                  <ArrowRight size={15} aria-hidden="true" />
+                <span className="m-card-go" aria-hidden="true">
+                  <ArrowRight size={20} />
                 </span>
               </Link>
             </li>

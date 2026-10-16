@@ -120,7 +120,7 @@ export function useVisible<T extends Element>(
     const sync = () => setVisible(inView && !document.hidden);
     const observer = new IntersectionObserver(
       ([entry]) => {
-        inView = entry.isIntersecting;
+        inView = entry.isIntersecting && entry.intersectionRatio > 0;
         sync();
       },
       { threshold },
