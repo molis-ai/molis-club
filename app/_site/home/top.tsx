@@ -1,22 +1,39 @@
 'use client';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import Link from 'next/link';
 import { studio } from '../../../content/site/studio';
 import { useVisible } from '../motion';
 import { AiWordCycle } from './ai-words';
 import { Film, FootageToggle, useFootagePlaying } from './footage';
 import { Ware } from './ware';
 
-// 首页前两屏（r8 海边版已定，原样保留）：
-// 第一屏：两人沿海边走，「Molis AI」字标 + A/I 换词 + 关键词；第二屏：礁石边对海作画，We build {Warm}ware / Beyond Software。
-// 两屏共用一卷胶片：首屏的照片钉在视口里，读到那句话时溶进第二张。
-export function HomeTop() {
+// 首屏天空与二屏海边共用一卷胶片，各自进入视口时播放；两处暂停键控制同一播放状态。
+export function HomeTop({
+  seasideVariant = 'b',
+  compareSeaside = false,
+}: {
+  seasideVariant?: 'a' | 'b';
+  compareSeaside?: boolean;
+}) {
   const { playing, toggle } = useFootagePlaying();
-  // 照片的「呼吸」是循环动画：离开视口、页面隐藏时停
-  const film = useRef<HTMLDivElement>(null);
-  const visible = useVisible(film, 0.01);
+  const [seasideResting, setSeasideResting] = useState(false);
+  const hero = useRef<HTMLElement>(null);
+  const ware = useRef<HTMLElement>(null);
+  const skyVisible = useVisible(hero, 0.01);
+  const seasideVisible = useVisible(ware, Number.EPSILON);
   return (
-    <Film playing={playing && visible} ref={film}>
-      <section className="m-hero m-real-hero" aria-labelledby="m-title">
+    <Film
+      skyPlaying={playing && skyVisible}
+      seasidePlaying={playing && seasideVisible}
+      seasideScene={ware}
+      onSeasideRestChange={setSeasideResting}
+      seasideVariant={seasideVariant}
+    >
+      <section
+        ref={hero}
+        className="m-hero m-real-hero"
+        aria-labelledby="m-title"
+      >
         <div className="m-real-copy">
           <h1 id="m-title" className="m-mark" lang="en">
             Molis AI
@@ -32,7 +49,38 @@ export function HomeTop() {
           </p>
         </div>
       </section>
-      <Ware />
+      <Ware
+        sectionRef={ware}
+        footer={
+          <>
+            <FootageToggle
+              playing={playing}
+              toggle={toggle}
+              resting={seasideResting && seasideVariant === 'a'}
+            />
+            {compareSeaside ? (
+              <nav className="m-seaside-compare" aria-label="海边方案对比">
+                <Link
+                  href="/?seaside=a#m-ware-title"
+                  prefetch={false}
+                  scroll={false}
+                  aria-current={seasideVariant === 'a' ? 'page' : undefined}
+                >
+                  A · 片尾停留
+                </Link>
+                <Link
+                  href="/?seaside=b#m-ware-title"
+                  prefetch={false}
+                  scroll={false}
+                  aria-current={seasideVariant === 'b' ? 'page' : undefined}
+                >
+                  B · 海浪衔接
+                </Link>
+              </nav>
+            ) : null}
+          </>
+        }
+      />
     </Film>
   );
 }

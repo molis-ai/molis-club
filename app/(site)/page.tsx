@@ -15,10 +15,18 @@ export const metadata = pageMetadata(
 // 首页四屏（第八轮的画面与结构，负责人 2026-10-15 重新配过）：
 // 首屏（天空，Molis AI）→ What we make（海边，We build {Warm}ware）→ 产品（纸页升起，左列表右舞台）
 // → 结尾（画室，过渡句与企业合作 / 社区 / 关于我们三张卡片）→ 页尾。
-export default function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ seaside?: string }>;
+}) {
+  const { seaside } = await searchParams;
   return (
     <div className="m-home">
-      <HomeTop />
+      <HomeTop
+        seasideVariant={seaside === 'a' ? 'a' : 'b'}
+        compareSeaside={seaside === 'a' || seaside === 'b'}
+      />
       <Products />
       <Closing />
     </div>

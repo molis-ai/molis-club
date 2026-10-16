@@ -9,14 +9,12 @@ import { IntroStage } from './stages';
 import { Thumb } from './thumbs';
 import './stages.css';
 
-// 首页第三段：产品（第八轮「美术馆的午后」那一版，负责人 2026-10-15 定为首页用，原样保留）。
+// 首页第三段：沿用第八轮的产品列表与演示，精简重复说明，扩大画面。
 // 左边一列五件产品（缩略图、名字、当前阶段），鼠标停在哪件，右边就换成哪件：
-// 第 4 章的标题与一句话 → 分段演示（一轮不超过 10 秒，小标题是第 4 章的原句）→
-// 第 3 章的「适合这样的时刻」「当前阶段」与去处。列表下面是第 3 章的「目前如何了解与体验」；
+// 第 3 章的一句话 → 分段演示（一轮不超过 10 秒，小标题是第 4 章的原句）→
+// 第 3 章的「当前阶段」与去处。列表下面保留「目前如何了解与体验」；
 // 「这些产品怎样联系」按负责人的意见不放首页，留给各产品页。
 // 交互：鼠标停一下才换；键盘聚焦到哪行选哪行；触屏第一次点是选中，再点进产品页。
-
-const pad = (n: number) => String(n).padStart(2, '0');
 
 const names = Object.fromEntries(
   introProducts.map((product) => [product.id, product.name]),
@@ -62,7 +60,6 @@ export function Products() {
             <span lang="en">Products</span>
             <small>{intro.title}</small>
           </h2>
-          <p className="ix-lead">{intro.lead}</p>
         </header>
 
         <div className="m-plist" data-reveal>
@@ -85,9 +82,6 @@ export function Products() {
                   }}
                   onClick={tap(index)}
                 >
-                  <span className="m-prow-no" aria-hidden="true">
-                    {pad(index + 1)}
-                  </span>
                   <span
                     className="m-prow-thumb"
                     data-concept={product.concept || undefined}
@@ -116,17 +110,13 @@ export function Products() {
                 >
                   <div className="m-panel-copy">
                     <p className="m-panel-kicker">
-                      <span className="m-panel-no" lang="en">
-                        {pad(index + 1)}
-                      </span>
                       <span lang="en">{product.name}</span>
                       <span className="ix-stage" data-stage={product.id}>
                         <i />
                         {product.stage}
                       </span>
                     </p>
-                    <h3 className="m-panel-line">{product.headline}</h3>
-                    <p className="m-panel-value">{product.what}</p>
+                    <h3 className="m-panel-line">{product.what}</h3>
                   </div>
                   <figure
                     className="m-panel-art ix-art"
@@ -165,10 +155,6 @@ export function Products() {
                   </figure>
                   <div className="ix-below">
                     <dl className="ix-facts">
-                      <div>
-                        <dt>{intro.fitLabel}</dt>
-                        <dd>{product.fit}</dd>
-                      </div>
                       <div>
                         <dt>{intro.stageLabel}</dt>
                         <dd>
@@ -226,7 +212,6 @@ export function Products() {
                 </div>
               ))}
             </dl>
-            <p className="ix-map-note">{access.note}</p>
           </section>
         </div>
       </div>

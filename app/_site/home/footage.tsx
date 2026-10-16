@@ -1,44 +1,65 @@
 'use client';
-import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+  type Ref,
+  type RefObject,
+} from 'react';
 import { Pause, Play } from 'lucide-react';
 import { useReducedMotion } from '../motion';
 import media from '../media.json';
+import { SeasideBridge } from './seaside-bridge';
 
 // 首页前两屏的一卷胶片（第八轮的画面，负责人 2026-10-15 重新配过）：
 // 首屏是第八轮天空版的那片积云，被暖光照着慢慢走；素材后半段云底转暗、乌云压上来，只留前 7.6 秒，
-// 播得比第八轮再慢一档。到结尾不跳回开头：另一份从头放起，在上面慢慢淡进来，看不出接缝。
-// 读到那句话时，画面溶进第八轮海边版的首屏：柔和的晨光里，两个人沿海边慢慢走，照片极慢地推近。
-// 照片已压成几档宽度的 WebP（scripts/site-media.mjs）。减少动态时停在一帧上；访客可以随时按暂停。
-
-type Still = {
-  name: 'seaside-hero';
-  focus: string;
-  flip?: boolean;
-};
-
-const ware: Still = { name: 'seaside-hero', focus: '50% 60%' };
-
-/** 循环接缝：离结尾还有这么多「素材秒」时，另一份从头放起并淡入（实际时长要除以播放速度） */
-const SEAM = 1.1;
+// 慢放节奏已烘焙进 30 fps 插帧文件，以正常速度播放；结尾用另一份从头淡入。
+// 二屏保留第一条 0.55 倍慢放素材，只播一遍，末尾缓下来停成照片；完全滚出二屏后才复位。
+// 两屏各自在进入视口后播放。减少动态时保留封面；访客可以随时按暂停。
 
 /**
  * 首屏的天空：一进来就是天，不等视频。
  * 最底下是按封面帧取色的天空渐变（样式里），上面是只有十几 KB 的封面帧，页面一出来就在；
- * 视频能播了，再从封面帧上淡进来（封面帧取自第 0.5 秒，第一份也从第 0.5 秒放起，接得上）。
- * 两份同一段视频轮流放，结尾处交叉淡入，循环没有跳帧。
+ * 视频从封面对应的素材位置开始；两份同一段视频交叉淡入，暂停同时冻结画面与淡入。
  */
-function Sky({ playing, className }: { playing: boolean; className: string }) {
-  const clip = media['home-sky'] as {
+function LoopFootage({
+  name,
+  playing,
+  className,
+  seam,
+  eager = false,
+  resetOutside,
+  onRestChange,
+}: {
+  name: 'home-sky' | 'home-seaside';
+  playing: boolean;
+  className: string;
+  seam: number;
+  eager?: boolean;
+  resetOutside?: RefObject<HTMLElement | null>;
+  onRestChange?: (resting: boolean) => void;
+}) {
+  const clip = media[name] as {
     src: string;
     poster: string;
     rate: number;
+    posterTime?: number;
     width: number;
     height: number;
   };
+  const [loaded, setLoaded] = useState(eager);
+  // 首次进入画面后保持素材已加载；手动暂停与切换标签页不重置位置。
+  if (playing && !loaded) setLoaded(true);
   const reel = useRef<HTMLDivElement>(null);
   const a = useRef<HTMLVideoElement>(null);
   const b = useRef<HTMLVideoElement>(null);
   const front = useRef(0);
+  const resting = useRef(false);
+  const transition = useRef<{
+    animation: Animation;
+    outgoing: HTMLVideoElement;
+  } | null>(null);
 
   // 水合之前视频就已经能播了：直接显出来
   useEffect(() => {
@@ -47,71 +68,151 @@ function Sky({ playing, className }: { playing: boolean; className: string }) {
   }, []);
 
   useEffect(() => {
-    const videos = [a.current, b.current];
-    if (!videos[0] || !videos[1]) return;
-    for (const video of videos as HTMLVideoElement[]) {
+    const scene = resetOutside?.current;
+    const video = a.current;
+    if (!scene || !video) return;
+    // 只观察几何位置，不把 document.hidden 或手动暂停当作离开二屏。
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0) {
+          // 从 B 切回 A 会重新挂载视频，同时同步新视频的控制键状态。
+          onRestChange?.(resting.current);
+          return;
+        }
+        video.pause();
+        video.currentTime = clip.posterTime ?? 0;
+        video.playbackRate = clip.rate;
+        resting.current = false;
+        onRestChange?.(false);
+      },
+      // 顶部滚到尽头时，二屏恰好贴着视口底边；零面积相交也应算离屏。
+      { threshold: Number.EPSILON },
+    );
+    observer.observe(scene);
+    return () => observer.disconnect();
+  }, [resetOutside, clip.posterTime, clip.rate, onRestChange]);
+
+  useEffect(() => {
+    if (!loaded) return;
+    const videos = [a.current, b.current].filter(
+      (video): video is HTMLVideoElement => video !== null,
+    );
+    if (!videos[0]) return;
+    for (const video of videos) {
       video.defaultPlaybackRate = clip.rate;
       video.playbackRate = clip.rate;
     }
     const current = () => videos[front.current] as HTMLVideoElement;
-    if (!playing) {
+    if (!playing || resting.current) {
       for (const video of videos) video?.pause();
+      transition.current?.animation.pause();
       return;
     }
+    if (resetOutside && current().ended) {
+      resting.current = true;
+      onRestChange?.(true);
+      return;
+    }
+
+    // 海边只前进，不叠化或倒放。最后一秒素材逐渐放慢，结束后保留视频的末帧。
+    let frame = 0;
+    const settle = () => {
+      const video = current();
+      if (video.ended) {
+        resting.current = true;
+        onRestChange?.(true);
+        return;
+      }
+      const remaining = video.duration - video.currentTime;
+      const progress = Math.min(1, Math.max(0, remaining));
+      const eased = progress * progress * (3 - 2 * progress);
+      video.playbackRate = Number.isFinite(remaining)
+        ? clip.rate * (0.25 + 0.75 * eased)
+        : clip.rate;
+      frame = requestAnimationFrame(settle);
+    };
+    if (resetOutside) settle();
     void current()
       .play()
       .catch(() => {});
 
-    let fading = false;
+    // 从暂停恢复时，两份素材与尚未完成的淡入继续在同一位置播放。
+    if (transition.current) {
+      void transition.current.outgoing.play().catch(() => {});
+      transition.current.animation.play();
+    }
     const check = () => {
       const now = current();
-      if (fading || !now.duration || now.currentTime < now.duration - SEAM)
+      if (
+        seam === 0 ||
+        transition.current ||
+        !now.duration ||
+        now.currentTime < now.duration - seam * clip.rate
+      )
         return;
-      fading = true;
       const next = videos[1 - front.current] as HTMLVideoElement;
+      // 等第二份素材可解码后才转场，不淡入尚未有画面的图层。
+      if (next.readyState < 2) return;
       next.currentTime = 0;
       next.playbackRate = clip.rate;
       void next.play().catch(() => {});
       // 新的一份压在上面，从透明慢慢显出来；旧的留在下面放完，不露底色
       next.style.zIndex = '1';
       now.style.zIndex = '0';
-      const fade = (SEAM / clip.rate) * 1000;
-      next.animate([{ opacity: 0 }, { opacity: 1 }], {
-        duration: fade,
+      const animation = next.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: seam * 1000,
         easing: 'ease-in-out',
         fill: 'forwards',
-      }).onfinish = () => {
+      });
+      transition.current = { animation, outgoing: now };
+      animation.onfinish = () => {
         now.pause();
-        fading = false;
+        now.style.opacity = '0';
+        next.style.opacity = '1';
+        animation.cancel();
+        transition.current = null;
       };
       front.current = 1 - front.current;
     };
-    const timer = window.setInterval(check, 250);
+    const timer = seam > 0 ? window.setInterval(check, 250) : undefined;
     return () => {
+      cancelAnimationFrame(frame);
       window.clearInterval(timer);
       for (const video of videos) video?.pause();
+      transition.current?.animation.pause();
     };
-  }, [playing, clip.rate]);
+  }, [playing, loaded, clip.rate, seam, resetOutside, onRestChange]);
+
+  useEffect(
+    () => () => {
+      if (transition.current) {
+        transition.current.animation.onfinish = null;
+        transition.current.animation.cancel();
+      }
+    },
+    [],
+  );
 
   return (
-    <div className={`m-footage m-sky ${className}`}>
+    <div className={`m-footage m-loop-footage ${className}`} data-ready="">
       <img
-        className="m-sky-poster"
+        className="m-film-poster"
         src={clip.poster}
         width={clip.width}
         height={clip.height}
         alt=""
         aria-hidden="true"
-        loading="eager"
-        fetchPriority="high"
+        loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={eager ? 'high' : undefined}
         decoding="async"
       />
-      <div ref={reel} className="m-sky-reel">
+      <div ref={reel} className="m-film-reel">
         <video
           ref={a}
-          src={`${clip.src}#t=0.5`}
+          src={loaded ? `${clip.src}#t=${clip.posterTime ?? 0}` : undefined}
           muted
           playsInline
+          loop={seam === 0 && !resetOutside}
           preload="auto"
           aria-hidden="true"
           tabIndex={-1}
@@ -121,59 +222,20 @@ function Sky({ playing, className }: { playing: boolean; className: string }) {
           }}
           style={{ zIndex: 1 }}
         />
-        <video
-          ref={b}
-          src={clip.src}
-          muted
-          playsInline
-          preload="metadata"
-          aria-hidden="true"
-          tabIndex={-1}
-          style={{ opacity: 0 }}
-        />
+        {seam > 0 ? (
+          <video
+            ref={b}
+            src={loaded ? clip.src : undefined}
+            muted
+            playsInline
+            preload="auto"
+            aria-hidden="true"
+            tabIndex={-1}
+            style={{ opacity: 0 }}
+          />
+        ) : null}
       </div>
     </div>
-  );
-}
-
-function Photo({
-  still,
-  playing,
-  className,
-  eager = false,
-}: {
-  still: Still;
-  playing: boolean;
-  className: string;
-  eager?: boolean;
-}) {
-  const ref = useRef<HTMLImageElement>(null);
-  const image = media[still.name];
-  useEffect(() => {
-    const node = ref.current;
-    if (node?.complete && node.naturalWidth) node.dataset.ready = '';
-  }, []);
-  return (
-    <img
-      ref={ref}
-      className={`m-footage m-still ${className}`}
-      data-playing={playing || undefined}
-      data-flip={still.flip || undefined}
-      src={image.src}
-      srcSet={image.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
-      sizes="100vw"
-      width={image.width}
-      height={image.height}
-      loading={eager ? 'eager' : 'lazy'}
-      fetchPriority={eager ? 'high' : undefined}
-      decoding="async"
-      onLoad={(event) => {
-        event.currentTarget.dataset.ready = '';
-      }}
-      alt=""
-      aria-hidden="true"
-      style={{ objectPosition: still.focus }}
-    />
   );
 }
 
@@ -188,9 +250,11 @@ export function useFootagePlaying() {
 export function FootageToggle({
   playing,
   toggle,
+  resting = false,
 }: {
   playing: boolean;
   toggle: () => void;
+  resting?: boolean;
 }) {
   return (
     <button
@@ -199,6 +263,8 @@ export function FootageToggle({
       aria-pressed={!playing}
       aria-label={playing ? '暂停背景画面' : '继续背景画面'}
       onClick={toggle}
+      disabled={resting}
+      style={resting ? { visibility: 'hidden' } : undefined}
     >
       {playing ? (
         <Pause size={11} fill="currentColor" aria-hidden="true" />
@@ -214,19 +280,50 @@ export function FootageToggle({
  * 用 data-scene 拿到 --pin（钉住的这一段读了多少），第二张的不透明度跟着它走。
  */
 export function Film({
-  playing,
+  skyPlaying,
+  seasidePlaying,
+  seasideScene,
+  onSeasideRestChange,
+  seasideVariant,
   children,
   ref,
 }: {
-  playing: boolean;
+  skyPlaying: boolean;
+  seasidePlaying: boolean;
+  seasideScene: RefObject<HTMLElement | null>;
+  onSeasideRestChange: (resting: boolean) => void;
+  seasideVariant: 'a' | 'b';
   children: ReactNode;
   ref?: Ref<HTMLDivElement>;
 }) {
   return (
-    <div className="m-film" data-scene data-tone="film" ref={ref}>
+    <div
+      className="m-film"
+      data-scene
+      data-tone="film"
+      data-seaside={seasideVariant}
+      ref={ref}
+    >
       <div className="m-film-media" aria-hidden="true">
-        <Sky playing={playing} className="m-film-a" />
-        <Photo still={ware} playing={playing} className="m-film-b" />
+        <LoopFootage
+          name="home-sky"
+          playing={skyPlaying}
+          className="m-sky m-film-a"
+          seam={4.6}
+          eager
+        />
+        {seasideVariant === 'b' ? (
+          <SeasideBridge playing={seasidePlaying} scene={seasideScene} />
+        ) : (
+          <LoopFootage
+            name="home-seaside"
+            playing={seasidePlaying}
+            className="m-seaside m-film-b"
+            seam={0}
+            resetOutside={seasideScene}
+            onRestChange={onSeasideRestChange}
+          />
+        )}
         <span className="m-film-scrim" />
       </div>
       <div className="m-film-content">{children}</div>
