@@ -99,7 +99,12 @@ assert.match(home, new RegExp(`rel="canonical" href="${canonicalOrigin}/?"`));
 const work = await html('/work');
 assert.match(work, /开源开发中/);
 assert.match(work, /界面示意/);
-assert.match(work, /把这件工作交给谁/);
+// Work 按读者分两版（写代码 / 写文档、管事情）；状态只分「已发布」「开发中」；Issue 插件是内部工具，不上官网
+assert.match(work, /你主要做什么/);
+assert.match(work, /已发布 · v0\.2\.0/);
+assert.match(work, /开发中/);
+assert(!work.includes('Issue'), 'work: no internal Issue plugin');
+assert(!/下载 Molis|安装包下载|立即下载/.test(work), 'work: no download entry');
 assert(work.includes('href="https://github.com/molis-ai/molis-work"'));
 assert(work.includes('https://github.com/molis-ai/molis-work#run-from-source'));
 for (const path of ['/tool', '/life', '/story', '/world']) {

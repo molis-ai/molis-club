@@ -3,710 +3,1332 @@ import {
   BookOpen,
   CalendarDays,
   Check,
+  CircleDot,
+  ClipboardCheck,
+  CornerDownLeft,
   FileText,
+  GitPullRequest,
   Inbox,
-  ListTodo,
+  Lightbulb,
+  ListChecks,
+  ListOrdered,
+  Mail,
   MessagesSquare,
-  Moon,
   NotebookPen,
-  Presentation,
-  Puzzle,
-  Quote,
+  Package,
+  Play,
   Rss,
-  Search,
-  SquareCode,
-  Table2,
+  Sparkles,
+  Star,
   Target,
+  Terminal,
+  Timer,
+  Wand,
+  Workflow,
   type LucideIcon,
 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import type { Persona, WorkActId } from '../../../content/site/work';
 import { at, Canvas, Cursor, type Scene } from '../demo/demo';
 import './work.css';
 
-// Molis Work 的演示画面：一份「行业观察报告」走三天。像一张真的工作台：木色的侧栏、植物绿的成功与插件。
-// 首页舞台用其中五段（每段约 3.5 秒），Work 页按章节用全部八段（滚到哪一步演到哪一步）。
-// 画面里的项目、资料、人名、时间都是示意数据，不代表已上线的功能；各段的阶段标注见 note。
-// 待负责人确认：第 4、6、8 段（多插件接力、讨论、你不在时）的文案与阶段标注是本轮新写的，
-// 按 Work 仓库现状标注：讨论（群聊 + 话题）首版已实现、未公开部署、AI 暂不参与群聊；主动提醒在开发版；插件创作台为预览。
+// Molis Work 的演示画面：照 Molis Work 自己的窗口（Soft Workbench：珍珠灰的桌面、白纸、石墨色的动作、铜色的「在等」）。
+// 演示区外面是 Work 的木色，成功是植物绿。首屏两段按时间播；四幕八段（两种读者各四段）随滚动推进。
+// 画面里的项目、人名、数字都是示意数据。阶段：只有「接 · 写代码」整段在 v0.2.0 里，其余都是开发中（标在各章上）。
 
-const Tick = ({ step, delay }: { step: number; delay?: number }) => (
-  <i className="m-tick" style={at(step, undefined, delay)}>
+type Vars = CSSProperties & Record<`--${string}`, string | number>;
+
+const Tick = ({ step, delay, tone }: { step: number; delay?: number; tone?: 'wait' }) => (
+  <i className="m-tick" data-tone={tone} style={at(step, undefined, delay)}>
     <Check strokeWidth={3} aria-hidden="true" />
   </i>
 );
 
-type Tool = { id: string; name: string; icon: LucideIcon };
-
-const projectTools: Tool[] = [
-  { id: 'files', name: '资料', icon: BookOpen },
-  { id: 'feed', name: '信息流', icon: Rss },
-  { id: 'doc', name: '文档', icon: FileText },
-  { id: 'table', name: '数据表', icon: Table2 },
-  { id: 'deck', name: '汇报', icon: Presentation },
-  { id: 'talk', name: '讨论', icon: MessagesSquare },
-];
-
-const personal: Tool[] = [
-  { id: 'calendar', name: '日历', icon: CalendarDays },
-  { id: 'notes', name: '笔记', icon: NotebookPen },
-  { id: 'todo', name: '待办', icon: ListTodo },
-];
-
-/** 工作台的外框：左边木色侧栏（项目里的工具 + 个人的日历、笔记、待办），右边是正在做的事 */
-function Desk({
-  step,
-  name,
-  active,
-  tools = projectTools,
-  extra,
-  children,
+/** 一段只在某几步出现、出现前不占位置的行（终端、对话、列表里新来的一条） */
+function Line({
+  show,
   className = '',
-  press,
+  children,
 }: {
-  step: number;
-  name: string;
-  active?: string;
-  tools?: Tool[];
-  extra?: ReactNode;
-  children: ReactNode;
+  show: Vars;
   className?: string;
-  press?: number[];
+  children: ReactNode;
 }) {
   return (
-    <Canvas step={step} className={`wk ${className}`} press={press}>
-      <div className="m-sc-win wk-win">
-        <aside className="wk-side">
-          <p className="wk-project">
-            <span className="m-dot" />
-            行业观察报告
-          </p>
-          <ul>
-            {tools.map((tool) => (
-              <li key={tool.id} data-on={tool.id === active || undefined}>
-                <tool.icon aria-hidden="true" />
-                {tool.name}
-              </li>
-            ))}
-            {extra}
-          </ul>
-          <p className="wk-side-label">个人</p>
-          <ul className="wk-personal">
-            {personal.map((tool) => (
-              <li key={tool.id}>
-                <tool.icon aria-hidden="true" />
-                {tool.name}
-              </li>
-            ))}
-          </ul>
-        </aside>
-        <div className="wk-main">
-          <p className="wk-crumb">
-            <span>{name}</span>
-          </p>
-          {children}
-        </div>
+    <div className={`m-v wv-line ${className}`} style={show}>
+      <div>{children}</div>
+    </div>
+  );
+}
+
+/** Molis Work 的窗口：一道窄标题栏（位置）+ 桌面上的几张纸 */
+function Win({
+  step,
+  className,
+  place,
+  icon: Icon,
+  status,
+  press,
+  children,
+}: {
+  step: number;
+  className: string;
+  place: string;
+  icon: LucideIcon;
+  /** 标题栏右边：在跑的、等你的 */
+  status?: ReactNode;
+  press?: number[];
+  children: ReactNode;
+}) {
+  return (
+    <Canvas step={step} className={`wv ${className}`} press={press}>
+      <div className="wv-win">
+        <p className="wv-bar">
+          <span className="wv-lights" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          <span className="wv-loc">
+            <Icon aria-hidden="true" />
+            {place}
+          </span>
+          {status ? <span className="wv-status">{status}</span> : null}
+        </p>
+        <div className="wv-desk">{children}</div>
       </div>
     </Canvas>
   );
 }
 
-/* ---------- 开场：散在各处的碎片，收拢进同一张工作台 ---------- */
-const scatter: Scene = {
-  id: 'work-scatter',
-  label:
-    'Molis Work 示意：浏览器标签、聊天、文档、待办里的碎片，收拢进同一个项目。',
-  steps: 3,
-  times: [0, 1.2, 2.4, 3.6],
-  note: '界面示意',
-  render: ({ step }) => (
-    <Canvas step={step} className="wk wk-scatter">
-      <div className="wk-bits">
-        <span className="wk-bit" data-k="tab">
-          <Rss aria-hidden="true" />3 个浏览器标签 · 行业新闻
-        </span>
-        <span className="wk-bit" data-k="chat">
-          <MessagesSquare aria-hidden="true" />
-          聊天里的一句：「周四前给初稿」
-        </span>
-        <span className="wk-bit" data-k="doc">
-          <FileText aria-hidden="true" />
-          报告草稿 v2.docx
-        </span>
-        <span className="wk-bit" data-k="ai">
-          <SquareCode aria-hidden="true" />
-          昨天的 AI 会话
-        </span>
-        <span className="wk-bit" data-k="todo">
-          <ListTodo aria-hidden="true" />
-          待办：补三家对比
-        </span>
-      </div>
-      <div className="m-sc-win wk-gather m-v" data-pop="" style={at(2)}>
-        <p className="wk-project">
-          <span className="m-dot" />
-          行业观察报告
+function Sheet({
+  icon: Icon,
+  title,
+  sub,
+  className = '',
+  children,
+}: {
+  icon?: LucideIcon;
+  title?: ReactNode;
+  sub?: ReactNode;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className={`wv-sheet ${className}`}>
+      {title ? (
+        <p className="wv-head">
+          {Icon ? <Icon aria-hidden="true" /> : null}
+          <b>{title}</b>
+          {sub ? <span>{sub}</span> : null}
         </p>
-        <ul>
-          <li>
-            <Rss aria-hidden="true" />
-            信息流 · 3 个来源
-          </li>
-          <li>
-            <FileText aria-hidden="true" />
-            文档 · 报告草稿
-          </li>
-          <li>
-            <ListTodo aria-hidden="true" />
-            待办 · 补三家对比 · 周四
-          </li>
-          <li>
-            <SquareCode aria-hidden="true" />
-            会话记录 · 接着昨天
-          </li>
-        </ul>
-      </div>
-    </Canvas>
-  ),
-};
+      ) : null}
+      <div className="wv-body">{children}</div>
+    </section>
+  );
+}
 
-/* ---------- 按这段工作的需要，布置工作台 ---------- */
-const arrange: Scene = {
-  id: 'work-arrange',
-  label:
-    'Molis Work 示意：给项目装上资料、信息流和文档；个人的日历、笔记、待办始终都在；搜一个词，各工具里的结果一起出来。',
-  steps: 3,
-  times: [0, 1.2, 2.4, 3.8],
-  note: '界面示意',
-  render: ({ step }) => (
-    <Desk
-      step={step}
-      name="项目 · 布置工具"
-      tools={[]}
-      extra={projectTools.slice(0, 3).map((tool, index) => (
-        <li
-          key={tool.id}
-          className="m-v"
-          style={at(0, undefined, index * 140)}
-          data-new={step === 0 || undefined}
-        >
-          <tool.icon aria-hidden="true" />
-          {tool.name}
-        </li>
-      ))}
-      className="wk-arrange"
-    >
-      <div className="wk-shelf m-v" data-fade="" style={at(0, 2)}>
-        <p className="m-mini">为这段工作选工具</p>
-        <div className="wk-shelf-grid">
-          {[...projectTools.slice(0, 3), ...projectTools.slice(3)].map(
-            (tool, index) => (
-              <span key={tool.id} data-picked={index < 3 || undefined}>
-                <tool.icon aria-hidden="true" />
-                {tool.name}
-                {index < 3 ? <Tick step={0} delay={index * 140} /> : null}
-              </span>
-            ),
-          )}
-        </div>
-        <p className="m-mini m-v" style={at(1)}>
-          日历、笔记、待办是你个人的，换项目也跟着你。
-        </p>
-      </div>
-      <div className="wk-search m-v" data-fade="" style={at(2)}>
-        <p className="wk-search-box">
-          <Search aria-hidden="true" />
-          储能
-        </p>
-        <ul>
-          <li>
-            <Rss aria-hidden="true" />
-            <span>
-              <b>储能</b>出货量季度数据
-            </span>
-            <small>信息流</small>
-          </li>
-          <li>
-            <FileText aria-hidden="true" />
-            <span>
-              第二节 · <b>储能</b>价格走势
-            </span>
-            <small>文档</small>
-          </li>
-          <li>
-            <NotebookPen aria-hidden="true" />
-            <span>
-              访谈笔记：<b>储能</b>客户
-            </span>
-            <small>笔记</small>
-          </li>
-        </ul>
-      </div>
-    </Desk>
-  ),
-};
+/** 同一个位置上前后换几张纸（右栏从 Inbox 换到终端……） */
+const Swap = ({ children, className = '' }: { children: ReactNode; className?: string }) => (
+  <div className={`wv-swap ${className}`}>{children}</div>
+);
 
-/* ---------- 你和 AI，接着同一份内容工作 ---------- */
-const together: Scene = {
-  id: 'work-together',
-  label:
-    'Molis Work 示意：写到一半的方案，助理接着当前内容整理提纲，改动高亮；你点「接手」，自己改一句。',
-  steps: 4,
-  times: [0, 0.7, 1.7, 2.6, 3.6],
-  note: '界面示意',
-  render: ({ step }) => (
-    <Desk
-      step={step}
-      name="文档 · 行业观察报告"
-      active="doc"
-      className="wk-together"
-      press={[2]}
-    >
-      <div className="wk-doc">
-        <p className="wk-doc-title">行业观察报告（草稿）</p>
-        <span className="m-ln" style={{ width: '92%' }} />
-        <span className="m-ln" style={{ width: '78%' }} />
-        <p className="wk-ai m-v" style={at(1)}>
-          <span className="m-chip" data-tone="accent">
+type BarItem = { label: string; icon?: LucideIcon; primary?: boolean; tag?: string };
+
+/** 浮条：选中的东西旁边递来两三个动作；光标点在第一个上 */
+function Bar({
+  show,
+  items,
+  land,
+  cursor,
+  below = false,
+  compact = false,
+}: {
+  show: Vars;
+  items: BarItem[];
+  /** 放到哪里（「第 2 节」） */
+  land?: string;
+  cursor?: Vars;
+  below?: boolean;
+  /** 窄的右栏里：不带「助理」那一格 */
+  compact?: boolean;
+}) {
+  return (
+    <span className="wv-anchor" data-below={below || undefined}>
+      <span className="wv-tb m-v" data-pop="" style={show}>
+        {land ? <span className="wv-tb-land">→ {land}</span> : null}
+        {items.map((item) => (
+          <span key={item.label} data-primary={item.primary || undefined}>
+            {item.icon ? <item.icon aria-hidden="true" /> : null}
+            {item.label}
+            {item.tag ? <small>{item.tag}</small> : null}
+            {item.primary && cursor ? <Cursor show={cursor} x="58%" y="58%" /> : null}
+          </span>
+        ))}
+        {compact ? null : (
+          <span className="wv-tb-ai">
+            <Sparkles aria-hidden="true" />
             助理
           </span>
-          按当前内容整理了提纲
-        </p>
-        <ol className="wk-outline">
-          <li className="m-hl" style={at(1, undefined, 0)}>
-            一、今年市场的三个变化
-          </li>
-          <li className="m-hl" style={at(1, undefined, 160)}>
-            二、三家公司的做法对比
-          </li>
-          <li>
-            <span className="m-stack">
-              <span className="m-hl m-v" data-fade="" style={at(1, 3, 320)}>
-                三、建议
-              </span>
-              <span className="m-v wk-mine" data-fade="" style={at(3)}>
-                三、我们的判断：先看价格，再看渠道
-              </span>
-            </span>
-            <span className="m-chip wk-you m-v" style={at(3)}>
-              你改了这一句
-            </span>
-          </li>
-        </ol>
-        <p className="wk-handoff">
-          <span className="wk-take" data-on={step >= 2 || undefined}>
-            接手
-            <Cursor show={at(2, 3)} x="60%" y="55%" />
-          </span>
-          <span className="m-mini m-v" style={at(2)}>
-            现在由你编辑 · 助理的改动都留着
-          </span>
-        </p>
-      </div>
-    </Desk>
-  ),
-};
+        )}
+      </span>
+    </span>
+  );
+}
 
-/* ---------- 助理用插件把事情做完（新写，待负责人确认） ---------- */
-const relay: Scene = {
-  id: 'work-relay',
-  label:
-    'Molis Work 示意：助理从信息流取三篇资料，在数据表里做成对比，再生成一页汇报，三样成果带着来源落进项目。',
-  steps: 4,
-  times: [0, 0.8, 1.7, 2.6, 3.6],
-  note: '界面示意',
-  render: ({ step }) => (
-    <Desk step={step} name="助理 · 接着做完" className="wk-relay">
-      <div className="wk-chain">
-        <div className="wk-card" data-on={step === 0 || undefined}>
-          <p>
-            <Rss aria-hidden="true" />
-            信息流
-          </p>
-          <ul>
-            {['A 公司季报', 'B 公司发布会', 'C 行业报告'].map((item, i) => (
-              <li key={item} className="m-hl" style={at(0, undefined, i * 160)}>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="wk-card m-v" data-pop="" style={at(1)}>
-          <p>
-            <Table2 aria-hidden="true" />
-            数据表
-          </p>
-          <table>
-            <tbody>
-              {[
-                ['', '价格', '渠道'],
-                ['A', '↓', '线上'],
-                ['B', '→', '经销'],
-                ['C', '↑', '直营'],
-              ].map((row, r) => (
-                <tr key={r}>
-                  {row.map((cell, c) => (
-                    <td key={c}>{cell}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="wk-card m-v" data-pop="" style={at(2)}>
-          <p>
-            <Presentation aria-hidden="true" />
-            汇报
-          </p>
-          <div className="wk-slide">
-            <span>第 2 页</span>
-            <b>三家对比</b>
-            <i />
-            <i />
-          </div>
-        </div>
-      </div>
-      <ul className="wk-results m-v" style={at(3)}>
-        <li>
-          <Tick step={3} />
-          资料摘录 3 篇<small>来源已附</small>
-        </li>
-        <li>
-          <Tick step={3} delay={120} />
-          对比表 1 张<small>来源已附</small>
-        </li>
-        <li>
-          <Tick step={3} delay={240} />
-          汇报 1 页<small>来源已附</small>
-        </li>
-      </ul>
-    </Desk>
-  ),
-};
-
-/** Work 页上这一章更长：再约一场评审、留一条跟进 */
-const relayMore: Scene = {
-  ...relay,
-  id: 'work-relay-more',
-  label:
-    'Molis Work 示意：信息流、数据表、汇报接力做完，再在日历上约评审、在待办里留跟进；成果都在项目里，都有来源。',
-  steps: 4,
-  render: ({ step }) => (
-    <Desk step={step} name="助理 · 接着做完" className="wk-relay wk-relay-more">
-      <div className="wk-chain">
-        <div className="wk-card">
-          <p>
-            <Rss aria-hidden="true" />
-            信息流
-          </p>
-          <ul>
-            {['A 公司季报', 'B 公司发布会', 'C 行业报告'].map((item, i) => (
-              <li key={item} className="m-hl" style={at(0, undefined, i * 160)}>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="wk-card m-v" data-pop="" style={at(1)}>
-          <p>
-            <Table2 aria-hidden="true" />
-            数据表 → 汇报
-          </p>
-          <div className="wk-slide">
-            <span>第 2 页</span>
-            <b>三家对比</b>
-            <i />
-            <i />
-          </div>
-        </div>
-        <div className="wk-card m-v" data-pop="" style={at(2)}>
-          <p>
-            <CalendarDays aria-hidden="true" />
-            日历
-          </p>
-          <p className="wk-event">
-            周四 15:00
-            <b>报告评审</b>
-          </p>
-        </div>
-        <div className="wk-card m-v" data-pop="" style={at(2, undefined, 200)}>
-          <p>
-            <ListTodo aria-hidden="true" />
-            待办
-          </p>
-          <p className="wk-event">
-            评审后
-            <b>补上 D 公司的数据</b>
-          </p>
-        </div>
-      </div>
-      <p className="wk-proof m-v" style={at(3)}>
-        <Tick step={3} />
-        五样成果都在「行业观察报告」里，每一样都能点回来源。
+/** 终端：Agent 在这里干活，终端绑着目标 */
+function Term({
+  name,
+  bind,
+  children,
+  className = '',
+}: {
+  name: string;
+  bind: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={`wv-term ${className}`}>
+      <p className="wv-term-head">
+        <Terminal aria-hidden="true" />
+        <b>{name}</b>
+        <span>{bind}</span>
       </p>
-    </Desk>
-  ),
-};
+      <div className="wv-term-lines">{children}</div>
+    </section>
+  );
+}
 
-/* ---------- 工作台也可以长出你自己的工具（预览） ---------- */
-const grow: Scene = {
-  id: 'work-grow',
+const Who = ({ k, children }: { k: 'cc' | 'cx' | 'ds' | 'me' | 'ai' | 'p'; children: ReactNode }) => (
+  <span className="wv-who" data-k={k}>
+    {children}
+  </span>
+);
+
+/* =====================================================================
+   首屏：一个短循环
+   ===================================================================== */
+
+const heroDev: Scene = {
+  id: 'work-hero-dev',
   label:
-    'Molis Work 示意：你说一句需要，一个插件被做出来、过检查，装进工作台成为一块界面，助理也能用它。插件创作台还在预览。',
+    'Molis Work 示意：Inbox 里一条报错，选中后旁边递来「交给 Codex」；点一下，目标的完成要求、设计约束和上次进度一起带上。',
   steps: 4,
-  times: [0, 0.7, 1.6, 2.6, 3.6],
-  note: '预览 · 界面示意',
-  render: ({ step }) => (
-    <Desk
-      step={step}
-      name="插件创作台"
-      className="wk-grow"
-      extra={
-        <li className="m-v wk-grown" style={at(3)}>
-          <Puzzle aria-hidden="true" />
-          评审记录表
-          <span className="m-chip" data-tone="green">
-            新
-          </span>
-        </li>
-      }
-    >
-      <p className="wk-ask">
-        <span className="m-chip" data-tone="line">
-          你
-        </span>
-        做一张评审记录表：按人记意见，标出要改的地方。
-      </p>
-      <div className="wk-build m-v" style={at(1)}>
-        <p className="wk-build-head">
-          <Puzzle aria-hidden="true" />
-          <b>评审记录表</b>
-          <span className="m-mini">插件</span>
-        </p>
-        <ul>
-          <li>
-            <Tick step={1} />
-            Agent 给出方案
-          </li>
-          <li>
-            <Tick step={2} />
-            在沙箱里做出来
-          </li>
-          <li>
-            <Tick step={2} delay={300} />
-            检查与验收通过
-          </li>
-        </ul>
-        <span className="m-bar" style={at(2)} />
-      </div>
-      <p className="wk-grow-done m-v" style={at(3)}>
-        已装进项目 · 助理和获授权的 Agent 也能调用它
-      </p>
-    </Desk>
-  ),
-};
-
-/* ---------- 一起讨论，上下文和成果都接得上（新写，待负责人确认） ---------- */
-const talk: Scene = {
-  id: 'work-talk',
-  label:
-    'Molis Work 示意：右侧「讨论」里，同事引用那页汇报开了一个话题；结论回到项目，谁接着做都看得到前因后果。',
-  steps: 4,
-  times: [0, 0.6, 1.6, 2.6, 3.6],
-  note: '界面示意',
-  render: ({ step }) => (
-    <Desk step={step} name="汇报 · 第 2 页" active="deck" className="wk-talk">
-      <div className="wk-talk-grid">
-        <div className="wk-slide wk-slide-big">
-          <span>第 2 页</span>
-          <b>三家对比</b>
-          <i />
-          <i />
-          <i />
-        </div>
-        <div className="wk-thread">
-          <p className="wk-thread-head">
-            <MessagesSquare aria-hidden="true" />
-            讨论
-          </p>
-          <div className="wk-msg m-v" style={at(0)}>
-            <span className="wk-face">周</span>
-            <div>
-              <p className="wk-quote">
-                <Quote aria-hidden="true" />
-                汇报 · 第 2 页「三家对比」
-              </p>
-              <p>价格这一列，要不要放进正式结论？</p>
-            </div>
-          </div>
-          <p className="m-chip m-v" style={at(1)}>
-            话题 · 价格要不要进结论
-          </p>
-          <div className="wk-msg m-v" style={at(1, undefined, 220)}>
-            <span className="wk-face" data-me="">
-              你
-            </span>
-            <p>放，周四评审前补上 D 公司。</p>
-          </div>
-          <p className="wk-conclusion m-v" style={at(2)}>
-            <b>结论</b> 价格进结论，评审前补 D 公司
-          </p>
-        </div>
-      </div>
-      <p className="wk-proof m-v" style={at(3)}>
-        <Tick step={3} />
-        结论回到项目：谁接着做，都看得到这个话题和那一页。
-      </p>
-    </Desk>
-  ),
-};
-
-/* ---------- 工作做到哪里，有记录，也有依据 ---------- */
-const goal: Scene = {
-  id: 'work-goal',
-  label:
-    'Molis Work 示意：Goal 记着目标、进展、问题和待决定的事；换成 Codex 或 Claude Code，也读同一份记录接着做；收尾时逐条核对。',
-  steps: 3,
-  times: [0, 1.2, 2.4, 3.8],
-  note: '界面示意',
-  render: ({ step }) => (
-    <Desk step={step} name="Goal · 周四交付报告初稿" className="wk-goal">
-      <dl className="wk-goal-list">
-        <div>
-          <dt>
-            <Target aria-hidden="true" />
-            目标
-          </dt>
-          <dd>周四交付报告初稿，三家对比要有来源</dd>
-        </div>
-        <div>
-          <dt>进展</dt>
-          <dd>第一、二节完成；第三节写了一半</dd>
-        </div>
-        <div>
-          <dt>问题</dt>
-          <dd>C 公司的数据口径和另两家不同</dd>
-        </div>
-        <div>
-          <dt>待决定</dt>
-          <dd>
-            <span className="m-chip" data-tone="accent">
-              等你
-            </span>
-            价格要不要进结论
-          </dd>
-        </div>
-      </dl>
-      <p className="wk-agent m-v" style={at(1, 2)}>
-        <SquareCode aria-hidden="true" />
-        <span>
-          换到 <b>Claude Code</b>：读同一份记录，从第三节接着写
-        </span>
-      </p>
-      <ul className="wk-check m-v" style={at(2)}>
-        <li>
-          <Tick step={2} />
-          三家对比都有来源
-        </li>
-        <li>
-          <Tick step={2} delay={150} />
-          结论与周四的要求一致
-        </li>
-        <li>
-          <i className="m-tick" style={at(99)} />
-          C 公司口径待你确认
-        </li>
-      </ul>
-    </Desk>
-  ),
-};
-
-/* ---------- 你不在的时候，助理接着干（新写，待负责人确认；开发中） ---------- */
-const away: Scene = {
-  id: 'work-away',
-  label:
-    'Molis Work 示意：你下线以后，助理按 Goal 跟进到期的事；第二天只把需要你决定的一件留在 Inbox，写明原因。主动跟进还在开发中。',
-  steps: 4,
-  times: [0, 0.8, 1.7, 2.6, 3.6],
+  times: [0, 1.2, 2.6, 4.4, 6.4],
   note: '开发中 · 界面示意',
   render: ({ step }) => (
-    <Canvas step={step} className="wk wk-away">
-      <div className="m-sc-win wk-night">
-        <p className="wk-off">
-          <Moon aria-hidden="true" />
-          你已下线 · 22:40
-          <span className="m-mini">勿扰时段不发提醒</span>
+    <Win step={step} className="wv-hero" place="Inbox · 支付改版" icon={Inbox} press={[1]}>
+      <Sheet>
+        <p className="wv-issue">
+          <CircleDot aria-hidden="true" />
+          <b>#318 支付回调偶发 500</b>
+          <span className="wv-why">和目标「上线支付」有关</span>
         </p>
-        <ol className="wk-night-log">
-          <li className="m-v" style={at(1)}>
-            <Tick step={1} />
-            <span>
-              23:10 跟进到期：C 公司更新了数据<small>已写进第三节草稿</small>
-            </span>
-          </li>
-          <li className="m-v" style={at(1, undefined, 260)}>
-            <Tick step={1} delay={260} />
-            <span>
-              02:30 导出失败一次<small>已重试成功，留了记录</small>
-            </span>
-          </li>
-          <li className="m-v" style={at(2)}>
-            <span className="m-tick" style={at(99)} />
-            <span>
-              07:00 D 公司昨晚发布了新版本
-              <small>要不要加进报告，需要你定</small>
-            </span>
-          </li>
-        </ol>
-      </div>
-      <div className="m-sc-win wk-inbox m-v" data-pop="" style={at(3)}>
-        <p className="wk-inbox-head">
-          <Inbox aria-hidden="true" />
-          Inbox · 第二天 9:00
-          <span className="m-chip" data-tone="accent">
-            1 件等你决定
+        <pre className="wv-log">
+          <span className="wv-log-em">POST /api/pay/callback → 500</span>
+          {'\n'}
+          <span className="m-hl" style={at(1)}>
+            SignatureExpired: skew 312s
           </span>
-        </p>
-        <p className="wk-inbox-q">要不要把 D 公司加进报告？</p>
-        <p className="m-mini">
-          原因：它昨晚发布了新版本，会影响第二节的结论。其余两件已处理，记录在
-          Goal 里。
-        </p>
-        <p className="wk-inbox-act">
-          <span className="m-chip" data-tone="ink">
-            加进去
-          </span>
-          <span className="m-chip" data-tone="line">
-            先不加
-          </span>
-        </p>
-      </div>
-    </Canvas>
+          {'\n'}
+          {'  at verifySign (callback.ts:42)'}
+        </pre>
+        <Bar
+          show={at(1, 2)}
+          below
+          compact
+          cursor={at(1, 2)}
+          items={[
+            { label: '交给 Codex', icon: Terminal, primary: true },
+            { label: '交给 Claude Code', icon: Terminal },
+            { label: '记成待办', icon: ListChecks },
+          ]}
+        />
+        <div className="wv-pack m-v" data-pop="" style={at(2)}>
+          <p className="wv-pack-head">
+            <Package aria-hidden="true" />
+            <b>交给 Codex</b>
+            <span>已经带上</span>
+          </p>
+          <ul>
+            {['报错原文', '目标的 3 条完成要求', '设计文档里的约束', 'Claude Code 的进度'].map(
+              (item, index) => (
+                <li key={item}>
+                  <Tick step={2} delay={200 + index * 220} />
+                  {item}
+                </li>
+              ),
+            )}
+          </ul>
+        </div>
+      </Sheet>
+      <p className="wv-toast m-v" style={at(3)}>
+        <Check aria-hidden="true" />
+        Codex 开工了 · 背景不用再讲一遍
+      </p>
+    </Win>
   ),
 };
 
-/** 首页舞台的五段（spec 第 4 节 3） */
-export const workHomeSegments = [
-  { title: '你和 AI，接着同一份内容工作。', scene: together },
-  // 待负责人确认：新写的一段
-  { title: '助理调用几个插件，把事情接着做完。', scene: relay },
-  { title: '工作台也可以长出你自己的工具。', scene: grow, tag: '预览' },
-  // 待负责人确认：新写的一段与阶段标注
-  {
-    title: '一起讨论，上下文和成果都接得上。',
-    scene: talk,
-    tag: '首版已实现 · 未公开部署',
-  },
-  // 待负责人确认：新写的一段
-  { title: '你不在的时候，助理接着干。', scene: away, tag: '开发中' },
+const heroDoc: Scene = {
+  id: 'work-hero-doc',
+  label:
+    'Molis Work 示意：灵光读出的视频字幕里选中一句，旁边递来「放进第 2 节」；点一下，这句话带着视频 12:40 的出处落进稿子。',
+  steps: 4,
+  times: [0, 1.2, 2.6, 4.4, 6.4],
+  note: '开发中 · 界面示意',
+  render: ({ step }) => (
+    <Win
+      step={step}
+      className="wv-hero wv-hero-doc"
+      place="灵光 · 《AI 编辑器的下一步》"
+      icon={Lightbulb}
+      press={[1]}
+    >
+      <Sheet>
+        <div className="wv-tr">
+          <time>12:40</time>
+          <p>
+            <span className="m-hl" style={at(1)}>
+              现在真正拉开差距的，是它能不能接住你手上的整个工作流。
+            </span>
+          </p>
+          <time>13:15</time>
+          <p className="wv-dim">模型会越来越像，体验不会。</p>
+        </div>
+        <Bar
+          show={at(1, 2)}
+          below
+          land="第 2 节"
+          cursor={at(1, 2)}
+          items={[
+            { label: '放进去', icon: CornerDownLeft, primary: true },
+            { label: '记下灵光', icon: Lightbulb },
+            { label: '找依据', icon: BookOpen },
+          ]}
+        />
+        <div className="wv-page">
+          <p className="wv-head">
+            <FileText aria-hidden="true" />
+            <b>Pages</b>
+            <span>AI 编辑器观察 · 第 2 节</span>
+          </p>
+          <p className="wv-page-text">
+            AI 编辑器的护城河不在模型，在工作流。
+            <span className="wv-put m-v" data-fade="" style={at(2)}>
+              “现在真正拉开差距的，是它能不能接住你手上的整个工作流。”
+              <small className="wv-src">
+                <Play aria-hidden="true" />
+                视频 · 12:40
+              </small>
+            </span>
+          </p>
+        </div>
+      </Sheet>
+      <p className="wv-toast m-v" style={at(3)}>
+        <Check aria-hidden="true" />
+        放进第 2 节 · 出处跟着
+      </p>
+    </Win>
+  ),
+};
+
+export const workHeroScenes: Record<Persona, Scene> = { dev: heroDev, doc: heroDoc };
+
+/* =====================================================================
+   递 · 写代码：Inbox 的报错交给 Codex，改完交给 Claude Code 复核
+   ===================================================================== */
+
+const giveDev: Scene = {
+  id: 'work-give-dev',
+  label:
+    'Molis Work 示意：Inbox 递来报错 #318；选中报错交给 Codex，交接包带上目标、约束和进度；Codex 的改动回到同一页，再交给 Claude Code 复核。',
+  steps: 5,
+  times: [0, 1.2, 2.4, 3.8, 5.2, 6.8],
+  note: '开发中 · 界面示意',
+  render: ({ step }) => (
+    <Win step={step} className="wv-give" place="Inbox · #318" icon={Inbox} press={[1]}>
+      <Sheet icon={CircleDot} title="#318 支付回调偶发 500" sub="molis-pay" className="wv-main">
+        <p className="wv-why wv-why-line">和目标「上线支付」有关</p>
+        <pre className="wv-log">
+          <span className="wv-log-em">POST /api/pay/callback → 500</span>
+          {'\n'}
+          <span className="m-hl" style={at(1)}>
+            SignatureExpired: skew 312s
+          </span>
+          {'\n'}
+          {'  at verifySign (callback.ts:42)'}
+        </pre>
+        <Bar
+          show={at(1, 2)}
+          below
+          compact
+          cursor={at(1, 2)}
+          items={[
+            { label: '交给 Codex', icon: Terminal, primary: true },
+            { label: '交给 Claude Code', icon: Terminal },
+            { label: '记成待办', icon: ListChecks },
+          ]}
+        />
+        <Line show={at(2, 3)} className="wv-pack-line">
+          <div className="wv-pack">
+            <p className="wv-pack-head">
+              <Package aria-hidden="true" />
+              <b>交给 Codex</b>
+              <span>已经带上</span>
+            </p>
+            <ul>
+              {['报错原文', '目标的 3 条完成要求', '设计文档里的约束', 'Claude Code 的进度'].map(
+                (item, index) => (
+                  <li key={item}>
+                    <Tick step={2} delay={150 + index * 180} />
+                    {item}
+                  </li>
+                ),
+              )}
+            </ul>
+          </div>
+        </Line>
+        <Line show={at(3)}>
+          <div className="wv-back">
+            <p>
+              <Who k="cx">Cx</Who>
+              <b>Codex 的改动</b>
+              <span>回到这一页</span>
+            </p>
+            <p className="wv-back-text">验签允许 5 分钟偏差；订单号做幂等键。</p>
+            <small className="wv-ok">2 个文件 · 测试 8/8 通过</small>
+          </div>
+        </Line>
+        <Line show={at(4)}>
+          <div className="wv-back">
+            <p>
+              <Who k="cc">CC</Who>
+              <b>Claude Code 复核</b>
+              <span>2 条通过，1 条建议</span>
+            </p>
+            <p className="wv-back-text">Safari 14 付款后跳回订单页，没覆盖到。</p>
+            <small className="wv-wait">已记成待办 · 连着 #318</small>
+          </div>
+        </Line>
+      </Sheet>
+      <Swap className="wv-side">
+        <div className="m-v" data-fade="" style={at(0, 3)}>
+          <Sheet icon={Inbox} title="Inbox" sub="只放要你处理的">
+            <ul className="wv-list">
+              <li data-on="">
+                <CircleDot aria-hidden="true" />
+                <span>
+                  #318 支付回调偶发 500
+                  <small className="wv-why">和目标「上线支付」有关</small>
+                </span>
+              </li>
+              <li>
+                <Mail aria-hidden="true" />
+                <span>
+                  客户：付了款还是待支付<small>和 #318 是同一件事</small>
+                </span>
+              </li>
+              <li>
+                <GitPullRequest aria-hidden="true" />
+                <span>
+                  #315 依赖升级<small>在等你 review</small>
+                </span>
+              </li>
+            </ul>
+          </Sheet>
+        </div>
+        <div className="m-v" data-fade="" style={at(3, 4)}>
+          <Term name="Codex" bind="目标：上线支付">
+            <Line show={at(3, undefined, 100)} className="wv-u">读到交接包：#318、要求、约束、进度</Line>
+            <Line show={at(3, undefined, 500)}>按「回调必须幂等」来改</Line>
+            <Line show={at(3, undefined, 900)} className="wv-okl">✓ 测试 8/8</Line>
+          </Term>
+        </div>
+        <div className="m-v" data-fade="" style={at(4)}>
+          <Term name="Claude Code" bind="复核">
+            <Line show={at(4, undefined, 100)} className="wv-u">复核 Codex 对 #318 的改动</Line>
+            <Line show={at(4, undefined, 400)} className="wv-okl">✓ 验签偏差 · ✓ 幂等键</Line>
+            <Line show={at(4, undefined, 800)} className="wv-warnl">△ 没覆盖：Safari 14 跳转</Line>
+          </Term>
+        </div>
+      </Swap>
+    </Win>
+  ),
+};
+
+/* =====================================================================
+   递 · 写文档：视频里的一句放进第 2 节，自己的观点从旧笔记里找到依据
+   ===================================================================== */
+
+const giveDoc: Scene = {
+  id: 'work-give-doc',
+  label:
+    'Molis Work 示意：Inbox 说频道更新和你在写的稿子有关；灵光读出字幕，选中 12:40 的一句放进第 2 节，出处跟着；你的观点从 Obsidian 旧笔记里找到 3 条依据。',
+  steps: 5,
+  times: [0, 1.2, 2.4, 3.6, 5.0, 6.6],
+  note: '开发中 · 界面示意',
+  render: ({ step }) => (
+    <Win step={step} className="wv-give wv-give-doc" place="Pages · AI 编辑器观察" icon={FileText} press={[2]}>
+      <Sheet icon={FileText} title="AI 编辑器观察" sub="草稿" className="wv-main">
+        <p className="wv-sec">二、编辑器在变成什么</p>
+        <p className="wv-page-text">
+          <span className="m-hl" style={at(4)}>
+            AI 编辑器的护城河不在模型，在工作流。
+          </span>
+          <sup className="wv-fn m-v" data-fade="" style={at(4, undefined, 500)}>
+            [1]
+          </sup>
+          一位做编辑器的创始人说：
+          <span className="wv-put m-v" data-fade="" style={at(3)}>
+            “现在真正拉开差距的，是它能不能接住你手上的整个工作流。”
+            <small className="wv-src">
+              <Play aria-hidden="true" />
+              视频 · 12:40
+            </small>
+          </span>
+        </p>
+        <p className="wv-sec wv-dim">三、还没写</p>
+        <Line show={at(4, undefined, 700)}>
+          <p className="wv-foot">[1] 2024-03 读书笔记 · 平台的粘性来自工作流</p>
+        </Line>
+      </Sheet>
+      <Swap className="wv-side">
+        <div className="m-v" data-fade="" style={at(0, 1)}>
+          <Sheet icon={Inbox} title="Inbox" sub="只放要你处理的">
+            <ul className="wv-list">
+              <li data-on="">
+                <Rss aria-hidden="true" />
+                <span>
+                  频道更新：《AI 编辑器的下一步》
+                  <small className="wv-why">和你在写的《AI 编辑器观察》有关</small>
+                </span>
+              </li>
+              <li>
+                <Mail aria-hidden="true" />
+                <span>
+                  编辑：周五前能交初稿吗<small>在等你回复</small>
+                </span>
+              </li>
+            </ul>
+          </Sheet>
+        </div>
+        <div className="m-v" data-fade="" style={at(1, 4)}>
+          <Sheet icon={Lightbulb} title="灵光" sub="读出了字幕">
+            <div className="wv-video" aria-hidden="true">
+              <Play />
+            </div>
+            <div className="wv-tr">
+              <time>12:40</time>
+              <p>
+                <span className="m-hl" style={at(2)}>
+                  现在真正拉开差距的，是它能不能接住你手上的整个工作流。
+                </span>
+              </p>
+            </div>
+            <Bar
+              show={at(2, 3)}
+              below
+              compact
+              land="第 2 节"
+              cursor={at(2, 3)}
+              items={[
+                { label: '放进去', icon: CornerDownLeft, primary: true },
+                { label: '记下灵光', icon: Lightbulb },
+              ]}
+            />
+            <div className="wv-tr">
+              <time>13:15</time>
+              <p className="wv-dim">模型会越来越像，体验不会。</p>
+            </div>
+          </Sheet>
+        </div>
+        <div className="m-v" data-fade="" style={at(4)}>
+          <Sheet icon={BookOpen} title="Cognia" sub="在你的资料里找到 3 条">
+            <ul className="wv-notes">
+              <li data-on="">
+                平台的粘性来自工作流，不是功能<small>2024-03 读书笔记 · Obsidian</small>
+              </li>
+              <li>
+                设计师为什么不肯换工具<small>2025-07 访谈 · Obsidian</small>
+              </li>
+              <li>
+                换工具，是换掉一套习惯<small>2026-01 随记 · Obsidian</small>
+              </li>
+            </ul>
+          </Sheet>
+        </div>
+      </Swap>
+    </Win>
+  ),
+};
+
+/* =====================================================================
+   接 · 写代码：前端 Claude Code、后端 Codex，同一组目标（v0.2.0 已发布）
+   ===================================================================== */
+
+const relayDev: Scene = {
+  id: 'work-relay-dev',
+  label:
+    'Molis Work 示意：Claude Code 做结算页、Codex 做支付接口，终端各绑一个目标；结算页等接口；Codex 提议把金额改成「分」，写明影响，等你同意；接口交了依据，前端接上；收尾时还差一条依据。',
+  steps: 5,
+  times: [0, 1.2, 2.4, 3.8, 5.2, 6.8],
+  note: '界面示意',
+  render: ({ step }) => (
+    <Win
+      step={step}
+      className="wv-relay"
+      place="Goals · 上线支付"
+      icon={Target}
+      press={[2]}
+      status={
+        <span className="wv-menu" data-wait={step === 2 || undefined}>
+          <Target aria-hidden="true" />
+          <span className="m-stack">
+            <span className="m-v" data-fade="" style={at(0, 2)}>2 个 Agent 在跑</span>
+            <span className="m-v" data-fade="" style={at(2, 3)}>1 个提议等你决定</span>
+            <span className="m-v" data-fade="" style={at(3)}>2 个 Agent 在跑</span>
+          </span>
+        </span>
+      }
+    >
+      <div className="wv-terms">
+        <Term name="Claude Code" bind="结算页">
+          <Line show={at(0)} className="wv-u">做结算页</Line>
+          <Line show={at(0, undefined, 300)}>读到：依赖「支付接口」</Line>
+          <Line show={at(1)} className="wv-warnl">提交要等接口，先记一笔</Line>
+          <Line show={at(3, undefined, 500)}>读到新约定：金额用「分」</Line>
+          <Line show={at(3, undefined, 900)} className="wv-okl">✓ 测试 9/9</Line>
+          <Line show={at(4)} className="wv-u">提交收尾</Line>
+          <Line show={at(4, undefined, 400)} className="wv-warnl">没成立：手机端没依据</Line>
+        </Term>
+        <Term name="Codex" bind="支付接口">
+          <Line show={at(0)} className="wv-u">做支付接口</Line>
+          <Line show={at(0, undefined, 300)}>读到：2 条完成要求</Line>
+          <Line show={at(2)} className="wv-warnl">金额想改成「分」，先提给你</Line>
+          <Line show={at(3)} className="wv-okl">✓ 沙箱 3 笔 · 测试 14/14</Line>
+        </Term>
+      </div>
+      <Sheet icon={Target} title="上线支付" sub="两个 Agent 读写同一组目标" className="wv-goals">
+        <div className="wv-goal">
+          <p className="wv-goal-head">
+            <Who k="cc">CC</Who>
+            <b>结算页</b>
+            <span className="m-stack wv-pills">
+              <span className="wv-pill m-v" data-fade="" style={at(0, 1)}>进行中</span>
+              <span className="wv-pill m-v" data-tone="wait" data-fade="" style={at(1, 3)}>等支付接口</span>
+              <span className="wv-pill m-v" data-fade="" style={at(3, 4)}>进行中</span>
+              <span className="wv-pill m-v" data-tone="wait" data-fade="" style={at(4)}>没算完</span>
+            </span>
+          </p>
+          <ul className="wv-reqs">
+            <li>
+              <Tick step={3} delay={900} />
+              金额按约定显示和提交
+            </li>
+            <li>
+              <Tick step={99} />
+              手机端排版正常<span className="wv-must">要你验收</span>
+            </li>
+          </ul>
+          <Line show={at(3)}>
+            <p className="wv-ok">约定已更新：金额用「分」· 你同意的</p>
+          </Line>
+          <Line show={at(4, undefined, 400)}>
+            <p className="wv-wait">还差：手机端排版没有依据</p>
+          </Line>
+        </div>
+        <Line show={at(2, 3)}>
+          <div className="wv-ask">
+            <p>
+              <Who k="cx">Cx</Who>
+              <b>Codex 提议：金额从「元」改成「分」</b>
+            </p>
+            <p className="wv-impact">影响：结算页（Claude Code 在做）· 2 处</p>
+            <p className="wv-btns">
+              <span data-primary="">
+                同意
+                <Cursor show={at(2, 3)} x="60%" y="60%" />
+              </span>
+              <span>先不</span>
+            </p>
+          </div>
+        </Line>
+        <div className="wv-goal">
+          <p className="wv-goal-head">
+            <Who k="cx">Cx</Who>
+            <b>支付接口</b>
+            <span className="m-stack wv-pills">
+              <span className="wv-pill m-v" data-fade="" style={at(0, 3)}>进行中</span>
+              <span className="wv-pill m-v" data-tone="done" data-fade="" style={at(3)}>完成</span>
+            </span>
+          </p>
+          <ul className="wv-reqs">
+            <li>
+              <Tick step={3} />
+              回调幂等
+            </li>
+            <li>
+              <Tick step={3} delay={200} />
+              沙箱支付走通
+            </li>
+          </ul>
+        </div>
+      </Sheet>
+    </Win>
+  ),
+};
+
+/* =====================================================================
+   接 · 写文档：周一 Claude 桌面版，周三换个模型，同一页
+   ===================================================================== */
+
+const relayDoc: Scene = {
+  id: 'work-relay-doc',
+  label:
+    'Molis Work 示意：周一在接了 Molis Work 的 Claude 桌面版里建目标、写前两部分；周三在 Molis Work 的助理里换成另一个模型接着写第三部分；目标页记着谁写了什么、用了哪些资料。',
+  steps: 5,
+  times: [0, 1.2, 2.4, 3.8, 5.2, 6.8],
+  note: '开发中 · 界面示意',
+  render: ({ step }) => (
+    <Win
+      step={step}
+      className="wv-relay wv-relay-doc"
+      place="Goals · 写作"
+      icon={Target}
+      status={
+        <span className="wv-menu" data-wait={step === 3 || undefined}>
+          <span className="m-stack">
+            <span className="m-v" data-fade="" style={at(0, 2)}>周一</span>
+            <span className="m-v" data-fade="" style={at(2, 3)}>周三</span>
+            <span className="m-v" data-fade="" style={at(3, 4)}>周四 · 3/4，结论要你定</span>
+            <span className="m-v" data-fade="" style={at(4)}>周五</span>
+          </span>
+        </span>
+      }
+    >
+      <Swap className="wv-side">
+        <div className="m-v" data-fade="" style={at(0, 2)}>
+          <section className="wv-chat">
+            <p className="wv-chat-head">
+              <span className="wv-lights" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
+              <b>Claude</b>桌面版
+              <small>已接 Molis Work</small>
+            </p>
+            <div className="wv-msgs">
+              <p className="wv-me">记个目标：写完《AI 编辑器观察》，四部分，周五交</p>
+              <p className="wv-tool">
+                <Target aria-hidden="true" />
+                Molis Work · 建目标
+              </p>
+              <p className="wv-ai">建好了，四部分是四条完成要求。</p>
+              <Line show={at(1)}>
+                <p className="wv-me">先写前两部分</p>
+              </Line>
+              <Line show={at(1, undefined, 400)}>
+                <p className="wv-ai">写好了，放进 Pages。</p>
+              </Line>
+            </div>
+          </section>
+        </div>
+        <div className="m-v" data-fade="" style={at(2)}>
+          <section className="wv-chat wv-asst">
+            <p className="wv-chat-head">
+              <Sparkles aria-hidden="true" />
+              <b>助理</b>
+              <span className="wv-model">DeepSeek</span>
+            </p>
+            <div className="wv-msgs">
+              <p className="wv-me">接着写第三部分</p>
+              <p className="wv-ai">
+                读到：前两部分周一由 Claude 写好。第三部分写好了，用了融资汇总和读者留言。
+              </p>
+            </div>
+          </section>
+        </div>
+      </Swap>
+      <Sheet icon={Target} title="写完《AI 编辑器观察》" sub="四部分，周五交" className="wv-goals">
+        <ul className="wv-reqs wv-reqs-big">
+          {[
+            ['一、补全之后', 'Claude · 周一 · 资料 2 条', 1],
+            ['二、编辑器在变成什么', 'Claude · 周一 · 视频 12:40', 1],
+            ['三、价格与商业模式', '助理 DeepSeek · 周三 · 资料 2 条', 2],
+          ].map(([title, by, s], index) => (
+            <li key={title as string}>
+              <Tick step={s as number} delay={index * 160} />
+              <span>
+                {title}
+                <small className="m-v" data-fade="" style={at(s as number, undefined, index * 160)}>
+                  {by}
+                </small>
+              </span>
+            </li>
+          ))}
+          <li data-wait={step >= 3 || undefined}>
+            <Tick step={99} />
+            <span>
+              四、结论<span className="wv-must">要你来定</span>
+            </span>
+          </li>
+        </ul>
+        <div className="wv-tl" data-flash={step === 4 || undefined}>
+          <Line show={at(1)}>
+            <p>
+              <Who k="cc">Cl</Who>周一 · Claude 写了一、二部分
+            </p>
+          </Line>
+          <Line show={at(2)}>
+            <p>
+              <Who k="ds">DS</Who>周三 · 助理（DeepSeek）写了第三部分
+            </p>
+          </Line>
+          <Line show={at(3)}>
+            <p>
+              <Who k="me">你</Who>周四 · 你改了第二部分开头
+            </p>
+          </Line>
+        </div>
+      </Sheet>
+    </Win>
+  ),
+};
+
+/* =====================================================================
+   长 · 写代码：一句话做出发版清单
+   ===================================================================== */
+
+const Studio = ({ prompt, checks, name, icon: Icon }: { prompt: string; checks: string[]; name: string; icon: LucideIcon }) => (
+  <Sheet icon={Wand} title="插件创作工作台" sub="用一句话做插件">
+    <p className="wv-prompt">{prompt}</p>
+    <ul className="wv-checks">
+      {checks.map((item, index) => (
+        <li key={item}>
+          <Tick step={1} delay={index * 260} />
+          {item}
+        </li>
+      ))}
+    </ul>
+    <p className="wv-newtile m-v" data-pop="" style={at(1, undefined, 1200)}>
+      <span>
+        <Icon aria-hidden="true" />
+      </span>
+      <b>{name}</b>
+      <small>你做的插件 · Agent 也能调用</small>
+    </p>
+  </Sheet>
+);
+
+const Flow = ({ stations, when }: { stations: [LucideIcon, string][]; when: string }) => (
+  <Sheet icon={Workflow} title="工作流程" sub="存成每周的">
+    <ol className="wv-flow">
+      {stations.map(([Icon, name], index) => (
+        <li key={name} className="m-v" data-pop="" style={at(0, undefined, index * 160)}>
+          <span data-mine={index === 1 || undefined}>
+            <Icon aria-hidden="true" />
+          </span>
+          {name}
+        </li>
+      ))}
+    </ol>
+    <p className="wv-when">
+      <Timer aria-hidden="true" />
+      {when}
+    </p>
+  </Sheet>
+);
+
+const growDev: Scene = {
+  id: 'work-grow-dev',
+  label:
+    'Molis Work 示意：在插件创作工作台说一句，做出「发版清单」；Claude Code 问能不能发，调用的就是它；Inbox 里选中刚合并的 PR，浮条递来「放进发版清单」；再存成每周五自己跑的流程。',
+  steps: 5,
+  times: [0, 1.2, 2.6, 4.0, 5.4, 7.0],
+  note: '开发中 · 界面示意',
+  render: ({ step }) => (
+    <Win step={step} className="wv-grow" place="支付改版" icon={Package} press={[3]}>
+      <Swap className="wv-main">
+        <div className="m-v" data-fade="" style={at(0, 2)}>
+          <Studio
+            icon={ClipboardCheck}
+            name="发版清单"
+            prompt="做一个发版清单：这一版完成了哪些目标、哪条还没依据，再起草发布说明。"
+            checks={['Agent 先给方案', '在沙箱里写代码和测试', '通过检查和验收', '装进「支付改版」']}
+          />
+        </div>
+        <div className="m-v" data-fade="" style={at(2)}>
+          <Sheet icon={ClipboardCheck} title="发版清单" sub="你做的插件">
+            <p className="wv-sub">这一版完成的目标</p>
+            <ul className="wv-reqs">
+              <li>
+                <Tick step={2} />
+                支付接口<small>沙箱 3 笔 · 14/14</small>
+              </li>
+              <li>
+                <Tick step={2} delay={120} />
+                下单页<small>测试 12/12</small>
+              </li>
+            </ul>
+            <p className="wv-sub">还没有依据</p>
+            <p className="wv-wait">手机端排版正常 · 要你验收</p>
+            <p className="wv-sub">发布说明草稿</p>
+            <ul className="wv-notes-plain">
+              <li>新增：结算页按「分」计价</li>
+              <li>修复：支付回调偶发 500</li>
+              <li className="m-v wv-line wv-new" style={at(3, undefined, 600)}>
+                <div>
+                  修复：Safari 14 付款后跳转<small>PR #322</small>
+                </div>
+              </li>
+            </ul>
+          </Sheet>
+        </div>
+      </Swap>
+      <Swap className="wv-side">
+        <div className="m-v" data-fade="" style={at(0, 2)}>
+          <Sheet icon={Package} title="底栏" sub="新插件钉在这里">
+            <p className="wv-dock">
+              {[Target, Inbox, Terminal, ListChecks].map((Icon, index) => (
+                <span key={index}>
+                  <Icon aria-hidden="true" />
+                </span>
+              ))}
+              <span className="wv-dock-new m-v" data-pop="" style={at(1, undefined, 1400)}>
+                <ClipboardCheck aria-hidden="true" />
+              </span>
+            </p>
+          </Sheet>
+        </div>
+        <div className="m-v" data-fade="" style={at(2, 3)}>
+          <Term name="Claude Code" bind="上线支付">
+            <Line show={at(2, undefined, 200)} className="wv-u">能发吗？</Line>
+            <Line show={at(2, undefined, 700)}>调用「发版清单」（你做的插件）</Line>
+            <Line show={at(2, undefined, 1200)} className="wv-warnl">还有 1 条没依据：手机端排版</Line>
+          </Term>
+        </div>
+        <div className="m-v" data-fade="" style={at(3, 4)}>
+          <Sheet icon={Inbox} title="Inbox">
+            <ul className="wv-list">
+              <li data-on="">
+                <GitPullRequest aria-hidden="true" />
+                <span>
+                  #322 合并：修好 Safari 14 跳转<small className="wv-why">你记过这条待办</small>
+                </span>
+              </li>
+            </ul>
+            <Bar
+              show={at(3)}
+              below
+              compact
+              cursor={at(3)}
+              items={[
+                { label: '放进发版清单', icon: ClipboardCheck, primary: true, tag: '你做的' },
+                { label: '记成待办', icon: ListChecks },
+              ]}
+            />
+          </Sheet>
+        </div>
+        <div className="m-v" data-fade="" style={at(4)}>
+          <Flow
+            when="每周五 17:00"
+            stations={[
+              [Target, 'Goals'],
+              [ClipboardCheck, '发版清单'],
+              [FileText, '发布说明'],
+            ]}
+          />
+        </div>
+      </Swap>
+    </Win>
+  ),
+};
+
+/* =====================================================================
+   长 · 写文档：一句话做出选题库
+   ===================================================================== */
+
+const topics: [string, string, string, number][] = [
+  ['AI 编辑器观察', '视频', '●●●', 0],
+  ['为什么大家又开始写长文', '灵光', '●●○', 0],
+  ['独立开发者的定价', 'Newsletter', '●●○', 0],
 ];
 
-export const workScenes = {
-  scatter,
-  arrange,
-  together,
-  relay: relayMore,
-  grow,
-  talk,
-  goal,
-  away,
+const growDoc: Scene = {
+  id: 'work-grow-doc',
+  label:
+    'Molis Work 示意：说一句做出「选题库」；Inbox 里一条读者留言，浮条递来「放进选题库」；存成每周日把最热的五个排进下周的流程；Claude 桌面版也问得到它。',
+  steps: 5,
+  times: [0, 1.2, 2.6, 4.0, 5.4, 7.0],
+  note: '开发中 · 界面示意',
+  render: ({ step }) => (
+    <Win step={step} className="wv-grow wv-grow-doc" place="写作" icon={NotebookPen} press={[2]}>
+      <Swap className="wv-main">
+        <div className="m-v" data-fade="" style={at(0, 2)}>
+          <Studio
+            icon={NotebookPen}
+            name="选题库"
+            prompt="做一个选题库：记选题、来源、热度和状态。"
+            checks={['Agent 先给方案', '在沙箱里写代码和测试', '通过检查和验收', '装进「写作」']}
+          />
+        </div>
+        <div className="m-v" data-fade="" style={at(2)}>
+          <Sheet icon={NotebookPen} title="选题库" sub="你做的插件">
+            <table className="wv-table">
+              <thead>
+                <tr>
+                  <th>选题</th>
+                  <th>来源</th>
+                  <th>热度</th>
+                  <th>状态</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="m-v wv-new-row" data-fade="" style={at(2, undefined, 900)}>
+                  <td>几家 AI 编辑器横评</td>
+                  <td>读者留言</td>
+                  <td className="wv-heat">●●●</td>
+                  <td aria-label="状态">
+                    <span className="m-stack">
+                      <span className="m-v" data-fade="" style={at(2, 3)}>没写</span>
+                      <span className="m-v wv-on" data-fade="" style={at(3)}>排进下周</span>
+                    </span>
+                  </td>
+                </tr>
+                {topics.map(([name, from, heat]) => (
+                  <tr key={name}>
+                    <td>{name}</td>
+                    <td>{from}</td>
+                    <td className="wv-heat">{heat}</td>
+                    <td>{name === 'AI 编辑器观察' ? <span className="wv-on">在写</span> : '没写'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Sheet>
+        </div>
+      </Swap>
+      <Swap className="wv-side">
+        <div className="m-v" data-fade="" style={at(0, 2)}>
+          <Sheet icon={NotebookPen} title="底栏" sub="新插件钉在这里">
+            <p className="wv-dock">
+              {[FileText, Inbox, Lightbulb, CalendarDays].map((Icon, index) => (
+                <span key={index}>
+                  <Icon aria-hidden="true" />
+                </span>
+              ))}
+              <span className="wv-dock-new m-v" data-pop="" style={at(1, undefined, 1400)}>
+                <NotebookPen aria-hidden="true" />
+              </span>
+            </p>
+          </Sheet>
+        </div>
+        <div className="m-v" data-fade="" style={at(2, 3)}>
+          <Sheet icon={Inbox} title="Inbox">
+            <ul className="wv-list">
+              <li data-on="">
+                <MessagesSquare aria-hidden="true" />
+                <span>
+                  读者留言：想看几家 AI 编辑器横评<small className="wv-why">可以记成选题</small>
+                </span>
+              </li>
+            </ul>
+            <Bar
+              show={at(2)}
+              below
+              compact
+              cursor={at(2)}
+              items={[
+                { label: '放进选题库', icon: NotebookPen, primary: true, tag: '你做的' },
+                { label: '记下灵光', icon: Lightbulb },
+              ]}
+            />
+          </Sheet>
+        </div>
+        <div className="m-v" data-fade="" style={at(3, 4)}>
+          <Flow
+            when="每周日 20:00"
+            stations={[
+              [NotebookPen, '选题库'],
+              [ListOrdered, '挑最热的 5 个'],
+              [CalendarDays, 'Jelly · 下周'],
+            ]}
+          />
+        </div>
+        <div className="m-v" data-fade="" style={at(4)}>
+          <section className="wv-chat">
+            <p className="wv-chat-head">
+              <span className="wv-lights" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
+              <b>Claude</b>桌面版
+            </p>
+            <div className="wv-msgs">
+              <p className="wv-me">选题库里哪些还没写？</p>
+              <p className="wv-tool">
+                <NotebookPen aria-hidden="true" />
+                选题库 · 你做的插件
+              </p>
+              <p className="wv-ai">还有 3 个，最热的是「几家 AI 编辑器横评」，已排进下周一。</p>
+            </div>
+          </section>
+        </div>
+      </Swap>
+    </Win>
+  ),
+};
+
+/* =====================================================================
+   一起干 · 写代码：用户反馈 → 助理判断 → 群里 → 目标 → Codex → 验收（开发中）
+   ===================================================================== */
+
+const teamDev: Scene = {
+  id: 'work-team-dev',
+  label:
+    'Molis Work 示意（开发中）：用户反馈进 Feed，项目助理按规则判断为高优先，发到项目群 @ 你和产品；讨论成一个目标，你同意；你的 Codex 接手，进展和依据回到群里，产品验收。',
+  steps: 5,
+  times: [0, 1.2, 2.4, 3.8, 5.2, 6.8],
+  note: '开发中 · 界面示意',
+  render: ({ step }) => (
+    <Win step={step} className="wv-team" place="支付改版" icon={MessagesSquare} press={[3, 4]}>
+      <Swap className="wv-side">
+        <div className="m-v" data-fade="" style={at(0, 3)}>
+          <Sheet icon={Rss} title="Feed" sub="用户反馈">
+            <ul className="wv-feed" data-judged={step >= 1 || undefined}>
+              <li data-hot="">
+                <Star aria-hidden="true" />
+                <span>
+                  付完钱一直转圈，订单没出来<small>App Store · 1 星</small>
+                </span>
+              </li>
+              <li data-hot="">
+                <Mail aria-hidden="true" />
+                <span>
+                  3 个店员在微信里都付不了款<small>客户邮件</small>
+                </span>
+              </li>
+              <li>
+                <Star aria-hidden="true" />
+                <span>
+                  界面比上一版好看<small>App Store · 4 星</small>
+                </span>
+              </li>
+              <li data-hot="">
+                <CircleDot aria-hidden="true" />
+                <span>
+                  iOS 微信内置浏览器回调失败<small>GitHub #331</small>
+                </span>
+              </li>
+            </ul>
+            <p className="wv-judge m-v" data-pop="" style={at(1)}>
+              <Sparkles aria-hidden="true" />
+              <b>高优先：支付失败，影响 23 位用户</b>
+              <small>规则：涉及付款、影响超过 10 人</small>
+            </p>
+          </Sheet>
+        </div>
+        <div className="m-v" data-fade="" style={at(3)}>
+          <Sheet icon={Target} title="修好微信里的支付" sub="目标">
+            <p className="m-stack wv-pills">
+              <span className="wv-pill m-v" data-fade="" style={at(3, 4)}>进行中 · Codex 在做</span>
+              <span className="wv-pill m-v" data-tone="done" data-fade="" style={at(4, undefined, 1400)}>完成</span>
+            </p>
+            <ul className="wv-reqs">
+              <li>
+                <Tick step={4} delay={300} />
+                微信内置浏览器里能付款
+              </li>
+              <li>
+                <Tick step={4} delay={700} />
+                23 位用户的订单补上
+              </li>
+              <li>
+                <Tick step={4} delay={1300} />
+                真机走一遍<span className="wv-must">小周验收</span>
+              </li>
+            </ul>
+          </Sheet>
+        </div>
+      </Swap>
+      <Sheet icon={MessagesSquare} title="# 支付失败" sub="项目群" className="wv-thread">
+        <div className="wv-msgs wv-msgs-end">
+          <Line show={at(2)}>
+            <div className="wv-post">
+              <Who k="ai">
+                <Sparkles aria-hidden="true" />
+              </Who>
+              <div>
+                <p>
+                  <span className="wv-at">@你</span> <span className="wv-at">@小周</span> 高优先：支付失败，影响 23 位用户
+                </p>
+                <p className="wv-quote">「付完钱一直转圈」「店员付不了款」「#331」</p>
+                <p className="wv-tool">
+                  <Target aria-hidden="true" />
+                  有关目标：上线支付
+                </p>
+              </div>
+            </div>
+          </Line>
+          <Line show={at(3)}>
+            <div className="wv-post">
+              <Who k="p">周</Who>
+              <p>先修微信内置浏览器。</p>
+            </div>
+          </Line>
+          <Line show={at(3, undefined, 400)}>
+            <div className="wv-post">
+              <Who k="ai">
+                <Sparkles aria-hidden="true" />
+              </Who>
+              <div>
+                <p>提成一个目标？三条完成要求已写好。</p>
+                <p className="wv-btns">
+                  <span data-primary="" data-done={step >= 4 || undefined}>
+                    同意，建目标
+                    <Cursor show={at(3, 4)} x="62%" y="60%" />
+                  </span>
+                </p>
+              </div>
+            </div>
+          </Line>
+          <Line show={at(4, undefined, 200)}>
+            <div className="wv-post">
+              <Who k="cx">Cx</Who>
+              <p className="wv-codeline">✓ 回调改走 https · 16/16　✓ 补单 23/23</p>
+            </div>
+          </Line>
+          <Line show={at(4, undefined, 1100)}>
+            <div className="wv-post">
+              <Who k="p">周</Who>
+              <p>
+                录屏看了，验收通过<Tick step={4} delay={1300} />
+              </p>
+            </div>
+          </Line>
+        </div>
+      </Sheet>
+    </Win>
+  ),
+};
+
+/* =====================================================================
+   一起干 · 写文档、管事情：一个决定，牵动的事都跟上（开发中）
+   ===================================================================== */
+
+const teamDoc: Scene = {
+  id: 'work-team-doc',
+  label:
+    'Molis Work 示意（开发中）：开发的 Agent 在目标上提了「待你决定」：两种定价各自的代价；项目助理发到群里 @ 你和运营；你点了 B；受影响的两个目标标出要改什么，开发的 Agent 接着做，运营多了一条待办。',
+  steps: 4,
+  times: [0, 1.3, 2.6, 4.2, 6.0],
+  note: '开发中 · 界面示意',
+  render: ({ step }) => (
+    <Win step={step} className="wv-team" place="会员订阅" icon={MessagesSquare} press={[2]}>
+      <Swap className="wv-side">
+        <div className="m-v" data-fade="" style={at(0, 3)}>
+          <Sheet icon={Target} title="会员订阅上线" sub="目标">
+            <div className="wv-decide" data-settled={step >= 2 || undefined}>
+              <p className="wv-decide-head">
+                <Who k="cc">CC</Who>
+                <b>待你决定：老用户怎么定价</b>
+              </p>
+              <p className="wv-choice" data-out={step >= 2 || undefined}>
+                <i>A</i>
+                <span>
+                  老用户保留原价<small>两套计费，多做一周</small>
+                </span>
+              </p>
+              <p className="wv-choice" data-picked={step >= 2 || undefined}>
+                <i>B</i>
+                <span>
+                  统一新价，老用户下月起<small>影响 1,200 位老用户</small>
+                </span>
+              </p>
+              <Line show={at(2, undefined, 600)}>
+                <p className="wv-ok">已定：B · 你，周四 · 记在目标上</p>
+              </Line>
+            </div>
+          </Sheet>
+        </div>
+        <div className="m-v" data-fade="" style={at(3)}>
+          <Sheet icon={Target} title="受影响的" sub="跟着改">
+            <ul className="wv-affect">
+              <li>
+                <b>订阅结算</b>
+                <span className="wv-wait">要改：老用户下月起按新价</span>
+                <span className="wv-codeline">阿哲的 Claude Code：读到新约定，接着做 ✓</span>
+              </li>
+              <li>
+                <b>价格页</b>
+                <span className="wv-wait">要改：加一段老用户说明</span>
+              </li>
+              <li>
+                <b>待办 · 小林</b>
+                <span>通知老用户：下月起按新价</span>
+              </li>
+            </ul>
+          </Sheet>
+        </div>
+      </Swap>
+      <Sheet icon={MessagesSquare} title="# 订阅定价" sub="项目群" className="wv-thread">
+        <div className="wv-msgs wv-msgs-end">
+          <Line show={at(1)}>
+            <div className="wv-post">
+              <Who k="ai">
+                <Sparkles aria-hidden="true" />
+              </Who>
+              <div>
+                <p>
+                  <span className="wv-at">@你</span> <span className="wv-at">@小林</span> 订阅卡在定价：A 要多做一周，B 影响老用户
+                </p>
+                <p className="wv-tool">
+                  <Target aria-hidden="true" />
+                  会员订阅上线 · 待你决定
+                </p>
+              </div>
+            </div>
+          </Line>
+          <Line show={at(2)}>
+            <div className="wv-post">
+              <Who k="p">林</Who>
+              <p>B 我能接住，提前一个月通知。</p>
+            </div>
+          </Line>
+          <Line show={at(2, undefined, 300)}>
+            <div className="wv-post">
+              <Who k="me">你</Who>
+              <div>
+                <p>那就 B。</p>
+                <p className="wv-btns">
+                  <span data-dim={step >= 2 || undefined}>选 A</span>
+                  <span data-primary="">
+                    选 B
+                    <Cursor show={at(2, 3)} x="60%" y="60%" />
+                  </span>
+                </p>
+              </div>
+            </div>
+          </Line>
+          <Line show={at(3, undefined, 300)}>
+            <div className="wv-post">
+              <Who k="ai">
+                <Sparkles aria-hidden="true" />
+              </Who>
+              <p>已记在目标上；受影响的 2 个目标和 1 条待办都更新了。</p>
+            </div>
+          </Line>
+        </div>
+      </Sheet>
+    </Win>
+  ),
+};
+
+export const workActScenes: Record<Persona, Record<WorkActId, Scene>> = {
+  dev: { give: giveDev, relay: relayDev, grow: growDev, team: teamDev },
+  doc: { give: giveDoc, relay: relayDoc, grow: growDoc, team: teamDoc },
 };

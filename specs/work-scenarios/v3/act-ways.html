@@ -1,0 +1,767 @@
+<title>Molis Work 干法小样</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Newsreader:ital,opsz,wght@1,6..72,400&family=Noto+Serif+SC:wght@500;700&display=swap">
+<style>
+/* Layout: one paper stage; tabs above, caption below. Plugin tiles are paper chips that re-arrange between a five-column shelf and a flow line. */
+:root {
+  --paper: #f5f0e6;
+  --sheet: #fffcf6;
+  --ink: #121826;
+  --text: #33312c;
+  --muted: #6f695f;
+  --line: rgb(18 24 38 / 0.14);
+  --navy: #19284f;
+  --red: #ee4e2b;
+  --c-take: #8fb69b;   /* 收 */
+  --c-think: #f6c445;  /* 想 */
+  --c-make: #b9c6f5;   /* 写 */
+  --c-plan: #f4b4c0;   /* 排 */
+  --c-move: #f39a82;   /* 推进 */
+  --serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --display: 'Newsreader', Georgia, serif;
+  --sans: 'Geist', 'PingFang SC', 'Hiragino Sans GB', system-ui, sans-serif;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --snap: cubic-bezier(0.34, 1.36, 0.5, 1);
+  --shadow: 0 12px 22px -14px rgb(40 24 10 / 0.55), 0 1px 0 rgb(18 24 38 / 0.06);
+  --t: 48px;
+  color-scheme: light;
+}
+body { background: var(--paper); color: var(--text); font-family: var(--sans); }
+.wrap { max-width: 1160px; margin: 0 auto; padding-inline: clamp(16px, 3.2vw, 48px); padding-block: clamp(28px, 5vw, 64px) 48px; display: grid; gap: 22px; }
+.eyebrow { margin: 0; font-size: 12px; letter-spacing: 0.08em; color: var(--muted); }
+.eyebrow b { color: var(--red); font-weight: 500; }
+.eyebrow a { margin-left: 8px; color: var(--muted); }
+.eyebrow a.on { color: var(--ink); font-weight: 500; }
+h1 { margin: 6px 0 0; font-family: var(--serif); font-weight: 700; color: var(--ink); font-size: clamp(30px, 4.6vw, 54px); line-height: 1.15; letter-spacing: -0.01em; text-wrap: balance; }
+.lead { margin: 10px 0 0; max-width: 38em; font-size: clamp(15px, 1.5vw, 17px); line-height: 1.8; }
+.lead em { font-family: var(--display); font-style: italic; color: var(--ink); }
+
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.ways { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; min-width: 0; }
+.ways-label { font-family: var(--serif); font-weight: 700; font-size: 15px; color: var(--ink); }
+.tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 999px; background: rgb(18 24 38 / 0.05); }
+.tabs button, .ctrl { font: 500 14px/1 var(--sans); color: var(--text); background: transparent; border: 0; border-radius: 999px; padding: 10px 14px; cursor: pointer; transition: background 160ms var(--ease), color 160ms var(--ease); }
+.tabs button:hover, .ctrl:hover { background: rgb(18 24 38 / 0.06); }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--sheet); }
+.tools { display: flex; align-items: center; gap: 4px; }
+.ctrl { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
+.ctrl svg { width: 15px; height: 15px; }
+.overview[aria-pressed="true"] { color: var(--ink); background: rgb(18 24 38 / 0.06); }
+.cap-kicker { margin: 0; font-size: 12px; letter-spacing: 0.08em; color: var(--red); }
+.ctrl .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
+.ctrl[aria-pressed="false"] .dot { background: transparent; box-shadow: inset 0 0 0 1.5px var(--muted); }
+button:focus-visible, .tile:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+
+.stage { position: relative; height: 640px; background: var(--sheet); border-radius: 22px; box-shadow: 0 30px 60px -40px rgb(40 24 10 / 0.5); overflow: hidden; }
+.stage::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgb(18 24 38 / 0.05) 1px, transparent 1px); background-size: 22px 22px; pointer-events: none; }
+.flow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.flow path { fill: none; stroke: var(--navy); stroke-width: 1.6; stroke-linecap: round; opacity: 0.55; }
+.flow .rail { stroke-dasharray: 2 7; opacity: 0.25; }
+
+.col-label { position: absolute; top: 0; left: 0; display: grid; justify-items: center; gap: 2px; transform: translateX(-50%); transition: opacity 420ms var(--ease), transform 420ms var(--ease); }
+.col-label strong { font-family: var(--serif); font-weight: 700; font-size: 20px; color: var(--ink); }
+.col-label small { font-size: 11px; line-height: 1.35; color: var(--muted); letter-spacing: 0.04em; text-align: center; }
+.stage.narrow .col-label small { display: none; }
+.col-label i { display: block; width: 18px; height: 3px; border-radius: 2px; margin-top: 4px; }
+.stage:not(.ready) .tile, .stage:not(.ready) .col-label { visibility: hidden; }
+.stage[data-mode="recipe"] .col-label { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+
+.tile { position: absolute; top: 0; left: 0; width: var(--t); height: var(--t); transform-origin: 50% 50%; transition: transform 820ms var(--ease), opacity 520ms var(--ease); cursor: default; }
+.tile.snap { transition-timing-function: var(--snap), var(--ease); }
+.ico { position: absolute; inset: 0; display: grid; place-items: center; background: var(--sheet); border-radius: 13px; box-shadow: var(--shadow); color: var(--ink); transition: background 380ms var(--ease), box-shadow 380ms var(--ease), transform 220ms var(--ease); }
+.ico::after { content: ''; position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+.ico svg { width: 46%; height: 46%; stroke-width: 1.7; }
+.ico .mono { font: 600 15px var(--sans); }
+.nm { position: absolute; top: calc(100% + 7px); left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 12px; color: var(--text); transition: opacity 300ms var(--ease); }
+.nm sup { font-size: 9px; color: var(--red); margin-left: 2px; }
+.tile.mini .nm { opacity: 0; }
+.tile.mini .ico { box-shadow: 0 6px 12px -10px rgb(40 24 10 / 0.6); }
+.tile.dim { opacity: 0.32; }
+.tile.lit .ico { background: var(--c); box-shadow: 0 14px 26px -16px rgb(40 24 10 / 0.7); }
+.tile.lit .ico::after { background: var(--sheet); }
+.tile.nod .ico { animation: nod 640ms var(--snap); }
+@keyframes nod { 0% { transform: scale(1); } 35% { transform: scale(1.2) rotate(-4deg); } 100% { transform: scale(1); } }
+.tile:hover .ico { transform: translateY(-3px) rotate(-2deg); }
+
+.tile.yours .ico { background: transparent; box-shadow: none; color: var(--red); }
+.tile.yours .ico::before { content: ''; position: absolute; inset: 0; border-radius: 13px; border: 1.5px dashed var(--red); }
+.tile.yours .ico::after { display: none; }
+.tile.yours.hidden { opacity: 0; }
+.tile.yours.drawn .ico::before { animation: dash 900ms var(--ease); }
+@keyframes dash { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.tile.yours.made .ico { background: var(--sheet); box-shadow: var(--shadow); color: var(--ink); }
+.tile.yours.made .ico::before { border-style: solid; border-color: transparent; }
+.tile.yours.made.lit .ico { background: #f7c1b2; }
+.tile.yours.pop .ico { animation: pop 700ms var(--snap); }
+@keyframes pop { 0% { transform: scale(0.4) rotate(-24deg); } 100% { transform: scale(1) rotate(0); } }
+
+.chip { position: absolute; top: 0; left: 0; max-width: 150px; padding: 6px 10px; border-radius: 8px; background: var(--paper); color: var(--ink); font-size: 12.5px; line-height: 1.45; text-align: center; transform: translate(-50%, 6px); opacity: 0; transition: opacity 360ms var(--ease), transform 360ms var(--ease); pointer-events: none; }
+.chip.on { opacity: 1; transform: translate(-50%, 0); }
+.chip.last { background: var(--ink); color: var(--sheet); max-width: none; white-space: nowrap; }
+
+.token { position: absolute; top: 0; left: 0; padding: 7px 11px; border-radius: 9px; background: var(--red); color: var(--sheet); font-size: 13px; font-weight: 500; white-space: nowrap; box-shadow: 0 14px 24px -14px rgb(150 40 10 / 0.8); opacity: 0; pointer-events: none; transition: opacity 260ms var(--ease); }
+.token.on { opacity: 1; }
+
+.tip { position: absolute; top: 0; left: 0; max-width: 220px; padding: 8px 11px; border-radius: 10px; background: var(--ink); color: var(--sheet); font-size: 12.5px; line-height: 1.5; opacity: 0; transform: translateY(4px); transition: opacity 180ms var(--ease), transform 180ms var(--ease); pointer-events: none; z-index: 5; }
+.tip.on { opacity: 1; transform: none; }
+.tip b { display: block; font-weight: 600; margin-bottom: 2px; }
+
+/* room for a two-line explanation, so the frame does not change height between examples */
+.caption { display: grid; gap: 6px; align-content: start; min-height: 132px; }
+.cap-main { margin: 0; font-family: var(--serif); font-weight: 700; font-size: clamp(22px, 2.6vw, 30px); color: var(--ink); }
+.cap-sub { margin: 0; max-width: 46em; font-size: 15px; line-height: 1.8; }
+.note { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.7; border-top: 1px solid var(--line); padding-top: 14px; }
+
+@media (max-width: 640px) {
+  .stage { height: 580px; border-radius: 16px; }
+  .col-label strong { font-size: 16px; }
+  .chip { max-width: 112px; font-size: 11.5px; padding: 5px 8px; }
+  .nm { font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tile, .chip, .token, .col-label, .ico, .tip { transition: none !important; }
+  .tile.nod .ico, .tile.yours.drawn .ico::before, .tile.yours.pop .ico { animation: none !important; }
+}
+html.embed .wrap > header, html.embed .note { display: none; }
+html.embed .wrap { max-width: none; padding-inline: 0; padding-block: 4px 12px; }
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow"><b>Molis Work</b> · 想怎么干 · 动画小样 <a href="#dev" data-persona="dev">写代码</a><a href="#doc" data-persona="doc">写文档、管事情</a></p>
+    <h1>同一套工作台，拼出你的干法。</h1>
+    <p class="lead">官方插件各管一摊，想怎么干就怎么拼；下面几种只是举例。不够的，让 AI 再做一个。<em>Same tools, your way.</em></p>
+  </header>
+
+  <div class="bar">
+    <div class="ways">
+      <span class="ways-label" id="ways-label">想怎么干就怎么干，比如</span>
+      <div class="tabs" id="tabs" role="tablist" aria-labelledby="ways-label"></div>
+    </div>
+    <div class="tools">
+      <button id="overview" class="ctrl overview" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>官方插件列表</span></button>
+      <button id="autoplay" class="ctrl" aria-pressed="true"><span class="dot" aria-hidden="true"></span><span class="ctrl-text">自动播放中</span></button>
+    </div>
+  </div>
+
+  <section class="stage" id="stage" data-mode="grid" aria-label="Molis Work 的插件按五类排开，再拼成不同的干法">
+    <svg class="flow" aria-hidden="true"><path class="rail" id="rail" d=""></path><path id="flow" d=""></path></svg>
+    <div class="tip" id="tip" role="tooltip"></div>
+  </section>
+
+  <div class="caption" aria-live="polite">
+    <p class="cap-kicker" id="cap-kicker"></p>
+    <p class="cap-main" id="cap-main"></p>
+    <p class="cap-sub" id="cap-sub"></p>
+  </div>
+
+  <p class="note">动画小样，用来感受节奏和手感，不是产品截图。图标取自 Molis Work 里各插件用的那一套。Goals、Sessions、Feed、成果已发布（v0.2.0），其余插件在开发中；「账单提醒」是用插件创作工作台做出新插件的示意。鼠标停在图标上，可以看到它是做什么的。</p>
+</main>
+
+<script>
+(() => {
+  // Icon geometry from Lucide 0.454.0 (ISC), the set Molis Work's plugins use.
+  const ICONS = {"rss":"<path d='M4 11a9 9 0 0 1 9 9'/><path d='M4 4a16 16 0 0 1 16 16'/><circle cx='5' cy='19' r='1'/>","inbox":"<polyline points='22 12 16 12 14 15 10 15 8 12 2 12'/><path d='M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'/>","library":"<path d='m16 6 4 14'/><path d='M12 6v14'/><path d='M8 8v12'/><path d='M4 4v16'/>","circle-alert":"<circle cx='12' cy='12' r='10'/><line x1='12' x2='12' y1='8' y2='12'/><line x1='12' x2='12.01' y1='16' y2='16'/>","lightbulb":"<path d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5'/><path d='M9 18h6'/><path d='M10 22h4'/>","book-open":"<path d='M12 7v14'/><path d='M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z'/>","zap":"<path d='M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z'/>","file-text":"<path d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'/><path d='M14 2v4a2 2 0 0 0 2 2h4'/><path d='M10 9H8'/><path d='M16 13H8'/><path d='M16 17H8'/>","pen-tool":"<path d='M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z'/><path d='m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18'/><path d='m2.3 2.3 7.286 7.286'/><circle cx='11' cy='11' r='2'/>","presentation":"<path d='M2 3h20'/><path d='M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3'/><path d='m7 21 5-5 5 5'/>","clipboard-list":"<rect width='8' height='4' x='8' y='2' rx='1' ry='1'/><path d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'/><path d='M12 11h4'/><path d='M12 16h4'/><path d='M8 11h.01'/><path d='M8 16h.01'/>","database":"<ellipse cx='12' cy='5' rx='9' ry='3'/><path d='M3 5V19A9 3 0 0 0 21 19V5'/><path d='M3 12A9 3 0 0 0 21 12'/>","image":"<rect width='18' height='18' x='3' y='3' rx='2' ry='2'/><circle cx='9' cy='9' r='2'/><path d='m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21'/>","list-checks":"<path d='m3 17 2 2 4-4'/><path d='m3 7 2 2 4-4'/><path d='M13 6h8'/><path d='M13 12h8'/><path d='M13 18h8'/>","calendar":"<path d='M8 2v4'/><path d='M16 2v4'/><rect width='18' height='18' x='3' y='4' rx='2'/><path d='M3 10h18'/>","timer":"<line x1='10' x2='14' y1='2' y2='2'/><line x1='12' x2='15' y1='14' y2='11'/><circle cx='12' cy='14' r='8'/>","target":"<circle cx='12' cy='12' r='10'/><circle cx='12' cy='12' r='6'/><circle cx='12' cy='12' r='2'/>","terminal":"<polyline points='4 17 10 11 4 5'/><line x1='12' x2='20' y1='19' y2='19'/>","code":"<polyline points='16 18 22 12 16 6'/><polyline points='8 6 2 12 8 18'/>","git-branch":"<line x1='6' x2='6' y1='3' y2='15'/><circle cx='18' cy='6' r='3'/><circle cx='6' cy='18' r='3'/><path d='M18 9a9 9 0 0 1-9 9'/>","package":"<path d='M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z'/><path d='M12 22V12'/><path d='m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7'/><path d='m7.5 4.27 9 5.15'/>","workflow":"<rect width='8' height='8' x='3' y='3' rx='2'/><path d='M7 11v4a2 2 0 0 0 2 2h4'/><rect width='8' height='8' x='13' y='13' rx='2'/>","plus":"<path d='M5 12h14'/><path d='M12 5v14'/>","receipt":"<path d='M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z'/><path d='M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8'/><path d='M12 17.5v-11'/>"};
+
+  const CATS = [
+    { name: '收', note: '信息与想法进来', color: 'var(--c-take)' },
+    { name: '想', note: '查资料、做判断', color: 'var(--c-think)' },
+    { name: '写', note: '做成能交的东西', color: 'var(--c-make)' },
+    { name: '排', note: '日程、待办、提醒', color: 'var(--c-plan)' },
+    { name: '推进', note: '目标与交付', color: 'var(--c-move)' },
+  ];
+
+  const PLUGINS = [
+    { id: 'feed', name: 'Feed', icon: 'rss', cat: 0, line: '订阅来源，读消息，留下值得留的。' },
+    { id: 'inbox', name: 'Inbox', icon: 'inbox', cat: 0, line: '只放需要你介入的事，写明为什么。' },
+    { id: 'shelf', name: 'Shelf', icon: 'library', cat: 0, line: '把文件放上来处理副本，原件不动。' },
+    { id: 'lingguang', name: '灵光', icon: 'lightbulb', cat: 1, line: '先记下想法，读得懂链接和录音。' },
+    { id: 'cognia', name: 'Cognia', icon: 'book-open', cat: 1, line: '导入你的笔记库，按资料回答。' },
+    { id: 'alchemist', name: '炼金术士', icon: 'zap', cat: 1, line: '写下方向，炼成可比较的卡再决定。' },
+    { id: 'pages', name: 'Pages', icon: 'file-text', cat: 2, line: '写文档，选中一句就有能做的事。' },
+    { id: 'cgs', name: 'CGS 创作', icon: 'pen-tool', cat: 2, line: '从素材写成主稿，再出各平台的稿子。', dev: true },
+    { id: 'ppt', name: 'PPT', icon: 'presentation', cat: 2, line: '写大纲，导出 PowerPoint。' },
+    { id: 'form', name: 'Forms', icon: 'clipboard-list', cat: 2, line: '建问卷，收答卷，看逐题汇总。' },
+    { id: 'dataset', name: 'Dataset', icon: 'database', cat: 2, line: '做表格，可以回到旧版。' },
+    { id: 'images', name: '图片', icon: 'image', cat: 2, line: '按描述生成图片。' },
+    { id: 'todo', name: '待办', icon: 'list-checks', cat: 3, line: '分清今天要做的，和在等谁的。' },
+    { id: 'jelly', name: 'Jelly', icon: 'calendar', cat: 3, line: '日历与笔记，按天安排。' },
+    { id: 'schedule', name: 'Schedule', icon: 'timer', cat: 3, line: '定时跑任务，准时提醒。' },
+    { id: 'goals', name: 'Goals', icon: 'target', cat: 4, line: '要达成什么、做到哪、凭什么算完成。' },
+    { id: 'sessions', name: 'Sessions', icon: 'terminal', cat: 4, line: '回到各个 Agent 的会话接着做。' },
+    { id: 'coding', name: 'Coding', icon: 'code', cat: 4, line: '和 Agent 一起写代码，每一轮都留得住。' },
+    { id: 'git', name: 'Git', icon: 'git-branch', cat: 4, line: '提交、推送、开 PR，先给你看。' },
+    { id: 'artifacts', name: '成果', icon: 'package', cat: 4, line: '固定下来的每一版，都找得回。' },
+    { id: 'workflows', name: '工作流程', icon: 'workflow', cat: 4, line: '把插件串成流程，一步步做完。' },
+    { id: 'yours', name: '你做的插件', icon: 'plus', cat: -1, line: '缺什么，在创作台说一句，让 AI 做一个。', yours: true },
+  ];
+
+  const STAGES = {
+    grid: {
+      main: '收、想、写、排、推进',
+      sub: '官方插件各管一摊：信息进来、想清楚、写出来、排进日程、推进到交付。列表还在持续建设，也空着一格，留给你自己做的插件。',
+    },
+    media: {
+      main: '自媒体运营',
+      sub: '一条同行视频进来：读出字幕，记成选题，写成小红书，配好图，排进周四的发布日。',
+      token: '一条同行视频',
+      steps: [
+        { id: 'feed', chip: '订阅的频道更新了' },
+        { id: 'lingguang', chip: '读出字幕，记成选题' },
+        { id: 'cgs', chip: '写成小红书' },
+        { id: 'images', chip: '配好三张图' },
+        { id: 'jelly', chip: '排进周四 20:00' },
+      ],
+    },
+    startup: {
+      main: '创业项目分析',
+      sub: '一个市场机会：炼成几个方向，查行业资料，做访谈问卷，汇总答卷，做成路演，再拆成 MVP 交给 Agent。',
+      token: '一个市场机会',
+      steps: [
+        { id: 'alchemist', chip: '炼成三个方向' },
+        { id: 'cognia', chip: '查行业资料' },
+        { id: 'form', chip: '做访谈问卷' },
+        { id: 'dataset', chip: '汇总 24 份答卷' },
+        { id: 'ppt', chip: '做成路演稿' },
+        { id: 'goals', chip: '拆成 MVP' },
+      ],
+    },
+    indie: {
+      main: '独立开发',
+      sub: '一条用户反馈进来：判断要不要处理，提成目标，交给 Codex，提交先给你看，再把这一版固定下来。',
+      token: '一条用户反馈',
+      steps: [
+        { id: 'feed', chip: 'App Store 有新评论' },
+        { id: 'inbox', chip: '判断：要处理' },
+        { id: 'goals', chip: '提成目标' },
+        { id: 'sessions', chip: '交给 Codex' },
+        { id: 'git', chip: '提交先给你看' },
+        { id: 'artifacts', chip: '固定这一版' },
+      ],
+    },
+    oss: {
+      main: '开源维护',
+      sub: '一个新 issue：查以前有没有讨论过，挂到下个版本的目标上，和 Claude Code 一起修，开 PR 前先给你看，最后写进更新日志。',
+      token: '一个新 issue',
+      steps: [
+        { id: 'feed', chip: 'GitHub 有新 issue' },
+        { id: 'cognia', chip: '查以前的讨论' },
+        { id: 'goals', chip: '挂到 v2.1 目标' },
+        { id: 'coding', chip: '和 Claude Code 修' },
+        { id: 'git', chip: '开 PR 先给你看' },
+        { id: 'pages', chip: '写进更新日志' },
+      ],
+    },
+    techwrite: {
+      main: '技术写作',
+      sub: '一次技术分享：录音记成灵光，查自己的笔记，写成长文，配好图，改成各平台的版本，到点提醒你发。',
+      token: '一次技术分享',
+      steps: [
+        { id: 'lingguang', chip: '录音记成灵光' },
+        { id: 'cognia', chip: '查自己的笔记' },
+        { id: 'pages', chip: '写成长文' },
+        { id: 'images', chip: '配好示意图' },
+        { id: 'cgs', chip: '改成各平台版本' },
+        { id: 'schedule', chip: '到点提醒你发' },
+      ],
+    },
+    research: {
+      main: '写研究',
+      sub: '一个研究问题：订阅相关的报告和论文，把 PDF 放上来，按资料回答，整理成数据表，写成报告，再把这一版固定下来。',
+      token: '一个研究问题',
+      steps: [
+        { id: 'feed', chip: '订阅报告和论文' },
+        { id: 'shelf', chip: '放进 PDF' },
+        { id: 'cognia', chip: '按资料回答' },
+        { id: 'dataset', chip: '整理成数据表' },
+        { id: 'pages', chip: '写成报告' },
+        { id: 'artifacts', chip: '固定这一版' },
+      ],
+    },
+    yours: {
+      main: '你自己的干法',
+      sub: '缺一个账单提醒？在插件创作台说一句，AI 做出来，它马上能被串进你的流程。',
+      token: '一封账单邮件',
+      steps: [
+        { id: 'inbox', chip: '收到账单邮件' },
+        { id: 'yours', chip: '认出到期日', morph: { icon: 'receipt', name: '账单提醒' } },
+        { id: 'todo', chip: '记成待办' },
+        { id: 'schedule', chip: '到期前一天提醒' },
+      ],
+    },
+  };
+  // the examples follow who is reading: people who mostly write code, or people who mostly write and manage
+  const P = window.MW_PERSONA || (/doc/.test(location.hash) ? 'doc' : 'dev');
+  const ORDER = P === 'doc' ? ['grid', 'media', 'startup', 'research', 'yours'] : ['grid', 'indie', 'oss', 'techwrite', 'yours'];
+  document.querySelectorAll('.eyebrow a').forEach((a) => a.classList.toggle('on', a.dataset.persona === P));
+  window.addEventListener('hashchange', () => { if (!window.MW_PERSONA) location.reload(); });
+  document.getElementById('tabs').innerHTML = ORDER.filter((k) => k !== 'grid').map((k) => `<button id="tab-${k}" role="tab" aria-selected="false" data-stage="${k}">${k === 'yours' ? '你自己的干法' : STAGES[k].main}</button>`).join('');
+
+  const stage = document.getElementById('stage');
+  const flow = document.getElementById('flow');
+  const rail = document.getElementById('rail');
+  const tip = document.getElementById('tip');
+  const capKicker = document.getElementById('cap-kicker');
+  const capMain = document.getElementById('cap-main');
+  const overviewBtn = document.getElementById('overview');
+  const capSub = document.getElementById('cap-sub');
+  const autoBtn = document.getElementById('autoplay');
+  const tabs = [...document.querySelectorAll('.tabs button')];
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const EMBED = location.hash === '#embed' || window.MW_EMBED === true;
+  // Embedded in the product page draft: hide this page's own header and note, report the height,
+  // and play only while the parent says this part is in view (scrolling back in replays it).
+  function embed(start, setLoop) {
+    document.documentElement.classList.add('embed');
+    let running = false;
+    const report = () => parent.postMessage({ type: 'mw-height', h: document.body.scrollHeight }, '*');
+    new ResizeObserver(report).observe(document.body);
+    report();
+    window.addEventListener('message', (e) => {
+      if (!e.data || e.data.type !== 'mw-visible' || reduce) return;
+      if (e.data.visible) { setLoop(true); if (!running) { running = true; start(); } }
+      else { setLoop(false); running = false; }
+    });
+  }
+
+
+  let W = 0, H = 0, T = 48, mobile = false;
+  let current = 'grid';
+  let autoplay = !reduce;
+  let runId = 0;
+  let chips = [];
+  let token = null;
+  let firstGrid = true;
+
+  // ---------- build ----------
+  const labels = CATS.map((c) => {
+    const el = document.createElement('div');
+    el.className = 'col-label';
+    const count = PLUGINS.filter((p) => p.cat === CATS.indexOf(c)).length;
+    el.innerHTML = `<strong>${c.name}</strong><small>${c.note}</small><i style="background:${c.color}"></i>`;
+    el.dataset.count = String(count);
+    stage.appendChild(el);
+    return el;
+  });
+
+  const tiles = {};
+  PLUGINS.forEach((p, i) => {
+    const el = document.createElement('div');
+    el.className = 'tile' + (p.yours ? ' yours hidden' : '');
+    el.tabIndex = 0;
+    el.dataset.id = p.id;
+    el.style.setProperty('--c', p.cat >= 0 ? CATS[p.cat].color : 'var(--red)');
+    el.setAttribute('aria-label', `${p.name}：${p.line}`);
+    el.innerHTML = `<span class="ico">${svg(p.icon)}</span><span class="nm">${p.name}${p.dev ? '<sup>开发中</sup>' : ''}</span>`;
+    stage.appendChild(el);
+    tiles[p.id] = { el, p, i };
+    el.addEventListener('mouseenter', () => showTip(p.id));
+    el.addEventListener('focus', () => showTip(p.id));
+    el.addEventListener('mouseleave', hideTip);
+    el.addEventListener('blur', hideTip);
+  });
+
+  function svg(name) {
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
+  }
+
+  function setIcon(id, icon, name) {
+    const t = tiles[id];
+    t.el.querySelector('.ico').innerHTML = svg(icon);
+    t.el.querySelector('.nm').textContent = name;
+  }
+
+  // ---------- geometry ----------
+  function measure() {
+    W = stage.clientWidth;
+    mobile = W < 640;
+    H = mobile ? 580 : 640;
+    stage.style.height = H + 'px';
+    T = mobile ? 38 : 50;
+    stage.style.setProperty('--t', T + 'px');
+  }
+
+  function place(id, x, y, s = 1, r = 0, delay = 0) {
+    const el = tiles[id].el;
+    const tx = x - (T * (1 - s)) / 2;
+    const ty = y - (T * (1 - s)) / 2;
+    el.style.transitionDelay = delay + 'ms';
+    el.style.transform = `translate(${tx}px, ${ty}px) rotate(${r}deg) scale(${s})`;
+    tiles[id].pos = { x, y, s };
+  }
+
+  function gridLayout() {
+    const top = mobile ? 74 : 96;
+    const pitch = T + (mobile ? 28 : 32);
+    const colW = W / CATS.length;
+    const out = {};
+    const idx = [0, 0, 0, 0, 0];
+    PLUGINS.forEach((p) => {
+      if (p.yours) return;
+      const k = idx[p.cat]++;
+      out[p.id] = { x: colW * (p.cat + 0.5) - T / 2, y: top + k * pitch };
+    });
+    out.yours = { x: W / 2 - T / 2, y: top + 6 * pitch + (mobile ? 8 : 14) };
+    stage.classList.toggle('narrow', W < 760);
+    labels.forEach((el, c) => {
+      el.style.width = colW - 12 + 'px';
+      el.style.left = colW * (c + 0.5) + 'px';
+      el.style.top = (mobile ? 14 : 24) + 'px';
+    });
+    return out;
+  }
+
+  function scatterLayout() {
+    let seed = 7;
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const out = {};
+    PLUGINS.forEach((p) => {
+      out[p.id] = { x: 16 + rnd() * (W - T - 32), y: 16 + rnd() * (H - T - 32), r: (rnd() - 0.5) * 50 };
+    });
+    return out;
+  }
+
+  function trayLayout(ids) {
+    const s = mobile ? 0.55 : 0.52;
+    const size = T * s;
+    const gap = mobile ? 7 : 10;
+    const groupGap = mobile ? 12 : 22;
+    const maxW = W - 32;
+    const rows = [[]];
+    let rowW = 0;
+    let lastCat = null;
+    ids.forEach((id) => {
+      const cat = tiles[id].p.cat;
+      const extra = lastCat !== null && cat !== lastCat ? groupGap : 0;
+      const need = (rows[rows.length - 1].length ? gap + extra : 0) + size;
+      if (rowW + need > maxW && rows[rows.length - 1].length) { rows.push([]); rowW = 0; }
+      const row = rows[rows.length - 1];
+      const lead = row.length ? gap + extra : 0;
+      row.push({ id, off: rowW + lead });
+      rowW += lead + size;
+      lastCat = cat;
+    });
+    const out = {};
+    rows.forEach((row, r) => {
+      const width = row.length ? row[row.length - 1].off + size : 0;
+      const left = (W - width) / 2;
+      row.forEach(({ id, off }) => { out[id] = { x: left + off, y: 18 + r * (size + 10), s }; });
+    });
+    const bottom = 18 + rows.length * (size + 10);
+    return { out, bottom };
+  }
+
+  function pathLayout(ids, regionTop) {
+    const n = ids.length;
+    const out = {};
+    const regionBottom = H - (mobile ? 96 : 110);
+    if (!mobile) {
+      const pad = Math.max(70, W * 0.09);
+      const mid = (regionTop + regionBottom) / 2 - 10;
+      const amp = Math.min(46, (regionBottom - regionTop) / 5);
+      ids.forEach((id, i) => {
+        const x = n === 1 ? W / 2 : pad + (i * (W - 2 * pad)) / (n - 1);
+        out[id] = { x: x - T / 2, y: mid + (i % 2 ? amp : -amp) - T / 2 };
+      });
+    } else {
+      const per = n <= 4 ? 2 : 3;
+      const xs = per === 2 ? [0.28, 0.72] : [0.17, 0.5, 0.83];
+      const rows = Math.ceil(n / per);
+      const rowH = Math.min(170, (regionBottom - regionTop) / rows);
+      ids.forEach((id, i) => {
+        const r = Math.floor(i / per);
+        let c = i % per;
+        if (r % 2 === 1) c = per - 1 - c;
+        out[id] = { x: W * xs[c] - T / 2, y: regionTop + 20 + r * rowH };
+      });
+    }
+    return out;
+  }
+
+  function smooth(pts) {
+    if (pts.length < 2) return '';
+    let d = `M${pts[0].x},${pts[0].y}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[i + 2] || p2;
+      const c1x = p1.x + (p2.x - p0.x) / 6;
+      const c1y = p1.y + (p2.y - p0.y) / 6;
+      const c2x = p2.x - (p3.x - p1.x) / 6;
+      const c2y = p2.y - (p3.y - p1.y) / 6;
+      d += ` C${c1x},${c1y} ${c2x},${c2y} ${p2.x},${p2.y}`;
+    }
+    return d;
+  }
+
+  // ---------- helpers ----------
+  const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+  function clearRecipe() {
+    chips.forEach((c) => c.remove());
+    chips = [];
+    if (token) { token.remove(); token = null; }
+    flow.setAttribute('d', '');
+    rail.setAttribute('d', '');
+    flow.style.transition = 'none';
+    Object.values(tiles).forEach((t) => t.el.classList.remove('lit', 'nod', 'dim', 'mini'));
+  }
+  function resetYours() {
+    const y = tiles.yours.el;
+    y.classList.remove('made', 'lit', 'pop');
+    setIcon('yours', 'plus', '你做的插件');
+  }
+  function setCaption(key) {
+    capKicker.textContent = key === 'grid'
+      ? '官方插件 · 持续建设中'
+      : key === 'yours' ? '你自己的干法' : '其中一种干法';
+    capMain.textContent = STAGES[key].main;
+    capSub.textContent = STAGES[key].sub;
+  }
+  function selectTab(key) {
+    tabs.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.stage === key)));
+    overviewBtn.setAttribute('aria-pressed', String(key === 'grid'));
+  }
+  function showTip(id) {
+    const t = tiles[id];
+    if (!t.pos) return;
+    tip.innerHTML = `<b>${t.p.name}${t.p.dev ? '（开发中）' : ''}</b>${t.p.line}`;
+    const size = T * (t.pos.s || 1);
+    let x = t.pos.x + size + 10;
+    if (x + 220 > W) x = Math.max(8, t.pos.x - 230);
+    tip.style.left = x + 'px';
+    tip.style.top = Math.max(8, t.pos.y - 4) + 'px';
+    tip.classList.add('on');
+  }
+  function hideTip() { tip.classList.remove('on'); }
+
+  // ---------- stages ----------
+  async function runGrid(id, instant) {
+    stage.dataset.mode = 'grid';
+    clearRecipe();
+    resetYours();
+    const yours = tiles.yours.el;
+    const grid = gridLayout();
+    const alive = () => id === runId;
+
+    if (!instant && !reduce) {
+      // fly out to a scatter, then settle into the five columns
+      const sc = scatterLayout();
+      Object.values(tiles).forEach((t) => t.el.classList.remove('snap'));
+      PLUGINS.forEach((p) => { if (!p.yours) place(p.id, sc[p.id].x, sc[p.id].y, 0.9, sc[p.id].r, 0); });
+      yours.classList.add('hidden');
+      yours.classList.remove('drawn');
+      await sleep(760);
+      if (!alive()) return;
+      firstGrid = false;
+      Object.values(tiles).forEach((t) => t.el.classList.add('snap'));
+      PLUGINS.forEach((p, i) => {
+        if (p.yours) return;
+        const k = PLUGINS.filter((q) => q.cat === p.cat).indexOf(p);
+        place(p.id, grid[p.id].x, grid[p.id].y, 1, 0, p.cat * 90 + k * 70);
+      });
+      await sleep(1700);
+      if (!alive()) return;
+      place('yours', grid.yours.x, grid.yours.y, 1, 0, 0);
+      yours.classList.remove('hidden');
+      yours.classList.add('drawn', 'pop');
+      await sleep(900);
+      yours.classList.remove('pop');
+      if (!alive()) return;
+      await sleep(3200);
+    } else {
+      Object.values(tiles).forEach((t) => t.el.classList.remove('snap'));
+      PLUGINS.forEach((p) => place(p.id, grid[p.id].x, grid[p.id].y, 1, 0, 0));
+      yours.classList.remove('hidden');
+      if (!reduce) await sleep(3600);
+    }
+  }
+
+  async function runRecipe(key, id, instant) {
+    const alive = () => id === runId;
+    const recipe = STAGES[key];
+    stage.dataset.mode = 'recipe';
+    clearRecipe();
+    if (key !== 'yours') resetYours();
+    const yours = tiles.yours.el;
+    yours.classList.remove('hidden');
+
+    const chosen = recipe.steps.map((s) => s.id);
+    // everything not on the line waits in the tray; the empty slot for your plugin stays there, still dashed
+    const rest = PLUGINS.map((p) => p.id).filter((pid) => !chosen.includes(pid));
+    const tray = trayLayout(rest);
+    const line = pathLayout(chosen, tray.bottom + (mobile ? 46 : 60));
+
+    Object.values(tiles).forEach((t) => t.el.classList.remove('snap'));
+    rest.forEach((pid, i) => {
+      const at = tray.out[pid];
+      if (!at) return;
+      tiles[pid].el.classList.add('mini', 'dim');
+      place(pid, at.x, at.y, at.s, 0, instant || reduce ? 0 : i * 14);
+    });
+    chosen.forEach((pid, i) => {
+      tiles[pid].el.classList.add('snap');
+      place(pid, line[pid].x, line[pid].y, 1, 0, instant || reduce ? 0 : 120 + i * 90);
+    });
+
+    // chips under each station
+    chips = recipe.steps.map((s, i) => {
+      const c = document.createElement('div');
+      c.className = 'chip' + (i === recipe.steps.length - 1 ? ' last' : '');
+      c.textContent = s.chip;
+      c.style.left = line[s.id].x + T / 2 + 'px';
+      c.style.top = line[s.id].y + T + (mobile ? 24 : 30) + 'px';
+      stage.appendChild(c);
+      return c;
+    });
+
+    const pts = chosen.map((pid) => ({ x: line[pid].x + T / 2, y: line[pid].y + T / 2 }));
+    const d = smooth(pts);
+    rail.setAttribute('d', d);
+    flow.setAttribute('d', d);
+    const L = flow.getTotalLength();
+
+    const visit = (i) => {
+      const step = recipe.steps[i];
+      const el = tiles[step.id].el;
+      if (step.morph) {
+        el.classList.add('pop');
+        setIcon(step.id, step.morph.icon, step.morph.name);
+        el.classList.add('made');
+        setTimeout(() => el.classList.remove('pop'), 720);
+      }
+      el.classList.add('lit', 'nod');
+      setTimeout(() => el.classList.remove('nod'), 680);
+      chips[i].classList.add('on');
+    };
+
+    if (instant || reduce) {
+      flow.style.strokeDasharray = 'none';
+      flow.style.strokeDashoffset = '0';
+      recipe.steps.forEach((_, i) => visit(i));
+      if (!reduce) await sleep(4200);
+      return;
+    }
+
+    flow.style.strokeDasharray = L;
+    flow.style.strokeDashoffset = L;
+    await sleep(1150);
+    if (!alive()) return;
+    flow.getBoundingClientRect();
+    flow.style.transition = 'stroke-dashoffset 1000ms cubic-bezier(0.2, 0.8, 0.2, 1)';
+    flow.style.strokeDashoffset = '0';
+    await sleep(1050);
+    if (!alive()) return;
+
+    // where each station sits along the path
+    const marks = pts.map((p) => {
+      let best = 0, bestD = Infinity;
+      for (let k = 0; k <= 240; k++) {
+        const q = flow.getPointAtLength((k / 240) * L);
+        const dd = (q.x - p.x) ** 2 + (q.y - p.y) ** 2;
+        if (dd < bestD) { bestD = dd; best = (k / 240) * L; }
+      }
+      return best;
+    });
+
+    token = document.createElement('div');
+    token.className = 'token';
+    token.textContent = recipe.token;
+    stage.appendChild(token);
+    const tw = token.offsetWidth;
+    const th = token.offsetHeight;
+    const moveTo = (len) => {
+      const q = flow.getPointAtLength(len);
+      token.style.transform = `translate(${q.x - tw / 2}px, ${q.y - th - T / 2 - 10}px)`;
+    };
+    moveTo(0);
+    token.classList.add('on');
+    visit(0);
+    await sleep(700);
+    if (!alive()) return;
+
+    const seen = new Set([0]);
+    const dur = 900 * (pts.length - 1);
+    const start = performance.now();
+    await new Promise((resolve) => {
+      const frame = (now) => {
+        if (!alive()) return resolve();
+        const t = Math.min(1, (now - start) / dur);
+        const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        const len = e * L;
+        moveTo(len);
+        marks.forEach((m, i) => { if (!seen.has(i) && len >= m - 2) { seen.add(i); visit(i); } });
+        if (t < 1) requestAnimationFrame(frame); else resolve();
+      };
+      requestAnimationFrame(frame);
+    });
+    if (!alive()) return;
+    await sleep(500);
+    if (token) token.classList.remove('on');
+    await sleep(3000);
+  }
+
+  async function go(key, opts = {}) {
+    const id = ++runId;
+    current = key;
+    selectTab(key);
+    setCaption(key);
+    hideTip();
+    if (key === 'grid') await runGrid(id, opts.instant);
+    else await runRecipe(key, id, opts.instant);
+    if (id !== runId || !autoplay) return;
+    const next = ORDER[(ORDER.indexOf(key) + 1) % ORDER.length];
+    go(next);
+  }
+
+  // ---------- controls ----------
+  tabs.forEach((b) => b.addEventListener('click', () => go(b.dataset.stage)));
+  overviewBtn.addEventListener('click', () => go('grid'));
+  function syncAuto() {
+    autoBtn.setAttribute('aria-pressed', String(autoplay));
+    autoBtn.querySelector('.ctrl-text').textContent = autoplay ? '自动播放中' : '自动播放已停';
+  }
+  autoBtn.addEventListener('click', () => {
+    autoplay = !autoplay;
+    syncAuto();
+    if (autoplay) go(ORDER[(ORDER.indexOf(current) + 1) % ORDER.length]);
+  });
+  syncAuto();
+
+  // lay out only once the stage has a real width; re-lay out when that width changes
+  let started = false;
+  let resizeTimer = 0;
+  function start() {
+    started = true;
+    measure();
+    // a complete resting frame first, then the opening move
+    const g = gridLayout();
+    Object.values(tiles).forEach((t) => { t.el.style.transition = 'none'; });
+    PLUGINS.forEach((p) => place(p.id, g[p.id].x, g[p.id].y, 1, 0, 0));
+    tiles.yours.el.classList.remove('hidden');
+    stage.getBoundingClientRect();
+    stage.classList.add('ready');
+    setTimeout(() => Object.values(tiles).forEach((t) => { t.el.style.transition = ''; }), 60);
+    setCaption('grid');
+    if (reduce) go('grid', { instant: true });
+    else if (!EMBED) setTimeout(() => { if (current === 'grid' && runId === 0) go('grid'); }, 900);
+  }
+  new ResizeObserver(() => {
+    if (stage.clientWidth < 40) return;
+    if (!started) { start(); return; }
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const before = W;
+      measure();
+      if (Math.abs(before - W) < 2) return;
+      Object.values(tiles).forEach((t) => { t.el.style.transition = 'none'; });
+      go(current, { instant: true });
+      requestAnimationFrame(() => Object.values(tiles).forEach((t) => { t.el.style.transition = ''; }));
+    }, 160);
+  }).observe(stage);
+  // a hidden or background tab may not report a resize yet; start from the width the stage already has
+  if (stage.clientWidth >= 40) start();
+  if (EMBED) embed(() => go('grid'), (on) => { autoplay = on; syncAuto(); });
+})();
+</script>
