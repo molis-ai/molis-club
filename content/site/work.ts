@@ -231,3 +231,17 @@ export const workGo = {
   build: '从源码构建说明',
   follow: '关注新版进展',
 };
+
+/** Work 页上其余的界面字：首屏的窗、读屏说明、和 Tool 的关系 */
+export const workPage = {
+  window: {
+    alt: '白色的工作室里，有人在窗边伏案，书架上摆着绿植。',
+    caption: 'A studio by the window',
+  },
+  chaptersLabel:
+    'Molis Work 的演示画面都是界面示意，画面里的项目、资料、人名与时间都是示意数据。',
+  relation: {
+    title: 'Work 与 Tool',
+    tag: '计划中 · 范围与时间未定',
+  },
+};

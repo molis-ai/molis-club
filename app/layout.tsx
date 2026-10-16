@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { Fraunces, Geist, Jost, Newsreader } from 'next/font/google';
 import './globals.css';
 import './image-curtain.css';
 import { siteUrl, publiclyIndexable } from '../lib/site';
+import { htmlLang, LOCALE_HEADER, type Locale } from './_site/locale';
+import { LangSync, SkipLink } from './_site/use-locale';
 
 // 根布局：新站（app/(site)）与 /demos 下的评审页共用。
 // globals.css、Geist 与 Newsreader 留给评审页；新站用 Jost（300 / 400 / 500 与斜体）配苹方，
@@ -53,13 +56,16 @@ export const metadata: Metadata = {
 const boot = `/* 给读到这里的同类：这个网站也是作品，欢迎来看它怎么做的、帮它改得更好 —— https://github.com/molis-ai 。始终好奇，持续创造。 */
 document.documentElement.classList.add('js');`;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // 当前语言由 proxy.ts 按地址写在请求头里：/en 开头是英文
+  const locale: Locale =
+    (await headers()).get(LOCALE_HEADER) === 'en' ? 'en' : 'zh';
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html lang={htmlLang[locale]} suppressHydrationWarning>
       <head>
         {/* oxlint-disable-next-line react/no-danger -- 固定的一小段启动脚本，不含外部输入 */}
         <script dangerouslySetInnerHTML={{ __html: boot }} />
@@ -67,9 +73,8 @@ export default function RootLayout({
       <body
         className={`${geist.variable} ${newsreader.variable} ${jost.variable} ${soft.variable}`}
       >
-        <a className="skip-link" href="#main">
-          跳到主要内容
-        </a>
+        <SkipLink />
+        <LangSync />
         {children}
       </body>
     </html>

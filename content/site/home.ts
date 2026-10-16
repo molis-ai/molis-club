@@ -74,3 +74,20 @@ export const homeClosing = {
     along: '走走「沿途」',
   },
 };
+
+/** 首页各段里的界面字：小标签、按钮的读屏说明 */
+export const homeUi = {
+  /** 第二屏的小标签：英文一行 + 中文一行 */
+  wareKicker: ['What we make', '我们在做的'],
+  warePause: '暂停轮换 ware 前面的词',
+  wareResume: '继续轮换 ware 前面的词',
+  /** 首屏 A/I 词组 */
+  aiPause: '暂停标题动画',
+  aiPlay: '播放标题动画',
+  /** 首屏背景画面 */
+  filmPause: '暂停背景画面',
+  filmResume: '继续背景画面',
+  /** 产品段的标题：大字英文 + 小字中文；右边一行：英文 + 中文 */
+  products: { title: 'Products', small: '产品' },
+  lines: { en: 'Five lines', local: '工作 · 生活 · 体验' },
+};
