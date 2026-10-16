@@ -21,6 +21,7 @@ const pages = {
     'app/_site/scenes/work.tsx',
     'app/_site/scenes/work.css',
   ],
+  '/work/download': [`${site}/work/download`, 'content/site/work.ts'],
   '/tool': [
     `${site}/tool`,
     'content/site/tool.ts',

@@ -28,6 +28,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { workWays, type Persona } from '../../../content/site/work';
 import { useReducedMotion, useVisible } from '../../_site/motion';
+import { pad } from '../../_site/ui';
 import { usePersona } from './persona';
 
 // 想怎么干：官方插件先整整齐齐排开，再一种一种拼成干法——一件事沿着线走过几站。
@@ -271,8 +272,8 @@ function WaysInner({ persona }: { persona: Persona }) {
         let x: number;
         let y: number;
         if (!mobile) {
-          const pad = Math.max(70, width * 0.09);
-          x = n === 1 ? width / 2 : pad + (i * (width - 2 * pad)) / (n - 1);
+          const edge = Math.max(90, width * 0.1);
+          x = n === 1 ? width / 2 : edge + (i * (width - 2 * edge)) / (n - 1);
           const mid = (regionTop + regionBottom) / 2 - 12;
           y = mid + (i % 2 ? 46 : -46);
         } else {
@@ -410,50 +411,17 @@ function WaysInner({ persona }: { persona: Persona }) {
   }, [current, persona, visible, auto, reduced, run]);
 
   const recipeKey = current === 'grid' ? null : current;
+  // 画面在左，文字在右：右边一列是「官方插件」和几种干法，点哪种演哪种；有一句话的那种展开那句话
+  const rows: { key: string; name: string; note?: string }[] = [
+    { key: 'grid', name: workWays.all, note: workWays.allNote },
+    ...workWays.order[persona].map((key) => ({
+      key,
+      name: RECIPES[key].name,
+      note: key === 'yours' ? '缺的那一站，让 AI 做一个。' : undefined,
+    })),
+  ];
   return (
     <div className="ww">
-      <div className="ww-bar">
-        <fieldset className="ww-tabs">
-          <legend className="sr-only">{workWays.label}</legend>
-          <button
-            type="button"
-            aria-pressed={current === 'grid'}
-            onClick={() => {
-              setCurrent('grid');
-              setRun((v) => v + 1);
-            }}
-          >
-            {workWays.all}
-          </button>
-          {workWays.order[persona].map((key) => (
-            <button
-              key={key}
-              type="button"
-              aria-pressed={current === key}
-              onClick={() => {
-                setCurrent(key);
-                setRun((v) => v + 1);
-              }}
-            >
-              {RECIPES[key].name}
-            </button>
-          ))}
-        </fieldset>
-        {reduced ? null : (
-          <button
-            type="button"
-            className="wt-auto"
-            aria-pressed={auto}
-            onClick={() => {
-              setAuto((v) => !v);
-              setRun((v) => v + 1);
-            }}
-          >
-            <i aria-hidden="true" />
-            {auto ? '自动播放' : '已暂停'}
-          </button>
-        )}
-      </div>
       <figure
         className="ww-stage"
         ref={stage}
@@ -498,21 +466,54 @@ function WaysInner({ persona }: { persona: Persona }) {
           </span>
         ))}
       </figure>
-      <p className="ww-cap" aria-live="polite">
-        <span className="m-note">{workWays.note}</span>
-        <span className="m-note">{workWays.status}</span>
-        {recipeKey ? (
-          <>
-            <b>{RECIPES[recipeKey].name}</b>
-            {recipeKey === 'yours' ? <span>缺的那一站，让 AI 做一个。</span> : null}
-          </>
-        ) : (
-          <>
-            <b>{workWays.all}</b>
-            <span>{workWays.allNote}</span>
-          </>
-        )}
-      </p>
+      <div className="ww-side">
+        <fieldset className="ww-tabs">
+          <legend className="sr-only">{workWays.label}</legend>
+          {rows.map((row, index) => {
+            const on = current === row.key;
+            return (
+              <div key={row.key} className="ww-row" data-on={on || undefined}>
+                <button
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => {
+                    setCurrent(row.key);
+                    setRun((v) => v + 1);
+                  }}
+                >
+                  <span className="m-no" aria-hidden="true">
+                    {pad(index + 1)}
+                  </span>
+                  {row.name}
+                </button>
+                {row.note ? (
+                  <div className="ww-more" inert={!on}>
+                    <p>{row.note}</p>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
+        </fieldset>
+        <div className="ww-foot">
+          <span className="m-note">{workWays.note}</span>
+          <span className="m-note">{workWays.status}</span>
+          {reduced ? null : (
+            <button
+              type="button"
+              className="wt-auto"
+              aria-pressed={auto}
+              onClick={() => {
+                setAuto((v) => !v);
+                setRun((v) => v + 1);
+              }}
+            >
+              <i aria-hidden="true" />
+              {auto ? '自动播放' : '已暂停'}
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

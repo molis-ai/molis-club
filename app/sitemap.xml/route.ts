@@ -9,6 +9,7 @@ export function GET() {
     ? [
         '/',
         '/work',
+        '/work/download',
         '/tool',
         '/life',
         '/story',

@@ -18,8 +18,8 @@ import {
   workWays,
 } from '../../../content/site/work';
 import { ProductHero } from '../../_site/product/product';
-import { ABOUT, contactHref, essayHref, productHref } from '../../_site/routes';
-import { Btn, More, pad, SectionHead, Window } from '../../_site/ui';
+import { ABOUT, contactHref, essayHref, productHref, WORK_DOWNLOAD } from '../../_site/routes';
+import { Btn, More, pad, SectionHead } from '../../_site/ui';
 import { WorkActs } from './acts';
 import { Copy } from './copy';
 import { Day } from './day';
@@ -29,6 +29,7 @@ import { Tour } from './tour';
 import { Ways } from './ways';
 import '../../_site/demo/demo.css';
 import '../../_site/product/product.css';
+import './code.css';
 import './work.css';
 
 const work = products.work;
@@ -49,7 +50,19 @@ export default function WorkPage() {
   return (
     <PersonaRoot className="m-product m-work wp" id="top">
       <script dangerouslySetInnerHTML={{ __html: personaBoot }} />
-      <ProductHero product={work} visual={<HeroDemo />} aside={<PersonaAsk />} />
+      <ProductHero
+        product={work}
+        visual={<HeroDemo />}
+        aside={
+          <div className="wp-go">
+            <div className="m-actions">
+              <Btn href={WORK_DOWNLOAD}>{workGo.mac}</Btn>
+              <More href="#tour">{workGo.see}</More>
+            </div>
+            <p className="wp-go-line">{workGo.line}</p>
+          </div>
+        }
+      />
       <WorkNav />
 
       <section className="m-sig wp-tour" id="tour" aria-labelledby="tour-title">
@@ -60,6 +73,7 @@ export default function WorkPage() {
           id="tour-title"
           size="h2"
         />
+        <PersonaAsk />
         <Tour />
       </section>
 
@@ -241,6 +255,14 @@ export default function WorkPage() {
           id="ending-title"
           size="h2"
         />
+        <div className="wp-letter" data-reveal>
+          {workEnding.letter.map((text) => (
+            <p key={text}>{text}</p>
+          ))}
+        </div>
+        <h3 className="wp-then" data-reveal>
+          {workEnding.question}
+        </h3>
         <Day />
         <div className="wp-uses">
           {workEnding.uses.map((use, index) => (
@@ -260,41 +282,28 @@ export default function WorkPage() {
             </article>
           ))}
         </div>
-        <div className="wp-vision">
-          <Window
-            name="ex-shore-person"
-            alt="白色的沙滩上，一个人面朝大海站着。"
-            ratio="21 / 9"
-            sizes="(max-width: 900px) 100vw, 90vw"
-            caption="Time, given back"
-            className="wp-vision-window"
-          />
-          <div className="wp-vision-text" data-reveal>
-            <p className="m-kicker">{workEnding.why}</p>
-            <p className="wp-vision-big">{studio.vision}</p>
-            <div className="m-actions">
-              <More href={essayHref('human-scale')}>{workEnding.essay}</More>
-              <More href={ABOUT}>{workEnding.about}</More>
-            </div>
-            <p className="wp-sign">{studio.signature}</p>
+        <div className="wp-vision" data-reveal>
+          <p className="wp-vision-big">{studio.vision}</p>
+          <div className="m-actions">
+            <More href={essayHref('human-scale')}>{workEnding.essay}</More>
+            <More href={ABOUT}>{workEnding.about}</More>
           </div>
+          <p className="wp-sign">{studio.signature}</p>
         </div>
         <div className="wp-close" data-reveal>
           <p className="wp-close-line">{workEnding.closing}</p>
           <div className="m-actions" data-p="dev">
-            <Btn href={WORK_GITHUB} external>
-              {workGo.github}
-            </Btn>
-            <More href={WORK_BUILD} external>
-              {workGo.build}
-            </More>
-            <More href={contactHref('work')}>{workGo.follow}</More>
-          </div>
-          <div className="m-actions" data-p="doc">
-            <Btn href={contactHref('work')}>{workGo.follow}</Btn>
+            <Btn href={WORK_DOWNLOAD}>{workGo.mac}</Btn>
             <More href={WORK_GITHUB} external>
               {workGo.github}
             </More>
+            <More href={WORK_BUILD} external>
+              {workGo.build}
+            </More>
+          </div>
+          <div className="m-actions" data-p="doc">
+            <Btn href={WORK_DOWNLOAD}>{workGo.mac}</Btn>
+            <More href={contactHref('work')}>{workGo.follow}</More>
           </div>
         </div>
       </section>

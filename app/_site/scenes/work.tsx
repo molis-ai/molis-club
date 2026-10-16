@@ -207,129 +207,201 @@ const Who = ({ k, children }: { k: 'cc' | 'cx' | 'ds' | 'me' | 'ai' | 'p'; child
 );
 
 /* =====================================================================
-   首屏：一个短循环
+   首屏：同一页，几个人在写（一个短循环）
+   写代码：一页目标，Claude Code、Codex 和你写在同一条时间线上；做没做完，按要求和依据核对（v0.2.0 已有）。
+   写文档：一页稿子，你写的、助理整理的都在同一页，每段带出处；选中一句，记成待办（开发中）。
    ===================================================================== */
 
 const heroDev: Scene = {
-  id: 'work-hero-dev',
+  id: 'work-hero-ledger-dev',
   label:
-    'Molis Work 示意：Inbox 里一条报错，选中后旁边递来「交给 Codex」；点一下，目标的完成要求、设计约束和上次进度一起带上。',
-  steps: 4,
-  times: [0, 1.2, 2.6, 4.4, 6.4],
-  note: '开发中 · 界面示意',
+    'Molis Work 示意：一页目标「上线支付」，三条完成要求。Claude Code 交了依据，第一条打勾；周三 Codex 接着做，读到做成 1/3；Codex 提议把金额改成「分」，等你同意；沙箱走通，第二条打勾；Codex 说做完了，收尾没生效：手机排版还差你的验收。',
+  steps: 5,
+  times: [0, 1.8, 3.8, 6, 8, 11],
+  note: '已发布 · v0.2.0 · 界面示意',
   render: ({ step }) => (
-    <Win step={step} className="wv-hero" place="Inbox · 支付改版" icon={Inbox} press={[1]}>
-      <Sheet>
-        <p className="wv-issue">
-          <CircleDot aria-hidden="true" />
-          <b>#318 支付回调偶发 500</b>
-          <span className="wv-why">和目标「上线支付」有关</span>
-        </p>
-        <pre className="wv-log">
-          <span className="wv-log-em">POST /api/pay/callback → 500</span>
-          {'\n'}
-          <span className="m-hl" style={at(1)}>
-            SignatureExpired: skew 312s
+    <Win
+      step={step}
+      className="wv-hero wv-ledger"
+      place="Goals · 支付改版"
+      icon={Target}
+      press={[2]}
+      status={
+        <span className="wv-menu" data-wait={step === 2 || step === 4 || undefined}>
+          <Target aria-hidden="true" />
+          <span className="m-stack">
+            <span className="m-v" data-fade="" style={at(0, 2)}>2 个 Agent 在做</span>
+            <span className="m-v" data-fade="" style={at(2, 3)}>1 个提议等你</span>
+            <span className="m-v" data-fade="" style={at(3, 4)}>2 个 Agent 在做</span>
+            <span className="m-v" data-fade="" style={at(4)}>等你验收</span>
           </span>
-          {'\n'}
-          {'  at verifySign (callback.ts:42)'}
-        </pre>
-        <Bar
-          show={at(1, 2)}
-          below
-          compact
-          cursor={at(1, 2)}
-          items={[
-            { label: '交给 Codex', icon: Terminal, primary: true },
-            { label: '交给 Claude Code', icon: Terminal },
-            { label: '记成待办', icon: ListChecks },
-          ]}
-        />
-        <div className="wv-pack m-v" data-pop="" style={at(2)}>
-          <p className="wv-pack-head">
-            <Package aria-hidden="true" />
-            <b>交给 Codex</b>
-            <span>已经带上</span>
+        </span>
+      }
+    >
+      <Sheet>
+        <p className="wv-ledger-title">
+          <b>上线支付</b>
+          <span className="m-stack wv-pills">
+            <span className="wv-pill m-v" data-fade="" style={at(0, 3)}>进行中 · 1/3</span>
+            <span className="wv-pill m-v" data-fade="" style={at(3, 4)}>进行中 · 2/3</span>
+            <span className="wv-pill m-v" data-tone="wait" data-fade="" style={at(4)}>没算完 · 2/3</span>
+          </span>
+        </p>
+        <ul className="wv-reqs wv-ledger-reqs">
+          <li>
+            <Tick step={0} />
+            回调幂等
+            <small>依据：测试 14/14 · Claude Code</small>
+          </li>
+          <li>
+            <Tick step={3} delay={500} />
+            沙箱三种支付走通
+            <small className="m-v" data-fade="" style={at(3, undefined, 500)}>
+              依据：沙箱 3 笔 · Codex
+            </small>
+          </li>
+          <li data-wait={step >= 4 || undefined}>
+            <Tick step={99} />
+            手机排版正常
+            <span className="wv-must">要你验收</span>
+          </li>
+        </ul>
+        <div className="wv-tl wv-ledger-tl">
+          <p>
+            <Who k="cc">CC</Who>
+            <span>
+              <b>Claude Code</b>回调做完，交了依据
+            </span>
+            <time>周二</time>
           </p>
-          <ul>
-            {['报错原文', '目标的 3 条完成要求', '设计文档里的约束', 'Claude Code 的进度'].map(
-              (item, index) => (
-                <li key={item}>
-                  <Tick step={2} delay={200 + index * 220} />
-                  {item}
-                </li>
-              ),
-            )}
-          </ul>
+          <Line show={at(1)}>
+            <p>
+              <Who k="cx">Cx</Who>
+              <span>
+                <b>Codex</b>接着做：读到做成 1/3，下一步沙箱
+              </span>
+              <time>周三</time>
+            </p>
+          </Line>
+          <Line show={at(2, 3)}>
+            <div className="wv-ask">
+              <p>
+                <Who k="cx">Cx</Who>
+                <b>Codex 提议：金额统一用「分」</b>
+              </p>
+              <p className="wv-impact">影响：结算页 · 2 处 · 等你确认</p>
+              <p className="wv-btns">
+                <span data-primary="">
+                  同意
+                  <Cursor show={at(2, 3)} x="60%" y="60%" />
+                </span>
+                <span>先不</span>
+              </p>
+            </div>
+          </Line>
+          <Line show={at(3)}>
+            <p>
+              <Who k="me">你</Who>
+              <span>同意了：金额用「分」</span>
+              <time>周三</time>
+            </p>
+          </Line>
+          <Line show={at(3, undefined, 500)}>
+            <p>
+              <Who k="cx">Cx</Who>
+              <span>
+                <b>Codex</b>沙箱 3 笔成功，交了依据
+              </span>
+              <time>周四</time>
+            </p>
+          </Line>
+          <Line show={at(4)}>
+            <p className="wv-ledger-no">
+              <Who k="cx">Cx</Who>
+              <span>
+                <b>Codex</b>说做完了 · 收尾没生效：手机排版还差你的验收
+              </span>
+            </p>
+          </Line>
         </div>
       </Sheet>
-      <p className="wv-toast m-v" style={at(3)}>
-        <Check aria-hidden="true" />
-        Codex 开工了 · 背景不用再讲一遍
-      </p>
     </Win>
   ),
 };
 
 const heroDoc: Scene = {
-  id: 'work-hero-doc',
+  id: 'work-hero-ledger-doc',
   label:
-    'Molis Work 示意：灵光读出的视频字幕里选中一句，旁边递来「放进第 2 节」；点一下，这句话带着视频 12:40 的出处落进稿子。',
+    'Molis Work 示意：一页稿子《AI 编辑器观察》。你写的开头；助理接着整理的一段，带着视频和笔记的出处；你在末尾记了一句「周五前和编辑对一下结构」，选中它，旁边递来「记成待办」；点一下，待办里多了这一条，来源写着这篇稿子。',
   steps: 4,
-  times: [0, 1.2, 2.6, 4.4, 6.4],
+  times: [0, 1.8, 4, 6, 8.6],
   note: '开发中 · 界面示意',
   render: ({ step }) => (
     <Win
       step={step}
-      className="wv-hero wv-hero-doc"
-      place="灵光 · 《AI 编辑器的下一步》"
-      icon={Lightbulb}
-      press={[1]}
+      className="wv-hero wv-ledger wv-ledger-doc"
+      place="Pages · AI 编辑器观察"
+      icon={FileText}
+      press={[2]}
     >
       <Sheet>
-        <div className="wv-tr">
-          <time>12:40</time>
-          <p>
-            <span className="m-hl" style={at(1)}>
-              现在真正拉开差距的，是它能不能接住你手上的整个工作流。
-            </span>
-          </p>
-          <time>13:15</time>
-          <p className="wv-dim">模型会越来越像，体验不会。</p>
+        <p className="wv-ledger-title">
+          <b>AI 编辑器观察</b>
+          <span className="wv-pills">
+            <span className="wv-pill">草稿 · 周五交</span>
+          </span>
+        </p>
+        <div className="wv-para">
+          <Who k="me">你</Who>
+          <p>AI 编辑器的护城河不在模型，在工作流。用户换工具的理由，越来越少是「它更聪明」。</p>
         </div>
-        <Bar
-          show={at(1, 2)}
-          below
-          land="第 2 节"
-          cursor={at(1, 2)}
-          items={[
-            { label: '放进去', icon: CornerDownLeft, primary: true },
-            { label: '记下灵光', icon: Lightbulb },
-            { label: '找依据', icon: BookOpen },
-          ]}
-        />
-        <div className="wv-page">
-          <p className="wv-head">
-            <FileText aria-hidden="true" />
-            <b>Pages</b>
-            <span>AI 编辑器观察 · 第 2 节</span>
-          </p>
-          <p className="wv-page-text">
-            AI 编辑器的护城河不在模型，在工作流。
-            <span className="wv-put m-v" data-fade="" style={at(2)}>
-              “现在真正拉开差距的，是它能不能接住你手上的整个工作流。”
+        <Line show={at(1)}>
+          <div className="wv-para">
+            <Who k="ai">
+              <Sparkles aria-hidden="true" />
+            </Who>
+            <p>
+              六家里有四家按月订阅；差别不在价格，在每档能接住多少工作流。
               <small className="wv-src">
                 <Play aria-hidden="true" />
                 视频 · 12:40
               </small>
+              <small className="wv-src">
+                <NotebookPen aria-hidden="true" />
+                笔记 · 3 条
+              </small>
+            </p>
+          </div>
+        </Line>
+        <div className="wv-para">
+          <Who k="me">你</Who>
+          <p>
+            <span className="m-hl" style={at(2)}>
+              周五前和编辑对一下结构。
             </span>
           </p>
         </div>
+        <Bar
+          show={at(2, 3)}
+          below
+          compact
+          cursor={at(2, 3)}
+          items={[
+            { label: '记成待办', icon: ListChecks, primary: true },
+            { label: '记成进展', icon: Target },
+            { label: '找依据', icon: BookOpen },
+          ]}
+        />
+        <Line show={at(3)}>
+          <p className="wv-ledger-landed">
+            <ListChecks aria-hidden="true" />
+            <span>
+              待办里多了一条：<b>周五前和编辑对一下结构</b>
+            </span>
+            <small>来源：《AI 编辑器观察》</small>
+          </p>
+        </Line>
       </Sheet>
-      <p className="wv-toast m-v" style={at(3)}>
-        <Check aria-hidden="true" />
-        放进第 2 节 · 出处跟着
-      </p>
     </Win>
   ),
 };

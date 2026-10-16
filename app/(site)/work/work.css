@@ -18,6 +18,17 @@
 .m-work .m-ch-inline .m-reel-view {
   --view: 4 / 5.2 !important;
 }
+/* 两栏首屏在 901–1240 之间画面只有五六栏宽，画面里的字到了底字不再缩，同一页的时间线放不下：画面高一些 */
+@media (min-width: 901px) and (max-width: 1240px) {
+  .m-work .wp-hero-demo .m-reel-view {
+    --view: 16 / 13.6 !important;
+  }
+}
+@media (min-width: 901px) and (max-width: 980px) {
+  .m-work .wp-hero-demo .m-reel-view {
+    --view: 15 / 16 !important;
+  }
+}
 @media (max-width: 640px) {
   .m-work .wp-hero-demo .m-reel-view {
     --view: 4 / 3.9 !important;
@@ -28,10 +39,61 @@
   }
 }
 
-/* ---------- 首屏：左边产品名与一句话，右边一段短循环 ---------- */
+/* ---------- 首屏：左边产品名、一句话和去处；右边同一页目标（几个人写在同一条时间线上） ---------- */
 .wp .wp-hero-demo {
   grid-column: 7 / -1;
   align-self: center;
+}
+.wp-go {
+  display: grid;
+  gap: 12px;
+}
+.wp-go-line {
+  font-size: var(--t-small);
+  letter-spacing: 0.04em;
+  color: var(--mute);
+}
+/* ---------- 下面几段：画面在左、文字在右（像展品和它右边的展签） ---------- */
+@media (min-width: 901px) {
+  /* 四幕：钉住的画面在左（八栏），每幕的字在右（四栏） */
+  .m-work .m-chapters-stage {
+    grid-column: 1 / span 8;
+  }
+  .m-work .m-chapters-text {
+    grid-column: 9 / -1;
+  }
+  /* 没有 JS：不钉住，每幕自己一行，停在最后一步的画面在左、这一幕的字在右 */
+  html:not(.js) .m-work .m-chapters-text {
+    grid-column: 1 / -1;
+  }
+  html:not(.js) .m-work .m-ch {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    align-content: start;
+  }
+  html:not(.js) .m-work .m-ch > * {
+    grid-column: 9 / -1;
+  }
+  html:not(.js) .m-work .m-ch > .m-ch-inline {
+    grid-column: 1 / span 8;
+    grid-row: 1 / span 6;
+    margin: 0;
+  }
+  html:not(.js) .m-work .m-ch-inline .m-reel-view {
+    --view: 16 / 9.2 !important;
+  }
+}
+/* 钉住的画面让出全站顶栏和页内顶栏两条，在剩下的高度里大致居中。
+   画面上方那行「正在演哪一步」不要：同一句就在右边的步骤里亮着，字只放右边 */
+.m-work .m-stage-pin {
+  top: calc(var(--header) + 52px + 7vh);
+}
+.m-work .m-stage-cap {
+  display: none;
+}
+.m-work .m-stage-view {
+  max-height: calc(100svh - var(--header) - 52px - 200px);
 }
 .wp-hero-demo .m-reel {
   gap: 12px;
@@ -79,8 +141,7 @@
 .wp-switch button:focus-visible,
 .wp-nav a:focus-visible,
 .wp-idea:focus-visible,
-.ww-tabs button:focus-visible,
-.wp-copy:focus-visible {
+.ww-tabs button:focus-visible {
   outline: 1.5px solid var(--ink);
   outline-offset: 3px;
 }
@@ -451,41 +512,6 @@ html:has(.wp-nav) {
   font-size: var(--t-small);
   color: var(--mute);
 }
-.wp-code {
-  position: relative;
-  min-width: 0;
-  border-radius: var(--r-inset);
-  background: var(--paper-2);
-}
-.wp-code pre {
-  margin: 0;
-  padding: 36px 14px 14px;
-  overflow-x: auto;
-  font: 400 var(--t-small) / 1.75 ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
-  white-space: pre;
-}
-.wp-say p {
-  padding: 12px 70px 12px 14px;
-  font-size: var(--t-small);
-  color: var(--ink-2);
-}
-.wp-copy {
-  all: unset;
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  padding: 3px 10px;
-  border-radius: var(--r-pill);
-  background: var(--white);
-  box-shadow: inset 0 0 0 1px var(--hair-2);
-  font: 500 var(--t-label) / 1.5 var(--sans);
-  letter-spacing: 0.08em;
-  color: var(--ink-2);
-  cursor: pointer;
-}
-.wp-copy:hover {
-  color: var(--ink);
-}
 .wp-bounds {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -641,20 +667,28 @@ html:has(.wp-nav) {
   padding-left: 22px;
   color: var(--ink-2);
 }
+.wp-letter {
+  display: grid;
+  gap: 0.9em;
+  max-width: var(--read);
+  margin: 8px 0 0 calc((100% + var(--col-gap)) / 12 * 2);
+}
+.wp-letter p {
+  font: 400 var(--t-read) / 2 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+/* 结尾的第二段：缘起讲完，接着问「那人做什么」 */
+.wp-then {
+  margin: var(--section-top) 0 32px calc((100% + var(--col-gap)) / 12 * 2);
+  font: 300 var(--t-h2) / 1.45 var(--sans);
+  letter-spacing: 0.04em;
+}
 .wp-vision {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 32px;
-  margin-top: var(--section-top);
-}
-.wp-vision-window {
-  grid-column: 1 / -1;
-}
-.wp-vision-text {
-  grid-column: 3 / span 8;
-  display: grid;
   gap: 16px;
+  margin: var(--section-top) 0 0 calc((100% + var(--col-gap)) / 12 * 2);
+  max-width: 48rem;
 }
 .wp-vision-big {
   font: 300 var(--t-h1) / 1.3 var(--sans);
@@ -680,38 +714,89 @@ html:has(.wp-nav) {
 /* ---------- 想怎么干：插件排开，再拼成一种干法 ---------- */
 .ww {
   display: grid;
-  gap: 16px;
+  /* 画面在左（八栏），文字在右（四栏），和全景同一种排法 */
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 18px;
+  align-items: start;
 }
-.ww-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px 20px;
+.ww-stage {
+  grid-column: 1 / span 8;
+  grid-row: 1;
+}
+.ww-side {
+  grid-column: 9 / -1;
+  grid-row: 1;
+  display: grid;
+  align-content: start;
+  min-width: 0;
 }
 .ww-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px 4px;
+  display: grid;
+  border-top: 1px solid var(--ink);
+}
+.ww-row {
+  border-bottom: 1px solid var(--hair);
 }
 .ww-tabs button {
   all: unset;
-  padding: 8px 12px 10px;
-  font: 400 var(--t-ui) / 1.3 var(--sans);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 2.2em minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 0;
+  font: 400 var(--t-ui) / 1.5 var(--sans);
   letter-spacing: 0.04em;
   color: var(--mute);
-  white-space: nowrap;
   cursor: pointer;
-  transition:
-    color 0.4s var(--ease),
-    box-shadow 0.4s var(--ease);
+  transition: color 0.4s var(--ease);
+}
+.ww-tabs .m-no {
+  font-size: var(--t-ui);
+  color: var(--mute);
+  transition: color 0.4s var(--ease);
 }
 .ww-tabs button:hover,
-.ww-tabs button[aria-pressed='true'] {
+.ww-row[data-on] button {
   color: var(--ink);
 }
-.ww-tabs button[aria-pressed='true'] {
-  box-shadow: inset 0 -1px 0 var(--ink);
+.ww-row[data-on] .m-no {
+  color: var(--accent-ink);
+}
+.ww-more {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.7s var(--ease),
+    opacity 0.5s var(--ease);
+}
+.ww-more > p {
+  min-height: 0;
+  overflow: hidden;
+  padding-left: calc(2.2em + 10px);
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+.ww-row[data-on] .ww-more {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.ww-row[data-on] .ww-more > p {
+  padding-bottom: 14px;
+}
+.ww-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+}
+.ww-foot .wt-auto {
+  margin-left: 6px;
 }
 .ww-stage {
   --t: 52px;
@@ -750,7 +835,7 @@ html:has(.wp-nav) {
     opacity 0.6s var(--ease);
 }
 /* 没有 JS：插件整整齐齐排开，干法的切换藏起来 */
-html:not(.js) .ww-bar,
+html:not(.js) .ww-tabs,
 html:not(.js) .ww-lines {
   display: none;
 }
@@ -847,6 +932,8 @@ html:not(.js) .ww-tile {
   top: 0;
   left: 0;
   z-index: 2;
+  /* 按字宽排，不因为离舞台右边近就被挤成两三行 */
+  width: max-content;
   max-width: 160px;
   padding: 4px 10px;
   border-radius: var(--r-pill);
@@ -900,33 +987,23 @@ html:not(.js) .ww-tile {
 .ww-token[data-on] {
   opacity: 1;
 }
-.ww-cap {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 6px 14px;
-  min-height: 2em;
-}
-.ww-cap .m-note + .m-note {
-  margin-left: -8px;
-}
-.ww-cap b {
-  font: 300 var(--t-h3) / 1.4 var(--sans);
-  letter-spacing: 0.04em;
-}
-.ww-cap > span:last-child {
-  font-size: var(--t-small);
-  color: var(--ink-2);
-}
-
 /* ---------- 窄屏 ---------- */
 @media (max-width: 900px) {
   .wp .wp-hero-demo {
     grid-column: 1 / -1;
   }
   .wp-ideas,
-  .wp-uses {
+  .wp-uses,
+  .ww {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .ww-stage,
+  .ww-side {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .ww-foot {
+    margin-top: 14px;
   }
   .wp-compare,
   .wd,
@@ -944,8 +1021,10 @@ html:not(.js) .ww-tile {
   .wp-now-start ol {
     grid-template-columns: minmax(0, 1fr);
   }
-  .wp-vision-text {
-    grid-column: 1 / -1;
+  .wp-letter,
+  .wp-then,
+  .wp-vision {
+    margin-left: 0;
   }
   .wp-bounds {
     grid-template-columns: minmax(0, 1fr);
@@ -1053,6 +1132,7 @@ html:not(.js) .ww-tile {
   .wd-blk > span,
   .ww-tile,
   .ww-chip,
+  .ww-more,
   .wp-idea,
   .wp-idea-art i {
     transition: none !important;

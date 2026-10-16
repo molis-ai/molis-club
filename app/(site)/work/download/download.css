@@ -1,0 +1,227 @@
+/* =====================================================================
+   在 Mac 上用 Molis Work：阅读版式，和隐私页同一套栅格。
+   标题从第 3 栏起；一张白卡（开发中的新版，留一个「有了告诉我」）；
+   小节标题挂在左两栏；问答用原生 details，没有 JS 也能展开。
+   ===================================================================== */
+
+.wdl-head,
+.wdl-sec {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+}
+.wdl-head {
+  row-gap: 18px;
+  padding-bottom: clamp(40px, 7vh, 80px);
+}
+.wdl-head .m-head-meta {
+  grid-row: 1 / span 3;
+}
+.wdl-head h1,
+.wdl-lead,
+.wdl-meta {
+  grid-column: 3 / span 8;
+}
+.wdl-head h1 {
+  font: 300 var(--t-h1) / 1.32 var(--sans);
+  letter-spacing: 0.04em;
+}
+.wdl-lead {
+  max-width: var(--read);
+  font: 400 var(--t-lead) / 1.95 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+.wdl-meta {
+  font-size: var(--t-small);
+  letter-spacing: 0.04em;
+  color: var(--mute);
+}
+
+.wdl-body {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 20px;
+  padding-bottom: var(--section-bottom);
+}
+.wdl-body > * {
+  grid-column: 3 / -1;
+  min-width: 0;
+}
+
+/* ---------- 两张卡 ---------- */
+.wdl-card {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: clamp(22px, 2.4vw, 32px);
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
+}
+.wdl-card h2 {
+  font: 300 var(--t-h3) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.wdl-card p {
+  color: var(--ink-2);
+}
+.wdl-card .m-status,
+.wdl-card .m-note {
+  justify-self: start;
+}
+.wdl-note {
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+.wdl-card p.wdl-note {
+  color: var(--mute);
+}
+
+/* 新版：说明在左，「有了告诉我」在右 */
+.wdl-next {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 18rem);
+  column-gap: var(--col-gap);
+  align-items: end;
+}
+.wdl-next-text,
+.wdl-next-go {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+}
+
+/* 一行去开源仓库 */
+.wdl-code {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+
+/* ---------- 小节：标题挂在左两栏 ---------- */
+.wdl-body > .wdl-sec {
+  grid-column: 1 / -1;
+  padding-top: clamp(28px, 5vh, 48px);
+  margin-top: clamp(28px, 5vh, 56px);
+  border-top: 1px solid var(--hair);
+}
+.wdl-sec-title {
+  grid-column: 1 / span 2;
+  padding-top: 0.2em;
+  font: 500 var(--t-label) / 1.6 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.wdl-sec-body {
+  grid-column: 3 / -1;
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  max-width: 52rem;
+}
+.wdl-sec-body > p {
+  font-size: var(--t-read);
+  line-height: 2;
+}
+
+/* ---------- 问答 ---------- */
+.wdl-faq {
+  gap: 0;
+}
+.wdl-faq details {
+  border-bottom: 1px solid var(--hair);
+}
+.wdl-faq details:first-child {
+  border-top: 1px solid var(--hair);
+}
+.wdl-faq summary {
+  position: relative;
+  display: block;
+  padding: 18px 40px 18px 0;
+  font: 400 var(--t-keys) / 1.6 var(--sans);
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  list-style: none;
+}
+.wdl-faq summary::-webkit-details-marker {
+  display: none;
+}
+/* 加号：竖线在展开时收起，变成减号 */
+.wdl-faq summary::before,
+.wdl-faq summary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  width: 13px;
+  height: 1px;
+  background: var(--ink-2);
+  transition: transform 0.4s var(--ease);
+}
+.wdl-faq summary::after {
+  transform: rotate(90deg);
+}
+.wdl-faq details[open] summary::after {
+  transform: rotate(0deg);
+}
+.wdl-faq summary:hover {
+  color: var(--accent-ink);
+}
+.wdl-faq summary:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 3px;
+}
+.wdl-faq-a {
+  display: grid;
+  gap: 0.6em;
+  padding: 0 40px 22px 0;
+  max-width: var(--read);
+}
+.wdl-faq-a p {
+  font-size: var(--t-body);
+  line-height: 1.95;
+  color: var(--ink-2);
+}
+
+.wdl-back {
+  margin-top: clamp(40px, 7vh, 72px);
+}
+
+@media (max-width: 900px) {
+  .wdl-head .m-head-meta,
+  .wdl-head h1,
+  .wdl-lead,
+  .wdl-meta,
+  .wdl-body > *,
+  .wdl-sec-title,
+  .wdl-sec-body {
+    grid-column: 1 / -1;
+  }
+  .wdl-head .m-head-meta {
+    grid-row: auto;
+  }
+  .wdl-sec {
+    row-gap: 16px;
+  }
+  .wdl-next {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wdl-faq summary::before,
+  .wdl-faq summary::after {
+    transition: none;
+  }
+}
+
+@media print {
+  .wdl-faq-a {
+    display: grid !important;
+  }
+}

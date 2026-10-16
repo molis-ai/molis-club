@@ -19,7 +19,7 @@ registerHooks({
 const { studio, story } = await import('../content/site/studio.ts');
 const { access, productIds, products, relations } =
   await import('../content/site/products.ts');
-const { workProgress } = await import('../content/site/work.ts');
+const { workEnding, workProgress } = await import('../content/site/work.ts');
 const { toolProgress } = await import('../content/site/tool.ts');
 const { lifeProgress } = await import('../content/site/life.ts');
 const { storyProgress } = await import('../content/site/story.ts');
@@ -96,6 +96,11 @@ void test('各产品页「当前进展」里标为原句的部分都在底稿里
     ...worldProgress.now,
   ];
   for (const text of quoted) assertVerbatim(text, '当前进展');
+});
+
+void test('Work 页结尾的缘起和三句话都在底稿里', () => {
+  for (const text of [workEnding.title, ...workEnding.letter])
+    assertVerbatim(text, 'Work 结尾');
 });
 
 void test('内部编辑备注不对外', () => {

@@ -15,6 +15,7 @@ const count = (text, pattern) => (text.match(pattern) || []).length;
 const pages = [
   '/',
   '/work',
+  '/work/download',
   '/tool',
   '/life',
   '/story',
@@ -107,6 +108,14 @@ assert(!work.includes('Issue'), 'work: no internal Issue plugin');
 assert(!/下载 Molis|安装包下载|立即下载/.test(work), 'work: no download entry');
 assert(work.includes('href="https://github.com/molis-ai/molis-work"'));
 assert(work.includes('https://github.com/molis-ai/molis-work#run-from-source'));
+
+// 下载页：还没到给人下载的时候，只留一个口子：新版标「开发中」、按钮「有了告诉我」；不列任何安装包，不写「免费」
+const download = await html('/work/download');
+assert.match(download, /开发中/);
+assert.match(download, /有了告诉我/);
+assert(!/免费|\.dmg|\.zip|0\.1\.1\d/i.test(download), 'download: no free claim, no package links');
+assert(!download.includes('Issue'), 'download: no internal Issue plugin');
+assert(work.includes('href="/work/download"'), 'work: hero links to download page');
 for (const path of ['/tool', '/life', '/story', '/world']) {
   const page = await html(path);
   assert.match(page, /示意/, `${path}: honest label`);

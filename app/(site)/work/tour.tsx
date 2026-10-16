@@ -974,29 +974,59 @@ export function Tour() {
   }, [current, persona, visible, auto, reduced, run]);
 
   const chapter = workTour.chapters[current];
-  const status = pick(chapter.status, persona);
+  const running = auto && visible && !reduced;
+  const statusOf = (item: (typeof workTour.chapters)[number]) =>
+    pick(item.status, persona) === 'rel' ? '已发布 · v0.2.0' : '开发中';
+  // 画面在左，文字在右：右边一列是八段的目录，正在演的那段展开标题和一句话。
+  // 手机上画面在上，目录横着滑，展开的那段放在目录下面。
   return (
     <div className="wt" style={{ '--dur': `${CH_MIN}ms` } as CSSProperties}>
-      <div className="wt-tools">
+      <figure
+        className="wt-stage"
+        ref={view}
+        aria-label={`Molis Work 窗口示意，第 ${current + 1} 段：${pick(chapter.title, persona)}${pick(chapter.text, persona)}`}
+      >
+        <Window persona={persona} theme={theme} />
+      </figure>
+      <div className="wt-notes">
         <ol className="wt-chapters" aria-label="产品全景的八段">
-          {workTour.chapters.map((item, index) => (
-            <li key={index}>
-              <button
-                type="button"
-                aria-current={index === current ? 'step' : undefined}
-                data-run={(index === current && auto && visible && !reduced) || undefined}
-                data-key={run}
-                onClick={() => {
-                  setCurrent(index);
-                  setRun((value) => value + 1);
-                }}
-              >
-                <span className="m-no">{pad(index + 1)}</span>
-                {pick(item.name, persona)}
-              </button>
-            </li>
-          ))}
+          {workTour.chapters.map((item, index) => {
+            const on = index === current;
+            return (
+              <li key={index} data-on={on || undefined}>
+                <button
+                  type="button"
+                  aria-current={on ? 'step' : undefined}
+                  onClick={() => {
+                    setCurrent(index);
+                    setRun((value) => value + 1);
+                  }}
+                >
+                  <span className="m-no">{pad(index + 1)}</span>
+                  <span className="wt-name">{pick(item.name, persona)}</span>
+                  {on ? <span className="m-note">{statusOf(item)}</span> : null}
+                </button>
+                <div className="wt-more" inert={!on}>
+                  <div>
+                    <h3>{pick(item.title, persona)}</h3>
+                    <p>{pick(item.text, persona)}</p>
+                  </div>
+                </div>
+                {/* 底边一道细线：这一段播了多久（每次重演都重新画） */}
+                {on && running ? <i className="wt-run" key={`${current}-${run}`} aria-hidden="true" /> : null}
+              </li>
+            );
+          })}
         </ol>
+        {/* 手机上才显示（桌面上同样的字在目录里展开），两处不会同时进读屏 */}
+        <div className="wt-cap">
+          <p className="wt-cap-k">
+            <span className="m-no">{pad(current + 1)}</span>
+            <span className="m-note">{statusOf(chapter)}</span>
+          </p>
+          <h3>{pick(chapter.title, persona)}</h3>
+          <p>{pick(chapter.text, persona)}</p>
+        </div>
         <div className="wt-controls">
           <fieldset className="wt-seg">
             <legend className="sr-only">窗口配色</legend>
@@ -1021,22 +1051,7 @@ export function Tour() {
             </button>
           )}
         </div>
-      </div>
-      <figure
-        className="wt-stage"
-        ref={view}
-        aria-label={`Molis Work 窗口示意，第 ${current + 1} 段：${pick(chapter.title, persona)}${pick(chapter.text, persona)}`}
-      >
-        <Window persona={persona} theme={theme} />
-      </figure>
-      <div className="wt-cap" aria-live="polite">
-        <p className="wt-cap-k">
-          <span className="m-no">{pad(current + 1)}</span>
-          <span className="m-note">{status === 'rel' ? '已发布 · v0.2.0' : '开发中'}</span>
-          <span className="wt-demo">{workTour.note}</span>
-        </p>
-        <h3>{pick(chapter.title, persona)}</h3>
-        <p>{pick(chapter.text, persona)}</p>
+        <p className="wt-demo">{workTour.note}</p>
       </div>
     </div>
   );

@@ -25,6 +25,9 @@ export const productHref: Record<ProductId, string> = {
   world: '/world',
 };
 
+/** Work 的下载与安装：新版安装包开发中，现在从源码装 v0.2.0 */
+export const WORK_DOWNLOAD = '/work/download';
+
 export const essayHref = (slug: string) => `${ESSAYS}/${slug}`;
 export const methodHref = (slug: string) => `${METHODS}/${slug}`;
 export const artistHref = (slug: string) => `${METHODS}/artists/${slug}`;
