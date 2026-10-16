@@ -1,0 +1,480 @@
+<title>Molis Work 接着做小样</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,400&family=Noto+Serif+SC:wght@500;700&display=swap">
+<style>
+/* Layout: one Goal page in the middle of the desk, Monday's Claude Code terminal on the left, Wednesday's Codex terminal on the right, a menu bar on top. Notes fly between the terminals and the page. */
+:root {
+  --paper: #f5f0e6;
+  --sheet: #fffcf6;
+  --ink: #121826;
+  --text: #33312c;
+  --muted: #6f695f;
+  --faint: #a39d92;
+  --line: rgb(18 24 38 / 0.12);
+  --red: #ee4e2b;
+  --red-soft: #fbe0d8;
+  --amber: #c98a12;
+  --amber-soft: #fbefd2;
+  --sage: #8fb69b;
+  --sage-deep: #2f6b45;
+  --cc: #e8a28c;
+  --cx: #b9c6f5;
+  --me: #8fb69b;
+  --term: #151b29;
+  --term-text: #e8e3d8;
+  --term-muted: #8d93a3;
+  --serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --display: 'Newsreader', Georgia, serif;
+  --sans: 'Geist', 'PingFang SC', 'Hiragino Sans GB', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, 'PingFang SC', monospace;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --shadow: 0 18px 34px -24px rgb(40 24 10 / 0.55), 0 1px 0 rgb(18 24 38 / 0.05);
+  color-scheme: light;
+}
+body { background: var(--paper); color: var(--text); font-family: var(--sans); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: clamp(16px, 3.2vw, 48px); padding-block: clamp(28px, 5vw, 64px) 48px; display: grid; gap: 22px; }
+.eyebrow { margin: 0; font-size: 12px; letter-spacing: 0.08em; color: var(--muted); }
+.eyebrow b { color: var(--red); font-weight: 500; }
+h1 { margin: 6px 0 0; font-family: var(--serif); font-weight: 700; color: var(--ink); font-size: clamp(30px, 4.6vw, 54px); line-height: 1.15; letter-spacing: -0.01em; text-wrap: balance; }
+.lead { margin: 10px 0 0; max-width: 40em; font-size: clamp(15px, 1.5vw, 17px); line-height: 1.8; }
+.lead em { font-family: var(--display); font-style: italic; color: var(--ink); }
+
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.steps { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.steps button { display: inline-flex; align-items: center; gap: 8px; font: 500 14px/1 var(--sans); color: var(--muted); background: transparent; border: 0; border-radius: 999px; padding: 9px 13px 9px 9px; cursor: pointer; transition: background 160ms var(--ease), color 160ms var(--ease); }
+.steps button:hover { background: rgb(18 24 38 / 0.06); }
+.steps .n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 11px; background: rgb(18 24 38 / 0.07); color: var(--muted); transition: background 200ms var(--ease), color 200ms var(--ease); }
+.steps button.done { color: var(--text); }
+.steps button.done .n { background: var(--sage); color: var(--sheet); }
+.steps button[aria-current="step"] { color: var(--ink); background: rgb(18 24 38 / 0.06); }
+.steps button[aria-current="step"] .n { background: var(--red); color: var(--sheet); }
+.tools { display: flex; gap: 4px; }
+.ctrl { display: inline-flex; align-items: center; gap: 8px; font: 500 14px/1 var(--sans); color: var(--muted); background: transparent; border: 0; border-radius: 999px; padding: 10px 14px; cursor: pointer; }
+.ctrl:hover { background: rgb(18 24 38 / 0.06); }
+.ctrl .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
+.ctrl[aria-pressed="false"] .dot { background: transparent; box-shadow: inset 0 0 0 1.5px var(--muted); }
+button:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+svg.i { width: 15px; height: 15px; flex: none; }
+
+.stage { position: relative; display: grid; gap: 14px; padding: 0 16px 16px; border-radius: 22px; background: #efe8db; box-shadow: inset 0 0 0 1px rgb(18 24 38 / 0.04); overflow: hidden; }
+.menubar { display: flex; align-items: center; justify-content: space-between; height: 32px; margin: 0 -16px; padding: 0 16px; background: rgb(255 252 246 / 0.7); border-bottom: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+.mb-right { display: flex; align-items: center; gap: 14px; }
+.mb-time { font-variant-numeric: tabular-nums; color: var(--text); transition: opacity 200ms var(--ease); }
+.mb-icon { display: grid; place-items: center; width: 24px; height: 22px; border-radius: 6px; color: var(--ink); transition: background 200ms var(--ease); }
+.mb-icon svg { width: 15px; height: 15px; }
+.mb-icon.on { background: rgb(18 24 38 / 0.1); }
+.capsule { position: absolute; top: 40px; right: 16px; z-index: 12; width: 270px; padding: 13px 14px; border-radius: 14px; background: var(--sheet); box-shadow: 0 24px 44px -24px rgb(40 24 10 / 0.7), 0 0 0 1px var(--line); font-size: 12.5px; line-height: 1.6; opacity: 0; transform: translateY(-6px); transition: opacity 240ms var(--ease), transform 300ms var(--ease); pointer-events: none; }
+.capsule.on { opacity: 1; transform: none; }
+.capsule small { color: var(--muted); }
+.capsule b { display: block; margin: 2px 0 6px; font-size: 14px; color: var(--ink); }
+.capsule .state { display: flex; align-items: center; gap: 8px; }
+.seg { display: flex; gap: 3px; }
+.seg i { width: 22px; height: 5px; border-radius: 3px; background: rgb(18 24 38 / 0.1); }
+.seg i.f { background: var(--sage); }
+.capsule .next { margin-top: 6px; color: var(--text); }
+
+.row { display: grid; grid-template-columns: 1fr 1.35fr 1fr; gap: 14px; height: 620px; }
+.term { position: relative; min-width: 0; display: flex; flex-direction: column; border-radius: 14px; background: var(--term); color: var(--term-text); box-shadow: 0 22px 40px -26px rgb(10 14 24 / 0.8); overflow: hidden; transition: opacity 500ms var(--ease), filter 500ms var(--ease); }
+.term.dim { opacity: 0.5; filter: saturate(0.6); }
+.term.idle { background: rgb(255 252 246 / 0.4); color: var(--muted); box-shadow: none; outline: 1.5px dashed rgb(18 24 38 / 0.2); outline-offset: -1.5px; }
+.term.idle .term-head { border-bottom-color: var(--line); }
+.term.idle .term-head svg, .term.idle .term-head small, .term.idle .term-state { color: var(--faint); }
+.term-head { display: flex; align-items: center; gap: 8px; padding: 11px 14px; border-bottom: 1px solid rgb(255 255 255 / 0.08); font-size: 12.5px; }
+.term-head svg { width: 15px; height: 15px; color: var(--term-muted); }
+.term-head b { font-weight: 600; }
+.term-head small { color: var(--term-muted); }
+.term-state { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--term-muted); }
+.term-state::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--term-muted); }
+.term-state.live::before { background: #7ccf95; box-shadow: 0 0 0 3px rgb(124 207 149 / 0.18); }
+.lines { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 7px; padding: 12px 14px 14px; font-family: var(--mono); font-size: 12px; line-height: 1.6; overflow: hidden; }
+.ln { animation: rise 320ms var(--ease); white-space: pre-wrap; word-break: break-word; }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.ln.u { color: var(--term-text); }
+.ln.u::before { content: '› '; color: var(--red); }
+.ln.o { color: var(--term-muted); }
+.ln.ok { color: #9be0ae; }
+.ln.warn { color: #f2c66d; }
+.ln .tagged { color: var(--term-text); }
+.cursor-blink { display: inline-block; width: 7px; height: 13px; margin-left: 1px; vertical-align: -2px; background: var(--term-text); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+.goal { position: relative; min-width: 0; display: flex; flex-direction: column; border-radius: 16px; background: var(--sheet); box-shadow: var(--shadow); overflow: hidden; }
+.goal-head { display: flex; align-items: center; gap: 9px; padding: 12px 16px 10px; border-bottom: 1px solid var(--line); }
+.goal-head svg { width: 17px; height: 17px; color: var(--ink); }
+.goal-head strong { font-size: 14px; font-weight: 600; color: var(--ink); }
+.goal-head small { font-size: 12px; color: var(--muted); }
+.goal-head .shared { margin-left: auto; font-size: 11px; color: var(--muted); }
+.goal-body { flex: 1; min-height: 0; padding: 16px 18px 14px; overflow: hidden; display: flex; flex-direction: column; }
+.g-empty { margin: 0; font-size: 13px; color: var(--faint); }
+.g-content { display: none; flex-direction: column; gap: 8px; min-height: 0; flex: 1; }
+.g-content.on { display: flex; animation: rise 420ms var(--ease); }
+.g-title { margin: 0; font-family: var(--serif); font-size: 20px; font-weight: 700; color: var(--ink); }
+.g-outcome { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+.g-status { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--text); }
+.g-status .pill { padding: 2px 8px; border-radius: 999px; background: var(--red-soft); color: #9c2f14; font-size: 11.5px; }
+.g-status b { font-variant-numeric: tabular-nums; color: var(--ink); }
+.g-h { margin: 4px 0 0; font-size: 11.5px; font-weight: 500; color: var(--muted); letter-spacing: 0.04em; }
+.reqs { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.req { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: start; padding: 5px 9px; border-radius: 9px; font-size: 13px; line-height: 1.5; transition: background 400ms var(--ease); }
+.req .mk { display: grid; place-items: center; width: 16px; height: 16px; margin-top: 2px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--faint); transition: background 300ms var(--ease), box-shadow 300ms var(--ease); }
+.req .mk svg { width: 11px; height: 11px; color: var(--sheet); opacity: 0; }
+.req.done .mk { background: var(--sage); box-shadow: none; }
+.req.done .mk svg { opacity: 1; }
+.req.flash { background: rgb(143 182 155 / 0.18); }
+.req.wait .mk { box-shadow: inset 0 0 0 2px var(--amber); }
+.req.wait { background: var(--amber-soft); }
+.req b { font-weight: 500; color: var(--ink); }
+.must { margin-left: 6px; padding: 1px 6px; border-radius: 5px; background: var(--paper); font-size: 11px; color: var(--muted); }
+.ev { display: none; margin-top: 1px; font-size: 11.5px; color: var(--sage-deep); }
+.ev.on { display: block; }
+.ev.no { color: var(--amber); }
+.banner { display: none; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 9px; background: var(--amber-soft); color: #7a520a; font-size: 12.5px; line-height: 1.5; }
+.banner svg { width: 15px; height: 15px; }
+.banner.on { display: flex; animation: rise 360ms var(--ease); }
+.tl { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.tl li { display: grid; grid-template-columns: 24px 1fr; gap: 8px; align-items: start; font-size: 12.5px; line-height: 1.55; animation: rise 360ms var(--ease); }
+.who { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font-size: 9.5px; font-weight: 600; color: var(--ink); }
+.tl b { font-weight: 600; color: var(--ink); }
+.tl small { display: block; font-size: 11.5px; color: var(--muted); }
+
+.packet { position: absolute; z-index: 20; display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: var(--red); color: var(--sheet); font-size: 12px; font-weight: 500; white-space: nowrap; box-shadow: 0 14px 24px -14px rgb(150 40 10 / 0.8); pointer-events: none; }
+.packet svg { width: 13px; height: 13px; }
+.packet.read { background: var(--ink); }
+
+.caption { display: grid; gap: 6px; min-height: 96px; }
+.cap-kicker { margin: 0; font-size: 12px; letter-spacing: 0.08em; color: var(--red); }
+.cap-main { margin: 0; font-family: var(--serif); font-weight: 700; font-size: clamp(22px, 2.6vw, 30px); color: var(--ink); }
+.cap-sub { margin: 0; max-width: 46em; font-size: 15px; line-height: 1.8; }
+.note { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.7; border-top: 1px solid var(--line); padding-top: 14px; }
+
+@media (max-width: 900px) {
+  .row { grid-template-columns: 1fr; height: auto; }
+  .term { height: 210px; }
+  .goal { height: 640px; }
+  .capsule { right: 10px; width: min(270px, calc(100% - 20px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow"><b>Molis Work</b> · 产品页第二幕「接」· 动画小样</p>
+    <h1>换了 Agent，接着同一页做。</h1>
+    <p class="lead">一件事做了好几天，中间换了工具。Claude Code、Codex 和你，读写的是工作台里的同一页：做成了什么、凭什么、下一步做什么。不用重讲背景，也不靠收工时写的摘要。<em>Same page, any agent.</em></p>
+  </header>
+
+  <div class="bar">
+    <ol class="steps" aria-label="这件事的四天">
+      <li><button data-step="0"><span class="n">1</span>周一 · Claude Code</button></li>
+      <li><button data-step="1"><span class="n">2</span>周三 · 换 Codex</button></li>
+      <li><button data-step="2"><span class="n">3</span>周四 · 一眼看进度</button></li>
+      <li><button data-step="3"><span class="n">4</span>说做完了</button></li>
+    </ol>
+    <div class="tools">
+      <button id="replay" class="ctrl">从头看</button>
+      <button id="autoplay" class="ctrl" aria-pressed="true"><span class="dot" aria-hidden="true"></span><span class="ctrl-text">自动播放中</span></button>
+    </div>
+  </div>
+
+  <section class="stage" id="stage" aria-label="示意：中间是一个 Goal 页，左边是周一的 Claude Code，右边是周三的 Codex，顶上是菜单栏">
+    <div class="menubar">
+      <span>发布页改版</span>
+      <span class="mb-right"><span class="mb-time" id="mb-time">周一 09:40</span><span class="mb-icon" id="mb-icon" data-icon="target"></span></span>
+    </div>
+    <div class="capsule" id="capsule" aria-hidden="true">
+      <small>Molis Work · 发布页改版</small>
+      <b>上线新版介绍页</b>
+      <div class="state"><span class="seg"><i class="f"></i><i class="f"></i><i></i></span>进行中 · 2/3</div>
+      <div class="next">下一步：手机上排版，要你验收</div>
+    </div>
+
+    <div class="row">
+      <article class="term" id="term-cc">
+        <header class="term-head"><span data-icon="terminal"></span><b>Claude Code</b><small>周一</small><span class="term-state" id="cc-state">还没开始</span></header>
+        <div class="lines" id="cc"></div>
+      </article>
+
+      <article class="goal" id="goal">
+        <header class="goal-head"><span data-icon="target"></span><strong>Goals</strong><small>发布页改版</small><span class="shared">同一页 · 谁来做都读它</span></header>
+        <div class="goal-body">
+          <p class="g-empty" id="g-empty">还没有目标。</p>
+          <div class="g-content" id="g-content">
+            <h2 class="g-title" id="g-title">上线新版介绍页</h2>
+            <p class="g-outcome">预期结果：新版介绍页上线，登录、支付、手机端都能用。</p>
+            <div class="g-status" id="g-status"><span class="pill">进行中</span>完成要求 <b id="g-count">0/3</b></div>
+            <p class="g-h">完成要求</p>
+            <ul class="reqs">
+              <li class="req" id="r1"><span class="mk" data-icon="check"></span><div><b>登录页可用</b><span class="ev" id="ev1">依据：测试 12/12 通过 · Claude Code</span></div></li>
+              <li class="req" id="r2"><span class="mk" data-icon="check"></span><div><b>支付走通</b><span class="ev" id="ev2">依据：沙箱支付 3 笔成功 · Codex</span></div></li>
+              <li class="req" id="r3"><span class="mk" data-icon="check"></span><div><b>手机上排版正常</b><span class="must">要你验收</span><span class="ev no" id="ev3">还没有依据</span></div></li>
+            </ul>
+            <div class="banner" id="banner"><span data-icon="circle-alert"></span>还没算完：「手机上排版正常」还没有依据。</div>
+            <p class="g-h">时间线</p>
+            <ol class="tl" id="tl"></ol>
+          </div>
+        </div>
+      </article>
+
+      <article class="term idle" id="term-cx">
+        <header class="term-head"><span data-icon="terminal"></span><b>Codex</b><small>周三 · 新会话</small><span class="term-state" id="cx-state">还没开始</span></header>
+        <div class="lines" id="cx"></div>
+      </article>
+    </div>
+  </section>
+
+  <div class="caption" aria-live="polite">
+    <p class="cap-kicker" id="cap-kicker"></p>
+    <p class="cap-main" id="cap-main"></p>
+    <p class="cap-sub" id="cap-sub"></p>
+  </div>
+
+  <p class="note">动画小样，示例数据，界面是示意。Claude Code、Codex 经 MCP 读写同一个 Goal，完成要求、显式收尾和菜单栏里的当前 Goal 已在 v0.2.0；交付物等新界面在开发版。</p>
+</main>
+
+<script>
+(() => {
+  // Icon geometry from Lucide 0.454.0 (ISC), the set Molis Work uses.
+  const ICONS = {"target":"<circle cx='12' cy='12' r='10'/><circle cx='12' cy='12' r='6'/><circle cx='12' cy='12' r='2'/>","check":"<path d='M20 6 9 17l-5-5'/>","terminal":"<polyline points='4 17 10 11 4 5'/><line x1='12' x2='20' y1='19' y2='19'/>","circle":"<circle cx='12' cy='12' r='10'/>","arrow-right":"<path d='M5 12h14'/><path d='m12 5 7 7-7 7'/>","circle-alert":"<circle cx='12' cy='12' r='10'/><line x1='12' x2='12' y1='8' y2='12'/><line x1='12' x2='12.01' y1='16' y2='16'/>","file-text":"<path d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'/><path d='M14 2v4a2 2 0 0 0 2 2h4'/><path d='M10 9H8'/><path d='M16 13H8'/><path d='M16 17H8'/>","git-commit":"<circle cx='12' cy='12' r='3'/><line x1='3' x2='9' y1='12' y2='12'/><line x1='15' x2='21' y1='12' y2='12'/>"};
+  const svg = (name) => `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
+  document.querySelectorAll('[data-icon]').forEach((el) => el.insertAdjacentHTML('afterbegin', svg(el.dataset.icon)));
+
+  const STEPS = [
+    { main: '周一 · Claude Code 开了头', sub: '在 Claude Code 里说一句，Goal 就建在工作台里。登录页做完，进展和依据记在这一页上；会话结束了，记录还在。' },
+    { main: '周三 · 换 Codex，只说「接着做」', sub: 'Codex 新开一个会话，读到的是同一页：做成了什么、凭什么、下一步做什么。不用重讲背景，也不靠收工时写的 handoff 摘要。' },
+    { main: '周四 · 不用问任何 AI', sub: '菜单栏点一下，就知道做到哪了：2/3，还差手机排版。你在周报里记的那句进展，也在这一页上。' },
+    { main: '说做完了，记录上还差一条', sub: 'Codex 说做完了，可「手机上排版正常」还没有依据，所以没算完。接下来谁来接手，看的都是这一页。' },
+  ];
+  const FINAL = { kicker: '换谁来做', main: '活留在工作台里，不留在对话里。', sub: 'Claude Code、Codex 和你，写的是同一页。下一个接手的人或 Agent，从这一页接着做。' };
+  const WHO = {
+    cc: { mono: 'CC', name: 'Claude Code', color: 'var(--cc)' },
+    cx: { mono: 'Cx', name: 'Codex', color: 'var(--cx)' },
+    me: { mono: '你', name: '你', color: 'var(--me)' },
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const stage = $('stage');
+  const stepBtns = [...document.querySelectorAll('.steps button')];
+  const autoBtn = $('autoplay');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let runId = 0;
+  let instant = false;
+  let autoplay = !reduce;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, instant ? 0 : ms));
+
+  function box(el) {
+    const s = stage.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    return { x: r.left - s.left, y: r.top - s.top, w: r.width, h: r.height };
+  }
+
+  // ---------- terminals ----------
+  function out(term, text, cls = 'o') {
+    const ln = document.createElement('div');
+    ln.className = 'ln ' + cls;
+    ln.textContent = text;
+    $(term).appendChild(ln);
+    return ln;
+  }
+  async function say(term, text, alive) {
+    const ln = out(term, '', 'u');
+    if (instant) { ln.textContent = text; return; }
+    const caret = document.createElement('span');
+    caret.className = 'cursor-blink';
+    for (let i = 1; i <= text.length; i++) {
+      if (!alive()) return;
+      ln.textContent = text.slice(0, i);
+      ln.appendChild(caret);
+      await sleep(34);
+    }
+    await sleep(260);
+    caret.remove();
+  }
+  function termState(id, text, live) {
+    const el = $(id);
+    el.textContent = text;
+    el.classList.toggle('live', !!live);
+  }
+
+  // ---------- the page ----------
+  function addEntry(who, title, detail) {
+    const w = WHO[who];
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="who" style="background:${w.color}">${w.mono}</span><div><b>${title}</b><small>${detail}</small></div>`;
+    $('tl').appendChild(li);
+  }
+  function check(req, ev, count) {
+    $(req).classList.add('done', 'flash');
+    $(ev).classList.add('on');
+    $('g-count').textContent = count;
+    setTimeout(() => $(req).classList.remove('flash'), 900);
+  }
+
+  function packet(fromEl, toEl, label, read) {
+    if (instant || reduce) return Promise.resolve();
+    const a = box(fromEl);
+    const b = box(toEl);
+    const p = document.createElement('div');
+    p.className = 'packet' + (read ? ' read' : '');
+    p.innerHTML = `${svg(read ? 'file-text' : 'git-commit')}${label}`;
+    stage.appendChild(p);
+    const sx = a.x + a.w / 2 - p.offsetWidth / 2;
+    const sy = a.y + a.h / 2 - p.offsetHeight / 2;
+    const ex = b.x + b.w / 2 - p.offsetWidth / 2;
+    const ey = b.y + b.h / 2 - p.offsetHeight / 2;
+    p.style.left = sx + 'px';
+    p.style.top = sy + 'px';
+    const dx = ex - sx;
+    const dy = ey - sy;
+    const anim = p.animate([
+      { transform: 'translate(0, 0) scale(0.8)', opacity: 0 },
+      { transform: `translate(${dx * 0.1}px, ${dy * 0.1 - 10}px) scale(1)`, opacity: 1, offset: 0.15 },
+      { transform: `translate(${dx * 0.5}px, ${dy * 0.5 - 46}px) scale(1)`, opacity: 1, offset: 0.55 },
+      { transform: `translate(${dx}px, ${dy}px) scale(0.85)`, opacity: 0 },
+    ], { duration: 1100, easing: 'cubic-bezier(0.3, 0.6, 0.3, 1)' });
+    // a background tab may never finish the animation; move on after its duration anyway
+    return Promise.race([anim.finished, new Promise((r) => setTimeout(r, 1300))]).then(() => p.remove(), () => p.remove());
+  }
+
+  function setStep(i) {
+    stepBtns.forEach((b, k) => {
+      b.classList.toggle('done', k < i);
+      if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    });
+    $('cap-kicker').textContent = `第 ${i + 1} 步，共 4 步`;
+    $('cap-main').textContent = STEPS[i].main;
+    $('cap-sub').textContent = STEPS[i].sub;
+  }
+  function setFinal() {
+    stepBtns.forEach((b) => { b.classList.add('done'); b.removeAttribute('aria-current'); });
+    $('cap-kicker').textContent = FINAL.kicker;
+    $('cap-main').textContent = FINAL.main;
+    $('cap-sub').textContent = FINAL.sub;
+  }
+
+  function reset() {
+    $('cc').innerHTML = '';
+    $('cx').innerHTML = '';
+    termState('cc-state', '还没开始');
+    termState('cx-state', '还没开始');
+    $('term-cc').classList.remove('dim');
+    $('term-cx').classList.add('idle');
+    $('g-empty').hidden = false;
+    $('g-content').classList.remove('on');
+    ['r1', 'r2', 'r3'].forEach((r) => $(r).classList.remove('done', 'wait', 'flash'));
+    ['ev1', 'ev2', 'ev3'].forEach((e) => $(e).classList.remove('on'));
+    $('g-count').textContent = '0/3';
+    $('banner').classList.remove('on');
+    $('tl').innerHTML = '';
+    $('mb-time').textContent = '周一 09:40';
+    $('mb-icon').classList.remove('on');
+    $('capsule').classList.remove('on');
+    stage.querySelectorAll('.packet').forEach((p) => p.remove());
+  }
+
+  // ---------- four days ----------
+  const steps = [
+    async (alive) => {
+      $('mb-time').textContent = '周一 09:40';
+      termState('cc-state', '会话中', true);
+      await say('cc', '用 Molis Work 记个目标：上线新版介绍页，登录、支付、手机端都要能用', alive); if (!alive()) return;
+      out('cc', '已在 Molis Work 建好 Goal，带 3 条完成要求');
+      await packet($('cc'), $('g-title').closest('.goal-body'), '建 Goal'); if (!alive()) return;
+      $('g-empty').hidden = true;
+      $('g-content').classList.add('on');
+      await sleep(700); if (!alive()) return;
+      await say('cc', '先做登录页', alive); if (!alive()) return;
+      out('cc', '改了 6 个文件……');
+      await sleep(700); if (!alive()) return;
+      out('cc', '✓ 测试 12/12 通过', 'ok');
+      await packet($('cc'), $('r1'), '记一笔'); if (!alive()) return;
+      check('r1', 'ev1', '1/3');
+      addEntry('cc', '周一 · 登录页完成', '依据：测试 12/12 通过 · 下一步：支付');
+      out('cc', '已记进 Goal · 下一步：支付');
+      await sleep(1200); if (!alive()) return;
+      termState('cc-state', '会话已结束');
+      $('term-cc').classList.add('dim');
+      await sleep(900);
+    },
+    async (alive) => {
+      $('mb-time').textContent = '周三 14:10';
+      $('term-cx').classList.remove('idle');
+      termState('cx-state', '会话中', true);
+      await sleep(500); if (!alive()) return;
+      await say('cx', '接着做介绍页', alive); if (!alive()) return;
+      await packet($('g-title'), $('cx'), '读这一页', true); if (!alive()) return;
+      out('cx', '读到 Goal「上线新版介绍页」');
+      await sleep(350); if (!alive()) return;
+      out('cx', '· 已完成 1/3：登录页（周一，Claude Code，测试 12/12）');
+      await sleep(350); if (!alive()) return;
+      out('cx', '· 下一步：支付；手机排版要你验收');
+      await sleep(900); if (!alive()) return;
+      out('cx', '开始做支付……');
+      await sleep(900); if (!alive()) return;
+      out('cx', '✓ 沙箱支付 3 笔成功', 'ok');
+      await packet($('cx'), $('r2'), '记一笔'); if (!alive()) return;
+      check('r2', 'ev2', '2/3');
+      addEntry('cx', '周三 · 支付走通', '依据：沙箱支付 3 笔成功 · 接着周一的进度做');
+      await sleep(1400);
+    },
+    async (alive) => {
+      $('mb-time').textContent = '周四 10:24';
+      await sleep(300); if (!alive()) return;
+      $('mb-icon').classList.add('on');
+      $('capsule').classList.add('on');
+      await sleep(1600); if (!alive()) return;
+      addEntry('me', '周四 · 你在周报里记了一笔', '「登录页已上线」· 来自《本周进展》');
+      await sleep(1800); if (!alive()) return;
+      $('capsule').classList.remove('on');
+      $('mb-icon').classList.remove('on');
+      await sleep(500);
+    },
+    async (alive) => {
+      $('mb-time').textContent = '周四 17:30';
+      out('cx', '支付做完了，提交收尾');
+      await packet($('cx'), $('g-status'), '提交收尾'); if (!alive()) return;
+      $('banner').classList.add('on');
+      $('r3').classList.add('wait');
+      $('ev3').classList.add('on');
+      addEntry('cx', '周四 · 提交收尾，没算完', '还差：手机上排版正常（要你验收）');
+      out('cx', '收尾没成立：手机上排版还没有依据', 'warn');
+      await sleep(1200);
+    },
+  ];
+
+  async function play(fromStep = 0) {
+    const id = ++runId;
+    const alive = () => id === runId;
+    instant = fromStep > 0 || reduce;
+    reset();
+    for (let k = 0; k < steps.length; k++) {
+      if (fromStep === k && !reduce) instant = false;
+      if (!instant) setStep(k);
+      await steps[k](alive);
+      if (!alive()) return;
+    }
+    if (fromStep >= steps.length || reduce) { instant = false; setFinal(); return; }
+    instant = false;
+    setFinal();
+    await sleep(4500); if (!alive()) return;
+    if (autoplay) play(0);
+  }
+
+  // ---------- controls ----------
+  stepBtns.forEach((b) => b.addEventListener('click', () => play(Number(b.dataset.step))));
+  $('replay').addEventListener('click', () => play(0));
+  function syncAuto() {
+    autoBtn.setAttribute('aria-pressed', String(autoplay));
+    autoBtn.querySelector('.ctrl-text').textContent = autoplay ? '自动播放中' : '自动播放已停';
+  }
+  autoBtn.addEventListener('click', () => { autoplay = !autoplay; syncAuto(); if (autoplay) play(0); });
+  syncAuto();
+
+  // a complete resting frame (the whole week on one page), then play from the start
+  play(steps.length);
+  if (!reduce) setTimeout(() => { if (runId === 1) play(0); }, 1400);
+})();
+</script>

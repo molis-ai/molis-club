@@ -48,11 +48,14 @@ export function Chapters({
   chapters,
   label,
   view = '16 / 10',
+  start = 1,
 }: {
   chapters: Chapter[];
   /** 读屏用：这一串画面是什么 */
   label: string;
   view?: string;
+  /** 第一章的编号（主线前面还有别的编号区块时接着往下数） */
+  start?: number;
 }) {
   const root = useRef<HTMLDivElement>(null);
   const [at, setAt] = useState({ chapter: 0, step: 0 });
@@ -112,7 +115,7 @@ export function Chapters({
           >
             <p className="m-ch-meta">
               <span className="m-no" aria-hidden="true">
-                {pad(c + 1)}
+                {pad(c + start)}
               </span>
               {chapter.kicker ? (
                 <span className="m-kicker">{chapter.kicker}</span>
@@ -159,7 +162,7 @@ export function Chapters({
       <div className="m-chapters-stage" aria-hidden="true">
         <div className="m-stage-pin">
           <p className="m-stage-cap">
-            <span className="m-no">{pad(at.chapter + 1)}</span>
+            <span className="m-no">{pad(at.chapter + start)}</span>
             <span>{current.steps[at.step]}</span>
           </p>
           <div className="m-stage-view">

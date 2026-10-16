@@ -1,0 +1,822 @@
+<title>Molis Work 递到手边小样</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,400&family=Noto+Serif+SC:wght@500;700&display=swap">
+<style>
+/* Layout: one desk, the work on the left and the side panel on the right, a slim dock below. A floating bar appears beside whatever is in hand; a pointer shows the single click. Two stories share this stage: code (an issue handed to Codex) and writing (a video quote placed into a draft). */
+:root {
+  --paper: #f5f0e6;
+  --sheet: #fffcf6;
+  --ink: #121826;
+  --text: #33312c;
+  --muted: #6f695f;
+  --faint: #a39d92;
+  --line: rgb(18 24 38 / 0.12);
+  --red: #ee4e2b;
+  --red-soft: #fbe0d8;
+  --sage: #8fb69b;
+  --sage-deep: #2f6b45;
+  --amber: #b07a10;
+  --peri: #b9c6f5;
+  --cc: #e8a28c;
+  --cx: #b9c6f5;
+  --sel: rgb(185 198 245 / 0.8);
+  --term: #151b29;
+  --term-text: #e8e3d8;
+  --term-muted: #8d93a3;
+  --serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --display: 'Newsreader', Georgia, serif;
+  --sans: 'Geist', 'PingFang SC', 'Hiragino Sans GB', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, 'PingFang SC', monospace;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --snap: cubic-bezier(0.34, 1.4, 0.5, 1);
+  --shadow: 0 18px 34px -24px rgb(40 24 10 / 0.55), 0 1px 0 rgb(18 24 38 / 0.05);
+  color-scheme: light;
+}
+body { background: var(--paper); color: var(--text); font-family: var(--sans); }
+[hidden] { display: none !important; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: clamp(16px, 3.2vw, 48px); padding-block: clamp(28px, 5vw, 64px) 48px; display: grid; gap: 22px; }
+.eyebrow { margin: 0; font-size: 12px; letter-spacing: 0.08em; color: var(--muted); }
+.eyebrow b { color: var(--red); font-weight: 500; }
+.eyebrow a { margin-left: 8px; color: var(--muted); }
+.eyebrow a.on { color: var(--ink); font-weight: 500; }
+h1 { margin: 6px 0 0; font-family: var(--serif); font-weight: 700; color: var(--ink); font-size: clamp(30px, 4.6vw, 54px); line-height: 1.15; letter-spacing: -0.01em; text-wrap: balance; }
+
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.steps { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.steps button { display: inline-flex; align-items: center; gap: 8px; font: 500 14px/1 var(--sans); color: var(--muted); background: transparent; border: 0; border-radius: 999px; padding: 9px 13px 9px 9px; cursor: pointer; transition: background 160ms var(--ease), color 160ms var(--ease); }
+.steps button:hover { background: rgb(18 24 38 / 0.06); }
+.steps .n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 11px; background: rgb(18 24 38 / 0.07); color: var(--muted); transition: background 200ms var(--ease), color 200ms var(--ease); }
+.steps button.done { color: var(--text); }
+.steps button.done .n { background: var(--sage); color: var(--sheet); }
+.steps button[aria-current="step"] { color: var(--ink); background: rgb(18 24 38 / 0.06); }
+.steps button[aria-current="step"] .n { background: var(--red); color: var(--sheet); }
+.tools { display: flex; gap: 4px; }
+.ctrl { display: inline-flex; align-items: center; gap: 8px; font: 500 14px/1 var(--sans); color: var(--muted); background: transparent; border: 0; border-radius: 999px; padding: 10px 14px; cursor: pointer; }
+.ctrl:hover { background: rgb(18 24 38 / 0.06); }
+.ctrl .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
+.ctrl[aria-pressed="false"] .dot { background: transparent; box-shadow: inset 0 0 0 1.5px var(--muted); }
+button:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+svg.i { width: 15px; height: 15px; flex: none; }
+
+.stage { position: relative; display: grid; gap: 12px; padding: 16px; border-radius: 22px; background: #efe8db; box-shadow: inset 0 0 0 1px rgb(18 24 38 / 0.04); }
+.desk { display: grid; grid-template-columns: 1.5fr 1fr; gap: 14px; height: 540px; }
+.sheet { position: relative; min-width: 0; display: flex; flex-direction: column; background: var(--sheet); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
+.sheet-head { display: flex; align-items: center; gap: 9px; padding: 13px 16px 11px; border-bottom: 1px solid var(--line); }
+.sheet-head svg { width: 17px; height: 17px; color: var(--ink); }
+.sheet-head strong { font-size: 14px; font-weight: 600; color: var(--ink); }
+.sheet-head small { font-size: 12px; color: var(--muted); }
+.draft { margin-left: auto; padding: 2px 8px; border-radius: 6px; background: var(--paper); font-size: 11px; color: var(--muted); }
+
+/* the main sheet */
+.doc-body { position: relative; flex: 1; min-height: 0; padding: 20px clamp(18px, 2.4vw, 30px); overflow: hidden; }
+.doc-title { margin: 0 0 10px; font-family: var(--serif); font-weight: 700; font-size: 22px; color: var(--ink); }
+.placeholder { margin: 0; font-size: 13px; color: var(--faint); }
+.para { margin: 0 0 10px; font-size: 14.5px; line-height: 1.85; color: var(--text); }
+.sec { margin: 14px 0 6px; font-size: 13px; font-weight: 600; color: var(--ink); }
+.sec.faint { color: var(--faint); font-weight: 500; }
+.s { border-radius: 3px; background: linear-gradient(var(--sel), var(--sel)) no-repeat 0 0 / 0% 100%; transition: background-size 620ms linear; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.s.sel { background-size: 100% 100%; }
+.ins { display: none; }
+.ins.on { display: inline; border-radius: 3px; animation: settle 1400ms var(--ease); }
+@keyframes settle { 0% { background: rgb(143 182 155 / 0.45); } 100% { background: rgb(143 182 155 / 0); } }
+.src-tag { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 6px; background: var(--paper); font-size: 11px; line-height: 1.6; color: var(--muted); vertical-align: 2px; white-space: nowrap; }
+.src-tag svg { width: 11px; height: 11px; vertical-align: -1px; margin-right: 3px; }
+.prev { display: none; color: var(--muted); }
+.prev.on { display: inline; }
+.prev .t { border-bottom: 1.5px dashed var(--red); }
+.prev-actions { display: inline-flex; gap: 4px; margin-left: 6px; vertical-align: 1px; }
+.mini { font: 500 11.5px/1 var(--sans); border: 0; border-radius: 6px; padding: 5px 8px; background: var(--paper); color: var(--text); transition: transform 130ms var(--ease); }
+.mini.dark { background: var(--ink); color: var(--sheet); }
+.mini.hit { transform: scale(0.93); }
+.caret { display: inline-block; width: 2px; height: 1.1em; margin-left: 2px; vertical-align: -0.2em; background: var(--red); opacity: 0; }
+.caret.on { opacity: 1; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.fn { display: none; margin-left: 1px; font-size: 10.5px; color: var(--red); font-weight: 600; }
+.fn.on { display: inline; animation: pop 600ms var(--snap); }
+@keyframes pop { 0% { transform: scale(0.3); } 100% { transform: none; } }
+.footnote { margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 12px; color: var(--muted); opacity: 0; transform: translateY(4px); transition: opacity 360ms var(--ease), transform 360ms var(--ease); }
+.footnote.on { opacity: 1; transform: none; }
+.footnote b { color: var(--red); font-weight: 600; margin-right: 4px; }
+
+/* code story: the issue */
+.view { display: none; }
+.view.on { display: block; animation: rise 360ms var(--ease); }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.iss-meta { display: flex; align-items: center; gap: 6px; margin: 0 0 6px; font-size: 12px; color: var(--muted); }
+.iss-meta svg { width: 14px; height: 14px; }
+.iss-meta .lbl { margin-left: 4px; padding: 1px 7px; border-radius: 999px; background: var(--red-soft); color: #9c2f14; font-size: 11px; }
+.log { margin: 8px 0 12px; padding: 11px 13px; border-radius: 10px; background: var(--term); color: var(--term-muted); font: 12px/1.75 var(--mono); white-space: pre-wrap; word-break: break-word; }
+.log .em { color: #f2a48c; }
+.log .s { color: var(--term-text); }
+.log .s.sel { color: var(--ink); }
+.back { margin-top: 10px; padding: 10px 12px 11px; border-radius: 12px; background: var(--paper); opacity: 0; transform: translateY(8px); transition: opacity 360ms var(--ease), transform 420ms var(--snap); }
+.back.on { opacity: 1; transform: none; }
+.back-h { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 12px; color: var(--muted); }
+.back-h b { color: var(--ink); font-weight: 600; }
+.back p { margin: 0; font-size: 13.5px; line-height: 1.7; color: var(--ink); }
+.back small { display: block; margin-top: 3px; font-size: 11.5px; color: var(--sage-deep); }
+.back small.warn { color: var(--amber); }
+.who { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 9px; font-weight: 600; color: var(--ink); flex: none; }
+.who.cc { background: var(--cc); }
+.who.cx { background: var(--cx); }
+
+/* side panel */
+.side-tabs { display: flex; gap: 4px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.stab { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 12.5px; color: var(--muted); white-space: nowrap; transition: background 200ms var(--ease), color 200ms var(--ease); }
+.stab svg { width: 14px; height: 14px; }
+.stab.on { background: rgb(18 24 38 / 0.06); color: var(--ink); }
+.pane { display: none; flex: 1; min-height: 0; padding: 10px 14px 14px; overflow: hidden; }
+.pane.on { display: flex; flex-direction: column; animation: rise 360ms var(--ease); }
+.ib { display: grid; grid-template-columns: 18px 1fr; gap: 9px; align-items: start; padding: 9px 6px; border-radius: 10px; border-bottom: 1px solid var(--line); font-size: 12.5px; line-height: 1.5; transition: background 200ms var(--ease), opacity 300ms var(--ease); }
+.ib .k svg { width: 15px; height: 15px; margin-top: 2px; color: var(--muted); }
+.ib b { display: block; font-weight: 500; color: var(--ink); }
+.ib small { font-size: 11.5px; color: var(--muted); }
+.ib small em { font-style: normal; color: #9c2f14; }
+.ib.open { background: rgb(18 24 38 / 0.05); }
+.ib.hit { transform: scale(0.98); }
+
+/* terminals in the side panel */
+.pane.term { background: var(--term); color: var(--term-text); }
+.term-head { display: flex; align-items: center; gap: 8px; padding-bottom: 8px; margin-bottom: 4px; border-bottom: 1px solid rgb(255 255 255 / 0.08); font-size: 12px; color: var(--term-muted); }
+.term-head b { color: var(--term-text); font-weight: 600; }
+.term-head .bind { margin-left: auto; padding: 1px 7px; border-radius: 6px; background: rgb(255 255 255 / 0.08); font-size: 11px; }
+.lines { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; font: 12px/1.6 var(--mono); overflow: hidden; }
+.ln { animation: rise 320ms var(--ease); white-space: pre-wrap; word-break: break-word; }
+.ln.u { color: var(--term-text); }
+.ln.u::before { content: '› '; color: var(--red); }
+.ln.o { color: var(--term-muted); }
+.ln.ok { color: #9be0ae; }
+.ln.warn { color: #f2c66d; }
+
+/* writing story: the video and Cognia */
+.video { position: relative; height: 112px; margin-bottom: 10px; border-radius: 10px; background: linear-gradient(135deg, #1d2742, #3b2a3f); display: grid; place-items: center; color: rgb(255 252 246 / 0.85); flex: none; }
+.video svg { width: 28px; height: 28px; }
+.video small { position: absolute; left: 10px; bottom: 8px; font-size: 11px; color: rgb(255 252 246 / 0.75); }
+.video .bar { position: absolute; left: 10px; right: 10px; bottom: 28px; height: 3px; border-radius: 2px; background: rgb(255 252 246 / 0.25); }
+.video .bar i { display: block; width: 46%; height: 100%; border-radius: 2px; background: var(--red); }
+.read-by { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 11.5px; color: var(--muted); }
+.read-by svg { width: 13px; height: 13px; color: var(--red); }
+.tr { display: grid; grid-template-columns: 42px 1fr; gap: 8px; padding: 6px 0; font-size: 13px; line-height: 1.65; color: var(--text); }
+.tr time { font: 11.5px/1.9 var(--mono); color: var(--muted); }
+.cog-h { margin: 0 0 8px; font-size: 12.5px; color: var(--muted); }
+.cog-h b { color: var(--ink); font-weight: 600; }
+.note { padding: 10px 11px; margin-bottom: 8px; border-radius: 10px; background: var(--paper); font-size: 12.5px; line-height: 1.6; opacity: 0; transform: translateY(6px); transition: opacity 300ms var(--ease), transform 380ms var(--snap); }
+.note.on { opacity: 1; transform: none; }
+.note b { display: block; color: var(--ink); font-weight: 500; }
+.note small { display: flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 11px; color: var(--muted); }
+.note .cite { margin-left: auto; font: 500 11.5px/1 var(--sans); border: 0; border-radius: 6px; padding: 5px 8px; background: var(--ink); color: var(--sheet); transition: transform 130ms var(--ease); }
+.note .cite.hit { transform: scale(0.93); }
+.note.picked { box-shadow: inset 0 0 0 1.5px var(--red); }
+
+/* dock */
+.dock { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-radius: 14px; background: var(--sheet); box-shadow: var(--shadow); }
+.dk { position: relative; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px; color: var(--muted); flex: none; }
+.dk svg { width: 17px; height: 17px; }
+.dk.cur { background: rgb(18 24 38 / 0.06); color: var(--ink); }
+.dk .badge { position: absolute; top: 2px; right: 1px; min-width: 15px; height: 15px; padding: 0 4px; border-radius: 999px; background: var(--red); color: var(--sheet); font-size: 10px; line-height: 15px; text-align: center; transform: scale(0); transition: transform 360ms cubic-bezier(0.34, 1.6, 0.5, 1); }
+.dk .badge.on { transform: scale(1); }
+.pill { flex: 1; min-width: 0; max-width: 420px; margin-left: auto; display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; background: var(--paper); color: var(--faint); font-size: 12.5px; white-space: nowrap; overflow: hidden; }
+.pill svg { width: 14px; height: 14px; color: var(--red); }
+.pill-note { margin-left: auto; color: var(--red); font-size: 11.5px; opacity: 0; transition: opacity 400ms var(--ease); }
+.pill-note.on { opacity: 1; }
+
+/* floating bits */
+.tb { position: absolute; top: 0; left: 0; z-index: 15; display: flex; align-items: center; gap: 2px; padding: 5px; border-radius: 12px; background: var(--ink); color: var(--sheet); white-space: nowrap; box-shadow: 0 18px 30px -16px rgb(0 0 0 / 0.55); opacity: 0; transform: translateY(6px) scale(0.98); transition: opacity 200ms var(--ease), transform 260ms var(--ease); pointer-events: none; }
+.tb.on { opacity: 1; transform: none; }
+.tb .div { width: 1px; height: 18px; margin: 0 4px; background: rgb(255 252 246 / 0.18); }
+.tb .act { display: inline-flex; align-items: center; gap: 6px; padding: 8px 10px; border-radius: 8px; color: var(--sheet); font: 500 12.5px/1 var(--sans); transition: transform 130ms var(--ease), background 200ms var(--ease); }
+.tb .act.primary { background: var(--red); }
+.tb .act.hit { transform: scale(0.93); }
+.tb .land { display: inline-flex; align-items: center; gap: 5px; padding: 0 6px; font-size: 12px; color: #f7c1b2; }
+.tb .ai { display: inline-flex; align-items: center; gap: 5px; padding: 0 8px; font-size: 12px; color: rgb(255 252 246 / 0.65); }
+.pack { position: absolute; top: 0; left: 0; z-index: 16; width: 300px; padding: 13px 14px 12px; border-radius: 14px; background: var(--sheet); box-shadow: 0 24px 40px -22px rgb(40 24 10 / 0.7), 0 0 0 1px var(--line); font-size: 12.5px; opacity: 0; transform: translateY(6px); transition: opacity 220ms var(--ease), transform 280ms var(--ease); pointer-events: none; }
+.pack.on { opacity: 1; transform: none; }
+.pack-h { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--ink); }
+.pack-h svg { width: 15px; height: 15px; color: var(--red); }
+.pack ul { margin: 9px 0 11px; padding: 0; list-style: none; display: grid; gap: 7px; }
+.pack li { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: start; line-height: 1.45; color: var(--ink); opacity: 0; transform: translateX(-6px); transition: opacity 260ms var(--ease), transform 320ms var(--ease); }
+.pack li.on { opacity: 1; transform: none; }
+.pack li .mk { display: grid; place-items: center; width: 16px; height: 16px; margin-top: 1px; border-radius: 50%; background: var(--sage); }
+.pack li .mk svg { width: 11px; height: 11px; color: var(--sheet); }
+.pack li small { display: block; font-size: 11.5px; color: var(--muted); }
+.opts { display: flex; gap: 6px; }
+.opt { font: 500 12.5px/1 var(--sans); border: 0; border-radius: 9px; padding: 8px 12px; background: var(--paper); color: var(--ink); transition: background 200ms var(--ease), color 200ms var(--ease), transform 130ms var(--ease); }
+.opt.dark { background: var(--ink); color: var(--sheet); }
+.opt.hit { transform: scale(0.94); }
+.toast { position: absolute; left: 50%; bottom: 74px; z-index: 16; display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-radius: 12px; background: var(--ink); color: var(--sheet); font-size: 12.5px; white-space: nowrap; box-shadow: 0 18px 30px -16px rgb(0 0 0 / 0.5); opacity: 0; transform: translate(-50%, 8px); transition: opacity 240ms var(--ease), transform 300ms var(--ease); pointer-events: none; }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+.toast svg { width: 14px; height: 14px; color: var(--sage); }
+.toast .undo { display: inline-flex; align-items: center; gap: 4px; color: #f7c1b2; }
+.toast .undo svg { color: #f7c1b2; }
+.flyer { position: absolute; z-index: 20; max-width: 260px; overflow: hidden; text-overflow: ellipsis; padding: 6px 10px; border-radius: 9px; background: var(--sheet); color: var(--ink); font-size: 12px; white-space: nowrap; box-shadow: 0 16px 28px -14px rgb(40 24 10 / 0.7); pointer-events: none; }
+.cursor { position: absolute; top: 0; left: 0; z-index: 30; width: 22px; height: 24px; pointer-events: none; transition-property: transform; transition-timing-function: var(--ease); }
+.cursor svg { display: block; width: 22px; height: 24px; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.25)); transition: transform 110ms var(--ease); transform-origin: 3px 2px; }
+.cursor.down svg { transform: scale(0.84); }
+.cursor.hidden { display: none; }
+.ripple { position: absolute; z-index: 29; width: 26px; height: 26px; margin: -11px 0 0 -11px; border-radius: 50%; border: 2px solid var(--red); pointer-events: none; animation: ripple 520ms var(--ease) forwards; }
+@keyframes ripple { from { transform: scale(0.3); opacity: 0.9; } to { transform: scale(1.4); opacity: 0; } }
+
+/* room for a two-line explanation, so the frame does not change height between steps */
+.caption { display: grid; gap: 6px; align-content: start; min-height: 132px; }
+.cap-kicker { margin: 0; font-size: 12px; letter-spacing: 0.08em; color: var(--red); }
+.cap-main { margin: 0; font-family: var(--serif); font-weight: 700; font-size: clamp(22px, 2.6vw, 30px); color: var(--ink); }
+.cap-sub { margin: 0; max-width: 46em; font-size: 15px; line-height: 1.8; }
+.foot-note { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.7; border-top: 1px solid var(--line); padding-top: 14px; }
+
+@media (max-width: 860px) {
+  .desk { grid-template-columns: 1fr; height: auto; }
+  .main { height: 470px; }
+  .side { height: 330px; }
+  .pill { display: none; }
+  .stage { padding: 10px; }
+  .pack { width: min(300px, calc(100% - 20px)); }
+}
+/* while skipping ahead to a step, everything lands at once */
+.stage.jump *, .stage.jump *::before, .stage.jump *::after { transition: none !important; animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+html.embed .wrap > header, html.embed .foot-note { display: none; }
+html.embed .wrap { max-width: none; padding-inline: 0; padding-block: 4px 12px; }
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow"><b>Molis Work</b> · 第一幕「递」· 动画小样 <a href="#dev" data-persona="dev">写代码</a><a href="#doc" data-persona="doc">写文档、管事情</a></p>
+    <h1>不用开口，下一步就在手边。</h1>
+  </header>
+
+  <div class="bar">
+    <ol class="steps" id="steps" aria-label="这一幕的几步"></ol>
+    <div class="tools">
+      <button id="replay" class="ctrl">从头看</button>
+      <button id="autoplay" class="ctrl" aria-pressed="true"><span class="dot" aria-hidden="true"></span><span class="ctrl-text">自动播放中</span></button>
+    </div>
+  </div>
+
+  <section class="stage" id="stage"></section>
+
+  <div class="caption" aria-live="polite">
+    <p class="cap-kicker" id="cap-kicker"></p>
+    <p class="cap-main" id="cap-main"></p>
+    <p class="cap-sub" id="cap-sub"></p>
+  </div>
+
+  <p class="foot-note" id="foot-note"></p>
+</main>
+
+<!-- the code story: an issue in Inbox goes to Codex with everything it needs, comes back, goes to Claude Code for review -->
+<template id="stage-dev">
+  <div class="desk">
+    <article class="sheet main">
+      <header class="sheet-head"><span id="m-icon" data-icon="inbox"></span><strong id="m-name">Inbox</strong><small>支付改版</small></header>
+      <div class="doc-body">
+        <p class="placeholder" id="d-empty">从右边 Inbox 打开一条。</p>
+        <div class="view" id="issue">
+          <p class="iss-meta"><span data-icon="github"></span>molis-pay · #318 · 2 小时前<span class="lbl">bug</span></p>
+          <h2 class="doc-title">支付回调偶发 500</h2>
+          <p class="para">用户付款成功，订单却一直显示待支付。复现率不高，夜里更多。</p>
+          <pre class="log"><span class="em">POST /api/pay/callback → 500</span>
+<span class="s" id="s-err">SignatureExpired: timestamp skew 312s</span>
+  at verifySign (pay/callback.ts:42)</pre>
+          <div class="back" id="back-cx">
+            <div class="back-h"><span class="who cx">Cx</span><b>Codex 的改动</b>· 回到这一页</div>
+            <p><span class="s" id="s-fix">验签允许 5 分钟时钟偏差；订单号做幂等键，重试不重复记账。</span></p>
+            <small>2 个文件 · 测试 8/8 通过</small>
+          </div>
+          <div class="back" id="back-cc">
+            <div class="back-h"><span class="who cc">CC</span><b>Claude Code 复核</b>· 2 条通过，1 条建议</div>
+            <p><span class="s" id="s-todo">Safari 14 下付款后跳回订单页，没覆盖到。</span></p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <aside class="sheet side">
+      <div class="side-tabs">
+        <span class="stab" data-tab="inbox"><span data-icon="inbox"></span>Inbox</span>
+        <span class="stab" data-tab="codex"><span data-icon="terminal"></span>Codex</span>
+        <span class="stab" data-tab="claude"><span data-icon="terminal"></span>Claude Code</span>
+      </div>
+      <div class="pane" data-pane="inbox"><div id="ib-list"></div></div>
+      <div class="pane term" data-pane="codex">
+        <div class="term-head"><b>Codex</b>新会话<span class="bind">目标：上线支付</span></div>
+        <div class="lines" id="t-codex"></div>
+      </div>
+      <div class="pane term" data-pane="claude">
+        <div class="term-head"><b>Claude Code</b>复核<span class="bind">目标：上线支付</span></div>
+        <div class="lines" id="t-claude"></div>
+      </div>
+    </aside>
+  </div>
+
+  <nav class="dock" aria-label="底栏">
+    <span class="dk"><span data-icon="house"></span></span>
+    <span class="dk"><span data-icon="target"></span></span>
+    <span class="dk cur"><span data-icon="inbox"></span></span>
+    <span class="dk"><span data-icon="terminal"></span></span>
+    <span class="dk"><span data-icon="git-branch"></span></span>
+    <span class="dk" id="dock-todo"><span data-icon="list-checks"></span><span class="badge" id="badge">1</span></span>
+    <span class="pill"><span data-icon="sparkles"></span>让助理做点什么，或按 ⌘K 搜索<span class="pill-note" id="pill-note">全程空着</span></span>
+  </nav>
+
+  <div class="pack" id="pack" aria-hidden="true">
+    <div class="pack-h"><span data-icon="package"></span>交给 Codex · 已经带上</div>
+    <ul>
+      <li><span class="mk" data-icon="check"></span><span>报错原文<small>#318 · pay/callback.ts:42</small></span></li>
+      <li><span class="mk" data-icon="check"></span><span>目标「上线支付」<small>3 条完成要求</small></span></li>
+      <li><span class="mk" data-icon="check"></span><span>《支付设计》里的约束<small>回调必须幂等</small></span></li>
+      <li><span class="mk" data-icon="check"></span><span>Claude Code 周二的进度<small>下单页已完成，验签待接</small></span></li>
+    </ul>
+    <div class="opts"><button class="opt dark" id="pack-send" tabindex="-1">发给 Codex</button><button class="opt" tabindex="-1">先看看</button></div>
+  </div>
+</template>
+
+<!-- the writing story: a channel update in Inbox, a quote placed into section 2 with its time, your own claim backed by old notes -->
+<template id="stage-doc">
+  <div class="desk">
+    <article class="sheet main">
+      <header class="sheet-head"><span data-icon="file-text"></span><strong>Pages</strong><small>AI 编辑器观察</small><span class="draft">草稿 · 自动保存</span></header>
+      <div class="doc-body">
+        <h2 class="doc-title">AI 编辑器观察</h2>
+        <p class="sec">一、补全之后</p>
+        <p class="para">两年前，大家比的是补全准不准、快不快。现在几家的补全，用起来已经分不太出来。</p>
+        <p class="sec">二、编辑器在变成什么</p>
+        <p class="para" id="p2"><span class="s" id="s-claim">AI 编辑器的护城河不在模型，在工作流。</span><sup class="fn" id="fn">[1]</sup>一位做编辑器的创始人说得更直白：<span class="ins" id="ins">“现在真正拉开差距的，是它能不能接住你手上的整个工作流。”<span class="src-tag"><span data-icon="play"></span>视频 · 12:40</span></span><span class="prev" id="prev"><span class="t">“现在真正拉开差距的，是它能不能接住你手上的整个工作流。”</span><span class="prev-actions"><button class="mini dark" id="prev-ok" tabindex="-1">放进去</button><button class="mini" tabindex="-1">取消</button></span></span><span class="caret" id="caret"></span></p>
+        <p class="sec faint">三、还没写</p>
+        <p class="footnote" id="footnote"><b>[1]</b>2024-03 读书笔记 · 平台的粘性来自工作流 · 来自 Obsidian</p>
+      </div>
+    </article>
+
+    <aside class="sheet side">
+      <div class="side-tabs">
+        <span class="stab" data-tab="inbox"><span data-icon="inbox"></span>Inbox</span>
+        <span class="stab" data-tab="video"><span data-icon="lightbulb"></span>灵光</span>
+        <span class="stab" data-tab="cognia"><span data-icon="book-open"></span>Cognia</span>
+      </div>
+      <div class="pane" data-pane="inbox"><div id="ib-list"></div></div>
+      <div class="pane" data-pane="video">
+        <div class="video"><span data-icon="play"></span><span class="bar"><i></i></span><small>《AI 编辑器的下一步》· 产品夜谈</small></div>
+        <p class="read-by"><span data-icon="sparkles"></span>灵光读出了字幕</p>
+        <div class="tr"><time>11:52</time><span>以前大家比的是补全准不准。</span></div>
+        <div class="tr"><time>12:40</time><span><span class="s" id="s-quote">现在真正拉开差距的，是它能不能接住你手上的整个工作流。</span></span></div>
+        <div class="tr"><time>13:15</time><span>模型会越来越像，体验不会。</span></div>
+      </div>
+      <div class="pane" data-pane="cognia">
+        <p class="cog-h">在你的资料里找到 <b>3 条</b> · 支持「护城河在工作流」</p>
+        <div class="note" id="n1"><b>平台的粘性来自工作流，不是功能</b><small>2024-03 读书笔记 · Obsidian<button class="cite" id="cite" tabindex="-1">引用</button></small></div>
+        <div class="note" id="n2"><b>设计师为什么不肯换工具</b><small>2025-07 访谈整理 · Obsidian</small></div>
+        <div class="note" id="n3"><b>换工具的成本，是换掉一套习惯</b><small>2026-01 随记 · Obsidian</small></div>
+      </div>
+    </aside>
+  </div>
+
+  <nav class="dock" aria-label="底栏">
+    <span class="dk"><span data-icon="house"></span></span>
+    <span class="dk"><span data-icon="inbox"></span></span>
+    <span class="dk cur"><span data-icon="file-text"></span></span>
+    <span class="dk" id="dock-lg"><span data-icon="lightbulb"></span></span>
+    <span class="dk"><span data-icon="book-open"></span></span>
+    <span class="dk"><span data-icon="list-checks"></span></span>
+    <span class="pill"><span data-icon="sparkles"></span>让助理做点什么，或按 ⌘K 搜索<span class="pill-note" id="pill-note">全程空着</span></span>
+  </nav>
+</template>
+
+<template id="stage-common">
+  <div class="tb" id="tb" aria-hidden="true"></div>
+  <div class="toast" id="toast" aria-hidden="true"></div>
+  <div class="cursor" id="cursor" aria-hidden="true"><svg viewBox="0 0 22 24"><path d="M3 2 L3 18.5 L7.6 14.4 L10.6 21.4 L13.4 20.2 L10.4 13.3 L16.6 13.3 Z" fill="#121826" stroke="#fffcf6" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+</template>
+
+<script>
+(() => {
+  // Icon geometry from Lucide 0.454.0 (ISC), the set Molis Work uses.
+  const ICONS = {"arrow-right":"<path d='M5 12h14'/><path d='m12 5 7 7-7 7'/>","book-open":"<path d='M12 7v14'/><path d='M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z'/>","check":"<path d='M20 6 9 17l-5-5'/>","corner-down-left":"<polyline points='9 10 4 15 9 20'/><path d='M20 4v7a4 4 0 0 1-4 4H4'/>","file-text":"<path d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'/><path d='M14 2v4a2 2 0 0 0 2 2h4'/><path d='M10 9H8'/><path d='M16 13H8'/><path d='M16 17H8'/>","git-branch":"<line x1='6' x2='6' y1='3' y2='15'/><circle cx='18' cy='6' r='3'/><circle cx='6' cy='18' r='3'/><path d='M18 9a9 9 0 0 1-9 9'/>","git-compare":"<circle cx='18' cy='18' r='3'/><circle cx='6' cy='6' r='3'/><path d='M13 6h3a2 2 0 0 1 2 2v7'/><path d='M11 18H8a2 2 0 0 1-2-2V9'/>","git-pull-request":"<circle cx='18' cy='18' r='3'/><circle cx='6' cy='6' r='3'/><path d='M13 6h3a2 2 0 0 1 2 2v7'/><line x1='6' x2='6' y1='9' y2='21'/>","github":"<path d='M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4'/><path d='M9 18c-4.51 2-5-2-7-2'/>","house":"<path d='M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8'/><path d='M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/>","inbox":"<polyline points='22 12 16 12 14 15 10 15 8 12 2 12'/><path d='M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'/>","lightbulb":"<path d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5'/><path d='M9 18h6'/><path d='M10 22h4'/>","list-checks":"<path d='m3 17 2 2 4-4'/><path d='m3 7 2 2 4-4'/><path d='M13 6h8'/><path d='M13 12h8'/><path d='M13 18h8'/>","mail":"<rect width='20' height='16' x='2' y='4' rx='2'/><path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'/>","message-circle":"<path d='M7.9 20A9 9 0 1 0 4 16.1L2 22Z'/>","package":"<path d='M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z'/><path d='M12 22V12'/><path d='m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7'/><path d='m7.5 4.27 9 5.15'/>","play":"<polygon points='6 3 20 12 6 21 6 3'/>","quote":"<path d='M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z'/><path d='M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z'/>","rss":"<path d='M4 11a9 9 0 0 1 9 9'/><path d='M4 4a16 16 0 0 1 16 16'/><circle cx='5' cy='19' r='1'/>","sparkles":"<path d='M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z'/><path d='M20 3v4'/><path d='M22 5h-4'/><path d='M4 17v2'/><path d='M5 18H3'/>","target":"<circle cx='12' cy='12' r='10'/><circle cx='12' cy='12' r='6'/><circle cx='12' cy='12' r='2'/>","terminal":"<polyline points='4 17 10 11 4 5'/><line x1='12' x2='20' y1='19' y2='19'/>","undo-2":"<path d='M9 14 4 9l5-5'/><path d='M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11'/>"};
+  /* icons: corner-down-left undo-2 book-open quote list-checks terminal check */
+  const svg = (name) => {
+    if (!ICONS[name]) console.warn('missing icon', name);
+    return `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
+  };
+  const P = window.MW_PERSONA || (/doc/.test(location.hash) ? 'doc' : 'dev');
+  const $ = (id) => document.getElementById(id);
+  const stage = $('stage');
+  stage.innerHTML = $('stage-' + P).innerHTML + $('stage-common').innerHTML;
+  document.querySelectorAll('.eyebrow a').forEach((a) => a.classList.toggle('on', a.dataset.persona === P));
+  window.addEventListener('hashchange', () => { if (!window.MW_PERSONA) location.reload(); });
+
+  const STORIES = {
+    dev: {
+      label: '示意：左边是 Inbox 打开的 GitHub issue，右边是 Inbox 和两个 Agent 的终端，选中内容时旁边出现浮条',
+      inbox: [
+        { k: 'github', t: '#318 支付回调偶发 500', why: '和目标「上线支付」有关', id: 'open' },
+        { k: 'mail', t: '客户：付了款，订单还是待支付', why: '和 #318 是同一件事' },
+        { k: 'git-pull-request', t: '#315 依赖升级等你 review', why: '在等你' },
+        { k: 'rss', t: '支付平台更新了回调签名说明', why: '和 #318 有关' },
+      ],
+      steps: [
+        { label: 'Inbox 递来', main: 'Inbox 递来', sub: 'Inbox 只放要你处理的事，每条写着为什么在这。#318 和你的目标「上线支付」有关，点开就是报错。' },
+        { label: '交给 Codex', main: '交给 Codex', sub: '选中报错，旁边递来「交给 Codex」。报错、目标的完成要求、设计文档里的约束、Claude Code 上次的进度，已经打包带上。' },
+        { label: '交给 Claude Code 复核', main: '交给 Claude Code 复核', sub: 'Codex 改完，结果回到同一页。选中它的改动，点「交给 Claude Code 复核」：两条通过，一条没覆盖到。' },
+        { label: '记成待办', main: '记成待办', sub: '选中那条建议，点「记成待办」。待办里多了一条，连着 #318。' },
+      ],
+      final: { kicker: '四步做完', main: '一句背景都没重讲。', sub: '报错、目标、设计约束和上次进展，打包跟着走；Codex 改完回到同一页，再交给 Claude Code 复核。每一步都是选中，点一下。' },
+      note: '动画小样，示例数据。浮条、交接包、交给另一个 Agent 复核都在开发中；Claude Code、Codex 经 MCP 读写同一个目标已发布（v0.2.0）。',
+    },
+    doc: {
+      label: '示意：左边是 Pages 里写到一半的稿子，右边是 Inbox、灵光读出的视频字幕和 Cognia，选中内容时旁边出现浮条',
+      inbox: [
+        { k: 'rss', t: '频道「产品夜谈」更新：《AI 编辑器的下一步》', why: '和你在写的《AI 编辑器观察》有关', id: 'open' },
+        { k: 'mail', t: '编辑：周五前能交初稿吗', why: '在等你回复' },
+        { k: 'rss', t: 'Newsletter：本周 AI 工具融资汇总', why: '提到你关注的 3 家公司' },
+        { k: 'message-circle', t: '读者留言：想看几家编辑器的对比', why: '可以记成选题' },
+      ],
+      steps: [
+        { label: 'Inbox 递来', main: 'Inbox 递来', sub: '订阅的频道更新了。Inbox 写明它为什么在这：和你在写的《AI 编辑器观察》有关。点开，灵光已经读出了字幕。' },
+        { label: '放进第 2 节', main: '放进第 2 节', sub: '选中 12:40 的那句话，旁边就递来「放进《AI 编辑器观察》· 第 2 节」。先看预览，再放进去，出处跟着。' },
+        { label: '找依据', main: '在我的资料里找依据', sub: '选中你自己写的观点，点「在我的资料里找依据」。Cognia 从你导入的 Obsidian 笔记里找到 3 条。' },
+        { label: '引用进来', main: '引用进来', sub: '挑一条引用，文末多了脚注，点开能回到原来的笔记。' },
+      ],
+      final: { kicker: '四步做完', main: '一句提示词都没写。', sub: '视频里的一句话带着 12:40 的出处落进第 2 节；你自己的观点，从两年前的笔记里找到依据。这些动作来自 Inbox、灵光和 Cognia，你一直没离开这篇稿子。' },
+      note: '动画小样，示例数据。浮条、灵光读视频字幕、Cognia 导入 Obsidian 与按资料回答都在开发中，Inbox 写明为什么在这也在开发中。',
+    },
+  };
+  const S = STORIES[P];
+  stage.setAttribute('aria-label', S.label);
+  $('ib-list').innerHTML = S.inbox.map((x) => `<div class="ib"${x.id ? ` id="ib-${x.id}"` : ''}><span class="k">${svg(x.k)}</span><div><b>${x.t}</b><small>为什么在这：<em>${x.why}</em></small></div></div>`).join('');
+  $('steps').innerHTML = S.steps.map((s, i) => `<li><button data-step="${i}"><span class="n">${i + 1}</span>${s.label}</button></li>`).join('');
+  $('foot-note').textContent = S.note;
+  document.querySelectorAll('[data-icon]').forEach((el) => el.insertAdjacentHTML('afterbegin', svg(el.dataset.icon)));
+
+  const tb = $('tb');
+  const toast = $('toast');
+  const cursor = $('cursor');
+  const stepBtns = [...document.querySelectorAll('.steps button')];
+  const autoBtn = $('autoplay');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const EMBED = location.hash === '#embed' || window.MW_EMBED === true;
+  // Embedded in the product page draft: hide this page's own header and note, report the height,
+  // and play only while the parent says this part is in view (scrolling back in replays it).
+  function embed(start, setLoop) {
+    document.documentElement.classList.add('embed');
+    let running = false;
+    const report = () => parent.postMessage({ type: 'mw-height', h: document.body.scrollHeight }, '*');
+    new ResizeObserver(report).observe(document.body);
+    report();
+    window.addEventListener('message', (e) => {
+      if (!e.data || e.data.type !== 'mw-visible' || reduce) return;
+      if (e.data.visible) { setLoop(true); if (!running) { running = true; start(); } }
+      else { setLoop(false); running = false; }
+    });
+  }
+
+  let runId = 0;
+  let instant = false;
+  let autoplay = !reduce;
+  let cur = { x: 0, y: 0 };
+  const sleep = (ms) => new Promise((r) => setTimeout(r, instant ? 0 : ms));
+  function setInstant(v) { instant = v; stage.classList.toggle('jump', v); }
+
+  // ---------- geometry and pointer ----------
+  function box(el, last) {
+    const s = stage.getBoundingClientRect();
+    const list = el.getClientRects();
+    const r = list.length ? list[last ? list.length - 1 : 0] : el.getBoundingClientRect();
+    return { x: r.left - s.left, y: r.top - s.top, w: r.width, h: r.height };
+  }
+  function cursorAt(x, y, dur) {
+    cursor.style.transitionDuration = (instant ? 0 : dur) + 'ms';
+    cursor.style.transform = `translate(${x - 3}px, ${y - 2}px)`;
+    cur = { x, y };
+  }
+  async function moveToPoint(x, y) {
+    const d = Math.hypot(x - cur.x, y - cur.y);
+    const dur = Math.min(760, Math.max(300, d * 1.05));
+    cursorAt(x, y, dur);
+    await sleep(dur + 60);
+  }
+  async function moveTo(el, fx = 0.5, fy = 0.55) {
+    const r = box(el);
+    await moveToPoint(r.x + r.w * fx, r.y + r.h * fy);
+  }
+  async function click(el) {
+    if (instant) return;
+    cursor.classList.add('down');
+    if (el) el.classList.add('hit');
+    const rp = document.createElement('span');
+    rp.className = 'ripple';
+    rp.style.left = cur.x + 'px';
+    rp.style.top = cur.y + 'px';
+    stage.appendChild(rp);
+    setTimeout(() => rp.remove(), 540);
+    await sleep(150);
+    cursor.classList.remove('down');
+    if (el) el.classList.remove('hit');
+    await sleep(140);
+  }
+  async function dragSelect(span) {
+    const a = box(span);
+    const b = box(span, true);
+    await moveToPoint(a.x + 1, a.y + a.h * 0.62);
+    span.classList.add('sel');
+    cursorAt(b.x + b.w, b.y + b.h * 0.62, 640);
+    await sleep(720);
+  }
+
+  // ---------- floating bar, toast, flyer ----------
+  function showBar(anchor, cfg) {
+    let html = '';
+    if (cfg.landing) html += `<span class="land">${svg('arrow-right')}${cfg.landing}</span><span class="div"></span>`;
+    html += cfg.actions.map((a) => `<span class="act${a.primary ? ' primary' : ''}"${a.id ? ` data-id="${a.id}"` : ''}>${a.icon ? svg(a.icon) : ''}${a.label}</span>`).join('');
+    html += `<span class="div"></span><span class="ai">${svg('sparkles')}助理</span>`;
+    tb.innerHTML = html;
+    const r = box(anchor);
+    const W = stage.clientWidth;
+    const w = tb.offsetWidth;
+    const h = tb.offsetHeight;
+    let left = r.x + r.w / 2 - w / 2;
+    left = Math.max(8, Math.min(W - w - 8, left));
+    let top = r.y - h - 10;
+    if (top < 8) top = r.y + r.h + 10;
+    tb.style.left = left + 'px';
+    tb.style.top = top + 'px';
+    tb.classList.add('on');
+  }
+  const hideBar = () => tb.classList.remove('on');
+  const barItem = (id) => tb.querySelector(`[data-id="${id}"]`);
+  function showToast(html) {
+    toast.innerHTML = html;
+    toast.classList.add('on');
+  }
+  function fly(fromEl, toEl, label) {
+    if (instant || reduce) return Promise.resolve();
+    const a = box(fromEl);
+    const b = box(toEl);
+    const f = document.createElement('div');
+    f.className = 'flyer';
+    f.textContent = label;
+    f.style.left = a.x + 'px';
+    f.style.top = a.y - 4 + 'px';
+    stage.appendChild(f);
+    const dx = b.x + b.w / 2 - (a.x + f.offsetWidth / 2);
+    const dy = b.y + b.h / 2 - (a.y - 4 + f.offsetHeight / 2);
+    const anim = f.animate([
+      { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+      { transform: `translate(${dx * 0.55}px, ${dy * 0.35 - 40}px) scale(0.9)`, opacity: 1, offset: 0.5 },
+      { transform: `translate(${dx}px, ${dy}px) scale(0.3)`, opacity: 0.2 },
+    ], { duration: 860, easing: 'cubic-bezier(0.3, 0.7, 0.3, 1)' });
+    // a background tab may never finish the animation; move on after its duration anyway
+    return Promise.race([anim.finished, new Promise((r) => setTimeout(r, 1040))]).then(() => f.remove(), () => f.remove());
+  }
+
+  function setTab(name) {
+    document.querySelectorAll('.stab').forEach((t) => t.classList.toggle('on', t.dataset.tab === name));
+    document.querySelectorAll('.pane').forEach((p) => p.classList.toggle('on', p.dataset.pane === name));
+  }
+  function line(term, text, cls = 'o') {
+    const ln = document.createElement('div');
+    ln.className = 'ln ' + cls;
+    ln.textContent = text;
+    $(term).appendChild(ln);
+    return ln;
+  }
+  async function lines(term, list, alive, gap = 420) {
+    for (const [text, cls] of list) {
+      line(term, text, cls);
+      await sleep(gap);
+      if (!alive()) return;
+    }
+  }
+  function setStep(i) {
+    stepBtns.forEach((b, k) => {
+      b.classList.toggle('done', k < i);
+      if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    });
+    $('cap-kicker').textContent = `第 ${i + 1} 步，共 ${S.steps.length} 步`;
+    $('cap-main').textContent = S.steps[i].main;
+    $('cap-sub').textContent = S.steps[i].sub;
+  }
+  function setFinal() {
+    stepBtns.forEach((b) => { b.classList.add('done'); b.removeAttribute('aria-current'); });
+    $('cap-kicker').textContent = S.final.kicker;
+    $('cap-main').textContent = S.final.main;
+    $('cap-sub').textContent = S.final.sub;
+    $('pill-note').classList.add('on');
+  }
+
+  // ---------- the two stories ----------
+  const RESET = {
+    dev() {
+      $('d-empty').hidden = false;
+      $('issue').classList.remove('on');
+      $('m-name').textContent = 'Inbox';
+      $('m-icon').innerHTML = svg('inbox');
+      ['back-cx', 'back-cc', 'badge', 'pack'].forEach((id) => $(id).classList.remove('on'));
+      document.querySelectorAll('.pack li').forEach((li) => li.classList.remove('on'));
+      document.querySelectorAll('.ib').forEach((i) => i.classList.remove('open'));
+      $('t-codex').innerHTML = '';
+      $('t-claude').innerHTML = '';
+    },
+    doc() {
+      ['ins', 'prev', 'caret', 'fn', 'footnote'].forEach((id) => $(id).classList.remove('on'));
+      document.querySelectorAll('.note').forEach((n) => n.classList.remove('on', 'picked'));
+      document.querySelectorAll('.ib').forEach((i) => i.classList.remove('open'));
+    },
+  };
+  const STEPS = {
+    dev: [
+      async (alive) => {
+        setTab('inbox');
+        await sleep(500); if (!alive()) return;
+        const it = $('ib-open');
+        await moveTo(it, 0.4); if (!alive()) return;
+        await click(it);
+        it.classList.add('open');
+        $('d-empty').hidden = true;
+        $('issue').classList.add('on');
+        $('m-name').textContent = '#318';
+        $('m-icon').innerHTML = svg('github');
+        await sleep(1500);
+      },
+      async (alive) => {
+        await dragSelect($('s-err')); if (!alive()) return;
+        showBar($('s-err'), { actions: [{ id: 'cx', icon: 'terminal', label: '交给 Codex', primary: true }, { icon: 'terminal', label: '交给 Claude Code' }, { icon: 'list-checks', label: '记成待办' }] });
+        await sleep(900); if (!alive()) return;
+        await moveTo(barItem('cx')); if (!alive()) return;
+        await click(barItem('cx'));
+        hideBar();
+        const r = box($('s-err'));
+        const pack = $('pack');
+        pack.style.left = Math.max(8, Math.min(stage.clientWidth - pack.offsetWidth - 8, r.x + 30)) + 'px';
+        pack.style.top = r.y + r.h + 14 + 'px';
+        pack.classList.add('on');
+        for (const li of document.querySelectorAll('.pack li')) {
+          await sleep(380); if (!alive()) return;
+          li.classList.add('on');
+        }
+        await sleep(700); if (!alive()) return;
+        await moveTo($('pack-send')); if (!alive()) return;
+        await click($('pack-send'));
+        pack.classList.remove('on');
+        $('s-err').classList.remove('sel');
+        setTab('codex');
+        await lines('t-codex', [
+          ['读到交接包：#318 · 目标「上线支付」· 设计约束 · 上次进度', 'u'],
+          ['按「回调必须幂等」来改', 'o'],
+          ['验签允许 5 分钟偏差，订单号做幂等键', 'o'],
+          ['✓ 测试 8/8 通过', 'ok'],
+          ['结果写回 #318', 'o'],
+        ], alive, 480);
+        await sleep(600);
+      },
+      async (alive) => {
+        $('back-cx').classList.add('on');
+        await sleep(900); if (!alive()) return;
+        await dragSelect($('s-fix')); if (!alive()) return;
+        showBar($('s-fix'), { actions: [{ id: 'cc', icon: 'terminal', label: '交给 Claude Code 复核', primary: true }, { icon: 'git-compare', label: '看改动' }, { icon: 'list-checks', label: '记成待办' }] });
+        await sleep(900); if (!alive()) return;
+        await moveTo(barItem('cc')); if (!alive()) return;
+        await click(barItem('cc'));
+        hideBar();
+        $('s-fix').classList.remove('sel');
+        setTab('claude');
+        await lines('t-claude', [
+          ['复核 Codex 对 #318 的改动', 'u'],
+          ['✓ 验签偏差的处理没问题', 'ok'],
+          ['✓ 幂等键没问题', 'ok'],
+          ['△ 没覆盖：Safari 14 下付款后跳回订单页', 'warn'],
+          ['结果写回 #318', 'o'],
+        ], alive, 480);
+        $('back-cc').classList.add('on');
+        await sleep(1300);
+      },
+      async (alive) => {
+        await dragSelect($('s-todo')); if (!alive()) return;
+        showBar($('s-todo'), { actions: [{ id: 'todo', icon: 'list-checks', label: '记成待办', primary: true }, { icon: 'terminal', label: '交给 Codex' }, { label: '拆成小步' }] });
+        await sleep(900); if (!alive()) return;
+        await moveTo(barItem('todo')); if (!alive()) return;
+        await click(barItem('todo'));
+        hideBar();
+        await fly($('s-todo'), $('dock-todo'), 'Safari 14 下付款后跳回订单页');
+        if (!alive()) return;
+        $('badge').classList.add('on');
+        $('s-todo').classList.remove('sel');
+        showToast(`${svg('check')}已记进待办 · 连着 #318<span class="undo">${svg('undo-2')}撤销</span>`);
+        await sleep(1800);
+        cursor.classList.add('hidden');
+      },
+    ],
+    doc: [
+      async (alive) => {
+        setTab('inbox');
+        await sleep(500); if (!alive()) return;
+        const it = $('ib-open');
+        await moveTo(it, 0.4); if (!alive()) return;
+        await click(it);
+        it.classList.add('open');
+        await sleep(300); if (!alive()) return;
+        setTab('video');
+        await sleep(1500);
+      },
+      async (alive) => {
+        $('caret').classList.add('on');
+        await dragSelect($('s-quote')); if (!alive()) return;
+        showBar($('s-quote'), { landing: '《AI 编辑器观察》· 第 2 节', actions: [{ id: 'put', icon: 'corner-down-left', label: '放进去', primary: true }, { icon: 'lightbulb', label: '记下灵光' }, { icon: 'book-open', label: '在我的资料里找依据' }] });
+        $('p2').animate([{ background: 'rgb(238 78 43 / 0.09)' }, { background: 'transparent' }], { duration: 1100 });
+        await sleep(1000); if (!alive()) return;
+        await moveTo(barItem('put')); if (!alive()) return;
+        await click(barItem('put'));
+        hideBar();
+        $('caret').classList.remove('on');
+        $('prev').classList.add('on');
+        await sleep(800); if (!alive()) return;
+        await moveTo($('prev-ok')); if (!alive()) return;
+        await click($('prev-ok'));
+        $('prev').classList.remove('on');
+        $('ins').classList.add('on');
+        $('s-quote').classList.remove('sel');
+        showToast(`${svg('check')}已放进第 2 节 · 出处：视频 12:40<span class="undo">${svg('undo-2')}撤销</span>`);
+        await sleep(1800);
+        toast.classList.remove('on');
+      },
+      async (alive) => {
+        await dragSelect($('s-claim')); if (!alive()) return;
+        showBar($('s-claim'), { actions: [{ id: 'find', icon: 'book-open', label: '在我的资料里找依据', primary: true }, { icon: 'lightbulb', label: '记下灵光' }, { label: '拆成提纲' }] });
+        await sleep(900); if (!alive()) return;
+        await moveTo(barItem('find')); if (!alive()) return;
+        await click(barItem('find'));
+        hideBar();
+        setTab('cognia');
+        for (const id of ['n1', 'n2', 'n3']) {
+          await sleep(420); if (!alive()) return;
+          $(id).classList.add('on');
+        }
+        await sleep(1000);
+      },
+      async (alive) => {
+        await moveTo($('cite')); if (!alive()) return;
+        await click($('cite'));
+        $('n1').classList.add('picked');
+        await fly($('n1'), $('fn'), '平台的粘性来自工作流，不是功能');
+        if (!alive()) return;
+        $('s-claim').classList.remove('sel');
+        $('fn').classList.add('on');
+        $('footnote').classList.add('on');
+        showToast(`${svg('check')}已引用 · 点开能回到原来的笔记`);
+        await sleep(1800);
+        cursor.classList.add('hidden');
+      },
+    ],
+  };
+  const steps = STEPS[P];
+
+  function reset() {
+    RESET[P]();
+    document.querySelectorAll('.s').forEach((s) => s.classList.remove('sel'));
+    $('pill-note').classList.remove('on');
+    hideBar();
+    toast.classList.remove('on');
+    stage.querySelectorAll('.flyer, .ripple').forEach((n) => n.remove());
+    setTab('inbox');
+    cursor.classList.toggle('hidden', reduce);
+    const saved = instant;
+    instant = true;
+    cursorAt(stage.clientWidth - 90, stage.clientHeight - 70, 0);
+    instant = saved;
+  }
+
+  async function play(fromStep = 0) {
+    const id = ++runId;
+    const alive = () => id === runId;
+    setInstant(fromStep > 0 || reduce);
+    reset();
+    for (let k = 0; k < steps.length; k++) {
+      if (fromStep === k && !reduce) setInstant(false);
+      if (!instant) setStep(k);
+      await steps[k](alive);
+      if (!alive()) return;
+    }
+    // a still frame of the finished story: show it, do not loop
+    if (fromStep >= steps.length || reduce) { setInstant(false); setFinal(); toast.classList.remove('on'); cursor.classList.add('hidden'); return; }
+    setInstant(false);
+    setFinal();
+    await sleep(4500); if (!alive()) return;
+    if (autoplay) play(0);
+  }
+
+  // ---------- controls ----------
+  stepBtns.forEach((b) => b.addEventListener('click', () => play(Number(b.dataset.step))));
+  $('replay').addEventListener('click', () => play(0));
+  function syncAuto() {
+    autoBtn.setAttribute('aria-pressed', String(autoplay));
+    autoBtn.querySelector('.ctrl-text').textContent = autoplay ? '自动播放中' : '自动播放已停';
+  }
+  autoBtn.addEventListener('click', () => { autoplay = !autoplay; syncAuto(); if (autoplay) play(0); });
+  syncAuto();
+
+  // a complete resting frame (the finished story), then play from the start
+  play(steps.length);
+  if (EMBED) embed(() => play(0), (on) => { autoplay = on; syncAuto(); });
+  else if (!reduce) setTimeout(() => { if (runId === 1) play(0); }, 1400);
+})();
+</script>

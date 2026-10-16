@@ -1,0 +1,838 @@
+<title>Molis Work 接着做小样</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,400&family=Noto+Serif+SC:wght@500;700&display=swap">
+<style>
+/* Layout: a menu bar on top; the shared Goal page in the middle of the desk with a worker on each side. Code: Claude Code on the left, Codex on the right, both bound to their goals. Writing: Claude desktop on the left, the Molis assistant on the right. Notes fly between the workers and the page. */
+:root {
+  --paper: #f5f0e6;
+  --sheet: #fffcf6;
+  --ink: #121826;
+  --text: #33312c;
+  --muted: #6f695f;
+  --faint: #a39d92;
+  --line: rgb(18 24 38 / 0.12);
+  --red: #ee4e2b;
+  --red-soft: #fbe0d8;
+  --amber: #c98a12;
+  --amber-soft: #fbefd2;
+  --sage: #8fb69b;
+  --sage-soft: #e3eee5;
+  --sage-deep: #2f6b45;
+  --cc: #e8a28c;
+  --cx: #b9c6f5;
+  --ds: #9fd3c7;
+  --me: #8fb69b;
+  --term: #151b29;
+  --term-text: #e8e3d8;
+  --term-muted: #8d93a3;
+  --serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --display: 'Newsreader', Georgia, serif;
+  --sans: 'Geist', 'PingFang SC', 'Hiragino Sans GB', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, 'PingFang SC', monospace;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --snap: cubic-bezier(0.34, 1.4, 0.5, 1);
+  --shadow: 0 18px 34px -24px rgb(40 24 10 / 0.55), 0 1px 0 rgb(18 24 38 / 0.05);
+  color-scheme: light;
+}
+body { background: var(--paper); color: var(--text); font-family: var(--sans); }
+[hidden] { display: none !important; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: clamp(16px, 3.2vw, 48px); padding-block: clamp(28px, 5vw, 64px) 48px; display: grid; gap: 22px; }
+.eyebrow { margin: 0; font-size: 12px; letter-spacing: 0.08em; color: var(--muted); }
+.eyebrow b { color: var(--red); font-weight: 500; }
+.eyebrow a { margin-left: 8px; color: var(--muted); }
+.eyebrow a.on { color: var(--ink); font-weight: 500; }
+h1 { margin: 6px 0 0; font-family: var(--serif); font-weight: 700; color: var(--ink); font-size: clamp(30px, 4.6vw, 54px); line-height: 1.15; letter-spacing: -0.01em; text-wrap: balance; }
+
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.steps { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.steps button { display: inline-flex; align-items: center; gap: 8px; font: 500 14px/1 var(--sans); color: var(--muted); background: transparent; border: 0; border-radius: 999px; padding: 9px 13px 9px 9px; cursor: pointer; transition: background 160ms var(--ease), color 160ms var(--ease); }
+.steps button:hover { background: rgb(18 24 38 / 0.06); }
+.steps .n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 11px; background: rgb(18 24 38 / 0.07); color: var(--muted); transition: background 200ms var(--ease), color 200ms var(--ease); }
+.steps button.done { color: var(--text); }
+.steps button.done .n { background: var(--sage); color: var(--sheet); }
+.steps button[aria-current="step"] { color: var(--ink); background: rgb(18 24 38 / 0.06); }
+.steps button[aria-current="step"] .n { background: var(--red); color: var(--sheet); }
+.tools { display: flex; gap: 4px; }
+.ctrl { display: inline-flex; align-items: center; gap: 8px; font: 500 14px/1 var(--sans); color: var(--muted); background: transparent; border: 0; border-radius: 999px; padding: 10px 14px; cursor: pointer; }
+.ctrl:hover { background: rgb(18 24 38 / 0.06); }
+.ctrl .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
+.ctrl[aria-pressed="false"] .dot { background: transparent; box-shadow: inset 0 0 0 1.5px var(--muted); }
+button:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+svg.i { width: 15px; height: 15px; flex: none; }
+
+.stage { position: relative; display: grid; gap: 14px; padding: 0 16px 16px; border-radius: 22px; background: #efe8db; box-shadow: inset 0 0 0 1px rgb(18 24 38 / 0.04); overflow: hidden; }
+.menubar { display: flex; align-items: center; justify-content: space-between; height: 32px; margin: 0 -16px; padding: 0 16px; background: rgb(255 252 246 / 0.7); border-bottom: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+.mb-right { display: flex; align-items: center; gap: 14px; }
+.mb-time { font-variant-numeric: tabular-nums; color: var(--text); }
+.mb-icon { position: relative; display: grid; place-items: center; width: 24px; height: 22px; border-radius: 6px; color: var(--ink); transition: background 200ms var(--ease); }
+.mb-icon svg { width: 15px; height: 15px; }
+.mb-icon.on { background: rgb(18 24 38 / 0.1); }
+.mb-icon .dot { position: absolute; top: 2px; right: 2px; width: 6px; height: 6px; border-radius: 50%; background: var(--red); transform: scale(0); transition: transform 300ms var(--snap); }
+.mb-icon.wait .dot { transform: scale(1); }
+.capsule { position: absolute; top: 40px; right: 16px; z-index: 12; width: 280px; padding: 13px 14px; border-radius: 14px; background: var(--sheet); box-shadow: 0 24px 44px -24px rgb(40 24 10 / 0.7), 0 0 0 1px var(--line); font-size: 12.5px; line-height: 1.6; opacity: 0; transform: translateY(-6px); transition: opacity 240ms var(--ease), transform 300ms var(--ease); pointer-events: none; }
+.capsule.on { opacity: 1; transform: none; }
+.capsule small { color: var(--muted); }
+.capsule b { display: block; margin: 2px 0 6px; font-size: 14px; color: var(--ink); }
+.capsule .state { display: flex; align-items: center; gap: 8px; }
+.seg { display: flex; gap: 3px; }
+.seg i { width: 18px; height: 5px; border-radius: 3px; background: rgb(18 24 38 / 0.1); }
+.seg i.f { background: var(--sage); }
+.capsule .next { margin-top: 6px; color: var(--text); }
+.capsule .next em { font-style: normal; color: #9c2f14; }
+
+.row { display: grid; grid-template-columns: 1fr 1.35fr 1fr; gap: 14px; height: 600px; }
+
+/* terminals */
+.term { position: relative; min-width: 0; display: flex; flex-direction: column; border-radius: 14px; background: var(--term); color: var(--term-text); box-shadow: 0 22px 40px -26px rgb(10 14 24 / 0.8); overflow: hidden; }
+.term-head { display: flex; align-items: center; gap: 8px; padding: 11px 14px; border-bottom: 1px solid rgb(255 255 255 / 0.08); font-size: 12.5px; }
+.term-head svg { width: 15px; height: 15px; color: var(--term-muted); }
+.term-head b { font-weight: 600; }
+.bind { margin-left: auto; padding: 2px 8px; border-radius: 6px; background: rgb(255 255 255 / 0.08); font-size: 11px; color: var(--term-muted); white-space: nowrap; }
+.term-state { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px 0; font-size: 11.5px; color: var(--term-muted); }
+.term-state::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--term-muted); }
+.term-state.live::before { background: #7ccf95; box-shadow: 0 0 0 3px rgb(124 207 149 / 0.18); }
+.term-state.wait::before { background: #f2c66d; }
+.lines { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 7px; padding: 12px 14px 14px; font-family: var(--mono); font-size: 12px; line-height: 1.6; overflow: hidden; }
+.ln { animation: rise 320ms var(--ease); white-space: pre-wrap; word-break: break-word; }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.ln.u { color: var(--term-text); }
+.ln.u::before { content: '› '; color: var(--red); }
+.ln.o { color: var(--term-muted); }
+.ln.ok { color: #9be0ae; }
+.ln.warn { color: #f2c66d; }
+.cursor-blink { display: inline-block; width: 7px; height: 13px; margin-left: 1px; vertical-align: -2px; background: var(--term-text); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* the shared page */
+.goal { position: relative; min-width: 0; display: flex; flex-direction: column; border-radius: 16px; background: var(--sheet); box-shadow: var(--shadow); overflow: hidden; }
+.goal-head { display: flex; align-items: center; gap: 9px; padding: 12px 16px 10px; border-bottom: 1px solid var(--line); }
+.goal-head svg { width: 17px; height: 17px; color: var(--ink); }
+.goal-head strong { font-size: 14px; font-weight: 600; color: var(--ink); }
+.goal-head small { font-size: 12px; color: var(--muted); }
+.goal-head .shared { margin-left: auto; font-size: 11px; color: var(--muted); }
+.goal-body { flex: 1; min-height: 0; padding: 14px 16px; overflow: hidden; display: flex; flex-direction: column; gap: 10px; }
+.g-empty { margin: 0; font-size: 13px; color: var(--faint); }
+.g-content { display: none; flex-direction: column; gap: 8px; min-height: 0; flex: 1; }
+.g-content.on { display: flex; animation: rise 420ms var(--ease); }
+.g-title { margin: 0; font-family: var(--serif); font-size: 20px; font-weight: 700; color: var(--ink); }
+.g-outcome { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+.g-status { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--text); }
+.g-status b { font-variant-numeric: tabular-nums; color: var(--ink); }
+.pill { padding: 2px 8px; border-radius: 999px; background: var(--red-soft); color: #9c2f14; font-size: 11.5px; white-space: nowrap; transition: background 300ms var(--ease), color 300ms var(--ease); }
+.pill.wait { background: var(--amber-soft); color: #7a520a; }
+.pill.done { background: var(--sage-soft); color: var(--sage-deep); }
+.g-h { margin: 4px 0 0; font-size: 11.5px; font-weight: 500; color: var(--muted); letter-spacing: 0.04em; }
+.reqs { margin: 0; padding: 0; list-style: none; display: grid; gap: 5px; }
+.req { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: start; padding: 4px 8px; border-radius: 9px; font-size: 13px; line-height: 1.5; transition: background 400ms var(--ease); }
+.req .mk { display: grid; place-items: center; width: 16px; height: 16px; margin-top: 2px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--faint); transition: background 300ms var(--ease), box-shadow 300ms var(--ease); }
+.req .mk svg { width: 11px; height: 11px; color: var(--sheet); opacity: 0; }
+.req.done .mk { background: var(--sage); box-shadow: none; }
+.req.done .mk svg { opacity: 1; }
+.req.flash { background: rgb(143 182 155 / 0.18); }
+.req.wait .mk { box-shadow: inset 0 0 0 2px var(--amber); }
+.req.wait { background: var(--amber-soft); }
+.req b { font-weight: 500; color: var(--ink); }
+.must { margin-left: 6px; padding: 1px 6px; border-radius: 5px; background: var(--paper); font-size: 11px; color: var(--muted); white-space: nowrap; }
+.ev { display: none; margin-top: 1px; font-size: 11.5px; color: var(--sage-deep); }
+.ev.on { display: block; }
+.ev.no { color: var(--amber); }
+.banner { display: none; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 9px; background: var(--amber-soft); color: #7a520a; font-size: 12.5px; line-height: 1.5; }
+.banner svg { width: 15px; height: 15px; }
+.banner.on { display: flex; animation: rise 360ms var(--ease); }
+.who { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font-size: 9.5px; font-weight: 600; color: var(--ink); flex: none; }
+.who.cc { background: var(--cc); }
+.who.cx { background: var(--cx); }
+.who.cl { background: var(--cc); }
+.who.ds { background: var(--ds); }
+.who.me { background: var(--me); }
+
+/* code: two goal cards and a proposal */
+.gcard { padding: 11px 12px; border-radius: 12px; background: var(--paper); display: grid; gap: 7px; }
+.gc-top { display: flex; align-items: center; gap: 8px; }
+.gc-top b { font-size: 14px; font-weight: 600; color: var(--ink); }
+.gc-top small { font-size: 11.5px; color: var(--muted); }
+.gc-top .pill { margin-left: auto; }
+.dep { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.dep svg { width: 13px; height: 13px; }
+.dep em { font-style: normal; padding: 1px 7px; border-radius: 6px; background: var(--amber-soft); color: #7a520a; transition: background 300ms var(--ease), color 300ms var(--ease); }
+.dep em.ok { background: var(--sage-soft); color: var(--sage-deep); }
+.agree { display: none; align-items: center; gap: 6px; font-size: 12px; color: var(--sage-deep); }
+.agree svg { width: 13px; height: 13px; }
+.agree.on { display: flex; animation: rise 360ms var(--ease); }
+.proposal { display: none; padding: 11px 12px; border-radius: 12px; background: var(--sheet); box-shadow: 0 0 0 1.5px var(--amber), 0 16px 30px -22px rgb(40 24 10 / 0.6); }
+.proposal.on { display: block; animation: rise 420ms var(--ease); }
+.pr-h { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.pr-h b { font-size: 13px; color: var(--ink); }
+.pr-h .tag { margin-left: auto; padding: 1px 7px; border-radius: 6px; background: var(--amber-soft); color: #7a520a; font-size: 11px; }
+.proposal p { margin: 0 0 4px; font-size: 13px; line-height: 1.6; color: var(--ink); }
+.proposal .impact { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; color: var(--muted); }
+.proposal .impact svg { width: 13px; height: 13px; margin-top: 3px; color: var(--amber); }
+.opts { display: flex; gap: 6px; margin-top: 8px; }
+.opt { font: 500 12.5px/1 var(--sans); border: 0; border-radius: 9px; padding: 8px 12px; background: var(--paper); color: var(--ink); transition: background 200ms var(--ease), color 200ms var(--ease), transform 130ms var(--ease); }
+.opt.dark { background: var(--ink); color: var(--sheet); }
+.opt.hit { transform: scale(0.94); }
+
+/* writing: timeline, chat window and the assistant */
+.tl { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.tl li { display: grid; grid-template-columns: 24px 1fr; gap: 8px; align-items: start; padding: 3px 6px; border-radius: 9px; font-size: 12.5px; line-height: 1.55; animation: rise 360ms var(--ease); transition: background 400ms var(--ease); }
+.tl li.flash { background: var(--red-soft); }
+.tl b { font-weight: 600; color: var(--ink); }
+.tl small { display: block; font-size: 11.5px; color: var(--muted); }
+.chat { position: relative; min-width: 0; display: flex; flex-direction: column; border-radius: 14px; background: #fbf8f2; box-shadow: var(--shadow); overflow: hidden; }
+.chat-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 12.5px; color: var(--ink); }
+.chat-head .dots { display: inline-flex; gap: 5px; margin-right: 4px; }
+.chat-head .dots i { width: 9px; height: 9px; border-radius: 50%; background: rgb(18 24 38 / 0.15); }
+.chat-head b { font-weight: 600; }
+.chat-head .mcp { margin-left: auto; padding: 2px 7px; border-radius: 6px; background: var(--paper); font-size: 11px; color: var(--muted); white-space: nowrap; }
+.msgs { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 9px; padding: 12px; overflow: hidden; }
+.bub { max-width: 92%; padding: 8px 11px; border-radius: 12px; font-size: 12.5px; line-height: 1.6; animation: rise 320ms var(--ease); }
+.bub.me { align-self: flex-end; background: var(--ink); color: var(--sheet); border-bottom-right-radius: 4px; }
+.bub.ai { align-self: flex-start; background: var(--sheet); color: var(--text); box-shadow: 0 0 0 1px var(--line); border-bottom-left-radius: 4px; }
+.tool { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 999px; background: var(--paper); font-size: 11.5px; color: var(--muted); animation: rise 320ms var(--ease); }
+.tool svg { width: 12px; height: 12px; }
+.comp { display: flex; align-items: center; gap: 8px; margin: 0 10px 10px; padding: 8px 12px; border-radius: 14px; background: var(--sheet); box-shadow: 0 0 0 1px var(--line); font-size: 12.5px; color: var(--faint); min-height: 36px; }
+.comp.typing { color: var(--ink); box-shadow: 0 0 0 1.5px var(--red); }
+.comp .send { margin-left: auto; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); flex: none; }
+.comp .send svg { width: 12px; height: 12px; color: var(--sheet); }
+.typing-caret { display: inline-block; width: 2px; height: 1.05em; margin-left: 1px; vertical-align: -0.15em; background: var(--red); animation: blink 1s steps(1) infinite; }
+.asst-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 12.5px; color: var(--ink); }
+.asst-head .av { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--red); }
+.asst-head .av svg { width: 12px; height: 12px; color: var(--sheet); }
+.asst-head b { font-weight: 600; }
+.model { position: relative; margin-left: auto; display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 8px; background: var(--paper); font-size: 11.5px; color: var(--ink); transition: transform 130ms var(--ease); }
+.model svg { width: 12px; height: 12px; color: var(--muted); }
+.model.hit { transform: scale(0.94); }
+.model .k { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--cc); transition: background 300ms var(--ease); }
+.model.swapped .k { background: var(--ds); }
+.menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 5; width: 150px; padding: 5px; border-radius: 10px; background: var(--sheet); box-shadow: 0 18px 30px -16px rgb(40 24 10 / 0.6), 0 0 0 1px var(--line); opacity: 0; transform: translateY(-4px); transition: opacity 200ms var(--ease), transform 240ms var(--ease); pointer-events: none; }
+.menu.on { opacity: 1; transform: none; }
+.menu span { display: flex; align-items: center; gap: 7px; padding: 7px 8px; border-radius: 7px; font-size: 12px; color: var(--ink); transition: background 160ms var(--ease); }
+.menu span i { width: 8px; height: 8px; border-radius: 50%; }
+.menu span.hit, .menu span.hover { background: rgb(18 24 38 / 0.06); }
+
+.packet { position: absolute; z-index: 20; display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: var(--red); color: var(--sheet); font-size: 12px; font-weight: 500; white-space: nowrap; box-shadow: 0 14px 24px -14px rgb(150 40 10 / 0.8); pointer-events: none; }
+.packet svg { width: 13px; height: 13px; }
+.packet.read { background: var(--ink); }
+.cursor { position: absolute; top: 0; left: 0; z-index: 30; width: 22px; height: 24px; pointer-events: none; transition-property: transform; transition-timing-function: var(--ease); }
+.cursor svg { display: block; width: 22px; height: 24px; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.25)); transition: transform 110ms var(--ease); transform-origin: 3px 2px; }
+.cursor.down svg { transform: scale(0.84); }
+.cursor.hidden { display: none; }
+.ripple { position: absolute; z-index: 29; width: 26px; height: 26px; margin: -11px 0 0 -11px; border-radius: 50%; border: 2px solid var(--red); pointer-events: none; animation: ripple 520ms var(--ease) forwards; }
+@keyframes ripple { from { transform: scale(0.3); opacity: 0.9; } to { transform: scale(1.4); opacity: 0; } }
+
+/* room for a two-line explanation, so the frame does not change height between steps */
+.caption { display: grid; gap: 6px; align-content: start; min-height: 132px; }
+.cap-kicker { margin: 0; font-size: 12px; letter-spacing: 0.08em; color: var(--red); }
+.cap-main { margin: 0; font-family: var(--serif); font-weight: 700; font-size: clamp(22px, 2.6vw, 30px); color: var(--ink); }
+.cap-sub { margin: 0; max-width: 46em; font-size: 15px; line-height: 1.8; }
+.foot-note { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.7; border-top: 1px solid var(--line); padding-top: 14px; }
+
+@media (max-width: 900px) {
+  .row { grid-template-columns: 1fr; height: auto; }
+  .term, .chat, .asst { height: 230px; }
+  .goal { height: 560px; }
+  .capsule { right: 10px; width: min(280px, calc(100% - 20px)); }
+}
+/* while skipping ahead to a step, everything lands at once */
+.stage.jump *, .stage.jump *::before, .stage.jump *::after { transition: none !important; animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+html.embed .wrap > header, html.embed .foot-note { display: none; }
+html.embed .wrap { max-width: none; padding-inline: 0; padding-block: 4px 12px; }
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow"><b>Molis Work</b> · 第二幕「接」· 动画小样 <a href="#dev" data-persona="dev">写代码</a><a href="#doc" data-persona="doc">写文档、管事情</a></p>
+    <h1>换谁来做，都接着同一页。</h1>
+  </header>
+
+  <div class="bar">
+    <ol class="steps" id="steps" aria-label="这一幕的几步"></ol>
+    <div class="tools">
+      <button id="replay" class="ctrl">从头看</button>
+      <button id="autoplay" class="ctrl" aria-pressed="true"><span class="dot" aria-hidden="true"></span><span class="ctrl-text">自动播放中</span></button>
+    </div>
+  </div>
+
+  <section class="stage" id="stage"></section>
+
+  <div class="caption" aria-live="polite">
+    <p class="cap-kicker" id="cap-kicker"></p>
+    <p class="cap-main" id="cap-main"></p>
+    <p class="cap-sub" id="cap-sub"></p>
+  </div>
+
+  <p class="foot-note" id="foot-note"></p>
+</main>
+
+<!-- code: front end to Claude Code, back end to Codex, one set of goals between them -->
+<template id="stage-dev">
+  <div class="menubar">
+    <span>支付改版</span>
+    <span class="mb-right"><span class="mb-time" id="mb-time">周三 10:00</span><span class="mb-icon" id="mb-icon"><span data-icon="target"></span><span class="dot"></span></span></span>
+  </div>
+  <div class="capsule" id="capsule" aria-hidden="true">
+    <small>Molis Work · 支付改版</small>
+    <b>上线支付</b>
+    <div class="state"><span class="seg"><i class="f"></i><i></i><i></i><i></i></span>进行中 · 2 个终端在跑</div>
+    <div class="next">下一步：<em>1 个提议等你决定</em></div>
+  </div>
+
+  <div class="row">
+    <article class="term" id="term-cc">
+      <header class="term-head"><span data-icon="terminal"></span><b>Claude Code</b><span class="bind">目标：结算页</span></header>
+      <span class="term-state" id="cc-state">还没开始</span>
+      <div class="lines" id="cc"></div>
+    </article>
+
+    <article class="goal" id="goal">
+      <header class="goal-head"><span data-icon="target"></span><strong>Goals</strong><small>上线支付</small><span class="shared">两个 Agent 读写同一组</span></header>
+      <div class="goal-body">
+        <div class="gcard" id="g-fe">
+          <div class="gc-top"><span class="who cc">CC</span><b>结算页</b><small>前端</small><span class="pill" id="fe-state">进行中</span></div>
+          <div class="dep"><span data-icon="link"></span>依赖「支付接口」<em id="fe-dep">还没开始</em></div>
+          <ul class="reqs">
+            <li class="req" id="fe-r1"><span class="mk" data-icon="check"></span><div><b>金额按约定显示和提交</b><span class="ev" id="fe-e1">依据：测试 9/9 · Claude Code</span></div></li>
+            <li class="req" id="fe-r2"><span class="mk" data-icon="check"></span><div><b>手机端排版正常</b><span class="must">要你验收</span><span class="ev no" id="fe-e2">还没有依据</span></div></li>
+          </ul>
+          <div class="agree" id="fe-agree"><span data-icon="check"></span>约定已更新：金额用「分」· 你周三同意</div>
+          <div class="banner" id="banner"><span data-icon="circle-alert"></span>还没算完：「手机端排版正常」还没有依据。</div>
+        </div>
+        <div class="proposal" id="proposal">
+          <div class="pr-h"><span class="who cx">Cx</span><b>Codex 提议改约定</b><span class="tag">等你决定</span></div>
+          <p>金额字段从「元」改成「分」，避免小数误差。</p>
+          <p class="impact"><span data-icon="git-fork"></span>影响：结算页（Claude Code 在做）· 显示和提交有 2 处要跟着改</p>
+          <div class="opts"><button class="opt dark" id="pr-ok" tabindex="-1">同意</button><button class="opt" tabindex="-1">先不</button></div>
+        </div>
+        <div class="gcard" id="g-be">
+          <div class="gc-top"><span class="who cx">Cx</span><b>支付接口</b><small>后端</small><span class="pill" id="be-state">进行中</span></div>
+          <ul class="reqs">
+            <li class="req" id="be-r1"><span class="mk" data-icon="check"></span><div><b>回调幂等</b><span class="ev" id="be-e1">依据：重放 20 次只记一笔</span></div></li>
+            <li class="req" id="be-r2"><span class="mk" data-icon="check"></span><div><b>沙箱支付走通</b><span class="ev" id="be-e2">依据：沙箱 3 笔成功 · 测试 14/14</span></div></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <article class="term" id="term-cx">
+      <header class="term-head"><span data-icon="terminal"></span><b>Codex</b><span class="bind">目标：支付接口</span></header>
+      <span class="term-state" id="cx-state">还没开始</span>
+      <div class="lines" id="cx"></div>
+    </article>
+  </div>
+</template>
+
+<!-- writing: Monday in Claude desktop, Wednesday in the Molis assistant with another model, one page between them -->
+<template id="stage-doc">
+  <div class="menubar">
+    <span>写作</span>
+    <span class="mb-right"><span class="mb-time" id="mb-time">周一 09:30</span><span class="mb-icon" id="mb-icon"><span data-icon="target"></span><span class="dot"></span></span></span>
+  </div>
+  <div class="capsule" id="capsule" aria-hidden="true">
+    <small>Molis Work · 写作</small>
+    <b>写完《AI 编辑器观察》</b>
+    <div class="state"><span class="seg"><i class="f"></i><i class="f"></i><i class="f"></i><i></i></span>进行中 · 3/4</div>
+    <div class="next">下一步：<em>结论，要你来定</em></div>
+  </div>
+
+  <div class="row">
+    <article class="chat" id="claude">
+      <header class="chat-head"><span class="dots"><i></i><i></i><i></i></span><b>Claude</b>桌面版<span class="mcp">已接 Molis Work · MCP</span></header>
+      <div class="msgs" id="cl"></div>
+      <div class="comp" id="cl-comp"><span id="cl-text">回复 Claude…</span></div>
+    </article>
+
+    <article class="goal" id="goal">
+      <header class="goal-head"><span data-icon="target"></span><strong>Goals</strong><small>写作</small><span class="shared">同一页 · 谁来写都读它</span></header>
+      <div class="goal-body">
+        <p class="g-empty" id="g-empty">还没有目标。</p>
+        <div class="g-content" id="g-content">
+          <h2 class="g-title">写完《AI 编辑器观察》</h2>
+          <p class="g-outcome">预期结果：四部分，周五交给编辑。</p>
+          <div class="g-status" id="g-status"><span class="pill">进行中</span>完成要求 <b id="g-count">0/4</b></div>
+          <ul class="reqs">
+            <li class="req" id="r1"><span class="mk" data-icon="check"></span><div><b>一、补全之后</b><span class="ev" id="e1">Claude · 周一 · 用了视频 12:40 和 2 条笔记</span></div></li>
+            <li class="req" id="r2"><span class="mk" data-icon="check"></span><div><b>二、编辑器在变成什么</b><span class="ev" id="e2">Claude · 周一 · 用了 1 条笔记</span></div></li>
+            <li class="req" id="r3"><span class="mk" data-icon="check"></span><div><b>三、价格与商业模式</b><span class="ev" id="e3">助理（DeepSeek）· 周三 · 用了融资汇总和读者留言</span></div></li>
+            <li class="req" id="r4"><span class="mk" data-icon="check"></span><div><b>四、结论</b><span class="must">要你来定</span></div></li>
+          </ul>
+          <p class="g-h">时间线</p>
+          <ol class="tl" id="tl"></ol>
+        </div>
+      </div>
+    </article>
+
+    <article class="chat asst" id="asst">
+      <header class="asst-head"><span class="av"><span data-icon="sparkles"></span></span><b>助理</b>Molis Work<span class="model" id="model"><span class="k"></span><span id="model-name">Claude</span><span data-icon="chevron-down"></span>
+        <span class="menu" id="menu"><span><i style="background: var(--cc)"></i>Claude</span><span id="pick-ds"><i style="background: var(--ds)"></i>DeepSeek</span></span></span></header>
+      <div class="msgs" id="as"></div>
+      <div class="comp" id="as-comp"><span id="as-text">让助理做点什么…</span><span class="send"><span data-icon="arrow-up"></span></span></div>
+    </article>
+  </div>
+</template>
+
+<template id="stage-common">
+  <div class="cursor hidden" id="cursor" aria-hidden="true"><svg viewBox="0 0 22 24"><path d="M3 2 L3 18.5 L7.6 14.4 L10.6 21.4 L13.4 20.2 L10.4 13.3 L16.6 13.3 Z" fill="#121826" stroke="#fffcf6" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+</template>
+
+<script>
+(() => {
+  // Icon geometry from Lucide 0.454.0 (ISC), the set Molis Work uses.
+  const ICONS = {"arrow-up":"<path d='m5 12 7-7 7 7'/><path d='M12 19V5'/>","check":"<path d='M20 6 9 17l-5-5'/>","chevron-down":"<path d='m6 9 6 6 6-6'/>","circle-alert":"<circle cx='12' cy='12' r='10'/><line x1='12' x2='12' y1='8' y2='12'/><line x1='12' x2='12.01' y1='16' y2='16'/>","file-text":"<path d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'/><path d='M14 2v4a2 2 0 0 0 2 2h4'/><path d='M10 9H8'/><path d='M16 13H8'/><path d='M16 17H8'/>","git-commit-horizontal":"<circle cx='12' cy='12' r='3'/><line x1='3' x2='9' y1='12' y2='12'/><line x1='15' x2='21' y1='12' y2='12'/>","git-fork":"<circle cx='12' cy='18' r='3'/><circle cx='6' cy='6' r='3'/><circle cx='18' cy='6' r='3'/><path d='M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9'/><path d='M12 12v3'/>","link":"<path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'/><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'/>","plug":"<path d='M12 22v-5'/><path d='M9 8V2'/><path d='M15 8V2'/><path d='M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z'/>","sparkles":"<path d='M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z'/><path d='M20 3v4'/><path d='M22 5h-4'/><path d='M4 17v2'/><path d='M5 18H3'/>","target":"<circle cx='12' cy='12' r='10'/><circle cx='12' cy='12' r='6'/><circle cx='12' cy='12' r='2'/>","terminal":"<polyline points='4 17 10 11 4 5'/><line x1='12' x2='20' y1='19' y2='19'/>"};
+  /* icons: git-commit-horizontal file-text plug */
+  const svg = (name) => {
+    if (!ICONS[name]) console.warn('missing icon', name);
+    return `<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
+  };
+  const P = window.MW_PERSONA || (/doc/.test(location.hash) ? 'doc' : 'dev');
+  const $ = (id) => document.getElementById(id);
+  const stage = $('stage');
+  stage.innerHTML = $('stage-' + P).innerHTML + $('stage-common').innerHTML;
+  document.querySelectorAll('.eyebrow a').forEach((a) => a.classList.toggle('on', a.dataset.persona === P));
+  window.addEventListener('hashchange', () => { if (!window.MW_PERSONA) location.reload(); });
+  document.querySelectorAll('[data-icon]').forEach((el) => el.insertAdjacentHTML('afterbegin', svg(el.dataset.icon)));
+
+  const STORIES = {
+    dev: {
+      label: '示意：中间是 Goals 里的两个目标，左边是绑着「结算页」的 Claude Code，右边是绑着「支付接口」的 Codex，顶上是菜单栏',
+      steps: [
+        { label: '两个 Agent 同时开工', main: '前端给 Claude Code，后端给 Codex', sub: '两个终端各绑一个目标，同时开工。Claude Code 读到结算页依赖支付接口，先做能做的，在目标上记一笔「等接口」。' },
+        { label: '改约定，先问你', main: '改约定之前，先问你', sub: 'Codex 想把金额从「元」改成「分」。提议写明会影响 Claude Code 正在做的结算页；菜单栏亮起：1 个提议等你决定。你点同意。' },
+        { label: '后端交了，前端接上', main: '后端交了依据，前端接着做', sub: 'Codex 交上测试和沙箱支付的依据，支付接口完成。Claude Code 读到接口好了、约定改成了「分」，按新约定改完两处。' },
+        { label: '说做完了，还差一条', main: '说做完了，记录上还差一条', sub: 'Claude Code 提交收尾，没算完：「手机端排版正常」要你验收，还没有依据。' },
+      ],
+      final: { kicker: '两个 Agent，一组目标', main: '谁在等谁、改了什么，都在一页上。', sub: '前端交给 Claude Code、后端交给 Codex，读写的是同一组目标：依赖、约定和依据都记在上面。不用在两个对话之间传话，菜单栏一眼就知道哪件等你。' },
+      note: '动画小样，示例数据，界面是示意。目标、依赖、改约定前的提议和影响、绑在目标上的终端、完成要求和显式收尾、菜单栏，都已发布（v0.2.0）。',
+    },
+    doc: {
+      label: '示意：中间是一个目标页，左边是接了 Molis Work 的 Claude 桌面版，右边是 Molis Work 里的助理，顶上是菜单栏',
+      steps: [
+        { label: '周一 · Claude 桌面版', main: '周一 · 在 Claude 桌面版开了头', sub: '说一句，目标就建在工作台里，四部分是四条完成要求。写完前两部分，用了哪些资料都记在这一页上。' },
+        { label: '周三 · 换个模型', main: '周三 · 换个模型，只说「接着写第三部分」', sub: '在 Molis Work 的助理里换成另一个模型。它读到的是同一页：写到哪了、谁写的、还有哪些资料没用。' },
+        { label: '周四 · 一眼看进度', main: '周四 · 不用问任何 AI', sub: '菜单栏点一下就知道：3/4，还差结论，要你来定。你自己改的那段，也记在这一页上。' },
+        { label: '周五 · 一页看清', main: '周五 · 谁写了什么，一页看清', sub: '交稿前打开目标页：哪部分是谁写的、用了哪些资料，一条条列着，点开能回到原文。' },
+      ],
+      final: { kicker: '换谁来写', main: '稿子留在工作台里，不留在对话里。', sub: 'Claude 桌面版、换了模型的助理和你，写的是同一页。下一个接手的人或 AI，从这一页接着写。' },
+      note: '动画小样，示例数据，界面是示意。Claude 桌面版这类支持 MCP 的应用读写目标已发布（v0.2.0）；Molis Work 里的助理、换模型和 Pages 在开发中。',
+    },
+  };
+  const S = STORIES[P];
+  stage.setAttribute('aria-label', S.label);
+  $('steps').innerHTML = S.steps.map((s, i) => `<li><button data-step="${i}"><span class="n">${i + 1}</span>${s.label}</button></li>`).join('');
+  $('foot-note').textContent = S.note;
+
+  const cursor = $('cursor');
+  const stepBtns = [...document.querySelectorAll('.steps button')];
+  const autoBtn = $('autoplay');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const EMBED = location.hash === '#embed' || window.MW_EMBED === true;
+  // Embedded in the product page draft: hide this page's own header and note, report the height,
+  // and play only while the parent says this part is in view (scrolling back in replays it).
+  function embed(start, setLoop) {
+    document.documentElement.classList.add('embed');
+    let running = false;
+    const report = () => parent.postMessage({ type: 'mw-height', h: document.body.scrollHeight }, '*');
+    new ResizeObserver(report).observe(document.body);
+    report();
+    window.addEventListener('message', (e) => {
+      if (!e.data || e.data.type !== 'mw-visible' || reduce) return;
+      if (e.data.visible) { setLoop(true); if (!running) { running = true; start(); } }
+      else { setLoop(false); running = false; }
+    });
+  }
+
+  let runId = 0;
+  let instant = false;
+  let autoplay = !reduce;
+  let cur = { x: 0, y: 0 };
+  const sleep = (ms) => new Promise((r) => setTimeout(r, instant ? 0 : ms));
+  function setInstant(v) { instant = v; stage.classList.toggle('jump', v); }
+
+  function box(el) {
+    const s = stage.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    return { x: r.left - s.left, y: r.top - s.top, w: r.width, h: r.height };
+  }
+  function cursorAt(x, y, dur) {
+    cursor.style.transitionDuration = (instant ? 0 : dur) + 'ms';
+    cursor.style.transform = `translate(${x - 3}px, ${y - 2}px)`;
+    cur = { x, y };
+  }
+  async function moveTo(el, fx = 0.5, fy = 0.55) {
+    if (!reduce) cursor.classList.remove('hidden');
+    const r = box(el);
+    const x = r.x + r.w * fx;
+    const y = r.y + r.h * fy;
+    const dur = Math.min(760, Math.max(300, Math.hypot(x - cur.x, y - cur.y) * 1.05));
+    cursorAt(x, y, dur);
+    await sleep(dur + 60);
+  }
+  async function click(el) {
+    if (instant) return;
+    cursor.classList.add('down');
+    if (el) el.classList.add('hit');
+    const rp = document.createElement('span');
+    rp.className = 'ripple';
+    rp.style.left = cur.x + 'px';
+    rp.style.top = cur.y + 'px';
+    stage.appendChild(rp);
+    setTimeout(() => rp.remove(), 540);
+    await sleep(150);
+    cursor.classList.remove('down');
+    if (el) el.classList.remove('hit');
+    await sleep(140);
+  }
+
+  // ---------- workers ----------
+  function out(term, text, cls = 'o') {
+    const ln = document.createElement('div');
+    ln.className = 'ln ' + cls;
+    ln.textContent = text;
+    $(term).appendChild(ln);
+    return ln;
+  }
+  async function say(term, text, alive) {
+    const ln = out(term, '', 'u');
+    if (instant) { ln.textContent = text; return; }
+    const caret = document.createElement('span');
+    caret.className = 'cursor-blink';
+    for (let i = 1; i <= text.length; i++) {
+      if (!alive()) return;
+      ln.textContent = text.slice(0, i);
+      ln.appendChild(caret);
+      await sleep(34);
+    }
+    await sleep(240);
+    caret.remove();
+  }
+  function termState(id, text, cls) {
+    const el = $(id);
+    el.textContent = text;
+    el.className = 'term-state' + (cls ? ' ' + cls : '');
+  }
+  function bubble(list, html, who) {
+    const el = document.createElement('div');
+    el.className = who === 'tool' ? 'tool' : 'bub ' + who;
+    el.innerHTML = html;
+    $(list).appendChild(el);
+    return el;
+  }
+  async function typeInto(comp, text, alive) {
+    const box = $(comp);
+    const t = box.firstElementChild;
+    box.classList.add('typing');
+    if (instant) { t.textContent = text; return; }
+    const caret = document.createElement('span');
+    caret.className = 'typing-caret';
+    for (let i = 1; i <= text.length; i++) {
+      if (!alive()) return;
+      t.textContent = text.slice(0, i);
+      t.appendChild(caret);
+      await sleep(40);
+    }
+    await sleep(260);
+    caret.remove();
+  }
+  function clearComp(comp, placeholder) {
+    $(comp).classList.remove('typing');
+    $(comp).firstElementChild.textContent = placeholder;
+  }
+
+  // ---------- the page ----------
+  const WHO = { cc: ['cc', 'CC'], cx: ['cx', 'Cx'], cl: ['cl', 'Cl'], ds: ['ds', 'DS'], me: ['me', '你'] };
+  function addEntry(who, title, detail) {
+    const [cls, mono] = WHO[who];
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="who ${cls}">${mono}</span><div><b>${title}</b><small>${detail}</small></div>`;
+    $('tl').appendChild(li);
+    return li;
+  }
+  function check(req, ev, count) {
+    $(req).classList.add('done', 'flash');
+    if (ev) $(ev).classList.add('on');
+    if (count) $('g-count').textContent = count;
+    setTimeout(() => $(req).classList.remove('flash'), 900);
+  }
+  function setPill(id, text, cls) {
+    const el = $(id);
+    el.textContent = text;
+    el.className = 'pill' + (cls ? ' ' + cls : '');
+  }
+  function packet(fromEl, toEl, label, read) {
+    if (instant || reduce) return Promise.resolve();
+    const a = box(fromEl);
+    const b = box(toEl);
+    const p = document.createElement('div');
+    p.className = 'packet' + (read ? ' read' : '');
+    p.innerHTML = `${svg(read ? 'file-text' : 'git-commit-horizontal')}${label}`;
+    stage.appendChild(p);
+    const sx = a.x + a.w / 2 - p.offsetWidth / 2;
+    const sy = a.y + a.h / 2 - p.offsetHeight / 2;
+    const ex = b.x + b.w / 2 - p.offsetWidth / 2;
+    const ey = b.y + b.h / 2 - p.offsetHeight / 2;
+    p.style.left = sx + 'px';
+    p.style.top = sy + 'px';
+    const dx = ex - sx;
+    const dy = ey - sy;
+    const anim = p.animate([
+      { transform: 'translate(0, 0) scale(0.8)', opacity: 0 },
+      { transform: `translate(${dx * 0.1}px, ${dy * 0.1 - 10}px) scale(1)`, opacity: 1, offset: 0.15 },
+      { transform: `translate(${dx * 0.5}px, ${dy * 0.5 - 46}px) scale(1)`, opacity: 1, offset: 0.55 },
+      { transform: `translate(${dx}px, ${dy}px) scale(0.85)`, opacity: 0 },
+    ], { duration: 1050, easing: 'cubic-bezier(0.3, 0.6, 0.3, 1)' });
+    // a background tab may never finish the animation; move on after its duration anyway
+    return Promise.race([anim.finished, new Promise((r) => setTimeout(r, 1250))]).then(() => p.remove(), () => p.remove());
+  }
+  async function capsule(ms, alive) {
+    $('mb-icon').classList.add('on');
+    $('capsule').classList.add('on');
+    await sleep(ms); if (!alive()) return;
+    $('capsule').classList.remove('on');
+    $('mb-icon').classList.remove('on');
+  }
+
+  function setStep(i) {
+    stepBtns.forEach((b, k) => {
+      b.classList.toggle('done', k < i);
+      if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    });
+    $('cap-kicker').textContent = `第 ${i + 1} 步，共 ${S.steps.length} 步`;
+    $('cap-main').textContent = S.steps[i].main;
+    $('cap-sub').textContent = S.steps[i].sub;
+  }
+  function setFinal() {
+    stepBtns.forEach((b) => { b.classList.add('done'); b.removeAttribute('aria-current'); });
+    $('cap-kicker').textContent = S.final.kicker;
+    $('cap-main').textContent = S.final.main;
+    $('cap-sub').textContent = S.final.sub;
+  }
+
+  const RESET = {
+    dev() {
+      $('cc').innerHTML = '';
+      $('cx').innerHTML = '';
+      termState('cc-state', '还没开始');
+      termState('cx-state', '还没开始');
+      setPill('fe-state', '进行中');
+      setPill('be-state', '进行中');
+      $('fe-dep').textContent = '还没开始';
+      $('fe-dep').classList.remove('ok');
+      ['fe-r1', 'fe-r2', 'be-r1', 'be-r2'].forEach((r) => $(r).classList.remove('done', 'wait', 'flash'));
+      ['fe-e1', 'fe-e2', 'be-e1', 'be-e2', 'fe-agree', 'banner', 'proposal'].forEach((e) => $(e).classList.remove('on'));
+      $('mb-time').textContent = '周三 10:00';
+      $('mb-icon').classList.remove('on', 'wait');
+      $('capsule').classList.remove('on');
+    },
+    doc() {
+      $('cl').innerHTML = '';
+      $('as').innerHTML = '';
+      clearComp('cl-comp', '回复 Claude…');
+      clearComp('as-comp', '让助理做点什么…');
+      $('g-empty').hidden = false;
+      $('g-content').classList.remove('on');
+      ['r1', 'r2', 'r3', 'r4'].forEach((r) => $(r).classList.remove('done', 'wait', 'flash'));
+      ['e1', 'e2', 'e3'].forEach((e) => $(e).classList.remove('on'));
+      $('g-count').textContent = '0/4';
+      $('tl').innerHTML = '';
+      $('model-name').textContent = 'Claude';
+      $('model').classList.remove('swapped');
+      $('menu').classList.remove('on');
+      $('pick-ds').classList.remove('hover');
+      $('mb-time').textContent = '周一 09:30';
+      $('mb-icon').classList.remove('on', 'wait');
+      $('capsule').classList.remove('on');
+    },
+  };
+
+  const STEPS = {
+    dev: [
+      async (alive) => {
+        termState('cc-state', '会话中', 'live');
+        termState('cx-state', '会话中', 'live');
+        out('cc', '做结算页', 'u');
+        out('cx', '做支付接口', 'u');
+        await sleep(700); if (!alive()) return;
+        await packet($('g-fe'), $('cc'), '读目标', true); if (!alive()) return;
+        out('cc', '读到「结算页」：2 条完成要求，依赖「支付接口」');
+        await sleep(300); if (!alive()) return;
+        await packet($('g-be'), $('cx'), '读目标', true); if (!alive()) return;
+        out('cx', '读到「支付接口」：2 条完成要求');
+        await sleep(600); if (!alive()) return;
+        out('cc', '先做页面结构和校验……');
+        out('cx', '写回调和验签……');
+        await sleep(1100); if (!alive()) return;
+        out('cc', '提交要等后端的接口定义，先记一笔', 'warn');
+        await packet($('cc'), $('g-fe'), '记一笔'); if (!alive()) return;
+        $('fe-dep').textContent = '等接口定义';
+        setPill('fe-state', '等支付接口', 'wait');
+        termState('cc-state', '在等支付接口', 'wait');
+        await sleep(1400);
+      },
+      async (alive) => {
+        $('mb-time').textContent = '周三 14:20';
+        out('cx', '金额用「元」会有小数误差，想改成「分」');
+        await sleep(700); if (!alive()) return;
+        out('cx', '这会影响结算页，先提给你', 'warn');
+        await packet($('cx'), $('g-be'), '提议'); if (!alive()) return;
+        $('proposal').classList.add('on');
+        $('mb-icon').classList.add('wait');
+        await sleep(600); if (!alive()) return;
+        await capsule(2200, alive); if (!alive()) return;
+        await moveTo($('pr-ok')); if (!alive()) return;
+        await click($('pr-ok'));
+        $('proposal').classList.remove('on');
+        $('mb-icon').classList.remove('wait');
+        $('fe-agree').classList.add('on');
+        cursor.classList.add('hidden');
+        out('cx', '✓ 你同意了，按「分」来改', 'ok');
+        await sleep(1300);
+      },
+      async (alive) => {
+        $('mb-time').textContent = '周四 11:00';
+        out('cx', '✓ 沙箱 3 笔成功 · 测试 14/14', 'ok');
+        await packet($('cx'), $('be-r2'), '交依据'); if (!alive()) return;
+        check('be-r1', 'be-e1');
+        check('be-r2', 'be-e2');
+        setPill('be-state', '完成', 'done');
+        termState('cx-state', '会话已结束');
+        $('fe-dep').textContent = '已就绪';
+        $('fe-dep').classList.add('ok');
+        setPill('fe-state', '进行中');
+        await sleep(700); if (!alive()) return;
+        await packet($('g-fe'), $('cc'), '读目标', true); if (!alive()) return;
+        termState('cc-state', '会话中', 'live');
+        out('cc', '读到：支付接口完成，金额改成「分」（你周三同意的）');
+        await sleep(800); if (!alive()) return;
+        out('cc', '按新约定改显示和提交，2 处');
+        await sleep(900); if (!alive()) return;
+        out('cc', '✓ 测试 9/9', 'ok');
+        await packet($('cc'), $('fe-r1'), '交依据'); if (!alive()) return;
+        check('fe-r1', 'fe-e1');
+        await sleep(1200);
+      },
+      async (alive) => {
+        $('mb-time').textContent = '周四 17:30';
+        await say('cc', '结算页做完了，提交收尾', alive); if (!alive()) return;
+        await packet($('cc'), $('fe-state'), '提交收尾'); if (!alive()) return;
+        $('banner').classList.add('on');
+        $('fe-r2').classList.add('wait');
+        $('fe-e2').classList.add('on');
+        out('cc', '收尾没成立：手机端排版还没有依据', 'warn');
+        await sleep(1400);
+      },
+    ],
+    doc: [
+      async (alive) => {
+        await typeInto('cl-comp', '用 Molis Work 记个目标：写完《AI 编辑器观察》，四部分，周五交', alive); if (!alive()) return;
+        bubble('cl', '用 Molis Work 记个目标：写完《AI 编辑器观察》，四部分，周五交', 'me');
+        clearComp('cl-comp', '回复 Claude…');
+        await sleep(400); if (!alive()) return;
+        bubble('cl', `${svg('plug')}Molis Work · 建目标`, 'tool');
+        await packet($('cl'), $('goal'), '建目标'); if (!alive()) return;
+        $('g-empty').hidden = true;
+        $('g-content').classList.add('on');
+        bubble('cl', '建好了，四部分是四条完成要求。项目资料里有那段视频和你的 3 条笔记，我先读了。', 'ai');
+        await sleep(1100); if (!alive()) return;
+        bubble('cl', '先写前两部分', 'me');
+        await sleep(900); if (!alive()) return;
+        bubble('cl', '写好了，放进 Pages。', 'ai');
+        await packet($('cl'), $('r1'), '记一笔'); if (!alive()) return;
+        check('r1', 'e1');
+        check('r2', 'e2', '2/4');
+        addEntry('cl', '周一 · Claude 写了一、二部分', '资料：视频 12:40、3 条笔记');
+        await sleep(1300);
+      },
+      async (alive) => {
+        $('mb-time').textContent = '周三 15:10';
+        await moveTo($('model')); if (!alive()) return;
+        await click($('model'));
+        $('menu').classList.add('on');
+        await sleep(500); if (!alive()) return;
+        await moveTo($('pick-ds')); if (!alive()) return;
+        $('pick-ds').classList.add('hover');
+        await click();
+        $('menu').classList.remove('on');
+        $('model-name').textContent = 'DeepSeek';
+        $('model').classList.add('swapped');
+        cursor.classList.add('hidden');
+        await sleep(400); if (!alive()) return;
+        await typeInto('as-comp', '接着写第三部分', alive); if (!alive()) return;
+        bubble('as', '接着写第三部分', 'me');
+        clearComp('as-comp', '让助理做点什么…');
+        await packet($('goal'), $('as'), '读这一页', true); if (!alive()) return;
+        bubble('as', '读到：一、二部分周一由 Claude 写好。第三部分还没用过的资料：融资汇总、读者留言。', 'ai');
+        await sleep(1400); if (!alive()) return;
+        bubble('as', '第三部分写好了，放进 Pages。', 'ai');
+        await packet($('as'), $('r3'), '记一笔'); if (!alive()) return;
+        check('r3', 'e3', '3/4');
+        addEntry('ds', '周三 · 助理（DeepSeek）写了第三部分', '资料：融资汇总、读者留言');
+        await sleep(1300);
+      },
+      async (alive) => {
+        $('mb-time').textContent = '周四 10:05';
+        addEntry('me', '周四 · 你改了第二部分的开头', '在 Pages 里改的');
+        await sleep(600); if (!alive()) return;
+        await capsule(2400, alive); if (!alive()) return;
+        await sleep(400);
+      },
+      async (alive) => {
+        $('mb-time').textContent = '周五 16:00';
+        $('r4').classList.add('wait');
+        for (const li of $('tl').children) {
+          li.classList.add('flash');
+          await sleep(700); if (!alive()) return;
+          li.classList.remove('flash');
+        }
+        await sleep(900);
+      },
+    ],
+  };
+  const steps = STEPS[P];
+
+  function reset() {
+    RESET[P]();
+    stage.querySelectorAll('.packet, .ripple').forEach((p) => p.remove());
+    cursor.classList.add('hidden');
+    const saved = instant;
+    instant = true;
+    cursorAt(stage.clientWidth / 2, stage.clientHeight - 60, 0);
+    instant = saved;
+  }
+
+  async function play(fromStep = 0) {
+    const id = ++runId;
+    const alive = () => id === runId;
+    setInstant(fromStep > 0 || reduce);
+    reset();
+    for (let k = 0; k < steps.length; k++) {
+      if (fromStep === k && !reduce) setInstant(false);
+      if (!instant) setStep(k);
+      await steps[k](alive);
+      if (!alive()) return;
+    }
+    if (fromStep >= steps.length || reduce) { setInstant(false); setFinal(); cursor.classList.add('hidden'); return; }
+    setInstant(false);
+    setFinal();
+    await sleep(4500); if (!alive()) return;
+    if (autoplay) play(0);
+  }
+
+  // ---------- controls ----------
+  stepBtns.forEach((b) => b.addEventListener('click', () => play(Number(b.dataset.step))));
+  $('replay').addEventListener('click', () => play(0));
+  function syncAuto() {
+    autoBtn.setAttribute('aria-pressed', String(autoplay));
+    autoBtn.querySelector('.ctrl-text').textContent = autoplay ? '自动播放中' : '自动播放已停';
+  }
+  autoBtn.addEventListener('click', () => { autoplay = !autoplay; syncAuto(); if (autoplay) play(0); });
+  syncAuto();
+
+  // a complete resting frame (the whole week on one page), then play from the start
+  play(steps.length);
+  if (EMBED) embed(() => play(0), (on) => { autoplay = on; syncAuto(); });
+  else if (!reduce) setTimeout(() => { if (runId === 1) play(0); }, 1400);
+})();
+</script>

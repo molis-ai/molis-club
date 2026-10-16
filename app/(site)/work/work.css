@@ -1,245 +1,1060 @@
-/* Molis Work 页：演示区是木色的桌面与植物绿；标志性交互「把这件工作交给谁」。 */
+/* Molis Work 页：工作室最核心的产品页。演示区是木色的桌面（窗口里是 Molis Work 自己的配色）；
+   页面本身只读官网令牌：近白的纸、细字、1px 线、一种杏橙。两种读者各看各的例子，用外层的 data-persona 换。 */
 
 .m-work {
   --stage: #efe8dc;
+  --leaf: #4f6e48;
+  --leaf-1: rgb(79 110 72 / 0.2);
+  --leaf-2: rgb(79 110 72 / 0.32);
+  --leaf-3: rgb(79 110 72 / 0.46);
 }
-.m-work .m-sig-box {
-  background: #f4efe6;
+/* 只显示这位读者的那一版（没有 JS 时就是「写代码」） */
+.wp[data-persona='doc'] [data-p='dev'],
+.wp:not([data-persona='doc']) [data-p='doc'] {
+  display: none !important;
 }
-.hf-note {
-  margin-top: 12px;
+/* 手机上画面在文字上方：窗口里上下叠两张纸，画面高一些。
+   Reel 把比例写在行内样式里，这里要用 !important 才盖得过 */
+.m-work .m-ch-inline .m-reel-view {
+  --view: 4 / 5.2 !important;
+}
+@media (max-width: 640px) {
+  .m-work .wp-hero-demo .m-reel-view {
+    --view: 4 / 3.9 !important;
+  }
+  /* 窄屏上画面里的字不再跟着宽度缩：底字 11.5px，最小的标注也在 9px 上下 */
+  .m-work .m-sc.wv {
+    font-size: 11.5px;
+  }
 }
 
-/* ---------- 把这件工作交给谁 ---------- */
-.hf {
-  --wood: #f1e9dc;
-  --wood-2: #e6dac7;
-  --leaf: #4f6e48;
-  --leaf-wash: rgb(79 110 72 / 0.13);
+/* ---------- 首屏：左边产品名与一句话，右边一段短循环 ---------- */
+.wp .wp-hero-demo {
+  grid-column: 7 / -1;
+  align-self: center;
+}
+.wp-hero-demo .m-reel {
+  gap: 12px;
+}
+.wp-ask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  font: 400 var(--t-small) / 1.4 var(--sans);
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.wp-switch {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+}
+.wp-switch button {
+  all: unset;
+  padding: 8px 16px;
+  border-radius: var(--r-pill);
+  font: 400 var(--t-ui) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--mute);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.4s var(--ease),
+    color 0.4s var(--ease),
+    box-shadow 0.4s var(--ease);
+}
+.wp-switch button:hover {
+  color: var(--ink);
+}
+.wp-switch button[aria-pressed='true'] {
+  background: var(--white);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 6px 14px -10px rgb(var(--shade) / 0.45);
+}
+.wp-switch button:focus-visible,
+.wp-nav a:focus-visible,
+.wp-idea:focus-visible,
+.ww-tabs button:focus-visible,
+.wp-copy:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 3px;
+}
+.wp-switch[data-compact] button {
+  padding: 5px 12px;
+  font-size: var(--t-small);
+}
+
+/* ---------- 页内顶栏：钉在全站顶栏下面 ---------- */
+/* 跳到页内锚点、键盘移焦点时，让出全站顶栏和页内顶栏两条的高度 */
+html:has(.wp-nav) {
+  scroll-padding-top: calc(var(--header, 64px) + 52px + 16px);
+}
+.wp-nav {
+  position: sticky;
+  top: var(--header);
+  z-index: 30;
+  background: var(--paper);
+  border-block: 1px solid var(--hair);
+}
+.wp-nav-in {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 52px;
+}
+.wp-nav-name {
+  font: 500 var(--t-label) / 1 var(--sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.wp-nav-links {
+  display: flex;
+  flex: 1;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.wp-nav-links::-webkit-scrollbar {
+  display: none;
+}
+.wp-nav-links a {
+  display: block;
+  padding: 6px 10px;
+  font: 400 var(--t-small) / 1.3 var(--sans);
+  letter-spacing: 0.06em;
+  color: var(--mute);
+  white-space: nowrap;
+  transition: color 0.3s var(--ease);
+}
+.wp-nav-links a:hover,
+.wp-nav-links a[aria-current] {
+  color: var(--ink);
+}
+.wp-nav-links a[aria-current] {
+  box-shadow: inset 0 -1px 0 var(--ink);
+}
+
+/* ---------- 产品全景 ---------- */
+.wp-tour .m-head {
+  margin-bottom: clamp(28px, 4vh, 48px);
+}
+
+/* ---------- 三件事：一个字、一句话、一幅小图 ---------- */
+.wp-ideas {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
-  gap: clamp(20px, 3vw, 48px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--col-gap);
+  padding-top: var(--section-top);
+}
+.wp-idea {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 26px 28px 30px;
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
+  transition:
+    box-shadow 0.5s var(--ease),
+    translate 0.6s var(--ease);
+}
+.wp-idea:hover {
+  translate: 0 -2px;
+  box-shadow:
+    0 0 0 1px var(--hair-2),
+    0 22px 40px -30px rgb(var(--shade) / 0.45);
+}
+.wp-idea-mark {
+  font: 300 var(--t-h1) / 1 var(--sans);
+}
+.wp-idea-line {
+  font: 400 var(--t-ui) / 1.6 var(--sans);
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+.wp-idea-art {
+  position: relative;
+  display: block;
+  height: 64px;
+  margin-bottom: 14px;
+}
+.wp-idea-art i {
+  position: absolute;
+  display: block;
+  transition:
+    translate 0.7s var(--ease),
+    opacity 0.6s var(--ease),
+    background-color 0.6s var(--ease),
+    border-color 0.6s var(--ease);
+}
+/* 递：三行字，选中一段，上面浮着一个小动作条 */
+.wp-idea[data-k='give'] i:nth-child(-n + 3) {
+  left: 0;
+  height: 6px;
+  border-radius: var(--r-label);
+  background: var(--faint);
+}
+.wp-idea[data-k='give'] i:nth-child(1) {
+  top: 30px;
+  width: 78%;
+}
+.wp-idea[data-k='give'] i:nth-child(2) {
+  top: 44px;
+  width: 62%;
+  background: linear-gradient(90deg, var(--faint) 0 34%, var(--accent) 34% 80%, var(--faint) 80%);
+}
+.wp-idea[data-k='give'] i:nth-child(3) {
+  top: 58px;
+  width: 70%;
+}
+.wp-idea[data-k='give'] i:nth-child(4) {
+  top: 2px;
+  left: 20%;
+  width: 34%;
+  height: 18px;
+  border-radius: var(--r-pill);
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px var(--hair-2),
+    0 8px 14px -10px rgb(var(--shade) / 0.5);
+}
+.wp-idea[data-k='give']:hover i:nth-child(4) {
+  translate: 0 -3px;
+}
+/* 接：两个 Agent，接着同一页 */
+.wp-idea[data-k='relay'] i:nth-child(1),
+.wp-idea[data-k='relay'] i:nth-child(2) {
+  left: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--hair-2);
+  background: var(--paper-2);
+}
+.wp-idea[data-k='relay'] i:nth-child(1) {
+  top: 4px;
+}
+.wp-idea[data-k='relay'] i:nth-child(2) {
+  top: 38px;
+}
+.wp-idea[data-k='relay'] i:nth-child(3) {
+  top: 2px;
+  left: 46%;
+  width: 44px;
+  height: 58px;
+  border-radius: var(--r-label);
+  border: 1px solid var(--ink);
+  background: linear-gradient(var(--faint), var(--faint)) 8px 14px / 26px 3px no-repeat,
+    linear-gradient(var(--faint), var(--faint)) 8px 22px / 20px 3px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) 8px 30px / 24px 3px no-repeat,
+    var(--white);
+}
+.wp-idea[data-k='relay'] i:nth-child(4) {
+  top: 15px;
+  left: 24px;
+  width: calc(46% - 24px);
+  height: 34px;
+  border-top: 1px solid var(--hair-2);
+  border-bottom: 1px solid var(--hair-2);
+}
+.wp-idea[data-k='relay']:hover i:nth-child(3) {
+  translate: 3px 0;
+}
+/* 长：几块插件，空着的一格长出来 */
+.wp-idea[data-k='grow'] i {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-label);
+  border: 1px solid var(--hair-2);
+  background: var(--white);
+}
+.wp-idea[data-k='grow'] i:nth-child(1) {
+  top: 4px;
+  left: 0;
+}
+.wp-idea[data-k='grow'] i:nth-child(2) {
+  top: 4px;
+  left: 34px;
+}
+.wp-idea[data-k='grow'] i:nth-child(3) {
+  top: 38px;
+  left: 0;
+}
+.wp-idea[data-k='grow'] i:nth-child(4) {
+  top: 38px;
+  left: 34px;
+  border: 1px dashed var(--accent);
+  background: transparent;
+}
+.wp-idea[data-k='grow']:hover i:nth-child(4) {
+  border: 1px solid var(--leaf);
+  background: var(--leaf-1);
+}
+
+/* ---------- 对比：页面上不点竞品名 ---------- */
+.wp-compare {
+  margin-left: calc((100% + var(--col-gap)) / 12 * 2);
+  overflow-x: auto;
+}
+.wp-compare table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font: 400 var(--t-small) / 1.75 var(--sans);
+  letter-spacing: 0.03em;
+}
+.wp-compare th,
+.wp-compare td {
+  padding: 14px 18px 14px 0;
+  border-bottom: 1px solid var(--hair);
+  text-align: left;
+  vertical-align: top;
+}
+.wp-compare thead th {
+  padding-top: 0;
+  border-bottom-color: var(--ink);
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.wp-compare tbody th {
+  width: 24%;
+  font-weight: 400;
+  color: var(--ink);
+}
+.wp-compare tbody th small {
+  display: block;
+  font-size: var(--t-label);
+  color: var(--mute);
+}
+.wp-compare td {
+  color: var(--ink-2);
+}
+.wp-compare .wp-us th,
+.wp-compare .wp-us td {
+  border-bottom: 0;
+  background: var(--accent-wash);
+  color: var(--ink);
+}
+.wp-compare .wp-us th {
+  padding-left: 14px;
+  border-radius: var(--r-inset) 0 0 var(--r-inset);
+}
+.wp-compare .wp-us td:last-child {
+  border-radius: 0 var(--r-inset) var(--r-inset) 0;
+}
+.wp-gap {
+  margin-top: 18px;
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+
+/* ---------- 现状：已发布 / 开发中 / 现在怎么开始 ---------- */
+.wp-now {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 32px;
   align-items: start;
 }
-.hf svg {
-  width: 16px;
-  height: 16px;
-  flex: none;
-  stroke-width: 1.6;
-}
-.hf-home {
+.wp-now-col {
   display: grid;
-  gap: 14px;
-  align-content: start;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair-2);
 }
-.hf-zone {
-  display: flex;
+.wp-now-col:nth-child(1) {
+  grid-column: 3 / span 5;
+}
+.wp-now-col:nth-child(2) {
+  grid-column: 8 / span 5;
+}
+.wp-now-label {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   font: 500 var(--t-label) / 1.4 var(--sans);
   letter-spacing: 0.16em;
   color: var(--mute);
 }
-.hf-slot {
-  min-height: 210px;
-  border: 1px dashed rgb(27 26 24 / 0.22);
-  border-radius: var(--r-panel);
+.wp-now-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.2px var(--accent);
 }
-.hf-card-wrap {
-  position: relative;
-  z-index: 2;
-  cursor: grab;
-  touch-action: pan-y;
-  user-select: none;
+.wp-now-label[data-tone='rel']::before {
+  background: var(--accent);
+  box-shadow: none;
 }
-.hf-card-wrap[data-dragging] {
-  cursor: grabbing;
-  z-index: 10;
-}
-.hf-card {
+.wp-now-col ul {
   display: grid;
-  gap: 12px;
-  padding: 18px 20px 20px;
-  border-radius: var(--r-panel);
+  gap: 6px;
+  color: var(--ink-2);
+}
+.wp-now-note {
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+.wp-now-start {
+  grid-column: 3 / -1;
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+  padding: 22px 24px 24px;
+  border-radius: var(--r-card);
   background: var(--white);
-  box-shadow:
-    0 0 0 1px rgb(27 26 24 / 0.07),
-    0 18px 36px -26px rgb(var(--shade) / 0.5);
+  box-shadow: 0 0 0 1px var(--hair);
 }
-.hf-card-name {
-  display: grid;
-  gap: 2px;
+.wp-now-start h3 {
+  font: 300 var(--t-h3) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
 }
-.hf-card-name b {
-  font: 400 18px/1.4 var(--sans);
+.wp-now-start > p {
+  color: var(--ink-2);
 }
-.hf-card-name span {
-  font-size: 13px;
-  color: var(--mute);
-}
-.hf-card-label {
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.14em;
-  color: var(--mute);
-}
-.hf-card ul {
+.wp-now-start ol {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px var(--col-gap);
+  counter-reset: step;
+}
+.wp-now-start li:first-child {
+  grid-column: 1 / -1;
+}
+.wp-now-start li {
+  display: grid;
+  align-content: start;
   gap: 6px;
-}
-.hf-card li {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  column-gap: 8px;
-  align-items: center;
-  padding: 8px 10px;
-  border-radius: 9px;
-  background: var(--wood);
-  font-size: 13px;
-  color: var(--ink);
-}
-.hf-card li small {
-  grid-column: 2;
-  font-size: 12px;
-  color: var(--ink-2);
-}
-/* 交出去时，附件依次跟上 */
-.hf-card:not([data-holder='start']) li {
-  animation: hf-follow 0.7s var(--ease) both;
-  animation-delay: calc(0.18s + var(--i) * 90ms);
-}
-@keyframes hf-follow {
-  from {
-    opacity: 0;
-    transform: translateX(-14px);
-  }
-}
-.hf-back {
-  display: grid;
-  gap: 8px;
-  justify-items: start;
-  min-height: 3.2em;
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--ink-2);
-}
-.hf-back b {
-  font-weight: 500;
-  color: var(--ink);
-}
-.hf-home .hf-card-wrap {
-  animation: none;
-}
-.hf-lanes {
-  display: grid;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  border: 0;
   min-width: 0;
+  counter-increment: step;
 }
-.hf-lane {
-  border-radius: var(--r-panel);
-  background: rgb(255 255 255 / 0.62);
-  box-shadow: inset 0 0 0 1px var(--hair);
-  transition:
-    background-color 0.4s var(--ease),
-    box-shadow 0.4s var(--ease);
+.wp-now-start li b {
+  font-weight: 400;
+  color: var(--ink);
 }
-.hf-lane[data-here] {
+.wp-now-start li b::before {
+  content: counter(step, decimal-leading-zero);
+  margin-right: 10px;
+  font: italic 300 var(--t-body) / 1 var(--latin);
+  color: var(--accent-ink);
+}
+.wp-now-start li > span {
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+.wp-code {
+  position: relative;
+  min-width: 0;
+  border-radius: var(--r-inset);
+  background: var(--paper-2);
+}
+.wp-code pre {
+  margin: 0;
+  padding: 36px 14px 14px;
+  overflow-x: auto;
+  font: 400 var(--t-small) / 1.75 ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+  white-space: pre;
+}
+.wp-say p {
+  padding: 12px 70px 12px 14px;
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+.wp-copy {
+  all: unset;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
   background: var(--white);
   box-shadow: inset 0 0 0 1px var(--hair-2);
-}
-.hf-pick {
-  all: unset;
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  min-height: 56px;
-  padding: 10px 16px;
-  border-radius: var(--r-panel);
+  font: 500 var(--t-label) / 1.5 var(--sans);
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
   cursor: pointer;
 }
-.hf-pick span:nth-child(2) {
+.wp-copy:hover {
+  color: var(--ink);
+}
+.wp-bounds {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px var(--col-gap);
+  max-width: 64rem;
+  margin: 56px 0 0 calc((100% + var(--col-gap)) / 12 * 2);
+}
+.wp-bounds li {
+  position: relative;
+  padding-left: 18px;
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+.wp-bounds li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.95em;
+  width: 8px;
+  height: 1px;
+  background: var(--hair-2);
+}
+
+/* ---------- 最后：事情都顺了，那人做什么？ ---------- */
+.wd {
+  display: grid;
+  gap: 10px;
+  margin-left: calc((100% + var(--col-gap)) / 12 * 2);
+}
+.wd-when {
+  display: flex;
+  gap: 20px;
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+}
+.wd-when span {
+  color: var(--mute);
+  opacity: 0.45;
+  transition: opacity 0.6s var(--ease);
+}
+.wd-when span[data-on] {
+  opacity: 1;
+  color: var(--ink);
+}
+.wd-bar {
+  position: relative;
+  height: 64px;
+  border-radius: var(--r-inset);
+  background: var(--paper-2);
+  overflow: hidden;
+}
+.wd-blk {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--a) * 100%);
+  width: calc(var(--b) * 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 400 var(--t-small) / 1.2 var(--sans);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition:
+    left 1.3s var(--ease),
+    width 1.3s var(--ease),
+    top 1.3s var(--ease),
+    height 1.3s var(--ease),
+    opacity 0.8s var(--ease);
+}
+.wd-blk::before {
+  content: '';
+  position: absolute;
+  inset: 6px 3px;
+  border-radius: var(--r-label);
+}
+.wd-blk > span {
+  position: relative;
+  overflow: hidden;
+  padding: 0 8px;
+  text-overflow: ellipsis;
+  transition: opacity 0.5s var(--ease);
+}
+.wd-chore {
+  color: var(--ink-2);
+}
+.wd-chore::before {
+  background: var(--faint);
+}
+.wd-work {
+  color: var(--mute);
+}
+.wd-work::before {
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+}
+.wd-use {
+  color: var(--ink);
+}
+.wd-u0::before {
+  background: var(--leaf-1);
+}
+.wd-u1::before {
+  background: var(--leaf-2);
+}
+.wd-u2::before {
+  background: var(--leaf-3);
+}
+.wd-blk[data-thin] > span,
+.wd-blk[data-gone] {
+  opacity: 0;
+}
+.wd-hours {
+  display: flex;
+  justify-content: space-between;
+  font: italic 300 var(--t-small) / 1 var(--latin);
+  color: var(--mute);
+}
+.wp-uses {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--col-gap);
+  margin: 56px 0 0 calc((100% + var(--col-gap)) / 12 * 2);
+}
+.wp-use {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair-2);
+}
+.wp-use h3 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 300 var(--t-h3) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.wp-use h3::before {
+  content: '';
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-label);
+  background: var(--leaf-1);
+}
+.wp-use[data-k='u1'] h3::before {
+  background: var(--leaf-2);
+}
+.wp-use[data-k='u2'] h3::before {
+  background: var(--leaf-3);
+}
+.wp-use .wp-use-eg {
+  padding-left: 22px;
+  color: var(--ink-2);
+}
+.wp-vision {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 32px;
+  margin-top: var(--section-top);
+}
+.wp-vision-window {
+  grid-column: 1 / -1;
+}
+.wp-vision-text {
+  grid-column: 3 / span 8;
+  display: grid;
+  gap: 16px;
+}
+.wp-vision-big {
+  font: 300 var(--t-h1) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+}
+.wp-sign {
+  font: 300 var(--t-lead) / 1.6 var(--sans);
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+}
+.wp-close {
+  display: grid;
+  gap: 22px;
+  margin: var(--section-top) 0 var(--section-bottom);
+  padding: 24px 0 0 calc((100% + var(--col-gap)) / 12 * 2);
+  border-top: 1px solid var(--ink);
+}
+.wp-close-line {
+  font: 300 var(--t-h2) / 1.45 var(--sans);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- 想怎么干：插件排开，再拼成一种干法 ---------- */
+.ww {
+  display: grid;
+  gap: 16px;
+}
+.ww-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 20px;
+}
+.ww-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+}
+.ww-tabs button {
+  all: unset;
+  padding: 8px 12px 10px;
+  font: 400 var(--t-ui) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--mute);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 0.4s var(--ease),
+    box-shadow 0.4s var(--ease);
+}
+.ww-tabs button:hover,
+.ww-tabs button[aria-pressed='true'] {
+  color: var(--ink);
+}
+.ww-tabs button[aria-pressed='true'] {
+  box-shadow: inset 0 -1px 0 var(--ink);
+}
+.ww-stage {
+  --t: 52px;
+  position: relative;
+  height: 460px;
+  overflow: hidden;
+  border-radius: var(--r-panel);
+  background: var(--stage);
+}
+.ww-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.ww-lines path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  opacity: 0.45;
+}
+.ww-lines .ww-rail {
+  stroke-dasharray: 2 7;
+  opacity: 0.2;
+}
+.ww-tile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--t);
+  height: var(--t);
+  transition:
+    transform 0.95s var(--ease),
+    opacity 0.6s var(--ease);
+}
+/* 没有 JS：插件整整齐齐排开，干法的切换藏起来 */
+html:not(.js) .ww-bar,
+html:not(.js) .ww-lines {
+  display: none;
+}
+html:not(.js) .ww-stage {
+  display: flex;
+  flex-wrap: wrap;
+  place-content: center;
+  gap: 46px 30px;
+  height: auto;
+  padding: 48px 24px 64px;
+}
+html:not(.js) .ww-tile {
+  position: relative;
+}
+.ww-stage[data-jump] .ww-tile,
+.ww-stage[data-jump] .ww-chip,
+.ww-stage[data-jump] .ww-ico {
+  transition: none;
+}
+.ww-ico {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-inset);
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 10px 20px -16px rgb(var(--shade) / 0.5);
+  color: var(--ink-2);
+  transition:
+    background-color 0.5s var(--ease),
+    color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+.ww-ico svg {
+  width: 44%;
+  height: 44%;
+  stroke-width: 1.6;
+}
+.ww-name {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  translate: -50% 0;
+  font: 400 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  white-space: nowrap;
+  transition: opacity 0.3s var(--ease);
+}
+.ww-tile[data-mini] .ww-name {
+  opacity: 0;
+}
+.ww-tile[data-dim] {
+  opacity: 0.55;
+}
+.ww-tile[data-lit] .ww-ico {
+  background: var(--leaf-1);
+  color: var(--leaf);
+  box-shadow: 0 0 0 1px rgb(79 110 72 / 0.35);
+}
+.ww-tile[data-yours] .ww-ico {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--accent-ink);
+}
+.ww-tile[data-yours] .ww-ico::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-inset);
+  border: 1px dashed var(--paper);
+}
+.ww-made {
+  display: none;
+}
+.ww-tile[data-made] .ww-made {
+  display: inline;
+}
+.ww-tile[data-made] .ww-ico svg.ww-made {
+  display: block;
+}
+.ww-tile[data-made] .ww-plus {
+  display: none;
+}
+.ww-tile[data-made][data-lit] .ww-ico {
+  background: var(--leaf-1);
+  box-shadow: 0 0 0 1px rgb(79 110 72 / 0.35);
+  color: var(--leaf);
+}
+.ww-chip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  max-width: 160px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
+  font: 400 var(--t-label) / 1.5 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  text-align: center;
+  opacity: 0;
+  translate: -50% 6px;
+  transition:
+    opacity 0.45s var(--ease),
+    translate 0.6s var(--ease);
+}
+.ww-chip[data-on] {
+  opacity: 1;
+  translate: -50% 0;
+}
+.ww-chip[data-last] {
+  color: var(--ink);
+  box-shadow: 0 0 0 1px var(--ink);
+}
+.ww-token {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px var(--hair-2),
+    0 10px 20px -14px rgb(var(--shade) / 0.5);
+  font: 400 var(--t-small) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+.ww-token::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.ww-token[data-on] {
+  opacity: 1;
+}
+.ww-cap {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 2px 12px;
+  gap: 6px 14px;
+  min-height: 2em;
 }
-.hf-pick b {
-  font: 400 16px/1.4 var(--sans);
+.ww-cap .m-note + .m-note {
+  margin-left: -8px;
 }
-.hf-pick small {
-  font-size: 12.5px;
-  color: var(--mute);
+.ww-cap b {
+  font: 300 var(--t-h3) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
 }
-.hf-pick-go {
-  font-size: 13px;
-  color: var(--mute);
-  opacity: 0;
-  transform: translateX(-4px);
-  transition:
-    opacity 0.3s,
-    transform 0.4s var(--ease);
-}
-.hf-pick:hover .hf-pick-go,
-.hf-pick:focus-visible .hf-pick-go {
-  opacity: 1;
-  transform: none;
-}
-.hf-pick[aria-pressed='true'] .hf-pick-go {
-  opacity: 0;
-}
-.hf-pick:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 2px;
-}
-.hf-lane-body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
-  gap: 16px;
-  align-items: center;
-  padding: 0 16px 16px;
-}
-.hf-resume {
-  display: grid;
-  gap: 4px;
-  padding-left: 14px;
-  border-left: 2px solid var(--leaf);
-  font-size: 14px;
-  line-height: 1.7;
+.ww-cap > span:last-child {
+  font-size: var(--t-small);
   color: var(--ink-2);
-  animation: m-page-in 0.6s var(--ease) 0.5s both;
 }
-.hf-resume span {
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.14em;
-  color: var(--leaf);
-}
-.hf-reset {
-  grid-column: 1 / -1;
-  justify-self: start;
-}
+
+/* ---------- 窄屏 ---------- */
 @media (max-width: 900px) {
-  .hf {
+  .wp .wp-hero-demo {
+    grid-column: 1 / -1;
+  }
+  .wp-ideas,
+  .wp-uses {
     grid-template-columns: minmax(0, 1fr);
   }
-  .hf-lane-body {
+  .wp-compare,
+  .wd,
+  .wp-uses,
+  .wp-bounds,
+  .wp-close {
+    margin-left: 0;
+    padding-left: 0;
+  }
+  .wp-now-col:nth-child(1),
+  .wp-now-col:nth-child(2),
+  .wp-now-start {
+    grid-column: 1 / -1;
+  }
+  .wp-now-start ol {
     grid-template-columns: minmax(0, 1fr);
   }
-  .hf-slot {
-    min-height: 72px;
+  .wp-vision-text {
+    grid-column: 1 / -1;
   }
-  .hf-card-wrap {
-    touch-action: auto;
+  .wp-bounds {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  /* 手机上顶栏只留产品名和切换：去处靠往下滑 */
+  .wp-nav-links {
+    display: none;
+  }
+  .wp-nav-in {
+    justify-content: space-between;
+    gap: 8px;
+  }
+  /* 对比表竖着读：一种做法一张，每格前面标上是哪一列 */
+  .wp-compare {
+    overflow: visible;
+  }
+  .wp-compare table,
+  .wp-compare tbody,
+  .wp-compare tr,
+  .wp-compare th,
+  .wp-compare td {
+    display: block;
+    min-width: 0;
+  }
+  .wp-compare thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .wp-compare tbody tr {
+    display: grid;
+    gap: 6px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--hair);
+  }
+  .wp-compare tbody tr:first-child {
+    border-top: 1px solid var(--ink);
+  }
+  .wp-compare tbody th,
+  .wp-compare tbody td {
+    width: auto;
+    padding: 0;
+    border: 0;
+  }
+  .wp-compare tbody th {
+    margin-bottom: 2px;
+  }
+  .wp-compare td {
+    display: grid;
+    grid-template-columns: 5.5em minmax(0, 1fr);
+    gap: 12px;
+  }
+  .wp-compare td::before {
+    content: attr(data-h);
+    color: var(--mute);
+  }
+  .wp-compare tbody .wp-us {
+    margin-top: 12px;
+    padding: 16px 14px;
+    border: 0;
+    border-radius: var(--r-inset);
+    background: var(--accent-wash);
+  }
+  .wp-compare .wp-us th,
+  .wp-compare .wp-us td {
+    padding: 0;
+    border-radius: 0;
+    background: none;
+  }
+  .wp-idea {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 6px 18px;
+    padding: 20px 22px;
+  }
+  .wp-idea-art {
+    grid-row: span 2;
+    width: 90px;
+    margin: 0;
+  }
+  /* 一天竖着放：从上到下是 9 点到 18 点 */
+  .wd-bar {
+    height: 360px;
+  }
+  .wd-blk {
+    top: calc(var(--a) * 100%);
+    bottom: auto;
+    left: 0;
+    width: 100%;
+    height: calc(var(--b) * 100%);
+  }
+  .wd-blk::before {
+    inset: 2px 6px;
+  }
+  .wd-hours {
+    display: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hf-card li,
-  .hf-resume {
-    animation: none !important;
+  .wd-blk,
+  .wd-blk > span,
+  .ww-tile,
+  .ww-chip,
+  .wp-idea,
+  .wp-idea-art i {
+    transition: none !important;
   }
 }

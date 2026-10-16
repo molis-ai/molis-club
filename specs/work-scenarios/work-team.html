@@ -1,0 +1,466 @@
+<title>Molis Work 团队协作小样</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Newsreader:ital,opsz,wght@1,6..72,400&family=Noto+Serif+SC:wght@500;700&display=swap">
+<style>
+/* Layout: three paper sheets on one stage (table, thread, todos); a step rail above, a caption below. Things fly between sheets as the work moves on. */
+:root {
+  --paper: #f5f0e6;
+  --sheet: #fffcf6;
+  --ink: #121826;
+  --text: #33312c;
+  --muted: #6f695f;
+  --faint: #a39d92;
+  --line: rgb(18 24 38 / 0.12);
+  --red: #ee4e2b;
+  --red-soft: #fbe0d8;
+  --sage: #8fb69b;
+  --sage-soft: #e3eee5;
+  --yellow: #f6c445;
+  --pink: #f4b4c0;
+  --peri: #b9c6f5;
+  --serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --display: 'Newsreader', Georgia, serif;
+  --sans: 'Geist', 'PingFang SC', 'Hiragino Sans GB', system-ui, sans-serif;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --shadow: 0 18px 34px -24px rgb(40 24 10 / 0.55), 0 1px 0 rgb(18 24 38 / 0.05);
+  color-scheme: light;
+}
+body { background: var(--paper); color: var(--text); font-family: var(--sans); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: clamp(16px, 3.2vw, 48px); padding-block: clamp(28px, 5vw, 64px) 48px; display: grid; gap: 22px; }
+.eyebrow { margin: 0; font-size: 12px; letter-spacing: 0.08em; color: var(--muted); }
+.eyebrow b { color: var(--red); font-weight: 500; }
+h1 { margin: 6px 0 0; font-family: var(--serif); font-weight: 700; color: var(--ink); font-size: clamp(30px, 4.6vw, 54px); line-height: 1.15; letter-spacing: -0.01em; text-wrap: balance; }
+.lead { margin: 10px 0 0; max-width: 40em; font-size: clamp(15px, 1.5vw, 17px); line-height: 1.8; }
+.lead em { font-family: var(--display); font-style: italic; color: var(--ink); }
+
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.steps { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.steps button { display: inline-flex; align-items: center; gap: 8px; font: 500 14px/1 var(--sans); color: var(--muted); background: transparent; border: 0; border-radius: 999px; padding: 9px 13px 9px 9px; cursor: pointer; transition: background 160ms var(--ease), color 160ms var(--ease); }
+.steps button:hover { background: rgb(18 24 38 / 0.06); }
+.steps .n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 11px; background: rgb(18 24 38 / 0.07); color: var(--muted); transition: background 200ms var(--ease), color 200ms var(--ease); }
+.steps button.done { color: var(--text); }
+.steps button.done .n { background: var(--sage); color: var(--sheet); }
+.steps button[aria-current="step"] { color: var(--ink); background: rgb(18 24 38 / 0.06); }
+.steps button[aria-current="step"] .n { background: var(--red); color: var(--sheet); }
+.tools { display: flex; gap: 4px; }
+.ctrl { display: inline-flex; align-items: center; gap: 8px; font: 500 14px/1 var(--sans); color: var(--muted); background: transparent; border: 0; border-radius: 999px; padding: 10px 14px; cursor: pointer; }
+.ctrl:hover { background: rgb(18 24 38 / 0.06); }
+.ctrl .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
+.ctrl[aria-pressed="false"] .dot { background: transparent; box-shadow: inset 0 0 0 1.5px var(--muted); }
+button:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+
+.stage { position: relative; display: grid; grid-template-columns: 1fr 1.3fr 0.95fr; gap: 16px; padding: 18px; height: 620px; border-radius: 22px; background: #efe8db; box-shadow: inset 0 0 0 1px rgb(18 24 38 / 0.04); }
+.sheet { position: relative; min-width: 0; display: flex; flex-direction: column; background: var(--sheet); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
+.sheet-head { display: flex; align-items: center; gap: 9px; padding: 14px 16px 12px; border-bottom: 1px solid var(--line); }
+.sheet-head svg { width: 17px; height: 17px; color: var(--ink); flex: none; }
+.sheet-head strong { font-size: 14px; font-weight: 600; color: var(--ink); }
+.sheet-head small { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sheet-body { position: relative; flex: 1; min-height: 0; padding: 14px 16px 16px; }
+svg.i { width: 15px; height: 15px; flex: none; }
+
+/* table */
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+th { text-align: left; font-weight: 500; font-size: 11.5px; color: var(--muted); padding: 0 6px 8px; }
+td { padding: 9px 6px; border-top: 1px solid var(--line); white-space: nowrap; transition: background 360ms var(--ease), color 360ms var(--ease); }
+td:not(:first-child), th:not(:first-child) { text-align: right; }
+tr.hot td { background: var(--red-soft); color: var(--ink); }
+tr.hot td:last-child { color: #b23417; font-weight: 600; }
+.down { display: inline-flex; align-items: center; gap: 3px; }
+.down svg { width: 13px; height: 13px; }
+.reader { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 10px; padding: 5px 10px 5px 8px; border-radius: 999px; background: var(--red-soft); color: #9c2f14; font-size: 12px; opacity: 0; transform: translateY(4px); transition: opacity 300ms var(--ease), transform 300ms var(--ease); }
+.reader.on { opacity: 1; transform: none; }
+.scan { position: absolute; left: 10px; right: 10px; height: 34px; border-radius: 8px; background: linear-gradient(90deg, transparent, rgb(238 78 43 / 0.14), transparent); opacity: 0; pointer-events: none; }
+.scan.on { opacity: 1; animation: scan 1500ms var(--ease) forwards; }
+@keyframes scan { 0% { transform: translateY(0); opacity: 1; } 85% { opacity: 1; } 100% { transform: translateY(var(--scan-to, 160px)); opacity: 0; } }
+
+.analysis { margin-top: 14px; padding: 13px 14px; border-radius: 12px; background: var(--paper); font-size: 13px; line-height: 1.65; opacity: 0; transform: translateY(8px); transition: opacity 420ms var(--ease), transform 420ms var(--ease); }
+.analysis.on { opacity: 1; transform: none; }
+.analysis h3 { margin: 0 0 4px; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--ink); }
+.analysis h3 svg { color: var(--red); }
+.analysis p { margin: 0; }
+.analysis ol { margin: 6px 0 0; padding-left: 1.3em; }
+.analysis .src { margin-top: 8px; font-size: 11.5px; color: var(--muted); }
+
+/* thread */
+.thread .sheet-body { display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; overflow: hidden; padding-top: 0; }
+.thread .sheet-body::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 40px; background: linear-gradient(var(--sheet), transparent); z-index: 1; pointer-events: none; }
+.people { margin-left: auto; display: flex; }
+.people span { width: 22px; height: 22px; margin-left: -6px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; font-weight: 600; color: var(--ink); box-shadow: 0 0 0 2px var(--sheet); opacity: 0; transform: scale(0.6); transition: opacity 260ms var(--ease), transform 360ms cubic-bezier(0.34, 1.4, 0.5, 1); }
+.people span.on { opacity: 1; transform: none; }
+.people svg { width: 12px; height: 12px; color: var(--sheet); }
+.msg { display: grid; grid-template-columns: 28px 1fr; gap: 9px; align-items: start; font-size: 13px; line-height: 1.6; animation: rise 420ms var(--ease); }
+.msg.pending { visibility: hidden; animation: none; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.av { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 11.5px; font-weight: 600; color: var(--ink); }
+.av svg { width: 15px; height: 15px; color: var(--sheet); }
+.who { display: flex; align-items: baseline; gap: 6px; font-size: 12px; color: var(--muted); }
+.who b { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+.who .tag { font-size: 11px; color: #9c2f14; }
+.bubble { margin-top: 2px; color: var(--text); }
+.at { color: var(--red); font-weight: 500; border-radius: 4px; padding: 0 2px; transition: background 300ms var(--ease); }
+.at.ping { background: var(--red-soft); }
+.post { margin-top: 6px; padding: 10px 12px; border-radius: 10px; background: var(--paper); font-size: 12.5px; line-height: 1.6; }
+.post b { color: var(--ink); }
+.post ol { margin: 4px 0 0; padding-left: 1.3em; }
+.memory { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; padding: 4px 9px; border-radius: 999px; background: #f1ecff; color: #463a8a; font-size: 11.5px; }
+.memory svg { width: 13px; height: 13px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chip { padding: 5px 9px; border-radius: 8px; background: var(--paper); font-size: 12px; color: var(--ink); }
+.act { margin-top: 6px; border-radius: 12px; background: var(--paper); overflow: hidden; }
+.act-row { display: grid; grid-template-columns: 26px 1fr auto; gap: 8px; align-items: center; padding: 9px 12px; font-size: 12.5px; border-bottom: 1px solid var(--line); }
+.act-row .tool { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: var(--sheet); color: var(--ink); }
+.act-row .tool svg { width: 14px; height: 14px; }
+.act-row small { display: block; font-size: 11px; color: var(--muted); }
+.act-row .st { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+.act-row.ok .st { color: #2f6b45; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+.act-row.ok .st svg { width: 13px; height: 13px; }
+.act-foot { display: flex; align-items: center; gap: 8px; padding: 9px 12px; font-size: 12px; color: var(--muted); }
+.btn { font: 500 12.5px/1 var(--sans); border: 0; border-radius: 8px; padding: 8px 12px; background: var(--ink); color: var(--sheet); transition: transform 130ms var(--ease), background 200ms var(--ease); }
+.btn.ghost { background: transparent; color: var(--muted); }
+.btn.press { transform: scale(0.95); }
+.btn.gone { display: none; }
+.undo { display: none; align-items: center; gap: 5px; }
+.undo svg { width: 13px; height: 13px; }
+.act.done .undo { display: inline-flex; }
+
+/* todos */
+.todo .sheet-body { display: flex; flex-direction: column; gap: 10px; }
+.empty { font-size: 12.5px; color: var(--faint); transition: opacity 300ms var(--ease); }
+.item { display: grid; grid-template-columns: 18px 1fr; gap: 10px; padding: 11px 12px; border-radius: 12px; background: var(--paper); font-size: 13px; line-height: 1.5; transition: background 400ms var(--ease); }
+.item.pending { visibility: hidden; }
+.item .box { width: 16px; height: 16px; margin-top: 2px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--faint); display: grid; place-items: center; transition: background 300ms var(--ease), box-shadow 300ms var(--ease); }
+.item .box svg { width: 11px; height: 11px; color: var(--sheet); opacity: 0; }
+.item b { display: block; font-weight: 500; color: var(--ink); }
+.item .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 4px; font-size: 11.5px; color: var(--muted); }
+.item .meta .av { width: 18px; height: 18px; font-size: 9.5px; }
+.item .state { display: none; padding: 2px 7px; border-radius: 999px; background: var(--sage-soft); color: #2f6b45; font-size: 11px; font-weight: 500; }
+.item.moving .state { display: inline-block; }
+.item.moving .box { background: var(--sage); box-shadow: none; }
+.item.moving .box svg { opacity: 1; }
+.src-line { margin-top: 2px; font-size: 11px; color: var(--faint); }
+
+.ghost { position: absolute; z-index: 20; transform-origin: 0 0; pointer-events: none; box-shadow: 0 20px 34px -18px rgb(40 24 10 / 0.6); }
+
+.caption { display: grid; gap: 6px; min-height: 96px; }
+.cap-kicker { margin: 0; font-size: 12px; letter-spacing: 0.08em; color: var(--red); }
+.cap-main { margin: 0; font-family: var(--serif); font-weight: 700; font-size: clamp(22px, 2.6vw, 30px); color: var(--ink); }
+.cap-sub { margin: 0; max-width: 46em; font-size: 15px; line-height: 1.8; }
+.note { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.7; border-top: 1px solid var(--line); padding-top: 14px; }
+
+@media (max-width: 900px) {
+  .stage { grid-template-columns: 1fr; height: auto; padding: 12px; gap: 12px; }
+  .thread { height: 460px; }
+  .todo .sheet-body { min-height: 160px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow"><b>Molis Work</b> · 产品页 · 团队协作 · 动画小样</p>
+    <h1>从一张表，到大家一起动手。</h1>
+    <p class="lead">数据分析、群里讨论、落成待办、直接执行，在一个地方接上。每个项目都有一个带着项目记忆的助理，在群里帮你们组织讨论、回答问题、给出建议，能做的也直接动手。<em>From numbers to moves.</em></p>
+  </header>
+
+  <div class="bar">
+    <ol class="steps" aria-label="这件事的五步">
+      <li><button data-step="0"><span class="n">1</span>读数据</button></li>
+      <li><button data-step="1"><span class="n">2</span>发到群里</button></li>
+      <li><button data-step="2"><span class="n">3</span>一起讨论</button></li>
+      <li><button data-step="3"><span class="n">4</span>形成待办</button></li>
+      <li><button data-step="4"><span class="n">5</span>直接执行</button></li>
+    </ol>
+    <div class="tools">
+      <button id="replay" class="ctrl">从头看</button>
+      <button id="autoplay" class="ctrl" aria-pressed="true"><span class="dot" aria-hidden="true"></span><span class="ctrl-text">自动播放中</span></button>
+    </div>
+  </div>
+
+  <section class="stage" id="stage" aria-label="团队协作示意：数据表、项目群里的 Thread 和待办">
+    <article class="sheet data">
+      <header class="sheet-head"><span data-icon="database"></span><strong>Dataset</strong><small>10 月门店经营 · 第 3 版</small></header>
+      <div class="sheet-body" id="data-body">
+        <div class="reader" id="reader"><span data-icon="sparkles"></span>项目助理在读这张表</div>
+        <div class="scan" id="scan"></div>
+        <table>
+          <thead><tr><th>门店</th><th>销售额</th><th>环比</th><th>复购率</th></tr></thead>
+          <tbody id="rows">
+            <tr><td>华东 1 店</td><td>86.2 万</td><td>+4%</td><td>34%</td></tr>
+            <tr data-hot><td>华东 2 店</td><td>71.5 万</td><td>-2%</td><td><span class="down"><span data-icon="trending-down"></span>27%</span></td></tr>
+            <tr data-hot><td>华东 3 店</td><td>64.8 万</td><td>-7%</td><td><span class="down"><span data-icon="trending-down"></span>21%</span></td></tr>
+            <tr><td>华南 1 店</td><td>92.1 万</td><td>+6%</td><td>36%</td></tr>
+            <tr><td>华北 2 店</td><td>58.3 万</td><td>+1%</td><td>31%</td></tr>
+          </tbody>
+        </table>
+        <div class="analysis" id="analysis">
+          <h3><span data-icon="sparkles"></span>分析结论</h3>
+          <p>复购下滑集中在华东 2、3 店，和晚班缺人、B 供应商到货延迟的时间对得上。</p>
+          <ol><li>周六会员日加推复购券</li><li>调整晚间排班</li><li>和 B 供应商复核到货</li></ol>
+          <p class="src">依据：Dataset · 10 月门店经营 第 3 版</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="sheet thread">
+      <header class="sheet-head"><span data-icon="messages-square"></span><strong>讨论</strong><small># 10 月复购下滑</small>
+        <span class="people" id="people">
+          <span style="background: var(--ink); color: var(--sheet)">你</span>
+          <span style="background: var(--sage)">林</span>
+          <span style="background: var(--yellow)">杰</span>
+          <span style="background: var(--pink)">M</span>
+          <span style="background: var(--red)" data-icon="sparkles"></span>
+        </span>
+      </header>
+      <div class="sheet-body" id="thread"></div>
+    </article>
+
+    <article class="sheet todo">
+      <header class="sheet-head"><span data-icon="list-checks"></span><strong>待办</strong><small>本项目 · 本周</small></header>
+      <div class="sheet-body" id="todos">
+        <p class="empty" id="empty">还没有待办</p>
+      </div>
+    </article>
+  </section>
+
+  <div class="caption" aria-live="polite">
+    <p class="cap-kicker" id="cap-kicker"></p>
+    <p class="cap-main" id="cap-main"></p>
+    <p class="cap-sub" id="cap-sub"></p>
+  </div>
+
+  <p class="note">动画小样，示例数据。项目群和 Thread 已经有，需要自己部署本地讨论服务；@ 提醒、项目助理进群发言还在规划。助理经 MCP 和配好的工具能力执行，这里的会员系统是示意。</p>
+</main>
+
+<script>
+(() => {
+  // Icon geometry from Lucide 0.454.0 (ISC), the set Molis Work uses.
+  const ICONS = {"database":"<ellipse cx='12' cy='5' rx='9' ry='3'/><path d='M3 5V19A9 3 0 0 0 21 19V5'/><path d='M3 12A9 3 0 0 0 21 12'/>","messages-square":"<path d='M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z'/><path d='M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1'/>","list-checks":"<path d='m3 17 2 2 4-4'/><path d='m3 7 2 2 4-4'/><path d='M13 6h8'/><path d='M13 12h8'/><path d='M13 18h8'/>","sparkles":"<path d='M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z'/><path d='M20 3v4'/><path d='M22 5h-4'/><path d='M4 17v2'/><path d='M5 18H3'/>","check":"<path d='M20 6 9 17l-5-5'/>","mail":"<rect width='20' height='16' x='2' y='4' rx='2'/><path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'/>","ticket-percent":"<path d='M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z'/><path d='M9 9h.01'/><path d='m15 9-6 6'/><path d='M15 15h.01'/>","history":"<path d='M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8'/><path d='M3 3v5h5'/><path d='M12 7v5l4 2'/>","at-sign":"<circle cx='12' cy='12' r='4'/><path d='M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8'/>","trending-down":"<polyline points='22 17 13.5 8.5 8.5 13.5 2 7'/><polyline points='16 17 22 17 22 11'/>","users":"<path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M22 21v-2a4 4 0 0 0-3-3.87'/><path d='M16 3.13a4 4 0 0 1 0 7.75'/>","undo-2":"<path d='M9 14 4 9l5-5'/><path d='M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11'/>"};
+  const svg = (name, cls = 'i') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
+  document.querySelectorAll('[data-icon]').forEach((el) => { el.insertAdjacentHTML('afterbegin', svg(el.dataset.icon)); });
+
+  const STEPS = [
+    { main: '读数据', sub: '项目助理读了这张表：复购下滑集中在华东 2、3 店。它给出结论和三条建议，写明依据是这张表的第 3 版。' },
+    { main: '发到群里', sub: '结论发到项目群里的一个 Thread，@ 运营、门店和采购三位，大家一点进来就看得到前因后果。' },
+    { main: '一起讨论', sub: '大家在 Thread 里接着说。助理带着项目记忆：7 月华南有过一次类似的下滑，它把当时的做法拿出来，也回答了晚班缺人怎么办。' },
+    { main: '形成待办', sub: '讨论落成三条待办：谁来做、什么时候做，都写清楚，还连着这次讨论。' },
+    { main: '直接执行', sub: '能马上做的，助理经 MCP 和配好的连接直接做了：建好周六的复购券，发出给供应商的复核邮件。两件都能撤销。' },
+  ];
+  const PEOPLE = {
+    me: { name: '你', role: '', color: 'var(--ink)', fg: 'var(--sheet)', mono: '你' },
+    lin: { name: '小林', role: '运营', color: 'var(--sage)', mono: '林' },
+    jie: { name: '阿杰', role: '门店', color: 'var(--yellow)', mono: '杰' },
+    mia: { name: 'Mia', role: '采购', color: 'var(--pink)', mono: 'M' },
+    ai: { name: '项目助理', role: '', tag: '带着项目记忆', color: 'var(--red)', icon: 'sparkles' },
+  };
+  const TODOS = [
+    { who: 'lin', title: '周六会员日加推复购券', due: '周五前', state: '券已建好' },
+    { who: 'jie', title: '调晚班：从周三早班调两位', due: '本周' },
+    { who: 'mia', title: '和 B 供应商复核到货', due: '周一', state: '复核邮件已发' },
+  ];
+
+  const stage = document.getElementById('stage');
+  const thread = document.getElementById('thread');
+  const todos = document.getElementById('todos');
+  const empty = document.getElementById('empty');
+  const reader = document.getElementById('reader');
+  const scan = document.getElementById('scan');
+  const analysis = document.getElementById('analysis');
+  const people = [...document.querySelectorAll('#people span')];
+  const rows = [...document.querySelectorAll('#rows tr')];
+  const stepBtns = [...document.querySelectorAll('.steps button')];
+  const autoBtn = document.getElementById('autoplay');
+  const capKicker = document.getElementById('cap-kicker');
+  const capMain = document.getElementById('cap-main');
+  const capSub = document.getElementById('cap-sub');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let runId = 0;
+  let autoplay = !reduce;
+  let instant = false;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, instant ? 0 : ms));
+
+  function avatar(key, small) {
+    const p = PEOPLE[key];
+    const style = `background:${p.color};${p.fg ? `color:${p.fg};` : ''}`;
+    return `<span class="av" style="${style}">${p.icon ? svg(p.icon) : p.mono}</span>`;
+  }
+  function message(key, html, pending) {
+    const p = PEOPLE[key];
+    const el = document.createElement('div');
+    el.className = 'msg' + (pending ? ' pending' : '');
+    el.innerHTML = `${avatar(key)}<div><div class="who"><b>${p.name}</b>${p.role ? `<span>${p.role}</span>` : ''}${p.tag ? `<span class="tag">${p.tag}</span>` : ''}</div><div class="bubble">${html}</div></div>`;
+    thread.appendChild(el);
+    return el;
+  }
+  function todoItem(t, pending) {
+    const p = PEOPLE[t.who];
+    const el = document.createElement('div');
+    el.className = 'item' + (pending ? ' pending' : '');
+    el.innerHTML = `<span class="box">${svg('check')}</span><div><b>${t.title}</b><div class="meta">${avatar(t.who)}<span>${p.name}</span><span>· ${t.due}</span>${t.state ? `<span class="state">${t.state}</span>` : ''}</div><div class="src-line">来自讨论 # 10 月复购下滑</div></div>`;
+    todos.appendChild(el);
+    return el;
+  }
+
+  function fly(fromEl, toEl, dur = 760) {
+    if (instant || reduce) return Promise.resolve();
+    const s = stage.getBoundingClientRect();
+    const a = fromEl.getBoundingClientRect();
+    const b = toEl.getBoundingClientRect();
+    if (!a.width || !b.width) return Promise.resolve();
+    const g = fromEl.cloneNode(true);
+    g.classList.add('ghost');
+    g.classList.remove('pending');
+    Object.assign(g.style, { left: a.left - s.left + 'px', top: a.top - s.top + 'px', width: a.width + 'px', height: a.height + 'px', margin: '0' });
+    stage.appendChild(g);
+    const dx = b.left - a.left;
+    const dy = b.top - a.top;
+    const anim = g.animate([
+      { transform: 'translate(0, 0) scale(1, 1)', opacity: 1 },
+      { transform: `translate(${dx}px, ${dy}px) scale(${b.width / a.width}, ${b.height / a.height})`, opacity: 0.35 },
+    ], { duration: dur, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' });
+    // a background tab may never finish the animation; move on after its duration anyway
+    return Promise.race([anim.finished, new Promise((r) => setTimeout(r, dur + 200))]).then(() => g.remove(), () => g.remove());
+  }
+
+  function reset() {
+    thread.innerHTML = '';
+    todos.querySelectorAll('.item').forEach((el) => el.remove());
+    empty.style.opacity = '1';
+    reader.classList.remove('on');
+    scan.classList.remove('on');
+    analysis.classList.remove('on');
+    rows.forEach((r) => r.classList.remove('hot'));
+    people.forEach((p) => p.classList.remove('on'));
+    stage.querySelectorAll('.ghost').forEach((g) => g.remove());
+  }
+  function setStep(i) {
+    stepBtns.forEach((b, k) => {
+      b.classList.toggle('done', k < i);
+      if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    });
+    capKicker.textContent = `第 ${i + 1} 步，共 5 步`;
+    capMain.textContent = STEPS[i].main;
+    capSub.textContent = STEPS[i].sub;
+  }
+
+  // ---------- the story ----------
+  async function play(fromStep = 0) {
+    const id = ++runId;
+    const alive = () => id === runId;
+    reset();
+    instant = fromStep > 0 || reduce;
+    let refs = {};
+
+    // 1 read the table
+    if (!instant) setStep(0);
+    reader.classList.add('on');
+    const body = document.getElementById('data-body');
+    const tb = document.getElementById('rows').getBoundingClientRect();
+    const bb = body.getBoundingClientRect();
+    scan.style.top = tb.top - bb.top + 'px';
+    scan.style.setProperty('--scan-to', tb.height - 34 + 'px');
+    if (!instant) { scan.classList.add('on'); }
+    await sleep(900); if (!alive()) return;
+    rows.forEach((r) => { if (r.hasAttribute('data-hot')) r.classList.add('hot'); });
+    await sleep(900); if (!alive()) return;
+    analysis.classList.add('on');
+    await sleep(2400); if (!alive()) return;
+    if (fromStep === 1) instant = false;
+
+    // 2 post to the thread
+    if (!instant) setStep(1);
+    people[0].classList.add('on');
+    const post = message('me', `<span class="at">@小林</span> <span class="at">@阿杰</span> <span class="at">@Mia</span> 看下这三条建议<div class="post"><b>复购下滑集中在华东 2、3 店</b><ol><li>周六会员日加推复购券</li><li>调整晚间排班</li><li>和 B 供应商复核到货</li></ol></div>`, true);
+    await fly(analysis, post.querySelector('.post'), 820);
+    if (!alive()) return;
+    post.classList.remove('pending');
+    const ats = [...post.querySelectorAll('.at')];
+    for (let k = 0; k < 3; k++) {
+      await sleep(260); if (!alive()) return;
+      ats[k].classList.add('ping');
+      people[k + 1].classList.add('on');
+    }
+    people[4].classList.add('on');
+    await sleep(1800); if (!alive()) return;
+    if (fromStep === 2) instant = false;
+
+    // 3 talk it through
+    if (!instant) setStep(2);
+    message('lin', '券这周六就能上，我来配。');
+    await sleep(1100); if (!alive()) return;
+    message('jie', '排班我改，但晚班还缺两个人。');
+    await sleep(1100); if (!alive()) return;
+    message('mia', 'B 供应商这个月延迟了 4 次，我约他们周一对一下。');
+    await sleep(1300); if (!alive()) return;
+    message('ai', `7 月华南有过一次类似的下滑，当时加推复购券，两周后回升了。晚班缺人，可以先从周三早班调两位。<div><span class="memory">${svg('history')}项目记忆 · 7 月华南复购下滑复盘</span></div>`);
+    await sleep(2600); if (!alive()) return;
+    if (fromStep === 3) instant = false;
+
+    // 4 turn it into todos
+    if (!instant) setStep(3);
+    const ask = message('ai', `我整理成 3 条待办，都连着这次讨论：<div class="chips">${TODOS.map((t) => `<span class="chip">${PEOPLE[t.who].name} · ${t.title}</span>`).join('')}</div>`);
+    await sleep(900); if (!alive()) return;
+    const chips = [...ask.querySelectorAll('.chip')];
+    empty.style.opacity = '0';
+    refs.items = [];
+    for (let k = 0; k < TODOS.length; k++) {
+      const item = todoItem(TODOS[k], true);
+      refs.items.push(item);
+      await fly(chips[k], item, 640);
+      if (!alive()) return;
+      item.classList.remove('pending');
+      await sleep(200); if (!alive()) return;
+    }
+    await sleep(1600); if (!alive()) return;
+    if (fromStep === 4) instant = false;
+
+    // 5 do what can be done now
+    if (!instant) setStep(4);
+    const act = message('ai', `这两件我现在就能做：<div class="act" id="act">
+      <div class="act-row" data-k="0"><span class="tool">${svg('ticket-percent')}</span><span>会员系统 · 创建周六复购券<small>满 99 减 15 · 经 MCP</small></span><span class="st">待执行</span></div>
+      <div class="act-row" data-k="2"><span class="tool">${svg('mail')}</span><span>邮件 · 给 B 供应商发到货复核<small>用配好的邮件连接</small></span><span class="st">待执行</span></div>
+      <div class="act-foot"><button class="btn" tabindex="-1">执行</button><button class="btn ghost" tabindex="-1">先不用</button><span class="undo">${svg('undo-2')}两件都能撤销</span></div></div>`);
+    await sleep(1300); if (!alive()) return;
+    const btns = act.querySelectorAll('.btn');
+    btns[0].classList.add('press');
+    await sleep(180); if (!alive()) return;
+    btns[0].classList.remove('press');
+    btns.forEach((b) => b.classList.add('gone'));
+    const actRows = [...act.querySelectorAll('.act-row')];
+    for (const row of actRows) {
+      row.querySelector('.st').textContent = '执行中…';
+      await sleep(700); if (!alive()) return;
+      row.classList.add('ok');
+      row.querySelector('.st').innerHTML = `${svg('check')}已完成`;
+      const item = (refs.items || [...todos.querySelectorAll('.item')])[Number(row.dataset.k)];
+      if (item) item.classList.add('moving');
+      await sleep(300); if (!alive()) return;
+    }
+    act.querySelector('.act').classList.add('done');
+    if (instant) { instant = false; }
+    await sleep(reduce ? 0 : 4200); if (!alive()) return;
+    if (autoplay) play(0);
+  }
+
+  // ---------- controls ----------
+  stepBtns.forEach((b) => b.addEventListener('click', () => play(Number(b.dataset.step))));
+  document.getElementById('replay').addEventListener('click', () => play(0));
+  function syncAuto() {
+    autoBtn.setAttribute('aria-pressed', String(autoplay));
+    autoBtn.querySelector('.ctrl-text').textContent = autoplay ? '自动播放中' : '自动播放已停';
+  }
+  autoBtn.addEventListener('click', () => { autoplay = !autoplay; syncAuto(); if (autoplay) play(0); });
+  syncAuto();
+
+  // a complete resting frame (the finished story), then play from the start
+  if (reduce) {
+    play(4).then(() => setStep(4));
+  } else {
+    play(4).then(() => setStep(4));
+    setTimeout(() => { if (runId === 1) play(0); }, 1200);
+  }
+})();
+</script>
