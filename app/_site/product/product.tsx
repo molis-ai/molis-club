@@ -7,7 +7,7 @@ import { pad, Phrases, Status, Window, type Vars } from '../ui';
 
 type WindowProps = Parameters<typeof Window>[0];
 
-/** 首屏：左边产品名、第 4 章标题、加粗一句、作品标签「名称 · 形态 · 阶段」；右边这件产品的窗 */
+/** 首屏：左边作品标签「形态 · 阶段」（名称就是下面的大字，不再写一遍）、产品名、第 4 章标题、加粗一句；右边这件产品的窗 */
 export function ProductHero({
   product,
   window,
@@ -20,14 +20,13 @@ export function ProductHero({
   /** 右边不是一张图时（例如 Story 的云是一段视频），直接给一个窗 */
   visual?: ReactNode;
   concept?: boolean;
-  /** 首屏左下角的一行（例如 World 的「整页都是概念示意」） */
+  /** 首屏左下角的一行（例如 Work 的选读者、Tool 的选字提示） */
   aside?: ReactNode;
 }) {
   return (
     <header className="m-phero m-wrap m-top">
       <div className="m-phero-copy">
         <p className="m-tagline m-rise">
-          <b lang="en">{product.name}</b>
           <span>{product.form}</span>
           <Status concept={concept}>{product.stage}</Status>
         </p>
@@ -107,19 +106,13 @@ export function Part({
   );
 }
 
-export type Progress = {
-  have: string[];
-  notYet: string[];
-  now: { text: string[]; links?: ReactNode };
-};
-
 /**
- * 固定收尾：适合这样的时刻 → 当前进展（已经有的 / 还没有的 / 现在怎么体验）
- * → 和其他产品的关系（只在有关系的页）→ 去处。
+ * 固定收尾：适合这样的时刻 → 当前进展（阶段、第 3 章一句、第 4 章「当前进展」原句）
+ * → 和其他产品的关系（只在有关系的页）→ 去处。「关注进展」只在去处放一次。
  */
 export function ProductEnding({
   product,
-  progress,
+  progress = product.progress,
   relation,
   go,
   start = 1,
@@ -127,8 +120,10 @@ export function ProductEnding({
 }: {
   product: Product;
   concept?: boolean;
-  progress: Progress;
-  relation?: { title: string; text: string; tag?: string; formula?: ReactNode };
+  /** 第 4 章「当前进展」的原句，按底稿分段；有一段已经在页面别处出现时，只传剩下的 */
+  progress?: string[];
+  /** 公式当标题，下面一句第 3 章原句 */
+  relation?: { formula: ReactNode; text: string };
   go: ReactNode;
   start?: number;
 }) {
@@ -156,49 +151,25 @@ export function ProductEnding({
         <p className="m-pend-stage" data-reveal>
           {product.stageNote}
         </p>
-        <dl className="m-pend-progress">
-          <div data-reveal>
-            <dt>已经有的</dt>
-            <dd>
-              {progress.have.map((text) => (
-                <p key={text}>{text}</p>
-              ))}
-            </dd>
-          </div>
-          <div data-reveal style={{ '--delay': '90ms' } as Vars}>
-            <dt>还没有的</dt>
-            <dd>
-              {progress.notYet.map((text) => (
-                <p key={text}>{text}</p>
-              ))}
-            </dd>
-          </div>
-          <div data-reveal style={{ '--delay': '180ms' } as Vars}>
-            <dt>现在怎么体验</dt>
-            <dd>
-              {progress.now.text.map((text) => (
-                <p key={text}>{text}</p>
-              ))}
-              {progress.now.links ? (
-                <div className="m-actions">{progress.now.links}</div>
-              ) : null}
-            </dd>
-          </div>
-        </dl>
+        <div className="m-pend-progress" data-reveal>
+          {progress.map((text) => (
+            <p key={text}>{text}</p>
+          ))}
+        </div>
       </Part>
       {relation ? (
-        <Part no={no++} kicker="和其他产品的关系" title={relation.title}>
-          <div className="m-pend-relation" data-reveal>
-            {relation.formula ? (
-              <p className="m-pend-formula" aria-hidden="true" lang="en">
-                {relation.formula}
-              </p>
-            ) : null}
-            <p>{relation.text}</p>
-            {relation.tag ? (
-              <span className="m-note">{relation.tag}</span>
-            ) : null}
-          </div>
+        <Part
+          no={no++}
+          kicker="和其他产品的关系"
+          title={
+            <span className="m-pend-formula" lang="en">
+              {relation.formula}
+            </span>
+          }
+        >
+          <p className="m-pend-relation" data-reveal>
+            {relation.text}
+          </p>
         </Part>
       ) : null}
       <section className="m-pend-go m-wrap" aria-label="去处">

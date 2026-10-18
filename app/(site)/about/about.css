@@ -1,6 +1,6 @@
 /* =====================================================================
    展厅 02「我们相信什么」· 主题：光。白墙（--wall-light，在 exhibit.css 里换墙）。
-   开场 · 什么变了 · 三种媒介 · 六条信念 · 落到产品里 · 我们怎样要求自己；每屏一个视口放得下。
+   开场 · 什么变了 · 三种媒介 · 六条信念；每屏一个视口放得下。
    展签、平面图、下一个展厅都在 app/_site/exhibit/exhibit.css；这里只排这一间和那件互动装置。
    ===================================================================== */
 
@@ -139,67 +139,6 @@ html:not(.js) .ab-bw-panel[hidden] {
   margin-top: 40px;
 }
 
-/* ---------- 落到产品里：天窗在左，四行字在右 ---------- */
-.ab-practice {
-  align-items: center;
-}
-.ab-practice-work {
-  grid-column: 1 / span 4;
-}
-.ab-practice-text {
-  grid-column: 6 / -1;
-}
-.ab-rows {
-  margin-top: clamp(16px, 3.4vh, 32px);
-  border-top: 1px solid var(--hair-2);
-}
-.ab-rows div {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 5fr);
-  gap: 20px;
-  padding: clamp(9px, 1.7vh, 15px) 0;
-  border-bottom: 1px solid var(--hair);
-}
-.ab-rows dt {
-  font: 400 14px/1.7 var(--sans);
-  letter-spacing: 0.04em;
-}
-.ab-rows dd {
-  font: 400 var(--t-small) / 1.85 var(--sans);
-  letter-spacing: 0.03em;
-  color: var(--ink-2);
-}
-
-/* ---------- 我们怎样要求自己：展厅最后一面墙，四句写大，两两一排 ---------- */
-.ab-demands-head {
-  max-width: 40em;
-}
-.ab-demands-head .ex-text {
-  margin-top: 8px;
-}
-.ab-demands {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(24px, 4.4vh, 48px) var(--col-gap);
-  margin-top: clamp(24px, 5vh, 56px);
-}
-.ab-demands li {
-  display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
-  align-content: start;
-  column-gap: 8px;
-  row-gap: 8px;
-  padding-top: 16px;
-  border-top: 1px solid var(--ink-2);
-}
-.ab-demands .ex-no {
-  padding-top: 0.9em;
-}
-.ab-demands .ex-text {
-  grid-column: 2;
-  max-width: 30em;
-}
-
 @media (max-width: 900px) {
   .ab-open-text,
   .ab-open-work,
@@ -208,14 +147,12 @@ html:not(.js) .ab-bw-panel[hidden] {
   .ab-trio-title,
   .ab-trio-label,
   .ab-bw-side,
-  .ab-bw-stage,
-  .ab-practice-text {
+  .ab-bw-stage {
     grid-column: 1 / -1;
   }
   .ab-open,
   .ab-change,
-  .ab-bw,
-  .ab-practice {
+  .ab-bw {
     row-gap: 28px;
   }
   .ab-open-work {
@@ -223,18 +160,6 @@ html:not(.js) .ab-bw-panel[hidden] {
   }
   .ab-trio-label {
     justify-self: start;
-  }
-  .ab-practice-work {
-    grid-column: 1 / span 8;
-  }
-}
-@media (max-width: 560px) {
-  .ab-rows div {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2px;
-  }
-  .ab-demands {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
 

@@ -4,7 +4,12 @@ import { usePathname } from 'next/navigation';
 import { ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { footer, nav } from '../../content/site/nav';
-import { productIds, products } from '../../content/site/products';
+import {
+  isSoon,
+  productIds,
+  products,
+  stageOf,
+} from '../../content/site/products';
 import pageDates from '../../content/site/page-dates.json';
 import {
   ABOUT,
@@ -24,6 +29,7 @@ import {
 // 顶栏与页尾。顶栏固定在上方：平时是实心的纸，滚动后下面出现一道细线；
 // 首页前两屏压在画面上时透明、白字（读 [data-tone="film"]）；压在明亮的建筑照片上时透明、墨字（[data-tone="light"]）。两个下拉和窄屏菜单都用 <details>，没有 JS 也能打开；
 // 有 JS 时补上点外面、按 Esc、换页时收起。
+// 先不开放的产品（Life、Story、World）在下拉、菜单和页尾都留着名字，但不是链接，阶段写「探索中，敬请期待」。
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
@@ -154,14 +160,8 @@ export function Header() {
           <div className="m-drop-panel m-drop-products">
             {productIds.map((id, index) => {
               const product = products[id];
-              return (
-                <Link
-                  key={id}
-                  href={productHref[id]}
-                  aria-current={
-                    isUnder(path, productHref[id]) ? 'page' : undefined
-                  }
-                >
+              const inner = (
+                <>
                   <span className="m-no" aria-hidden="true">
                     {pad(index + 1)}
                   </span>
@@ -170,11 +170,26 @@ export function Header() {
                     <span>{product.overview}</span>
                     <span
                       className="m-status"
-                      data-concept={id === 'world' || undefined}
+                      data-concept={id === 'world' || isSoon(id) || undefined}
                     >
-                      {product.stage}
+                      {stageOf(id)}
                     </span>
                   </small>
+                </>
+              );
+              return isSoon(id) ? (
+                <div key={id} className="m-soon">
+                  {inner}
+                </div>
+              ) : (
+                <Link
+                  key={id}
+                  href={productHref[id]}
+                  aria-current={
+                    isUnder(path, productHref[id]) ? 'page' : undefined
+                  }
+                >
+                  {inner}
                 </Link>
               );
             })}
@@ -228,12 +243,19 @@ export function Header() {
           </summary>
           <div className="m-menu-sheet">
             <h2>{nav.products}</h2>
-            {productIds.map((id) => (
-              <Link key={id} href={productHref[id]}>
-                <span lang="en">{products[id].name}</span>
-                <small>{products[id].stage}</small>
-              </Link>
-            ))}
+            {productIds.map((id) =>
+              isSoon(id) ? (
+                <p key={id} className="m-soon">
+                  <span lang="en">{products[id].name}</span>
+                  <small>{stageOf(id)}</small>
+                </p>
+              ) : (
+                <Link key={id} href={productHref[id]}>
+                  <span lang="en">{products[id].name}</span>
+                  <small>{stageOf(id)}</small>
+                </Link>
+              ),
+            )}
             <h2>{footer.columns.studio}</h2>
             <Link href={ENTERPRISE}>{nav.enterprise}</Link>
             <Link href={COMMUNITY}>{nav.community}</Link>
@@ -281,20 +303,13 @@ export function Footer() {
       <div className="m-wrap">
         <div className="m-footer-top">
           <div className="m-footer-lead">
-            <Link href="/" className="m-logo" aria-label={nav.home}>
-              <img
-                src="/site/molis-logo-64.png"
-                srcSet="/site/molis-logo-64.png 2x, /site/molis-logo-96.png 3x"
-                width="28"
-                height="28"
-                alt=""
-                loading="lazy"
-              />
-              <span lang="en">Molis AI</span>
+            <Link href="/" className="m-footer-brand" aria-label={nav.home}>
+              <span className="m-footer-mark" lang="en">
+                Molis AI
+              </span>
             </Link>
             <p>
               <span className="m-phrase">技术，回到人的尺度。</span>
-              <span className="m-phrase">始终好奇，持续创造。</span>
             </p>
           </div>
           <nav className="m-footer-cols" aria-label="页尾导航">
@@ -303,9 +318,15 @@ export function Footer() {
               <ul>
                 {productIds.map((id) => (
                   <li key={id}>
-                    <Link href={productHref[id]} lang="en">
-                      {products[id].name}
-                    </Link>
+                    {isSoon(id) ? (
+                      <span className="m-soon" lang="en">
+                        {products[id].name}
+                      </span>
+                    ) : (
+                      <Link href={productHref[id]} lang="en">
+                        {products[id].name}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -359,9 +380,6 @@ export function Footer() {
           ) : null}
         </div>
       </div>
-      <p className="m-footer-mark" aria-hidden="true" lang="en">
-        Molis AI
-      </p>
     </footer>
   );
 }

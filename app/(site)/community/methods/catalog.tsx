@@ -108,7 +108,10 @@ function ArtistCard({ skill }: { skill: ArtistSkill }) {
             kb={skillZipKb[skill.slug]}
             label={t.download}
           />
-          <More href={artistHref(skill.slug)}>{t.detail}</More>
+          <More
+            href={artistHref(skill.slug)}
+            label={`${t.detail}：${skill.name}`}
+          />
         </div>
       </div>
     </li>
@@ -134,7 +137,10 @@ function TechniqueCard({ entry }: { entry: TechniqueEntry }) {
             label={methodText.copy}
             topic="share-method"
           />
-          <More href={methodHref(entry.slug)}>{methodText.detail}</More>
+          <More
+            href={methodHref(entry.slug)}
+            label={`${methodText.detail}：${entry.name}`}
+          />
         </div>
       </div>
     </li>

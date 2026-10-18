@@ -1,4 +1,3 @@
-import { ArrowDown } from 'lucide-react';
 import { pageMetadata } from '../../../lib/site';
 import { enterprise } from '../../../content/site/enterprise';
 import { ENTERPRISE } from '../../_site/routes';
@@ -84,14 +83,6 @@ export default function EnterprisePage() {
               <span>{titleA}，</span>
               <span>{titleB}</span>
             </h1>
-            <a
-              className="m-ent-hint m-rise"
-              href="#where"
-              style={{ '--delay': '320ms' } as Vars}
-            >
-              {e.hero.hint}
-              <ArrowDown size={14} aria-hidden="true" />
-            </a>
           </div>
         </header>
 
@@ -102,7 +93,6 @@ export default function EnterprisePage() {
           aria-labelledby="ent-where-title"
         >
           <header className="m-ent-where-head" data-reveal>
-            <p className="m-kicker">{e.questions.kicker}</p>
             <h2 className="m-ent-ask" id="ent-where-title">
               {e.hook.ask}
             </h2>
@@ -158,11 +148,9 @@ export default function EnterprisePage() {
           />
           <div className="m-ent-talk-body">
             <header className="m-ent-talk-head" data-reveal>
-              <p className="m-kicker">{e.talk.kicker}</p>
               <h2 className="m-ent-talk-title" id="ent-talk-title">
                 {e.talk.title}
               </h2>
-              <p className="m-ent-talk-lead">{e.talk.lead}</p>
             </header>
             <EnterpriseForm />
           </div>

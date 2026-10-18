@@ -361,41 +361,84 @@ body:has(.m) .skip-link {
   box-shadow: inset 0 0 0 1px var(--ink);
 }
 
-/* ---------- 文字链接：悬停时下划线从左画到右 ---------- */
+/* ---------- 行动入口：一个按钮一个箭头，不用下划线文字（DESIGN.md 常驻约束） ----------
+   没有上下文的独立入口用 .m-link：轻描边胶囊，两三个字说明去处 + 箭头（站内右箭头、外链斜箭头）；
+   卡片里已经有标题和说明时只留 .m-go：一颗圆形箭头，去处写在 aria-label 里。
+   正文里的行内链接才有下划线（.m-inline）；导航和目录保留文字，不用这两种。 */
 .m-link {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  min-height: 30px;
-  padding-bottom: 2px;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 6px 16px;
   border: 0;
-  background:
-    linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat,
-    linear-gradient(var(--hair-2), var(--hair-2)) 0 100% / 100% 1px no-repeat;
+  border-radius: var(--r-pill);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
   color: var(--ink);
   font: 400 var(--t-ui) / 1.4 var(--sans);
   letter-spacing: 0.04em;
+  text-align: center;
   text-decoration: none;
   cursor: pointer;
-  transition: background-size 0.55s var(--ease);
+  transition:
+    background-color 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
 }
-.m-link:hover {
-  background-size:
-    100% 1px,
-    100% 1px;
+.m-link:hover,
+.m-go:hover {
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1px var(--mute);
 }
-.m-link svg {
+.m-link:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.m-go {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    background-color 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
+}
+.m-link svg,
+.m-go svg,
+.m-btn svg {
   flex: none;
   transition: transform 0.45s var(--ease);
 }
-.m-link:hover svg {
+.m-link:hover svg,
+.m-go:hover svg,
+.m-btn:hover svg {
   transform: translate(2px, -2px);
 }
 .m-link[data-dir='down']:hover svg {
   transform: translateY(2px);
 }
-.m-link[data-dir='right']:hover svg {
+.m-link[data-dir='right']:hover svg,
+.m-go[data-dir='right']:hover svg,
+.m-btn[data-dir='right']:hover svg {
   transform: translateX(3px);
+}
+.m-btn:disabled:hover svg,
+.m-link:disabled:hover svg {
+  transform: none;
+}
+/* 焦点框跟着胶囊和圆走，不被公共的 4px 圆角压成方框 */
+.m .m-btn:focus-visible,
+.m .m-link:focus-visible {
+  border-radius: var(--r-pill);
+}
+.m .m-go:focus-visible {
+  border-radius: 50%;
 }
 /* 正文里的行内链接 */
 .m-inline {
@@ -414,7 +457,7 @@ body:has(.m) .skip-link {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 14px 24px;
+  gap: 12px 16px;
 }
 
 /* ---------- 状态签：杏橙圆点 + 阶段 ---------- */
@@ -735,7 +778,8 @@ body:has(.m) .skip-link {
     transform: translateY(-6px);
   }
 }
-.m-drop-panel a {
+.m-drop-panel a,
+.m-drop-panel .m-soon {
   display: grid;
   grid-template-columns: 26px minmax(0, 1fr);
   gap: 2px 10px;
@@ -846,7 +890,8 @@ body:has(.m) .skip-link {
     letter-spacing: 0.16em;
     color: var(--mute);
   }
-  .m-menu-sheet a {
+  .m-menu-sheet a,
+  .m-menu-sheet .m-soon {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
@@ -857,7 +902,11 @@ body:has(.m) .skip-link {
     font: 300 22px/1.4 var(--sans);
     letter-spacing: 0.02em;
   }
-  .m-menu-sheet a small {
+  .m-menu-sheet .m-soon {
+    color: var(--ink-2);
+  }
+  .m-menu-sheet a small,
+  .m-menu-sheet .m-soon small {
     font: 400 12px/1.4 var(--sans);
     color: var(--mute);
     letter-spacing: 0.06em;
@@ -877,13 +926,13 @@ body:has(.m) .skip-link {
 }
 
 /* =====================================================================
-   页尾：一道细线、三栏链接、版权与来源、本页最近修改；最后一行被裁一截的大字标
+   页尾：左侧字标与单句口号、右侧三栏目录；底部保留本页最近修改
    ===================================================================== */
 .m-footer {
   position: relative;
   z-index: 3;
   overflow: hidden;
-  padding: clamp(40px, 6vh, 64px) 0 0;
+  padding: clamp(40px, 6vh, 64px) 0 24px;
   border-top: 1px solid var(--hair);
   background: var(--paper);
 }
@@ -894,18 +943,21 @@ body:has(.m) .skip-link {
   row-gap: 40px;
 }
 .m-footer-lead {
-  grid-column: 1 / span 4;
+  grid-column: 1 / span 5;
   display: grid;
   align-content: start;
-  gap: 14px;
+  gap: 24px;
+}
+.m-footer-brand {
+  display: block;
 }
 .m-footer-lead p {
-  font: 300 var(--t-h3) / 1.6 var(--sans);
+  font: 400 var(--t-body) / 1.8 var(--sans);
   letter-spacing: 0.06em;
   color: var(--ink-2);
 }
 .m-footer-cols {
-  grid-column: 6 / -1;
+  grid-column: 7 / -1;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 32px var(--col-gap);
@@ -916,13 +968,18 @@ body:has(.m) .skip-link {
   letter-spacing: 0.16em;
   color: var(--mute);
 }
-.m-footer-cols a {
+.m-footer-cols a,
+.m-footer-cols .m-soon {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   min-height: 30px;
   font-size: 13.5px;
   line-height: 2;
+}
+/* 先不开放的产品：只留名字，不是链接 */
+.m-footer-cols .m-soon {
+  color: var(--mute);
 }
 .m-footer-cols a:hover {
   text-decoration: underline;
@@ -934,7 +991,7 @@ body:has(.m) .skip-link {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 8px 32px;
-  margin-top: clamp(40px, 6vh, 64px);
+  margin-top: 32px;
   padding-top: 18px;
   border-top: 1px solid var(--hair);
   font-size: 12.5px;
@@ -950,11 +1007,9 @@ body:has(.m) .skip-link {
   text-underline-offset: 4px;
 }
 .m-footer-mark {
-  margin: clamp(28px, 4vw, 56px) 0 -0.16em;
-  padding-inline: max(var(--gutter), calc((100% - var(--wrap)) / 2));
-  font: 300 var(--t-colophon) / 0.9 var(--sans);
+  font: 300 clamp(64px, 7.5vw, 120px) / 1.1 var(--latin);
   letter-spacing: -0.03em;
-  color: #efede8;
+  color: var(--ink);
   white-space: nowrap;
   user-select: none;
 }
@@ -1014,7 +1069,6 @@ body:has(.m) .skip-link {
   }
   .m-header,
   .m-footer-cols,
-  .m-footer-mark,
   .m-menu,
   .m-btn,
   .m-noprint,
@@ -1033,8 +1087,9 @@ body:has(.m) .skip-link {
   }
 }
 
-/* ---------- 404：纯文字 ---------- */
-.m-404 {
+/* ---------- 404：纯文字 ----------
+   类名别写成 m-数字：根布局的 Tailwind 会把 m-404 认成「外边距 404 档」，给页面上下各加 1616px。 */
+.m-notfound {
   display: grid;
   align-content: center;
   justify-items: start;
@@ -1042,11 +1097,11 @@ body:has(.m) .skip-link {
   min-height: 72svh;
   padding-bottom: var(--section-bottom);
 }
-.m-404 h1 {
+.m-notfound h1 {
   font: 300 var(--t-display) / 1.15 var(--sans);
   letter-spacing: 0.02em;
 }
-.m-404-lead {
+.m-notfound-lead {
   max-width: 30em;
   font: 300 var(--t-lead) / 1.9 var(--sans);
   color: var(--ink-2);

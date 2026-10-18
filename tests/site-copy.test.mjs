@@ -21,9 +21,6 @@ const { access, productIds, products, relations } =
   await import('../content/site/products.ts');
 const { workEnding, workProgress } = await import('../content/site/work.ts');
 const { toolProgress } = await import('../content/site/tool.ts');
-const { lifeProgress } = await import('../content/site/life.ts');
-const { storyProgress } = await import('../content/site/story.ts');
-const { worldProgress } = await import('../content/site/world.ts');
 
 // 新站文案取自 docs/studio-intro.md 的原句（specs/site-rebuild/spec.md 第 9 节）。
 // 这里逐句核对：收进 content/site 的「原句」都还在底稿里，一个字都没改。
@@ -86,14 +83,7 @@ void test('各产品页「当前进展」里标为原句的部分都在底稿里
     ...workProgress.now,
     ...toolProgress.have,
     ...toolProgress.notYet,
-    // toolProgress.now、storyProgress.now、worldProgress.have 是新写的引导句
-    ...lifeProgress.have,
-    ...lifeProgress.notYet,
-    ...lifeProgress.now,
-    ...storyProgress.have,
-    ...storyProgress.notYet,
-    ...worldProgress.notYet,
-    ...worldProgress.now,
+    // toolProgress.now 是新写的引导句；Life、Story、World 直接用 products 里第 4 章的原句（上面已核对）
   ];
   for (const text of quoted) assertVerbatim(text, '当前进展');
 });

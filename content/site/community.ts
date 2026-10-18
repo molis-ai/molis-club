@@ -110,7 +110,6 @@ export const communityUi = {
   /** 页边竖排的三幕，就是结尾那句话的三段 */
   acts: ['带着好奇来', '带点什么走', '再带点什么回来'],
   hero: {
-    next: '往下：四件作品，各自连着做法',
     sign: '拖一拖',
     hintX: '左右拖 · 重复',
     hintY: '上下拖 · 展开',
@@ -135,7 +134,7 @@ export const communityUi = {
     why: '想解决什么',
     take: '带走',
     go: '项目入口',
-    detail: '看完整方法',
+    detail: '完整方法',
     /** 压缩自附录 A.1 末句 */
     tool: '这部分场景也在 Molis Tool 中继续完善',
   },
@@ -289,7 +288,7 @@ export const works = {
     download: '查看项目与下载',
     system: 'macOS 14 及以上 · Apple Silicon',
     repo: 'GitHub 仓库',
-    tool: '看看 Molis Tool',
+    tool: 'Molis Tool',
   },
 };
 
@@ -324,8 +323,8 @@ export const demos = {
 export const methodText = {
   trail: { community: '社区', methods: '方法目录' },
   kicker: '方法目录',
-  back: '回到社区',
-  backToMethods: '回到方法目录',
+  back: '社区',
+  backToMethods: '方法目录',
   fullImage: '看大图',
   repo: 'Artist Skill 仓库',
   /** 新写：页面描述（元信息）里接在原句后面的一句 */

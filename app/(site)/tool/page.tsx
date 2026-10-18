@@ -1,12 +1,12 @@
 import { pageMetadata } from '../../../lib/site';
-import { products, relations } from '../../../content/site/products';
-import { selectTry, toolGo, toolProgress } from '../../../content/site/tool';
-import { ProductEnding, ProductHero } from '../../_site/product/product';
-import { contactHref, productHref } from '../../_site/routes';
-import { Btn, More, Note, pad } from '../../_site/ui';
-import { ToolChapters } from './chapters';
-import { SelectionBar, SelectSample } from './selection';
-import '../../_site/demo/demo.css';
+import { products } from '../../../content/site/products';
+import { toolGo, toolProgress } from '../../../content/site/tool';
+import { ProductHero } from '../../_site/product/product';
+import { COMMUNITY, contactHref, productHref } from '../../_site/routes';
+import { Btn, More, Note, Phrases, Status } from '../../_site/ui';
+import { PaperByWindow, TryHint } from './hero';
+import { SelectionBar } from './selection';
+import { Wall } from './wall';
 import '../../_site/product/product.css';
 import './tool.css';
 
@@ -18,75 +18,101 @@ export const metadata = pageMetadata(
   productHref.tool,
 );
 
-// Molis Tool：最空、最短的一页，几乎全白，一道光。给手上已有材料的 Mac 用户。
-// 主线是一个下午手边冒出的几件小事；整页任意选中一句话，动作条出现在光标旁（结果为示意）。
+// Molis Tool：最轻、最短的一页（specs/site-rebuild/tool-page.md）。这一页本身就是 Tool：
+// 不画任何应用窗口，整页任意选中一段字，光标旁出现动作条，选的东西不同、第一个动作不同。
+// 首屏是窗前一张纸；往下是一面白墙，一个下午的几件小事挂在墙上；最后一屏收尾。
 export default function ToolPage() {
+  const { blocks } = toolProgress;
   return (
     <SelectionBar>
       <div className="m-product m-tool">
         <ProductHero
           product={tool}
-          window={{
-            name: 'tool-light',
-            alt: '白墙上落着一道天光。',
-            focus: '50% 50%',
-            caption: 'A beam of light on a white wall',
-          }}
-          aside={<Note>选中这一页的任意一句话试试</Note>}
+          visual={<PaperByWindow />}
+          aside={<TryHint />}
         />
-        <ToolChapters />
-        <section className="m-sig" aria-labelledby="tl-try-title">
+
+        <Wall />
+
+        <section className="tl-end m-wrap" aria-labelledby="tl-end-title">
           <header className="m-head" data-size="h2" data-reveal>
             <p className="m-head-meta">
               <span className="m-no" aria-hidden="true">
-                {pad(5)}
+                02
               </span>
-              <span className="m-kicker">{selectTry.kicker}</span>
+              <span className="m-kicker">适合这样的时刻</span>
             </p>
-            <h2 className="m-head-title" id="tl-try-title">
-              {selectTry.title}
+            <h2 className="m-head-title" id="tl-end-title">
+              <Phrases text={tool.fit} />
             </h2>
-            <div className="m-head-lead">
-              <p>{selectTry.lead}</p>
-              <p className="tl-try-note">
-                <Note>{selectTry.note}</Note>
-              </p>
-            </div>
           </header>
-          <div className="m-sig-box">
-            <SelectSample />
+
+          <div className="tl-end-grid">
+            <div className="tl-end-progress" data-reveal>
+              <p className="m-kicker">当前进展</p>
+              <p className="tl-end-stage">
+                <Status>{tool.stage}</Status>
+              </p>
+              <p className="tl-end-note">{tool.stageNote}</p>
+              <div className="tl-blocks">
+                <p className="tl-blocks-key">
+                  <i aria-hidden="true" />
+                  {toolGo.have}
+                </p>
+                <ul>
+                  {blocks.have.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+                <p className="tl-blocks-key" data-not="">
+                  <i aria-hidden="true" />
+                  {toolGo.notYet}
+                </p>
+                <ul data-not="">
+                  {blocks.notYet.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <details className="tl-fold">
+                <summary>{toolGo.original}</summary>
+                {toolProgress.have.map((text) => (
+                  <p key={text}>{text}</p>
+                ))}
+                <p>{toolProgress.notYet[0]}</p>
+              </details>
+            </div>
+
+            <div
+              className="tl-end-side"
+              data-reveal
+              style={{ '--delay': '120ms' } as React.CSSProperties}
+            >
+              <div>
+                <p className="m-kicker">{toolGo.relation}</p>
+                <p>{toolProgress.notYet[1]}</p>
+                <p className="m-actions">
+                  <Note>{toolGo.relationTag}</Note>
+                  <More href={productHref.work}>{toolGo.work}</More>
+                </p>
+              </div>
+              <div>
+                <p className="m-kicker">{toolGo.tryNow}</p>
+                <p>
+                  {toolGo.now}
+                  {toolProgress.siblings}
+                </p>
+                <p className="m-actions">
+                  <More href={`${COMMUNITY}#take`}>{toolGo.community}</More>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="tl-end-go" data-reveal>
+            <Btn href={contactHref('tool')}>{toolGo.follow}</Btn>
           </div>
         </section>
-        <ProductEnding
-          product={tool}
-          start={6}
-          progress={{
-            have: toolProgress.have,
-            notYet: toolProgress.notYet,
-            now: {
-              text: toolProgress.now,
-              links: <More href={contactHref('tool')}>{toolGo.follow}</More>,
-            },
-          }}
-          relation={{
-            title: 'Tool 与 Work',
-            formula: (
-              <>
-                <span>Tool</span>
-                <i>→</i>
-                <span>Work</span>
-              </>
-            ),
-            text: relations.workTool,
-            tag: '计划中 · 范围与时间未定',
-          }}
-          go={
-            <>
-              <Btn href={contactHref('tool')}>{toolGo.follow}</Btn>
-              <More href={productHref.work}>{toolGo.work}</More>
-            </>
-          }
-        />
       </div>
     </SelectionBar>
   );

@@ -274,7 +274,9 @@ i[data-stage='life'] {
   box-shadow: inset 0 0 0 1px var(--ink-2);
 }
 [data-stage='world'] i,
-i[data-stage='world'] {
+i[data-stage='world'],
+[data-stage='soon'] i,
+i[data-stage='soon'] {
   background: transparent;
   border: 1px dashed var(--ink-2);
 }
@@ -349,9 +351,8 @@ i[data-stage='world'] {
 }
 .ix-go {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
 }
 
 /* ---------- 演示的骨架：一行大字、一个画面、几条进度线 ---------- */
@@ -1920,60 +1921,6 @@ i[data-stage='world'] {
   text-align: center;
 }
 
-/* ---------- 第 3 章：目前如何了解与体验 ----------
-   列表下面一整条：左边是这一条的名字，右边三栏按产品分（Work / Tool · Life · Story / World） */
-.ix-map {
-  max-width: var(--wrap);
-  margin: clamp(48px, 7vh, 88px) auto 0;
-  padding-top: 26px;
-  border-top: 1px solid var(--hair);
-}
-.ix-map-access {
-  display: grid;
-  grid-template-columns: minmax(10em, 0.62fr) minmax(0, 2fr);
-  gap: 0 clamp(24px, 4vw, 72px);
-}
-.ix-map-h {
-  margin: 0 0 18px;
-  font: 500 11.5px/1.4 var(--sans);
-  letter-spacing: 0.22em;
-  color: var(--mute);
-}
-.ix-map-access dl {
-  display: grid;
-  grid-template-columns: 1.35fr 1fr 1fr;
-  gap: 0 clamp(20px, 3vw, 48px);
-  margin: 0;
-}
-.ix-map-access dl div {
-  display: grid;
-  align-content: start;
-  gap: 6px;
-}
-.ix-map-note {
-  grid-column: 2;
-}
-.ix-map-access dt {
-  font: 400 14px/1.7 var(--latin);
-}
-.ix-map-access dd {
-  display: grid;
-  justify-items: start;
-  gap: 4px;
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.8;
-  color: var(--ink-2);
-}
-.ix-map-access dd .m-link {
-  font-size: 12.5px;
-}
-.ix-map-note {
-  margin: 12px 0 0;
-  font-size: 12.5px;
-  color: var(--mute);
-}
-
 /* 宽屏上画面整体放大一档，填满舞台，字也更好认 */
 @media (min-width: 901px) {
   .ix-scene > * {
@@ -1991,11 +1938,6 @@ i[data-stage='world'] {
   }
   .ix-below {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .ix-go {
-    flex-direction: row;
-    align-items: center;
-    gap: 18px;
   }
   .ix-reel {
     padding: 16px 14px 8px;
@@ -2145,21 +2087,6 @@ i[data-stage='world'] {
   }
   .ix-op {
     font-size: 18px;
-  }
-  .ix-map-access,
-  .ix-map-access dl {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .ix-map-access dl div {
-    gap: 2px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--hair);
-  }
-  .ix-map-access dl div:first-child {
-    padding-top: 0;
-  }
-  .ix-map-note {
-    grid-column: auto;
   }
 }
 

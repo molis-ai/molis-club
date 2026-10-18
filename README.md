@@ -69,6 +69,13 @@ npm run test:http
 - 换了配图：原图放进 `public/` 下的图库目录，在 `scripts/site-media.mjs` 里登记（写清来源和谁定的），再 `npm run media`，输出 `public/site/` 的 WebP 与 `app/_site/media.json`。
 - 更新公开预览：`npm run build:site-preview` 导出到 `outputs/site-preview/`，再进 `deploy/site-preview/` 按里面的说明上传。wrangler 只在那个目录里跑，每次显式写 `--config`，先 `--dry-run`；不要在仓库根目录跑 `wrangler deploy` 或任何 `wrangler pages` 命令。
 
+## 开发流程
+
+- main 是唯一主线，GitHub 上的 main 就是最新的官网代码。
+- 每件事从 main 拉一个短分支，在单独的副本里做：`git worktree add .claude/worktrees/<名字> -b <分支名> main`。验收后合回 main，再删掉分支和副本。
+- main 所在的文件夹只用来看最新版、合并和推送，不在里面开发。
+- 本地预览的端口配置 `.claude/launch.json` 是各自本机的，不进 Git。
+
 ## 代码结构
 
 | 目录                            | 放什么                                                      |
@@ -91,6 +98,7 @@ npm run test:http
 
 - [项目事实与约定](AGENTS.md) · [产品范围](PRODUCT.md) · [视觉系统](DESIGN.md)
 - [新站规格](specs/site-rebuild/spec.md) · [Work 产品页规格](specs/work-product-page/spec.md) · [官网优化清单](docs/site-optimization-2026-10-16.md)
+- [官网优化接手 prompt](docs/site-optimization-handoff-prompt-2026-10-18.md) · [样张与验收记录](docs/site-style-studies-2026-10-16.md)（仓库交付与仅本地样张范围见主清单）
 - [工作室介绍（文案事实来源）](docs/studio-intro.md) · [官方图库说明](docs/IMAGE-LIBRARY-BRIEF.md) · [图库原图与雾感版](docs/r8-materials-assets.md)
 - [部署与成本](docs/DEPLOYMENT.md) · [Cloudflare 自有账号部署](docs/CLOUDFLARE-DEPLOYMENT.md) · [登录配置](docs/AUTH-SETUP.md) · [艺术家 Skill 来源](docs/ARTIST-SKILL-SOURCES.md)
 

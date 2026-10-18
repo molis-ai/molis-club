@@ -89,27 +89,6 @@
 .m-ent-title span + span {
   padding-left: 1.6em;
 }
-.m-ent-hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 36px;
-  color: var(--ink-2);
-  font: 400 var(--t-ui) / 1.4 var(--sans);
-  letter-spacing: 0.12em;
-  transition: color 0.4s var(--ease);
-}
-.m-ent-hint:hover {
-  color: var(--ink);
-}
-.m-ent-hint svg {
-  animation: m-ent-nudge 2.2s var(--ease) 1.6s 3;
-}
-@keyframes m-ent-nudge {
-  40% {
-    translate: 0 4px;
-  }
-}
 
 /* =====================================================================
    ② 你们卡在哪：五张摊在桌上的纸条
@@ -2416,11 +2395,6 @@ html:not(.js) .m-ent-slip:has(input:checked)::before {
   font: 300 var(--t-h1) / 1.3 var(--sans);
   letter-spacing: 0.04em;
 }
-.m-ent-talk-lead {
-  color: var(--ink-2);
-  font: 300 var(--t-lead) / 1.8 var(--sans);
-  letter-spacing: 0.03em;
-}
 .m-ent-seeded {
   display: flex;
   align-items: baseline;
@@ -2503,7 +2477,6 @@ html:not(.js) .m-ent-slip:has(input:checked)::before {
 /* ---------- 减少动态：每处停在完整的结果 ---------- */
 @media (prefers-reduced-motion: reduce) {
   .m-ent-hero .m-plate img,
-  .m-ent-hint svg,
   .m-sym,
   .m-sym *,
   .m-keep-art *,

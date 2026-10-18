@@ -2,9 +2,14 @@
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, Pause, Play } from 'lucide-react';
 import { Fragment, useEffect, useRef, useState } from 'react';
-import type { CSSProperties, MouseEvent, PointerEvent } from 'react';
+import type {
+  CSSProperties,
+  FocusEvent,
+  MouseEvent,
+  PointerEvent,
+} from 'react';
 import { useReducedMotion, useVisible } from '../motion';
-import { access, intro, introProducts } from './stages-data';
+import { intro, introProducts } from './stages-data';
 import { IntroStage } from './stages';
 import { Thumb } from './thumbs';
 import './stages.css';
@@ -12,9 +17,10 @@ import './stages.css';
 // 首页第三段：沿用第八轮的产品列表与演示，精简重复说明，扩大画面。
 // 左边一列五件产品（缩略图、名字、当前阶段），鼠标停在哪件，右边就换成哪件：
 // 第 3 章的一句话 → 分段演示（一轮不超过 10 秒，小标题是第 4 章的原句）→
-// 第 3 章的「当前阶段」与去处。列表下面保留「目前如何了解与体验」；
+// 第 3 章的「当前阶段」与去处。2026-10-17 按首页验收反馈移除列表下方重复的开放说明；
 // 「这些产品怎样联系」按负责人的意见不放首页，留给各产品页。
 // 交互：鼠标停一下才换；键盘聚焦到哪行选哪行；触屏第一次点是选中，再点进产品页。
+// 先不开放的产品（Life、Story、World）：这一行是按钮，只用来选中；右边不给去处，阶段写「探索中，敬请期待」。
 
 const names = Object.fromEntries(
   introProducts.map((product) => [product.id, product.name]),
@@ -39,6 +45,10 @@ export function Products() {
   };
   const leave = () => window.clearTimeout(intent.current);
   const tap = (index: number) => (event: MouseEvent) => {
+    if (!introProducts[index].href) {
+      setActive(index);
+      return;
+    }
     if (index === active) return;
     if (!matchMedia('(hover: hover)').matches) {
       event.preventDefault();
@@ -65,42 +75,59 @@ export function Products() {
         <div className="m-plist" data-reveal>
           {introProducts.map((product, index) => {
             const on = index === active;
-            return (
-              <Fragment key={product.id}>
-                <Link
-                  href={product.href}
-                  className="m-prow"
-                  data-active={on || undefined}
-                  aria-current={on ? 'true' : undefined}
-                  style={{ '--row': index + 1 } as CSSProperties}
-                  onPointerEnter={enter(index)}
-                  onPointerLeave={leave}
-                  onFocus={(event) => {
-                    // 只认键盘聚焦；点按带来的聚焦交给 onClick 判断
-                    if (event.currentTarget.matches(':focus-visible'))
-                      setActive(index);
-                  }}
-                  onClick={tap(index)}
+            const row = {
+              className: 'm-prow',
+              'data-active': on || undefined,
+              'data-soon': product.soon,
+              style: { '--row': index + 1 } as CSSProperties,
+              onPointerEnter: enter(index),
+              onPointerLeave: leave,
+              onFocus: (event: FocusEvent<HTMLElement>) => {
+                // 只认键盘聚焦；点按带来的聚焦交给 onClick 判断
+                if (event.currentTarget.matches(':focus-visible'))
+                  setActive(index);
+              },
+              onClick: tap(index),
+            };
+            const rowInner = (
+              <>
+                <span
+                  className="m-prow-thumb"
+                  data-concept={product.concept || undefined}
                 >
-                  <span
-                    className="m-prow-thumb"
-                    data-concept={product.concept || undefined}
-                  >
-                    <Thumb id={product.id} />
-                  </span>
-                  <span className="m-prow-name">
-                    <strong lang="en">{product.name}</strong>
-                    <small className="ix-row-note">
-                      <i data-stage={product.id} />
-                      {product.rowNote}
-                    </small>
-                  </span>
+                  <Thumb id={product.id} />
+                </span>
+                <span className="m-prow-name">
+                  <strong lang="en">{product.name}</strong>
+                  <small className="ix-row-note">
+                    <i data-stage={product.soon ? 'soon' : product.id} />
+                    {product.rowNote}
+                  </small>
+                </span>
+                {product.href ? (
                   <ArrowRight
                     className="m-prow-arrow"
                     size={18}
                     aria-hidden="true"
                   />
-                </Link>
+                ) : null}
+              </>
+            );
+            return (
+              <Fragment key={product.id}>
+                {product.href ? (
+                  <Link
+                    href={product.href}
+                    aria-current={on ? 'true' : undefined}
+                    {...row}
+                  >
+                    {rowInner}
+                  </Link>
+                ) : (
+                  <button type="button" aria-pressed={on} {...row}>
+                    {rowInner}
+                  </button>
+                )}
                 <article
                   className={`m-panel ix-panel ix-panel-${product.id}${on ? ' is-on' : ''}`}
                   data-running={on && running}
@@ -111,7 +138,10 @@ export function Products() {
                   <div className="m-panel-copy">
                     <p className="m-panel-kicker">
                       <span lang="en">{product.name}</span>
-                      <span className="ix-stage" data-stage={product.id}>
+                      <span
+                        className="ix-stage"
+                        data-stage={product.soon ? 'soon' : product.id}
+                      >
                         <i />
                         {product.stage}
                       </span>
@@ -158,15 +188,19 @@ export function Products() {
                       <div>
                         <dt>{intro.stageLabel}</dt>
                         <dd>
-                          <b>{product.stage}。</b>
-                          {product.stageNote}
+                          {product.stageNote ? (
+                            <>
+                              <b>{product.stage}。</b>
+                              {product.stageNote}
+                            </>
+                          ) : (
+                            <b>{product.stage}</b>
+                          )}
                         </dd>
                       </div>
                     </dl>
+                    {/* 画面上方已经写着是哪件产品：去产品页只留一颗圆形箭头；开源代码没有上下文，留两个词 */}
                     <span className="ix-go">
-                      <Link className="m-btn" href={product.href}>
-                        {product.more}
-                      </Link>
                       {product.extra ? (
                         <a
                           className="m-link"
@@ -178,41 +212,23 @@ export function Products() {
                           <ArrowUpRight size={13} aria-hidden="true" />
                         </a>
                       ) : null}
+                      {/* Life、Story、World 暂不开放：没有 href，不放箭头 */}
+                      {product.href ? (
+                        <Link
+                          className="m-go"
+                          href={product.href}
+                          data-dir="right"
+                          aria-label={product.more}
+                        >
+                          <ArrowRight size={18} aria-hidden="true" />
+                        </Link>
+                      ) : null}
                     </span>
                   </div>
                 </article>
               </Fragment>
             );
           })}
-        </div>
-
-        <div className="ix-map" data-reveal>
-          <section className="ix-map-access" aria-labelledby="ix-access-title">
-            <h3 id="ix-access-title" className="ix-map-h">
-              {access.title}
-            </h3>
-            <dl>
-              {access.rows.map((row) => (
-                <div key={row.who}>
-                  <dt lang="en">{row.who}</dt>
-                  <dd>
-                    {row.text}
-                    {row.link ? (
-                      <a
-                        className="m-link"
-                        href={row.link.href}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {row.link.label}
-                        <ArrowUpRight size={12} aria-hidden="true" />
-                      </a>
-                    ) : null}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </section>
         </div>
       </div>
     </section>

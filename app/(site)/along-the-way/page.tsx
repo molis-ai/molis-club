@@ -164,12 +164,9 @@ export default function AlongPage() {
             className="al-end-work"
           />
           <div className="al-end-text" data-reveal>
-            <h2 className="ex-kicker" id="al-end-title">
-              {alongUi.endLabel}
-            </h2>
-            <p className="ex-h3">
+            <h2 className="ex-h3" id="al-end-title">
               <Phrases text={along.outro} />
-            </p>
+            </h2>
             <div className="m-actions">
               <Btn href={contactHref()}>{alongUi.chat}</Btn>
             </div>

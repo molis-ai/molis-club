@@ -125,7 +125,6 @@ export const teamUi = {
 
   // ① 开场
   facts: { members: '成员', tries: '具体的尝试', products: '产品方向' },
-  meet: '认识每一个人',
 
   // ② 八个人
   membersLabel: '成员',
@@ -133,7 +132,7 @@ export const teamUi = {
   motto: '签名',
   more: '经历',
   allSelf: '全部自述',
-  selfNote: '「」里是本人的自述：玩笑话，不作职务。点「经历」看完整的背景。',
+  selfNote: '「」里是本人的自述：玩笑话，不作职务。',
 
   // ③ 来时路
   pathLabel: '来时路',
@@ -153,6 +152,5 @@ export const teamUi = {
   community: '去社区看看',
 
   // ⑥ 找同类
-  endLabel: '找同类',
   chat: '聊一聊',
 };

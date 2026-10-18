@@ -10,8 +10,8 @@ export const aboutUi = {
   kicker: '关于我们',
   /** 底稿 1.4 的小标题，当这一页的大标题 */
   title: '我们相信什么',
-  /** 开场的三个数 */
-  facts: { beliefs: '信念', practice: '产品里的选择', demands: '要求自己' },
+  /** 开场的数 */
+  facts: { beliefs: '信念' },
 
   changed: '什么变了',
   whole: '读这一节的前两段',
@@ -19,9 +19,6 @@ export const aboutUi = {
 
   believe: 'What we believe',
   beliefsTitle: '六条信念',
-
-  practice: '落到产品里',
-  demands: '要求自己',
 };
 
 /** 「三种媒介，同一个动作」：作画、写代码、改文字并排，地位相同，一起走过起稿 → 修改 → 完成（新写，示意） */

@@ -1,5 +1,5 @@
 // Molis Life 页：几周里的一件挂念和一个心愿。章节正文取自 docs/studio-intro.md 4.3（原句）；
-// 每一步的一句话说明画面在演什么。Life 是可交互的规则原型，真实模型和外部服务尚未接入，画面都标「原型示意」。
+// 画面自己演，不再另写每一步的说明。Life 是可交互的规则原型，真实模型和外部服务尚未接入，画面都标「原型示意」。
 
 import { products } from './products';
 
@@ -13,57 +13,36 @@ export const lifeChapters: {
   kicker: string;
   title: string;
   paragraphs: string[];
-  steps: string[];
 }[] = [
   {
     id: 'worries',
     kicker: '第一周',
     title: life.opening[0],
     paragraphs: life.opening.slice(1),
-    steps: ['一笔还没退回来的款。', '一件快到期的事。', '一个说了很久的愿望。'],
   },
   {
     id: 'refund',
     kicker: '第二周',
     title: followUp.title,
     paragraphs: followUp.paragraphs,
-    steps: [
-      '申请已提交：有申请记录，才亮。',
-      '对方已受理：有商家回复，才亮。',
-      '退货已签收：有物流签收，才亮。',
-      '钱还没到账，就照实说没到账；哪里要你自己处理，写清楚。',
-    ],
   },
   {
     id: 'sea',
     kicker: '第三周',
     title: chance.title,
     paragraphs: chance.paragraphs,
-    steps: [
-      '「想陪妈妈去看海。」先留着。',
-      '这周六下午，空出了半天。',
-      '它说明为什么此刻想到这件事。',
-      '近一点，或者多走一段；去不去由你定。',
-    ],
   },
   {
     id: 'curious',
     kicker: '第四周',
     title: curious.title,
     paragraphs: curious.paragraphs,
-    steps: [
-      '看见的植物、想读的书、一段音乐，都可以留下。',
-      '各自选：替我处理、一起想想，或者先留着。',
-      '它对你的理解，你可以改。',
-    ],
   },
 ];
 
 /** 标志性交互：拨动「这周空出多少时间」。新写；所有地点、天气、路程都是示意 */
 export const freeTime = {
-  kicker: '亲手试一次',
   title: '这周空出多少时间？',
-  lead: '拨一拨。时间不同，准备也不同；每一次都说明为什么此刻想到，去不去由你点。',
   note: '原型示意 · 地点与天气为示意',
   wish: '“想陪妈妈去看海。”',
   label: '这周空出的时间',
@@ -101,18 +80,6 @@ export const freeTime = {
   went: '好，开始准备。去不去、准备到什么程度，随时可以改。',
   kept: '好，愿望先留着。下次有空的时候再说。',
   why: '为什么此刻想到',
-};
-
-/** 当前进展：摘自 4.3「当前进展」原句 */
-export const lifeProgress = {
-  have: [
-    'Molis Life 处于原型探索阶段。已有可交互的本地 Web 原型，可以保存生活内容、明确偏好、查看有限规则生成的建议，并进行本地准备、延后、暂停和回看。',
-  ],
-  notYet: [
-    '真实模型、外部服务、后台跟进与跨设备同步尚未接入。',
-    '退换货的持续跟进、结合真实日历与天气寻找机会，以及更长期的理解与陪伴，仍需要继续做出来。',
-  ],
-  now: ['当前尚未开放公开下载。'],
 };
 
 export const lifeGo = {
