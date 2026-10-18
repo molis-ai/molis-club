@@ -7,6 +7,7 @@ import { alongGroups } from '../../../content/site/along';
 import { essays, splitTitle } from '../../../content/site/essays';
 import { nav } from '../../../content/site/nav';
 import { aboutUi } from '../../../content/site/about';
+import { products, type ProductId } from '../../../content/site/products';
 import {
   ALONG,
   COMMUNITY,
@@ -15,7 +16,7 @@ import {
   essayHref,
   productHref,
 } from '../../_site/routes';
-import { Btn, More, Note, Phrases, type Vars } from '../../_site/ui';
+import { Btn, More, Note, Phrases, Status, type Vars } from '../../_site/ui';
 import { Work } from '../../_site/exhibit/exhibit';
 import { BeliefGallery } from './belief-gallery';
 import { Painters } from './painters';
@@ -28,7 +29,7 @@ import './one.css';
 // 读起来是一篇故事（负责人 2026-10-18：「像读故事一样来读我们的故事」「成员放在最后，不想班味很重」「先讲愿景，可以先讲黑客与画家」）。
 // 骨架是底稿第 2 章「我们的故事」，按负责人的顺序重排，第 1 章的愿景、做法与信念织在中间：
 //   序 技术，回到人的尺度。→ 《黑客与画家》（画家与黑客一起推近）→ 当想法更容易变成现实（2.2，去文章）→
-//   我们相信什么（1.4）→ 从怎样工作，走向怎样生活（2.3，产品名在句子里链过去）→
+//   我们相信什么（1.4）→ 从怎样工作，走向怎样生活（2.3，Work、Tool 在句子里链过去；Life、Story、World 先不开放）→
 //   从这些探索，看向更远的构想（2.4，World）→ 从同事，到共同创造的伙伴（2.1，去沿途；最后是八个人）→
 //   尾声 找同类，不抢货架。
 // 章节标题都是底稿的小标题，不加眉题与编号；《黑客与画家》一章是例外：标题是书名，字是新写的（见 painters.tsx）；
@@ -76,22 +77,62 @@ function Linked({
   return <>{out}</>;
 }
 
+/**
+ * 先不开放的产品（负责人 2026-10-18）：句子里只留名字，不链；第一次说到它的那段下面一行写名字和「探索中，敬请期待」。
+ * 合并 main 以后改读 content/site/products.ts 的 soon / stageOf（阶段字样与那里一致）。
+ */
+const SOON: Array<[string, ProductId]> = [
+  ['Life', 'life'],
+  ['Story', 'story'],
+  ['Molis World', 'world'],
+];
+const SOON_STAGE = '探索中，敬请期待';
+
 /** 一段正文：只有一句的短段当作节拍，字大一点、墨色 */
 function Para({
   text,
   links = [],
   lead = false,
+  soon = [],
 }: {
   text: string;
   links?: Array<[string, string]>;
   /** 一章开头那句，也当作节拍 */
   lead?: boolean;
+  /** 这一段第一次说到的、先不开放的产品 */
+  soon?: ProductId[];
 }) {
   const beat = lead || (sentences(text).length === 1 && text.length <= 28);
   return (
-    <p className={beat ? 'ao-beat' : undefined}>
-      <Linked text={text} links={links} />
-    </p>
+    <>
+      <p className={beat ? 'ao-beat' : undefined}>
+        <Linked text={text} links={links} />
+      </p>
+      {soon.length ? (
+        <p className="ao-soon">
+          {soon.map((id) => (
+            <span key={id} className="ao-soon-item">
+              <span lang="en">{products[id].name}</span>
+              <Status concept>{SOON_STAGE}</Status>
+            </span>
+          ))}
+        </p>
+      ) : null}
+    </>
+  );
+}
+
+/** 每件先不开放的产品第一次出现在哪一段（按页面上的先后） */
+function soonFirst(paragraphs: string[]) {
+  const seen = new Set<ProductId>();
+  return new Map(
+    paragraphs.map((text) => {
+      const ids = SOON.filter(
+        ([term, id]) => !seen.has(id) && text.includes(term),
+      ).map(([, id]) => id);
+      ids.forEach((id) => seen.add(id));
+      return [text, ids] as const;
+    }),
   );
 }
 
@@ -99,11 +140,10 @@ const HUMAN_SCALE: [string, string] = [
   '《人的尺度》',
   essayHref('human-scale'),
 ];
+/** 正文里链过去的产品：Life、Story、World 先不开放，不链（见 SOON） */
 const PRODUCTS: Array<[string, string]> = [
   ['Molis Work', productHref.work],
   ['Molis Tool', productHref.tool],
-  ['Life', productHref.life],
-  ['Story', productHref.story],
 ];
 
 const leadFirst = sentences(team.lead)[0];
@@ -163,6 +203,7 @@ export function AboutOne() {
   const change = story.change.paragraphs;
   const toLife = story.toLife.paragraphs;
   const further = story.further.paragraphs;
+  const soon = soonFirst([...toLife, ...further]);
   return (
     <div className="ao">
       {/* 序：主线，窗前的人 */}
@@ -260,7 +301,12 @@ export function AboutOne() {
         <div className="ao-prose" data-reveal>
           <Para text={studio.short[2]} lead />
           {toLife.slice(0, 2).map((text) => (
-            <Para key={text} text={text} links={PRODUCTS} />
+            <Para
+              key={text}
+              text={text}
+              links={PRODUCTS}
+              soon={soon.get(text)}
+            />
           ))}
         </div>
         <Work
@@ -274,7 +320,12 @@ export function AboutOne() {
         />
         <div className="ao-prose" data-reveal>
           {toLife.slice(2).map((text) => (
-            <Para key={text} text={text} links={PRODUCTS} />
+            <Para
+              key={text}
+              text={text}
+              links={PRODUCTS}
+              soon={soon.get(text)}
+            />
           ))}
         </div>
       </Chapter>
@@ -283,10 +334,7 @@ export function AboutOne() {
       <Chapter id="further" title={story.further.title}>
         <div className="ao-prose" data-reveal>
           <Para text={further[0]} />
-          <Para
-            text={further[1]}
-            links={[['Molis World', productHref.world]]}
-          />
+          <Para text={further[1]} soon={soon.get(further[1])} />
         </div>
         <Work
           name="team-island"

@@ -270,21 +270,30 @@ for (const [path, text] of [
     '决定什么值得做，本身就是创造的一部分。',
   ])
     assert.equal(text.split(line).length - 1, 1, `about one: 「${line}」 once`);
-  // 去处：沿途、两篇文章、正文里的五件产品、企业合作、社区、聊一聊
+  // 去处：沿途、两篇文章、正文里的 Work 与 Tool、企业合作、社区、聊一聊
   for (const href of [
     '/along-the-way',
     '/essays/human-scale',
     '/essays/idealism',
     '/work',
     '/tool',
-    '/life',
-    '/story',
-    '/world',
     '/enterprise',
     '/community',
     '/contact',
   ])
     assert(one.includes(`href="${href}"`), `about one: link ${href}`);
+  // Life、Story、World 先不开放（负责人 2026-10-18）：正文里不链，第一次说到的那段下面写「探索中，敬请期待」
+  assert(
+    !/class="m-inline" href="\/(life|story|world)"/.test(one),
+    'about one: no inline links to products that are not open yet',
+  );
+  for (const name of ['Molis Life', 'Molis Story', 'Molis World'])
+    assert(
+      new RegExp(
+        `${name}</span><span class="m-status"[^>]*>探索中，敬请期待`,
+      ).test(one),
+      `about one: ${name} is marked 探索中，敬请期待`,
+    );
   // 不再是展厅：没有名牌、平面图、墙色与「下一个展厅」
   assert(!text.includes('展厅'), 'about one: no room names');
   // 《黑客与画家》：右边是本站真实的样式表，行号跟着文件走；推近的终点是缓动曲线和它的注释

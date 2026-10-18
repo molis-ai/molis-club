@@ -85,6 +85,22 @@
   margin-bottom: 0;
 }
 
+/* 先不开放的产品：说到它的那段下面一行，名字和「探索中，敬请期待」（空心圆点） */
+.ao-prose > p.ao-soon {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  margin-top: 0.8em;
+  font: 400 var(--t-small) / 1.6 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+.ao-soon-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
 /* 插页：比正文宽，四周留白 */
 .ao-fig {
   width: min(100%, var(--ao-fig));
