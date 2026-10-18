@@ -166,23 +166,25 @@ export function Clothesline() {
                 <i className="m-com-tag-hole" aria-hidden="true" />
                 <b>{tag.title}</b>
                 <p>{tag.text}</p>
+                {/* 签上已经有标题和说明：只留一颗圆形箭头，去处写进读屏名 */}
                 {tag.topic ? (
                   <Link
-                    className="m-link m-com-tag-link"
+                    className="m-go m-com-tag-link"
                     href={contactHref(tag.topic)}
+                    data-dir="right"
+                    aria-label={tag.link}
                   >
-                    {tag.link}
-                    <ArrowRight size={13} aria-hidden="true" />
+                    <ArrowRight size={18} aria-hidden="true" />
                   </Link>
                 ) : (
                   <a
-                    className="m-link m-com-tag-link"
+                    className="m-go m-com-tag-link"
                     href={ARTIST_SKILL_REPO}
                     target="_blank"
                     rel="noreferrer"
+                    aria-label={tag.link}
                   >
-                    {tag.link}
-                    <ArrowUpRight size={13} aria-hidden="true" />
+                    <ArrowUpRight size={18} aria-hidden="true" />
                   </a>
                 )}
               </div>

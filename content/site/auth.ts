@@ -64,7 +64,7 @@ export const accountCopy = {
     submit: '保存新密码',
   },
   logout: '退出登录',
-  back: '回到 Molis AI',
+  back: '首页',
   /** 预留：能力上线前不显示，上线后把 ready 改成 true 并接上数据 */
   sections: [
     { id: 'follow', title: '关注的产品进展', ready: false },

@@ -163,10 +163,8 @@ export function Products() {
                         </dd>
                       </div>
                     </dl>
+                    {/* 画面上方已经写着是哪件产品：去产品页只留一颗圆形箭头；开源代码没有上下文，留两个词 */}
                     <span className="ix-go">
-                      <Link className="m-btn" href={product.href}>
-                        {product.more}
-                      </Link>
                       {product.extra ? (
                         <a
                           className="m-link"
@@ -178,6 +176,14 @@ export function Products() {
                           <ArrowUpRight size={13} aria-hidden="true" />
                         </a>
                       ) : null}
+                      <Link
+                        className="m-go"
+                        href={product.href}
+                        data-dir="right"
+                        aria-label={product.more}
+                      >
+                        <ArrowRight size={18} aria-hidden="true" />
+                      </Link>
                     </span>
                   </div>
                 </article>

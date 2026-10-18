@@ -361,41 +361,84 @@ body:has(.m) .skip-link {
   box-shadow: inset 0 0 0 1px var(--ink);
 }
 
-/* ---------- 文字链接：悬停时下划线从左画到右 ---------- */
+/* ---------- 行动入口：一个按钮一个箭头，不用下划线文字（DESIGN.md 常驻约束） ----------
+   没有上下文的独立入口用 .m-link：轻描边胶囊，两三个字说明去处 + 箭头（站内右箭头、外链斜箭头）；
+   卡片里已经有标题和说明时只留 .m-go：一颗圆形箭头，去处写在 aria-label 里。
+   正文里的行内链接才有下划线（.m-inline）；导航和目录保留文字，不用这两种。 */
 .m-link {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  min-height: 30px;
-  padding-bottom: 2px;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 6px 16px;
   border: 0;
-  background:
-    linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat,
-    linear-gradient(var(--hair-2), var(--hair-2)) 0 100% / 100% 1px no-repeat;
+  border-radius: var(--r-pill);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
   color: var(--ink);
   font: 400 var(--t-ui) / 1.4 var(--sans);
   letter-spacing: 0.04em;
+  text-align: center;
   text-decoration: none;
   cursor: pointer;
-  transition: background-size 0.55s var(--ease);
+  transition:
+    background-color 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
 }
-.m-link:hover {
-  background-size:
-    100% 1px,
-    100% 1px;
+.m-link:hover,
+.m-go:hover {
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1px var(--mute);
 }
-.m-link svg {
+.m-link:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.m-go {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    background-color 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
+}
+.m-link svg,
+.m-go svg,
+.m-btn svg {
   flex: none;
   transition: transform 0.45s var(--ease);
 }
-.m-link:hover svg {
+.m-link:hover svg,
+.m-go:hover svg,
+.m-btn:hover svg {
   transform: translate(2px, -2px);
 }
 .m-link[data-dir='down']:hover svg {
   transform: translateY(2px);
 }
-.m-link[data-dir='right']:hover svg {
+.m-link[data-dir='right']:hover svg,
+.m-go[data-dir='right']:hover svg,
+.m-btn[data-dir='right']:hover svg {
   transform: translateX(3px);
+}
+.m-btn:disabled:hover svg,
+.m-link:disabled:hover svg {
+  transform: none;
+}
+/* 焦点框跟着胶囊和圆走，不被公共的 4px 圆角压成方框 */
+.m .m-btn:focus-visible,
+.m .m-link:focus-visible {
+  border-radius: var(--r-pill);
+}
+.m .m-go:focus-visible {
+  border-radius: 50%;
 }
 /* 正文里的行内链接 */
 .m-inline {
@@ -414,7 +457,7 @@ body:has(.m) .skip-link {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 14px 24px;
+  gap: 12px 16px;
 }
 
 /* ---------- 状态签：杏橙圆点 + 阶段 ---------- */

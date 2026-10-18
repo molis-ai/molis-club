@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import {
   useRef,
@@ -170,6 +171,7 @@ export function ContactForm({
 
   if (done) {
     const back = backTo(entry);
+    const twoWays = back && back.href !== path;
     return (
       <div className="m-form-done" aria-live="polite">
         <Title className="m-form-done-title" ref={focusOnMount} tabIndex={-1}>
@@ -177,16 +179,19 @@ export function ContactForm({
         </Title>
         <p className="m-form-done-text">{form.success.text}</p>
         <p className="m-actions">
-          {back && back.href !== path ? (
-            <Link className="m-btn" href={back.href}>
+          {twoWays ? (
+            <Link className="m-btn" href={back.href} data-dir="right">
               {back.label}
+              <ArrowRight size={14} aria-hidden="true" />
             </Link>
           ) : null}
           <Link
-            className={back && back.href !== path ? 'm-link' : 'm-btn'}
+            className={twoWays ? 'm-link' : 'm-btn'}
             href={HOME}
+            data-dir="right"
           >
             {form.back.home}
+            <ArrowRight size={twoWays ? 13 : 14} aria-hidden="true" />
           </Link>
         </p>
       </div>
@@ -208,6 +213,7 @@ export function ContactForm({
           </span>
           <Link className="m-link" href={CONTACT} data-dir="right">
             {form.elsewhere}
+            <ArrowRight size={13} aria-hidden="true" />
           </Link>
         </p>
       ) : (

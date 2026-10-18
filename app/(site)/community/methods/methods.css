@@ -14,7 +14,6 @@ html:not(.js) .m-com-js {
 
 /* ---------- 带走：复制、下载，做完后的一句话 ---------- */
 .m-com-act {
-  padding: 0 0 2px;
   white-space: nowrap;
 }
 .m-com-act small {
@@ -747,8 +746,12 @@ html:not(.js) .m-com-js {
   display: flex;
   flex-wrap: wrap;
   align-items: start;
-  gap: 4px 22px;
+  gap: 8px 12px;
   margin-top: 6px;
+}
+/* 卡片已经有标题和说明，去详情只留一颗圆形箭头，靠右，和左边的复制、下载分开 */
+.m-mth-card-actions .m-go {
+  margin-left: auto;
 }
 .m-mth-share {
   display: flex;
@@ -959,7 +962,7 @@ html:not(.js) .m-com-js {
 .m-mth-related ul {
   border-top: 1px solid var(--ink);
 }
-.m-mth-related a {
+.m-mth-related li > a {
   display: grid;
   grid-template-columns: 3em minmax(0, 1fr) minmax(0, 1fr) 20px;
   align-items: baseline;
@@ -967,23 +970,23 @@ html:not(.js) .m-com-js {
   padding: 18px 0;
   border-bottom: 1px solid var(--hair);
 }
-.m-mth-related b {
+.m-mth-related li > a b {
   font: 400 var(--t-keys) / 1.4 var(--sans);
   letter-spacing: 0.03em;
 }
-.m-mth-related i {
+.m-mth-related li > a i {
   font: italic 300 var(--t-ui) / 1.4 var(--latin);
   color: var(--mute);
 }
-.m-mth-related svg {
+.m-mth-related li > a svg {
   color: var(--mute);
   transition: transform 0.45s var(--ease);
 }
-.m-mth-related a:hover svg {
+.m-mth-related li > a:hover svg {
   transform: translate(2px, -2px);
   color: var(--ink);
 }
-.m-mth-related a:hover b {
+.m-mth-related li > a:hover b {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 6px;
@@ -1130,13 +1133,13 @@ html:not(.js) .m-com-js {
   .m-mth-guide {
     grid-template-columns: minmax(0, 1fr);
   }
-  .m-mth-related a {
+  .m-mth-related li > a {
     grid-template-columns: 2.4em minmax(0, 1fr) 20px;
   }
-  .m-mth-related i {
+  .m-mth-related li > a i {
     grid-column: 2;
   }
-  .m-mth-related svg {
+  .m-mth-related li > a svg {
     grid-column: 3;
     grid-row: 1;
   }
