@@ -101,9 +101,15 @@ assert(!home.includes('目前如何了解与体验'), 'home: removed access over
 assert.match(home, /开源代码/);
 // 产品舞台去产品页只留圆形箭头，读屏名写清是哪件（E3）；Life、Story、World 暂不开放，不放箭头
 for (const name of ['Work', 'Tool'])
-  assert(home.includes(`aria-label="了解 Molis ${name}"`), `home stage go ${name}`);
+  assert(
+    home.includes(`aria-label="了解 Molis ${name}"`),
+    `home stage go ${name}`,
+  );
 for (const name of ['Life', 'Story', 'World'])
-  assert(!home.includes(`aria-label="了解 Molis ${name}"`), `home stage no go ${name}`);
+  assert(
+    !home.includes(`aria-label="了解 Molis ${name}"`),
+    `home stage no go ${name}`,
+  );
 // 结尾：过渡句与企业合作、社区、关于我们三个去处
 assert.match(home, /让口味相近的人/);
 for (const path of ['/enterprise', '/community', '/about'])
@@ -287,6 +293,12 @@ for (const [path, text] of [
     '/contact',
   ])
     assert(one.includes(`href="${href}"`), `about one: link ${href}`);
+  // 文章与沿途是有标题和说明的卡片：只留圆形箭头，读屏名写清去处（E3）
+  for (const label of ['读《人的尺度》', '看沿途'])
+    assert(
+      new RegExp(`class="m-go"[^>]*aria-label="${label}"`).test(one),
+      `about one: card arrow ${label}`,
+    );
   // Life、Story、World 先不开放（负责人 2026-10-18）：正文里不链，第一次说到的那段下面写「探索中，敬请期待」
   assert(
     !/class="m-inline" href="\/(life|story|world)"/.test(one),
@@ -342,7 +354,10 @@ for (const [path, text] of [
 for (const path of ['/contact', '/contact?study=current']) {
   const contact = await html(path);
   assert(!contact.includes('m-review-bar'), `${path}: no review switch`);
-  assert(!contact.includes('选一个来意，写几句就好'), `${path}: old lead removed`);
+  assert(
+    !contact.includes('选一个来意，写几句就好'),
+    `${path}: old lead removed`,
+  );
 }
 
 // 行动入口不用下划线文字：卡片里只留圆形箭头，读屏名写清去处（E3）

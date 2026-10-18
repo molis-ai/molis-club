@@ -1,13 +1,18 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { ArrowRight } from 'lucide-react';
 import { story, studio } from '../../../content/site/studio';
 import { members, team, teamUi } from '../../../content/site/team';
 import { alongGroups } from '../../../content/site/along';
 import { essays, splitTitle } from '../../../content/site/essays';
 import { nav } from '../../../content/site/nav';
 import { aboutUi } from '../../../content/site/about';
-import { products, type ProductId } from '../../../content/site/products';
+import {
+  isSoon,
+  products,
+  soon,
+  stageOf,
+  type ProductId,
+} from '../../../content/site/products';
 import {
   ALONG,
   COMMUNITY,
@@ -77,30 +82,33 @@ function Linked({
   return <>{out}</>;
 }
 
+/** 底稿句子里怎样称呼每件产品（行内链接、找第一次出现都按这个） */
+const TERMS: Record<ProductId, string> = {
+  work: 'Molis Work',
+  tool: 'Molis Tool',
+  life: 'Life',
+  story: 'Story',
+  world: 'Molis World',
+};
 /**
- * 先不开放的产品（负责人 2026-10-18）：句子里只留名字，不链；第一次说到它的那段下面一行写名字和「探索中，敬请期待」。
- * 合并 main 以后改读 content/site/products.ts 的 soon / stageOf（阶段字样与那里一致）。
+ * 先不开放的产品（负责人 2026-10-18，全站统一读 products.ts 的 soon / stageOf）：
+ * 句子里只留名字，不链；第一次说到它的那段下面一行写名字和「探索中，敬请期待」。
  */
-const SOON: Array<[string, ProductId]> = [
-  ['Life', 'life'],
-  ['Story', 'story'],
-  ['Molis World', 'world'],
-];
-const SOON_STAGE = '探索中，敬请期待';
+const SOON = soon.ids.map((id) => [TERMS[id], id] as const);
 
 /** 一段正文：只有一句的短段当作节拍，字大一点、墨色 */
 function Para({
   text,
   links = [],
   lead = false,
-  soon = [],
+  later = [],
 }: {
   text: string;
   links?: Array<[string, string]>;
   /** 一章开头那句，也当作节拍 */
   lead?: boolean;
   /** 这一段第一次说到的、先不开放的产品 */
-  soon?: ProductId[];
+  later?: ProductId[];
 }) {
   const beat = lead || (sentences(text).length === 1 && text.length <= 28);
   return (
@@ -108,12 +116,12 @@ function Para({
       <p className={beat ? 'ao-beat' : undefined}>
         <Linked text={text} links={links} />
       </p>
-      {soon.length ? (
+      {later.length ? (
         <p className="ao-soon">
-          {soon.map((id) => (
+          {later.map((id) => (
             <span key={id} className="ao-soon-item">
               <span lang="en">{products[id].name}</span>
-              <Status concept>{SOON_STAGE}</Status>
+              <Status concept>{stageOf(id)}</Status>
             </span>
           ))}
         </p>
@@ -140,11 +148,10 @@ const HUMAN_SCALE: [string, string] = [
   '《人的尺度》',
   essayHref('human-scale'),
 ];
-/** 正文里链过去的产品：Life、Story、World 先不开放，不链（见 SOON） */
-const PRODUCTS: Array<[string, string]> = [
-  ['Molis Work', productHref.work],
-  ['Molis Tool', productHref.tool],
-];
+/** 正文里链过去的产品：先不开放的不链（见 SOON） */
+const PRODUCTS = (Object.keys(TERMS) as ProductId[])
+  .filter((id) => !isSoon(id))
+  .map((id): [string, string] => [TERMS[id], productHref[id]]);
 
 const leadFirst = sentences(team.lead)[0];
 const findPeers = studio.beliefs[2];
@@ -161,14 +168,21 @@ const beliefWorks = [
 ] as const;
 
 /** 有标题和说明的去处：整张是链接，只留一个箭头按钮 */
-function Go({ href, children }: { href: string; children: ReactNode }) {
+function Go({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  /** 读屏听到的去处 */
+  label: string;
+  children: ReactNode;
+}) {
   return (
-    <Link className="ao-go" href={href}>
+    <div className="ao-go">
       <span className="ao-go-body">{children}</span>
-      <span className="ao-go-arrow" aria-hidden="true">
-        <ArrowRight size={18} />
-      </span>
-    </Link>
+      <More href={href} label={label} />
+    </div>
   );
 }
 
@@ -203,7 +217,7 @@ export function AboutOne() {
   const change = story.change.paragraphs;
   const toLife = story.toLife.paragraphs;
   const further = story.further.paragraphs;
-  const soon = soonFirst([...toLife, ...further]);
+  const firstSoon = soonFirst([...toLife, ...further]);
   return (
     <div className="ao">
       {/* 序：主线，窗前的人 */}
@@ -259,7 +273,7 @@ export function AboutOne() {
             const { main, sub } = splitTitle(essay.title);
             return (
               <li key={essay.slug}>
-                <Go href={essayHref(essay.slug)}>
+                <Go href={essayHref(essay.slug)} label={`读《${main}》`}>
                   <span className="ao-go-title">《{main}》</span>
                   {sub ? <span className="ao-go-line">{sub}</span> : null}
                 </Go>
@@ -305,7 +319,7 @@ export function AboutOne() {
               key={text}
               text={text}
               links={PRODUCTS}
-              soon={soon.get(text)}
+              later={firstSoon.get(text)}
             />
           ))}
         </div>
@@ -324,7 +338,7 @@ export function AboutOne() {
               key={text}
               text={text}
               links={PRODUCTS}
-              soon={soon.get(text)}
+              later={firstSoon.get(text)}
             />
           ))}
         </div>
@@ -334,7 +348,11 @@ export function AboutOne() {
       <Chapter id="further" title={story.further.title}>
         <div className="ao-prose" data-reveal>
           <Para text={further[0]} />
-          <Para text={further[1]} soon={soon.get(further[1])} />
+          <Para
+            text={further[1]}
+            links={PRODUCTS}
+            later={firstSoon.get(further[1])}
+          />
         </div>
         <Work
           name="team-island"
@@ -376,7 +394,7 @@ export function AboutOne() {
           />
         </div>
         <div className="ao-prose" data-reveal>
-          <Go href={ALONG}>
+          <Go href={ALONG} label={`看${nav.aboutItems.along}`}>
             <span className="ao-go-title">{nav.aboutItems.along}</span>
             <span className="ao-go-line">
               <span className="num">{tries}</span>{' '}
