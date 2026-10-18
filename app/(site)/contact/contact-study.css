@@ -1,0 +1,276 @@
+/* 已验收的 compact 样张自行带上基础布局；普通页与 current 沿用 contact.css。 */
+.m-contact[data-study='compact'] {
+  padding-top: calc(var(--header) + 32px);
+  padding-bottom: 36px;
+  min-height: 100svh;
+}
+.m-contact[data-study='compact'] .m-contact-door {
+  position: static;
+  top: auto;
+}
+.m-contact[data-study='compact'] .m-window-frame {
+  max-height: min(52svh, 500px);
+}
+.m-contact[data-study='compact'] .m-contact-main {
+  gap: 24px;
+}
+.m-contact[data-study='compact'] .m-contact-head {
+  padding-top: 0;
+  border-top: 0;
+}
+.m-contact[data-study='compact'] .m-contact-title {
+  font-size: clamp(32px, 3.5vw, 50px);
+}
+.m-contact[data-study='compact'] .m-contact-note {
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 0;
+  border-top: 0;
+}
+.m-contact[data-study='compact'] .m-form {
+  gap: 16px;
+}
+.m-contact[data-study='compact'] .m-form-field {
+  gap: 6px;
+}
+.m-contact[data-study='compact'] .m-form-set > .m-form-label {
+  margin-bottom: 8px;
+}
+.m-contact[data-study='compact'] .m-form-field input,
+.m-contact[data-study='compact'] .m-form-field textarea {
+  min-height: 44px;
+  padding: 9px 12px;
+  font-size: 16px;
+}
+.m-contact[data-study='compact'] .m-form-field textarea {
+  height: 108px;
+  min-height: 108px;
+}
+.m-contact[data-study='compact'] .m-form-handling {
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* 保留样张内的独立入口外观，不采用全站 CTA 候选样式。 */
+.m-contact[data-study='compact'] .m-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  color: var(--ink);
+  font: 400 var(--t-ui) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
+}
+.m-contact[data-study='compact'] .m-link:hover {
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1px var(--mute);
+}
+
+@media (max-width: 900px) {
+  .m-contact[data-study='compact'] {
+    row-gap: 24px;
+  }
+  .m-contact[data-study='compact'] .m-contact-door {
+    display: contents;
+  }
+  .m-contact[data-study='compact'] .m-contact-door > .m-window {
+    grid-column: 1 / -1;
+    order: 2;
+  }
+  .m-contact[data-study='compact'] .m-contact-door .m-window-frame {
+    --ratio: 16 / 7 !important;
+    --focus: 62% 80% !important;
+    max-height: none;
+  }
+  .m-contact[data-study='compact'] .m-contact-note {
+    margin-top: 0;
+  }
+}
+
+/* 仅显式 study 参数的比较控件；放进正常流，避免盖住表单或页尾链接。 */
+.m-contact-review {
+  margin-top: 16px;
+}
+.m-contact-review .m-review-bar {
+  position: static;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  max-width: none;
+  width: fit-content;
+  padding-left: 12px;
+  box-shadow: none;
+}
+
+/* 只在完整桌面宽度排紧凑样张。高度始终由内容撑开，报错、缩放和手动扩大的留言仍可滚动到。 */
+@media (min-width: 1100px) {
+  .m-contact[data-study='compact'] {
+    min-height: 0;
+    padding-top: calc(var(--header) + 24px);
+    padding-bottom: 24px;
+  }
+  .m-contact[data-study='compact'] .m-contact-door {
+    grid-column: 1 / span 4;
+  }
+  .m-contact[data-study='compact'] .m-contact-main {
+    grid-column: 6 / -1;
+    gap: 16px;
+  }
+  .m-contact[data-study='compact'] .m-contact-title {
+    font-size: clamp(32px, 3vw, 40px);
+  }
+  .m-contact[data-study='compact'] .m-window {
+    gap: 8px;
+  }
+  .m-contact[data-study='compact'] .m-window-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: clamp(180px, 26svh, 240px);
+  }
+  .m-contact[data-study='compact'] .m-contact-note {
+    gap: 6px;
+    margin-top: 16px;
+  }
+  .m-contact[data-study='compact'] .m-contact-note ul {
+    gap: 4px;
+    font-size: var(--t-small);
+    line-height: 1.65;
+  }
+
+  /* 图例和选项并排。保留原 fieldset/legend 语义与所有选项。 */
+  .m-contact[data-study='compact'] .m-form {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px 20px;
+  }
+  .m-contact[data-study='compact'] .m-form > * {
+    grid-column: 1 / -1;
+  }
+  .m-contact[data-study='compact'] .m-form-set {
+    position: relative;
+    min-height: 36px;
+    padding-left: 64px;
+  }
+  .m-contact[data-study='compact'] .m-form-set > .m-form-label {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 52px;
+    margin-bottom: 0;
+  }
+  .m-contact[data-study='compact'] .m-form-chips {
+    gap: 6px;
+  }
+  .m-contact[data-study='compact'] .m-form-chip > span {
+    min-height: 36px;
+    gap: 6px;
+    padding-inline: 10px 12px;
+  }
+  .m-contact[data-study='compact'] .m-form-stage {
+    margin-top: 6px;
+  }
+  .m-contact[data-study='compact'] .m-form-field {
+    gap: 4px;
+  }
+  .m-contact[data-study='compact'] .m-form-field textarea {
+    height: 88px;
+    min-height: 88px;
+  }
+
+  /* 同意与发送并排，完整处理说明仍在其后单独成行，不隐藏错误或提示。 */
+  .m-contact[data-study='compact'] .m-form-checks {
+    grid-column: 1;
+    align-self: center;
+    gap: 8px;
+    order: 1;
+  }
+  .m-contact[data-study='compact'] .m-form-check {
+    gap: 8px;
+    line-height: 1.65;
+  }
+  .m-contact[data-study='compact'] .m-form-send {
+    grid-column: 2;
+    align-self: start;
+    max-width: 190px;
+    gap: 6px;
+    order: 1;
+  }
+  .m-contact[data-study='compact'] .m-form-send .m-btn {
+    min-width: 120px;
+  }
+  .m-contact[data-study='compact'] .m-form-handling {
+    line-height: 1.65;
+    order: 2;
+  }
+  .m-contact[data-study='compact'] .m-form-nojs {
+    order: 3;
+  }
+
+  /* Footer 是共享组件，只借页面根标记约束这张样张；所有品牌句、目录与日期保留。 */
+  body:has(.m-contact[data-study='compact']) .m-footer {
+    padding-block: 16px 12px;
+  }
+  body:has(.m-contact[data-study='compact']) .m-footer-top {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    row-gap: 16px;
+  }
+  body:has(.m-contact[data-study='compact']) .m-footer-lead {
+    grid-column: 1 / span 4;
+    gap: 10px;
+  }
+  body:has(.m-contact[data-study='compact']) .m-footer-brand {
+    gap: 12px;
+  }
+  body:has(.m-contact[data-study='compact']) .m-footer-mark {
+    font-size: 46px;
+  }
+  body:has(.m-contact[data-study='compact']) .m-footer-lead p {
+    font-size: var(--t-small);
+    line-height: 1.7;
+  }
+  body:has(.m-contact[data-study='compact']) .m-footer-cols {
+    grid-column: 6 / -1;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  body:has(.m-contact[data-study='compact']) .m-footer-cols > div {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    align-items: baseline;
+    gap: 12px;
+  }
+  body:has(.m-contact[data-study='compact']) .m-footer-cols h2 {
+    margin-bottom: 0;
+  }
+  body:has(.m-contact[data-study='compact']) .m-footer-cols ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 16px;
+  }
+  body:has(.m-contact[data-study='compact']) .m-footer-cols a {
+    min-height: 24px;
+    line-height: 1.7;
+  }
+  body:has(.m-contact[data-study='compact']) .m-footer-base {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+}
+
+@media (max-width: 900px) {
+  .m-contact-review {
+    grid-column: 1 / -1;
+    order: 5;
+    margin-top: 0;
+  }
+}

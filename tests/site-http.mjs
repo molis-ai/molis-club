@@ -85,7 +85,7 @@ assert(
   'no beliefs on home',
 );
 assert(!home.includes('这些产品怎样联系'), 'no product relations on home');
-assert.match(home, /目前如何了解与体验/);
+assert(!home.includes('目前如何了解与体验'), 'home: removed access overview');
 assert.match(home, /查看开源代码/);
 // 结尾：过渡句与企业合作、社区、关于我们三个去处
 assert.match(home, /让口味相近的人/);

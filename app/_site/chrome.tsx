@@ -281,20 +281,13 @@ export function Footer() {
       <div className="m-wrap">
         <div className="m-footer-top">
           <div className="m-footer-lead">
-            <Link href="/" className="m-logo" aria-label={nav.home}>
-              <img
-                src="/site/molis-logo-64.png"
-                srcSet="/site/molis-logo-64.png 2x, /site/molis-logo-96.png 3x"
-                width="28"
-                height="28"
-                alt=""
-                loading="lazy"
-              />
-              <span lang="en">Molis AI</span>
+            <Link href="/" className="m-footer-brand" aria-label={nav.home}>
+              <span className="m-footer-mark" lang="en">
+                Molis AI
+              </span>
             </Link>
             <p>
               <span className="m-phrase">技术，回到人的尺度。</span>
-              <span className="m-phrase">始终好奇，持续创造。</span>
             </p>
           </div>
           <nav className="m-footer-cols" aria-label="页尾导航">
@@ -359,9 +352,6 @@ export function Footer() {
           ) : null}
         </div>
       </div>
-      <p className="m-footer-mark" aria-hidden="true" lang="en">
-        Molis AI
-      </p>
     </footer>
   );
 }

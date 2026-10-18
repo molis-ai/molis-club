@@ -1,9 +1,11 @@
 import { pageMetadata } from '../../../lib/site';
 import { contactPage } from '../../../content/site/contact';
 import { ContactForm } from '../../_site/contact-form';
+import { ReviewSwitch } from '../../_site/review/comparison';
 import { CONTACT, PRIVACY } from '../../_site/routes';
 import { More, Phrases, Window, type Vars } from '../../_site/ui';
 import './contact.css';
+import './contact-study.css';
 
 const c = contactPage;
 
@@ -12,9 +14,35 @@ export const metadata = pageMetadata(c.title, c.description, CONTACT);
 // 联系：左边一扇竖窗（白展厅里有人穿过门洞），右边表单。地址栏 ?topic= 预选来意（见 content/site/contact.ts），
 // 提交后给「回到来处」的路。处理方式照实写：存进团队私密收件箱，不公开，目前不会自动回信。
 // 窄屏上顺序是：标题 → 门洞（裁成横幅）→ 表单 → 处理方式。
-export default function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ study?: string; topic?: string }>;
+}) {
+  const { study, topic } = await searchParams;
+  const compact = study === 'compact';
+  const review = compact || study === 'current';
+  const topicQuery = topic ? `&topic=${encodeURIComponent(topic)}` : '';
+  const handling = (
+    <aside className="m-contact-note" aria-labelledby="contact-note-title">
+      <h2 id="contact-note-title" className="m-kicker">
+        {c.handlingTitle}
+      </h2>
+      <ul>
+        {c.handling.map((line) => (
+          <li key={line}>{line}</li>
+        ))}
+      </ul>
+      <p>
+        <More href={PRIVACY}>{c.privacy}</More>
+      </p>
+    </aside>
+  );
   return (
-    <div className="m-contact m-wrap m-top">
+    <div
+      className="m-contact m-wrap m-top"
+      data-study={compact ? 'compact' : undefined}
+    >
       <div className="m-contact-door">
         <Window
           name="contact-door"
@@ -25,12 +53,25 @@ export default function ContactPage() {
           alt={c.alt}
           caption={<span lang="en">{c.caption}</span>}
         />
+        {compact ? handling : null}
+        {review ? (
+          <div className="m-contact-review">
+            <ReviewSwitch
+              label="联系页"
+              variant={compact ? 'sample' : 'current'}
+              currentHref={`${CONTACT}?study=current${topicQuery}`}
+              sampleHref={`${CONTACT}?study=compact${topicQuery}`}
+            />
+          </div>
+        ) : null}
       </div>
       <div className="m-contact-main">
         <header className="m-contact-head">
-          <p className="m-kicker" data-reveal>
-            {c.kicker}
-          </p>
+          {!compact ? (
+            <p className="m-kicker" data-reveal>
+              {c.kicker}
+            </p>
+          ) : null}
           <h1
             className="m-contact-title"
             data-reveal
@@ -38,13 +79,15 @@ export default function ContactPage() {
           >
             <Phrases text={c.heading} />
           </h1>
-          <p
-            className="m-contact-lead"
-            data-reveal
-            style={{ '--delay': '160ms' } as Vars}
-          >
-            {c.lead}
-          </p>
+          {!compact ? (
+            <p
+              className="m-contact-lead"
+              data-reveal
+              style={{ '--delay': '160ms' } as Vars}
+            >
+              {c.lead}
+            </p>
+          ) : null}
         </header>
         <div
           className="m-contact-form"
@@ -53,19 +96,7 @@ export default function ContactPage() {
         >
           <ContactForm idPrefix="contact" />
         </div>
-        <aside className="m-contact-note" aria-labelledby="contact-note-title">
-          <h2 id="contact-note-title" className="m-kicker">
-            {c.handlingTitle}
-          </h2>
-          <ul>
-            {c.handling.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
-          <p>
-            <More href={PRIVACY}>{c.privacy}</More>
-          </p>
-        </aside>
+        {!compact ? handling : null}
       </div>
     </div>
   );

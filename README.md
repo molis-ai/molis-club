@@ -91,6 +91,7 @@ npm run test:http
 
 - [项目事实与约定](AGENTS.md) · [产品范围](PRODUCT.md) · [视觉系统](DESIGN.md)
 - [新站规格](specs/site-rebuild/spec.md) · [Work 产品页规格](specs/work-product-page/spec.md) · [官网优化清单](docs/site-optimization-2026-10-16.md)
+- [官网优化接手 prompt](docs/site-optimization-handoff-prompt-2026-10-18.md) · [样张与验收记录](docs/site-style-studies-2026-10-16.md)（仓库交付与仅本地样张范围见主清单）
 - [工作室介绍（文案事实来源）](docs/studio-intro.md) · [官方图库说明](docs/IMAGE-LIBRARY-BRIEF.md) · [图库原图与雾感版](docs/r8-materials-assets.md)
 - [部署与成本](docs/DEPLOYMENT.md) · [Cloudflare 自有账号部署](docs/CLOUDFLARE-DEPLOYMENT.md) · [登录配置](docs/AUTH-SETUP.md) · [艺术家 Skill 来源](docs/ARTIST-SKILL-SOURCES.md)
 

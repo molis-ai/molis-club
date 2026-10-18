@@ -877,13 +877,13 @@ body:has(.m) .skip-link {
 }
 
 /* =====================================================================
-   页尾：一道细线、三栏链接、版权与来源、本页最近修改；最后一行被裁一截的大字标
+   页尾：左侧字标与单句口号、右侧三栏目录；底部保留本页最近修改
    ===================================================================== */
 .m-footer {
   position: relative;
   z-index: 3;
   overflow: hidden;
-  padding: clamp(40px, 6vh, 64px) 0 0;
+  padding: clamp(40px, 6vh, 64px) 0 24px;
   border-top: 1px solid var(--hair);
   background: var(--paper);
 }
@@ -894,18 +894,21 @@ body:has(.m) .skip-link {
   row-gap: 40px;
 }
 .m-footer-lead {
-  grid-column: 1 / span 4;
+  grid-column: 1 / span 5;
   display: grid;
   align-content: start;
-  gap: 14px;
+  gap: 24px;
+}
+.m-footer-brand {
+  display: block;
 }
 .m-footer-lead p {
-  font: 300 var(--t-h3) / 1.6 var(--sans);
+  font: 400 var(--t-body) / 1.8 var(--sans);
   letter-spacing: 0.06em;
   color: var(--ink-2);
 }
 .m-footer-cols {
-  grid-column: 6 / -1;
+  grid-column: 7 / -1;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 32px var(--col-gap);
@@ -934,7 +937,7 @@ body:has(.m) .skip-link {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 8px 32px;
-  margin-top: clamp(40px, 6vh, 64px);
+  margin-top: 32px;
   padding-top: 18px;
   border-top: 1px solid var(--hair);
   font-size: 12.5px;
@@ -950,11 +953,9 @@ body:has(.m) .skip-link {
   text-underline-offset: 4px;
 }
 .m-footer-mark {
-  margin: clamp(28px, 4vw, 56px) 0 -0.16em;
-  padding-inline: max(var(--gutter), calc((100% - var(--wrap)) / 2));
-  font: 300 var(--t-colophon) / 0.9 var(--sans);
+  font: 300 clamp(64px, 7.5vw, 120px) / 1.1 var(--latin);
   letter-spacing: -0.03em;
-  color: #efede8;
+  color: var(--ink);
   white-space: nowrap;
   user-select: none;
 }
@@ -1014,7 +1015,6 @@ body:has(.m) .skip-link {
   }
   .m-header,
   .m-footer-cols,
-  .m-footer-mark,
   .m-menu,
   .m-btn,
   .m-noprint,

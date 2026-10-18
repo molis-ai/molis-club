@@ -4,7 +4,7 @@ import { ArrowRight, ArrowUpRight, Pause, Play } from 'lucide-react';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent, PointerEvent } from 'react';
 import { useReducedMotion, useVisible } from '../motion';
-import { access, intro, introProducts } from './stages-data';
+import { intro, introProducts } from './stages-data';
 import { IntroStage } from './stages';
 import { Thumb } from './thumbs';
 import './stages.css';
@@ -12,7 +12,7 @@ import './stages.css';
 // 首页第三段：沿用第八轮的产品列表与演示，精简重复说明，扩大画面。
 // 左边一列五件产品（缩略图、名字、当前阶段），鼠标停在哪件，右边就换成哪件：
 // 第 3 章的一句话 → 分段演示（一轮不超过 10 秒，小标题是第 4 章的原句）→
-// 第 3 章的「当前阶段」与去处。列表下面保留「目前如何了解与体验」；
+// 第 3 章的「当前阶段」与去处。2026-10-17 按首页验收反馈移除列表下方重复的开放说明；
 // 「这些产品怎样联系」按负责人的意见不放首页，留给各产品页。
 // 交互：鼠标停一下才换；键盘聚焦到哪行选哪行；触屏第一次点是选中，再点进产品页。
 
@@ -184,35 +184,6 @@ export function Products() {
               </Fragment>
             );
           })}
-        </div>
-
-        <div className="ix-map" data-reveal>
-          <section className="ix-map-access" aria-labelledby="ix-access-title">
-            <h3 id="ix-access-title" className="ix-map-h">
-              {access.title}
-            </h3>
-            <dl>
-              {access.rows.map((row) => (
-                <div key={row.who}>
-                  <dt lang="en">{row.who}</dt>
-                  <dd>
-                    {row.text}
-                    {row.link ? (
-                      <a
-                        className="m-link"
-                        href={row.link.href}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {row.link.label}
-                        <ArrowUpRight size={12} aria-hidden="true" />
-                      </a>
-                    ) : null}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </section>
         </div>
       </div>
     </section>
