@@ -226,9 +226,11 @@
   text-align: center;
 }
 .m-ent-onward-line {
-  max-width: 24em;
-  font: 300 var(--t-h2) / 1.55 var(--sans);
+  max-width: 30em;
+  color: var(--ink-2);
+  font: 300 var(--t-h3) / 1.8 var(--sans);
   letter-spacing: 0.03em;
+  text-wrap: balance;
 }
 .m-ent-onward .m-btn svg {
   margin-left: 2px;
@@ -352,6 +354,10 @@
   .m-ent-onward {
     justify-items: start;
     text-align: left;
+  }
+  /* 手机上字号不到 20px，细体换成常规 */
+  .m-ent-onward-line {
+    font-weight: 400;
   }
   /* 团队卡竖着排，不再左右滑 */
   .m-ent-caps[data-lean] {
