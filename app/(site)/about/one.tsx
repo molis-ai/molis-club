@@ -3,14 +3,9 @@ import type { ReactNode } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { story, studio } from '../../../content/site/studio';
 import { members, team, teamUi } from '../../../content/site/team';
-import { alongGroups, flowOf } from '../../../content/site/along';
+import { alongGroups } from '../../../content/site/along';
 import { essays, splitTitle } from '../../../content/site/essays';
 import { nav } from '../../../content/site/nav';
-import {
-  productIds,
-  products,
-  type ProductId,
-} from '../../../content/site/products';
 import { aboutUi, trio } from '../../../content/site/about';
 import {
   ALONG,
@@ -20,7 +15,7 @@ import {
   essayHref,
   productHref,
 } from '../../_site/routes';
-import { Btn, More, Phrases, Status, type Vars } from '../../_site/ui';
+import { Btn, More, Note, Phrases, type Vars } from '../../_site/ui';
 import { Work } from '../../_site/exhibit/exhibit';
 import { BeliefGallery } from './belief-gallery';
 import { Plate } from './plate';
@@ -28,54 +23,92 @@ import { Trio } from './trio';
 import './one.css';
 
 // 「关于」一整页（清单 C1；负责人 2026-10-18 定方向、看过样张后切成默认）。顶栏「关于」直接到这里，不再有下拉；
-// 旧地址 /team 跳到「我们是谁」（#people），/community/yijun 跳到一骏的名牌；文章、沿途各自留着，从这一页的卡片进去。
-// 一条主线「技术，回到人的尺度。」，把态度、人、来路、文章、做法、信念和产品串在一页里：
-// 开场 · 我们是谁 · 从哪来（去沿途）· 什么变了（去文章）· 三种媒介 · 六条信念 · 想做的事 · 找同类。
-// 不再是四间展厅：没有名牌、平面图、墙色和「下一个展厅」；展品不编号，图下只留媒介与摄影者（AI 生成的图照实标出）。
-// 区块之间用留白分开，不画线；内容居中陈列。
-// 正文全部是底稿原句，从 studio.ts、team.ts、along.ts、essays.ts 读、用代码切（一字不差），
-// 每句只出现一次：「找同类，不抢货架。」在结尾回扣一次标题，它的正文只在六条信念里。
-// 新写的界面文字只有小标签、去处与几个数的说明，沿用 aboutUi、teamUi、trio 里已有的写法。
-// 去处的写法按全站链接规则（E3）：有标题和说明的卡片整张是链接、只留箭头；独立入口用 More，两三个字说明去处；
-// Btn 的箭头由公共部件自己加，这里不手放。
+// 旧地址 /team 跳到「我们是谁」（#people），/community/yijun 跳到一骏的名牌；文章、沿途各自留着，从这一页进去。
+//
+// 读起来是一篇故事（负责人 2026-10-18：「像读故事一样来读我们的故事」「成员放在最后，不想班味很重」「先讲愿景，可以先讲黑客与画家」）。
+// 骨架是底稿第 2 章「我们的故事」，按负责人的顺序重排，第 1 章的愿景、做法与信念织在中间：
+//   序 技术，回到人的尺度。→ 三种媒介，同一个动作（黑客与画家）→ 当想法更容易变成现实（2.2，去文章）→
+//   我们相信什么（1.4）→ 从怎样工作，走向怎样生活（2.3，产品名在句子里链过去）→
+//   从这些探索，看向更远的构想（2.4，World）→ 从同事，到共同创造的伙伴（2.1，去沿途；最后是八个人）→
+//   尾声 找同类，不抢货架。
+// 章节标题都是底稿的小标题（「三种媒介，同一个动作。」是这一页原有的写法），不加眉题与编号；
+// 正文是居中的一栏、左对齐，段落完整不拆；配图是段落之间的插页；只有一句的短段当作节拍，字大一点。
+// 正文全部是底稿原句，从 studio.ts、team.ts、along.ts、essays.ts 读（一字不差），每段只出现一次：
+// 「找同类，不抢货架。」在尾声回扣一次标题，它的正文只在信念里。
+// 去处按全站链接规则（E3）：正文里的书名与产品名是行内链接；有标题和说明的卡片只留箭头；独立入口用 More。
 
 /** 按句号、问号切句 */
 const sentences = (text: string) =>
   text.match(/[^。？！]+[。？！]?/g) ?? [text];
 
-const HUMAN_SCALE = '《人的尺度》';
+/** 把原句里的书名、产品名换成行内链接（每个只链第一次出现），其余一字不动 */
+function Linked({
+  text,
+  links,
+}: {
+  text: string;
+  links: Array<[string, string]>;
+}) {
+  const out: ReactNode[] = [];
+  const pending = [...links];
+  let rest = text;
+  while (pending.length) {
+    let at = -1;
+    let pick = -1;
+    pending.forEach(([term], index) => {
+      const found = rest.indexOf(term);
+      if (found >= 0 && (at < 0 || found < at)) {
+        at = found;
+        pick = index;
+      }
+    });
+    if (pick < 0) break;
+    const [term, href] = pending.splice(pick, 1)[0];
+    out.push(rest.slice(0, at));
+    out.push(
+      <Link key={term} className="m-inline" href={href}>
+        {term}
+      </Link>,
+    );
+    rest = rest.slice(at + term.length);
+  }
+  out.push(rest);
+  return <>{out}</>;
+}
 
-/** 把原句里的《人的尺度》换成去文章的链接，其余一字不动 */
-function WithEssayLink({ text }: { text: string }) {
-  const [before, after] = text.split(HUMAN_SCALE);
-  if (after === undefined) return <>{text}</>;
+/** 一段正文：只有一句的短段当作节拍，字大一点、墨色 */
+function Para({
+  text,
+  links = [],
+  lead = false,
+}: {
+  text: string;
+  links?: Array<[string, string]>;
+  /** 一章开头那句，也当作节拍 */
+  lead?: boolean;
+}) {
+  const beat = lead || (sentences(text).length === 1 && text.length <= 28);
   return (
-    <>
-      {before}
-      <Link className="m-inline" href={essayHref('human-scale')}>
-        {HUMAN_SCALE}
-      </Link>
-      {after}
-    </>
+    <p className={beat ? 'ao-beat' : undefined}>
+      <Linked text={text} links={links} />
+    </p>
   );
 }
 
-const [fromMeituan, fromRoles, nowAtMolis] = sentences(
-  story.origin.paragraphs[0],
-);
+const HUMAN_SCALE: [string, string] = [
+  '《人的尺度》',
+  essayHref('human-scale'),
+];
+const PRODUCTS: Array<[string, string]> = [
+  ['Molis Work', productHref.work],
+  ['Molis Tool', productHref.tool],
+  ['Life', productHref.life],
+  ['Story', productHref.story],
+];
+
 const leadFirst = sentences(team.lead)[0];
-const care = sentences(studio.standard.intro)[1].split('：')[0];
 const findPeers = studio.beliefs[2];
-
-const alongItems = alongGroups.flatMap((group) => group.items);
-const intoProducts = alongItems.filter((item) =>
-  ['work', 'tool', 'story'].includes(flowOf(item)),
-).length;
-
-const nearIds = productIds.filter((id) => id !== 'world') as Exclude<
-  ProductId,
-  'world'
->[];
+const tries = alongGroups.flatMap((group) => group.items).length;
 
 /** 六条信念各配一张（沿用现版的配对） */
 const beliefWorks = [
@@ -87,30 +120,10 @@ const beliefWorks = [
   { name: 'ex-paper-plane', focus: '35% 45%' },
 ] as const;
 
-/** 四个日常问题在「能不能」前断开，不在词中间折行 */
-function Question({ text }: { text: string }) {
-  const at = text.indexOf('能不能');
-  if (at < 1) return <>{text}</>;
-  return (
-    <>
-      <span className="m-phrase">{text.slice(0, at)}</span>
-      <span className="m-phrase">{text.slice(at)}</span>
-    </>
-  );
-}
-
 /** 有标题和说明的去处：整张是链接，只留一个箭头按钮 */
-function Go({
-  href,
-  className = '',
-  children,
-}: {
-  href: string;
-  className?: string;
-  children: ReactNode;
-}) {
+function Go({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Link className={`ao-go ${className}`} href={href}>
+    <Link className="ao-go" href={href}>
       <span className="ao-go-body">{children}</span>
       <span className="ao-go-arrow" aria-hidden="true">
         <ArrowRight size={18} />
@@ -119,11 +132,33 @@ function Go({
   );
 }
 
+/** 一章：底稿的小标题，下面是正文与插页 */
+function Chapter({
+  id,
+  title,
+  children,
+}: {
+  id: string;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="ao-ch m-wrap" id={id} aria-labelledby={`${id}-title`}>
+      <h2 className="ao-ch-title" id={`${id}-title`} data-reveal>
+        <Phrases text={title} />
+      </h2>
+      {children}
+    </section>
+  );
+}
+
 export function AboutOne() {
   const change = story.change.paragraphs;
+  const toLife = story.toLife.paragraphs;
+  const further = story.further.paragraphs;
   return (
     <div className="ao">
-      {/* 开场：主线，窗前的人 */}
+      {/* 序：主线，窗前的人 */}
       <header className="ao-open m-wrap">
         <h1 className="ao-h1 m-rise" style={{ '--delay': '60ms' } as Vars}>
           <Phrases text={studio.vision} />
@@ -143,246 +178,208 @@ export function AboutOne() {
         />
       </header>
 
-      {/* 我们是谁：八个人 */}
-      <section
-        className="ao-sec m-wrap"
-        id="people"
-        aria-labelledby="ao-people-title"
-      >
-        <div className="ao-head" data-reveal>
-          <p className="ao-kicker">{teamUi.membersLabel}</p>
-          <h2 className="ao-h2" id="ao-people-title">
-            <Phrases text={team.title} />
-          </h2>
-          <p className="ao-text">{leadFirst}</p>
+      {/* 黑客与画家：我们想做怎样的创造者 */}
+      <Chapter id="makers" title={trio.title}>
+        <div className="ao-prose" data-reveal>
+          <p>{studio.standard.makers}</p>
         </div>
-        <ol className="tm-roster ao-roster">
-          {members.map((member, index) => (
-            <Plate key={member.id} member={member} index={index} />
-          ))}
-        </ol>
-        <p className="ao-fine" data-reveal>
-          {teamUi.selfNote}
-        </p>
-      </section>
+        <div className="ao-wide">
+          <Trio flow />
+        </div>
+      </Chapter>
 
-      {/* 从哪来：来时路，去沿途 */}
-      <section className="ao-sec m-wrap" aria-labelledby="ao-from-title">
-        <div className="ao-split">
-          <div className="ao-from-pics">
-            <Work
-              name="team-sketchbook"
-              ratio="4 / 3"
-              focus="50% 55%"
-              maxH="44svh"
-              sizes="(max-width: 900px) 100vw, 34vw"
-              className="ao-from-book"
-            />
-            <Work
-              name="ex-car-sea"
-              ratio="4 / 5"
-              focus="58% 50%"
-              maxH="34svh"
-              sizes="(max-width: 900px) 60vw, 16vw"
-              className="ao-from-sea"
-              style={{ '--delay': '120ms' } as Vars}
-            />
-          </div>
-          <div className="ao-split-text" data-reveal>
-            <p className="ao-kicker">{teamUi.pathLabel}</p>
-            <h2 className="ao-h2" id="ao-from-title">
-              <Phrases text={fromMeituan} />
-            </h2>
-            <p className="ao-text">
-              {fromRoles}
-              {nowAtMolis}
-            </p>
-            <p className="ao-text">{story.origin.paragraphs[2]}</p>
-            <Go href={ALONG} className="ao-go-along">
-              <span className="ao-go-title">{nav.aboutItems.along}</span>
-              <span className="ao-go-line">
-                <span className="num">{alongItems.length}</span>{' '}
-                {teamUi.groups(alongGroups.length)}
-              </span>
-              <span className="ao-go-line">
-                {teamUi.intoProducts(intoProducts)}
-              </span>
-            </Go>
-          </div>
+      {/* 2.2 当想法更容易变成现实：光照进来，去文章 */}
+      <Chapter id="change" title={story.change.title}>
+        <div className="ao-prose" data-reveal>
+          <Para text={change[0]} links={[HUMAN_SCALE]} />
+          <Para text={change[1]} />
         </div>
-      </section>
-
-      {/* 什么变了：光照进来，去文章 */}
-      <section className="ao-sec m-wrap" aria-labelledby="ao-change-title">
-        <div className="ao-split">
-          <Work
-            name="ex-window-sun"
-            ratio="4 / 5"
-            focus="58% 40%"
-            maxH="66svh"
-            sizes="(max-width: 900px) 100vw, 40vw"
-            className="ao-change-work"
-          />
-          <div className="ao-split-text" data-reveal>
-            <p className="ao-kicker">{aboutUi.changed}</p>
-            <h2 className="ao-h2" id="ao-change-title">
-              <Phrases text={story.change.title} />
-            </h2>
-            <p className="ao-text">
-              <WithEssayLink text={change[0]} />
-            </p>
-            <p className="ao-text">{change[1]}</p>
-            <p className="ao-text">{change[2]}</p>
-            <p className="ao-keys">{change[3]}</p>
-            <ul className="ao-essays">
-              {essays.map((essay) => {
-                const { main, sub } = splitTitle(essay.title);
-                return (
-                  <li key={essay.slug}>
-                    <Go href={essayHref(essay.slug)}>
-                      <span className="ao-go-title">《{main}》</span>
-                      {sub ? <span className="ao-go-line">{sub}</span> : null}
-                    </Go>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* 三种媒介，同一个动作 */}
-      <section
-        className="ao-sec m-wrap"
-        id="makers"
-        aria-labelledby="ao-trio-title"
-      >
-        <div className="ao-head" data-reveal>
-          <p className="ao-kicker" lang="en">
-            {trio.kicker}
-          </p>
-          <h2 className="ao-h2" id="ao-trio-title">
-            <Phrases text={trio.title} />
-          </h2>
-          <p className="ao-text ao-head-read">{studio.standard.makers}</p>
-        </div>
-        <Trio flow />
-      </section>
-
-      {/* 六条信念：图停在一处，随文字换 */}
-      <section
-        className="ao-sec m-wrap"
-        id="beliefs"
-        aria-labelledby="ao-beliefs-title"
-      >
-        <div className="ao-head" data-reveal>
-          <p className="ao-kicker" lang="en">
-            {aboutUi.believe}
-          </p>
-          <h2 className="ao-h2" id="ao-beliefs-title">
-            {aboutUi.title}
-          </h2>
-        </div>
-        <BeliefGallery
-          items={studio.beliefs.map((belief, index) => {
-            const work = beliefWorks[index];
-            const figure = (still: boolean) => (
-              <Work
-                name={work.name}
-                ratio={still ? '4 / 5' : '3 / 2'}
-                focus={work.focus}
-                maxH={still ? '68svh' : undefined}
-                sizes={still ? '38vw' : '(max-width: 900px) 100vw, 50vw'}
-                fill={still}
-              />
-            );
-            return {
-              title: belief.title,
-              text: belief.text,
-              figure: figure(false),
-              still: figure(true),
-            };
-          })}
+        <Work
+          name="ex-window-sun"
+          ratio="3 / 2"
+          focus="58% 40%"
+          maxH="62svh"
+          sizes="(max-width: 900px) 100vw, 960px"
+          fill
+          className="ao-fig"
         />
-      </section>
-
-      {/* 想做的事：四个日常问题对上四件产品，World 更远 */}
-      <section className="ao-sec m-wrap" aria-labelledby="ao-want-title">
-        <div className="ao-head" data-reveal>
-          <p className="ao-kicker">{teamUi.wantLabel}</p>
-          <h2 className="ao-h3" id="ao-want-title">
-            <Phrases text={studio.short[2]} />
-          </h2>
-          <p className="ao-fine">{care}</p>
+        <div className="ao-prose" data-reveal>
+          <Para text={change[2]} />
+          <Para text={change[3]} />
         </div>
-        <ol className="ao-products">
-          {nearIds.map((id, index) => (
-            <li
-              key={id}
-              data-reveal
-              style={{ '--delay': `${index * 70}ms` } as Vars}
-            >
-              <Go href={productHref[id]}>
-                <span className="ao-go-q">
-                  <Question text={studio.standard.questions[id]} />
-                </span>
-                <span className="ao-go-to">
-                  <span className="ao-go-name" lang="en">
-                    {products[id].name}
-                  </span>
-                  <Status>{products[id].stage}</Status>
-                </span>
-              </Go>
-            </li>
+        <ul className="ao-prose ao-essays" data-reveal>
+          {essays.map((essay) => {
+            const { main, sub } = splitTitle(essay.title);
+            return (
+              <li key={essay.slug}>
+                <Go href={essayHref(essay.slug)}>
+                  <span className="ao-go-title">《{main}》</span>
+                  {sub ? <span className="ao-go-line">{sub}</span> : null}
+                </Go>
+              </li>
+            );
+          })}
+        </ul>
+      </Chapter>
+
+      {/* 1.4 我们相信什么：图停在一处，随文字换 */}
+      <Chapter id="beliefs" title={aboutUi.title}>
+        <div className="ao-wide">
+          <BeliefGallery
+            items={studio.beliefs.map((belief, index) => {
+              const work = beliefWorks[index];
+              const figure = (still: boolean) => (
+                <Work
+                  name={work.name}
+                  ratio={still ? '4 / 5' : '3 / 2'}
+                  focus={work.focus}
+                  maxH={still ? '68svh' : undefined}
+                  sizes={still ? '38vw' : '(max-width: 900px) 100vw, 50vw'}
+                  fill={still}
+                />
+              );
+              return {
+                title: belief.title,
+                text: belief.text,
+                figure: figure(false),
+                still: figure(true),
+              };
+            })}
+          />
+        </div>
+      </Chapter>
+
+      {/* 2.3 从怎样工作，走向怎样生活：产品的来历，产品名在句子里 */}
+      <Chapter id="products" title={story.toLife.title}>
+        <div className="ao-prose" data-reveal>
+          <Para text={studio.short[2]} lead />
+          {toLife.slice(0, 2).map((text) => (
+            <Para key={text} text={text} links={PRODUCTS} />
           ))}
-          <li
-            data-far
-            data-reveal
-            style={{ '--delay': `${nearIds.length * 70}ms` } as Vars}
-          >
-            <Go href={productHref.world}>
-              <span className="ao-go-q">{teamUi.far}</span>
-              <span className="ao-go-to">
-                <span className="ao-go-name" lang="en">
-                  {products.world.name}
-                </span>
-                <Status concept>{products.world.stage}</Status>
-              </span>
-            </Go>
-          </li>
-        </ol>
-        <div className="ao-together" data-reveal>
-          <More href={ENTERPRISE}>{teamUi.enterprise}</More>
-          <More href={COMMUNITY}>{nav.community}</More>
         </div>
-      </section>
+        <Work
+          name="ex-desk-forest"
+          ratio="3 / 2"
+          focus="50% 60%"
+          maxH="58svh"
+          sizes="(max-width: 900px) 100vw, 960px"
+          fill
+          className="ao-fig"
+        />
+        <div className="ao-prose" data-reveal>
+          {toLife.slice(2).map((text) => (
+            <Para key={text} text={text} links={PRODUCTS} />
+          ))}
+        </div>
+      </Chapter>
 
-      {/* 结尾：找同类，不抢货架 */}
-      <section className="ao-sec ao-end m-wrap" aria-labelledby="ao-end-title">
+      {/* 2.4 从这些探索，看向更远的构想：World，小岛（概念示意） */}
+      <Chapter id="further" title={story.further.title}>
+        <div className="ao-prose" data-reveal>
+          <Para text={further[0]} />
+          <Para
+            text={further[1]}
+            links={[['Molis World', productHref.world]]}
+          />
+        </div>
+        <Work
+          name="team-island"
+          ratio="16 / 9"
+          focus="50% 60%"
+          maxH="52svh"
+          sizes="(max-width: 900px) 100vw, 960px"
+          note={<Note>{teamUi.concept}</Note>}
+          fill
+          className="ao-fig"
+        />
+        <div className="ao-prose" data-reveal>
+          <Para text={further[2]} />
+        </div>
+      </Chapter>
+
+      {/* 2.1 从同事，到共同创造的伙伴：来路、沿途，最后是八个人 */}
+      <Chapter id="origin" title={story.origin.title}>
+        <div className="ao-prose" data-reveal>
+          {story.origin.paragraphs.map((text) => (
+            <Para key={text} text={text} />
+          ))}
+        </div>
+        <div className="ao-fig ao-fig-pair">
+          <Work
+            name="team-sketchbook"
+            ratio="4 / 3"
+            focus="50% 55%"
+            maxH="44svh"
+            sizes="(max-width: 900px) 60vw, 34vw"
+          />
+          <Work
+            name="ex-car-sea"
+            ratio="4 / 5"
+            focus="58% 50%"
+            maxH="34svh"
+            sizes="(max-width: 900px) 40vw, 16vw"
+            style={{ '--delay': '120ms' } as Vars}
+          />
+        </div>
+        <div className="ao-prose" data-reveal>
+          <Go href={ALONG}>
+            <span className="ao-go-title">{nav.aboutItems.along}</span>
+            <span className="ao-go-line">
+              <span className="num">{tries}</span>{' '}
+              {teamUi.groups(alongGroups.length)}
+            </span>
+          </Go>
+        </div>
+
+        <div className="ao-people" id="people">
+          <div className="ao-people-head" data-reveal>
+            <h3 className="ao-people-title">
+              <Phrases text={team.title} />
+            </h3>
+            <p>{leadFirst}</p>
+          </div>
+          <ol className="tm-roster ao-roster">
+            {members.map((member, index) => (
+              <Plate key={member.id} member={member} index={index} />
+            ))}
+          </ol>
+          <p className="ao-fine" data-reveal>
+            {teamUi.selfNote}
+          </p>
+        </div>
+      </Chapter>
+
+      {/* 尾声：找同类，不抢货架 */}
+      <section className="ao-end m-wrap" aria-labelledby="ao-end-title">
         <div className="ao-end-pics">
           <Work
             name="life-shore"
             ratio="4 / 5"
             focus="84% 50%"
-            maxH="48svh"
-            sizes="(max-width: 900px) 50vw, 24vw"
+            maxH="40svh"
+            sizes="(max-width: 900px) 50vw, 20vw"
           />
           <Work
             name="ex-shore-person"
             ratio="4 / 5"
             focus="52% 50%"
-            maxH="48svh"
-            sizes="(max-width: 900px) 50vw, 24vw"
+            maxH="40svh"
+            sizes="(max-width: 900px) 50vw, 20vw"
             style={{ '--delay': '120ms' } as Vars}
           />
         </div>
-        <div className="ao-head" data-reveal>
-          <h2 className="ao-h2" id="ao-end-title">
+        <div className="ao-end-text" data-reveal>
+          <h2 className="ao-ch-title" id="ao-end-title">
             <Phrases text={findPeers.title} />
           </h2>
-          <p className="ao-text">{studio.ware.view}</p>
+          <p className="ao-beat">
+            <Phrases text={studio.ware.view} />
+          </p>
+          <p>{studio.standard.together}</p>
           <div className="ao-end-act">
             <Btn href={contactHref()}>{teamUi.chat}</Btn>
+            <More href={ENTERPRISE}>{teamUi.enterprise}</More>
+            <More href={COMMUNITY}>{nav.community}</More>
           </div>
         </div>
       </section>

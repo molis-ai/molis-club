@@ -122,7 +122,6 @@ export const members: Member[] = [
 /** 「关于」页上团队几屏的界面文字（新写，不是底稿原句；数字都由数据算出）。替代文字与署名在 exhibit.ts */
 export const teamUi = {
   // 我们是谁：八个人
-  membersLabel: '成员',
   /** 赵壮实那句是签名摘句，不是个性标签：句后小字注明 */
   motto: '签名',
   /** 有好几条自述的人，旁边的小按钮（只有图标，读屏念这几个字） */
@@ -131,15 +130,13 @@ export const teamUi = {
   allSelf: '全部自述',
   selfNote: '「」里是本人的自述：玩笑话，不作职务。',
 
-  // 从哪来
-  pathLabel: '来时路',
+  // 去沿途的卡片
   groups: (n: number) => `件具体的尝试，分在 ${n} 组`,
-  intoProducts: (n: number) =>
-    `其中 ${n} 件，后来流进了今天的 Molis Work、Tool 与 Story。`,
 
-  // 想做的事
-  wantLabel: '想做的事',
-  far: '更远一点',
+  // World 那张小岛
+  concept: '概念示意',
+
+  // 尾声
   enterprise: '企业合作',
 
   // 找同类
