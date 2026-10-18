@@ -2,7 +2,7 @@
 
 - 单一 React / Vinext 应用，源码位于仓库根目录；无旧版静态原型目录。
 - 网页品牌始终为 Molis AI；仅 npm 包、GitHub 仓库和本地目录为 molis-club，仓库更名不授权修改对外品牌。
-- 项目范围见 PRODUCT.md，视觉见 DESIGN.md，整站当前任务规格见 specs/site-rebuild/spec.md；文案事实以 docs/studio-intro.md 为准，原句不改写，「内部编辑备注」不对外。目录更名历史见 specs/molis-club/spec.md。
+- 项目范围见 PRODUCT.md，视觉见 DESIGN.md（其中「常驻约束」一节是文字、目录、入口与滚动的硬规矩，改页面前先读），整站当前任务规格见 specs/site-rebuild/spec.md；文案事实以 docs/studio-intro.md 为准，原句不改写，「内部编辑备注」不对外。目录更名历史见 specs/molis-club/spec.md。
 - 正式官网在 app/(site)，站点公共模块在 app/_site，新站文案在 content/site；/demos/** 是评审页，不动，新站不从 /demos 引用代码。根布局与 app/globals.css 同时服务评审页。
 - 命令：npm run dev、npm run check、npm run lint、npm test、npm run build；本地服务运行后 npm run test:http。改了页面后运行 npm run dates 更新「本页最近修改」；换配图后运行 npm run media。
 - 真实凭据在忽略文件 .dev.vars；勿提交或输出。保留 .wrangler/state 本地数据，勿作为缓存清理。
