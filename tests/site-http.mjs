@@ -182,6 +182,17 @@ assert.match(
 assert.equal(await html('/robots.txt'), 'User-agent: *\nDisallow: /\n');
 assert(!(await html('/sitemap.xml')).includes('<loc>'));
 
+// 常驻约束：不放引导与过渡句；负责人要求删掉的整段不再回来（评审 2026-10-16、负责人 2026-10-18）
+for (const [path, text] of [
+  ['/community', '往下：四件作品，各自连着做法'],
+  ['/enterprise', '先说说，你们卡在哪'],
+  ['/team', '认识每一个人'],
+  ['/essays/human-scale', '接着读'],
+  ['/about', '我们怎样要求自己'],
+  ['/about', '这些信念怎样落到产品里'],
+])
+  assert(!(await html(path)).includes(text), `${path}: no「${text}」`);
+
 console.log(
   'PASS: every page of the rebuilt site, one h1 each, header/footer, honest stages and labels, legacy redirects, 404 and private indexing.',
 );

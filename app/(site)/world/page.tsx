@@ -47,7 +47,6 @@ export default function WorldPage() {
             {placeTry.title}
           </h2>
           <div className="m-head-lead">
-            <p>{placeTry.lead}</p>
             <p className="wd-try-note">
               <Note>{placeTry.note}</Note>
             </p>

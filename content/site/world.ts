@@ -56,7 +56,6 @@ export const worldChapters: {
 export const placeTry = {
   kicker: '亲手试一次',
   title: '把一个地方放进小岛。',
-  lead: '写下一个你在意的地方，或者从下面挑一个。它会被画进这座小岛；放几个都行，擦掉也行。',
   note: '概念示意 · 不保存',
   label: '一个你在意的地方',
   placeholder: '例如：巷口那家面馆',

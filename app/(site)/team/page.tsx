@@ -9,7 +9,6 @@ import {
   type ProductId,
 } from '../../../content/site/products';
 import {
-  ABOUT,
   ALONG,
   COMMUNITY,
   ENTERPRISE,
@@ -173,9 +172,6 @@ export default function TeamPage() {
                   { label: teamUi.facts.products, value: productIds.length },
                 ]}
               />
-              <a className="tm-down" href="#people">
-                {teamUi.meet} ↓
-              </a>
             </div>
           </div>
           <Work
@@ -273,7 +269,6 @@ export default function TeamPage() {
           </div>
           <div className="tm-makers-lead">
             <p className="ex-text">{makersWant}</p>
-            <More href={`${ABOUT}#demands`}>{studio.demands.title}</More>
           </div>
         </div>
         <div className="tm-salon">
@@ -396,7 +391,6 @@ export default function TeamPage() {
             style={{ '--delay': '120ms' } as Vars}
           />
           <div className="tm-end-text" data-reveal>
-            <p className="ex-kicker">{teamUi.endLabel}</p>
             <h2 className="ex-h2" id="tm-end-title">
               <Phrases text={findPeers.title} />
             </h2>

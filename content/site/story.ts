@@ -78,7 +78,6 @@ export const storyWorlds: StoryWorld[] = [
 /** 此处：去过哪里、哪段旅程还没结束、带回了什么（示意数据；访客带回的纪念物会加进「带回来的」） */
 export const hereList = {
   id: 'here',
-  kicker: '此处',
   title: here.title,
   paragraphs: here.paragraphs,
   note: '示意',
@@ -90,21 +89,19 @@ export const hereList = {
   visited: ['彼处 · 上周'],
   unfinished: ['雾港失物招领处 · 第二夜'],
   brought: ['一本春天的纪念册'],
-  empty: '还没带回什么。走进下面任意一扇窗试试。',
+  empty: '还没带回什么。',
   take: '带回「此处」',
   taken: '已经放进「此处」',
   chip: '此处',
 };
 
 export const rhythmPart = {
-  kicker: '每个世界，都有自己的节奏',
   title: rhythm.title,
   paragraphs: rhythm.paragraphs,
 };
 
 /** 更远的方向：摘自 4.4「当前进展与未来方向」第二段 */
 export const further = {
-  kicker: '更远一点',
   text: story.progress[1],
   tag: '尚未开放',
 };
@@ -115,8 +112,8 @@ export const storyProgress = {
     'Molis Story 面向 macOS 开发，已有四个世界及共同入口、旅程保存和归来的开发实现。',
   ],
   notYet: ['真实模型服务与完整桌面体验仍需验证，尚未开放公开下载。'],
-  /** 新写 */
-  now: ['现在还不能下载体验。想知道哪扇窗先打开，可以留个联系方式。'],
+  /** 「还没有的」已写明尚未开放下载，这一栏只留关注进展的入口 */
+  now: [],
 };
 
 export const storyGo = {

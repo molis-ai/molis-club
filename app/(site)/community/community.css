@@ -159,30 +159,6 @@
   letter-spacing: 0.04em;
   color: var(--mute);
 }
-.m-com-next {
-  position: absolute;
-  left: var(--gutter);
-  bottom: 30px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: var(--t-small);
-  color: var(--mute);
-  transition: color 0.3s var(--ease);
-}
-.m-com-next svg {
-  color: var(--ink);
-  animation: m-com-nudge 2.4s var(--ease) infinite;
-}
-.m-com-next:hover {
-  color: var(--ink);
-}
-@keyframes m-com-nudge {
-  50% {
-    translate: 0 4px;
-  }
-}
-
 .m-com-toy {
   grid-column: 7 / -1;
   justify-self: center;
@@ -2457,7 +2433,6 @@ html:not(.js) .m-com-stage + .m-com-stage {
   .js .m-com-paper[data-intro] .m-com-petal,
   .m-com-peek,
   .m-com-scribble path,
-  .m-com-next svg,
   .m-com-stage,
   .m-com-sample-view img,
   .m-com-ticket-stub,

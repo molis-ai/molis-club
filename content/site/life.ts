@@ -63,7 +63,6 @@ export const lifeChapters: {
 export const freeTime = {
   kicker: '亲手试一次',
   title: '这周空出多少时间？',
-  lead: '拨一拨。时间不同，准备也不同；每一次都说明为什么此刻想到，去不去由你点。',
   note: '原型示意 · 地点与天气为示意',
   wish: '“想陪妈妈去看海。”',
   label: '这周空出的时间',

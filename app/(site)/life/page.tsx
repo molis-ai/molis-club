@@ -44,7 +44,6 @@ export default function LifePage() {
             {freeTime.title}
           </h2>
           <div className="m-head-lead">
-            <p>{freeTime.lead}</p>
             <p className="lf-free-note">
               <Note>{freeTime.note}</Note>
             </p>

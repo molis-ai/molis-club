@@ -48,7 +48,6 @@ export default function StoryPage() {
               <span className="m-no" aria-hidden="true">
                 {pad(0)}
               </span>
-              <span className="m-kicker">{hereList.kicker}</span>
             </p>
             <h2 className="m-head-title" id="st-place-title">
               <Phrases text={hereList.title} />
@@ -74,7 +73,6 @@ export default function StoryPage() {
               <span className="m-no" aria-hidden="true">
                 {pad(5)}
               </span>
-              <span className="m-kicker">{rhythmPart.kicker}</span>
             </p>
             <h2 className="m-head-title" id="st-rhythm-title">
               <Phrases text={rhythmPart.title} />
@@ -86,7 +84,6 @@ export default function StoryPage() {
             </div>
           </header>
           <div className="st-further" data-reveal>
-            <p className="m-kicker">{further.kicker}</p>
             <p>{further.text}</p>
             <Note>{further.tag}</Note>
           </div>

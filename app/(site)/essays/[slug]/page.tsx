@@ -132,7 +132,6 @@ export default async function EssayPage({ params }: Props) {
       {next && next.slug !== slug ? (
         <footer className="m-wrap m-essay-end m-noprint">
           <div className="m-essay-next">
-            <p className="m-kicker">{essayUi.next}</p>
             <Link className="m-essay-nextlink" href={essayHref(next.slug)}>
               <Title title={next.title} as="span" />
             </Link>

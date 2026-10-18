@@ -372,7 +372,6 @@ export function AlongMap({
       </section>
 
       <div className="m-along-index m-wrap" ref={index}>
-        <p className="ex-kicker m-along-catalog">{alongUi.catalog(total)}</p>
         <div className="m-along-bar">
           <fieldset className="m-along-filter">
             <legend className="sr-only">{alongUi.filterLabel}</legend>

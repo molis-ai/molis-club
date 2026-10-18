@@ -65,7 +65,10 @@
 .m-river .m-river-notes p {
   align-items: flex-start;
 }
-.m-along-catalog {
+/* 目录和上面的河图之间一道细线（原来是「目录 · N 件」那一行带着，现在只留线） */
+.m-along-index::before {
+  content: '';
+  display: block;
   padding-top: clamp(24px, 5vh, 56px);
   border-top: 1px solid var(--hair);
 }

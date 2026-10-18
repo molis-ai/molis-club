@@ -31,7 +31,6 @@ export const excerpts: Record<string, string> = {
 export const essayUi = {
   all: '全部文章',
   read: '读全文',
-  next: '接着读',
   toc: '本篇目录',
   words: (n: number) => `约 ${n} 字`,
   minutes: (n: number) => `读完约 ${n} 分钟`,

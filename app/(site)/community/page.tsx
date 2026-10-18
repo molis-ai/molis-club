@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowDown, ArrowRight, Search } from 'lucide-react';
+import { ArrowRight, Search } from 'lucide-react';
 import { pageMetadata } from '../../../lib/site';
 import { artistSkills } from '../../../content/artists';
 import { isResourceEntry, knowledge } from '../../../content/knowledge';
@@ -195,10 +195,6 @@ export default function CommunityPage() {
           </p>
         </div>
         <FlowerToy />
-        <a className="m-com-next" href="#take">
-          {ui.hero.next}
-          <ArrowDown size={14} aria-hidden="true" />
-        </a>
       </header>
 
       {/* ② 带点什么走：围桌的人 */}

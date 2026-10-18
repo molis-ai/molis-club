@@ -24,7 +24,8 @@ export const metadata = pageMetadata(
 
 // 展厅 02「我们相信什么」· 主题：光（负责人 2026-10-15 定：「关于」做成一场展，这是第二间，白墙）。
 // 开场（窗前的人）· 什么变了（光照进来）· 三种媒介（互动装置）· 六条信念（一面墙六件，点标题换一件）·
-// 落到产品里（天窗的格子）· 我们怎样要求自己（墙上的四段字）· 下一个展厅。每屏一个视口放得下。
+// 下一个展厅。每屏一个视口放得下。「落到产品里」「我们怎样要求自己」两段按负责人 2026-10-18 的要求删去，
+// 原句仍留在 content/site/studio.ts。
 // 正文都是 1.3–1.6 与 2.2 的原句；《黑客与画家》那一段在展厅 01，这里不重复。
 
 const HUMAN_SCALE = '《人的尺度》';
@@ -81,14 +82,6 @@ export default function AboutPage() {
                   {
                     label: aboutUi.facts.beliefs,
                     value: studio.beliefs.length,
-                  },
-                  {
-                    label: aboutUi.facts.practice,
-                    value: studio.practice.rows.length,
-                  },
-                  {
-                    label: aboutUi.facts.demands,
-                    value: studio.demands.items.length,
                   },
                 ]}
               />
@@ -186,67 +179,6 @@ export default function AboutPage() {
             ),
           }))}
         />
-      </section>
-
-      {/* 这些信念怎样落到产品里：天窗的格子 */}
-      <section className="ex-screen m-wrap" aria-labelledby="ab-practice-title">
-        <div className="ex-grid ab-practice">
-          <Work
-            name="ex-skylight"
-            no="10"
-            ratio="4 / 5"
-            focus="40% 40%"
-            maxH="60svh"
-            sizes="(max-width: 900px) 70vw, 30vw"
-            className="ab-practice-work"
-          >
-            {studio.practice.lead}
-          </Work>
-          <div className="ab-practice-text" data-reveal>
-            <p className="ex-kicker">{aboutUi.practice}</p>
-            <h2 className="ex-h2" id="ab-practice-title">
-              <Phrases text={studio.practice.title} />
-            </h2>
-            <dl className="ab-rows">
-              {studio.practice.rows.map((row) => (
-                <div key={row.choice}>
-                  <dt>{row.choice}</dt>
-                  <dd>{row.how}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </div>
-      </section>
-
-      {/* 我们怎样要求自己：墙上的四段字（团队页「黑客与画家」链到这里） */}
-      <section
-        className="ex-screen m-wrap"
-        id="demands"
-        aria-labelledby="ab-demands-title"
-      >
-        <div className="ab-demands-head" data-reveal>
-          <p className="ex-kicker">{aboutUi.demands}</p>
-          <h2 className="ex-h2" id="ab-demands-title">
-            <Phrases text={studio.demands.title} />
-          </h2>
-          <p className="ex-text">{studio.demands.lead}</p>
-        </div>
-        <ol className="ab-demands">
-          {studio.demands.items.map((item, index) => (
-            <li
-              key={item.title}
-              data-reveal
-              style={{ '--delay': `${index * 80}ms` } as Vars}
-            >
-              <span className="ex-no num" aria-hidden="true">
-                {pad(index + 1)}
-              </span>
-              <h3 className="ex-h2">{item.title}</h3>
-              <p className="ex-text">{item.text}</p>
-            </li>
-          ))}
-        </ol>
       </section>
 
       <NextRoom from="light" />
