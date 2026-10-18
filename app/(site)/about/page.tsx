@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { pageMetadata } from '../../../lib/site';
 import { story, studio } from '../../../content/site/studio';
 import { aboutUi, trio } from '../../../content/site/about';
+import { nav } from '../../../content/site/nav';
 import { ABOUT, essayHref } from '../../_site/routes';
 import { More, pad, Phrases, type Vars } from '../../_site/ui';
 import { Fold } from '../../_site/viz/viz';
@@ -12,15 +13,23 @@ import {
   RoomMeta,
   Work,
 } from '../../_site/exhibit/exhibit';
+import { ReviewSwitch } from '../../_site/review/comparison';
 import { BeliefWall } from './belief-wall';
+import { AboutOne } from './one';
 import { Trio } from './trio';
 import './about.css';
 
-export const metadata = pageMetadata(
-  aboutUi.title,
-  studio.standard.character,
-  ABOUT,
-);
+type Props = { searchParams: Promise<{ study?: string }> };
+
+/** 样张的标题是「关于」（一页里不止信念）；现版照旧是「我们相信什么」 */
+export async function generateMetadata({ searchParams }: Props) {
+  const { study } = await searchParams;
+  return pageMetadata(
+    study === 'one' ? nav.about : aboutUi.title,
+    studio.standard.character,
+    ABOUT,
+  );
+}
 
 // 展厅 02「我们相信什么」· 主题：光（负责人 2026-10-15 定：「关于」做成一场展，这是第二间，白墙）。
 // 开场（窗前的人）· 什么变了（光照进来）· 三种媒介（互动装置）· 六条信念（一面墙六件，点标题换一件）·
@@ -55,7 +64,26 @@ const beliefWorks = [
   { name: 'ex-paper-plane', focus: '35% 45%' },
 ] as const;
 
-export default function AboutPage() {
+// 一页式样张（C1）：/about?study=one；/about?study=current 是带比较条的现版。不带参数时照旧是现版，不出现比较条。
+export default async function AboutPage({ searchParams }: Props) {
+  const { study } = await searchParams;
+  const one = study === 'one';
+  return (
+    <>
+      {one ? <AboutOne /> : <AboutCurrent />}
+      {one || study === 'current' ? (
+        <ReviewSwitch
+          label={nav.about}
+          variant={one ? 'sample' : 'current'}
+          currentHref={`${ABOUT}?study=current`}
+          sampleHref={`${ABOUT}?study=one`}
+        />
+      ) : null}
+    </>
+  );
+}
+
+function AboutCurrent() {
   const change = story.change.paragraphs;
   const [why] = change.slice(2, 3);
   const changeLast = change[change.length - 1];

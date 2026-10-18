@@ -12,6 +12,8 @@ import { pad, Phrases, type Vars } from '../../_site/ui';
 // - 点任何一步就停在那一步；「停在这一步」随时可以按；演完可以「再演一遍」。
 // - 没有 JS、减少动态：直接是「完成」，不自己演（减少动态时仍可以手动点每一步看）。
 // 画面一律是示意：作画是一段循环的影像（起稿时先褪成单色，像打底），代码是本站文字链接下划线的写法，文字是一句话的修改痕迹。
+// flow（一页式「关于」样张用）：代码与文字的框不再按比例截住、在框里滚动，而是由内容撑高；
+// 三稿叠在同一格里占位，只露出当前一稿，换步时框的高度不跳，三栏共用一行的高度（清单 D3）。
 
 type Step = 0 | 1 | 2;
 type Mode = 'waiting' | 'playing' | 'resting';
@@ -19,7 +21,60 @@ type Mode = 'waiting' | 'playing' | 'resting';
 /** 每一步停多久（毫秒）：修改那一步要读的东西多，停久一点 */
 const HOLD: Record<Step, number> = { 0: 2600, 1: 3600, 2: 0 };
 
-export function Trio() {
+type Mark = ' ' | '-' | '+';
+
+function CodeDraft({
+  lines,
+  keyPrefix,
+}: {
+  lines: Array<[Mark, string]>;
+  keyPrefix: string;
+}) {
+  return (
+    <code>
+      {lines.map(([mark, text], index) => {
+        const Line = mark === '+' ? 'ins' : mark === '-' ? 'del' : 'span';
+        return (
+          <Line
+            key={`${keyPrefix}-${index}`}
+            className="ab-line"
+            data-mark={mark}
+            style={{ '--i': index } as Vars}
+          >
+            {text}
+          </Line>
+        );
+      })}
+    </code>
+  );
+}
+
+function WordsDraft({
+  parts,
+  keyPrefix,
+}: {
+  parts: Array<[Mark, string]>;
+  keyPrefix: string;
+}) {
+  return (
+    <>
+      {parts.map(([mark, text], index) => {
+        const Part = mark === '+' ? 'ins' : mark === '-' ? 'del' : 'span';
+        return (
+          <Part
+            key={`${keyPrefix}-${index}`}
+            data-mark={mark}
+            style={{ '--i': index } as Vars}
+          >
+            {mark === ' ' ? <Phrases text={text} /> : text}
+          </Part>
+        );
+      })}
+    </>
+  );
+}
+
+export function Trio({ flow = false }: { flow?: boolean }) {
   const reduced = useReducedMotion();
   const box = useRef<HTMLDivElement>(null);
   const visible = useVisible(box, 0.25);
@@ -70,6 +125,7 @@ export function Trio() {
       ref={box}
       data-step={shown}
       data-playing={playing || undefined}
+      data-flow={flow || undefined}
     >
       <div className="ab-trio-bar">
         <fieldset className="ab-steps">
@@ -150,24 +206,29 @@ export function Trio() {
                   <span lang="en">{trio.code.file}</span>
                   <span>{trio.steps[shown]}</span>
                 </p>
-                <pre className="ab-pre">
-                  <code>
-                    {code.map(([mark, text], index) => {
-                      const Line =
-                        mark === '+' ? 'ins' : mark === '-' ? 'del' : 'span';
-                      return (
-                        <Line
-                          key={`${shown}-${index}`}
-                          className="ab-line"
-                          data-mark={mark}
-                          style={{ '--i': index } as Vars}
-                        >
-                          {text}
-                        </Line>
-                      );
-                    })}
-                  </code>
-                </pre>
+                {flow ? (
+                  <div className="ab-stack">
+                    {trio.code.drafts.map((draft, index) => (
+                      <pre
+                        key={index}
+                        className="ab-pre"
+                        data-on={index === shown || undefined}
+                        aria-hidden={index === shown ? undefined : true}
+                      >
+                        <CodeDraft
+                          lines={draft}
+                          keyPrefix={
+                            index === shown ? `${shown}` : `still-${index}`
+                          }
+                        />
+                      </pre>
+                    ))}
+                  </div>
+                ) : (
+                  <pre className="ab-pre">
+                    <CodeDraft lines={code} keyPrefix={`${shown}`} />
+                  </pre>
+                )}
                 <p className="ab-result">
                   <span>{trio.code.result}</span>
                   <a className="ab-sample" href="#beliefs">
@@ -200,21 +261,29 @@ export function Trio() {
                   <span>{trio.words.versions[shown]}</span>
                   <span>{trio.steps[shown]}</span>
                 </p>
-                <p className="ab-sentence">
-                  {words.map(([mark, text], index) => {
-                    const Part =
-                      mark === '+' ? 'ins' : mark === '-' ? 'del' : 'span';
-                    return (
-                      <Part
-                        key={`${shown}-${index}`}
-                        data-mark={mark}
-                        style={{ '--i': index } as Vars}
+                {flow ? (
+                  <div className="ab-stack">
+                    {trio.words.drafts.map((draft, index) => (
+                      <p
+                        key={index}
+                        className="ab-sentence"
+                        data-on={index === shown || undefined}
+                        aria-hidden={index === shown ? undefined : true}
                       >
-                        {mark === ' ' ? <Phrases text={text} /> : text}
-                      </Part>
-                    );
-                  })}
-                </p>
+                        <WordsDraft
+                          parts={draft}
+                          keyPrefix={
+                            index === shown ? `${shown}` : `still-${index}`
+                          }
+                        />
+                      </p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="ab-sentence">
+                    <WordsDraft parts={words} keyPrefix={`${shown}`} />
+                  </p>
+                )}
               </div>
             </div>
             <figcaption>

@@ -1,0 +1,515 @@
+/* =====================================================================
+   一页式「关于」样张（C1）：/about?study=one。
+   全站的纸色，不换墙；区块之间用留白分开，不画线；标题与内容居中陈列。
+   八个人的名牌沿用 team.css，三种媒介沿用 about.css，这里只排这一页和几处覆盖。
+   ===================================================================== */
+
+.ao {
+  --ao-wide: 1200px;
+}
+
+/* ---------- 共用的字 ---------- */
+.ao-kicker {
+  margin-bottom: clamp(12px, 2vh, 20px);
+  font: 500 var(--t-label) / 1.6 var(--sans);
+  letter-spacing: 0.16em;
+  color: var(--mute);
+}
+.ao-kicker:lang(en) {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+}
+.ao-h1 {
+  font: 300 var(--t-h1) / 1.25 var(--sans);
+  letter-spacing: 0.06em;
+  font-feature-settings: 'palt' 1;
+  text-wrap: balance;
+}
+.ao-h2 {
+  font: 300 var(--t-h2) / 1.45 var(--sans);
+  letter-spacing: 0.04em;
+  font-feature-settings: 'palt' 1;
+  text-wrap: balance;
+}
+.ao-h3 {
+  font: 300 var(--t-h3) / 1.65 var(--sans);
+  letter-spacing: 0.04em;
+  text-wrap: balance;
+}
+.ao-lead {
+  max-width: 32em;
+  margin-top: clamp(14px, 2.4vh, 24px);
+  font: 300 var(--t-lead) / 1.9 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+  text-wrap: balance;
+}
+.ao-text {
+  margin-top: 0.9em;
+  font: 400 var(--t-body) / 1.95 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.ao-keys {
+  margin-top: 1.1em;
+  font: 300 var(--t-keys) / 1.7 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+.ao-fine {
+  margin-top: clamp(18px, 3vh, 30px);
+  font-size: 12px;
+  line-height: 1.7;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+  text-align: center;
+}
+
+/* 图下的一行：媒介 · 摄影者（不编号、不起标题） */
+.ao .ex-work {
+  gap: 8px;
+}
+.ao .ex-medium {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  font-size: 11.5px;
+}
+
+/* ---------- 一屏：至少一个视口高，内容竖向居中；屏与屏之间只有留白 ---------- */
+.ao-sec {
+  min-height: calc(100svh - var(--header));
+  display: grid;
+  align-content: center;
+  padding-block: clamp(64px, 12vh, 140px);
+}
+.ao-head {
+  max-width: 40rem;
+  margin: 0 auto clamp(28px, 5.4vh, 60px);
+  text-align: center;
+}
+.ao-head .ao-text {
+  margin-inline: auto;
+}
+.ao-head-read {
+  max-width: 36em;
+}
+
+/* ---------- 开场：主线，下面一整扇窗 ---------- */
+.ao-open {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-height: 100svh;
+  padding-top: calc(var(--header) + clamp(24px, 6vh, 64px));
+  padding-bottom: clamp(24px, 5vh, 56px);
+  text-align: center;
+}
+.ao-open-work {
+  width: min(100%, var(--ao-wide));
+  margin-top: clamp(28px, 5.4vh, 56px);
+  text-align: left;
+}
+
+/* ---------- 我们是谁：名牌四列两行，去掉名牌上的墨线，靠留白分组 ---------- */
+.ao-roster {
+  width: min(100%, var(--ao-wide));
+  margin-inline: auto;
+  row-gap: clamp(26px, 4.6vh, 48px);
+}
+.ao .tm-plate {
+  padding: 0;
+  border-top: 0;
+}
+.ao .tm-more > summary {
+  top: -6px;
+}
+.ao .tm-more-body {
+  padding-top: 0;
+  border-top: 0;
+}
+.ao .tm-plate-top {
+  padding-right: 72px;
+}
+
+/* ---------- 左图右文（从哪来、什么变了）：一对居中的两栏 ---------- */
+.ao-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(36px, 6vw, 104px);
+  width: min(100%, var(--ao-wide));
+  margin-inline: auto;
+}
+.ao-split-text {
+  max-width: 34rem;
+}
+.ao-from-pics {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(14px, 1.8vw, 24px);
+}
+.ao-from-sea {
+  margin-bottom: clamp(36px, 8vh, 90px);
+}
+.ao-change-work {
+  justify-self: end;
+  width: min(100%, 460px);
+}
+
+/* ---------- 去处：有标题和说明的卡片，整张是链接，只留一个箭头按钮 ---------- */
+.ao-go {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: clamp(14px, 2vh, 20px) clamp(16px, 1.6vw, 22px);
+  border-radius: var(--r-card);
+  background: var(--paper-2);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    background-color 0.4s var(--ease),
+    transform 0.4s var(--ease);
+}
+.ao-go:hover {
+  background: color-mix(in srgb, var(--paper-2) 70%, var(--faint));
+  transform: translateY(-2px);
+}
+.ao-go:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+}
+.ao-go-body {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.ao-go-title {
+  font: 400 var(--t-keys) / 1.5 var(--sans);
+  letter-spacing: 0.04em;
+}
+.ao-go-line {
+  font-size: 12.5px;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  color: var(--mute);
+}
+.ao-go-line .num {
+  color: var(--ink);
+}
+.ao-go-arrow {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  transition:
+    background-color 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+.ao-go-arrow svg {
+  transition: transform 0.5s var(--ease);
+}
+.ao-go:hover .ao-go-arrow,
+.ao-go:focus-visible .ao-go-arrow {
+  background: var(--ink);
+  color: var(--paper);
+}
+.ao-go:hover .ao-go-arrow svg,
+.ao-go:focus-visible .ao-go-arrow svg {
+  transform: translateX(3px);
+}
+.ao-go-along {
+  margin-top: clamp(22px, 4vh, 40px);
+}
+.ao-essays {
+  display: grid;
+  gap: 10px;
+  margin-top: clamp(22px, 4vh, 40px);
+}
+
+/* ---------- 三种媒介：框由内容撑高，三栏同一行高，不在框里滚动 ---------- */
+.ao .ab-trio {
+  width: min(100%, var(--ao-wide));
+  margin-inline: auto;
+}
+.ab-trio[data-flow] .ab-panel-in {
+  gap: 14px;
+  padding: clamp(16px, 1.6vw, 22px);
+}
+.ab-trio[data-flow] .ab-pre {
+  line-height: 1.7;
+}
+.ab-trio[data-flow] .ab-col {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.ab-trio[data-flow] .ab-col > .m-window {
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+/* 作画那栏的图注旁有暂停键：三栏图注同高，框才一样高 */
+.ab-trio[data-flow] .ab-col figcaption {
+  min-height: 28px;
+}
+.ab-trio[data-flow] .m-window-frame {
+  aspect-ratio: auto;
+  max-height: none;
+  min-height: clamp(300px, 40svh, 420px);
+}
+.ab-trio[data-flow] .ab-panel-in {
+  position: relative;
+  inset: auto;
+  height: 100%;
+  overflow: visible;
+}
+.ab-stack {
+  display: grid;
+  flex: 1;
+}
+.ab-stack > * {
+  grid-area: 1 / 1;
+}
+.ab-stack > :not([data-on]) {
+  visibility: hidden;
+}
+.ab-words .ab-stack > .ab-sentence {
+  margin-block: 0;
+  align-self: center;
+}
+
+/* ---------- 六条信念：左边一扇窗钉住，右边六条顺着滚动走 ---------- */
+.ao-bg {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: min(100%, var(--ao-wide));
+  margin-inline: auto;
+}
+.ao-bg-stage {
+  display: none;
+}
+.ao-bg-list {
+  display: grid;
+  gap: clamp(56px, 10vh, 96px);
+}
+.ao-bg-item {
+  display: grid;
+  gap: 20px;
+}
+.ao-bg-title {
+  font: 300 var(--t-h3) / 1.6 var(--sans);
+  letter-spacing: 0.04em;
+  font-feature-settings: 'palt' 1;
+}
+.ao-bg-text {
+  max-width: 32em;
+  margin-top: 12px;
+  font: 400 var(--t-body) / 1.95 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+@media (min-width: 901px) {
+  /* 没有 JS：每条自己一行，图左文右 */
+  .ao-bg-item {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(40px, 6vw, 104px);
+  }
+  .ao-bg-figure .ex-work {
+    justify-self: end;
+    width: min(100%, 460px);
+  }
+  .js .ao-bg-item {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .js .ao-bg {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 104px);
+  }
+  .js .ao-bg-stage {
+    position: sticky;
+    top: var(--header);
+    display: grid;
+    align-content: center;
+    height: calc(100svh - var(--header));
+  }
+  .js .ao-bg-still {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transition: opacity 0.9s var(--ease);
+  }
+  .js .ao-bg-still[data-on] {
+    opacity: 1;
+  }
+  .js .ao-bg-still .ex-work {
+    justify-self: end;
+    width: min(100%, 460px);
+  }
+  .js .ao-bg-list {
+    gap: 0;
+  }
+  .js .ao-bg-item {
+    min-height: 72svh;
+    align-content: center;
+  }
+  .js .ao-bg-figure {
+    display: none;
+  }
+  /* 走到中间的那一条是墨色，其余退后 */
+  .js .ao-bg-words {
+    transition: opacity 0.6s var(--ease);
+  }
+  .js .ao-bg-item:not([data-on]) .ao-bg-words {
+    opacity: 0.32;
+  }
+}
+
+/* ---------- 想做的事：五张卡一排，问题在上，产品与阶段在下 ---------- */
+.ao-products {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  width: min(100%, var(--ao-wide));
+  margin-inline: auto;
+}
+/* 卡片里：问题占满一行，产品与阶段在左下，箭头在右下 */
+.ao-products .ao-go {
+  height: 100%;
+  min-height: clamp(150px, 22vh, 200px);
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: end;
+  row-gap: 20px;
+}
+.ao-products .ao-go-body {
+  display: contents;
+}
+.ao-products .ao-go-q {
+  grid-column: 1 / -1;
+  align-self: start;
+}
+.ao-go-q {
+  font: 400 15px/1.7 var(--sans);
+  letter-spacing: 0.04em;
+}
+.ao-go-to {
+  display: grid;
+  gap: 4px;
+}
+.ao-go-name {
+  font: 400 var(--t-small) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.ao-products [data-far] .ao-go {
+  background: color-mix(in srgb, var(--paper-2) 45%, transparent);
+}
+.ao-products [data-far] .ao-go-q {
+  color: var(--mute);
+}
+.ao-together {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: clamp(24px, 4.4vh, 44px);
+}
+
+/* ---------- 结尾：两张海边并排，下面一句、一个按钮 ---------- */
+.ao-end-pics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(14px, 2vw, 28px);
+  width: min(100%, 640px);
+  margin: 0 auto clamp(28px, 5vh, 56px);
+}
+.ao-end-pics > :last-child {
+  margin-top: clamp(24px, 6vh, 64px);
+}
+.ao-end .ao-head {
+  margin-bottom: 0;
+}
+.ao-end-act {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(20px, 3.6vh, 32px);
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 1100px) {
+  .ao-products {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .ao-split {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 36px;
+  }
+  .ao-split-text {
+    max-width: none;
+  }
+  .ao-change-work {
+    justify-self: stretch;
+    width: 100%;
+  }
+  .ao-products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  /* 长段落在手机上左对齐好读 */
+  .ao-head:has(.ao-head-read) {
+    text-align: left;
+  }
+  .ao-sec {
+    min-height: 0;
+    padding-block: 72px;
+  }
+  .ao-open {
+    min-height: 0;
+  }
+  .ab-trio[data-flow] .ab-paint .m-window-frame {
+    aspect-ratio: 4 / 4.2;
+    min-height: 0;
+  }
+  .ab-trio[data-flow] .ab-panel .m-window-frame {
+    min-height: 0;
+  }
+}
+@media (max-width: 560px) {
+  .ao-products {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ao-products .ao-go {
+    min-height: 0;
+  }
+}
+
+/* ---------- 减少动态：换图不淡入淡出 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .js .ao-bg-still,
+  .js .ao-bg-words,
+  .ao-go,
+  .ao-go-arrow,
+  .ao-go-arrow svg {
+    transition: none;
+  }
+}
+
+/* ---------- 打印：钉住的窗不印，每条信念跟着自己的图 ---------- */
+@media print {
+  .ao-bg-stage {
+    display: none !important;
+  }
+  .ao-bg-figure {
+    display: block !important;
+  }
+  .ao-bg-item:not([data-on]) .ao-bg-words {
+    opacity: 1 !important;
+  }
+}

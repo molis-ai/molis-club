@@ -193,6 +193,69 @@ for (const [path, text] of [
 ])
   assert(!(await html(path)).includes(text), `${path}: no「${text}」`);
 
+// 一页式「关于」样张（C1，负责人 2026-10-18）：/about?study=one。默认 /about 照旧是现版，不出现比较条
+assert(
+  !(await html('/about')).includes('m-review-bar'),
+  '/about: no review bar by default',
+);
+{
+  const one = await html('/about?study=one');
+  const text = one
+    .replace(/<script[\s\S]*?<\/script>/g, '')
+    .replace(/<style[\s\S]*?<\/style>/g, '')
+    .replace(/<[^>]+>/g, '');
+  assert.equal(count(one, /<h1[\s>]/g), 1, 'about one: one h1');
+  assert.match(
+    one,
+    /<h1[^>]*>[\s\S]*?技术，[\s\S]*?回到人的尺度。[\s\S]*?<\/h1>/,
+    'about one: the main line is the h1',
+  );
+  assert.match(one, /<title>关于 · Molis AI<\/title>/, 'about one: title');
+  // 顺序：开场 · 我们是谁 · 从哪来 · 什么变了 · 三种媒介 · 六条信念 · 想做的事 · 找同类
+  let at = 0;
+  for (const line of [
+    '技术，回到人的尺度。',
+    '一群同类，一起创造。',
+    '我们曾是美团的同事。',
+    '当想法更容易变成现实',
+    '三种媒介，同一个动作。',
+    '我们相信什么',
+    '有自己的判断，也有把它做成的本事。',
+    '让更多人成为创造者，让作品找到最早的相信者。',
+    '我们希望，技术带来的能力，能变成人手里的选择',
+    '我们做自己用着舒服的产品',
+  ]) {
+    const next = text.indexOf(line, at);
+    assert(next >= 0, `about one: 「${line}」 in order`);
+    at = next;
+  }
+  // 原句只出现一次（「找同类，不抢货架。」只在结尾回扣标题，正文只在信念里）
+  for (const line of [
+    '这些经历构成了我们的来路。',
+    '我们想在产品里寻找这些答案。',
+    '让口味相近的人认出彼此。',
+    '决定什么值得做，本身就是创造的一部分。',
+  ])
+    assert.equal(text.split(line).length - 1, 1, `about one: 「${line}」 once`);
+  // 去处：沿途、两篇文章、五件产品、企业合作、社区、聊一聊
+  for (const href of [
+    '/along-the-way',
+    '/essays/human-scale',
+    '/essays/idealism',
+    '/work',
+    '/world',
+    '/enterprise',
+    '/community',
+    '/contact',
+  ])
+    assert(one.includes(`href="${href}"`), `about one: link ${href}`);
+  // 不再是展厅：没有名牌、平面图、墙色与「下一个展厅」
+  for (const mark of ['ex-meta', 'ex-plan', 'ex-next', 'data-room'])
+    assert(!one.includes(mark), `about one: no exhibit ${mark}`);
+  assert(!text.includes('展厅'), 'about one: no room names');
+  assert(one.includes('m-review-bar'), 'about one: review bar');
+}
+
 console.log(
   'PASS: every page of the rebuilt site, one h1 each, header/footer, honest stages and labels, legacy redirects, 404 and private indexing.',
 );
