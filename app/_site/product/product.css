@@ -169,33 +169,110 @@
     min-height: 40vh;
   }
 }
-/* 只演画面（不给每一步的字）：文字停在左边，下面一排看不见的节拍推着画面一步步演 */
-.m-ch-beats {
+/* 只演画面（不给每一步的字）：桌面上像画廊，左边的字和右边的画面钉在一起，一排看不见的节拍推着画面一步步演；
+   换章时字和画面一起换。正文里那一份文字留给读屏。最长的一章放不下时（data-tall），各章文字各自停住 */
+.m-ch-beats,
+.m-stage-copy {
   display: none;
 }
 @media (min-width: 901px) {
-  .js .m-chapters[data-quiet] .m-ch {
+  .js .m-chapters[data-quiet] .m-ch-beats {
     display: grid;
   }
-  .js .m-chapters[data-quiet] .m-ch > * {
+  .js .m-chapters[data-quiet] .m-chapters-stage {
+    grid-column: 1 / -1;
+    pointer-events: none;
+  }
+  .js .m-chapters[data-quiet] .m-stage-pin {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    align-items: start;
+  }
+  .js .m-chapters[data-quiet] .m-stage-pin > * {
+    pointer-events: auto;
+  }
+  .js .m-chapters[data-quiet] .m-stage-view,
+  .js .m-chapters[data-quiet] .m-stage-foot {
+    grid-column: 6 / -1;
+  }
+  .js .m-chapters[data-quiet] .m-stage-copy {
+    display: grid;
+    grid-column: 1 / span 5;
+    grid-row: 1 / span 2;
+  }
+  .m-stage-text {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.6s var(--ease),
+      visibility 0.6s;
+  }
+  .m-stage-text[data-now] {
+    opacity: 1;
+    visibility: visible;
+  }
+  .m-stage-text .m-ch-meta {
+    border-top: 1px solid var(--ink);
+  }
+  .js .m-chapters[data-quiet]:not([data-tall]) .m-ch {
+    padding: 0;
+    border: 0;
+  }
+  .js .m-chapters[data-quiet]:not([data-tall]) .m-ch-copy {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .js .m-chapters[data-quiet]:not([data-tall]) .m-ch-beats i {
+    height: 40vh;
+  }
+  .js
+    .m-chapters[data-quiet]:not([data-tall])
+    .m-ch:first-child
+    .m-ch-beats
+    i:first-child {
+    height: 56vh;
+  }
+  .js
+    .m-chapters[data-quiet]:not([data-tall])
+    .m-ch:last-child
+    .m-ch-beats
+    i:last-child {
+    height: 62vh;
+  }
+
+  /* 矮屏：画廊里的字只留着量高度，各章文字在自己那一段里停住 */
+  .js .m-chapters[data-tall] .m-stage-copy {
+    height: 0;
+  }
+  .js .m-chapters[data-tall] .m-stage-text {
+    visibility: hidden;
+    opacity: 0;
+  }
+  .js .m-chapters[data-quiet][data-tall] .m-ch {
+    display: grid;
+  }
+  .js .m-chapters[data-quiet][data-tall] .m-ch > * {
     grid-area: 1 / 1;
   }
-  .js .m-chapters[data-quiet] .m-ch-copy {
+  .js .m-chapters[data-quiet][data-tall] .m-ch-copy {
     position: sticky;
     top: calc(var(--header) + 5vh);
     align-self: start;
     z-index: 1;
   }
-  .js .m-chapters[data-quiet] .m-ch-beats {
-    display: grid;
-  }
-  .js .m-chapters[data-quiet] .m-ch-beats i {
+  .js .m-chapters[data-quiet][data-tall] .m-ch-beats i {
     height: 34vh;
   }
-  .js .m-chapters[data-quiet] .m-ch-beats i:first-child {
+  .js .m-chapters[data-quiet][data-tall] .m-ch-beats i:first-child {
     height: 44vh;
   }
-  .js .m-chapters[data-quiet] .m-ch-beats i:last-child {
+  .js .m-chapters[data-quiet][data-tall] .m-ch-beats i:last-child {
     height: 56vh;
   }
 }

@@ -9,8 +9,9 @@ import { pad, Phrases } from '../ui';
 // 桌面：左文右图，右侧画面钉住；滚到哪一章画面换到哪一章，一章两三步，滚到哪一步演到哪一步，可以倒回。
 // 手机：画面在每章文字上方，进入视口按时间播，可暂停。减少动态：没有过渡，停在每步的结果上。
 // 没有 JS：每章文字上方都有一张停在最后一步的画面（同手机的排法），钉住的画面不出现。
-// 不给每一步的字（Life、World）：只演画面，不列步骤、画面上方也不写；桌面上这一章的文字和画面一起停住，
-// 滚过的距离推着画面一步步演，滚完一章再换下一章的字（同 Story 四个世界：文字停住、画面演）。
+// 不给每一步的字（Life、World）：只演画面，不列步骤、画面上方也不写。桌面上像画廊：左边的字和右边的画面
+// 钉在同一个位置，滚过的距离推着画面一步步演，换章时字和画面一起换，主线结束时一起离开；
+// 正文里那一份留给读屏。最长的一章在这一屏放不下时（矮屏），退回各章文字在自己那一段里停住。
 
 export type Chapter = {
   id: string;
@@ -24,6 +25,21 @@ export type Chapter = {
   steps?: string[];
   scene: Scene;
 };
+
+/** 编号、小标签、阶段签 */
+function Meta({ chapter, no }: { chapter: Chapter; no: number }) {
+  return (
+    <p className="m-ch-meta">
+      <span className="m-no" aria-hidden="true">
+        {pad(no)}
+      </span>
+      {chapter.kicker ? (
+        <span className="m-kicker">{chapter.kicker}</span>
+      ) : null}
+      {chapter.tag ? <span className="m-note">{chapter.tag}</span> : null}
+    </p>
+  );
+}
 
 /** 手机上：画面在文字上方，进入视口按时间播，可暂停 */
 function Inline({ chapter }: { chapter: Chapter }) {
@@ -90,9 +106,19 @@ export function Chapters({
     const request = () => {
       if (!frame) frame = requestAnimationFrame(read);
     };
-    // 停住的文字比一屏还高时（矮屏），往上让出一截，让最后一行也看得见
+    // 画廊里最长的一章放不下（矮屏）就退回各章文字各自停住；停住的文字比一屏还高时，往上让出一截
+    const texts = Array.from(
+      node.querySelectorAll<HTMLElement>('.m-stage-text'),
+    );
     const copies = Array.from(node.querySelectorAll<HTMLElement>('.m-ch-copy'));
     const fit = () => {
+      const pin = node.querySelector<HTMLElement>('.m-stage-pin');
+      const top = pin ? parseFloat(getComputedStyle(pin).top) || 0 : 0;
+      const tallest = Math.max(0, ...texts.map((text) => text.offsetHeight));
+      node.toggleAttribute(
+        'data-tall',
+        tallest > window.innerHeight - top - 24,
+      );
       for (const copy of copies) {
         copy.style.top = '';
         const top = parseFloat(getComputedStyle(copy).top);
@@ -106,6 +132,7 @@ export function Chapters({
     };
     fit();
     request();
+    void document.fonts?.ready.then(resize);
     window.addEventListener('scroll', request, { passive: true });
     window.addEventListener('resize', resize);
     return () => {
@@ -133,17 +160,7 @@ export function Chapters({
             aria-labelledby={`${chapter.id}-title`}
           >
             <div className="m-ch-copy">
-              <p className="m-ch-meta">
-                <span className="m-no" aria-hidden="true">
-                  {pad(c + start)}
-                </span>
-                {chapter.kicker ? (
-                  <span className="m-kicker">{chapter.kicker}</span>
-                ) : null}
-                {chapter.tag ? (
-                  <span className="m-note">{chapter.tag}</span>
-                ) : null}
-              </p>
+              <Meta chapter={chapter} no={c + start} />
               <Inline chapter={chapter} />
               <h2 className="m-ch-title" id={`${chapter.id}-title`}>
                 <Phrases text={chapter.title} />
@@ -190,12 +207,32 @@ export function Chapters({
       </div>
       <div className="m-chapters-stage" aria-hidden="true">
         <div className="m-stage-pin">
-          {current.steps?.length ? (
+          {quiet ? (
+            <div className="m-stage-copy">
+              {chapters.map((chapter, c) => (
+                <div
+                  key={chapter.id}
+                  className="m-stage-text"
+                  data-now={c === at.chapter || undefined}
+                >
+                  <Meta chapter={chapter} no={c + start} />
+                  <p className="m-ch-title">
+                    <Phrases text={chapter.title} />
+                  </p>
+                  <div className="m-ch-prose">
+                    {chapter.paragraphs.map((text) => (
+                      <p key={text}>{text}</p>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
             <p className="m-stage-cap">
               <span className="m-no">{pad(at.chapter + start)}</span>
-              <span>{current.steps[at.step]}</span>
+              <span>{current.steps?.[at.step]}</span>
             </p>
-          ) : null}
+          )}
           <div className="m-stage-view">
             {chapters.map((chapter, c) => (
               <div

@@ -164,7 +164,8 @@
     padding: var(--header) var(--gutter) 0;
     width: min(100%, calc(var(--wrap) + 2 * var(--gutter)));
     pointer-events: none;
-    opacity: calc(1 - min(1, var(--g) * 2.4));
+    /* 拱窗收回到文字右边以外（--g 约 0.14）之前，文字不出来，免得叠在窗上 */
+    opacity: calc(1 - min(1, var(--g) * 7));
   }
   .js .st-world:not([data-still]) .st-world-text > * {
     max-width: 40%;
