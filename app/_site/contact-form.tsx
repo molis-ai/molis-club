@@ -15,8 +15,10 @@ import {
   type Intent,
 } from '../../content/site/contact';
 import {
+  isSoon,
   productIds,
   products,
+  stageOf,
   type ProductId,
 } from '../../content/site/products';
 import { COMMUNITY, CONTACT, ENTERPRISE, HOME, productHref } from './routes';
@@ -64,7 +66,8 @@ function backTo(entry: string | null) {
   if (entry === 'feedback' || entry === 'creator' || entry.startsWith('share'))
     return { href: COMMUNITY, label: form.back.community };
   const product = topics[entry]?.product;
-  return product
+  // 先不开放的产品没有详情页可回
+  return product && !isSoon(product)
     ? {
         href: productHref[product],
         label: form.back.product(products[product].name),
@@ -253,9 +256,11 @@ export function ContactForm({
             <p className="m-form-stage">
               <span
                 className="m-status"
-                data-concept={product === 'world' || undefined}
+                data-concept={
+                  product === 'world' || isSoon(product) || undefined
+                }
               >
-                {products[product].stage}
+                {stageOf(product)}
               </span>
             </p>
           ) : null}

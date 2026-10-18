@@ -735,7 +735,8 @@ body:has(.m) .skip-link {
     transform: translateY(-6px);
   }
 }
-.m-drop-panel a {
+.m-drop-panel a,
+.m-drop-panel .m-soon {
   display: grid;
   grid-template-columns: 26px minmax(0, 1fr);
   gap: 2px 10px;
@@ -846,7 +847,8 @@ body:has(.m) .skip-link {
     letter-spacing: 0.16em;
     color: var(--mute);
   }
-  .m-menu-sheet a {
+  .m-menu-sheet a,
+  .m-menu-sheet .m-soon {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
@@ -857,7 +859,11 @@ body:has(.m) .skip-link {
     font: 300 22px/1.4 var(--sans);
     letter-spacing: 0.02em;
   }
-  .m-menu-sheet a small {
+  .m-menu-sheet .m-soon {
+    color: var(--ink-2);
+  }
+  .m-menu-sheet a small,
+  .m-menu-sheet .m-soon small {
     font: 400 12px/1.4 var(--sans);
     color: var(--mute);
     letter-spacing: 0.06em;
@@ -919,13 +925,18 @@ body:has(.m) .skip-link {
   letter-spacing: 0.16em;
   color: var(--mute);
 }
-.m-footer-cols a {
+.m-footer-cols a,
+.m-footer-cols .m-soon {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   min-height: 30px;
   font-size: 13.5px;
   line-height: 2;
+}
+/* 先不开放的产品：只留名字，不是链接 */
+.m-footer-cols .m-soon {
+  color: var(--mute);
 }
 .m-footer-cols a:hover {
   text-decoration: underline;

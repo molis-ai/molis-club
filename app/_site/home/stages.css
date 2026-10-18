@@ -274,7 +274,9 @@ i[data-stage='life'] {
   box-shadow: inset 0 0 0 1px var(--ink-2);
 }
 [data-stage='world'] i,
-i[data-stage='world'] {
+i[data-stage='world'],
+[data-stage='soon'] i,
+i[data-stage='soon'] {
   background: transparent;
   border: 1px dashed var(--ink-2);
 }

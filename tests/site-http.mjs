@@ -16,9 +16,6 @@ const pages = [
   '/',
   '/work',
   '/tool',
-  '/life',
-  '/story',
-  '/world',
   '/enterprise',
   '/community',
   '/community/methods',
@@ -56,8 +53,11 @@ for (const path of pages) {
       page.includes(`href="${href}"`),
       `${path}: header/footer link ${href}`,
     );
-  for (const href of ['/work', '/tool', '/life', '/story', '/world'])
+  for (const href of ['/work', '/tool'])
     assert(page.includes(`href="${href}"`), `${path}: product link ${href}`);
+  // Life、Story、World 先不开放（负责人 2026-10-18）：哪里都不链过去，阶段写「探索中，敬请期待」
+  for (const href of ['/life', '/story', '/world'])
+    assert(!page.includes(`href="${href}"`), `${path}: no link to ${href}`);
   // 页尾：本页最近修改
   assert.match(
     page,
@@ -77,7 +77,7 @@ const home = await html('/');
 assert.match(home, /<h1[^>]*>Molis AI<\/h1>/);
 assert.match(home, /We build/);
 assert.match(home, /Beyond/);
-for (const stage of ['开源开发中', '开发中', '原型探索中', '概念设计'])
+for (const stage of ['开源开发中', '开发中', '探索中，敬请期待'])
   assert(home.includes(stage), `home stage ${stage}`);
 // 「我们相信」与「这些产品怎样联系」不放首页（负责人 2026-10-15）
 assert(
@@ -107,56 +107,20 @@ assert(!work.includes('Issue'), 'work: no internal Issue plugin');
 assert(!/下载 Molis|安装包下载|立即下载/.test(work), 'work: no download entry');
 assert(work.includes('href="https://github.com/molis-ai/molis-work"'));
 assert(work.includes('https://github.com/molis-ai/molis-work#run-from-source'));
-for (const path of ['/tool', '/life', '/story', '/world']) {
-  const page = await html(path);
-  assert.match(page, /示意/, `${path}: honest label`);
-  assert(
-    !/下载 Molis|安装包下载|立即下载/.test(page),
-    `${path}: no download entry`,
-  );
-  assert(
-    page.includes('href="/contact?topic='),
-    `${path}: follow progress via contact`,
-  );
-}
-assert.match(await html('/tool'), /计划成为 Molis Work 的基础能力/);
-assert.match(await html('/life'), /尚未打通/);
-assert.match(await html('/story'), /尚未开放/);
-const world = await html('/world');
-assert.match(world, /概念设计/);
-assert.match(world, /概念示意/);
-// A1 第二批：产品页同一件事只说一次（标签行不再写产品名；不列每一步的字；进展不再分栏贴标签；关注入口只在页尾）
-for (const path of ['/life', '/story', '/world']) {
-  const page = await html(path);
-  for (const phrase of [
-    '亲手试一次',
-    '已经有的',
-    '现在怎么体验',
-    '未来方向 · 尚未打通',
-    'Life、Story 与 World',
-    '画面在演什么',
-  ])
-    assert(!page.includes(phrase), `${path}: no repeated 「${phrase}」`);
-  const shown = page.replace(/<script[\s\S]*?<\/script>/g, '');
-  assert.equal(
-    count(shown, /关注 Molis (Life|Story|World) 的进展/g),
-    1,
-    `${path}: follow entry once`,
-  );
-}
-assert(!(await html('/life')).includes('一个说了很久的愿望'), 'life: no steps');
-assert(!world.includes('这一页的画面都是概念示意'), 'world: no hero aside');
-assert(!world.includes('和其他产品的关系'), 'world: relation told in 03');
-assert(!world.includes('面馆在你的世界里'), 'world: no steps');
+const tool = await html('/tool');
+assert.match(tool, /示意/, '/tool: honest label');
 assert(
-  !(await html('/story')).includes('再来一次，彼此的意思慢慢清楚了一点'),
-  'story: no step captions',
+  !/下载 Molis|安装包下载|立即下载/.test(tool),
+  '/tool: no download entry',
 );
-for (const path of ['/work', '/tool', '/life', '/story', '/world'])
-  assert(
-    !/<p class="m-tagline[^"]*"><b/.test(await html(path)),
-    `${path}: tagline without repeated name`,
-  );
+assert(
+  tool.includes('href="/contact?topic='),
+  '/tool: follow progress via contact',
+);
+assert.match(tool, /计划成为 Molis Work 的基础能力/);
+// 产品页标签行不再写产品名（下面就是大字产品名）
+for (const page of [work, tool])
+  assert(!/<p class="m-tagline[^"]*"><b/.test(page), 'tagline without name');
 
 // 旧地址：全部转到新页面里对应的位置
 for (const [from, to] of [
@@ -181,6 +145,10 @@ for (const [from, to] of [
   ['/edition-c', '/'],
   ['/edition-c/products', '/'],
   ['/compare', '/'],
+  // 先不开放的产品详情页
+  ['/life', '/#products'],
+  ['/story', '/#products'],
+  ['/world', '/#products'],
 ]) {
   const response = await fetch(`${origin}${from}`, { redirect: 'manual' });
   assert.equal(response.status, 307, from);
