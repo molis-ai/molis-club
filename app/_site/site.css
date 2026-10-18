@@ -1076,8 +1076,9 @@ body:has(.m) .skip-link {
   }
 }
 
-/* ---------- 404：纯文字 ---------- */
-.m-404 {
+/* ---------- 404：纯文字 ----------
+   类名别写成 m-数字：根布局的 Tailwind 会把 m-404 认成「外边距 404 档」，给页面上下各加 1616px。 */
+.m-notfound {
   display: grid;
   align-content: center;
   justify-items: start;
@@ -1085,11 +1086,11 @@ body:has(.m) .skip-link {
   min-height: 72svh;
   padding-bottom: var(--section-bottom);
 }
-.m-404 h1 {
+.m-notfound h1 {
   font: 300 var(--t-display) / 1.15 var(--sans);
   letter-spacing: 0.02em;
 }
-.m-404-lead {
+.m-notfound-lead {
   max-width: 30em;
   font: 300 var(--t-lead) / 1.9 var(--sans);
   color: var(--ink-2);
