@@ -1,38 +1,111 @@
 'use client';
 import {
+  CalendarDays,
   Copy,
+  Eraser,
   Hash,
-  ListChecks,
-  MessageCircleQuestionMark,
+  Languages,
+  Table2,
   X,
 } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { selectTry } from '../../../content/site/tool';
+import { remember } from './memory';
 
-// Tool 页的标志性交互：在这一页任意选中一句话，动作条出现在光标旁（触屏与键盘选中时，出现在选区下方）。
-// 「数一数」「复制纯文本」是真的在本机做；「解释」「整理成待办」需要 AI，这里只演示它们出现在哪里（示意）。
-// Esc、点别处、滚走都会收起；键盘用户可以按「选中这句话」，动作条出现后焦点移进去。
+// Tool 页的标志性交互：在这一页任意选中一段字，动作条出现在光标旁（触屏与键盘选中时，出现在选区下方）。
+// 选的东西不同，第一个动作不同：带日期时间的先给「整理成日程」，英文先给「翻译」，一串数字先给「整理成表格」。
+// 「清理格式」「数一数」「复制纯文本」「整理成表格」是真的在浏览器里做；「整理成日程」「翻译」要 AI，只演示会出现在哪里（示意）。
+// 做过的事记进内存（memory.ts），墙上下午 4:30 的「接续」会读到。Esc、点别处、滚走都会收起。
 
-type Action = 'count' | 'plain' | 'explain' | 'todo';
+type Action = keyof typeof selectTry.actions;
+type Result = { text: string; rows?: [string, string][] };
 
-const actions: { id: Action; icon: typeof Hash; ai: boolean }[] = [
-  { id: 'count', icon: Hash, ai: false },
-  { id: 'plain', icon: Copy, ai: false },
-  { id: 'explain', icon: MessageCircleQuestionMark, ai: true },
-  { id: 'todo', icon: ListChecks, ai: true },
-];
+const icons: Record<Action, typeof Hash> = {
+  calendar: CalendarDays,
+  translate: Languages,
+  table: Table2,
+  clean: Eraser,
+  count: Hash,
+  plain: Copy,
+};
+const ai: Partial<Record<Action, true>> = { calendar: true, translate: true };
 
-type Bar = { text: string; x: number; y: number; focus: boolean };
+const DATE =
+  /\d{1,2}\s*月\s*\d{1,2}\s*日(?:\s*[（(][^）)]{1,4}[）)])?(?:\s*\d{1,2}[:：]\d{2}(?:\s*[—–-]+\s*\d{1,2}[:：]\d{2})?)?|\d{1,2}[:：]\d{2}(?:\s*[—–-]+\s*\d{1,2}[:：]\d{2})?|周[一二三四五六日天]\s*(?:上午|下午|晚上)?\s*[一二三四五六七八九十两\d]+点/;
+const NUMBER = /\d+(?:\.\d+)?/g;
 
-/** 用键盘按「选中这句话」时，动作条出现后把焦点移进去 */
+/** 按选中的内容排出动作：第一个随内容变，后面三个是本机的通用动作 */
+function plan(text: string): Action[] {
+  const latin = (text.match(/[A-Za-z]/g) ?? []).length;
+  const cjk = (text.match(/[㐀-鿿]/g) ?? []).length;
+  const numbers = (text.match(NUMBER) ?? []).length;
+  let first: Action | null = null;
+  if (DATE.test(text)) first = 'calendar';
+  else if (latin >= 8 && latin > cjk * 2) first = 'translate';
+  else if (numbers >= 3) first = 'table';
+  const rest: Action[] = ['clean', 'count', 'plain'];
+  return first ? [first, ...rest] : rest;
+}
+
+/** 清理格式：并掉多余空白，去掉中文与标点两边的空格，句末补一个句号 */
+export function cleanText(text: string) {
+  let out = text
+    .replace(/\s+/g, ' ')
+    .replace(/\s*([，。、；：！？（）—])\s*/g, '$1')
+    .replace(/([㐀-鿿])\s+(?=[㐀-鿿])/g, '$1')
+    .trim();
+  if (/[㐀-鿿]$/.test(out)) out += '。';
+  return out;
+}
+
+/** 整理成表格：按逗号、分号切开，每段一个名字一个数 */
+function toRows(text: string): [string, string][] {
+  return text
+    .split(/[，,；;、\n]/)
+    .map((part) => {
+      const value = part.match(NUMBER)?.[0];
+      if (!value) return null;
+      const name = part
+        .replace(/^[^：:]*[：:]/, '')
+        .replace(NUMBER, '')
+        .replace(/[元个件份次%％]/g, '')
+        .trim();
+      return [name || '—', value] as [string, string];
+    })
+    .filter((row): row is [string, string] => row !== null);
+}
+
+type Bar = {
+  text: string;
+  actions: Action[];
+  x: number;
+  y: number;
+  focus: boolean;
+};
+
+/** 用键盘按按钮选中一段时，动作条出现后把焦点移进去 */
 let focusNext = false;
+/** 按钮替你选中的：动作条放在选区下面，不放在按钮旁 */
+let fromButton = false;
+
+/** 选中一个元素里的全部文字（给不方便拖选的人） */
+export function selectNode(node: HTMLElement | null, keyboard: boolean) {
+  const selection = document.getSelection();
+  if (!node || !selection) return;
+  focusNext = keyboard;
+  fromButton = true;
+  const range = document.createRange();
+  range.selectNodeContents(node);
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
 
 export function SelectionBar({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLDivElement>(null);
   const pointer = useRef<{ x: number; y: number } | null>(null);
   const [state, setState] = useState<Bar | null>(null);
-  const [result, setResult] = useState<string>('');
+  const [result, setResult] = useState<Result | null>(null);
 
   useEffect(() => {
     const node = root.current;
@@ -52,12 +125,20 @@ export function SelectionBar({ children }: { children: ReactNode }) {
         return;
       }
       const rect = selection.getRangeAt(0).getBoundingClientRect();
-      const at = pointer.current;
+      const at = fromButton ? null : pointer.current;
+      fromButton = false;
       // 有鼠标：放在光标旁；触屏和键盘：放在选区下面，不挡住系统自己的菜单
-      const x = at ? at.x + 14 : rect.left + rect.width / 2 - 140;
+      const x = at ? at.x + 14 : rect.left + rect.width / 2 - 160;
       const y = at ? at.y + 18 : rect.bottom + 12;
-      setResult('');
-      setState({ text: text.slice(0, 400), x, y, focus: focusNext });
+      const clipped = text.slice(0, 400);
+      setResult(null);
+      setState({
+        text: clipped,
+        actions: plan(clipped),
+        x,
+        y,
+        focus: focusNext,
+      });
       focusNext = false;
     };
     const onSelection = () => {
@@ -91,32 +172,51 @@ export function SelectionBar({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // 键盘选中示例句时，动作条出现后把焦点移进去
   useEffect(() => {
     if (state?.focus) bar.current?.querySelector('button')?.focus();
   }, [state]);
 
   const run = async (action: Action) => {
     if (!state) return;
+    const { text } = state;
     const { results } = selectTry;
+    let next: Result;
     if (action === 'count')
-      setResult(
-        results.count(Array.from(state.text.replace(/\s/g, '')).length),
-      );
+      next = {
+        text: results.count(Array.from(text.replace(/\s/g, '')).length),
+      };
+    else if (action === 'clean')
+      next = { text: results.clean(cleanText(text)) };
     else if (action === 'plain') {
       try {
-        await navigator.clipboard.writeText(state.text);
-        setResult(results.plain);
+        await navigator.clipboard.writeText(text);
+        next = { text: results.plain };
       } catch {
-        setResult(results.plainFailed);
+        next = { text: results.plainFailed };
       }
-    } else setResult(results[action]);
+    } else if (action === 'table') {
+      const rows = toRows(text);
+      next =
+        rows.length >= 2
+          ? { text: results.table(rows.length), rows }
+          : { text: results.tableEmpty };
+    } else if (action === 'calendar')
+      next = { text: results.calendar(text.match(DATE)?.[0] ?? text) };
+    else
+      next = {
+        text: /cup/i.test(text) ? results.translateSample : results.translate,
+      };
+    setResult(next);
+    remember({
+      action: selectTry.actions[action],
+      text: text.length > 22 ? `${text.slice(0, 22)}…` : text,
+    });
   };
 
   const place = (bar: Bar) => {
-    const width = 320;
+    const width = 336;
     const left = Math.max(12, Math.min(bar.x, window.innerWidth - width - 12));
-    const top = Math.max(76, Math.min(bar.y, window.innerHeight - 140));
+    const top = Math.max(76, Math.min(bar.y, window.innerHeight - 220));
     return { left, top };
   };
 
@@ -128,28 +228,52 @@ export function SelectionBar({ children }: { children: ReactNode }) {
           ref={bar}
           className="tl-select"
           role="toolbar"
-          aria-label="对选中的文字可以做的事（示意）"
+          aria-label={selectTry.label}
           style={place(state)}
         >
           <div className="tl-select-actions">
-            {actions.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => void run(item.id)}
-              >
-                <item.icon aria-hidden="true" />
-                {selectTry.actions[item.id]}
-                <small data-ai={item.ai || undefined}>
-                  {item.ai ? selectTry.ai : selectTry.local}
-                </small>
-              </button>
-            ))}
+            {state.actions.map((id, index) => {
+              const Icon = icons[id];
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  data-first={
+                    (index === 0 && state.actions.length > 3) || undefined
+                  }
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={() => void run(id)}
+                >
+                  <Icon aria-hidden="true" />
+                  {selectTry.actions[id]}
+                  <small data-ai={ai[id]}>
+                    {ai[id] ? selectTry.ai : selectTry.local}
+                  </small>
+                </button>
+              );
+            })}
           </div>
           <div className="tl-select-foot">
             <output className="tl-select-result" aria-live="polite">
-              {result}
+              {result ? (
+                <>
+                  {result.text}
+                  {result.rows ? (
+                    <table className="tl-select-table">
+                      <tbody>
+                        {result.rows.map(([name, value], index) => (
+                          <tr key={index}>
+                            <th scope="row">{name}</th>
+                            <td className="num">{value}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : null}
+                </>
+              ) : (
+                <span className="tl-select-idle">{selectTry.idle}</span>
+              )}
             </output>
             <button
               type="button"
@@ -162,35 +286,6 @@ export function SelectionBar({ children }: { children: ReactNode }) {
           </div>
         </div>
       ) : null}
-    </div>
-  );
-}
-
-/** 示例句和「选中这句话」：给不方便拖选的人一个入口 */
-export function SelectSample() {
-  const sample = useRef<HTMLParagraphElement>(null);
-  return (
-    <div className="tl-try">
-      <p className="tl-try-sample" ref={sample}>
-        {selectTry.sample}
-      </p>
-      <button
-        type="button"
-        className="m-link"
-        onClick={(event) => {
-          // detail 为 0：用键盘按下的
-          focusNext = event.detail === 0;
-          const node = sample.current;
-          const selection = document.getSelection();
-          if (!node || !selection) return;
-          const range = document.createRange();
-          range.selectNodeContents(node);
-          selection.removeAllRanges();
-          selection.addRange(range);
-        }}
-      >
-        选中这句话
-      </button>
     </div>
   );
 }
