@@ -2,6 +2,7 @@
 import { useMemo, useRef, useState } from 'react';
 import {
   personas,
+  personaUi,
   workChapters,
   workHero,
   type Chapter,
@@ -37,7 +38,7 @@ import {
   opsScope,
   opsTool,
 } from '../../_site/scenes/work-stage';
-import { routeName, useEntry, usePersona } from './persona';
+import { usePersona } from './persona';
 
 // 首屏舞台：一扇 Molis Work 窗口，下面一条章节线。
 // 还没选路：轮演三条路各自最要紧的一段（三句反转），每格写路名；选了路：演这条路的八段，演完停在最后一段的结果上。
@@ -105,7 +106,6 @@ function segment(chapter: Chapter, title = chapter.title): Segment {
 
 export function Stage() {
   const { chosen } = usePersona();
-  const entry = useEntry();
   const ref = useRef<HTMLDivElement>(null);
   const visible = useVisible(ref, 0.3);
   const reduced = useReducedMotion();
@@ -114,14 +114,14 @@ export function Stage() {
     () =>
       chosen
         ? workChapters[chosen].map((chapter) => segment(chapter))
-        : personas.map((persona) => segment(workChapters[persona][0], routeName(entry, persona))),
-    [chosen, entry],
+        : personas.map((persona) => segment(workChapters[persona][0], personaUi.label[persona])),
+    [chosen],
   );
   return (
     <div className="wp-stage" ref={ref} data-intro={chosen ? undefined : ''}>
       <Reel
         key={chosen ?? 'intro'}
-        name={chosen ? `Molis Work · ${routeName(entry, chosen)}` : `Molis Work · ${workHero.intro}`}
+        name={chosen ? `Molis Work · ${personaUi.label[chosen]}` : `Molis Work · ${workHero.intro}`}
         segments={segments}
         running={visible && !paused}
         reduced={reduced}

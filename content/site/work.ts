@@ -16,13 +16,8 @@ export type ByPersona<T = string> = Record<Persona, T>;
 export const personaUi = {
   ask: '你主要做什么？',
   group: '按你的工作看演示',
-  /** 路名做两版，找人测完再定：默认职业版；地址里带 ?entry=moment 时换成卡点版 */
+  /** 路名按角色（负责人 2026-10-19 定：卡点版「做没做完 / 依据在哪 / 谁在等谁」不用） */
   label: { dev: '写代码', doc: '写文档、做研究', ops: '管事情、跟进度' } as ByPersona,
-  moment: {
-    dev: { name: '做没做完', line: 'AI 说做完了，我还得自己核' },
-    doc: { name: '依据在哪', line: '结论交出去，被问从哪来' },
-    ops: { name: '谁在等谁', line: '答应的、等别人的，总有漏的' },
-  } as ByPersona<{ name: string; line: string }>,
   /** 路名下的职业提示：角色墙去掉以后，各种人靠这一行认出自己 */
   roles: {
     dev: '独立开发者 · AI 重度开发者 · 技术负责人 · 测试 · 开源维护者 · 数据分析 · 技术写作',

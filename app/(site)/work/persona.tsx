@@ -8,7 +8,6 @@ import { Btn } from '../../_site/ui';
 // 选择记在本机（localStorage），链接里的 #dev / #doc / #ops 直接指定；没有 JS 时就是「写代码」那一版。
 // 按路变的静态内容三版都在页面里，由外层的 data-persona 用样式藏掉另外两版（不闪、无 JS 也可读）；
 // 首屏舞台读这里的状态：还没选过路时轮演三条路各自最要紧的一段，选了路演这条路的八段。
-// 路名做两版，找人测完再定：默认职业版，地址里带 ?entry=moment 时换成卡点版（做没做完 / 依据在哪 / 谁在等谁）。
 
 const KEY = 'molis-work-persona';
 const HASH = /^#(dev|doc|ops)$/;
@@ -64,15 +63,6 @@ export function usePersona() {
   return { persona: chosen ?? 'dev', chosen, set: choose };
 }
 
-/** 路名用哪一版：职业版（默认）或卡点版 */
-export type Entry = 'role' | 'moment';
-const readEntry = (): Entry =>
-  new URLSearchParams(location.search).get('entry') === 'moment' ? 'moment' : 'role';
-const noop = () => () => {};
-export function useEntry(): Entry {
-  return useSyncExternalStore(noop, readEntry, () => 'role');
-}
-
 export function PersonaRoot({
   className,
   id,
@@ -90,22 +80,16 @@ export function PersonaRoot({
   );
 }
 
-/** 一条路的名字：职业版是「写代码」，卡点版是「做没做完」 */
-export function routeName(entry: Entry, persona: Persona) {
-  return entry === 'moment' ? personaUi.moment[persona].name : personaUi.label[persona];
-}
-
-/** 首屏右边：你主要做什么？三条路，每条下面一行提示（职业版列角色，卡点版写那一刻） */
+/** 首屏右边：你主要做什么？三条路，每条下面一行角色，各种人靠这一行认出自己 */
 export function RoutePick() {
   const { chosen, set } = usePersona();
-  const entry = useEntry();
   return (
     <fieldset className="wp-pick">
       <legend>{personaUi.ask}</legend>
       {personas.map((id) => (
         <button key={id} type="button" aria-pressed={chosen === id} onClick={() => set(id)}>
-          <b>{routeName(entry, id)}</b>
-          <small>{entry === 'moment' ? personaUi.moment[id].line : personaUi.roles[id]}</small>
+          <b>{personaUi.label[id]}</b>
+          <small>{personaUi.roles[id]}</small>
         </button>
       ))}
     </fieldset>
@@ -115,7 +99,6 @@ export function RoutePick() {
 /** 页内顶栏：钉在全站顶栏下面；产品名、三条路、报名按钮。一共三屏，不再列段落 */
 export function WorkNav() {
   const { chosen, set } = usePersona();
-  const entry = useEntry();
   return (
     <nav className="wp-nav" aria-label="这一页">
       <div className="wp-nav-in m-wrap">
@@ -126,7 +109,7 @@ export function WorkNav() {
           <legend className="sr-only">{personaUi.group}</legend>
           {personas.map((id) => (
             <button key={id} type="button" aria-pressed={chosen === id} onClick={() => set(id)}>
-              {routeName(entry, id)}
+              {personaUi.label[id]}
             </button>
           ))}
         </fieldset>
