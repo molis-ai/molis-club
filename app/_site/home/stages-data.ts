@@ -5,8 +5,11 @@ import { worlds } from '../../../content/molis-story';
 import { folioWorld } from '../../../content/folio-world';
 import { homeProducts } from '../../../content/site/home';
 import {
+  isSoon,
   productIds,
   products,
+  soon,
+  stageOf,
   WORK_GITHUB,
   type ProductId,
 } from '../../../content/site/products';
@@ -17,6 +20,7 @@ import { productHref } from '../routes';
 // 不在这里另写一份；只有列表里那行小字和画面说明是界面文字。
 // 画面里的项目名、记录与世界取自 content/ 的示意数据，统一标「示意」，不当作已经能用的功能。
 // 第 3 章的「这些产品怎样联系」按负责人的意见不放首页，留给各产品页。
+// 先不开放的产品（Life、Story、World，负责人 2026-10-18）：列表和画面照旧，不给去处，阶段写「探索中，敬请期待」。
 
 export type Chapter = {
   /** 第 4 章里这一段的小标题，原句 */
@@ -30,7 +34,10 @@ export type Chapter = {
 export type IntroProduct = {
   id: ProductId;
   name: string;
-  href: string;
+  /** 详情页；先不开放的产品没有 */
+  href?: string;
+  /** 先不开放：列表这一行只用来选中，不是链接 */
+  soon?: boolean;
   /** 去处按钮 */
   more: string;
   /** 第二个去处（Work 的开源代码） */
@@ -92,14 +99,14 @@ const local: Record<
       'Molis Tool 界面示意，三段：选中网页上的一句英文，光标旁出现动作，翻译带着来源贴在旁边；一份 PDF 提取出文字，再整理成表格，接着比较或导出；工具收进菜单栏，回来时在「接续」里找到结果和它们的来源。',
   },
   life: {
-    rowNote: '生活 · 原型探索中',
+    rowNote: `生活 · ${soon.stage}`,
     chapters: titles('life', 0, 3).map((title) => ({ title })),
     sceneNote: '示意 · 服务未接入',
     sceneLabel:
       'Molis Life 示意，三段：一件退换货，申请已提交、对方已受理、钱是否到账分开记着；「想陪妈妈去看海」先留着，有了空闲再给出近一点和多走一段两种准备；散步时看见的植物、想读的书、一段音乐都可以留下，选择替我处理、一起想想或先留着。',
   },
   story: {
-    rowNote: '体验 · 开发中',
+    rowNote: `体验 · ${soon.stage}`,
     // 第 4.4 节里四个世界各一节（第 2 到第 5 节）
     chapters: titles('story', 1, 4).map((title) => ({ title, time: 2.5 })),
     sceneNote: '概念画面；袖珍博物馆为示例照片（Unsplash）',
@@ -107,7 +114,7 @@ const local: Record<
       'Molis Story 示意：从「此处」选一扇窗，依次走进云海来客、彼处、袖珍博物馆和雾港失物招领处，每次归来都带回一样东西：一段未译的信号、补完的一句、一本离线纪念册、第十三号钥匙牌。',
   },
   world: {
-    rowNote: '概念设计',
+    rowNote: soon.stage,
     chapters: titles('world', 0, 3).map((title) => ({ title })),
     sceneNote: '概念示意',
     sceneLabel:
@@ -120,14 +127,15 @@ export const introProducts: IntroProduct[] = productIds.map((id) => {
   return {
     id,
     name: product.name,
-    href: productHref[id],
+    href: isSoon(id) ? undefined : productHref[id],
+    soon: isSoon(id) || undefined,
     more: homeProducts[id].more,
     concept: id === 'world' || undefined,
     headline: product.headline,
     what: product.what,
     fit: product.fit,
-    stage: product.stage,
-    stageNote: product.stageNote,
+    stage: stageOf(id),
+    stageNote: isSoon(id) ? '' : product.stageNote,
     ...local[id],
   };
 });

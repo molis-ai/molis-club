@@ -1,6 +1,6 @@
 import { pageMetadata } from '../../../lib/site';
 import { products, relations } from '../../../content/site/products';
-import { freeTime, lifeGo, lifeProgress } from '../../../content/site/life';
+import { freeTime, lifeGo } from '../../../content/site/life';
 import { ProductEnding, ProductHero } from '../../_site/product/product';
 import { contactHref, productHref } from '../../_site/routes';
 import { Btn, More, Note, pad } from '../../_site/ui';
@@ -38,7 +38,6 @@ export default function LifePage() {
             <span className="m-no" aria-hidden="true">
               {pad(5)}
             </span>
-            <span className="m-kicker">{freeTime.kicker}</span>
           </p>
           <h2 className="m-head-title" id="lf-free-title">
             {freeTime.title}
@@ -56,16 +55,7 @@ export default function LifePage() {
       <ProductEnding
         product={life}
         start={6}
-        progress={{
-          have: lifeProgress.have,
-          notYet: lifeProgress.notYet,
-          now: {
-            text: lifeProgress.now,
-            links: <More href={contactHref('life')}>{lifeGo.follow}</More>,
-          },
-        }}
         relation={{
-          title: 'Life、Story 与 World',
           formula: (
             <>
               <span>Life</span>
@@ -76,7 +66,6 @@ export default function LifePage() {
             </>
           ),
           text: relations.lifeStoryWorld,
-          tag: '未来方向 · 尚未打通',
         }}
         go={
           <>

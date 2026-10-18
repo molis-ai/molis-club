@@ -8,14 +8,14 @@
   "/enterprise": "2026-10-18",
   "/community": "2026-10-18",
   "/community/methods": "2026-10-15",
-  "/community/methods/*": "2026-10-15",
+  "/community/methods/*": "2026-10-18",
   "/about": "2026-10-18",
   "/essays": "2026-10-18",
   "/essays/*": "2026-10-18",
   "/along-the-way": "2026-10-18",
   "/contact": "2026-10-18",
   "/privacy": "2026-10-15",
-  "/login": "2026-10-15",
-  "/account": "2026-10-15",
+  "/login": "2026-10-18",
+  "/account": "2026-10-18",
   "*": "2026-10-18"
 }

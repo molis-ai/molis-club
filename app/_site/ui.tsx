@@ -3,7 +3,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import media from './media.json';
 
-// 全站公共部件：区块开头、按钮、文字链接、状态签、诚实标注、作品标签、配图的窗。
+// 全站公共部件：区块开头、按钮、行动入口、状态签、诚实标注、作品标签、配图的窗。
 // 都是服务端组件；需要交互的部件在各自的 client 文件里。
 
 export type Vars = CSSProperties & Record<`--${string}`, string | number>;
@@ -65,7 +65,7 @@ export function SectionHead({
   );
 }
 
-/** 墨色实心胶囊：站内链接或外链 */
+/** 墨色实心胶囊：站内链接或外链，一个按钮一个箭头 */
 export function Btn({
   href,
   children,
@@ -86,33 +86,49 @@ export function Btn({
       </a>
     );
   return (
-    <Link className={className} href={href}>
+    <Link className={className} href={href} data-dir="right">
       {children}
+      <ArrowRight size={14} aria-hidden="true" />
     </Link>
   );
 }
 
-/** 文字链接：站内带右箭头，外链带斜箭头 */
-export function More({
-  href,
-  children,
-  external = false,
-}: {
-  href: string;
-  children: ReactNode;
-  external?: boolean;
-}) {
+type MoreProps = { href: string; external?: boolean } & (
+  | { children: ReactNode; label?: never }
+  | { children?: never; label: string }
+);
+
+/**
+ * 行动入口，不用下划线文字。两种写法：
+ * - `<More href>隐私说明</More>`：没有上下文的独立入口，轻描边胶囊，两三个字说明去处 + 箭头；
+ * - `<More href label="看「某某」的做法" />`：卡片里已经有标题和说明，只留一颗圆形箭头，
+ *   label 是读屏听到的去处，要写清去哪。
+ * 站内右箭头；外链斜箭头，在新窗口打开。
+ */
+export function More({ href, children, label, external = false }: MoreProps) {
+  const className = label === undefined ? 'm-link' : 'm-go';
+  const Arrow = external ? ArrowUpRight : ArrowRight;
+  const body = (
+    <>
+      {children}
+      <Arrow size={label === undefined ? 13 : 18} aria-hidden="true" />
+    </>
+  );
   if (external)
     return (
-      <a className="m-link" href={href} target="_blank" rel="noreferrer">
-        {children}
-        <ArrowUpRight size={13} aria-hidden="true" />
+      <a
+        className={className}
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={label}
+      >
+        {body}
       </a>
     );
   return (
-    <Link className="m-link" href={href} data-dir="right">
-      {children}
-      <ArrowRight size={13} aria-hidden="true" />
+    <Link className={className} href={href} data-dir="right" aria-label={label}>
+      {body}
     </Link>
   );
 }
