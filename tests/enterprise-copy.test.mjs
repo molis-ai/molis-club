@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-// 企业合作样张（D1）：每站适合谁、「业务团队 / Molis / 一起」做的事和留下的东西，都是 docs/studio-intro.md 第 5 章的原句片段，
-// 一个字都没改；五个问题的建议起点仍落在四站上。
+// 企业合作样张（D1）：每站「业务团队 / Molis / 一起」做的事和留下的东西，都是 docs/studio-intro.md 第 5 章的原句片段，
+// 一个字都没改；五个问题都对应到四站上。
 
 const { enterprise } = await import('../content/site/enterprise.ts');
 const doc = readFileSync(
@@ -34,11 +34,6 @@ void test('样张里每站的事与留下的东西都是第 5 章原句片段', 
         if (act.detail) verbatim(act.detail, id);
       }
     }
-    verbatim(line.fit[id], `${id} 适合`);
-    assert.ok(
-      line.fit[id].startsWith('适合'),
-      `${id}：适合谁那句要以「适合」开头`,
-    );
     if (line.after[id]) verbatim(line.after[id], `${id} 留下`);
     for (const leaf of path.stations[id].leaves) verbatim(leaf, `${id} 留下`);
   }
@@ -48,11 +43,16 @@ void test('样张里每站的事与留下的东西都是第 5 章原句片段', 
     verbatim(text, '5.5 小标题');
 });
 
-void test('五个问题的建议起点都落在样张的四站上', () => {
+void test('五个问题都对应到四站上，每一站至少亮起一个问题', () => {
   const { advice, stations } = enterprise.path;
+  const lit = new Set();
   for (const item of enterprise.questions.items) {
     const { start, next } = advice[item.id];
-    assert.ok(start in stations, `${item.id} 的起点不在路线上`);
+    assert.ok(start in stations, `${item.id} 对应的站不在路线上`);
     if (next) assert.ok(next in stations, `${item.id} 的下一站不在路线上`);
+    lit.add(start);
+    if (next) lit.add(next);
   }
+  for (const id of Object.keys(stations))
+    assert.ok(lit.has(id), `${id} 没有对应的问题`);
 });

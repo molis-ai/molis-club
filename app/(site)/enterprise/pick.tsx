@@ -69,7 +69,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
  * 离开纸条和回应这一整块，回到选定的那张，没选过就回到那句提示。触屏上点一下就是选定。
  * 回应叠在同一格里，高度按最长的那条留好，换来换去下面的内容不跳。
  */
-export function Slips() {
+export function Slips({ lean = false }: { lean?: boolean }) {
   const context = usePick();
   const pick = context?.pick ?? null;
   const [hover, setHover] = useState<QuestionId | null>(null);
@@ -127,10 +127,39 @@ export function Slips() {
         ))}
       </fieldset>
 
-      <div className="m-ent-replies">
-        <p className="m-ent-reply-idle">{hook.idle}</p>
+      <div className="m-ent-replies" data-lean={lean || undefined}>
+        {lean ? null : <p className="m-ent-reply-idle">{hook.idle}</p>}
         {questions.items.map((question) => {
           const item = path.advice[question.id];
+          // 样张（D1，lean）：只回问题原句和去处，不说「起点」，不复述问题，不写理由
+          if (lean)
+            return (
+              <div
+                key={question.id}
+                className="m-ent-reply"
+                data-for={question.id}
+                data-lean
+              >
+                <p className="m-ent-reply-title">{question.title}</p>
+                <p className="m-actions">
+                  <a
+                    className="m-link"
+                    href={`#station-${item.start}`}
+                    data-dir="down"
+                    onClick={(event) => {
+                      context?.setPick(question.id);
+                      jump(event, item.start);
+                    }}
+                  >
+                    {hook.jump}
+                    <ArrowDown size={13} aria-hidden="true" />
+                  </a>
+                  <button type="reset" className="m-link">
+                    {hook.reset}
+                  </button>
+                </p>
+              </div>
+            );
           return (
             <div
               key={question.id}
@@ -179,13 +208,15 @@ export function Slips() {
         })}
         {/* 读屏：选定了什么，念一遍回应（画面上的那几块不是 live 区，免得重复） */}
         <p className="sr-only" aria-live="polite">
-          {advice && pick
-            ? `${questions.items.find((item) => item.id === pick)?.wish ?? ''}${hook.start}：${path.stations[advice.start].name}${
-                advice.next
-                  ? `，${hook.next}：${path.stations[advice.next].name}`
-                  : ''
-              }。${advice.reason}${hook.caveat}`
-            : ''}
+          {advice && pick && lean
+            ? `${questions.items.find((item) => item.id === pick)?.title ?? ''}${[advice.start, advice.next].flatMap((id) => (id ? [path.stations[id].name] : [])).join('、')}`
+            : advice && pick
+              ? `${questions.items.find((item) => item.id === pick)?.wish ?? ''}${hook.start}：${path.stations[advice.start].name}${
+                  advice.next
+                    ? `，${hook.next}：${path.stations[advice.next].name}`
+                    : ''
+                }。${advice.reason}${hook.caveat}`
+              : ''}
         </p>
       </div>
     </form>

@@ -30,10 +30,10 @@ export const metadata = pageMetadata(
 // 首屏照片很亮，字用墨色，顶栏透明（data-tone="light"）。
 //
 // 样张（D1，?study=line；现版对照 ?study=current，默认仍是现版）：把页面串成一条线——
-// 长廊 → 我们和你们一起做什么（开场第三段原句，配那双手）→ 你们卡在哪（选一个，回一句建议起点）
-// → 一站一页：你们做什么、我们做什么、一起做什么，留下什么、拿去做什么（stages.tsx）
+// 长廊 → 我们和你们一起做什么（开场第三段原句，配那双手）
+// → 你们卡在哪与四站合成一段，一页一页翻：先选问题，再看对应那一站业务团队、Molis、一起各做什么，墙上挂着留下的东西（stages.tsx）
 // → 怎么继续（5.2 开头原句，聊聊）→ 做这件事的人（只留小标题与经历）→ 内部探索 → 表单。
-// 首屏去掉四个服务名，路线不再有横线与编号，「能力，留在团队手里。」不再复述标题。
+// 首屏去掉四个服务名，路线不再有横线与编号，「能力，留在团队手里。」不再复述标题，不说「起点」。
 
 /** 满幅照片：铺满一屏，载入前铺平均色，极慢地推近 */
 function Plate({
@@ -170,18 +170,22 @@ export default async function EnterprisePage({
             />
           </section>
 
-          {where}
-
-          {/* 一站一页：双方各做什么，留下什么 */}
+          {/* 你们卡在哪 → 对应的一站：同一段里一页一页翻（stages.tsx） */}
           <section
             className="m-ent-path"
             id="path"
-            aria-labelledby="ent-path-title"
+            aria-labelledby="ent-where-title"
           >
-            <h2 className="sr-only" id="ent-path-title">
-              {e.path.title}
-            </h2>
-            <Stages />
+            <Stages
+              cover={
+                <>
+                  <h2 className="m-ent-ask" id="ent-where-title">
+                    {e.hook.ask}
+                  </h2>
+                  <Slips lean />
+                </>
+              }
+            />
             {/* 怎么继续：5.2 开头一句 */}
             <div className="m-ent-onward m-wrap" data-reveal>
               <p className="m-ent-onward-line">
