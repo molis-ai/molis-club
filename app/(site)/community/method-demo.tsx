@@ -307,13 +307,13 @@ export function SourceCard({ entry }: { entry: ResourceEntry }) {
       </p>
       <p>{entry.recipe}</p>
       <a
-        className="m-link"
+        className="m-go"
         href={entry.source.url}
         target="_blank"
         rel="noreferrer"
+        aria-label={`${methodText.open}：${entry.english}`}
       >
-        {methodText.open}
-        <ArrowUpRight size={13} aria-hidden="true" />
+        <ArrowUpRight size={18} aria-hidden="true" />
       </a>
     </div>
   );

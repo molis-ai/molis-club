@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, type SubmitEvent } from 'react';
 import { authClient } from '../../../lib/auth-client';
@@ -100,8 +101,9 @@ export function LoginForm() {
       <div className="m-auth-done">
         <h1>{t.signedIn.title}</h1>
         <p>{t.signedIn.hello(session.user.name)}</p>
-        <Link className="m-btn" href={ACCOUNT}>
+        <Link className="m-btn" href={ACCOUNT} data-dir="right">
           {t.signedIn.go}
+          <ArrowRight size={14} aria-hidden="true" />
         </Link>
       </div>
     );

@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { FileText, Pause, Play } from 'lucide-react';
+import { ArrowDownToLine, FileText, Pause, Play } from 'lucide-react';
 import { artistSkills } from '../../../content/artists';
 import {
   isResourceEntry,
@@ -128,6 +128,7 @@ export function ArtistStage() {
               href={`/downloads/artists/${builder.slug}.zip`}
               download
             >
+              <ArrowDownToLine size={14} aria-hidden="true" />
               {t.builderDownload}
             </a>
           ) : null}

@@ -210,7 +210,6 @@ export default async function ArtistSkillPage({ params }: Props) {
               {methodText.repo}
             </More>
             <More href={contactHref('share-artist')}>
-              {methodText.shareArtist}
               {methodText.shareLink}
             </More>
           </p>

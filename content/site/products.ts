@@ -298,6 +298,19 @@ export const products: Record<ProductId, Product> = {
   },
 };
 
+/**
+ * 先不开放详情页的产品（负责人 2026-10-18）：顶栏、手机菜单、页尾、首页、团队页、联系页都保留名字和一句话，
+ * 不给跳链，阶段一律写「探索中，敬请期待」；详情页地址临时转到首页产品区（next.config.ts），页面代码留着。
+ */
+export const soon = {
+  ids: ['life', 'story', 'world'] as ProductId[],
+  stage: '探索中，敬请期待',
+};
+export const isSoon = (id: ProductId) => soon.ids.includes(id);
+/** 对外显示的阶段：先不开放的写「探索中，敬请期待」，其余按第 3 章 */
+export const stageOf = (id: ProductId) =>
+  isSoon(id) ? soon.stage : products[id].stage;
+
 /** 第 3 章「这些产品怎样联系」 */
 export const relations = {
   title: '这些产品怎样联系',
