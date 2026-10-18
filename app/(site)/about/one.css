@@ -220,6 +220,82 @@
   transform: translateX(3px);
 }
 
+/* ---------- 三种媒介：底稿 1.3 那一句就是控件 ----------
+   句子居中、大一点；冒号后的三个短句是按钮：没轮到的退成灰，轮到的那句是杏色，
+   底下一道杏色细线（自己演时按停留时间从左画到右）。 */
+.ao-makers {
+  margin-top: 0;
+}
+.ab-say-wrap {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  margin: 0 auto clamp(36px, 6.4vh, 64px);
+  text-align: center;
+}
+.ab-say {
+  max-width: 23em;
+  font: 300 clamp(21px, 2vw, 30px) / 1.75 var(--sans);
+  letter-spacing: 0.04em;
+  font-feature-settings: 'palt' 1;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.ab-say-step {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  padding: 0 0 2px;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--mute);
+  cursor: pointer;
+  transition: color 0.45s var(--ease);
+}
+.ab-say-step:hover {
+  color: var(--ink);
+}
+.ab-say-step[aria-pressed='true'] {
+  color: var(--accent-ink);
+}
+.ab-say-step:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+  border-radius: var(--r-label);
+}
+.ab-say-step .ab-step-line {
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  overflow: hidden;
+}
+.ab-say-step .ab-step-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease);
+}
+.ab-say-step[aria-pressed='true'] .ab-step-line::after {
+  transform: scaleX(1);
+}
+.ab-trio[data-playing] .ab-say-step[aria-pressed='true'] .ab-step-line::after {
+  transition: none;
+  animation: ab-fill var(--hold, 0ms) linear both;
+}
+/* 没有 JS：点不了，三句都是正文的颜色 */
+html:not(.js) .ab-say-step {
+  color: inherit;
+  cursor: default;
+}
+html:not(.js) .ab-say-step .ab-step-line {
+  display: none;
+}
+
 /* ---------- 三种媒介：框由内容撑高，三栏同一行高，不在框里滚动 ---------- */
 .ao .ab-trio {
   width: min(100%, var(--ao-wide));
@@ -420,10 +496,26 @@
   .ab-trio[data-flow] .ab-panel .m-window-frame {
     min-height: 0;
   }
+  /* 手机上三扇窗上下排：那句话贴在顶栏下面，滚到哪扇窗都看得到在第几步 */
+  .ab-say-wrap {
+    position: sticky;
+    top: var(--header);
+    z-index: 3;
+    gap: 8px;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 10px var(--gutter) 12px;
+    background: var(--paper);
+  }
+  .ab-say {
+    font-size: 17px;
+    line-height: 1.7;
+  }
 }
 
 /* ---------- 减少动态：换图不淡入淡出 ---------- */
 @media (prefers-reduced-motion: reduce) {
+  .ab-say-step,
+  .ab-say-step .ab-step-line::after,
   .js .ao-bg-still,
   .js .ao-bg-words,
   .ao-go,

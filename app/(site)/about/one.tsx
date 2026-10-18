@@ -31,7 +31,7 @@ import './one.css';
 //   我们相信什么（1.4）→ 从怎样工作，走向怎样生活（2.3，产品名在句子里链过去）→
 //   从这些探索，看向更远的构想（2.4，World）→ 从同事，到共同创造的伙伴（2.1，去沿途；最后是八个人）→
 //   尾声 找同类，不抢货架。
-// 章节标题都是底稿的小标题（「三种媒介，同一个动作。」是这一页原有的写法），不加眉题与编号；
+// 章节标题都是底稿的小标题，不加眉题与编号；「三种媒介」那一章由底稿 1.3 那句话本身开头，标题只给读屏；
 // 正文是居中的一栏、左对齐，段落完整不拆；配图是段落之间的插页；只有一句的短段当作节拍，字大一点。
 // 正文全部是底稿原句，从 studio.ts、team.ts、along.ts、essays.ts 读（一字不差），每段只出现一次：
 // 「找同类，不抢货架。」在尾声回扣一次标题，它的正文只在信念里。
@@ -136,15 +136,22 @@ function Go({ href, children }: { href: string; children: ReactNode }) {
 function Chapter({
   id,
   title,
+  quiet = false,
   children,
 }: {
   id: string;
   title: string;
+  /** 标题只给读屏（这一章由一句话本身开头） */
+  quiet?: boolean;
   children: ReactNode;
 }) {
   return (
     <section className="ao-ch m-wrap" id={id} aria-labelledby={`${id}-title`}>
-      <h2 className="ao-ch-title" id={`${id}-title`} data-reveal>
+      <h2
+        className={quiet ? 'sr-only' : 'ao-ch-title'}
+        id={`${id}-title`}
+        data-reveal={quiet ? undefined : true}
+      >
         <Phrases text={title} />
       </h2>
       {children}
@@ -178,13 +185,10 @@ export function AboutOne() {
         />
       </header>
 
-      {/* 黑客与画家：我们想做怎样的创造者 */}
-      <Chapter id="makers" title={trio.title}>
-        <div className="ao-prose" data-reveal>
-          <p>{studio.standard.makers}</p>
-        </div>
-        <div className="ao-wide">
-          <Trio flow />
+      {/* 黑客与画家：底稿 1.3 那一句就是控件，三个短句推动下面三扇窗（负责人 2026-10-18 定的句子） */}
+      <Chapter id="makers" title={trio.title} quiet>
+        <div className="ao-wide ao-makers">
+          <Trio flow lead={studio.standard.makers} />
         </div>
       </Chapter>
 
