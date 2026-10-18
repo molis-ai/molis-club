@@ -1,0 +1,251 @@
+/* 联系页的紧凑版：负责人 2026-10-18 把验收过的 compact 样张切成默认，叠在 contact.css 的基础布局上。
+   ?study=current 是暂留的旧版（data-study=current），只用 contact.css；看过后删掉旧版，再把这里并进 contact.css。 */
+.m-contact:not([data-study='current']) {
+  padding-top: calc(var(--header) + 32px);
+  padding-bottom: 36px;
+  min-height: 100svh;
+}
+.m-contact:not([data-study='current']) .m-contact-door {
+  position: static;
+  top: auto;
+}
+.m-contact:not([data-study='current']) .m-window-frame {
+  max-height: min(52svh, 500px);
+}
+.m-contact:not([data-study='current']) .m-contact-main {
+  gap: 24px;
+}
+.m-contact:not([data-study='current']) .m-contact-head {
+  padding-top: 0;
+  border-top: 0;
+}
+.m-contact:not([data-study='current']) .m-contact-title {
+  font-size: clamp(32px, 3.5vw, 50px);
+}
+.m-contact:not([data-study='current']) .m-contact-note {
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 0;
+  border-top: 0;
+}
+.m-contact:not([data-study='current']) .m-form {
+  gap: 16px;
+}
+.m-contact:not([data-study='current']) .m-form-field {
+  gap: 6px;
+}
+.m-contact:not([data-study='current']) .m-form-set > .m-form-label {
+  margin-bottom: 8px;
+}
+.m-contact:not([data-study='current']) .m-form-field input,
+.m-contact:not([data-study='current']) .m-form-field textarea {
+  min-height: 44px;
+  padding: 9px 12px;
+  font-size: 16px;
+}
+.m-contact:not([data-study='current']) .m-form-field textarea {
+  height: 108px;
+  min-height: 108px;
+}
+.m-contact:not([data-study='current']) .m-form-handling {
+  padding-top: 0;
+  border-top: 0;
+}
+
+@media (max-width: 900px) {
+  .m-contact:not([data-study='current']) {
+    row-gap: 24px;
+  }
+  .m-contact:not([data-study='current']) .m-contact-door {
+    display: contents;
+  }
+  .m-contact:not([data-study='current']) .m-contact-door > .m-window {
+    grid-column: 1 / -1;
+    order: 2;
+  }
+  .m-contact:not([data-study='current']) .m-contact-door .m-window-frame {
+    --ratio: 16 / 7 !important;
+    --focus: 62% 80% !important;
+    max-height: none;
+  }
+  .m-contact:not([data-study='current']) .m-contact-note {
+    margin-top: 0;
+  }
+}
+
+/* 仅显式 study 参数时出现的比较控件；放进正常流，避免盖住表单或页尾链接。 */
+.m-contact-review {
+  margin-top: 16px;
+}
+.m-contact-review .m-review-bar {
+  position: static;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  max-width: none;
+  width: fit-content;
+  padding-left: 12px;
+  box-shadow: none;
+}
+
+/* 只在完整桌面宽度排紧凑版。高度始终由内容撑开，报错、缩放和手动扩大的留言仍可滚动到。 */
+@media (min-width: 1100px) {
+  .m-contact:not([data-study='current']) {
+    min-height: 0;
+    padding-top: calc(var(--header) + 24px);
+    padding-bottom: 24px;
+  }
+  .m-contact:not([data-study='current']) .m-contact-door {
+    grid-column: 1 / span 4;
+  }
+  .m-contact:not([data-study='current']) .m-contact-main {
+    grid-column: 6 / -1;
+    gap: 16px;
+  }
+  .m-contact:not([data-study='current']) .m-contact-title {
+    font-size: clamp(32px, 3vw, 40px);
+  }
+  .m-contact:not([data-study='current']) .m-window {
+    gap: 8px;
+  }
+  .m-contact:not([data-study='current']) .m-window-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: clamp(180px, 26svh, 240px);
+  }
+  .m-contact:not([data-study='current']) .m-contact-note {
+    gap: 6px;
+    margin-top: 16px;
+  }
+  .m-contact:not([data-study='current']) .m-contact-note ul {
+    gap: 4px;
+    font-size: var(--t-small);
+    line-height: 1.65;
+  }
+
+  /* 图例和选项并排。保留原 fieldset/legend 语义与所有选项。 */
+  .m-contact:not([data-study='current']) .m-form {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px 20px;
+  }
+  .m-contact:not([data-study='current']) .m-form > * {
+    grid-column: 1 / -1;
+  }
+  .m-contact:not([data-study='current']) .m-form-set {
+    position: relative;
+    min-height: 36px;
+    padding-left: 64px;
+  }
+  .m-contact:not([data-study='current']) .m-form-set > .m-form-label {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 52px;
+    margin-bottom: 0;
+  }
+  .m-contact:not([data-study='current']) .m-form-chips {
+    gap: 6px;
+  }
+  .m-contact:not([data-study='current']) .m-form-chip > span {
+    min-height: 36px;
+    gap: 6px;
+    padding-inline: 10px 12px;
+  }
+  .m-contact:not([data-study='current']) .m-form-stage {
+    margin-top: 6px;
+  }
+  .m-contact:not([data-study='current']) .m-form-field {
+    gap: 4px;
+  }
+  .m-contact:not([data-study='current']) .m-form-field textarea {
+    height: 88px;
+    min-height: 88px;
+  }
+
+  /* 同意与发送并排，完整处理说明仍在其后单独成行，不隐藏错误或提示。 */
+  .m-contact:not([data-study='current']) .m-form-checks {
+    grid-column: 1;
+    align-self: center;
+    gap: 8px;
+    order: 1;
+  }
+  .m-contact:not([data-study='current']) .m-form-check {
+    gap: 8px;
+    line-height: 1.65;
+  }
+  .m-contact:not([data-study='current']) .m-form-send {
+    grid-column: 2;
+    align-self: start;
+    max-width: 190px;
+    gap: 6px;
+    order: 1;
+  }
+  .m-contact:not([data-study='current']) .m-form-send .m-btn {
+    min-width: 120px;
+  }
+  .m-contact:not([data-study='current']) .m-form-handling {
+    line-height: 1.65;
+    order: 2;
+  }
+  .m-contact:not([data-study='current']) .m-form-nojs {
+    order: 3;
+  }
+
+  /* Footer 是共享组件，只借页面根标记在联系页压紧；所有品牌句、目录与日期保留。 */
+  body:has(.m-contact:not([data-study='current'])) .m-footer {
+    padding-block: 16px 12px;
+  }
+  body:has(.m-contact:not([data-study='current'])) .m-footer-top {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    row-gap: 16px;
+  }
+  body:has(.m-contact:not([data-study='current'])) .m-footer-lead {
+    grid-column: 1 / span 4;
+    gap: 10px;
+  }
+  body:has(.m-contact:not([data-study='current'])) .m-footer-brand {
+    gap: 12px;
+  }
+  body:has(.m-contact:not([data-study='current'])) .m-footer-mark {
+    font-size: 46px;
+  }
+  body:has(.m-contact:not([data-study='current'])) .m-footer-lead p {
+    font-size: var(--t-small);
+    line-height: 1.7;
+  }
+  body:has(.m-contact:not([data-study='current'])) .m-footer-cols {
+    grid-column: 6 / -1;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  body:has(.m-contact:not([data-study='current'])) .m-footer-cols > div {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    align-items: baseline;
+    gap: 12px;
+  }
+  body:has(.m-contact:not([data-study='current'])) .m-footer-cols h2 {
+    margin-bottom: 0;
+  }
+  body:has(.m-contact:not([data-study='current'])) .m-footer-cols ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 16px;
+  }
+  body:has(.m-contact:not([data-study='current'])) .m-footer-cols a {
+    min-height: 24px;
+    line-height: 1.7;
+  }
+  body:has(.m-contact:not([data-study='current'])) .m-footer-base {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+}
+
+@media (max-width: 900px) {
+  .m-contact-review {
+    grid-column: 1 / -1;
+    order: 5;
+    margin-top: 0;
+  }
+}

@@ -6,12 +6,15 @@ export function ReviewSwitch({
   variant,
   currentHref,
   sampleHref,
+  names = ['现版', '样张'],
   inline = false,
 }: {
   label: string;
   variant: 'current' | 'sample';
   currentHref: string;
   sampleHref: string;
+  /** 两个版本的叫法；样张切成默认以后，对照的一边就成了旧版 */
+  names?: [string, string];
   inline?: boolean;
 }) {
   return (
@@ -26,13 +29,13 @@ export function ReviewSwitch({
           href={currentHref}
           aria-current={variant === 'current' ? 'page' : undefined}
         >
-          现版
+          {names[0]}
         </a>
         <a
           href={sampleHref}
           aria-current={variant === 'sample' ? 'page' : undefined}
         >
-          样张
+          {names[1]}
         </a>
       </nav>
     </aside>
