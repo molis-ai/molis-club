@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work 页第四版 · 一个舞台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #fbfaf7; --paper-2: #f3f1ec; --white: #fff; --ink: #1b1a18; --ink-2: #3e3c38; --mute: #69665f;
+  --hair: rgb(27 26 24 / .12); --hair-2: rgb(27 26 24 / .22); --accent: #ea9260; --accent-ink: #a4552f;
+  --wash: rgb(234 146 96 / .14); --leaf: #4f6e48; --stage: #efe8dc; --term: #1d1e21;
+  --sans: 'Jost', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', sans-serif;
+  --latin: 'Jost', sans-serif;
+  --ease: cubic-bezier(.2, .7, .1, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #171614; --paper-2: #201f1c; --white: #22211e; --ink: #f1eee8; --ink-2: #d4d0c8; --mute: #a29d93;
+    --hair: rgb(241 238 232 / .13); --hair-2: rgb(241 238 232 / .24); --wash: rgb(234 146 96 / .16); --accent-ink: #f0a77e; --leaf: #8fb486; --stage: #2a2723;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #171614; --paper-2: #201f1c; --white: #22211e; --ink: #f1eee8; --ink-2: #d4d0c8; --mute: #a29d93;
+  --hair: rgb(241 238 232 / .13); --hair-2: rgb(241 238 232 / .24); --wash: rgb(234 146 96 / .16); --accent-ink: #f0a77e; --leaf: #8fb486; --stage: #2a2723;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--paper); color: var(--ink); font: 400 15px/1.85 var(--sans); letter-spacing: .02em; -webkit-font-smoothing: antialiased; }
+main { max-width: 1120px; margin: 0 auto; padding: 56px 16px 120px; }
+@media (min-width: 720px) { main { padding-left: 24px; padding-right: 24px; } }
+a { color: inherit; }
+h1 { font: 300 clamp(28px, 4vw, 46px)/1.32 var(--sans); letter-spacing: .03em; margin: 8px 0 16px; }
+h2 { font: 300 clamp(23px, 2.6vw, 33px)/1.4 var(--sans); letter-spacing: .04em; margin-bottom: 16px; }
+h3 { font: 400 19px/1.5 var(--sans); letter-spacing: .04em; margin: 30px 0 10px; }
+h4 { font: 500 12px/1.5 var(--sans); letter-spacing: .14em; color: var(--mute); margin: 22px 0 8px; }
+p + p { margin-top: .7em; }
+b, strong { font-weight: 500; }
+code { font-family: var(--sans); letter-spacing: .06em; font-kerning: none; font-variant-ligatures: none; }
+.lead { font: 300 18px/1.9 var(--sans); color: var(--ink-2); max-width: 46em; }
+.meta { font-size: 12.5px; letter-spacing: .1em; color: var(--mute); }
+.no { font: italic 300 15px/1 var(--latin); color: var(--accent-ink); margin-right: 12px; }
+section { margin-top: 84px; padding-top: 22px; border-top: 1px solid var(--ink); }
+.kicker { font: 500 11.5px/1.4 var(--sans); letter-spacing: .16em; color: var(--mute); margin-bottom: 12px; display: block; }
+ul.dots { padding-left: 1.3em; color: var(--ink-2); }
+ul.dots li { margin: 4px 0; }
+.note { display: inline-block; padding: 0 9px; border: 1px dashed var(--hair-2); border-radius: 999px; font-size: 11.5px; letter-spacing: .06em; color: var(--mute); white-space: nowrap; vertical-align: 1px; line-height: 1.75; }
+.st { display: inline-block; padding: 0 9px; border-radius: 999px; font-size: 11.5px; letter-spacing: .06em; white-space: nowrap; vertical-align: 1px; line-height: 1.75; }
+.st.done { background: var(--ink); color: var(--paper); }
+.st.fixed { box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink); }
+.st.ask { box-shadow: inset 0 0 0 1px var(--accent); color: var(--accent-ink); background: var(--wash); }
+.st.new { box-shadow: inset 0 0 0 1px var(--accent); color: var(--accent-ink); }
+.box { background: var(--white); box-shadow: 0 0 0 1px var(--hair); border-radius: 16px; padding: 20px 22px; margin: 16px 0; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 820px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; line-height: 1.7; margin: 10px 0; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--hair); }
+thead th { font: 500 11.5px/1.4 var(--sans); letter-spacing: .14em; color: var(--mute); border-bottom-color: var(--ink); white-space: nowrap; }
+td.n { font: italic 300 15px/1.6 var(--latin); color: var(--accent-ink); width: 2em; }
+td .y { color: var(--mute); font-size: 12.5px; }
+td .lab { display: block; font-size: 11.5px; color: var(--mute); margin-top: 2px; }
+.wide { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (max-width: 720px) { .wide table { min-width: 860px; } }
+.small { font-size: 13px; color: var(--mute); }
+.spec { display: grid; grid-template-columns: 7em minmax(0, 1fr); gap: 6px 16px; margin: 14px 0; }
+.spec > dt { font: 500 12px/1.9 var(--sans); letter-spacing: .12em; color: var(--mute); }
+.spec > dd { color: var(--ink-2); }
+@media (max-width: 640px) { .spec { grid-template-columns: minmax(0, 1fr); } .spec > dt { margin-top: 8px; } }
+
+/* 方案自己的路线切换 */
+.switch { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--hair); }
+.switch div { max-width: 1120px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+@media (min-width: 720px) { .switch div { padding-left: 24px; padding-right: 24px; } }
+.switch span { color: var(--mute); margin-right: 4px; }
+.switch button { font: 400 13px/1 var(--sans); letter-spacing: .04em; padding: 7px 12px; border-radius: 999px; border: 0; background: transparent; color: var(--ink-2); box-shadow: inset 0 0 0 1px var(--hair-2); cursor: pointer; transition: background .3s var(--ease), color .3s var(--ease); }
+.switch button[aria-pressed="true"] { background: var(--ink); color: var(--paper); box-shadow: none; }
+body[data-r="dev"] [data-r]:not([data-r~="dev"]),
+body[data-r="doc"] [data-r]:not([data-r~="doc"]),
+body[data-r="ops"] [data-r]:not([data-r~="ops"]) { display: none !important; }
+.rtag { font: 500 11px/1.4 var(--sans); letter-spacing: .14em; color: var(--accent-ink); margin: 26px 0 4px; display: block; }
+
+/* 对比条 */
+.diff { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--ink); margin: 18px 0; }
+.diff > div { padding: 14px 16px 16px 0; border-right: 1px solid var(--hair); }
+.diff > div + div { padding-left: 16px; }
+.diff > div:last-child { border-right: 0; }
+.diff i { display: block; font: italic 300 13px/1.4 var(--latin); color: var(--mute); margin-bottom: 4px; }
+.diff b { display: block; font: 300 26px/1.25 var(--latin); color: var(--ink); }
+.diff b s { color: var(--mute); font-size: 18px; margin-right: 6px; }
+.diff p { font-size: 12.5px; color: var(--ink-2); margin-top: 4px; }
+@media (max-width: 820px) { .diff { grid-template-columns: repeat(2, minmax(0, 1fr)); } .diff > div:nth-child(2) { border-right: 0; } .diff > div:nth-child(3) { padding-left: 0; } .diff > div:nth-child(n+3) { border-top: 1px solid var(--hair); } }
+
+.skel { border-top: 1px solid var(--hair-2); margin: 16px 0; }
+.skel > div { display: grid; grid-template-columns: 2.4em minmax(0, 12em) minmax(0, 1fr) 6em; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--hair); align-items: baseline; }
+.skel b { font-weight: 400; font-size: 16.5px; }
+.skel span { color: var(--ink-2); font-size: 14px; }
+.skel em { font-style: normal; color: var(--mute); font-size: 12.5px; text-align: right; }
+@media (max-width: 720px) { .skel > div { grid-template-columns: 2.2em minmax(0, 1fr); } .skel span:not(.no), .skel em { grid-column: 2; text-align: left; } }
+
+/* 舞台示意 */
+.hero { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: 24px; align-items: center; margin: 18px 0 8px; }
+@media (max-width: 900px) { .hero { grid-template-columns: minmax(0, 1fr); } .hero .htext { order: -1; } }
+.stage { background: var(--stage); border-radius: 18px; padding: 16px 16px 12px; }
+.win { position: relative; aspect-ratio: 16 / 10; border-radius: 10px; background: var(--paper-2); box-shadow: 0 0 0 1px var(--hair), 0 22px 44px -30px rgb(40 30 20 / .5); overflow: hidden; font-size: 11.5px; color: var(--ink-2); }
+.win .mbar { position: absolute; left: 0; right: 0; top: 0; height: 7.5%; display: flex; justify-content: flex-end; align-items: center; gap: 8px; padding: 0 10px; font-size: 10.5px; background: var(--white); border-bottom: 1px solid var(--hair); }
+.win .pill { padding: 0 8px; border-radius: 999px; background: var(--wash); color: var(--accent-ink); line-height: 1.7; }
+.win .main { position: absolute; left: 2%; top: 11%; width: 64%; bottom: 14%; border-radius: 8px; background: var(--white); padding: 12px 14px; }
+.win .main .h { font-size: 14px; color: var(--ink); }
+.win .main .h small { font-size: 11px; color: var(--mute); margin-left: 6px; }
+.win .main .row { display: flex; gap: 6px; padding: 5px 0; border-top: 1px solid var(--hair); align-items: baseline; flex-wrap: wrap; }
+.win .main .row:first-of-type { border-top: 0; }
+.win .main .row i { font-style: normal; width: 1em; color: var(--leaf); }
+.win .main .row i.o { color: var(--accent-ink); }
+.win .main .row span { flex: 1 1 auto; min-width: 6em; }
+.win .main .row em { font-style: normal; color: var(--mute); font-size: 10.5px; margin-left: auto; }
+.win .main .flag { margin-top: 8px; padding: 5px 8px; border-radius: 7px; background: var(--wash); color: var(--accent-ink); }
+.win .side { position: absolute; right: 2%; top: 11%; width: 30%; bottom: 14%; border-radius: 8px; background: var(--white); padding: 10px 11px; }
+.win .side .tabs { display: flex; gap: 6px; font-size: 10px; color: var(--mute); margin-bottom: 8px; flex-wrap: wrap; }
+.win .side .tabs b { font-weight: 400; color: var(--ink); }
+.win .term { border-radius: 7px; background: var(--term); color: #e9e7e2; padding: 8px 9px; font-size: 10.5px; line-height: 1.6; letter-spacing: .05em; font-kerning: none; font-variant-ligatures: none; }
+.win .term + .term { margin-top: 6px; opacity: .55; }
+.win .dock { position: absolute; left: 2%; right: 2%; bottom: 2.5%; height: 8.5%; border-radius: 8px; background: var(--white); display: flex; align-items: center; gap: 10px; padding: 0 12px; font-size: 10.5px; color: var(--mute); }
+.win .dock b { font-weight: 400; color: var(--ink); }
+.win .tag { position: absolute; padding: 1px 8px; border-radius: 999px; background: var(--ink); color: var(--paper); font-size: 10px; letter-spacing: .06em; }
+@media (max-width: 640px) { .win .tag { display: none; } }
+.sub { margin: 10px 2px 0; font-size: 14.5px; line-height: 1.6; color: var(--ink); }
+.sub small { display: block; color: var(--mute); font-size: 11.5px; margin-bottom: 2px; }
+.sub em { font-style: normal; font-size: 11px; color: var(--mute); margin-left: 8px; }
+.tl { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; margin-top: 12px; font-size: 10.5px; line-height: 1.45; color: var(--mute); }
+.tl div i { display: block; height: 2px; border-radius: 2px; background: var(--hair-2); margin-bottom: 5px; }
+.tl div.on { color: var(--ink); }
+.tl div.on i { background: linear-gradient(90deg, var(--ink) 60%, var(--hair-2) 60%); }
+.tl div.done i { background: var(--ink); }
+@media (max-width: 640px) { .tl { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 10px; } .win { aspect-ratio: auto; height: 340px; } .win .side { display: none; } .win .main { width: auto; right: 2%; } }
+.htext .k { font: 500 11px/1.5 var(--sans); letter-spacing: .14em; color: var(--mute); }
+.htext .t { font: 300 25px/1.45 var(--sans); letter-spacing: .03em; margin: 8px 0 10px; }
+.htext .l { font: 300 15px/1.8 var(--sans); color: var(--ink-2); }
+.htext .q { margin-top: 16px; font-size: 12.5px; color: var(--mute); }
+.routes { display: grid; gap: 8px; margin-top: 8px; }
+.routes div { padding: 9px 12px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--hair-2); font-size: 14px; }
+.routes div:first-child { box-shadow: inset 0 0 0 1px var(--ink); }
+.routes small { display: block; color: var(--mute); font-size: 11.5px; line-height: 1.6; margin-top: 2px; }
+.cta { display: flex; gap: 14px; align-items: center; margin-top: 14px; font-size: 13px; flex-wrap: wrap; }
+.cta b { font-weight: 400; padding: 7px 16px; border-radius: 999px; background: var(--ink); color: var(--paper); }
+.cta span { color: var(--ink-2); border-bottom: 1px solid var(--hair-2); }
+.fine { font-size: 11.5px; color: var(--mute); margin-top: 10px; }
+
+/* 第二屏示意 */
+.s2 { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 28px; align-items: start; background: var(--white); border-radius: 18px; box-shadow: 0 0 0 1px var(--hair); padding: 26px 26px 22px; margin: 14px 0; }
+@media (max-width: 820px) { .s2 { grid-template-columns: minmax(0, 1fr); } }
+.nots p { font: 300 clamp(19px, 2.2vw, 25px)/1.5 var(--sans); letter-spacing: .03em; margin: 0; }
+.nots p + p { margin: 0; }
+.two { margin-top: 18px; display: grid; gap: 6px; font-size: 13px; color: var(--ink-2); }
+.nowl { display: grid; gap: 10px; font-size: 13px; color: var(--ink-2); }
+.nowl h5 { font: 500 11px/1.5 var(--sans); letter-spacing: .14em; color: var(--mute); }
+.nowl p { margin: 0; }
+
+.ask { counter-reset: q; list-style: none; border-top: 1px solid var(--ink); }
+.ask li { counter-increment: q; display: grid; grid-template-columns: 2.6em minmax(0, 1fr); gap: 8px; padding: 14px 0; border-bottom: 1px solid var(--hair); }
+.ask li::before { content: counter(q, decimal-leading-zero); font: italic 300 15px/1.85 var(--latin); color: var(--accent-ink); }
+.ask li p { color: var(--ink-2); font-size: 14px; }
+.ask li p.rec { color: var(--ink); }
+.ask li p.rec::before { content: '定　'; color: var(--accent-ink); font-size: 12px; letter-spacing: .1em; }
+.toc { columns: 2; column-gap: 32px; font-size: 14px; color: var(--ink-2); margin-top: 18px; }
+.toc a { text-decoration: none; display: block; padding: 3px 0; break-inside: avoid; }
+.toc a:hover { color: var(--accent-ink); }
+@media (max-width: 560px) { .toc { columns: 1; } }
+</style>
+</head>
+<body data-r="all">
+<nav class="switch" aria-label="按读者看"><div><span>按哪条路看这份方案</span>
+  <button type="button" data-set="all" aria-pressed="true">全部</button>
+  <button type="button" data-set="dev" aria-pressed="false">写代码</button>
+  <button type="button" data-set="doc" aria-pressed="false">写文档、做研究</button>
+  <button type="button" data-set="ops" aria-pressed="false">管事情、跟进度</button>
+</div></nav>
+<main>
+
+<p class="meta">MOLIS WORK 产品页 · 第四版 · 一个舞台 · 2026-10-18 · 已定（第 07 节九件都按建议），待做</p>
+<h1>三屏。东西都在首屏那个舞台里演：每条路八段，一共二十四个 case。</h1>
+<p class="lead">按你说的，内容和 case 尽量放进演示动画，不靠多开屏。首屏就是一扇一直开着的 Molis Work 窗口，下面一条章节线；选了你那条路，窗里就一段接一段地演这条路上的八件事。流程和协作两段动画完整地放在里面，不缩。「为什么」也搬进动画：每段开头先有一行「原来：……」，再演 Work 怎么接。</p>
+<p class="small" style="margin-top:12px">依据同前两份：molis-work <code>docs/product-operations</code>（<code>docs/product-operations-review</code> 分支 501cf1f）、另一台设备 10-17 的复核、第二轮设计方案 4.1–4.3 节。完整版、精简版留在同目录。只是方案，页面没动，也没提交。</p>
+<p class="small">图例：<span class="st done">已定·已做</span> <span class="st fixed">已定·待做</span> <span class="st fixed">已定·待做</span> <span class="st new">这版新提</span></p>
+
+<nav class="toc" aria-label="目录">
+  <a href="#s0"><span class="no">00</span>和精简版比</a>
+  <a href="#s1"><span class="no">01</span>三屏</a>
+  <a href="#s2"><span class="no">02</span>首屏 · 舞台怎么演</a>
+  <a href="#s3"><span class="no">03</span>每条路的八段</a>
+  <a href="#s4"><span class="no">04</span>第二屏 · 为什么、现在、怎么试</a>
+  <a href="#s5"><span class="no">05</span>第三屏 · 我们为什么做它</a>
+  <a href="#s6"><span class="no">06</span>下载页与口径</a>
+  <a href="#s7"><span class="no">07</span>定下来的事</a>
+  <a href="#s8"><span class="no">08</span>做起来和怎么验</a>
+</nav>
+
+<!-- ===================== 00 ===================== -->
+<section id="s0">
+<span class="kicker"><span class="no">00</span>和精简版比</span>
+<h2>屏少了一半多，每条路演的 case 从 3 个变成 8 个</h2>
+<div class="diff">
+  <div><i>屏数（桌面）</i><b><s>7</s>3</b><p>首屏舞台、为什么与现在、结尾。约 3.5 屏高（精简版约 8 屏）。</p></div>
+  <div><i>每条路演的 case</i><b><s>3</s>8</b><p>精简版每条路演一分钟加两段动画；这版每条路八段，两段动画在里面。三条路一共 24 段。</p></div>
+  <div><i>钉住滚动的段落</i><b><s>1</s>0</b><p>舞台按时间演，不劫持滚动。</p></div>
+  <div><i>要访客动手的地方</i><b><s>1</s>1</b><p>还是只有选路。章节线可以点着跳，不点也会自己往下演。</p></div>
+</div>
+<p class="small">代价：一条路八段演完约一分半，大多数人不会看完。所以最要紧的那段放第一，章节线上每段都有短标题，扫一眼就知道后面还有什么。</p>
+</section>
+
+<!-- ===================== 01 ===================== -->
+<section id="s1">
+<span class="kicker"><span class="no">01</span>三屏</span>
+<h2>三屏</h2>
+<div class="skel">
+  <div><span class="no">1</span><b>首屏 · 舞台</b><span>左边一扇窗按章节演，右边标题、解释句、选路、按钮。没选路时轮着演三条路各自最要紧的一段（就是三句反转）；选了路，演这条路的八段。</span><em>1 屏</em></div>
+  <div><span class="no">2</span><b>为什么 · 现在 · 怎么试</b><span>左边三句「不」，加两行：你的 AI 接在哪、数据和模型；右边现状、你那条路的第一个十分钟、暂时不适合谁、按钮。</span><em>1 屏</em></div>
+  <div><span class="no">3</span><b>我们为什么做它</b><span>缘起、三句、「事情都顺了，那人做什么？」、一天的时间条动画、愿景一行、按钮。</span><em>约 1.3 屏</em></div>
+</div>
+<p class="small">页内顶栏只留产品名、三条路切换和「报名首批试用」，不再列段落链接：一共三屏，用不着。路线记在本机，<code>#dev</code> / <code>#doc</code> / <code>#ops</code> 直达；路名照旧做职业版和卡点版两种，测完再定。</p>
+</section>
+
+<!-- ===================== 02 ===================== -->
+<section id="s2">
+<span class="kicker"><span class="no">02</span>首屏</span>
+<h2>舞台怎么演 <span class="st fixed">已定·待做</span></h2>
+<div class="hero" aria-label="首屏舞台示意（写代码那条，第 1 段的最后一镜）">
+  <div class="stage">
+    <div class="win">
+      <div class="mbar"><span class="pill">需要你决定 · 1</span><span>⌘K</span></div>
+      <div class="main">
+        <div class="h">上线支付<small>正在推进 · 完成要求 2/3</small></div>
+        <div class="term" style="margin:6px 0 4px">终端 · Codex › 做完了。测试 14/14 通过，请求收尾。</div>
+        <div class="row"><i>✓</i><span>下单与退款</span><em>测试 14/14 · Agent 报告 · Claude Code</em></div>
+        <div class="row"><i>✓</i><span>金额统一用「分」</span><em>沙箱 3 笔 · Agent 报告 · Codex</em></div>
+        <div class="row"><i class="o">○</i><span>手机排版</span><em>必须由你验收</em></div>
+        <div class="flag">收尾没生效：手机排版还等你亲手验</div>
+      </div>
+      <div class="side">
+        <div class="tabs"><span>Shelf</span><span>浏览器</span><span>文件</span><b>讨论</b></div>
+        <p style="margin:0;padding:6px 8px;border-radius:7px;background:var(--paper)"><b style="font-weight:500;color:var(--ink)">产品</b>　手机排版我下午在真机上看。</p>
+      </div>
+      <div class="dock"><b>目标</b><span>会话</span><span>Coding</span><span>文档</span><span>待办</span><span>助理</span></div>
+      <span class="tag" style="right:19%;top:1.4%">菜单栏：谁在等你 →</span>
+    </div>
+    <p class="sub"><small>原来：几家 AI 共用项目说明，可做到哪、谁验收过，散在各家的会话里。</small>Agent 说做完了，Work 说还差你。<em>已发布 · v0.2.0 · 界面示意</em></p>
+    <div class="tl">
+      <div class="on"><i></i>做完了吗</div><div><i></i>谁在等你</div><div><i></i>报错交出去</div><div><i></i>issue 自动分拣</div><div><i></i>客户来信进群</div><div><i></i>Skill 带进来</div><div><i></i>说一句做个清单</div><div><i></i>动手先问你</div>
+    </div>
+  </div>
+  <div class="htext">
+    <p class="k">MOLIS WORK · MAC 上的 AI 工作台 · 开发中</p>
+    <p class="t">让工作，在人、工具与 AI 之间继续。</p>
+    <p class="l">装在你电脑上的 AI 工作台：你和你用的每一个 AI，对着同一份目标、资料和成果干活。</p>
+    <p class="q">你主要做什么？</p>
+    <div class="routes">
+      <div>写代码<small>独立开发者 · 技术负责人 · 测试 · 开源维护者……</small></div>
+      <div>写文档、做研究<small>咨询 · 投研 · 用户研究 · 内容 · 学术 · 法务……</small></div>
+      <div>管事情、跟进度<small>项目 · 产品 · 创始人 · 运营 · 销售 · 自由职业……</small></div>
+    </div>
+    <div class="cta"><b>报名首批试用</b></div>
+    <p class="fine">macOS · 新版安装包在准备 · v0.2.0 源码公开</p>
+  </div>
+</div>
+
+<dl class="spec">
+  <dt>一扇窗</dt><dd>八段都在同一扇 Molis Work 窗口里演：菜单栏、主区、右栏、浮条、底栏的位置始终不变，换的只是主区里打开的插件和右栏的标签。看几段下来，访客自然知道这张台长什么样，用不着单独讲界面。每段第一次用到某一处时，那里先亮一个小标签（「菜单栏：谁在等你」「浮条」「右栏 · 讨论」「底栏 · 插件创作台」），讲解画在画面里，这是第一版就定下的做法。</dd>
+  <dt>每段三拍</dt><dd>① 字幕上方先出一行灰字「原来：……」，说今天卡在哪；② 窗里演 Work 怎么接；③ 定格在结果上，字幕亮出这一段的一句话和状态。「为什么是它」就这样放进了每一段里，不再单独占一屏。</dd>
+  <dt>章节线</dt><dd>窗下一条线分八格，每格写短标题，点哪格跳到哪段，正在演的那格往前走。没选路时只有三格：三条路各自最要紧的一段（就是三句反转），每段约 7 秒，演完接着轮。选了路，换成那条路的八格，从第一格演起。</dd>
+  <dt>节奏</dt><dd>每段 7–20 秒，一条路约一分半。进入视口才演，离开就停，有暂停键；演完最后一段停在结果上，再点任意一格重看。流程那一段里能点的三处（交接方式、「开始一次」、「交过去」）照之前定的留着，不点也会自己演完。</dd>
+  <dt>减少动态</dt><dd>不动，每段直接是结果那一帧，点章节线翻看。没有 JS 时：显示写代码第 1 段的结果帧，下面列出八段的标题和字幕。</dd>
+  <dt>手机</dt><dd>文字在前，舞台在后；窗口去掉右栏、主区占满；章节线折成两行四格。</dd>
+  <dt>标注</dt><dd>每段的状态标在字幕后面；整个舞台右下角「界面示意 · 示例数据」。Issue 插件不出现在任何一处。</dd>
+</dl>
+<p class="small">另一种排法：首屏只放三句反转，舞台挪到第二屏，一共四屏。好处是首屏更轻；坏处是访客得往下滚一屏才看到自己那条路的八段，三句反转也会和舞台第一段重复。我建议合在首屏。</p>
+</section>
+
+<!-- ===================== 03 ===================== -->
+<section id="s3">
+<span class="kicker"><span class="no">03</span>每条路的八段 <span class="st fixed">已定·待做</span></span>
+<h2>每条路八段，最要紧的放第一</h2>
+<p class="small">表里「原来」是每段开头那行灰字，「字幕」是定格时那一句。镜头细节做的时候照产品原文逐站核：字段名、按钮名、状态文案用 Work 界面里真有的字，界面上没有的标示意。依据一律写「Agent 报告」，不写「核验」；写文档那边不讲换 AI。</p>
+
+<div data-r="dev">
+<span class="rtag">写代码 · 八段，约 95 秒</span>
+<div class="wide"><table>
+<thead><tr><th>#</th><th>章节线</th><th>窗里演什么</th><th>原来</th><th>字幕</th><th>状态 · 时长</th></tr></thead>
+<tbody>
+<tr><td class="n">1</td><td>做完了吗</td><td>目标「上线支付」三条要求，「手机排版」标必须由你验收 → 周二 Claude Code 交依据 → 周三 Codex 打开同一个目标，读到约定和改过的范围 → 它提议放宽一条，页头「1 项待你确认」，你点不同意 → 它报做完了，收尾没生效 → 你验完，收尾生效<span class="lab">讲到：主区目标页、页头的终端、菜单栏</span></td><td>几家 AI 共用项目说明，可做到哪、谁验收过，散在各家的会话里。</td><td>Agent 说做完了，Work 说还差你。</td><td>已发布 · v0.2.0（新界面开发中）<br><span class="y">约 18 秒</span></td></tr>
+<tr><td class="n">2</td><td>谁在等你</td><td>菜单栏「等你 · 2」→ 展开：一个 Agent 请你验收，一个问了问题 → 问题卡上选一个选项，不用打字，它接着做<span class="lab">讲到：菜单栏</span></td><td>几个窗口挨个去问做到哪了。</td><td>四个 Agent 各停在不同的问题上，等你的事收在一处。</td><td>开发中<br><span class="y">约 8 秒</span></td></tr>
+<tr><td class="n">3</td><td>报错交出去</td><td>选中一段报错 → 浮条「交给 Codex」→ 交接带上目标、约束和上次进度 → 结果回到这一页<span class="lab">讲到：浮条</span></td><td>复制报错、切到另一个工具、再讲一遍背景。</td><td>选中就交出去，背景跟着走，结果回到原处。</td><td>开发中<br><span class="y">约 9 秒</span></td></tr>
+<tr><td class="n">4</td><td>issue 自动分拣</td><td><b>跨插件流程动画 · 写代码版，六个镜头照第二轮设计方案 4.2 节完整演</b>：新建流程 → 拖上信息流、收件箱 → 交接选「判断后」（是不是 bug）→ 再接「人看完后」→ 新建目标 → 开始一次，小圆点沿链走<span class="lab">讲到：底栏 · 工作流程</span></td><td>每天早上自己翻几十条通知。</td><td>GitHub 新 issue 先判断是不是 bug，你看过再建成目标。</td><td>开发中<br><span class="y">约 20 秒</span></td></tr>
+<tr><td class="n">5</td><td>客户来信进群</td><td><b>协作全演 · 写代码版，照 4.3 节</b>：客户邮件经信息流进收件箱 → 助理判断要紧，发进项目群 @你和产品 → 群里讨论成目标，你同意 → 你的 Codex 接手，进展回到群里 → 产品验收<span class="lab">讲到：右栏 · 讨论</span></td><td>邮件、群聊、任务各在一处，结论要手动搬成任务。</td><td>讨论、决定和 AI 的工作，在同一处接得上。</td><td>开发中（全演）<br><span class="y">约 15 秒</span></td></tr>
+<tr><td class="n">6</td><td>Skill 带进来</td><td>设置里「从本机导入」→ 列出 Claude Code 里的五个 Skill，勾三个 → 发布成角色 → 助理的输入区选这个角色写更新说明<span class="lab">讲到：助理</span></td><td>同一段规则，粘进每一个 AI。</td><td>攒下的做法写一次，助理和 Coding 都照着做。</td><td>开发中<br><span class="y">约 8 秒</span></td></tr>
+<tr><td class="n">7</td><td>说一句做个清单</td><td>插件创作台里说「做个发版清单」→ 三行方案，确认 → 写代码、过检查、试跑 → 你点头装上，底栏多一个图标 → 切到 Claude Code：「按发版清单检查一遍」，调的是同一个<span class="lab">讲到：底栏 · 插件创作台</span></td><td>写个脚本，接不进日常，别的 AI 也不认。</td><td>缺个工具，说一句；你和你的 AI 用同一个。</td><td>开发中 · 预览<br><span class="y">约 10 秒</span></td></tr>
+<tr><td class="n">8</td><td>动手先问你</td><td>设置里外部 AI 的授权列表，逐项勾 → 撤掉一项，Codex 下一次调用被拒 → 助理要写一个文件，先把内容给你看，你放行<span class="lab">讲到：设置</span></td><td>要么不让 AI 动手，要么全放开。</td><td>谁能动什么，逐个授权；撤了，下一次调用就被拒。</td><td>开发中<br><span class="y">约 8 秒</span></td></tr>
+</tbody></table></div>
+</div>
+
+<div data-r="doc">
+<span class="rtag">写文档、做研究 · 八段，约 90 秒</span>
+<div class="wide"><table>
+<thead><tr><th>#</th><th>章节线</th><th>窗里演什么</th><th>原来</th><th>字幕</th><th>状态 · 时长</th></tr></thead>
+<tbody>
+<tr><td class="n">1</td><td>依据在哪</td><td>收件箱本周 6 条，每条写着哪条规则送来的 → 勾 4 条「整理成一页」，文末出现本期采用的材料，带来源和版本 → 存一版交给客户 → 一周后客户问「为什么暂缓」，打开那一版，点开当时的原文<span class="lab">讲到：主区文档、收件箱</span></td><td>引用在 AI 的回答里，进了交付稿就断了。</td><td>交出去的每一份结论，都留着当时的依据。</td><td>开发中<br><span class="y">约 16 秒</span></td></tr>
+<tr><td class="n">2</td><td>第一天</td><td>新建项目时拖进资料文件夹、聊天记录导出、最近 7 天的邮件 → 「已读 23 份」→ 项目建议四段，删一条改一条 → 工作摘要、来源文稿、待办草稿落在各自的插件里<span class="lab">讲到：底栏的插件</span></td><td>上传给对话 AI，得到一段总结，待办和文档还是空的。</td><td>把资料丢进来，第一天就有内容。</td><td>开发中<br><span class="y">约 10 秒</span></td></tr>
+<tr><td class="n">3</td><td>好句子放进稿子</td><td>右栏里一段视频字幕，选中一句 → 浮条「放进第 2 节」→ 句后带出处 → 再选中一句「周五前和编辑对结构」→「记成待办」，待办写着来源<span class="lab">讲到：右栏、浮条</span></td><td>复制进、复制出，出处在路上丢了。</td><td>选中就放进去，出处跟着走。</td><td>开发中<br><span class="y">约 9 秒</span></td></tr>
+<tr><td class="n">4</td><td>让助理挑刺</td><td>选中一段 → 浮条「提反例」→ 助理给三条 → 删两条，留下的插在这段后面<span class="lab">讲到：助理</span></td><td>把整段贴给 AI，再把回答粘回来。</td><td>结果回到你正在改的地方。</td><td>开发中<br><span class="y">约 8 秒</span></td></tr>
+<tr><td class="n">5</td><td>每周一页</td><td><b>跨插件流程动画 · 写文档版，六个镜头照 4.2 节完整演</b>：新建流程「每周读报告，写成一页」→ 拖上信息流、文档 → 交接选「AI 整理后」→ 再接待办「人看完后」→ 开始一次 → 停在「看内容并交给 待办」，交过去<span class="lab">讲到：底栏 · 工作流程</span></td><td>每周同样的读、摘、写，再做一遍。</td><td>重复的处理，存成你说了算的流程。</td><td>开发中<br><span class="y">约 20 秒</span></td></tr>
+<tr><td class="n">6</td><td>群里待你决定</td><td><b>协作全演 · 写文档版，照 4.3 节</b>：Agent 在目标上提「待你决定」，两个选择各写代价 → 助理发进项目群 @你和运营 → 你选 B → 受影响的目标和待办都跟上<span class="lab">讲到：右栏 · 讨论</span></td><td>群里定了，再手动去改文档和待办。</td><td>讨论、决定和 AI 的工作，在同一处接得上。</td><td>开发中（全演）<br><span class="y">约 12 秒</span></td></tr>
+<tr><td class="n">7</td><td>说一句做个选题库</td><td>插件创作台里说「做个选题库」→ 方案 → 试跑 → 你点头装上 → 助理把今天的两条想法放进去<span class="lab">讲到：底栏 · 插件创作台</span></td><td>表格太散，专门的软件太重。</td><td>缺个工具，说一句；你和助理用同一个。</td><td>开发中 · 预览<br><span class="y">约 10 秒</span></td></tr>
+<tr><td class="n">8</td><td>做成演示稿</td><td>对助理说「做成 5 页给周会」→ 演示稿一页页出来 → 导出 PPTX<span class="lab">讲到：底栏 · 演示稿</span></td><td>稿子和演示稿各写一遍。</td><td>一份稿子，接着做成演示稿。</td><td>开发中<br><span class="y">约 6 秒</span></td></tr>
+</tbody></table></div>
+<p class="small">第 3 段句后的出处，代码里只核到「视频」，精确到时间点还没核到；核不到就只写「视频」。第 8 段不说演示稿「记得基于哪一版」：出处跟到演示稿在产品运营里还是没立项的建议。</p>
+</div>
+
+<div data-r="ops">
+<span class="rtag">管事情、跟进度 · 八段，约 90 秒</span>
+<div class="wide"><table>
+<thead><tr><th>#</th><th>章节线</th><th>窗里演什么</th><th>原来</th><th>字幕</th><th>状态 · 时长</th></tr></thead>
+<tbody>
+<tr><td class="n">1</td><td>谁在等谁</td><td>周会纪要 2,000 字 → 整理出 8 件，分四栏，每条下面是原话 → 3 件标「可能已经记过」→「下周三」换成「10 月 29 日」→ 到了那天，首页「法务回复合同 · 约定今天跟进」，助理起草催办，你自己发<span class="lab">讲到：主区待办、首页</span></td><td>抽出来的事不知道你已经记了什么，在等别人的没人盯。</td><td>AI 抽了 8 件事，Work 说 3 件你已经记过、1 件在等法务。</td><td>开发中<br><span class="y">约 16 秒</span></td></tr>
+<tr><td class="n">2</td><td>说好的范围</td><td>客户来信「不是说好包含移动端吗」→ 打开当时那一版约定和决定记录 → 你同意加范围：新增一条要求、写明原因 → 旧的验收作废，按新约定重新验<span class="lab">讲到：主区目标页</span></td><td>翻聊天记录，找当初说好的范围。</td><td>说好的事，改了要你点头；交没交完，你说了算。</td><td>机制已发布 · v0.2.0（新界面开发中）<br><span class="y">约 10 秒</span></td></tr>
+<tr><td class="n">3</td><td>明早见客户</td><td>对助理说「明早见王总」→ 一页：上次答应的三件、最近两封来信、一个没结的问题，每条能点回原处<span class="lab">讲到：助理</span></td><td>翻邮件、翻笔记、翻待办，拼出上次聊到哪。</td><td>明早见谁，五分钟备好。</td><td>开发中<br><span class="y">约 8 秒</span></td></tr>
+<tr><td class="n">4</td><td>变更走流程</td><td><b>跨插件流程动画 · 管事情版（新改编，镜头结构同 4.2 节）</b>：新建流程「客户变更」→ 收件箱的变更请求 → 交接「AI 整理后」（拆成几条）→「判断后」（超没超范围）→「人看完后」→ 目标：改约定要你点头<span class="lab">讲到：底栏 · 工作流程</span></td><td>每个变更都从头判断一遍，口头答应了就算。</td><td>客户的每个变更，走同一套处理，你点头才改。</td><td>开发中<br><span class="y">约 20 秒</span></td></tr>
+<tr><td class="n">5</td><td>群里待你决定</td><td><b>协作全演 · 写文档版</b>（同上一条路的第 6 段）：目标上一项待你决定 → 助理发进项目群 @你和运营 → 你选 B → 目标和待办都跟上<span class="lab">讲到：右栏 · 讨论</span></td><td>群里定了，再手动去改目标和待办。</td><td>讨论、决定和 AI 的工作，在同一处接得上。</td><td>开发中（全演）<br><span class="y">约 12 秒</span></td></tr>
+<tr><td class="n">6</td><td>说一句做个核对器</td><td>插件创作台里说「做个报价前核对器」→ 试跑 → 你点头装上 → 客户第二版清单拖进来，对不上的三行先标出来<span class="lab">讲到：底栏 · 插件创作台</span></td><td>客户每改一次清单，逐行对型号、数量和批准价。</td><td>缺个工具，说一句；你和你的 AI 用同一个。</td><td>开发中 · 预览<br><span class="y">约 10 秒</span></td></tr>
+<tr><td class="n">7</td><td>范围改了</td><td>评审会上砍掉一条需求 → 你在目标上改约定 → 开发那边的 Agent 下次读到的就是新的一版<span class="lab">讲到：主区目标页</span></td><td>文档改了，开发那边的 AI 还按旧的做。</td><td>改一次，开发那边的 AI 下次读到的就是新的。</td><td>开发中<br><span class="y">约 8 秒</span></td></tr>
+<tr><td class="n">8</td><td>早上打开</td><td>早上打开，首页一页简报：昨天三个目标一个完成、一个等你验收、一个卡在客户回复；底下三个选项，点一个，助理接着做<span class="lab">讲到：首页</span></td><td>早上自己翻一遍所有事。</td><td>早上打开，就知道今天先做什么。</td><td>规划中（标签见第 07 节）<br><span class="y">约 8 秒</span></td></tr>
+</tbody></table></div>
+<p class="small">第 4 段是新改编：之前定的流程动画只有写代码、写文档两版。管事情的人每周都要处理客户变更，比「每周读报告」贴近得多；如果你想少做一版，就让这条路也演写文档版。</p>
+</div>
+</section>
+
+<!-- ===================== 04 ===================== -->
+<section id="s4">
+<span class="kicker"><span class="no">04</span>第二屏</span>
+<h2>为什么 · 现在 · 怎么试 <span class="st new">这版新提</span></h2>
+<p class="small">舞台已经把一个个 case 演完了，这一屏只做两件事：用三句话说清 Work 和别的东西根本上哪里不同，再告诉访客今天能拿到什么、怎么留下联系方式。</p>
+<div class="s2">
+  <div>
+    <div class="nots">
+      <p>不把你的工作锁在某一家 AI 里。</p>
+      <p>不把「AI 说做完了」当成做完了。</p>
+      <p>不替你派单，也不替你点头。</p>
+    </div>
+    <div class="two">
+      <p>你用的 AI 都接在这里：Claude Code、Codex、OpenCode、Pi Agent、Grok Build 内置接入，其他经 MCP。</p>
+      <p>数据在你的电脑上，模型你来选：DeepSeek、通义千问、Kimi、GLM、MiniMax、Anthropic、OpenAI 等，费用直接付给模型商；用模型和联网时，相关内容会发给你选的服务。</p>
+    </div>
+  </div>
+  <div class="nowl">
+    <div><h5>今天就有</h5><p>v0.2.0 源码（当时名 GoalBoard）：目标与要求、本人验收、决定请求、五家 AI 接入、本机存储。</p></div>
+    <div><h5>开发中</h5><p>新版 0.3.0：新工作台、二十多个插件、流程、插件创作台（预览）、项目讨论。还没有公开安装包。</p></div>
+    <div><h5>能下载以后，你的第一个十分钟</h5>
+      <p data-r="dev">一键把 Skill 和 MCP 写进 Claude Code、Codex，给手头的功能建第一个目标。</p>
+      <p data-r="doc">拖进一个资料文件夹，读完项目建议，写出第一份附「本期采用材料」的稿子。</p>
+      <p data-r="ops">粘一段周会纪要，看你答应的和在等别人的分开。</p>
+    </div>
+    <div><h5>暂时不适合</h5><p>全员实时一起改同一份的团队；只想要一个聊天窗口；要在手机上随时处理；只用 Windows。</p></div>
+    <div class="cta" style="margin-top:2px"><b>报名首批试用</b><span data-r="dev">看 v0.2.0 源码</span></div>
+    <p class="fine" style="margin-top:0">macOS · 许可以仓库 LICENSE 为准</p>
+  </div>
+</div>
+<p class="small">「以后」那一栏不单列：规划中的东西已经在舞台里演了（标着状态），这里不再重复。外部调查数字不放：页面靠演，不靠读数字。</p>
+</section>
+
+<!-- ===================== 05 ===================== -->
+<section id="s5">
+<span class="kicker"><span class="no">05</span>第三屏</span>
+<h2>我们为什么做它 <span class="st fixed">已定·待做</span></h2>
+<p>沿用已做好的结尾，去掉一处重复，补一版：</p>
+<ul class="dots">
+  <li><b>留：</b>「一开始，我们只是想做一个让自己团队用得更顺的工具。」→ 三句原句（讲协作的那句跟着新口径改）→「事情都顺了，那人做什么？」→ <b>一天的时间条动画</b>（杂事变薄，空出来的时间留给更难的问题、新东西和生活）→ 愿景一行、文章与关于 → 结尾一句和按钮。</li>
+  <li><b>去：</b>时间条下面那三张卡「去够更难的问题 / 去创造 / 留给生活」。时间条动画演完时已经写着空出来的时间用来做什么，三张卡把同样的话又说了一遍。</li>
+  <li><b>补：</b>时间条现在只有写代码、写文档两版，补一版管事情的：杂事是「整理纪要、追谁欠什么、翻聊天找范围、贴背景给 AI」，空出来的是「想清楚下一步、见该见的人、早点下班」。</li>
+</ul>
+</section>
+
+<!-- ===================== 06 ===================== -->
+<section id="s6">
+<span class="kicker"><span class="no">06</span>下载页与口径</span>
+<h2>和精简版一样，不重复展开</h2>
+<ul class="dots">
+  <li><b>下载页</b>：「开源（MIT）」改许可说法；「正在做公开发布前的检查」改「新版安装包还在准备。能下载的时候，会放在这里。」；「开源仓库」改「源码仓库」；协作那问换新句；加两问「它和聊天 AI、在线文档有什么不同」「旧版的数据能带过来吗」。</li>
+  <li><b>要先改的口径</b>：许可（全站的「开源」，Work 的 main 从 10-17 起不是 MIT）、协作那句、下载页那句、「决定请求」不叫「决定中心」、插件数写「二十多个」。详细见精简版第 11 节。</li>
+</ul>
+</section>
+
+<!-- ===================== 07 ===================== -->
+<section id="s7">
+<span class="kicker"><span class="no">07</span>决定</span>
+<h2>都定了（10-18）</h2>
+<h4>已定（10-18）</h4>
+<ul class="dots">
+  <li>三条路代替两种读者；路名做职业版和卡点版两种，测完再定。</li>
+  <li>内容和 case 尽量放进演示动画里，不靠多开屏。</li>
+  <li>跨插件流程动画和协作全演完整保留，不缩成小卡。</li>
+  <li>Work 页文案可以直接用产品运营文档的说法；只限 Work 页，AGENTS.md 不改。</li>
+  <li>下载页那句改成「新版安装包还在准备……」；一律说「决定请求」；插件数写「二十多个」。</li>
+</ul>
+<h4>10-18 你回「九件都按建议定」</h4>
+<ol class="ask">
+  <li><div><b>首屏就是舞台，一共三屏</b>；还是首屏只放三句反转、舞台挪到第二屏，一共四屏。<p class="rec">合在首屏。访客不用往下滚就能看到自己那条路，三句反转也不会和舞台第一段重复。</p></div></li>
+  <li><div><b>每条路八段的选法和顺序</b>（第 03 节三张表），包括管事情那条用 K8「谁在等谁」打头（痛点还没访谈验证）。<p class="rec">照表；K8 站不住就和第 2 段「说好的范围」换位置。</p></div></li>
+  <li><div><b>管事情那条的流程动画改编成「客户变更走同一套处理」</b>，还是直接用写文档版。<p class="rec">改编。多做一版，但贴近这条路的人。</p></div></li>
+  <li><div><b>「为什么」不再单独成屏</b>：对照放进每段开头那行「原来：……」，第二屏只留三句「不」。之前定的形式 B（选一项、看三栏对照）就不做了。<p class="rec">这样做。三栏对照是要读的，「原来」一行是边看边懂的。</p></div></li>
+  <li><div><b>结尾去掉三张卡、补管事情版的时间条</b>（第 05 节）。<p class="rec">这样做。</p></div></li>
+  <li><div><b>解释句换成</b>「装在你电脑上的 AI 工作台：你和你用的每一个 AI，对着同一份目标、资料和成果干活。」<p class="rec">换。</p></div></li>
+  <li><div><b>状态标签两档还是三档</b>：管事情第 8 段「早上打开」只有需求书，按 10-17 的两档要标「开发中」，按产品运营 10-18 的三档标「规划中」。<p class="rec">三档；团队协作按你的例外标「开发中」。</p></div></li>
+  <li><div><b>许可怎么说</b>（影响全站）。<p class="rec">阶段「开发中」，按钮「查看源码」，许可一行「源码公开 · 许可以仓库 LICENSE 为准」。</p></div></li>
+  <li><div><b>主按钮</b>：「有了告诉我」，还是「报名首批试用」；以及「第一个十分钟」「暂时不适合」放不放。<p class="rec">用「报名首批试用」（10-18 你说要招）；「第一个十分钟」「暂时不适合」两块都放，第一个十分钟标「新版开发中 · 示意」。</p></div></li>
+</ol>
+<p class="small" style="margin-top:14px"><b>还开着的旧事：</b>协作新句；Work 仓库 README 引导下载不存在的 DMG，要不要转告 Work 那边；0.3.0 公开时统一改状态、下载页换成真下载。</p>
+</section>
+
+<!-- ===================== 08 ===================== -->
+<section id="s8">
+<span class="kicker"><span class="no">08</span>做起来和怎么验</span>
+<h2>做起来</h2>
+<ul class="dots">
+  <li>舞台用现成的 <code>Reel</code>（首页那个按时间推进、点细线看哪段的舞台），每段是一个演示画面；窗口外壳做一个共用的，八段只换主区和右栏里的内容。已做好的首屏 C 就是写代码第 1 段的前半，直接接着用。</li>
+  <li>三条路一共 24 段，其中插件创作台、流程、协作三类各有三版，外壳和动作共用，只换内容。</li>
+  <li>手机、减少动态、没有 JS 的样子按第 02 节；每段第一次讲到的界面标签用演示画面现有的 <code>at()</code> 分步做。</li>
+</ul>
+<h2 style="margin-top:34px">怎么验</h2>
+<p>三条路各找 2 个人，不讲解，只看他们自己看：</p>
+<ul class="dots">
+  <li><b>30 秒时</b>问：这是什么？给谁用？</li>
+  <li><b>记</b>他们在舞台上看了几段、有没有点章节线跳着看、在哪一段往下滚走了。前两段就走的人多，就把那两段剪短。</li>
+  <li><b>看完整页</b>问：哪一段最像你平时的事？会留联系方式吗？</li>
+  <li><b>路名两版</b>照旧分组比：选路用了几秒、有没有犹豫、看完第一段觉不觉得在说自己。</li>
+</ul>
+<p class="small">找人、发问卷、联系外部的人，都要你先点头。</p>
+</section>
+
+<section>
+<span class="kicker">依据</span>
+<ul class="dots small">
+  <li>molis-work <code>docs/product-operations</code>（<code>docs/product-operations-review</code> 分支 501cf1f）：killer 场景 K1–K8 与 S1–S3 的演示镜头、角色与使用链路（SALES-01、PM-01、FREE-02、PMO-05 等）、产品介绍。</li>
+  <li>本仓库 <code>specs/work-product-page/round2/Work页设计方案.md</code> 4.1–4.3 节（第一组场景、流程动画六个镜头、协作全演两版）；产品进展复核与官网内容审查（10-17）。</li>
+  <li>同目录的第四版完整版、精简版。</li>
+</ul>
+</section>
+
+</main>
+<script>
+(() => {
+  const buttons = document.querySelectorAll('.switch button');
+  buttons.forEach((b) => b.addEventListener('click', () => {
+    document.body.dataset.r = b.dataset.set;
+    buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+})();
+</script>
+</body>
+</html>
