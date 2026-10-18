@@ -299,6 +299,42 @@
       ]
     ]
   },
+  "ginevra-whole": {
+    "width": 2453,
+    "height": 2600,
+    "avg": "#554b3b",
+    "src": "/site/ginevra-whole-2000.webp",
+    "srcset": [
+      [
+        "/site/ginevra-whole-2000.webp",
+        2000
+      ]
+    ]
+  },
+  "ginevra-near": {
+    "width": 2100,
+    "height": 2100,
+    "avg": "#6a6352",
+    "src": "/site/ginevra-near-1800.webp",
+    "srcset": [
+      [
+        "/site/ginevra-near-1800.webp",
+        1800
+      ]
+    ]
+  },
+  "ginevra-edge": {
+    "width": 1600,
+    "height": 1600,
+    "avg": "#696654",
+    "src": "/site/ginevra-edge-1600.webp",
+    "srcset": [
+      [
+        "/site/ginevra-edge-1600.webp",
+        1600
+      ]
+    ]
+  },
   "ex-painter-water": {
     "width": 2400,
     "height": 1600,

@@ -2,7 +2,7 @@
    「关于」一整页：读起来是一篇故事（C1）。
    全站的纸色，不换墙；章与章之间只有留白，不画线、不加眉题与编号。
    正文是居中的一栏（约 34 个汉字一行），左对齐；配图是段落之间的插页，比正文宽；
-   三种媒介与六条信念两件「作品」更宽。八个人的名牌在 plate.css，三种媒介沿用 about.css。
+   六条信念更宽。《黑客与画家》在 painters.css，八个人的名牌在 plate.css。
    ===================================================================== */
 
 .ao {
@@ -220,130 +220,6 @@
   transform: translateX(3px);
 }
 
-/* ---------- 三种媒介：底稿 1.3 那一句就是控件 ----------
-   句子居中、大一点；冒号后的三个短句是按钮：没轮到的退成灰，轮到的那句是杏色，
-   底下一道杏色细线（自己演时按停留时间从左画到右）。 */
-.ao-makers {
-  margin-top: 0;
-}
-.ab-say-wrap {
-  display: grid;
-  justify-items: center;
-  gap: 16px;
-  margin: 0 auto clamp(36px, 6.4vh, 64px);
-  text-align: center;
-}
-.ab-say {
-  max-width: 23em;
-  font: 300 clamp(21px, 2vw, 30px) / 1.75 var(--sans);
-  letter-spacing: 0.04em;
-  font-feature-settings: 'palt' 1;
-  color: var(--ink);
-  text-wrap: balance;
-}
-.ab-say-step {
-  position: relative;
-  display: inline-block;
-  margin: 0;
-  padding: 0 0 2px;
-  border: 0;
-  background: none;
-  font: inherit;
-  letter-spacing: inherit;
-  color: var(--mute);
-  cursor: pointer;
-  transition: color 0.45s var(--ease);
-}
-.ab-say-step:hover {
-  color: var(--ink);
-}
-.ab-say-step[aria-pressed='true'] {
-  color: var(--accent-ink);
-}
-.ab-say-step:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 4px;
-  border-radius: var(--r-label);
-}
-.ab-say-step .ab-step-line {
-  position: absolute;
-  inset: auto 0 0;
-  height: 1px;
-  overflow: hidden;
-}
-.ab-say-step .ab-step-line::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.5s var(--ease);
-}
-.ab-say-step[aria-pressed='true'] .ab-step-line::after {
-  transform: scaleX(1);
-}
-.ab-trio[data-playing] .ab-say-step[aria-pressed='true'] .ab-step-line::after {
-  transition: none;
-  animation: ab-fill var(--hold, 0ms) linear both;
-}
-/* 没有 JS：点不了，三句都是正文的颜色 */
-html:not(.js) .ab-say-step {
-  color: inherit;
-  cursor: default;
-}
-html:not(.js) .ab-say-step .ab-step-line {
-  display: none;
-}
-
-/* ---------- 三种媒介：框由内容撑高，三栏同一行高，不在框里滚动 ---------- */
-.ao .ab-trio {
-  width: min(100%, var(--ao-wide));
-  margin-inline: auto;
-}
-.ab-trio[data-flow] .ab-panel-in {
-  gap: 14px;
-  padding: clamp(16px, 1.6vw, 22px);
-}
-.ab-trio[data-flow] .ab-pre {
-  line-height: 1.7;
-}
-.ab-trio[data-flow] .ab-col {
-  grid-template-rows: auto minmax(0, 1fr);
-}
-.ab-trio[data-flow] .ab-col > .m-window {
-  grid-template-rows: minmax(0, 1fr) auto;
-}
-/* 作画那栏的图注旁有暂停键：三栏图注同高，框才一样高 */
-.ab-trio[data-flow] .ab-col figcaption {
-  min-height: 28px;
-}
-.ab-trio[data-flow] .m-window-frame {
-  aspect-ratio: auto;
-  max-height: none;
-  min-height: clamp(300px, 40svh, 420px);
-}
-.ab-trio[data-flow] .ab-panel-in {
-  position: relative;
-  inset: auto;
-  height: 100%;
-  overflow: visible;
-}
-.ab-stack {
-  display: grid;
-  flex: 1;
-}
-.ab-stack > * {
-  grid-area: 1 / 1;
-}
-.ab-stack > :not([data-on]) {
-  visibility: hidden;
-}
-.ab-words .ab-stack > .ab-sentence {
-  margin-block: 0;
-  align-self: center;
-}
-
 /* ---------- 六条信念：左边一扇窗钉住，右边六条顺着滚动走 ---------- */
 .ao-bg {
   display: grid;
@@ -489,33 +365,10 @@ html:not(.js) .ab-say-step .ab-step-line {
   .ao-essays {
     grid-template-columns: minmax(0, 1fr);
   }
-  .ab-trio[data-flow] .ab-paint .m-window-frame {
-    aspect-ratio: 4 / 4.2;
-    min-height: 0;
-  }
-  .ab-trio[data-flow] .ab-panel .m-window-frame {
-    min-height: 0;
-  }
-  /* 手机上三扇窗上下排：那句话贴在顶栏下面，滚到哪扇窗都看得到在第几步 */
-  .ab-say-wrap {
-    position: sticky;
-    top: var(--header);
-    z-index: 3;
-    gap: 8px;
-    margin-inline: calc(var(--gutter) * -1);
-    padding: 10px var(--gutter) 12px;
-    background: var(--paper);
-  }
-  .ab-say {
-    font-size: 17px;
-    line-height: 1.7;
-  }
 }
 
 /* ---------- 减少动态：换图不淡入淡出 ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .ab-say-step,
-  .ab-say-step .ab-step-line::after,
   .js .ao-bg-still,
   .js .ao-bg-words,
   .ao-go,

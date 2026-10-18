@@ -6,7 +6,7 @@ import { members, team, teamUi } from '../../../content/site/team';
 import { alongGroups } from '../../../content/site/along';
 import { essays, splitTitle } from '../../../content/site/essays';
 import { nav } from '../../../content/site/nav';
-import { aboutUi, trio } from '../../../content/site/about';
+import { aboutUi } from '../../../content/site/about';
 import {
   ALONG,
   COMMUNITY,
@@ -18,8 +18,8 @@ import {
 import { Btn, More, Note, Phrases, type Vars } from '../../_site/ui';
 import { Work } from '../../_site/exhibit/exhibit';
 import { BeliefGallery } from './belief-gallery';
+import { Painters } from './painters';
 import { Plate } from './plate';
-import { Trio } from './trio';
 import './one.css';
 
 // 「关于」一整页（清单 C1；负责人 2026-10-18 定方向、看过样张后切成默认）。顶栏「关于」直接到这里，不再有下拉；
@@ -27,13 +27,13 @@ import './one.css';
 //
 // 读起来是一篇故事（负责人 2026-10-18：「像读故事一样来读我们的故事」「成员放在最后，不想班味很重」「先讲愿景，可以先讲黑客与画家」）。
 // 骨架是底稿第 2 章「我们的故事」，按负责人的顺序重排，第 1 章的愿景、做法与信念织在中间：
-//   序 技术，回到人的尺度。→ 三种媒介，同一个动作（黑客与画家）→ 当想法更容易变成现实（2.2，去文章）→
+//   序 技术，回到人的尺度。→ 《黑客与画家》（画家与黑客一起推近）→ 当想法更容易变成现实（2.2，去文章）→
 //   我们相信什么（1.4）→ 从怎样工作，走向怎样生活（2.3，产品名在句子里链过去）→
 //   从这些探索，看向更远的构想（2.4，World）→ 从同事，到共同创造的伙伴（2.1，去沿途；最后是八个人）→
 //   尾声 找同类，不抢货架。
-// 章节标题都是底稿的小标题，不加眉题与编号；「三种媒介」那一章由底稿 1.3 那句话本身开头，标题只给读屏；
+// 章节标题都是底稿的小标题，不加眉题与编号；《黑客与画家》一章是例外：标题是书名，字是新写的（见 painters.tsx）；
 // 正文是居中的一栏、左对齐，段落完整不拆；配图是段落之间的插页；只有一句的短段当作节拍，字大一点。
-// 正文全部是底稿原句，从 studio.ts、team.ts、along.ts、essays.ts 读（一字不差），每段只出现一次：
+// 其余正文全部是底稿原句，从 studio.ts、team.ts、along.ts、essays.ts 读（一字不差），每段只出现一次：
 // 「找同类，不抢货架。」在尾声回扣一次标题，它的正文只在信念里。
 // 去处按全站链接规则（E3）：正文里的书名与产品名是行内链接；有标题和说明的卡片只留箭头；独立入口用 More。
 
@@ -185,12 +185,14 @@ export function AboutOne() {
         />
       </header>
 
-      {/* 黑客与画家：底稿 1.3 那一句就是控件，三个短句推动下面三扇窗（负责人 2026-10-18 定的句子） */}
-      <Chapter id="makers" title={trio.title} quiet>
-        <div className="ao-wide ao-makers">
-          <Trio flow lead={studio.standard.makers} />
-        </div>
-      </Chapter>
+      {/* 《黑客与画家》：画家与黑客左右一对，往下滚一起推近（负责人 2026-10-18 定，替掉三栏演示） */}
+      <section
+        className="ao-ch m-wrap"
+        id="makers"
+        aria-labelledby="makers-title"
+      >
+        <Painters />
+      </section>
 
       {/* 2.2 当想法更容易变成现实：光照进来，去文章 */}
       <Chapter id="change" title={story.change.title}>

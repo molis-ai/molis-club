@@ -1,6 +1,7 @@
 // 新站的 HTTP 检查（本地服务运行时：npm run test:http）。
 // 覆盖 specs/site-rebuild/spec.md 第 3 节的全部页面、旧地址重定向、私有收录边界、诚实标注与 404。
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 const origin = process.env.TEST_ORIGIN || 'http://localhost:3000';
 const canonicalOrigin = 'https://molis-club.yijunw0212.chatgpt.site';
@@ -58,11 +59,15 @@ for (const path of pages) {
     );
   for (const href of ['/work', '/tool', '/life', '/story', '/world'])
     assert(page.includes(`href="${href}"`), `${path}: product link ${href}`);
-  // 「关于」是一整页：顶栏不下拉，不再链到退役的「认识我们」，也没有展厅名牌与「下一个展厅」
-  assert(!page.includes('m-drop-about'), `${path}: no about dropdown`);
-  assert(!page.includes('href="/team'), `${path}: no link to /team`);
+  // 「关于」是一整页：顶栏不下拉，不再链到退役的「认识我们」，也没有展厅名牌与「下一个展厅」。
+  // 「关于」的《黑客与画家》把整张样式表当画面摆出来（里面有各种类名），查结构时先拿掉它和脚本
+  const markup = page
+    .replace(/<div class="hp-sheet"[\s\S]*?<p class="sr-only">/, '')
+    .replace(/<script[\s\S]*?<\/script>/g, '');
+  assert(!markup.includes('m-drop-about'), `${path}: no about dropdown`);
+  assert(!markup.includes('href="/team'), `${path}: no link to /team`);
   assert(
-    !exhibit.test(page),
+    !exhibit.test(markup),
     `${path}: no exhibit plate, plan, wall or next room`,
   );
   // 页尾：本页最近修改
@@ -215,7 +220,9 @@ for (const [path, text] of [
   assert((await html('/about?study=one')).includes('m-review-bar'));
   const one = await html('/about');
   assert(!one.includes('m-review-bar'), '/about: no review bar by default');
+  // 《黑客与画家》右边是整张样式表（字很小，当作画面）；读正文时先拿掉它
   const text = one
+    .replace(/<div class="hp-sheet"[\s\S]*?<p class="sr-only">/, '')
     .replace(/<script[\s\S]*?<\/script>/g, '')
     .replace(/<style[\s\S]*?<\/style>/g, '')
     .replace(/<[^>]+>/g, '');
@@ -230,9 +237,11 @@ for (const [path, text] of [
   let at = 0;
   for (const line of [
     '技术，回到人的尺度。',
-    '三种媒介，同一个动作。',
-    // 底稿 1.3 那句（负责人 2026-10-18 收短），整句连着读得出来，三个短句是推动三扇窗的按钮
-    '像《黑客与画家》里那样，写代码、做设计、讲故事，都是同一种创造：先起稿，再一遍遍修改，直到经得起真实使用。',
+    // 《黑客与画家》（负责人 2026-10-18 定，替掉三栏演示）：画家与黑客一起推近
+    '《黑客与画家》',
+    '达·芬奇《吉内薇拉·德·班琪》',
+    '1991 年修复时，人们在杜松和天空交界的地方，发现了达·芬奇的指纹。',
+    '没人细看的地方，也一样认真。',
     '当想法更容易变成现实',
     '我们相信什么',
     '有自己的判断，也有把它做成的本事。',
@@ -278,6 +287,38 @@ for (const [path, text] of [
     assert(one.includes(`href="${href}"`), `about one: link ${href}`);
   // 不再是展厅：没有名牌、平面图、墙色与「下一个展厅」
   assert(!text.includes('展厅'), 'about one: no room names');
+  // 《黑客与画家》：右边是本站真实的样式表，行号跟着文件走；推近的终点是缓动曲线和它的注释
+  // （落款的日期与提交说明写在 content/site/about.ts，改了这两行要同步那里）
+  {
+    const css = readFileSync(
+      new URL('../app/_site/site.css', import.meta.url),
+      'utf8',
+    )
+      .replace(/\n$/, '')
+      .split('\n');
+    const ease = css.findIndex((line) => /^\s*--ease:/.test(line));
+    assert.equal(
+      css[ease - 1].trim(),
+      '/* ---------- 动效：全站一条缓动曲线（开头快、收尾慢，像物体落定） ---------- */',
+      'site.css: the ease comment the about page zooms into',
+    );
+    assert.equal(css[ease].trim(), '--ease: cubic-bezier(0.2, 0.7, 0.1, 1);');
+    assert(
+      text.includes(`第 ${ease}–${ease + 1} 行`),
+      'about one: the zoomed lines are numbered as in site.css',
+    );
+    assert(
+      text.includes(`Molis AI 网站的样式表，${css.length} 行`),
+      'about one: the whole stylesheet is shown',
+    );
+    assert(one.includes('class="hp-sheet"'), 'about one: stylesheet sheet');
+    for (const layer of ['whole', 'near', 'edge'])
+      assert(
+        one.includes(`/site/ginevra-${layer}-`),
+        `about one: painting layer ${layer}`,
+      );
+    assert(one.includes('data-scene'), 'about one: the pair follows scroll');
+  }
   // 八个人的名牌带锚点（旧地址 /community/yijun 跳到 #yijun）
   for (const id of ['people', 'yijun', 'jinqu'])
     assert(one.includes(`id="${id}"`), `about one: anchor #${id}`);
