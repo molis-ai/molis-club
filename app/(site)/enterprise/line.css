@@ -1,7 +1,8 @@
 /* =====================================================================
-   样张（D1，?study=line）：合作路线一站一页（stages.tsx）
-   每页：这一站是什么 → 你们 / 我们 / 一起做什么（左右两条道，一起做的横跨）→ 留下什么。
-   不加框线、连接线与编号，用白纸、留白和一点影子分组；颜色、字号只读 site.css 的令牌。
+   样张（D1，?study=line）：合作路线一站一页（stages.tsx），像展厅里一间一间看过去
+   每页：左边一面墙（四站四种墙色，同「关于」的展厅），正中挂着这一站留下的东西，墙角是展签；
+   右边是站名、适合谁，和一张分工表（业务团队 / Molis / 一起）。
+   不加框线、连接线与编号，用墙色、留白和一点影子分组；颜色、字号只读 site.css 的令牌。
    ===================================================================== */
 
 /* 我们和你们一起做什么：开场第三段原句比原来那句长，左栏放宽一点，短语接着排，不再一组一行 */
@@ -36,24 +37,34 @@
   display: none;
 }
 
-/* 一页：左边站名与双方的事，右边留下的东西 */
+/* 一页：左边墙，右边站名与分工表，文字在墙旁上下居中 */
 .m-ent-stage {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr);
   column-gap: var(--col-gap);
-  row-gap: clamp(22px, 4vh, 40px);
-  align-content: center;
 }
 .m-ent-stage-head {
-  grid-column: 1 / span 7;
+  grid-column: 8 / -1;
+  grid-row: 2;
   display: grid;
   justify-items: start;
-  gap: 10px;
+  gap: 12px;
 }
+.m-ent-roles {
+  grid-column: 8 / -1;
+  grid-row: 3;
+}
+.m-ent-wall {
+  grid-column: 1 / span 6;
+  grid-row: 1 / -1;
+}
+
 .m-ent-stage-where {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-height: 24px;
   color: var(--ink-2);
   font: 500 var(--t-label) / 1.4 var(--sans);
   letter-spacing: 0.16em;
@@ -62,159 +73,120 @@
   font: 300 var(--t-h2) / 1.3 var(--sans);
   letter-spacing: 0.03em;
 }
-/* 从这一站开始的那几个问题：选过的那个亮起来 */
-.m-ent-stage-asks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 4px 0 0;
-  padding: 0;
-  list-style: none;
-}
-.m-ent-stage-asks li {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 2px 11px 2px 9px;
-  border-radius: var(--r-pill);
-  box-shadow: inset 0 0 0 1px var(--hair-2);
+.m-ent-stage-fit {
+  max-width: 26em;
   color: var(--ink-2);
-  font-size: var(--t-small);
-  line-height: 1.7;
+  font-size: var(--t-body);
+  line-height: 1.85;
   letter-spacing: 0.03em;
-  transition:
-    background-color 0.5s var(--ease),
-    box-shadow 0.5s var(--ease),
-    color 0.5s var(--ease);
-}
-.m-ent-stage-asks li::before {
-  content: '';
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px var(--mute);
-}
-.m-ent-stage-asks li[data-on] {
-  background: var(--accent-wash);
-  box-shadow: inset 0 0 0 1px var(--accent);
-  color: var(--ink);
-}
-.m-ent-stage-asks li[data-on]::before {
-  background: var(--accent);
-  box-shadow: none;
 }
 
-/* 双方的事：你们在左道，我们在右道，一起做的横跨两道；行序就是先后 */
-.m-ent-acts {
-  grid-column: 1 / span 7;
-  grid-row: 2;
+/* 分工表：左边角色名，右边这一站它做的事；同一个角色的几件事上下排 */
+.m-ent-roles {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  align-content: start;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  gap: clamp(18px, 3vh, 28px);
+  margin: clamp(28px, 5vh, 52px) 0 0;
 }
-.m-ent-act {
-  grid-row: var(--row);
+.m-ent-roles > div {
   display: grid;
-  align-content: start;
-  gap: 8px;
-  padding: clamp(14px, 2.2vh, 20px) clamp(16px, 1.4vw, 22px)
-    clamp(16px, 2.4vh, 22px);
-  border-radius: 14px;
-  background: var(--white);
-  box-shadow: 0 18px 36px -28px rgb(var(--shade) / 0.5);
+  grid-template-columns: 5.5em minmax(0, 1fr);
+  column-gap: 20px;
+  row-gap: 10px;
+  align-items: baseline;
 }
-.m-ent-act[data-who='you'] {
+.m-ent-roles dt {
   grid-column: 1;
+  color: var(--mute);
+  font: 500 var(--t-small) / 1.6 var(--sans);
+  letter-spacing: 0.12em;
 }
-.m-ent-act[data-who='we'] {
-  grid-column: 2;
-}
-.m-ent-act[data-who='both'] {
-  grid-column: 1 / -1;
-}
-.m-ent-act-text {
-  color: var(--ink);
-  font: 400 clamp(15.5px, 1.15vw, 17px) / 1.65 var(--sans);
+.m-ent-roles [data-who='we'] dt {
+  color: var(--accent-ink);
+  font: 400 15px / 1.45 var(--latin);
   letter-spacing: 0.02em;
 }
-.m-ent-act-detail {
+.m-ent-roles dd {
+  grid-column: 2;
+  margin: 0;
+  color: var(--ink);
+  font: 400 clamp(15.5px, 1.15vw, 17px) / 1.7 var(--sans);
+  letter-spacing: 0.02em;
+}
+.m-ent-roles-detail {
+  display: block;
+  margin-top: 2px;
   color: var(--mute);
   font-size: var(--t-small);
   line-height: 1.75;
   letter-spacing: 0.03em;
 }
 
-/* 谁来做：墨点是你们，杏点是我们，一半一半是一起 */
-.m-ent-who {
-  display: inline-flex;
-  align-items: center;
-  justify-self: start;
-  gap: 8px;
-  color: var(--ink-2);
+/* 墙：这一站的墙色，留下的东西挂在正中，墙角是展签 */
+.m-ent-wall {
+  --wall: var(--paper-2);
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: clamp(420px, 68vh, 640px);
+  margin: 0;
+  padding: clamp(24px, 4vh, 44px) clamp(24px, 3vw, 44px);
+  border-radius: 24px;
+  background: var(--wall);
+  transition: background-color 0.8s var(--ease);
+}
+.m-ent-stage[data-wall='diagnose'] .m-ent-wall {
+  --wall: var(--wall-people);
+}
+.m-ent-stage[data-wall='build'] .m-ent-wall {
+  --wall: var(--wall-light-2);
+}
+.m-ent-stage[data-wall='assess'] .m-ent-wall {
+  --wall: var(--wall-read);
+}
+.m-ent-stage[data-wall='train'] .m-ent-wall {
+  --wall: var(--wall-road);
+}
+.m-ent-wall-art {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+}
+.m-ent-wall-art .m-keep-art {
+  width: min(100%, 560px);
+  height: auto;
+  max-height: 100%;
+  aspect-ratio: 240 / 170;
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+}
+.m-ent-wall .m-k-shade {
+  flood-opacity: 0.16;
+}
+/* 展签：留下 · 名字 · 拿去做什么 */
+.m-ent-wall-label {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  max-width: 30em;
+}
+.m-ent-wall-kicker {
+  color: var(--accent-ink);
   font: 500 var(--t-label) / 1.4 var(--sans);
   letter-spacing: 0.16em;
 }
-.m-ent-who::before {
-  content: '';
-  flex: none;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--ink);
-}
-.m-ent-who[data-who='we']::before {
-  background: var(--accent);
-}
-.m-ent-who[data-who='both']::before {
-  background: linear-gradient(90deg, var(--ink) 50%, var(--accent) 50%);
-}
-.m-ent-who[data-who='leave'] {
-  color: var(--accent-ink);
-}
-.m-ent-who[data-who='leave']::before {
-  background: var(--paper);
-  box-shadow: inset 0 0 0 1.5px var(--accent);
-}
-
-/* 留下的东西：一张会动的成果卡（keeps.tsx），下面是它的名字和拿去做什么 */
-.m-ent-leave {
-  grid-column: 9 / -1;
-  grid-row: 1 / span 2;
-  align-self: center;
-  display: grid;
-  gap: 18px;
-  margin: 0;
-}
-.m-ent-leave-card {
-  padding: 12px;
-  border-radius: 18px;
-  background: var(--white);
-  box-shadow: 0 26px 48px -34px rgb(var(--shade) / 0.6);
-}
-.m-ent-leave-card .m-keep-art {
-  height: clamp(160px, 30vh, 280px);
-}
-.m-ent-leave-text {
-  display: grid;
-  justify-items: start;
-  gap: 8px;
-}
-.m-ent-leave-name {
+.m-ent-wall-name {
   font: 400 var(--t-h3) / 1.45 var(--sans);
   letter-spacing: 0.03em;
 }
-.m-ent-leave-after {
+.m-ent-wall-after {
   color: var(--ink-2);
   font-size: var(--t-small);
   line-height: 1.85;
   letter-spacing: 0.03em;
 }
-.m-ent-leave .m-ent-forms {
-  margin-top: 0;
+.m-ent-wall .m-ent-forms {
+  margin-top: 4px;
 }
 
 /* 怎么继续：5.2 开头一句，和聊聊 */
@@ -245,36 +217,47 @@
   top: 0;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
+  gap: 12px;
   height: 100vh;
   height: 100svh;
-  padding-top: calc(var(--header) + clamp(12px, 4vh, 40px));
-  padding-bottom: clamp(16px, 3vh, 32px);
+  padding-top: calc(var(--header) + clamp(16px, 3vh, 32px));
+  padding-bottom: clamp(12px, 2.4vh, 24px);
 }
 .m-ent-line[data-live] .m-ent-stages {
   display: grid;
   grid-template-areas: 'one';
-  align-items: center;
   min-height: 0;
   padding: 0;
 }
 .m-ent-line[data-live] .m-ent-stage {
   grid-area: one;
+  min-height: 0;
   opacity: 0;
-  translate: 0 16px;
   visibility: hidden;
   transition:
-    opacity 0.5s var(--ease),
-    translate 0.7s var(--ease),
-    visibility 0s linear 0.5s;
+    opacity 0.6s var(--ease),
+    visibility 0s linear 0.6s;
 }
 .m-ent-line[data-live] .m-ent-stage[data-shown] {
   opacity: 1;
-  translate: 0 0;
   visibility: visible;
   transition:
-    opacity 0.8s var(--ease) 0.1s,
-    translate 1s var(--ease) 0.1s,
+    opacity 0.8s var(--ease),
     visibility 0s;
+}
+/* 换站时墙只换颜色，右边的字轻轻浮上来 */
+.m-ent-line[data-live] .m-ent-stage-head,
+.m-ent-line[data-live] .m-ent-roles {
+  translate: 0 14px;
+  transition: translate 0.8s var(--ease);
+}
+.m-ent-line[data-live] .m-ent-stage[data-shown] .m-ent-stage-head,
+.m-ent-line[data-live] .m-ent-stage[data-shown] .m-ent-roles {
+  translate: 0 0;
+  transition: translate 1s var(--ease) 0.1s;
+}
+.m-ent-line[data-live] .m-ent-wall {
+  min-height: 0;
 }
 .m-ent-line[data-live] .m-ent-line-dots {
   display: flex;
@@ -330,26 +313,59 @@
 }
 
 /* ---------- 窄屏 ---------- */
-@media (max-width: 900px) {
-  .m-ent-stage-head,
-  .m-ent-acts,
-  .m-ent-leave {
-    grid-column: 1 / -1;
-    grid-row: auto;
+@media (max-width: 1180px) {
+  .m-ent-wall {
+    grid-column: 1 / span 6;
   }
-  .m-ent-leave {
-    max-width: 520px;
+  .m-ent-stage-head,
+  .m-ent-roles {
+    grid-column: 7 / -1;
+  }
+  .m-ent-roles > div {
+    grid-template-columns: 4.8em minmax(0, 1fr);
+    column-gap: 14px;
+  }
+}
+@media (max-width: 900px) {
+  /* 站名在上，墙在中间，分工表在下 */
+  .m-ent-stage {
+    grid-template-rows: none;
+    row-gap: 24px;
+  }
+  .m-ent-stage-head,
+  .m-ent-roles,
+  .m-ent-wall {
+    grid-column: 1 / -1;
+  }
+  .m-ent-stage-head {
+    grid-row: 1;
+  }
+  .m-ent-wall {
+    grid-row: 2;
+    min-height: 0;
+    gap: 16px;
+  }
+  .m-ent-wall-art .m-keep-art {
+    width: min(100%, 420px);
+  }
+  .m-ent-roles {
+    grid-row: 3;
+    margin-top: 8px;
   }
 }
 @media (max-width: 700px) {
-  /* 手机：两条道并成一列，谁来做看每张卡上的点 */
-  .m-ent-acts {
-    grid-template-columns: minmax(0, 1fr);
+  .m-ent-wall {
+    border-radius: 18px;
   }
-  .m-ent-act,
-  .m-ent-act[data-who] {
+  .m-ent-roles > div {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 4px;
+  }
+  .m-ent-roles dd {
     grid-column: 1;
-    grid-row: auto;
+  }
+  .m-ent-roles dd + dd {
+    margin-top: 6px;
   }
   .m-ent-onward {
     justify-items: start;
@@ -371,7 +387,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .m-ent-stage,
-  .m-ent-stage-asks li {
+  .m-ent-stage-head,
+  .m-ent-roles,
+  .m-ent-wall {
     transition: none !important;
   }
 }

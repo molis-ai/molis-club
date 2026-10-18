@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   enterprise,
   type Act,
@@ -8,41 +8,42 @@ import {
 import { Keep, play } from './keeps';
 import { usePick } from './pick';
 
-// 样张（D1）：合作路线改成一站一页，像翻一页 PPT。每页三样东西，排成一条线：
-// 这一站是什么（开始前 · 场景诊断与试点规划，下面是从这里开始的那几个问题）→
-// 你们做什么、我们做什么、一起做什么（左右两条道，一起做的横跨两道）→ 留下什么、拿去做什么（右边一张会动的成果卡）。
+// 样张（D1）：合作路线改成一站一页，像展厅里一间一间看过去。每页左边一面墙（四站四种墙色，同「关于」的展厅），
+// 墙上挂着这一站留下的东西——一小段「做出来」的动画（keeps.tsx），墙角是它的展签：留下什么、拿去做什么；
+// 右边是这一站的名字、适合谁（5.2 原句），和一张分工表：业务团队做什么、Molis 做什么、一起做什么。
 // 事与成果都是 5.2 / 5.3 的原句片段（content/site/enterprise.ts 的 line）。
 //
 // 宽屏（≥1000 宽、≥720 高）且不减少动态时，这一页钉在视口里，往下滚换下一站，像画廊在同一个位置换一幅（常驻约束「同类内容同一种看法」）；
 // 底下四个点是走到第几站，点一下跳过去。其余情况（手机、矮屏、减少动态、没有 JS）四站竖着排开。
-// 在「你们卡在哪」选过问题的，对应那站标「建议起点」「接着」，那个问题在站名下亮起来；「看看这条路怎么走」跳到建议起点那一站。
+// 在「你们卡在哪」选过问题的，对应那站标「建议起点」「接着」；「看看这条路怎么走」跳到建议起点那一站。
 
-const { path, hook, line, questions } = enterprise;
+const { path, hook, line } = enterprise;
 const stationIds = Object.keys(path.stations) as StationId[];
 const count = stationIds.length;
-const lanes = ['you', 'we', 'both'] as const;
+const roles = ['you', 'we', 'both'] as const;
 
-function ActCard({
-  who,
-  act,
-  row,
-}: {
-  who: (typeof lanes)[number];
-  act: Act;
-  row: number;
-}) {
+/** 分工表：同一个角色的事收在一行，顺序固定是业务团队、Molis、一起；没有的角色不写 */
+function Roles({ id }: { id: StationId }) {
+  const rows = roles.flatMap((who) => {
+    const acts = line.rows[id].flatMap((row) => row[who] ?? []);
+    return acts.length ? [{ who, acts }] : [];
+  });
   return (
-    <li
-      className="m-ent-act"
-      data-who={who}
-      style={{ '--row': row + 1 } as CSSProperties}
-    >
-      <span className="m-ent-who" data-who={who}>
-        {line.who[who]}
-      </span>
-      <p className="m-ent-act-text">{act.text}</p>
-      {act.detail ? <p className="m-ent-act-detail">{act.detail}</p> : null}
-    </li>
+    <dl className="m-ent-roles">
+      {rows.map(({ who, acts }) => (
+        <div key={who} data-who={who}>
+          <dt lang={who === 'we' ? 'en' : undefined}>{line.who[who]}</dt>
+          {acts.map((act: Act) => (
+            <dd key={act.text}>
+              {act.text}
+              {act.detail ? (
+                <span className="m-ent-roles-detail">{act.detail}</span>
+              ) : null}
+            </dd>
+          ))}
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -86,7 +87,7 @@ export function Stages() {
         const shown = index === step;
         // 刚翻到的这一页：成果卡从头演一遍
         if (shown && !page.hasAttribute('data-shown'))
-          play(page.querySelector('.m-ent-leave-card'));
+          play(page.querySelector('.m-ent-wall-art'));
         page.toggleAttribute('data-shown', shown);
       });
       dots.forEach((dot, index) => {
@@ -121,7 +122,7 @@ export function Stages() {
       { threshold: 0.4 },
     );
     root
-      .querySelectorAll('.m-ent-leave-card')
+      .querySelectorAll('.m-ent-wall-art')
       .forEach((node) => seen.observe(node));
 
     window.addEventListener('scroll', request, { passive: true });
@@ -164,9 +165,6 @@ export function Stages() {
           {stationIds.map((id, index) => {
             const station = path.stations[id];
             const mark = markOf(id);
-            const asks = questions.items.filter(
-              (item) => path.advice[item.id].start === id,
-            );
             const after = line.after[id];
             return (
               <article
@@ -174,6 +172,7 @@ export function Stages() {
                 id={`station-${id}`}
                 className="m-ent-stage"
                 data-i={index}
+                data-wall={id}
                 data-mark={mark}
                 aria-labelledby={`station-${id}-name`}
               >
@@ -189,51 +188,23 @@ export function Stages() {
                   <h3 className="m-ent-stage-name" id={`station-${id}-name`}>
                     {station.name}
                   </h3>
-                  {asks.length ? (
-                    <ul className="m-ent-stage-asks">
-                      {asks.map((item) => (
-                        <li
-                          key={item.id}
-                          data-on={pick === item.id || undefined}
-                        >
-                          {item.short}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
+                  <p className="m-ent-stage-fit">{line.fit[id]}</p>
                 </header>
 
-                <ul className="m-ent-acts">
-                  {line.rows[id].flatMap((row, at) =>
-                    lanes.flatMap((who) => {
-                      const act = row[who];
-                      return act ? (
-                        <ActCard
-                          key={`${at}-${who}`}
-                          who={who}
-                          act={act}
-                          row={at}
-                        />
-                      ) : (
-                        []
-                      );
-                    }),
-                  )}
-                </ul>
+                <Roles id={id} />
 
-                <figure className="m-ent-leave">
-                  <div className="m-ent-leave-card">
+                {/* 墙：留下的东西挂在正中，墙角是展签 */}
+                <figure className="m-ent-wall">
+                  <div className="m-ent-wall-art">
                     <Keep id={id} />
                   </div>
-                  <figcaption className="m-ent-leave-text">
-                    <span className="m-ent-who" data-who="leave">
-                      {line.leaves}
-                    </span>
-                    <strong className="m-ent-leave-name">
+                  <figcaption className="m-ent-wall-label">
+                    <span className="m-ent-wall-kicker">{line.leaves}</span>
+                    <strong className="m-ent-wall-name">
                       {station.leaves.join('、')}
                     </strong>
                     {after ? (
-                      <span className="m-ent-leave-after">{after}</span>
+                      <span className="m-ent-wall-after">{after}</span>
                     ) : null}
                     {id === 'build' ? (
                       <span className="m-ent-forms">

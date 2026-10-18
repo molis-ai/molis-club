@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-// 企业合作样张（D1）：每站「你们 / 我们 / 一起」做的事和留下的东西，都是 docs/studio-intro.md 第 5 章的原句片段，
+// 企业合作样张（D1）：每站适合谁、「业务团队 / Molis / 一起」做的事和留下的东西，都是 docs/studio-intro.md 第 5 章的原句片段，
 // 一个字都没改；五个问题的建议起点仍落在四站上。
 
 const { enterprise } = await import('../content/site/enterprise.ts');
@@ -27,13 +27,18 @@ void test('样张里每站的事与留下的东西都是第 5 章原句片段', 
     for (const row of line.rows[id]) {
       assert.ok(
         row.both ? !row.you && !row.we : row.you || row.we,
-        `${id}：一行要么一起做，要么分给你们 / 我们`,
+        `${id}：一行要么一起做，要么分给业务团队 / Molis`,
       );
       for (const act of [row.you, row.we, row.both].filter(Boolean)) {
         verbatim(act.text, id);
         if (act.detail) verbatim(act.detail, id);
       }
     }
+    verbatim(line.fit[id], `${id} 适合`);
+    assert.ok(
+      line.fit[id].startsWith('适合'),
+      `${id}：适合谁那句要以「适合」开头`,
+    );
     if (line.after[id]) verbatim(line.after[id], `${id} 留下`);
     for (const leaf of path.stations[id].leaves) verbatim(leaf, `${id} 留下`);
   }
