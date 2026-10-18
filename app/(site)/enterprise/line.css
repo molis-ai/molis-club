@@ -1,0 +1,371 @@
+/* =====================================================================
+   样张（D1，?study=line）：合作路线一站一页（stages.tsx）
+   每页：这一站是什么 → 你们 / 我们 / 一起做什么（左右两条道，一起做的横跨）→ 留下什么。
+   不加框线、连接线与编号，用白纸、留白和一点影子分组；颜色、字号只读 site.css 的令牌。
+   ===================================================================== */
+
+/* 我们和你们一起做什么：开场第三段原句比原来那句长，左栏放宽一点，短语接着排，不再一组一行 */
+@media (min-width: 901px) {
+  .m-ent[data-study='line'] .m-ent-path-head {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  }
+}
+.m-ent[data-study='line'] .m-ent-path-line {
+  max-width: 15em;
+}
+.m-ent[data-study='line'] .m-ent-path-line .m-phrase {
+  display: inline;
+}
+
+.m-ent-line {
+  position: relative;
+}
+.m-ent-line-stick {
+  width: 100%;
+  max-width: calc(var(--wrap) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+/* 竖排（手机、矮屏、减少动态、没有 JS）：四站依次排开 */
+.m-ent-stages {
+  display: grid;
+  gap: clamp(88px, 14vh, 144px);
+  padding-top: clamp(24px, 6vh, 64px);
+}
+.m-ent-line-dots {
+  display: none;
+}
+
+/* 一页：左边站名与双方的事，右边留下的东西 */
+.m-ent-stage {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: clamp(22px, 4vh, 40px);
+  align-content: center;
+}
+.m-ent-stage-head {
+  grid-column: 1 / span 7;
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+.m-ent-stage-where {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink-2);
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+}
+.m-ent-stage-name {
+  font: 300 var(--t-h2) / 1.3 var(--sans);
+  letter-spacing: 0.03em;
+}
+/* 从这一站开始的那几个问题：选过的那个亮起来 */
+.m-ent-stage-asks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.m-ent-stage-asks li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 2px 11px 2px 9px;
+  border-radius: var(--r-pill);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  transition:
+    background-color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease),
+    color 0.5s var(--ease);
+}
+.m-ent-stage-asks li::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--mute);
+}
+.m-ent-stage-asks li[data-on] {
+  background: var(--accent-wash);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--ink);
+}
+.m-ent-stage-asks li[data-on]::before {
+  background: var(--accent);
+  box-shadow: none;
+}
+
+/* 双方的事：你们在左道，我们在右道，一起做的横跨两道；行序就是先后 */
+.m-ent-acts {
+  grid-column: 1 / span 7;
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-content: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.m-ent-act {
+  grid-row: var(--row);
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: clamp(14px, 2.2vh, 20px) clamp(16px, 1.4vw, 22px)
+    clamp(16px, 2.4vh, 22px);
+  border-radius: 14px;
+  background: var(--white);
+  box-shadow: 0 18px 36px -28px rgb(var(--shade) / 0.5);
+}
+.m-ent-act[data-who='you'] {
+  grid-column: 1;
+}
+.m-ent-act[data-who='we'] {
+  grid-column: 2;
+}
+.m-ent-act[data-who='both'] {
+  grid-column: 1 / -1;
+}
+.m-ent-act-text {
+  color: var(--ink);
+  font: 400 clamp(15.5px, 1.15vw, 17px) / 1.65 var(--sans);
+  letter-spacing: 0.02em;
+}
+.m-ent-act-detail {
+  color: var(--mute);
+  font-size: var(--t-small);
+  line-height: 1.75;
+  letter-spacing: 0.03em;
+}
+
+/* 谁来做：墨点是你们，杏点是我们，一半一半是一起 */
+.m-ent-who {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 8px;
+  color: var(--ink-2);
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+}
+.m-ent-who::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.m-ent-who[data-who='we']::before {
+  background: var(--accent);
+}
+.m-ent-who[data-who='both']::before {
+  background: linear-gradient(90deg, var(--ink) 50%, var(--accent) 50%);
+}
+.m-ent-who[data-who='leave'] {
+  color: var(--accent-ink);
+}
+.m-ent-who[data-who='leave']::before {
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+/* 留下的东西：一张会动的成果卡（keeps.tsx），下面是它的名字和拿去做什么 */
+.m-ent-leave {
+  grid-column: 9 / -1;
+  grid-row: 1 / span 2;
+  align-self: center;
+  display: grid;
+  gap: 18px;
+  margin: 0;
+}
+.m-ent-leave-card {
+  padding: 12px;
+  border-radius: 18px;
+  background: var(--white);
+  box-shadow: 0 26px 48px -34px rgb(var(--shade) / 0.6);
+}
+.m-ent-leave-card .m-keep-art {
+  height: clamp(160px, 30vh, 280px);
+}
+.m-ent-leave-text {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+.m-ent-leave-name {
+  font: 400 var(--t-h3) / 1.45 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-leave-after {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  line-height: 1.85;
+  letter-spacing: 0.03em;
+}
+.m-ent-leave .m-ent-forms {
+  margin-top: 0;
+}
+
+/* 怎么继续：5.2 开头一句，和聊聊 */
+.m-ent-onward {
+  display: grid;
+  justify-items: center;
+  gap: 28px;
+  padding-top: clamp(96px, 16vh, 168px);
+  text-align: center;
+}
+.m-ent-onward-line {
+  max-width: 24em;
+  font: 300 var(--t-h2) / 1.55 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-onward .m-btn svg {
+  margin-left: 2px;
+}
+
+/* ---------- 钉住：宽屏、够高、不减少动态时（stages.tsx 加 data-live），一页一页在同一个位置换 ---------- */
+.m-ent-line[data-live] {
+  height: 400vh;
+}
+.m-ent-line[data-live] .m-ent-line-stick {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: 100vh;
+  height: 100svh;
+  padding-top: calc(var(--header) + clamp(12px, 4vh, 40px));
+  padding-bottom: clamp(16px, 3vh, 32px);
+}
+.m-ent-line[data-live] .m-ent-stages {
+  display: grid;
+  grid-template-areas: 'one';
+  align-items: center;
+  min-height: 0;
+  padding: 0;
+}
+.m-ent-line[data-live] .m-ent-stage {
+  grid-area: one;
+  opacity: 0;
+  translate: 0 16px;
+  visibility: hidden;
+  transition:
+    opacity 0.5s var(--ease),
+    translate 0.7s var(--ease),
+    visibility 0s linear 0.5s;
+}
+.m-ent-line[data-live] .m-ent-stage[data-shown] {
+  opacity: 1;
+  translate: 0 0;
+  visibility: visible;
+  transition:
+    opacity 0.8s var(--ease) 0.1s,
+    translate 1s var(--ease) 0.1s,
+    visibility 0s;
+}
+.m-ent-line[data-live] .m-ent-line-dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+.m-ent-line-dot {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.m-ent-line-dot::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-pill);
+  background: var(--hair-2);
+  transition:
+    width 0.5s var(--ease),
+    background-color 0.5s var(--ease);
+}
+.m-ent-line-dot:hover::before {
+  background: var(--mute);
+}
+.m-ent-line-dot[data-mark]::before {
+  background: var(--accent);
+}
+.m-ent-line-dot[aria-current]::before {
+  width: 22px;
+  background: var(--ink);
+}
+.m-ent-line-dot:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+/* ---------- 团队（lean）：卡上只有 5.5 小标题与经历 ---------- */
+.m-ent-caps[data-lean] .m-cap {
+  grid-row: span 2;
+}
+.m-ent-caps[data-lean] .m-cap-record {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+  font-size: 13.5px;
+  line-height: 1.8;
+}
+
+/* ---------- 窄屏 ---------- */
+@media (max-width: 900px) {
+  .m-ent-stage-head,
+  .m-ent-acts,
+  .m-ent-leave {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+  .m-ent-leave {
+    max-width: 520px;
+  }
+}
+@media (max-width: 700px) {
+  /* 手机：两条道并成一列，谁来做看每张卡上的点 */
+  .m-ent-acts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .m-ent-act,
+  .m-ent-act[data-who] {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .m-ent-onward {
+    justify-items: start;
+    text-align: left;
+  }
+  /* 团队卡竖着排，不再左右滑 */
+  .m-ent-caps[data-lean] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    margin-inline: 0;
+    padding: 0;
+    overflow: visible;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-ent-stage,
+  .m-ent-stage-asks li {
+    transition: none !important;
+  }
+}

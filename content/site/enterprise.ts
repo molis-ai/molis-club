@@ -62,6 +62,11 @@ export type Advice = {
   reason: string;
 };
 
+/** 样张（D1）里一站的一件事：主句与补充都是 5.2 / 5.3 的原句片段 */
+export type Act = { text: string; detail?: string };
+/** 一行：你们与我们各做的（左右两条道），或一起做的（横跨两道） */
+export type ActRow = { you?: Act; we?: Act; both?: Act };
+
 export type Exploration = {
   name: string;
   /** 5.4 「企业中可能遇到的问题」 */
@@ -343,6 +348,96 @@ export const enterprise = {
     } satisfies Record<QuestionId, Advice> as Record<QuestionId, Advice>,
   },
 
+  /**
+   * 样张（D1，2026-10-18，待负责人验收）：把页面串成一条线——
+   * 你们卡在哪 → 建议起点 → 这一站你们做什么、我们做什么、一起做什么 → 留下什么 → 怎么继续。
+   * 每站的事与留下的东西都取 5.2 / 5.3 的原句片段（tests/enterprise-copy.test.mjs 逐句核对）；
+   * 谁来做照原文的主语：「由熟悉业务的人」「业务团队」「使用者」「团队」是你们，「我们」是我们，
+   * 「一起」「共同」与约定类的是一起（5.3 第三步的标题就是「一起做到最后」）。原文没写清主语的不分派。
+   */
+  line: {
+    /** 新写：三条道的名字，和成果那一栏 */
+    who: { you: '你们', we: '我们', both: '一起' },
+    leaves: '留下',
+    rows: {
+      diagnose: [
+        {
+          you: { text: '讲清当前做法和希望发生的变化' },
+          we: {
+            text: '梳理值得尝试的场景',
+            detail: '业务价值、发生频率、数据条件、接入成本和结果可验证程度',
+          },
+        },
+        {
+          both: {
+            text: '确定试点范围',
+            detail: '约定结果给谁用、做到什么程度、可以使用哪些数据与系统',
+          },
+        },
+        {
+          both: {
+            text: '记录当前工作的表现',
+            detail: '为后续比较提供依据',
+          },
+        },
+      ],
+      build: [
+        {
+          you: { text: '提供专业判断与必要材料' },
+          we: {
+            text: '把要求转化为产品交互、工具能力和执行流程',
+            detail:
+              '整理业务资料、术语、判断规则和例外情况，按需要连接已有系统',
+          },
+        },
+        {
+          both: {
+            text: '通过共同试用修正',
+            detail: '明确操作权限和人与 AI 的分工',
+          },
+        },
+      ],
+      assess: [
+        {
+          both: {
+            text: '用有代表性的任务检查结果质量、来源依据和完成情况',
+            detail: '验收依据是事先约定的标准与实际结果',
+          },
+        },
+        {
+          both: {
+            text: '核算处理时间、运行与维护费用、人工复核与返工成本',
+          },
+        },
+        { you: { text: '完整流程要由使用者亲手跑过' } },
+      ],
+      train: [
+        {
+          you: {
+            text: '围绕自己的业务练习选择任务、交代目标、准备材料、安排执行和检查结果',
+            detail: '让业务负责人、实际使用者和技术同事都能参与',
+          },
+        },
+        {
+          you: { text: '团队独立完成一轮任务和结果检查' },
+          we: {
+            text: '按约定留下业务规则、资料、配置、验证方法和维护说明',
+            detail: '明确后续由谁维护、怎样处理常见异常',
+          },
+        },
+      ],
+    } satisfies Record<StationId, ActRow[]> as Record<StationId, ActRow[]>,
+    /** 留下的东西拿去做什么（怎么继续）：5.2 原句片段；共建那一站改放四种产品形态（path.forms） */
+    after: {
+      diagnose:
+        '希望改善什么、需要哪些条件、怎样验证，以及如何判断是否继续投入。',
+      assess: '为继续优化、扩大使用或调整方案提供依据。',
+      train: '帮助团队在后续工作中自行复用和改进。',
+    } satisfies Partial<Record<StationId, string>> as Partial<
+      Record<StationId, string>
+    >,
+  },
+
   /** 5.4 */
   explore: {
     kicker: '内部探索',
@@ -483,6 +578,9 @@ export const enterprise = {
     }[],
     /** 新写：5.5 编辑注释的意思，对外的短句 */
     note: '「团队经历背书」来自成员过往的工作：不代表固定分工，也不是 Molis 已完成的客户项目或交付成效。',
+    /** 新写（样张 D1）：卡上不再逐张写「团队经历背书」，说明照旧，主语改成「这些经历」 */
+    noteLean:
+      '这些经历来自成员过往的工作：不代表固定分工，也不是 Molis 已完成的客户项目或交付成效。',
     /** 新写 */
     link: '认识我们',
     /** 背景大图（品牌图库 C5） */

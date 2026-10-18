@@ -1,12 +1,16 @@
+import { ArrowDown } from 'lucide-react';
 import { pageMetadata } from '../../../lib/site';
 import { enterprise } from '../../../content/site/enterprise';
+import { ReviewSwitch } from '../../_site/review/comparison';
 import { ENTERPRISE } from '../../_site/routes';
 import { mediaOf, Phrases, Window, type Vars } from '../../_site/ui';
 import { Explore } from './explore';
 import { People } from './people';
 import { EnterpriseForm, PickProvider, Slips } from './pick';
 import { Route } from './course';
+import { Stages } from './stages';
 import './enterprise.css';
+import './line.css';
 
 const e = enterprise;
 
@@ -24,6 +28,12 @@ export const metadata = pageMetadata(
 // ⑥ 窗边的书桌与表单：选过的问题已经写在第一行。
 // （路线之后原有一屏柱廊照片，负责人 2026-10-15 删去。）
 // 首屏照片很亮，字用墨色，顶栏透明（data-tone="light"）。
+//
+// 样张（D1，?study=line；现版对照 ?study=current，默认仍是现版）：把页面串成一条线——
+// 长廊 → 我们和你们一起做什么（开场第三段原句，配那双手）→ 你们卡在哪（选一个，回一句建议起点）
+// → 一站一页：你们做什么、我们做什么、一起做什么，留下什么、拿去做什么（stages.tsx）
+// → 怎么继续（5.2 开头原句，聊聊）→ 做这件事的人（只留小标题与经历）→ 内部探索 → 表单。
+// 首屏去掉四个服务名，路线不再有横线与编号，「能力，留在团队手里。」不再复述标题。
 
 /** 满幅照片：铺满一屏，载入前铺平均色，极慢地推近 */
 function Plate({
@@ -56,49 +66,150 @@ function Plate({
   );
 }
 
-export default function EnterprisePage() {
+export default async function EnterprisePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ study?: string }>;
+}) {
+  const { study } = await searchParams;
+  const sample = study === 'line';
+  const review = sample || study === 'current';
   const [titleA, titleB] = e.title.split('，');
+
+  const hero = (
+    <header className="m-ent-hero" data-tone="light">
+      <Plate name="enterprise-gallery" alt={e.hero.alt} focus="50% 46%" eager />
+      <div className="m-ent-hero-body">
+        <p className="m-tagline m-rise">
+          <b>{e.hero.kicker}</b>
+          {sample ? null : e.tags.map((tag) => <span key={tag}>{tag}</span>)}
+        </p>
+        <h1
+          className="m-ent-title m-rise"
+          style={{ '--delay': '120ms' } as Vars}
+        >
+          <span>{titleA}，</span>
+          <span>{titleB}</span>
+        </h1>
+      </div>
+    </header>
+  );
+
+  const where = (
+    <section
+      className="m-ent-where m-wrap"
+      id="where"
+      aria-labelledby="ent-where-title"
+    >
+      <header className="m-ent-where-head" data-reveal>
+        <h2 className="m-ent-ask" id="ent-where-title">
+          {e.hook.ask}
+        </h2>
+      </header>
+      <Slips />
+    </section>
+  );
+
+  const talk = (
+    <section
+      className="m-ent-talk m-wrap"
+      id="talk"
+      aria-labelledby="ent-talk-title"
+    >
+      <Window
+        className="m-ent-talk-window"
+        name="enterprise-desk"
+        ratio="4 / 5"
+        focus="40% 62%"
+        sizes="(max-width: 900px) 100vw, 40vw"
+        alt={e.talk.alt}
+      />
+      <div className="m-ent-talk-body">
+        <header className="m-ent-talk-head" data-reveal>
+          <h2 className="m-ent-talk-title" id="ent-talk-title">
+            {e.talk.title}
+          </h2>
+        </header>
+        <EnterpriseForm />
+      </div>
+    </section>
+  );
+
+  const switcher = review ? (
+    <ReviewSwitch
+      label="企业合作"
+      variant={sample ? 'sample' : 'current'}
+      currentHref={`${ENTERPRISE}?study=current`}
+      sampleHref={`${ENTERPRISE}?study=line`}
+    />
+  ) : null;
+
+  if (sample)
+    return (
+      <div className="m-ent" data-study="line">
+        <PickProvider>
+          {hero}
+
+          {/* 我们和你们一起做什么：开场第三段原句，右边一双手在做一件小工具 */}
+          <section
+            className="m-ent-path-head m-wrap"
+            aria-labelledby="ent-promise-title"
+          >
+            <div className="m-ent-path-copy" data-reveal>
+              <h2 className="m-ent-path-line" id="ent-promise-title">
+                <Phrases text={e.intro[2]} />
+              </h2>
+            </div>
+            <Window
+              className="m-ent-path-window"
+              name="enterprise-hands"
+              ratio="3 / 2"
+              focus="50% 45%"
+              sizes="(max-width: 900px) 100vw, 56vw"
+              alt={e.path.alt}
+            />
+          </section>
+
+          {where}
+
+          {/* 一站一页：双方各做什么，留下什么 */}
+          <section
+            className="m-ent-path"
+            id="path"
+            aria-labelledby="ent-path-title"
+          >
+            <h2 className="sr-only" id="ent-path-title">
+              {e.path.title}
+            </h2>
+            <Stages />
+            {/* 怎么继续：5.2 开头一句 */}
+            <div className="m-ent-onward m-wrap" data-reveal>
+              <p className="m-ent-onward-line">
+                <Phrases text={e.path.lead} />
+              </p>
+              <a className="m-btn m-btn-line" href="#talk">
+                {e.hook.talk}
+                <ArrowDown size={14} aria-hidden="true" />
+              </a>
+            </div>
+          </section>
+
+          <People lean />
+          <Explore lean />
+          {talk}
+        </PickProvider>
+        {switcher}
+      </div>
+    );
+
   return (
     <div className="m-ent">
       <PickProvider>
         {/* ① 首屏 */}
-        <header className="m-ent-hero" data-tone="light">
-          <Plate
-            name="enterprise-gallery"
-            alt={e.hero.alt}
-            focus="50% 46%"
-            eager
-          />
-          <div className="m-ent-hero-body">
-            <p className="m-tagline m-rise">
-              <b>{e.hero.kicker}</b>
-              {e.tags.map((tag) => (
-                <span key={tag}>{tag}</span>
-              ))}
-            </p>
-            <h1
-              className="m-ent-title m-rise"
-              style={{ '--delay': '120ms' } as Vars}
-            >
-              <span>{titleA}，</span>
-              <span>{titleB}</span>
-            </h1>
-          </div>
-        </header>
+        {hero}
 
         {/* ② 你们卡在哪 */}
-        <section
-          className="m-ent-where m-wrap"
-          id="where"
-          aria-labelledby="ent-where-title"
-        >
-          <header className="m-ent-where-head" data-reveal>
-            <h2 className="m-ent-ask" id="ent-where-title">
-              {e.hook.ask}
-            </h2>
-          </header>
-          <Slips />
-        </section>
+        {where}
 
         {/* ③ 合作路线 */}
         <section
@@ -133,29 +244,9 @@ export default function EnterprisePage() {
         <Explore />
 
         {/* ⑥ 聊聊：窗边的书桌，表单第一行写着选过的问题 */}
-        <section
-          className="m-ent-talk m-wrap"
-          id="talk"
-          aria-labelledby="ent-talk-title"
-        >
-          <Window
-            className="m-ent-talk-window"
-            name="enterprise-desk"
-            ratio="4 / 5"
-            focus="40% 62%"
-            sizes="(max-width: 900px) 100vw, 40vw"
-            alt={e.talk.alt}
-          />
-          <div className="m-ent-talk-body">
-            <header className="m-ent-talk-head" data-reveal>
-              <h2 className="m-ent-talk-title" id="ent-talk-title">
-                {e.talk.title}
-              </h2>
-            </header>
-            <EnterpriseForm />
-          </div>
-        </section>
+        {talk}
       </PickProvider>
+      {switcher}
     </div>
   );
 }
