@@ -125,6 +125,7 @@ html:not(.js) .m-com-js {
   gap: 10px;
 }
 .m-mth-copy textarea {
+  field-sizing: content;
   width: 100%;
   min-height: 15em;
   padding: 16px 18px;
@@ -135,7 +136,7 @@ html:not(.js) .m-com-js {
   font-size: var(--t-small);
   line-height: 1.85;
   color: var(--ink-2);
-  resize: vertical;
+  resize: none;
 }
 .m-mth-copy textarea:focus-visible {
   outline: 1.5px solid var(--ink);
