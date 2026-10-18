@@ -78,8 +78,10 @@ const home = await html('/');
 assert.match(home, /<h1[^>]*>Molis AI<\/h1>/);
 assert.match(home, /We build/);
 assert.match(home, /Beyond/);
-for (const stage of ['开源开发中', '开发中', '探索中，敬请期待'])
+// Work 从 2026-10-18 起写「开发中」、源码公开，不写「开源」（main 已不是 MIT）
+for (const stage of ['重点推进 · 开发中', '开发中', '探索中，敬请期待'])
   assert(home.includes(stage), `home stage ${stage}`);
+assert(!/开源开发中|开源代码|开源（MIT）/.test(home), 'home: no open-source claim');
 // 「我们相信」与「这些产品怎样联系」不放首页（负责人 2026-10-15）
 assert(
   !home.includes('有自己的判断，也有把它做成的本事。'),
@@ -87,7 +89,7 @@ assert(
 );
 assert(!home.includes('这些产品怎样联系'), 'no product relations on home');
 assert(!home.includes('目前如何了解与体验'), 'home: removed access overview');
-assert.match(home, /开源代码/);
+assert.match(home, /查看源码/);
 // 产品舞台去产品页只留圆形箭头，读屏名写清是哪件（E3）；Life、Story、World 暂不开放，不放箭头
 for (const name of ['Work', 'Tool'])
   assert(home.includes(`aria-label="了解 Molis ${name}"`), `home stage go ${name}`);
@@ -103,24 +105,36 @@ assert.match(home, new RegExp(`rel="canonical" href="${canonicalOrigin}/?"`));
 
 // 产品页：阶段、诚实标注；没有伪装可用的下载入口
 const work = await html('/work');
-assert.match(work, /开源开发中/);
-assert.match(work, /界面示意/);
-// Work 按读者分两版（写代码 / 写文档、管事情）；状态只分「已发布」「开发中」；Issue 插件是内部工具，不上官网
-assert.match(work, /你主要做什么/);
-assert.match(work, /已发布 · v0\.2\.0/);
 assert.match(work, /开发中/);
+assert.match(work, /界面示意 · 示例数据/);
+// Work 分三条路（写代码 / 写文档、做研究 / 管事情、跟进度）；状态三档：已发布 · v0.2.0 / 开发中 / 规划中；
+// 许可不写「开源」（Work 的 main 从 2026-10-17 起不是 MIT）；Issue 插件是内部工具，不上官网
+assert.match(work, /你主要做什么/);
+for (const route of ['写代码', '写文档、做研究', '管事情、跟进度'])
+  assert(work.includes(route), `work: route ${route}`);
+assert.match(work, /已发布 · v0\.2\.0/);
+assert.match(work, /规划中/);
+assert.match(work, /源码公开/);
+assert.match(work, /许可以仓库 LICENSE 为准/);
+assert(!/开源开发中|开源（MIT）|MIT 许可|开源版/.test(work), 'work: no open-source claim');
 assert(!work.includes('Issue'), 'work: no internal Issue plugin');
 assert(!/下载 Molis|安装包下载|立即下载/.test(work), 'work: no download entry');
+// 主按钮报名首批试用，去联系页
+assert.match(work, /报名首批试用/);
+assert(work.includes('href="/contact?topic=work-trial"'), 'work: trial goes to contact');
 assert(work.includes('href="https://github.com/molis-ai/molis-work"'));
-assert(work.includes('https://github.com/molis-ai/molis-work#run-from-source'));
+// 没有 JS 时舞台下面列出每段的标题和字幕
+assert.match(work, /Agent 说做完了，Work 说还差你。/);
 
-// 下载页：还没到给人下载的时候，只留一个口子：新版标「开发中」、按钮「有了告诉我」；不列任何安装包，不写「免费」
+// 下载页：还没到给人下载的时候，只留一个口子：新版标「开发中」、按钮「报名首批试用」；不列任何安装包，不写「免费」
 const download = await html('/work/download');
 assert.match(download, /开发中/);
-assert.match(download, /有了告诉我/);
+assert.match(download, /报名首批试用/);
+assert(download.includes('href="/contact?topic=work-trial"'), 'download: trial goes to contact');
+assert(!/开源开发中|开源（MIT）|MIT 许可|开源版/.test(download), 'download: no open-source claim');
 assert(!/免费|\.dmg|\.zip|0\.1\.1\d/i.test(download), 'download: no free claim, no package links');
 assert(!download.includes('Issue'), 'download: no internal Issue plugin');
-assert(work.includes('href="/work/download"'), 'work: hero links to download page');
+assert(work.includes('href="/work/download"'), 'work: links to download page');
 const tool = await html('/tool');
 assert.match(tool, /示意/, '/tool: honest label');
 assert(

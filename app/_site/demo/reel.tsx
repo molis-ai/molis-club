@@ -14,8 +14,11 @@ import type { Scene } from './demo';
 // 首页舞台的演示：按时间播几段画面，底部几条细线表示第几段，点哪条看哪段。
 // 只在选中、在视口里、没暂停时播（running）；减少动态时不播，停在每段的结果上，点细线换段。
 // 进度线直接改样式，不为每一帧重渲染画面；只有换步、换段时才更新。
+// Work 首屏的舞台多两样（都可选）：细线下写每段的短标题（titles）；画面下一行字幕（subtitles）——
+// 先是灰字「原来……」（was），演到最后一步时亮出这一段的一句（say）和状态（tag）；
+// 不轮播（loop={false}）时演完最后一段就停在它的结果上，点任意一条细线重看。
 
-export type Segment = { title: string; scene: Scene; tag?: string };
+export type Segment = { title: string; scene: Scene; tag?: string; was?: string; say?: string };
 
 const Frame = memo(function Frame({
   scene,
@@ -52,6 +55,9 @@ export function Reel({
   view = '16 / 10',
   footer,
   bare = false,
+  titles = false,
+  subtitles = false,
+  loop = true,
 }: {
   name: string;
   segments: Segment[];
@@ -63,18 +69,25 @@ export function Reel({
   footer?: ReactNode;
   /** 只要画面和底部一行，不要上面的说明（产品页手机上用） */
   bare?: boolean;
+  /** 细线下写每段的短标题 */
+  titles?: boolean;
+  /** 画面下一行字幕：「原来……」和这一段的一句 */
+  subtitles?: boolean;
+  /** 演完最后一段接着从头演；false 时停在最后一段的结果上 */
+  loop?: boolean;
 }) {
   const [now, setNow] = useState(0);
   // 服务端与没有 JS 时停在结果上；开始播时从第一步演起
   const [step, setStep] = useState(() => segments[0].scene.steps - 1);
   // 每播完一轮、每次点细线都换一个 round，让计时从头开始
   const [round, setRound] = useState(0);
+  const [ended, setEnded] = useState(false);
   const elapsed = useRef(0);
   const fills = useRef<(HTMLElement | null)[]>([]);
   const total = segments.length;
 
   useEffect(() => {
-    if (!running || reduced) return;
+    if (!running || reduced || ended) return;
     let frame = 0;
     let last = performance.now();
     const index = now;
@@ -84,6 +97,12 @@ export function Reel({
       elapsed.current += Math.min(100, time - last);
       last = time;
       if (elapsed.current >= length) {
+        if (!loop && index === total - 1) {
+          setStep(scene.steps - 1);
+          paint(fills.current, segments, index, length);
+          setEnded(true);
+          return;
+        }
         elapsed.current = 0;
         setStep(0);
         setNow((index + 1) % total);
@@ -100,10 +119,11 @@ export function Reel({
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [running, reduced, segments, total, now, round]);
+  }, [running, reduced, ended, loop, segments, total, now, round]);
 
   const go = (index: number) => {
     elapsed.current = 0;
+    setEnded(false);
     setNow(index);
     setStep(0);
     setRound((value) => value + 1);
@@ -148,7 +168,20 @@ export function Reel({
           </div>
         ))}
       </figure>
-      <div className="m-reel-bottom">
+      {subtitles ? (
+        <div
+          className="m-reel-sub"
+          aria-live="polite"
+          data-done={shown >= current.scene.steps - 1 || undefined}
+        >
+          {current.was ? <p className="m-reel-was">{current.was}</p> : null}
+          <p className="m-reel-say">
+            <span>{current.say ?? current.title}</span>
+            {current.tag ? <span className="m-note">{current.tag}</span> : null}
+          </p>
+        </div>
+      ) : null}
+      <div className="m-reel-bottom" data-titles={titles || undefined}>
         <fieldset className="m-segs">
           <legend className="sr-only">{`${name} 的 ${total} 段演示`}</legend>
           {segments.map((segment, index) => (
@@ -172,6 +205,11 @@ export function Reel({
                   }
                 />
               </i>
+              {titles ? (
+                <span className="m-seg-title" aria-hidden="true">
+                  {segment.title}
+                </span>
+              ) : null}
             </button>
           ))}
         </fieldset>

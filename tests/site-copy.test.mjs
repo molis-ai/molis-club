@@ -19,7 +19,7 @@ registerHooks({
 const { studio, story } = await import('../content/site/studio.ts');
 const { access, productIds, products, relations } =
   await import('../content/site/products.ts');
-const { workEnding, workProgress } = await import('../content/site/work.ts');
+const { workDownload, workEnding } = await import('../content/site/work.ts');
 const { toolProgress } = await import('../content/site/tool.ts');
 
 // 新站文案取自 docs/studio-intro.md 的原句（specs/site-rebuild/spec.md 第 9 节）。
@@ -69,18 +69,19 @@ void test('五件产品的标题、一句话、适合的时刻、阶段与正文
   for (const text of strings(access)) assertVerbatim(text, 'access');
 });
 
-void test('阶段按第 3 章：Work 开源开发中；Tool 开发中；Life 原型探索中；Story 开发中；World 概念设计', () => {
+void test('阶段按第 3 章：Work 开发中（源码公开，2026-10-18 起不写「开源」）；Tool 开发中；Life 原型探索中；Story 开发中；World 概念设计', () => {
   assert.deepEqual(
     productIds.map((id) => products[id].stage),
-    ['开源开发中', '开发中', '原型探索中', '开发中', '概念设计'],
+    ['开发中', '开发中', '原型探索中', '开发中', '概念设计'],
   );
 });
 
 void test('各产品页「当前进展」里标为原句的部分都在底稿里', () => {
+  // Work 页第四版不再单列「当前进展」，原句在下载页（导语、数据、协作两问）
   const quoted = [
-    ...workProgress.have,
-    ...workProgress.notYet,
-    ...workProgress.now,
+    workDownload.lead,
+    ...workDownload.faq.items[1].a,
+    ...workDownload.faq.items[2].a,
     ...toolProgress.have,
     ...toolProgress.notYet,
     // toolProgress.now 是新写的引导句；Life、Story、World 直接用 products 里第 4 章的原句（上面已核对）

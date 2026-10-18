@@ -20,6 +20,8 @@ const pages = {
     'content/site/work.ts',
     'app/_site/scenes/work.tsx',
     'app/_site/scenes/work.css',
+    'app/_site/scenes/work-stage.tsx',
+    'app/_site/scenes/work-stage.css',
   ],
   '/work/download': [`${site}/work/download`, 'content/site/work.ts'],
   '/tool': [

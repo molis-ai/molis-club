@@ -40,7 +40,7 @@ export type IntroProduct = {
   soon?: boolean;
   /** 去处按钮 */
   more: string;
-  /** 第二个去处（Work 的开源代码） */
+  /** 第二个去处（Work 的源码） */
   extra?: { label: string; href: string };
   /** 还是概念 */
   concept?: boolean;
@@ -84,7 +84,7 @@ const local: Record<
   }
 > = {
   work: {
-    rowNote: '重点推进 · 开源开发中',
+    rowNote: '重点推进 · 开发中',
     extra: { label: homeProducts.work.github ?? '', href: WORK_GITHUB },
     chapters: titles('work', 0, 3).map((title) => ({ title })),
     sceneNote: desk.note,
@@ -146,7 +146,7 @@ export const access = {
   rows: [
     {
       who: 'Molis Work',
-      text: '可以查看开源代码，并按仓库说明从源码构建；正在开发的新版工作台尚未提供正式安装包。',
+      text: '可以查看源码，并按仓库说明从源码构建；正在开发的新版工作台尚未提供正式安装包。',
       link: { label: 'GitHub', href: WORK_GITHUB },
     },
     {

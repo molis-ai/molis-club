@@ -1,5 +1,6 @@
-/* Molis Work 页：工作室最核心的产品页。演示区是木色的桌面（窗口里是 Molis Work 自己的配色）；
-   页面本身只读官网令牌：近白的纸、细字、1px 线、一种杏橙。两种读者各看各的例子，用外层的 data-persona 换。 */
+/* Molis Work 页（第四版「一个舞台」）：一共三屏。首屏左边是舞台（木色的桌面，窗口里是 Molis Work 自己的配色），
+   右边是名字、解释句、选路和报名；第二屏三句「不」和现在能拿到什么；第三屏我们为什么做它。
+   页面本身只读官网令牌：近白的纸、细字、1px 线、一种杏橙。三条路各看各的，用外层的 data-persona 换。 */
 
 .m-work {
   --stage: #efe8dc;
@@ -8,41 +9,43 @@
   --leaf-2: rgb(79 110 72 / 0.32);
   --leaf-3: rgb(79 110 72 / 0.46);
 }
-/* 只显示这位读者的那一版（没有 JS 时就是「写代码」） */
-.wp[data-persona='doc'] [data-p='dev'],
-.wp:not([data-persona='doc']) [data-p='doc'] {
+/* 只显示这条路的那一版（没有 JS、还没选路时是「写代码」） */
+.wp:not([data-persona='doc'], [data-persona='ops']) [data-p]:not([data-p='dev']),
+.wp[data-persona='doc'] [data-p]:not([data-p='doc']),
+.wp[data-persona='ops'] [data-p]:not([data-p='ops']) {
   display: none !important;
 }
-/* 手机上画面在文字上方：窗口里上下叠两张纸，画面高一些。
-   Reel 把比例写在行内样式里，这里要用 !important 才盖得过 */
-.m-work .m-ch-inline .m-reel-view {
-  --view: 4 / 5.2 !important;
-}
-/* 两栏首屏在 901–1240 之间画面只有五六栏宽，画面里的字到了底字不再缩，同一页的时间线放不下：画面高一些 */
-@media (min-width: 901px) and (max-width: 1240px) {
-  .m-work .wp-hero-demo .m-reel-view {
-    --view: 16 / 13.6 !important;
-  }
-}
-@media (min-width: 901px) and (max-width: 980px) {
-  .m-work .wp-hero-demo .m-reel-view {
-    --view: 15 / 16 !important;
-  }
-}
-@media (max-width: 640px) {
-  .m-work .wp-hero-demo .m-reel-view {
-    --view: 4 / 3.9 !important;
-  }
-  /* 窄屏上画面里的字不再跟着宽度缩：底字 11.5px，最小的标注也在 9px 上下 */
-  .m-work .m-sc.wv {
-    font-size: 11.5px;
-  }
-}
 
-/* ---------- 首屏：左边产品名、一句话和去处；右边同一页目标（几个人写在同一条时间线上） ---------- */
-.wp .wp-hero-demo {
-  grid-column: 7 / -1;
-  align-self: center;
+/* ---------- 首屏：左边舞台（八栏），右边名字、解释句、选路、报名（四栏） ---------- */
+.wp-hero {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  align-items: start;
+  padding-bottom: clamp(40px, 8vh, 96px);
+}
+.wp-hero-stage {
+  grid-column: 1 / span 8;
+  grid-row: 1;
+  min-width: 0;
+}
+.wp-hero-copy {
+  grid-column: 9 / -1;
+  grid-row: 1;
+  display: grid;
+  gap: clamp(12px, 2vh, 20px);
+  min-width: 0;
+}
+.wp-hero .m-phero-name {
+  margin-top: 4px;
+  font-size: var(--t-h1);
+}
+.wp-hero .m-phero-title {
+  font-size: var(--t-h3);
+  line-height: 1.6;
+}
+.wp-hero .m-phero-what {
+  line-height: 1.8;
 }
 .wp-go {
   display: grid;
@@ -53,60 +56,114 @@
   letter-spacing: 0.04em;
   color: var(--mute);
 }
-/* ---------- 下面几段：画面在左、文字在右（像展品和它右边的展签） ---------- */
-@media (min-width: 901px) {
-  /* 四幕：钉住的画面在左（八栏），每幕的字在右（四栏） */
-  .m-work .m-chapters-stage {
-    grid-column: 1 / span 8;
-  }
-  .m-work .m-chapters-text {
-    grid-column: 9 / -1;
-  }
-  /* 没有 JS：不钉住，每幕自己一行，停在最后一步的画面在左、这一幕的字在右 */
-  html:not(.js) .m-work .m-chapters-text {
-    grid-column: 1 / -1;
-  }
-  html:not(.js) .m-work .m-ch {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--col-gap);
-    align-content: start;
-  }
-  html:not(.js) .m-work .m-ch > * {
-    grid-column: 9 / -1;
-  }
-  html:not(.js) .m-work .m-ch > .m-ch-inline {
-    grid-column: 1 / span 8;
-    grid-row: 1 / span 6;
-    margin: 0;
-  }
-  html:not(.js) .m-work .m-ch-inline .m-reel-view {
-    --view: 16 / 9.2 !important;
-  }
+
+/* 选路：三行，每行路名加一行提示（职业版列角色，卡点版写那一刻）；选中的那行描一圈墨线 */
+.wp-pick {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 4px 0 0;
+  padding: 0;
+  border: 0;
 }
-/* 钉住的画面让出全站顶栏和页内顶栏两条，在剩下的高度里大致居中。
-   画面上方那行「正在演哪一步」不要：同一句就在右边的步骤里亮着，字只放右边 */
-.m-work .m-stage-pin {
-  top: calc(var(--header) + 52px + 7vh);
-}
-.m-work .m-stage-cap {
-  display: none;
-}
-.m-work .m-stage-view {
-  max-height: calc(100svh - var(--header) - 52px - 200px);
-}
-.wp-hero-demo .m-reel {
-  gap: 12px;
-}
-.wp-ask {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 14px;
-  font: 400 var(--t-small) / 1.4 var(--sans);
-  letter-spacing: 0.06em;
+.wp-pick legend {
+  margin-bottom: 10px;
+  padding: 0;
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.16em;
   color: var(--mute);
 }
+.wp-pick button {
+  all: unset;
+  display: grid;
+  gap: 3px;
+  padding: 10px 14px;
+  border-radius: var(--r-inset);
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  cursor: pointer;
+  transition: box-shadow 0.4s var(--ease);
+}
+.wp-pick button:hover {
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+}
+.wp-pick button[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.wp-pick b {
+  font: 400 var(--t-ui) / 1.4 var(--sans);
+  letter-spacing: 0.04em;
+}
+.wp-pick small {
+  font: 400 var(--t-small) / 1.55 var(--sans);
+  letter-spacing: 0.02em;
+  color: var(--mute);
+}
+
+/* 舞台：画面、字幕、章节线；画面右下角是「界面示意 · 示例数据」 */
+.wp-stage .m-reel {
+  gap: 12px;
+}
+.wp-stage .m-reel-sub {
+  min-height: 5.2em;
+}
+/* 章节标题留够两行：换路、换段时舞台的高度不跳 */
+.wp-stage .m-seg-title {
+  min-height: 2.9em;
+}
+.wp-stage[data-intro] .m-seg-title {
+  font-size: var(--t-ui);
+}
+/* 八段的文字：读屏一直读得到；没有 JS 时显示在舞台下面 */
+.wp-stage-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+html:not(.js) .wp-stage-text {
+  position: static;
+  width: auto;
+  height: auto;
+  margin-top: 28px;
+  overflow: visible;
+  clip-path: none;
+  white-space: normal;
+}
+.wp-stage-text ol {
+  display: grid;
+  gap: 14px;
+  counter-reset: ch;
+}
+.wp-stage-text li {
+  display: grid;
+  gap: 2px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hair);
+  counter-increment: ch;
+}
+.wp-stage-text li b {
+  font-weight: 400;
+}
+.wp-stage-text li b::before {
+  content: counter(ch, decimal-leading-zero);
+  margin-right: 10px;
+  font: italic 300 var(--t-body) / 1 var(--latin);
+  color: var(--accent-ink);
+}
+.wp-stage-text li span:first-of-type {
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+.wp-stage-text small {
+  margin-left: 10px;
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+
+/* 三条路的切换（页内顶栏里） */
 .wp-switch {
   display: inline-flex;
   padding: 3px;
@@ -139,9 +196,8 @@
     0 6px 14px -10px rgb(var(--shade) / 0.45);
 }
 .wp-switch button:focus-visible,
-.wp-nav a:focus-visible,
-.wp-idea:focus-visible,
-.ww-tabs button:focus-visible {
+.wp-pick button:focus-visible,
+.wp-nav a:focus-visible {
   outline: 1.5px solid var(--ink);
   outline-offset: 3px;
 }
@@ -174,273 +230,84 @@ html:has(.wp-nav) {
   text-transform: uppercase;
   white-space: nowrap;
 }
-.wp-nav-links {
-  display: flex;
-  flex: 1;
-  gap: 2px;
+/* 一共三屏，不再列段落链接：产品名、三条路、报名。窄了三条路可以横着滑 */
+.wp-nav-in .wp-switch {
+  flex: 0 1 auto;
   min-width: 0;
+  margin: 0;
   overflow-x: auto;
   scrollbar-width: none;
 }
-.wp-nav-links::-webkit-scrollbar {
+.wp-nav-in .wp-switch::-webkit-scrollbar {
   display: none;
 }
-.wp-nav-links a {
-  display: block;
-  padding: 6px 10px;
-  font: 400 var(--t-small) / 1.3 var(--sans);
-  letter-spacing: 0.06em;
-  color: var(--mute);
-  white-space: nowrap;
-  transition: color 0.3s var(--ease);
+.wp-nav-go {
+  margin-left: auto;
 }
-.wp-nav-links a:hover,
-.wp-nav-links a[aria-current] {
-  color: var(--ink);
-}
-.wp-nav-links a[aria-current] {
-  box-shadow: inset 0 -1px 0 var(--ink);
+.wp-nav-go .m-btn {
+  min-height: 36px;
+  padding-inline: 18px;
 }
 
-/* ---------- 产品全景 ---------- */
-.wp-tour .m-head {
-  margin-bottom: clamp(28px, 4vh, 48px);
-}
-
-/* ---------- 三件事：一个字、一句话、一幅小图 ---------- */
-.wp-ideas {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--col-gap);
-  padding-top: var(--section-top);
-}
-.wp-idea {
-  display: grid;
-  align-content: start;
-  gap: 10px;
-  padding: 26px 28px 30px;
-  border-radius: var(--r-card);
-  background: var(--white);
-  box-shadow: 0 0 0 1px var(--hair);
-  transition:
-    box-shadow 0.5s var(--ease),
-    translate 0.6s var(--ease);
-}
-.wp-idea:hover {
-  translate: 0 -2px;
-  box-shadow:
-    0 0 0 1px var(--hair-2),
-    0 22px 40px -30px rgb(var(--shade) / 0.45);
-}
-.wp-idea-mark {
-  font: 300 var(--t-h1) / 1 var(--sans);
-}
-.wp-idea-line {
-  font: 400 var(--t-ui) / 1.6 var(--sans);
-  letter-spacing: 0.06em;
-  color: var(--ink-2);
-}
-.wp-idea-art {
-  position: relative;
-  display: block;
-  height: 64px;
-  margin-bottom: 14px;
-}
-.wp-idea-art i {
-  position: absolute;
-  display: block;
-  transition:
-    translate 0.7s var(--ease),
-    opacity 0.6s var(--ease),
-    background-color 0.6s var(--ease),
-    border-color 0.6s var(--ease);
-}
-/* 递：三行字，选中一段，上面浮着一个小动作条 */
-.wp-idea[data-k='give'] i:nth-child(-n + 3) {
-  left: 0;
-  height: 6px;
-  border-radius: var(--r-label);
-  background: var(--faint);
-}
-.wp-idea[data-k='give'] i:nth-child(1) {
-  top: 30px;
-  width: 78%;
-}
-.wp-idea[data-k='give'] i:nth-child(2) {
-  top: 44px;
-  width: 62%;
-  background: linear-gradient(90deg, var(--faint) 0 34%, var(--accent) 34% 80%, var(--faint) 80%);
-}
-.wp-idea[data-k='give'] i:nth-child(3) {
-  top: 58px;
-  width: 70%;
-}
-.wp-idea[data-k='give'] i:nth-child(4) {
-  top: 2px;
-  left: 20%;
-  width: 34%;
-  height: 18px;
-  border-radius: var(--r-pill);
-  background: var(--white);
-  box-shadow:
-    0 0 0 1px var(--hair-2),
-    0 8px 14px -10px rgb(var(--shade) / 0.5);
-}
-.wp-idea[data-k='give']:hover i:nth-child(4) {
-  translate: 0 -3px;
-}
-/* 接：两个 Agent，接着同一页 */
-.wp-idea[data-k='relay'] i:nth-child(1),
-.wp-idea[data-k='relay'] i:nth-child(2) {
-  left: 0;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 1px solid var(--hair-2);
-  background: var(--paper-2);
-}
-.wp-idea[data-k='relay'] i:nth-child(1) {
-  top: 4px;
-}
-.wp-idea[data-k='relay'] i:nth-child(2) {
-  top: 38px;
-}
-.wp-idea[data-k='relay'] i:nth-child(3) {
-  top: 2px;
-  left: 46%;
-  width: 44px;
-  height: 58px;
-  border-radius: var(--r-label);
-  border: 1px solid var(--ink);
-  background: linear-gradient(var(--faint), var(--faint)) 8px 14px / 26px 3px no-repeat,
-    linear-gradient(var(--faint), var(--faint)) 8px 22px / 20px 3px no-repeat,
-    linear-gradient(var(--accent), var(--accent)) 8px 30px / 24px 3px no-repeat,
-    var(--white);
-}
-.wp-idea[data-k='relay'] i:nth-child(4) {
-  top: 15px;
-  left: 24px;
-  width: calc(46% - 24px);
-  height: 34px;
-  border-top: 1px solid var(--hair-2);
-  border-bottom: 1px solid var(--hair-2);
-}
-.wp-idea[data-k='relay']:hover i:nth-child(3) {
-  translate: 3px 0;
-}
-/* 长：几块插件，空着的一格长出来 */
-.wp-idea[data-k='grow'] i {
-  width: 26px;
-  height: 26px;
-  border-radius: var(--r-label);
-  border: 1px solid var(--hair-2);
-  background: var(--white);
-}
-.wp-idea[data-k='grow'] i:nth-child(1) {
-  top: 4px;
-  left: 0;
-}
-.wp-idea[data-k='grow'] i:nth-child(2) {
-  top: 4px;
-  left: 34px;
-}
-.wp-idea[data-k='grow'] i:nth-child(3) {
-  top: 38px;
-  left: 0;
-}
-.wp-idea[data-k='grow'] i:nth-child(4) {
-  top: 38px;
-  left: 34px;
-  border: 1px dashed var(--accent);
-  background: transparent;
-}
-.wp-idea[data-k='grow']:hover i:nth-child(4) {
-  border: 1px solid var(--leaf);
-  background: var(--leaf-1);
-}
-
-/* ---------- 对比：页面上不点竞品名 ---------- */
-.wp-compare {
-  margin-left: calc((100% + var(--col-gap)) / 12 * 2);
-  overflow-x: auto;
-}
-.wp-compare table {
-  width: 100%;
-  min-width: 640px;
-  border-collapse: collapse;
-  font: 400 var(--t-small) / 1.75 var(--sans);
-  letter-spacing: 0.03em;
-}
-.wp-compare th,
-.wp-compare td {
-  padding: 14px 18px 14px 0;
-  border-bottom: 1px solid var(--hair);
-  text-align: left;
-  vertical-align: top;
-}
-.wp-compare thead th {
-  padding-top: 0;
-  border-bottom-color: var(--ink);
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-  color: var(--mute);
-}
-.wp-compare tbody th {
-  width: 24%;
-  font-weight: 400;
-  color: var(--ink);
-}
-.wp-compare tbody th small {
-  display: block;
-  font-size: var(--t-label);
-  color: var(--mute);
-}
-.wp-compare td {
-  color: var(--ink-2);
-}
-.wp-compare .wp-us th,
-.wp-compare .wp-us td {
-  border-bottom: 0;
-  background: var(--accent-wash);
-  color: var(--ink);
-}
-.wp-compare .wp-us th {
-  padding-left: 14px;
-  border-radius: var(--r-inset) 0 0 var(--r-inset);
-}
-.wp-compare .wp-us td:last-child {
-  border-radius: 0 var(--r-inset) var(--r-inset) 0;
-}
-.wp-gap {
-  margin-top: 18px;
-  font-size: var(--t-small);
-  color: var(--mute);
-}
-
-/* ---------- 现状：已发布 / 开发中 / 现在怎么开始 ---------- */
-.wp-now {
+/* ---------- 第二屏：左边三句「不」和两行约定；右边现在能拿到什么、怎么试 ---------- */
+.wp-why-in {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--col-gap);
-  row-gap: 32px;
+  row-gap: 48px;
   align-items: start;
+  padding-top: 20px;
+  border-top: 1px solid var(--ink);
 }
-.wp-now-col {
+.wp-why-not {
+  grid-column: 1 / span 6;
   display: grid;
-  gap: 12px;
-  padding-top: 16px;
+  gap: 20px;
+}
+.wp-why-not .m-head-meta {
+  grid-column: auto;
+  padding-top: 0;
+}
+.wp-nots {
+  display: grid;
+  gap: 0.3em;
+  margin-bottom: 12px;
+  font: 300 var(--t-h2) / 1.45 var(--sans);
+  letter-spacing: 0.04em;
+}
+.wp-nots span {
+  display: block;
+}
+.wp-why-line {
+  max-width: 36em;
+  padding-top: 14px;
+  border-top: 1px solid var(--hair);
+  color: var(--ink-2);
+  line-height: 1.9;
+}
+.wp-now {
+  grid-column: 8 / -1;
+  display: grid;
+  gap: 22px;
+}
+.wp-now-row {
+  display: grid;
+  gap: 6px;
+  padding-top: 14px;
   border-top: 1px solid var(--hair-2);
 }
-.wp-now-col:nth-child(1) {
-  grid-column: 3 / span 5;
+.wp-now-row:first-child {
+  border-top: 0;
+  padding-top: 4px;
 }
-.wp-now-col:nth-child(2) {
-  grid-column: 8 / span 5;
+.wp-now-row > p:not(.wp-now-label, .wp-now-note) {
+  color: var(--ink-2);
 }
 .wp-now-label {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 8px 10px;
   font: 500 var(--t-label) / 1.4 var(--sans);
   letter-spacing: 0.16em;
   color: var(--mute);
@@ -456,85 +323,22 @@ html:has(.wp-nav) {
   background: var(--accent);
   box-shadow: none;
 }
-.wp-now-col ul {
-  display: grid;
-  gap: 6px;
-  color: var(--ink-2);
+.wp-now-label[data-tone='no']::before {
+  box-shadow: inset 0 0 0 1.2px var(--hair-2);
+}
+.wp-now-label .m-note {
+  letter-spacing: 0.04em;
 }
 .wp-now-note {
   font-size: var(--t-small);
+  line-height: 1.75;
   color: var(--mute);
 }
-.wp-now-start {
-  grid-column: 3 / -1;
-  min-width: 0;
-  display: grid;
-  gap: 14px;
-  padding: 22px 24px 24px;
-  border-radius: var(--r-card);
-  background: var(--white);
-  box-shadow: 0 0 0 1px var(--hair);
-}
-.wp-now-start h3 {
-  font: 300 var(--t-h3) / 1.4 var(--sans);
-  letter-spacing: 0.04em;
-}
-.wp-now-start > p {
-  color: var(--ink-2);
-}
-.wp-now-start ol {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px var(--col-gap);
-  counter-reset: step;
-}
-.wp-now-start li:first-child {
-  grid-column: 1 / -1;
-}
-.wp-now-start li {
-  display: grid;
-  align-content: start;
-  gap: 6px;
-  min-width: 0;
-  counter-increment: step;
-}
-.wp-now-start li b {
-  font-weight: 400;
-  color: var(--ink);
-}
-.wp-now-start li b::before {
-  content: counter(step, decimal-leading-zero);
-  margin-right: 10px;
-  font: italic 300 var(--t-body) / 1 var(--latin);
-  color: var(--accent-ink);
-}
-.wp-now-start li > span {
-  font-size: var(--t-small);
-  color: var(--mute);
-}
-.wp-bounds {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px var(--col-gap);
-  max-width: 64rem;
-  margin: 56px 0 0 calc((100% + var(--col-gap)) / 12 * 2);
-}
-.wp-bounds li {
-  position: relative;
-  padding-left: 18px;
-  font-size: var(--t-small);
-  color: var(--ink-2);
-}
-.wp-bounds li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.95em;
-  width: 8px;
-  height: 1px;
-  background: var(--hair-2);
+.wp-now .wp-go {
+  margin-top: 8px;
 }
 
+/* ---------- 第三屏：事情都顺了，那人做什么？ ---------- */
 /* ---------- 最后：事情都顺了，那人做什么？ ---------- */
 .wd {
   display: grid;
@@ -629,44 +433,6 @@ html:has(.wp-nav) {
   font: italic 300 var(--t-small) / 1 var(--latin);
   color: var(--mute);
 }
-.wp-uses {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--col-gap);
-  margin: 56px 0 0 calc((100% + var(--col-gap)) / 12 * 2);
-}
-.wp-use {
-  display: grid;
-  align-content: start;
-  gap: 10px;
-  padding-top: 16px;
-  border-top: 1px solid var(--hair-2);
-}
-.wp-use h3 {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font: 300 var(--t-h3) / 1.4 var(--sans);
-  letter-spacing: 0.04em;
-}
-.wp-use h3::before {
-  content: '';
-  flex: none;
-  width: 10px;
-  height: 10px;
-  border-radius: var(--r-label);
-  background: var(--leaf-1);
-}
-.wp-use[data-k='u1'] h3::before {
-  background: var(--leaf-2);
-}
-.wp-use[data-k='u2'] h3::before {
-  background: var(--leaf-3);
-}
-.wp-use .wp-use-eg {
-  padding-left: 22px;
-  color: var(--ink-2);
-}
 .wp-letter {
   display: grid;
   gap: 0.9em;
@@ -711,403 +477,64 @@ html:has(.wp-nav) {
   letter-spacing: 0.04em;
 }
 
-/* ---------- 想怎么干：插件排开，再拼成一种干法 ---------- */
-.ww {
-  display: grid;
-  /* 画面在左（八栏），文字在右（四栏），和全景同一种排法 */
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 18px;
-  align-items: start;
-}
-.ww-stage {
-  grid-column: 1 / span 8;
-  grid-row: 1;
-}
-.ww-side {
-  grid-column: 9 / -1;
-  grid-row: 1;
-  display: grid;
-  align-content: start;
-  min-width: 0;
-}
-.ww-tabs {
-  display: grid;
-  border-top: 1px solid var(--ink);
-}
-.ww-row {
-  border-bottom: 1px solid var(--hair);
-}
-.ww-tabs button {
-  all: unset;
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: 2.2em minmax(0, 1fr);
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  min-height: 44px;
-  padding: 8px 0;
-  font: 400 var(--t-ui) / 1.5 var(--sans);
-  letter-spacing: 0.04em;
-  color: var(--mute);
-  cursor: pointer;
-  transition: color 0.4s var(--ease);
-}
-.ww-tabs .m-no {
-  font-size: var(--t-ui);
-  color: var(--mute);
-  transition: color 0.4s var(--ease);
-}
-.ww-tabs button:hover,
-.ww-row[data-on] button {
-  color: var(--ink);
-}
-.ww-row[data-on] .m-no {
-  color: var(--accent-ink);
-}
-.ww-more {
-  display: grid;
-  grid-template-rows: 0fr;
-  opacity: 0;
-  transition:
-    grid-template-rows 0.7s var(--ease),
-    opacity 0.5s var(--ease);
-}
-.ww-more > p {
-  min-height: 0;
-  overflow: hidden;
-  padding-left: calc(2.2em + 10px);
-  font-size: var(--t-small);
-  color: var(--ink-2);
-}
-.ww-row[data-on] .ww-more {
-  grid-template-rows: 1fr;
-  opacity: 1;
-}
-.ww-row[data-on] .ww-more > p {
-  padding-bottom: 14px;
-}
-.ww-foot {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin-top: 22px;
-}
-.ww-foot .wt-auto {
-  margin-left: 6px;
-}
-.ww-stage {
-  --t: 52px;
-  position: relative;
-  height: 460px;
-  overflow: hidden;
-  border-radius: var(--r-panel);
-  background: var(--stage);
-}
-.ww-lines {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-.ww-lines path {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 1.3;
-  stroke-linecap: round;
-  opacity: 0.45;
-}
-.ww-lines .ww-rail {
-  stroke-dasharray: 2 7;
-  opacity: 0.2;
-}
-.ww-tile {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--t);
-  height: var(--t);
-  transition:
-    transform 0.95s var(--ease),
-    opacity 0.6s var(--ease);
-}
-/* 没有 JS：插件整整齐齐排开，干法的切换藏起来 */
-html:not(.js) .ww-tabs,
-html:not(.js) .ww-lines {
-  display: none;
-}
-html:not(.js) .ww-stage {
-  display: flex;
-  flex-wrap: wrap;
-  place-content: center;
-  gap: 46px 30px;
-  height: auto;
-  padding: 48px 24px 64px;
-}
-html:not(.js) .ww-tile {
-  position: relative;
-}
-.ww-stage[data-jump] .ww-tile,
-.ww-stage[data-jump] .ww-chip,
-.ww-stage[data-jump] .ww-ico {
-  transition: none;
-}
-.ww-ico {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  border-radius: var(--r-inset);
-  background: var(--white);
-  box-shadow:
-    0 0 0 1px var(--hair),
-    0 10px 20px -16px rgb(var(--shade) / 0.5);
-  color: var(--ink-2);
-  transition:
-    background-color 0.5s var(--ease),
-    color 0.5s var(--ease),
-    box-shadow 0.5s var(--ease);
-}
-.ww-ico svg {
-  width: 44%;
-  height: 44%;
-  stroke-width: 1.6;
-}
-.ww-name {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  translate: -50% 0;
-  font: 400 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.04em;
-  color: var(--ink-2);
-  white-space: nowrap;
-  transition: opacity 0.3s var(--ease);
-}
-.ww-tile[data-mini] .ww-name {
-  opacity: 0;
-}
-.ww-tile[data-dim] {
-  opacity: 0.55;
-}
-.ww-tile[data-lit] .ww-ico {
-  background: var(--leaf-1);
-  color: var(--leaf);
-  box-shadow: 0 0 0 1px rgb(79 110 72 / 0.35);
-}
-.ww-tile[data-yours] .ww-ico {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--accent);
-  color: var(--accent-ink);
-}
-.ww-tile[data-yours] .ww-ico::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--r-inset);
-  border: 1px dashed var(--paper);
-}
-.ww-made {
-  display: none;
-}
-.ww-tile[data-made] .ww-made {
-  display: inline;
-}
-.ww-tile[data-made] .ww-ico svg.ww-made {
-  display: block;
-}
-.ww-tile[data-made] .ww-plus {
-  display: none;
-}
-.ww-tile[data-made][data-lit] .ww-ico {
-  background: var(--leaf-1);
-  box-shadow: 0 0 0 1px rgb(79 110 72 / 0.35);
-  color: var(--leaf);
-}
-.ww-chip {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  /* 按字宽排，不因为离舞台右边近就被挤成两三行 */
-  width: max-content;
-  max-width: 160px;
-  padding: 4px 10px;
-  border-radius: var(--r-pill);
-  background: var(--white);
-  box-shadow: 0 0 0 1px var(--hair);
-  font: 400 var(--t-label) / 1.5 var(--sans);
-  letter-spacing: 0.04em;
-  color: var(--ink-2);
-  text-align: center;
-  opacity: 0;
-  translate: -50% 6px;
-  transition:
-    opacity 0.45s var(--ease),
-    translate 0.6s var(--ease);
-}
-.ww-chip[data-on] {
-  opacity: 1;
-  translate: -50% 0;
-}
-.ww-chip[data-last] {
-  color: var(--ink);
-  box-shadow: 0 0 0 1px var(--ink);
-}
-.ww-token {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 3;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 12px;
-  border-radius: var(--r-pill);
-  background: var(--white);
-  box-shadow:
-    0 0 0 1px var(--hair-2),
-    0 10px 20px -14px rgb(var(--shade) / 0.5);
-  font: 400 var(--t-small) / 1.4 var(--sans);
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.4s var(--ease);
-}
-.ww-token::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-.ww-token[data-on] {
-  opacity: 1;
-}
 /* ---------- 窄屏 ---------- */
+/* 两栏首屏在 901–1240 之间舞台只有六七百像素宽：画面高一些，画面里的字放得下 */
+@media (min-width: 901px) and (max-width: 1240px) {
+  .wp-stage .m-reel-view {
+    --view: 16 / 11 !important;
+  }
+}
 @media (max-width: 900px) {
-  .wp .wp-hero-demo {
+  /* 手机、平板竖着：文字在前，舞台在后 */
+  .wp-hero {
+    row-gap: 36px;
+  }
+  .wp-hero-copy,
+  .wp-hero-stage,
+  .wp-why-not,
+  .wp-now {
     grid-column: 1 / -1;
-  }
-  .wp-ideas,
-  .wp-uses,
-  .ww {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .ww-stage,
-  .ww-side {
-    grid-column: 1;
     grid-row: auto;
   }
-  .ww-foot {
-    margin-top: 14px;
-  }
-  .wp-compare,
   .wd,
-  .wp-uses,
-  .wp-bounds,
-  .wp-close {
-    margin-left: 0;
-    padding-left: 0;
-  }
-  .wp-now-col:nth-child(1),
-  .wp-now-col:nth-child(2),
-  .wp-now-start {
-    grid-column: 1 / -1;
-  }
-  .wp-now-start ol {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  .wp-close,
   .wp-letter,
   .wp-then,
   .wp-vision {
     margin-left: 0;
-  }
-  .wp-bounds {
-    grid-template-columns: minmax(0, 1fr);
+    padding-left: 0;
   }
 }
 @media (max-width: 640px) {
-  /* 手机上顶栏只留产品名和切换：去处靠往下滑 */
-  .wp-nav-links {
+  /* 窄屏上两张纸上下叠，画面竖一些；画面里的字不再跟着宽度缩：底字 11.5px */
+  .wp-stage .m-reel-view {
+    --view: 4 / 5 !important;
+  }
+  .m-work .m-sc.wv {
+    font-size: 11.5px;
+  }
+  /* 章节线折成两行四格 */
+  .wp-stage .m-reel-bottom {
+    flex-wrap: wrap;
+  }
+  .wp-stage .m-segs {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+  .wp-stage .m-seg {
+    flex: 1 1 calc(25% - 6px);
+  }
+  .wp-stage[data-intro] .m-seg {
+    flex-basis: calc(33% - 6px);
+  }
+  .wp-stage .m-reel-tools {
+    margin-left: auto;
+  }
+  /* 顶栏只留三条路：名字和报名靠首屏、往下滑 */
+  .wp-nav-name,
+  .wp-nav-go {
     display: none;
-  }
-  .wp-nav-in {
-    justify-content: space-between;
-    gap: 8px;
-  }
-  /* 对比表竖着读：一种做法一张，每格前面标上是哪一列 */
-  .wp-compare {
-    overflow: visible;
-  }
-  .wp-compare table,
-  .wp-compare tbody,
-  .wp-compare tr,
-  .wp-compare th,
-  .wp-compare td {
-    display: block;
-    min-width: 0;
-  }
-  .wp-compare thead {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-  }
-  .wp-compare tbody tr {
-    display: grid;
-    gap: 6px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--hair);
-  }
-  .wp-compare tbody tr:first-child {
-    border-top: 1px solid var(--ink);
-  }
-  .wp-compare tbody th,
-  .wp-compare tbody td {
-    width: auto;
-    padding: 0;
-    border: 0;
-  }
-  .wp-compare tbody th {
-    margin-bottom: 2px;
-  }
-  .wp-compare td {
-    display: grid;
-    grid-template-columns: 5.5em minmax(0, 1fr);
-    gap: 12px;
-  }
-  .wp-compare td::before {
-    content: attr(data-h);
-    color: var(--mute);
-  }
-  .wp-compare tbody .wp-us {
-    margin-top: 12px;
-    padding: 16px 14px;
-    border: 0;
-    border-radius: var(--r-inset);
-    background: var(--accent-wash);
-  }
-  .wp-compare .wp-us th,
-  .wp-compare .wp-us td {
-    padding: 0;
-    border-radius: 0;
-    background: none;
-  }
-  .wp-idea {
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: center;
-    gap: 6px 18px;
-    padding: 20px 22px;
-  }
-  .wp-idea-art {
-    grid-row: span 2;
-    width: 90px;
-    margin: 0;
   }
   /* 一天竖着放：从上到下是 9 点到 18 点 */
   .wd-bar {
@@ -1130,11 +557,7 @@ html:not(.js) .ww-tile {
 @media (prefers-reduced-motion: reduce) {
   .wd-blk,
   .wd-blk > span,
-  .ww-tile,
-  .ww-chip,
-  .ww-more,
-  .wp-idea,
-  .wp-idea-art i {
+  .wp-pick button {
     transition: none !important;
   }
 }

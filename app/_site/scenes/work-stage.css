@@ -1,0 +1,916 @@
+/* Work 页首屏舞台的新画面（work-stage.tsx）。窗口、纸、浮条、终端这些零件沿用 work.css；
+   这里只有新画面里多出来的：小标签、底栏、菜单栏展开、提问卡、工作流程的链与交接、勾选清单、授权开关……
+   颜色只用窗口自己的那几种（珍珠灰、白纸、石墨、铜色、植物绿）；讲解用的小标签是墨色加一点杏橙。 */
+
+/* ---------- 讲解：某一处第一次用到时亮的小标签 ---------- */
+.ws-pin.m-v {
+  position: absolute;
+  z-index: 8;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.28em 0.75em;
+  border-radius: 999px;
+  background: var(--sw-ink);
+  color: #fff;
+  font-size: 0.78em;
+  white-space: nowrap;
+  box-shadow: 0 0.7em 1.4em -0.7em rgb(var(--shade) / 0.55);
+}
+.ws-pin::before {
+  content: '';
+  width: 0.45em;
+  height: 0.45em;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* 一个字一个字打出来 */
+.ws-typed .m-v {
+  transition-duration: 0.18s;
+}
+
+/* ---------- 版式 ---------- */
+.ws-two .wv-desk {
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+.ws-one .wv-desk,
+.ws-owe .wv-desk {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+.ws-one .wv-body {
+  gap: 0.8em;
+  padding: 1em 1.2em;
+}
+.ws-two .wv-side > .wv-chat {
+  height: 100%;
+}
+
+/* ---------- 底栏：项目里的插件一排，右边是对助理说 ---------- */
+.ws-dock {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.35em 0.45em;
+  border-radius: 0.8em;
+  background: var(--sw-paper);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+.ws-dock > span {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.1em;
+  height: 2.1em;
+  border-radius: 0.55em;
+  color: var(--sw-ink-2);
+}
+.ws-dock > span[data-on] {
+  background: var(--sw-wash);
+  color: var(--sw-ink);
+  box-shadow: inset 0 0 0 1px var(--sw-line-2);
+}
+.ws-dock > .ws-dock-ask {
+  display: flex;
+  flex: 1;
+  gap: 0.45em;
+  justify-content: flex-start;
+  width: auto;
+  padding: 0 0.85em;
+  background: var(--sw-soft);
+  font-size: 0.84em;
+  color: var(--sw-mute);
+}
+.ws-dock-ask svg {
+  color: var(--sw-accent);
+}
+
+/* ---------- 菜单栏展开：几个 AI 各停在哪 ---------- */
+.ws-drop.m-v {
+  position: absolute;
+  z-index: 7;
+  top: 2.7em;
+  right: 0.8em;
+  width: min(19em, 62%);
+  padding: 0.5em;
+  border-radius: 0.8em;
+  background: var(--sw-paper);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.08),
+    0 1.2em 2.4em -1.2em rgb(var(--shade) / 0.55);
+  transform-origin: top right;
+}
+.ws-drop-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.3em;
+  padding: 0.2em 0.45em 0.45em;
+  border-bottom: 1px solid var(--sw-line);
+  font-size: 0.82em;
+  color: var(--sw-mute);
+}
+.ws-drop-head b {
+  color: var(--sw-ink);
+}
+.ws-drop li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.4em 0.45em;
+  border-radius: 0.55em;
+  font-size: 0.88em;
+  line-height: 1.4;
+  transition: background-color 0.5s var(--ease);
+}
+.ws-drop li[data-wait] small {
+  color: var(--sw-accent);
+}
+.ws-drop li[data-on] {
+  background: var(--sw-wash);
+}
+
+/* ---------- 提问卡、选项 ---------- */
+.ws-askcard {
+  display: grid;
+  gap: 0.45em;
+  padding: 0.6em 0.75em;
+  border-radius: 0.75em;
+  background: var(--sw-paper);
+  box-shadow:
+    inset 0 0 0 1px var(--sw-accent),
+    0 1em 2em -1.4em rgb(var(--shade) / 0.5);
+  transition: box-shadow 0.6s var(--ease);
+}
+.ws-askcard[data-answered] {
+  box-shadow: inset 0 0 0 1px rgb(79 110 72 / 0.5);
+}
+.ws-opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em;
+}
+.ws-opts > span {
+  position: relative;
+  padding: 0.3em 0.8em;
+  border-radius: 0.55em;
+  background: var(--sw-wash);
+  font-size: 0.86em;
+  transition:
+    background-color 0.5s var(--ease),
+    color 0.5s var(--ease),
+    opacity 0.5s var(--ease);
+}
+.ws-opts > span[data-picked] {
+  background: var(--sw-ink);
+  color: #fff;
+}
+.ws-opts > span[data-out] {
+  opacity: 0.4;
+}
+.ws-opts-wide > span {
+  padding: 0.45em 0.95em;
+}
+
+/* ---------- 工作流程：一条链，两站之间是交接 ---------- */
+.ws-flow .wv-desk {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+.ws-flow-sheet .wv-body {
+  flex: 1;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 0.6em;
+  padding-block: 0.6em;
+}
+.ws-flow-name {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7em;
+  min-height: 1.8em;
+}
+.ws-flow-name small {
+  display: inline;
+  flex: none;
+}
+.ws-flow-name .ws-typed {
+  min-width: 0;
+  font-size: 1.08em;
+  font-weight: 500;
+}
+.ws-flow-go.m-v {
+  position: relative;
+  align-self: center;
+  flex: none;
+  margin-left: auto;
+  padding: 0.3em 0.9em;
+  border-radius: 0.55em;
+  background: var(--sw-ink);
+  color: #fff;
+  font-size: 0.82em;
+}
+.ws-chain {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 4.8em;
+  padding: 0.45em 0.5em;
+  border-radius: 0.8em;
+  background: var(--sw-soft);
+  box-shadow: inset 0 0 0 1px var(--sw-line);
+}
+.ws-empty.m-v {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.84em;
+  color: var(--sw-mute);
+}
+.ws-station.m-v {
+  display: grid;
+  flex: none;
+  justify-items: center;
+  gap: 0.15em;
+  width: 7em;
+  font-size: 0.88em;
+  text-align: center;
+  line-height: 1.35;
+}
+.ws-station > span {
+  display: grid;
+  place-items: center;
+  width: 2.3em;
+  height: 2.3em;
+  border-radius: 0.6em;
+  background: var(--sw-paper);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  transition:
+    background-color 0.6s var(--ease) var(--dd, 0ms),
+    color 0.6s var(--ease) var(--dd, 0ms);
+}
+.ws-station[data-done] > span {
+  background: var(--leaf);
+  color: #fff;
+}
+.ws-station small {
+  font-size: 0.78em;
+}
+.ws-link.m-v {
+  position: relative;
+  display: grid;
+  flex: 1 1 0;
+  justify-items: center;
+  gap: 0.35em;
+  min-width: 2.6em;
+  margin-top: -1.2em;
+}
+.ws-link-line {
+  position: relative;
+  display: block;
+  width: 100%;
+  border-top: 1.5px dashed var(--sw-accent);
+}
+.ws-link[data-set] .ws-link-line {
+  border-top-style: solid;
+  border-top-color: var(--sw-ink-2);
+}
+.ws-link small {
+  font-size: 0.74em;
+  color: var(--sw-accent);
+  white-space: nowrap;
+}
+.ws-link[data-set] small {
+  color: var(--sw-ink-2);
+}
+.ws-dot {
+  position: absolute;
+  top: -0.38em;
+  left: 0;
+  width: 0.65em;
+  height: 0.65em;
+  border-radius: 50%;
+  background: var(--leaf);
+  opacity: 0;
+  transition:
+    left 1.4s var(--ease) var(--dd, 0ms),
+    opacity 0.3s var(--ease) var(--dd, 0ms);
+}
+.ws-dot[data-go] {
+  left: calc(100% - 0.65em);
+  opacity: 1;
+}
+.ws-flow-panel > * {
+  display: grid;
+  align-content: start;
+  gap: 0.55em;
+}
+.ws-flow-hint,
+.ws-flow-note {
+  font-size: 0.88em;
+  line-height: 1.7;
+  color: var(--sw-mute);
+}
+.ws-flow-sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2em 0.7em;
+  font-size: 0.9em;
+}
+.ws-flow-sub small {
+  display: inline;
+}
+.ws-saved.m-v {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  margin-left: auto;
+  font-size: 0.82em;
+  color: var(--leaf);
+}
+.ws-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+}
+.ws-palette > span {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.35em 0.75em;
+  border-radius: 0.6em;
+  background: var(--sw-paper);
+  box-shadow: inset 0 0 0 1px var(--sw-line-2);
+  font-size: 0.86em;
+  transition: opacity 0.5s var(--ease) 0.4s;
+}
+.ws-palette > span[data-used] {
+  opacity: 0.35;
+}
+.ws-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em;
+}
+.ws-modes > span {
+  padding: 0.3em 0.75em;
+  border-radius: 0.55em;
+  background: var(--sw-wash);
+  font-size: 0.84em;
+  color: var(--sw-ink-2);
+}
+.ws-modes > span[data-on] {
+  background: var(--sw-ink);
+  color: #fff;
+}
+.ws-rule {
+  display: grid;
+  gap: 0.4em;
+  padding: 0.55em 0.7em;
+  border-radius: 0.7em;
+  background: var(--sw-soft);
+  box-shadow: inset 0 0 0 1px var(--sw-line);
+  font-size: 0.88em;
+}
+.ws-rule p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35em 0.6em;
+}
+.ws-rule small {
+  display: inline;
+}
+.ws-chk {
+  padding: 0.05em 0.55em;
+  border-radius: 0.45em;
+  background: var(--sw-paper);
+  box-shadow: inset 0 0 0 1px var(--sw-line-2);
+}
+.ws-chk[data-on] {
+  background: var(--leaf-wash);
+  box-shadow: inset 0 0 0 1px rgb(79 110 72 / 0.5);
+  color: var(--leaf);
+}
+.ws-chk[data-on]::before {
+  content: '✓ ';
+}
+.ws-ask-text {
+  line-height: 1.65;
+}
+.ws-pick li {
+  font-size: 0.86em;
+}
+.ws-runlog {
+  display: grid;
+  gap: 0.45em;
+  font-size: 0.9em;
+}
+.ws-runlog li {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+}
+.ws-runlog svg {
+  color: var(--leaf);
+}
+.ws-spin {
+  flex: none;
+  width: 0.6em;
+  height: 0.6em;
+  margin: 0 0.22em;
+  border-radius: 50%;
+  background: var(--sw-accent);
+  animation: ws-wait 0.9s var(--ease) infinite alternate;
+}
+@keyframes ws-wait {
+  to {
+    opacity: 0.25;
+  }
+}
+.ws-review {
+  display: grid;
+  gap: 0.45em;
+}
+.ws-review-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.ws-review-row .wv-btns {
+  flex: none;
+  margin: 0;
+}
+.ws-review-doc {
+  display: grid;
+  flex: 1;
+  gap: 0.1em;
+  min-width: 0;
+  padding: 0.45em 0.7em;
+  border-radius: 0.65em;
+  background: var(--sw-soft);
+  box-shadow: inset 0 0 0 1px var(--sw-line);
+  font-size: 0.88em;
+}
+.ws-review-doc[data-wait] {
+  background: var(--sw-paper);
+  box-shadow: inset 0 0 0 1px var(--sw-accent);
+}
+.ws-review-doc[data-wait] small {
+  color: var(--sw-accent);
+}
+.ws-flow-done {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2em 0.8em;
+  font-size: 0.88em;
+}
+.ws-flow-done .wv-ok {
+  font-size: 1em;
+}
+
+/* ---------- 勾选清单（导入 Skill、Inbox 勾几条） ---------- */
+.ws-checklist {
+  display: grid;
+  gap: 0.2em;
+}
+.ws-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6em;
+  padding: 0.4em 0.5em;
+  border-radius: 0.55em;
+  font-size: 0.9em;
+  line-height: 1.45;
+  transition: background-color 0.5s var(--ease) var(--dd, 0ms);
+}
+.ws-checklist li[data-on] {
+  background: var(--sw-wash);
+}
+.ws-checklist li .wv-why {
+  margin-top: 0.25em;
+}
+.ws-tight li {
+  padding-block: 0.26em;
+}
+.ws-box {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.15em;
+  height: 1.15em;
+  margin-top: 0.15em;
+  border-radius: 0.3em;
+  box-shadow: inset 0 0 0 1.5px var(--sw-line-2);
+  color: #fff;
+  transition:
+    background-color 0.4s var(--ease) var(--dd, 0ms),
+    box-shadow 0.4s var(--ease) var(--dd, 0ms);
+}
+.ws-box svg {
+  width: 0.75em;
+  height: 0.75em;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease) var(--dd, 0ms);
+}
+li[data-on] > .ws-box {
+  background: var(--sw-ink);
+  box-shadow: none;
+}
+li[data-on] > .ws-box svg {
+  opacity: 1;
+}
+.ws-role {
+  padding: 0.05em 0.55em;
+  border-radius: 0.45em;
+  background: var(--leaf-wash);
+  color: var(--leaf);
+}
+
+/* ---------- 授权开关、写文件前先给你看 ---------- */
+.ws-grant {
+  display: grid;
+  gap: 0.25em;
+  padding: 0.5em 0.65em;
+  border-radius: 0.7em;
+  background: var(--sw-soft);
+}
+.ws-grant-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 0.88em;
+}
+.ws-grant ul {
+  display: grid;
+  gap: 0.1em;
+}
+.ws-grant li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.12em 0;
+  font-size: 0.86em;
+}
+.ws-toggle {
+  position: relative;
+  flex: none;
+  width: 2em;
+  height: 1.15em;
+  border-radius: 999px;
+  background: var(--sw-line-2);
+  transition: background-color 0.5s var(--ease) 0.5s;
+}
+.ws-toggle::after {
+  content: '';
+  position: absolute;
+  top: 0.15em;
+  left: 0.15em;
+  width: 0.85em;
+  height: 0.85em;
+  border-radius: 50%;
+  background: #fff;
+  transition: translate 0.5s var(--ease) 0.5s;
+}
+.ws-toggle[data-on] {
+  background: var(--leaf);
+}
+.ws-toggle[data-on]::after {
+  translate: 0.85em 0;
+}
+.ws-filepeek {
+  padding: 0.5em 0.7em;
+  border-radius: 0.55em;
+  background: var(--sw-soft);
+  font-size: 0.82em;
+  line-height: 1.6;
+  color: var(--sw-ink-2);
+}
+
+/* ---------- 依据：本期采用材料、当时的原文 ---------- */
+.ws-used {
+  margin-top: 0.2em;
+  padding-top: 0.5em;
+  border-top: 1px dashed var(--sw-line-2);
+}
+.ws-used ol {
+  display: grid;
+  gap: 0.1em;
+  margin-top: 0.3em;
+  font-size: 0.86em;
+}
+.ws-used li {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6em;
+  padding: 0.18em 0.45em;
+  border-radius: 0.45em;
+  transition: background-color 0.5s var(--ease);
+}
+.ws-used li small {
+  display: inline;
+}
+.ws-used li[data-on] {
+  background: var(--sw-accent-soft);
+}
+.ws-origin {
+  display: grid;
+  gap: 0.3em;
+  padding: 0.55em 0.7em;
+  border-radius: 0.65em;
+  background: var(--sw-accent-soft);
+}
+.ws-origin p:last-child {
+  display: flex;
+  gap: 0.45em;
+  font-size: 0.92em;
+  line-height: 1.6;
+}
+.ws-origin svg {
+  margin-top: 0.25em;
+  color: var(--sw-accent);
+}
+
+/* ---------- 第一天：材料拖进来、项目建议、落进各自的插件 ---------- */
+.ws-drop-zone {
+  display: grid;
+  gap: 0.45em;
+  padding: 0.7em;
+  border: 1.5px dashed var(--sw-line-2);
+  border-radius: 0.8em;
+  background: var(--sw-soft);
+}
+.ws-file.m-v {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.45em 0.65em;
+  border-radius: 0.6em;
+  background: var(--sw-paper);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  font-size: 0.88em;
+}
+.ws-file small {
+  display: inline;
+  margin-left: auto;
+}
+.ws-read {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  font-size: 0.86em;
+}
+.ws-read .m-bar {
+  flex: 1;
+}
+.ws-brief {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.4em 0.8em;
+  font-size: 0.88em;
+  line-height: 1.55;
+}
+.ws-brief dt {
+  color: var(--sw-mute);
+  white-space: nowrap;
+}
+.ws-strike {
+  text-decoration: line-through transparent;
+  transition:
+    color 0.5s var(--ease) 0.5s,
+    text-decoration-color 0.5s var(--ease) 0.5s;
+}
+.ws-strike[data-on] {
+  color: var(--sw-mute);
+  text-decoration-color: currentColor;
+}
+.ws-edited.m-v {
+  margin-left: 0.5em;
+  padding: 0 0.4em;
+  border-radius: 0.3em;
+  background: var(--leaf-wash);
+}
+.ws-landed {
+  display: grid;
+  gap: 0.45em;
+}
+.ws-landed li {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.5em 0.65em;
+  border-radius: 0.65em;
+  background: var(--leaf-wash);
+  font-size: 0.9em;
+}
+.ws-landed svg {
+  color: var(--leaf);
+}
+
+/* ---------- 挑刺：三条反例，删两条，留下的插回去 ---------- */
+.ws-insert {
+  padding: 0.45em 0.65em;
+  border-radius: 0.55em;
+  background: var(--leaf-wash);
+  font-size: 0.92em;
+  line-height: 1.7;
+}
+.ws-counters {
+  display: grid;
+  gap: 0.4em;
+}
+.ws-counters li {
+  display: grid;
+  gap: 0.1em;
+  padding: 0.45em 0.65em;
+  border-radius: 0.6em;
+  background: var(--sw-paper);
+  box-shadow: inset 0 0 0 1px var(--sw-line);
+  transition: opacity 0.5s var(--ease);
+}
+.ws-counters li[data-out] {
+  opacity: 0.3;
+}
+.ws-counters li[data-out] span {
+  text-decoration: line-through;
+}
+
+/* ---------- 演示稿 ---------- */
+.ws-slides {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5em;
+}
+.ws-slides li {
+  display: grid;
+  align-content: start;
+  gap: 0.35em;
+  aspect-ratio: 16 / 10;
+  padding: 0.5em 0.6em;
+  border-radius: 0.5em;
+  background: var(--sw-soft);
+  box-shadow: inset 0 0 0 1px var(--sw-line);
+  font-size: 0.78em;
+  line-height: 1.35;
+}
+.ws-slides .m-ln {
+  width: 80%;
+  height: 0.35em;
+}
+.ws-slides .m-ln + .m-ln {
+  width: 55%;
+}
+
+/* ---------- 谁在等谁：纪要整理成四栏 ---------- */
+.ws-lines {
+  display: grid;
+  gap: 0.55em;
+  margin-top: 0.4em;
+}
+.ws-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55em;
+}
+.ws-board section {
+  display: grid;
+  align-content: start;
+  gap: 0.4em;
+}
+.ws-card {
+  display: grid;
+  gap: 0.2em;
+  padding: 0.5em 0.6em;
+  border-radius: 0.6em;
+  background: var(--sw-soft);
+  box-shadow: inset 0 0 0 1px var(--sw-line);
+  font-size: 0.86em;
+  line-height: 1.4;
+  transition: box-shadow 0.5s var(--ease);
+}
+.ws-card b {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1em 0.4em;
+}
+.ws-card[data-seen] {
+  box-shadow: inset 0 0 0 1px var(--sw-accent);
+}
+.ws-seen.m-v {
+  width: fit-content;
+  padding: 0 0.45em;
+  border-radius: 0.4em;
+  background: var(--sw-accent-soft);
+  font-size: 0.8em;
+  color: var(--sw-accent);
+}
+.ws-date {
+  font-weight: 400;
+  color: var(--sw-accent);
+}
+
+/* ---------- 说好的范围、范围改了、见客户、核对器、早上打开 ---------- */
+.ws-scope-line .m-stack > span {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2em 0.5em;
+}
+.ws-prep {
+  display: grid;
+  gap: 0.4em;
+}
+.ws-src-row {
+  position: relative;
+  border-radius: 0.3em;
+  transition: background-color 0.5s var(--ease);
+}
+.ws-src-row[data-on] {
+  background: var(--sw-accent-soft);
+}
+.ws-file-in.m-v {
+  margin-bottom: 0.2em;
+}
+.ws-quote td small {
+  color: var(--sw-accent);
+}
+.ws-quote tr td {
+  transition: background-color 0.5s var(--ease) var(--dd, 0ms);
+}
+.ws-quote tr[data-flag] td {
+  background: var(--sw-accent-soft);
+}
+.wv-reqs-big li.ws-cut {
+  position: relative;
+}
+.wv-reqs-big li.ws-cut[data-on] {
+  background: var(--sw-accent-soft);
+}
+.ws-brief-list {
+  display: grid;
+  gap: 0.4em;
+}
+.ws-brief-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3em 0.65em;
+  padding: 0.55em 0.75em;
+  border-radius: 0.65em;
+  background: var(--sw-soft);
+  font-size: 0.92em;
+}
+.ws-brief-list li b {
+  min-width: 7em;
+}
+.ws-brief-list li[data-wait] {
+  background: var(--sw-accent-soft);
+}
+.ws-brief-list svg {
+  color: var(--sw-mute);
+}
+
+/* ---------- 窄画面：两张纸上下叠 ---------- */
+@container (max-width: 560px) {
+  .ws-two .wv-desk {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1.25fr) minmax(0, 1fr);
+  }
+  .ws-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ws-drop.m-v {
+    width: 76%;
+  }
+  .ws-empty.m-v {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.84em;
+  color: var(--sw-mute);
+}
+.ws-station.m-v {
+    width: 5.6em;
+  }
+  .ws-dock > span {
+    width: 1.9em;
+    height: 1.9em;
+  }
+}
+
+/* 要求下面那行小字前后换一句：叠在同一格 */
+.wv-reqs-big li small.m-stack {
+  display: grid;
+}
+/* 右栏里的一张确认卡：只占自己的高度 */
+.wv-swap > * > .ws-side-ask {
+  height: auto;
+  align-content: start;
+}

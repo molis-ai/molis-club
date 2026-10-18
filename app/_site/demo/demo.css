@@ -303,3 +303,63 @@
     display: none;
   }
 }
+
+/* ---------- 舞台的字幕与章节标题（Work 首屏用；首页不开） ---------- */
+.m-reel-sub {
+  display: grid;
+  gap: 4px;
+  min-height: 4.6em;
+  align-content: start;
+}
+.m-reel-was {
+  font: 400 var(--t-small) / 1.6 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--mute);
+}
+.m-reel-say {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  font: 400 var(--t-read) / 1.55 var(--sans);
+  letter-spacing: 0.03em;
+  font-feature-settings: 'palt' 1;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.6s var(--ease),
+    transform 0.6s var(--ease);
+}
+.m-reel-sub[data-done] .m-reel-say {
+  opacity: 1;
+  transform: none;
+}
+.m-reel-bottom[data-titles] {
+  align-items: flex-start;
+}
+.m-reel-bottom[data-titles] .m-seg {
+  padding-bottom: 0;
+}
+.m-seg-title {
+  display: block;
+  margin-top: 8px;
+  font: 400 var(--t-small) / 1.45 var(--sans);
+  letter-spacing: 0.02em;
+  color: var(--mute);
+  transition: color 0.4s var(--ease);
+}
+.m-seg:hover .m-seg-title,
+.m-seg[aria-pressed='true'] .m-seg-title {
+  color: var(--ink);
+}
+html:not(.js) .m-reel-say {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-reel-say {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

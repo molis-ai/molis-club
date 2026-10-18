@@ -92,7 +92,7 @@
   justify-items: start;
 }
 
-/* 一行去开源仓库 */
+/* 一行去源码仓库 */
 .wdl-code {
   display: flex;
   flex-wrap: wrap;

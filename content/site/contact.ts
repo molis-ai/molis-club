@@ -64,6 +64,8 @@ export const topics: Record<
 > = {
   enterprise: { intent: 'enterprise' },
   work: { intent: 'follow', product: 'work' },
+  /** Work 页「报名首批试用」（负责人 2026-10-18 定要招首批试用）：仍是关注 Work，预填一句 */
+  'work-trial': { intent: 'follow', product: 'work', idea: '想报名 Molis Work 首批试用。我主要用它来：' },
   tool: { intent: 'follow', product: 'tool' },
   life: { intent: 'follow', product: 'life' },
   story: { intent: 'follow', product: 'story' },

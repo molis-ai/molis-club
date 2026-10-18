@@ -19,7 +19,6 @@ import {
   Play,
   Rss,
   Sparkles,
-  Star,
   Target,
   Terminal,
   Timer,
@@ -28,24 +27,24 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
-import type { Persona, WorkActId } from '../../../content/site/work';
 import { at, Canvas, Cursor, type Scene } from '../demo/demo';
 import './work.css';
 
 // Molis Work 的演示画面：照 Molis Work 自己的窗口（Soft Workbench：珍珠灰的桌面、白纸、石墨色的动作、铜色的「在等」）。
-// 演示区外面是 Work 的木色，成功是植物绿。首屏两段按时间播；四幕八段（两种读者各四段）随滚动推进。
-// 画面里的项目、人名、数字都是示意数据。阶段：只有「接 · 写代码」整段在 v0.2.0 里，其余都是开发中（标在各章上）。
+// 演示区外面是 Work 的木色，成功是植物绿。这里是窗口零件和几段已经做好的画面；
+// Work 页首屏舞台按路把它们和 work-stage.tsx 里的新画面排成每条路八段。
+// 画面里的项目、人名、数字都是示意数据；每段的阶段标在 content/site/work.ts 的章节上。
 
-type Vars = CSSProperties & Record<`--${string}`, string | number>;
+export type Vars = CSSProperties & Record<`--${string}`, string | number>;
 
-const Tick = ({ step, delay, tone }: { step: number; delay?: number; tone?: 'wait' }) => (
+export const Tick = ({ step, delay, tone }: { step: number; delay?: number; tone?: 'wait' }) => (
   <i className="m-tick" data-tone={tone} style={at(step, undefined, delay)}>
     <Check strokeWidth={3} aria-hidden="true" />
   </i>
 );
 
 /** 一段只在某几步出现、出现前不占位置的行（终端、对话、列表里新来的一条） */
-function Line({
+export function Line({
   show,
   className = '',
   children,
@@ -62,7 +61,7 @@ function Line({
 }
 
 /** Molis Work 的窗口：一道窄标题栏（位置）+ 桌面上的几张纸 */
-function Win({
+export function Win({
   step,
   className,
   place,
@@ -101,7 +100,7 @@ function Win({
   );
 }
 
-function Sheet({
+export function Sheet({
   icon: Icon,
   title,
   sub,
@@ -129,14 +128,14 @@ function Sheet({
 }
 
 /** 同一个位置上前后换几张纸（右栏从 Inbox 换到终端……） */
-const Swap = ({ children, className = '' }: { children: ReactNode; className?: string }) => (
+export const Swap = ({ children, className = '' }: { children: ReactNode; className?: string }) => (
   <div className={`wv-swap ${className}`}>{children}</div>
 );
 
-type BarItem = { label: string; icon?: LucideIcon; primary?: boolean; tag?: string };
+export type BarItem = { label: string; icon?: LucideIcon; primary?: boolean; tag?: string };
 
 /** 浮条：选中的东西旁边递来两三个动作；光标点在第一个上 */
-function Bar({
+export function Bar({
   show,
   items,
   land,
@@ -177,7 +176,7 @@ function Bar({
 }
 
 /** 终端：Agent 在这里干活，终端绑着目标 */
-function Term({
+export function Term({
   name,
   bind,
   children,
@@ -200,7 +199,7 @@ function Term({
   );
 }
 
-const Who = ({ k, children }: { k: 'cc' | 'cx' | 'ds' | 'me' | 'ai' | 'p'; children: ReactNode }) => (
+export const Who = ({ k, children }: { k: 'cc' | 'cx' | 'ds' | 'me' | 'ai' | 'p'; children: ReactNode }) => (
   <span className="wv-who" data-k={k}>
     {children}
   </span>
@@ -212,7 +211,7 @@ const Who = ({ k, children }: { k: 'cc' | 'cx' | 'ds' | 'me' | 'ai' | 'p'; child
    写文档：一页稿子，你写的、助理整理的都在同一页，每段带出处；选中一句，记成待办（开发中）。
    ===================================================================== */
 
-const heroDev: Scene = {
+export const heroDev: Scene = {
   id: 'work-hero-ledger-dev',
   label:
     'Molis Work 示意：一页目标「上线支付」，三条完成要求。Claude Code 交了依据，第一条打勾；周三 Codex 接着做，读到做成 1/3；Codex 提议把金额改成「分」，等你同意；沙箱走通，第二条打勾；Codex 说做完了，收尾没生效：手机排版还差你的验收。',
@@ -329,90 +328,11 @@ const heroDev: Scene = {
   ),
 };
 
-const heroDoc: Scene = {
-  id: 'work-hero-ledger-doc',
-  label:
-    'Molis Work 示意：一页稿子《AI 编辑器观察》。你写的开头；助理接着整理的一段，带着视频和笔记的出处；你在末尾记了一句「周五前和编辑对一下结构」，选中它，旁边递来「记成待办」；点一下，待办里多了这一条，来源写着这篇稿子。',
-  steps: 4,
-  times: [0, 1.8, 4, 6, 8.6],
-  note: '开发中 · 界面示意',
-  render: ({ step }) => (
-    <Win
-      step={step}
-      className="wv-hero wv-ledger wv-ledger-doc"
-      place="Pages · AI 编辑器观察"
-      icon={FileText}
-      press={[2]}
-    >
-      <Sheet>
-        <p className="wv-ledger-title">
-          <b>AI 编辑器观察</b>
-          <span className="wv-pills">
-            <span className="wv-pill">草稿 · 周五交</span>
-          </span>
-        </p>
-        <div className="wv-para">
-          <Who k="me">你</Who>
-          <p>AI 编辑器的护城河不在模型，在工作流。用户换工具的理由，越来越少是「它更聪明」。</p>
-        </div>
-        <Line show={at(1)}>
-          <div className="wv-para">
-            <Who k="ai">
-              <Sparkles aria-hidden="true" />
-            </Who>
-            <p>
-              六家里有四家按月订阅；差别不在价格，在每档能接住多少工作流。
-              <small className="wv-src">
-                <Play aria-hidden="true" />
-                视频 · 12:40
-              </small>
-              <small className="wv-src">
-                <NotebookPen aria-hidden="true" />
-                笔记 · 3 条
-              </small>
-            </p>
-          </div>
-        </Line>
-        <div className="wv-para">
-          <Who k="me">你</Who>
-          <p>
-            <span className="m-hl" style={at(2)}>
-              周五前和编辑对一下结构。
-            </span>
-          </p>
-        </div>
-        <Bar
-          show={at(2, 3)}
-          below
-          compact
-          cursor={at(2, 3)}
-          items={[
-            { label: '记成待办', icon: ListChecks, primary: true },
-            { label: '记成进展', icon: Target },
-            { label: '找依据', icon: BookOpen },
-          ]}
-        />
-        <Line show={at(3)}>
-          <p className="wv-ledger-landed">
-            <ListChecks aria-hidden="true" />
-            <span>
-              待办里多了一条：<b>周五前和编辑对一下结构</b>
-            </span>
-            <small>来源：《AI 编辑器观察》</small>
-          </p>
-        </Line>
-      </Sheet>
-    </Win>
-  ),
-};
-
-export const workHeroScenes: Record<Persona, Scene> = { dev: heroDev, doc: heroDoc };
-
 /* =====================================================================
    递 · 写代码：Inbox 的报错交给 Codex，改完交给 Claude Code 复核
    ===================================================================== */
 
-const giveDev: Scene = {
+export const giveDev: Scene = {
   id: 'work-give-dev',
   label:
     'Molis Work 示意：Inbox 递来报错 #318；选中报错交给 Codex，交接包带上目标、约束和进度；Codex 的改动回到同一页，再交给 Claude Code 复核。',
@@ -534,7 +454,7 @@ const giveDev: Scene = {
    递 · 写文档：视频里的一句放进第 2 节，自己的观点从旧笔记里找到依据
    ===================================================================== */
 
-const giveDoc: Scene = {
+export const giveDoc: Scene = {
   id: 'work-give-doc',
   label:
     'Molis Work 示意：Inbox 说频道更新和你在写的稿子有关；灵光读出字幕，选中 12:40 的一句放进第 2 节，出处跟着；你的观点从 Obsidian 旧笔记里找到 3 条依据。',
@@ -637,244 +557,10 @@ const giveDoc: Scene = {
 };
 
 /* =====================================================================
-   接 · 写代码：前端 Claude Code、后端 Codex，同一组目标（v0.2.0 已发布）
-   ===================================================================== */
-
-const relayDev: Scene = {
-  id: 'work-relay-dev',
-  label:
-    'Molis Work 示意：Claude Code 做结算页、Codex 做支付接口，终端各绑一个目标；结算页等接口；Codex 提议把金额改成「分」，写明影响，等你同意；接口交了依据，前端接上；收尾时还差一条依据。',
-  steps: 5,
-  times: [0, 1.2, 2.4, 3.8, 5.2, 6.8],
-  note: '界面示意',
-  render: ({ step }) => (
-    <Win
-      step={step}
-      className="wv-relay"
-      place="Goals · 上线支付"
-      icon={Target}
-      press={[2]}
-      status={
-        <span className="wv-menu" data-wait={step === 2 || undefined}>
-          <Target aria-hidden="true" />
-          <span className="m-stack">
-            <span className="m-v" data-fade="" style={at(0, 2)}>2 个 Agent 在跑</span>
-            <span className="m-v" data-fade="" style={at(2, 3)}>1 个提议等你决定</span>
-            <span className="m-v" data-fade="" style={at(3)}>2 个 Agent 在跑</span>
-          </span>
-        </span>
-      }
-    >
-      <div className="wv-terms">
-        <Term name="Claude Code" bind="结算页">
-          <Line show={at(0)} className="wv-u">做结算页</Line>
-          <Line show={at(0, undefined, 300)}>读到：依赖「支付接口」</Line>
-          <Line show={at(1)} className="wv-warnl">提交要等接口，先记一笔</Line>
-          <Line show={at(3, undefined, 500)}>读到新约定：金额用「分」</Line>
-          <Line show={at(3, undefined, 900)} className="wv-okl">✓ 测试 9/9</Line>
-          <Line show={at(4)} className="wv-u">提交收尾</Line>
-          <Line show={at(4, undefined, 400)} className="wv-warnl">没成立：手机端没依据</Line>
-        </Term>
-        <Term name="Codex" bind="支付接口">
-          <Line show={at(0)} className="wv-u">做支付接口</Line>
-          <Line show={at(0, undefined, 300)}>读到：2 条完成要求</Line>
-          <Line show={at(2)} className="wv-warnl">金额想改成「分」，先提给你</Line>
-          <Line show={at(3)} className="wv-okl">✓ 沙箱 3 笔 · 测试 14/14</Line>
-        </Term>
-      </div>
-      <Sheet icon={Target} title="上线支付" sub="两个 Agent 读写同一组目标" className="wv-goals">
-        <div className="wv-goal">
-          <p className="wv-goal-head">
-            <Who k="cc">CC</Who>
-            <b>结算页</b>
-            <span className="m-stack wv-pills">
-              <span className="wv-pill m-v" data-fade="" style={at(0, 1)}>进行中</span>
-              <span className="wv-pill m-v" data-tone="wait" data-fade="" style={at(1, 3)}>等支付接口</span>
-              <span className="wv-pill m-v" data-fade="" style={at(3, 4)}>进行中</span>
-              <span className="wv-pill m-v" data-tone="wait" data-fade="" style={at(4)}>没算完</span>
-            </span>
-          </p>
-          <ul className="wv-reqs">
-            <li>
-              <Tick step={3} delay={900} />
-              金额按约定显示和提交
-            </li>
-            <li>
-              <Tick step={99} />
-              手机端排版正常<span className="wv-must">要你验收</span>
-            </li>
-          </ul>
-          <Line show={at(3)}>
-            <p className="wv-ok">约定已更新：金额用「分」· 你同意的</p>
-          </Line>
-          <Line show={at(4, undefined, 400)}>
-            <p className="wv-wait">还差：手机端排版没有依据</p>
-          </Line>
-        </div>
-        <Line show={at(2, 3)}>
-          <div className="wv-ask">
-            <p>
-              <Who k="cx">Cx</Who>
-              <b>Codex 提议：金额从「元」改成「分」</b>
-            </p>
-            <p className="wv-impact">影响：结算页（Claude Code 在做）· 2 处</p>
-            <p className="wv-btns">
-              <span data-primary="">
-                同意
-                <Cursor show={at(2, 3)} x="60%" y="60%" />
-              </span>
-              <span>先不</span>
-            </p>
-          </div>
-        </Line>
-        <div className="wv-goal">
-          <p className="wv-goal-head">
-            <Who k="cx">Cx</Who>
-            <b>支付接口</b>
-            <span className="m-stack wv-pills">
-              <span className="wv-pill m-v" data-fade="" style={at(0, 3)}>进行中</span>
-              <span className="wv-pill m-v" data-tone="done" data-fade="" style={at(3)}>完成</span>
-            </span>
-          </p>
-          <ul className="wv-reqs">
-            <li>
-              <Tick step={3} />
-              回调幂等
-            </li>
-            <li>
-              <Tick step={3} delay={200} />
-              沙箱支付走通
-            </li>
-          </ul>
-        </div>
-      </Sheet>
-    </Win>
-  ),
-};
-
-/* =====================================================================
-   接 · 写文档：周一 Claude 桌面版，周三换个模型，同一页
-   ===================================================================== */
-
-const relayDoc: Scene = {
-  id: 'work-relay-doc',
-  label:
-    'Molis Work 示意：周一在接了 Molis Work 的 Claude 桌面版里建目标、写前两部分；周三在 Molis Work 的助理里换成另一个模型接着写第三部分；目标页记着谁写了什么、用了哪些资料。',
-  steps: 5,
-  times: [0, 1.2, 2.4, 3.8, 5.2, 6.8],
-  note: '开发中 · 界面示意',
-  render: ({ step }) => (
-    <Win
-      step={step}
-      className="wv-relay wv-relay-doc"
-      place="Goals · 写作"
-      icon={Target}
-      status={
-        <span className="wv-menu" data-wait={step === 3 || undefined}>
-          <span className="m-stack">
-            <span className="m-v" data-fade="" style={at(0, 2)}>周一</span>
-            <span className="m-v" data-fade="" style={at(2, 3)}>周三</span>
-            <span className="m-v" data-fade="" style={at(3, 4)}>周四 · 3/4，结论要你定</span>
-            <span className="m-v" data-fade="" style={at(4)}>周五</span>
-          </span>
-        </span>
-      }
-    >
-      <Swap className="wv-side">
-        <div className="m-v" data-fade="" style={at(0, 2)}>
-          <section className="wv-chat">
-            <p className="wv-chat-head">
-              <span className="wv-lights" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-              </span>
-              <b>Claude</b>桌面版
-              <small>已接 Molis Work</small>
-            </p>
-            <div className="wv-msgs">
-              <p className="wv-me">记个目标：写完《AI 编辑器观察》，四部分，周五交</p>
-              <p className="wv-tool">
-                <Target aria-hidden="true" />
-                Molis Work · 建目标
-              </p>
-              <p className="wv-ai">建好了，四部分是四条完成要求。</p>
-              <Line show={at(1)}>
-                <p className="wv-me">先写前两部分</p>
-              </Line>
-              <Line show={at(1, undefined, 400)}>
-                <p className="wv-ai">写好了，放进 Pages。</p>
-              </Line>
-            </div>
-          </section>
-        </div>
-        <div className="m-v" data-fade="" style={at(2)}>
-          <section className="wv-chat wv-asst">
-            <p className="wv-chat-head">
-              <Sparkles aria-hidden="true" />
-              <b>助理</b>
-              <span className="wv-model">DeepSeek</span>
-            </p>
-            <div className="wv-msgs">
-              <p className="wv-me">接着写第三部分</p>
-              <p className="wv-ai">
-                读到：前两部分周一由 Claude 写好。第三部分写好了，用了融资汇总和读者留言。
-              </p>
-            </div>
-          </section>
-        </div>
-      </Swap>
-      <Sheet icon={Target} title="写完《AI 编辑器观察》" sub="四部分，周五交" className="wv-goals">
-        <ul className="wv-reqs wv-reqs-big">
-          {[
-            ['一、补全之后', 'Claude · 周一 · 资料 2 条', 1],
-            ['二、编辑器在变成什么', 'Claude · 周一 · 视频 12:40', 1],
-            ['三、价格与商业模式', '助理 DeepSeek · 周三 · 资料 2 条', 2],
-          ].map(([title, by, s], index) => (
-            <li key={title as string}>
-              <Tick step={s as number} delay={index * 160} />
-              <span>
-                {title}
-                <small className="m-v" data-fade="" style={at(s as number, undefined, index * 160)}>
-                  {by}
-                </small>
-              </span>
-            </li>
-          ))}
-          <li data-wait={step >= 3 || undefined}>
-            <Tick step={99} />
-            <span>
-              四、结论<span className="wv-must">要你来定</span>
-            </span>
-          </li>
-        </ul>
-        <div className="wv-tl" data-flash={step === 4 || undefined}>
-          <Line show={at(1)}>
-            <p>
-              <Who k="cc">Cl</Who>周一 · Claude 写了一、二部分
-            </p>
-          </Line>
-          <Line show={at(2)}>
-            <p>
-              <Who k="ds">DS</Who>周三 · 助理（DeepSeek）写了第三部分
-            </p>
-          </Line>
-          <Line show={at(3)}>
-            <p>
-              <Who k="me">你</Who>周四 · 你改了第二部分开头
-            </p>
-          </Line>
-        </div>
-      </Sheet>
-    </Win>
-  ),
-};
-
-/* =====================================================================
    长 · 写代码：一句话做出发版清单
    ===================================================================== */
 
-const Studio = ({ prompt, checks, name, icon: Icon }: { prompt: string; checks: string[]; name: string; icon: LucideIcon }) => (
+export const Studio = ({ prompt, checks, name, icon: Icon }: { prompt: string; checks: string[]; name: string; icon: LucideIcon }) => (
   <Sheet icon={Wand} title="插件创作工作台" sub="用一句话做插件">
     <p className="wv-prompt">{prompt}</p>
     <ul className="wv-checks">
@@ -895,7 +581,7 @@ const Studio = ({ prompt, checks, name, icon: Icon }: { prompt: string; checks: 
   </Sheet>
 );
 
-const Flow = ({ stations, when }: { stations: [LucideIcon, string][]; when: string }) => (
+export const Flow = ({ stations, when }: { stations: [LucideIcon, string][]; when: string }) => (
   <Sheet icon={Workflow} title="工作流程" sub="存成每周的">
     <ol className="wv-flow">
       {stations.map(([Icon, name], index) => (
@@ -914,7 +600,7 @@ const Flow = ({ stations, when }: { stations: [LucideIcon, string][]; when: stri
   </Sheet>
 );
 
-const growDev: Scene = {
+export const growDev: Scene = {
   id: 'work-grow-dev',
   label:
     'Molis Work 示意：在插件创作工作台说一句，做出「发版清单」；Claude Code 问能不能发，调用的就是它；Inbox 里选中刚合并的 PR，浮条递来「放进发版清单」；再存成每周五自己跑的流程。',
@@ -1029,7 +715,7 @@ const topics: [string, string, string, number][] = [
   ['独立开发者的定价', 'Newsletter', '●●○', 0],
 ];
 
-const growDoc: Scene = {
+export const growDoc: Scene = {
   id: 'work-grow-doc',
   label:
     'Molis Work 示意：说一句做出「选题库」；Inbox 里一条读者留言，浮条递来「放进选题库」；存成每周日把最热的五个排进下周的流程；Claude 桌面版也问得到它。',
@@ -1156,13 +842,13 @@ const growDoc: Scene = {
 };
 
 /* =====================================================================
-   一起干 · 写代码：用户反馈 → 助理判断 → 群里 → 目标 → Codex → 验收（开发中）
+   一起干 · 写代码：客户邮件 → 助理判断 → 群里 → 目标 → Codex → 验收（开发中）
    ===================================================================== */
 
-const teamDev: Scene = {
+export const teamDev: Scene = {
   id: 'work-team-dev',
   label:
-    'Molis Work 示意（开发中）：用户反馈进 Feed，项目助理按规则判断为高优先，发到项目群 @ 你和产品；讨论成一个目标，你同意；你的 Codex 接手，进展和依据回到群里，产品验收。',
+    'Molis Work 示意（开发中）：客户邮件经信息流进 Inbox，项目助理按规则判断为高优先，发到项目群 @ 你和产品；讨论成一个目标，你同意；你的 Codex 接手，进展和依据回到群里，产品验收。',
   steps: 5,
   times: [0, 1.2, 2.4, 3.8, 5.2, 6.8],
   note: '开发中 · 界面示意',
@@ -1170,24 +856,18 @@ const teamDev: Scene = {
     <Win step={step} className="wv-team" place="支付改版" icon={MessagesSquare} press={[3, 4]}>
       <Swap className="wv-side">
         <div className="m-v" data-fade="" style={at(0, 3)}>
-          <Sheet icon={Rss} title="Feed" sub="用户反馈">
+          <Sheet icon={Inbox} title="Inbox" sub="只放要你处理的">
             <ul className="wv-feed" data-judged={step >= 1 || undefined}>
-              <li data-hot="">
-                <Star aria-hidden="true" />
-                <span>
-                  付完钱一直转圈，订单没出来<small>App Store · 1 星</small>
-                </span>
-              </li>
               <li data-hot="">
                 <Mail aria-hidden="true" />
                 <span>
-                  3 个店员在微信里都付不了款<small>客户邮件</small>
+                  3 个店员在微信里都付不了款<small>客户邮件 · 经信息流</small>
                 </span>
               </li>
               <li>
-                <Star aria-hidden="true" />
+                <Mail aria-hidden="true" />
                 <span>
-                  界面比上一版好看<small>App Store · 4 星</small>
+                  下个月想加开两家门店<small>客户邮件 · 经信息流</small>
                 </span>
               </li>
               <li data-hot="">
@@ -1199,8 +879,8 @@ const teamDev: Scene = {
             </ul>
             <p className="wv-judge m-v" data-pop="" style={at(1)}>
               <Sparkles aria-hidden="true" />
-              <b>高优先：支付失败，影响 23 位用户</b>
-              <small>规则：涉及付款、影响超过 10 人</small>
+              <b>高优先：付不了款，和 #331 是同一件事</b>
+              <small>规则：涉及付款、客户在等</small>
             </p>
           </Sheet>
         </div>
@@ -1217,7 +897,7 @@ const teamDev: Scene = {
               </li>
               <li>
                 <Tick step={4} delay={700} />
-                23 位用户的订单补上
+                客户门店的订单补上
               </li>
               <li>
                 <Tick step={4} delay={1300} />
@@ -1236,9 +916,9 @@ const teamDev: Scene = {
               </Who>
               <div>
                 <p>
-                  <span className="wv-at">@你</span> <span className="wv-at">@小周</span> 高优先：支付失败，影响 23 位用户
+                  <span className="wv-at">@你</span> <span className="wv-at">@小周</span> 高优先：客户门店付不了款
                 </p>
-                <p className="wv-quote">「付完钱一直转圈」「店员付不了款」「#331」</p>
+                <p className="wv-quote">客户邮件「店员付不了款」· GitHub #331</p>
                 <p className="wv-tool">
                   <Target aria-hidden="true" />
                   有关目标：上线支付
@@ -1271,7 +951,7 @@ const teamDev: Scene = {
           <Line show={at(4, undefined, 200)}>
             <div className="wv-post">
               <Who k="cx">Cx</Who>
-              <p className="wv-codeline">✓ 回调改走 https · 16/16　✓ 补单 23/23</p>
+              <p className="wv-codeline">✓ 回调改走 https · 16/16　✓ 补单 12/12</p>
             </div>
           </Line>
           <Line show={at(4, undefined, 1100)}>
@@ -1292,7 +972,7 @@ const teamDev: Scene = {
    一起干 · 写文档、管事情：一个决定，牵动的事都跟上（开发中）
    ===================================================================== */
 
-const teamDoc: Scene = {
+export const teamDoc: Scene = {
   id: 'work-team-doc',
   label:
     'Molis Work 示意（开发中）：开发的 Agent 在目标上提了「待你决定」：两种定价各自的代价；项目助理发到群里 @ 你和运营；你点了 B；受影响的两个目标标出要改什么，开发的 Agent 接着做，运营多了一条待办。',
@@ -1398,9 +1078,4 @@ const teamDoc: Scene = {
       </Sheet>
     </Win>
   ),
-};
-
-export const workActScenes: Record<Persona, Record<WorkActId, Scene>> = {
-  dev: { give: giveDev, relay: relayDev, grow: growDev, team: teamDev },
-  doc: { give: giveDoc, relay: relayDoc, grow: growDoc, team: teamDoc },
 };

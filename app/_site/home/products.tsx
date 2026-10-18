@@ -199,7 +199,7 @@ export function Products() {
                         </dd>
                       </div>
                     </dl>
-                    {/* 画面上方已经写着是哪件产品：去产品页只留一颗圆形箭头；开源代码没有上下文，留两个词 */}
+                    {/* 画面上方已经写着是哪件产品：去产品页只留一颗圆形箭头；源码没有上下文，留两个词 */}
                     <span className="ix-go">
                       {product.extra ? (
                         <a

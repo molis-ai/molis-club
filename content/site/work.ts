@@ -1,395 +1,306 @@
-// Molis Work 页（2026-10-16 起按第三版草稿：specs/work-scenarios/v3/，目标与完成要求见 specs/work-product-page/spec.md）。
-// 两种读者各看各的例子：「写代码」（默认）与「写文档、管事情」。画面与其中的名字、数据都是示意。
-// 文字尽量少：能用画面演的不写；每幕一个标题、一句不超过 40 字的导语，每步一句不超过 18 字。
-// 状态只分两种：已发布（v0.2.0，发布时叫 GoalBoard）与开发中。workProgress 里是 docs/studio-intro.md 4.1 的原句（测试逐句核对）。
+// Molis Work 页（2026-10-18 起按第四版「一个舞台」：specs/work-product-page/spec.md 末节，
+// 方案原样在 specs/work-product-page/round2/方案/第四版-一个舞台（已定）.html）。
+// 三条路各看各的：写代码 / 写文档、做研究 / 管事情、跟进度。首屏是演示舞台：没选路时轮演三条路各自最要紧的一段，
+// 选了路演这条路的八段；每段先一行「原来」，再演 Work 怎么接，最后定格一句字幕和状态。
+// 只限 Work 页：文案可以直接取自 Molis Work 仓库的产品运营文档（docs/product-operations），不必先进工作室介绍；
+// 工作室介绍的原句用到哪里都一字不改（下面标了「原句」的，tests/site-copy.test.mjs 逐句核对）。
+// 状态三档：已发布 · v0.2.0（源码，当时名 GoalBoard）/ 开发中 / 规划中。画面和其中的名字、数字都是示意。
 
-export type Persona = 'dev' | 'doc';
+export type Persona = 'dev' | 'doc' | 'ops';
 
-export const personas: Persona[] = ['dev', 'doc'];
+export const personas: Persona[] = ['dev', 'doc', 'ops'];
 
-/** 按身份变的一段字 */
+/** 按路变的一段字 */
 export type ByPersona<T = string> = Record<Persona, T>;
 
 export const personaUi = {
   ask: '你主要做什么？',
-  group: '按你的工作看例子',
-  label: { dev: '写代码', doc: '写文档、管事情' } as ByPersona,
+  group: '按你的工作看演示',
+  /** 路名做两版，找人测完再定：默认职业版；地址里带 ?entry=moment 时换成卡点版 */
+  label: { dev: '写代码', doc: '写文档、做研究', ops: '管事情、跟进度' } as ByPersona,
+  moment: {
+    dev: { name: '做没做完', line: 'AI 说做完了，我还得自己核' },
+    doc: { name: '依据在哪', line: '结论交出去，被问从哪来' },
+    ops: { name: '谁在等谁', line: '答应的、等别人的，总有漏的' },
+  } as ByPersona<{ name: string; line: string }>,
+  /** 路名下的职业提示：角色墙去掉以后，各种人靠这一行认出自己 */
+  roles: {
+    dev: '独立开发者 · AI 重度开发者 · 技术负责人 · 测试 · 开源维护者 · 数据分析 · 技术写作',
+    doc: '咨询与研究 · 投研 · 用户研究 · 内容创作 · 记者编辑 · 学术 · 教师 · 法务',
+    ops: '项目经理 · 产品经理 · 创始人 · 运营市场 · 销售 · 自由职业 · 财务 · 人事',
+  } as ByPersona,
 };
 
-/** 页内顶栏的去处 */
-export const workNav = [
-  { id: 'tour', label: '全景' },
-  { id: 'give', label: '递' },
-  { id: 'relay', label: '接' },
-  { id: 'grow', label: '长' },
-  { id: 'team', label: '一起干' },
-  { id: 'now', label: '现状' },
-];
+/* ---------- 首屏 · 舞台 ---------- */
 
-/* ---------- 产品全景：照 Molis Work 的窗口画，一段讲一处 ---------- */
-
-export type TourStatus = 'rel' | 'dev';
-
-export type TourChapter = {
-  name: string | ByPersona;
-  title: string | ByPersona;
-  text: string | ByPersona;
-  status: TourStatus | ByPersona<TourStatus>;
+export const workHero = {
+  /** 产品运营《产品介绍》第 1 节的解释句（只在 Work 页这样用） */
+  what: '装在你电脑上的 AI 工作台：你和你用的每一个 AI，对着同一份目标、资料和成果干活。',
+  /** 没选路时那三段的总称（读屏用） */
+  intro: '三种人各自最要紧的一刻',
+  stage: '界面示意 · 示例数据',
+  /** 规划中的那一段（早上打开）还没有界面 */
+  concept: '概念示意 · 示例数据',
 };
 
-export const workTour = {
-  kicker: '产品全景',
-  title: '先看看它长什么样。',
-  chapters: [
-    {
-      name: '一个窗口',
-      title: '一个窗口，一个项目。',
-      text: '左边是在做的，右边放参考，底下是插件和助理。',
-      status: 'dev',
-    },
-    {
-      name: '项目与标签',
-      title: '开着几件事，都在。',
-      text: '标签像浏览器；右下角切项目，各有各的插件和资料。',
-      status: 'dev',
-    },
-    {
-      name: '插件',
-      title: '一组插件，各管一摊。',
-      text: '项目里只加要用的，常用的钉在底栏；缺的，自己做。',
-      status: 'dev',
-    },
-    {
-      name: '右栏',
-      title: '参考放右边。',
-      text: '网页、文件、讨论、灵光，和左边并排着用。',
-      status: 'dev',
-    },
-    {
-      name: '浮条',
-      title: '选中什么，能力就递来。',
-      text: '只递两三个此刻用得上的动作，来自哪个插件都行。',
-      status: 'dev',
-    },
-    {
-      name: '助理',
-      title: '底下这一条，是助理。',
-      text: '它认得这个项目的资料和插件；按 ⌘K 是搜索。',
-      status: 'dev',
-    },
-    {
-      name: { dev: 'Agent 接进来', doc: '助理接着写' },
-      title: { dev: 'Agent 在终端里干活。', doc: '让助理接着写。' },
-      text: {
-        dev: '终端绑着目标；做成了什么、凭什么，写回目标页。',
-        doc: '写进来的每一段，都标着用了哪些资料。',
-      },
-      status: { dev: 'rel', doc: 'dev' },
-    },
-    {
-      name: '⌘K 和后台',
-      title: '找得到，也知道什么在跑。',
-      text: '搜所有插件里的东西；在跑的、等你的，一眼看到。',
-      status: 'dev',
-    },
-  ] as TourChapter[],
-  theme: { light: '浅色', dark: '深色' },
-  play: { on: '自动播放', off: '已暂停' },
-  note: '界面示意 · 示例数据',
-};
-
-/* ---------- 三件事 ---------- */
-
-export const workIdeas = [
-  { id: 'give', mark: '递', line: '下一步，递到手边' },
-  { id: 'relay', mark: '接', line: '换谁来做，都接得上' },
-  { id: 'grow', mark: '长', line: '缺的工具，自己长' },
-] as const;
-
-/* ---------- 四幕：滚到哪一步演到哪一步 ---------- */
-
-export type WorkActId = 'give' | 'relay' | 'grow' | 'team';
-
-export type WorkAct = {
-  id: WorkActId;
-  kicker: string;
-  tag: string;
+export type Chapter = {
+  id: string;
+  /** 章节线上的短标题 */
   title: string;
-  lead: string;
-  /** 每一步画面在演什么，条数等于画面的步数 */
-  steps: string[];
+  /** 每段开头那行灰字：今天卡在哪 */
+  was: string;
+  /** 定格时的一句 */
+  say: string;
+  status: string;
 };
 
-export const workActs: ByPersona<WorkAct[]> = {
+const REL = '已发布 · v0.2.0（新界面开发中）';
+const DEV = '开发中';
+const PREVIEW = '开发中 · 预览';
+const TEAM = '开发中 · 团队协作';
+const PLAN = '规划中';
+
+/** 每条路八段，最要紧的放第一（写代码 K1、写文档 K2、管事情 K8，见产品运营《killer 场景》） */
+export const workChapters: ByPersona<Chapter[]> = {
   dev: [
     {
-      id: 'give',
-      kicker: '递',
-      tag: '开发中',
-      title: '不用开口，下一步就在手边。',
-      lead: '选中报错就能交出去，背景跟着走。',
-      steps: [
-        'Inbox 递来一条报错',
-        '选中报错，「交给 Codex」',
-        '目标、约束、进度一起带上',
-        'Codex 改完，结果回到这页',
-        '再交给 Claude Code 复核',
-      ],
+      id: 'dev-done',
+      title: '做完了吗',
+      was: '原来：几家 AI 共用项目说明，可做到哪、谁验收过，散在各家的会话里。',
+      say: 'Agent 说做完了，Work 说还差你。',
+      status: REL,
     },
     {
-      id: 'relay',
-      kicker: '接',
-      tag: '已发布 · v0.2.0',
-      title: '几个 Agent，读写同一组目标。',
-      lead: '谁在等谁、凭什么算完成，都记在目标上。',
-      steps: [
-        '前端 Claude Code，后端 Codex',
-        '结算页在等支付接口',
-        '改约定之前，先问你',
-        '接口交了依据，前端接上',
-        '说做完了？还差一条依据',
-      ],
+      id: 'dev-wait',
+      title: '谁在等你',
+      was: '原来：几个窗口挨个去问做到哪了。',
+      say: '几个 AI 各停在不同的地方，等你的事收在一处。',
+      status: DEV,
     },
     {
-      id: 'grow',
-      kicker: '长',
-      tag: '开发中',
-      title: '缺的工具，让 AI 做一个。',
-      lead: '做出来的工具，递得到手边，Agent 也调得到。',
-      steps: [
-        '说一句：做个发版清单',
-        '出方案、写代码、过检查',
-        'Claude Code 问：能发吗？',
-        '浮条递来「放进发版清单」',
-        '每周五，自己跑一遍',
-      ],
+      id: 'dev-give',
+      title: '报错交出去',
+      was: '原来：复制报错、切到另一个工具、再讲一遍背景。',
+      say: '选中就交出去，背景跟着走，结果回到原处。',
+      status: DEV,
     },
     {
-      id: 'team',
-      kicker: '接下来 · 一起干',
-      tag: '开发中',
-      title: '从一句抱怨，到修好。',
-      lead: '反馈进来，助理分轻重，叫上该看的人。',
-      steps: [
-        '用户反馈进 Feed',
-        '助理判断：高优先',
-        '发到群里，@ 你和产品',
-        '讨论成目标，你点同意',
-        '你的 Codex 接手，产品验收',
-      ],
+      id: 'dev-flow',
+      title: 'issue 自动分拣',
+      was: '原来：每天早上自己翻几十条通知。',
+      say: 'GitHub 新 issue 先判断是不是 bug，你看过再建成目标。',
+      status: DEV,
+    },
+    {
+      id: 'dev-team',
+      title: '客户来信进群',
+      was: '原来：邮件、群聊、任务各在一处，结论要手动搬成任务。',
+      say: '讨论、决定和 AI 的工作，在同一处接得上。',
+      status: TEAM,
+    },
+    {
+      id: 'dev-skill',
+      title: 'Skill 带进来',
+      was: '原来：同一段规则，粘进每一个 AI。',
+      say: '攒下的做法写一次，助理和 Coding 都照着做。',
+      status: DEV,
+    },
+    {
+      id: 'dev-tool',
+      title: '说一句做个清单',
+      was: '原来：写个脚本，接不进日常，别的 AI 也不认。',
+      say: '缺个工具，说一句；你和你的 AI 用同一个。',
+      status: PREVIEW,
+    },
+    {
+      id: 'dev-safe',
+      title: '动手先问你',
+      was: '原来：要么不让 AI 动手，要么全放开。',
+      say: '谁能动什么，逐个授权；撤了，下一次调用就被拒。',
+      status: DEV,
     },
   ],
   doc: [
     {
-      id: 'give',
-      kicker: '递',
-      tag: '开发中',
-      title: '不用开口，下一步就在手边。',
-      lead: '选中一句就放进稿子，出处跟着。',
-      steps: [
-        'Inbox：和你在写的稿子有关',
-        '灵光读出了视频字幕',
-        '选中一句，放进第 2 节',
-        '带着 12:40 的出处落进来',
-        '你的观点，旧笔记里有依据',
-      ],
+      id: 'doc-source',
+      title: '依据在哪',
+      was: '原来：引用在 AI 的回答里，进了交付稿就断了。',
+      say: '交出去的每一份结论，都留着当时的依据。',
+      status: DEV,
     },
     {
-      id: 'relay',
-      kicker: '接',
-      tag: '开发中',
-      title: '换个 AI，接着同一页写。',
-      lead: '写到哪、谁写的、用了什么，都在同一页。',
-      steps: [
-        '周一，Claude 桌面版建好目标',
-        '写完前两部分，记在目标上',
-        '周三，换个模型接着写',
-        '周四，菜单栏一眼看进度',
-        '周五，谁写了什么一页看清',
-      ],
+      id: 'doc-first',
+      title: '第一天',
+      was: '原来：上传给对话 AI，得到一段总结，待办和文档还是空的。',
+      say: '把资料丢进来，第一天就有内容。',
+      status: DEV,
     },
     {
-      id: 'grow',
-      kicker: '长',
-      tag: '开发中',
-      title: '缺的工具，让 AI 做一个。',
-      lead: '做出来的工具，随手放得进，别的 AI 也问得到。',
-      steps: [
-        '说一句：做个选题库',
-        '出方案、写代码、过检查',
-        '看到什么，一点就放进去',
-        '每周日，排好下周五个',
-        'Claude 桌面版也问得到',
-      ],
+      id: 'doc-give',
+      title: '好句子放进稿子',
+      was: '原来：复制进、复制出，出处在路上丢了。',
+      say: '选中就放进去，出处跟着走。',
+      status: DEV,
     },
     {
-      id: 'team',
-      kicker: '接下来 · 一起干',
-      tag: '开发中',
-      title: '一个决定，牵动的事都跟上。',
-      lead: '待你决定的事带着代价来；点了，相关的都跟上。',
-      steps: [
-        '开发的 Agent 停下来问你',
-        '助理发到群里，@ 你和运营',
-        '你点了 B',
-        '受影响的事，都跟着改',
-      ],
+      id: 'doc-pick',
+      title: '让助理挑刺',
+      was: '原来：把整段贴给 AI，再把回答粘回来。',
+      say: '结果回到你正在改的地方。',
+      status: DEV,
+    },
+    {
+      id: 'doc-flow',
+      title: '每周一页',
+      was: '原来：每周同样的读、摘、写，再做一遍。',
+      say: '重复的处理，存成你说了算的流程。',
+      status: DEV,
+    },
+    {
+      id: 'doc-team',
+      title: '群里待你决定',
+      was: '原来：群里定了，再手动去改文档和待办。',
+      say: '讨论、决定和 AI 的工作，在同一处接得上。',
+      status: TEAM,
+    },
+    {
+      id: 'doc-tool',
+      title: '说一句做个选题库',
+      was: '原来：表格太散，专门的软件太重。',
+      say: '缺个工具，说一句；你和你的 AI 用同一个。',
+      status: PREVIEW,
+    },
+    {
+      id: 'doc-deck',
+      title: '做成演示稿',
+      was: '原来：稿子和演示稿各写一遍。',
+      say: '一份稿子，接着做成演示稿。',
+      status: DEV,
+    },
+  ],
+  ops: [
+    {
+      id: 'ops-owe',
+      title: '谁在等谁',
+      was: '原来：抽出来的事不知道你已经记了什么，在等别人的没人盯。',
+      say: 'AI 抽了 8 件事，Work 标出 3 件可能已经记过、1 件在等法务。',
+      status: DEV,
+    },
+    {
+      id: 'ops-scope',
+      title: '说好的范围',
+      was: '原来：翻聊天记录，找当初说好的范围。',
+      say: '说好的事，改了要你点头；交没交完，你说了算。',
+      status: REL,
+    },
+    {
+      id: 'ops-meet',
+      title: '明早见客户',
+      was: '原来：翻邮件、翻笔记、翻待办，拼出上次聊到哪。',
+      say: '明早见谁，五分钟备好。',
+      status: DEV,
+    },
+    {
+      id: 'ops-flow',
+      title: '变更走流程',
+      was: '原来：每个变更都从头判断一遍，口头答应了就算。',
+      say: '客户的每个变更，走同一套处理，你点头才改。',
+      status: DEV,
+    },
+    {
+      id: 'ops-team',
+      title: '群里待你决定',
+      was: '原来：群里定了，再手动去改目标和待办。',
+      say: '讨论、决定和 AI 的工作，在同一处接得上。',
+      status: TEAM,
+    },
+    {
+      id: 'ops-tool',
+      title: '说一句做个核对器',
+      was: '原来：客户每改一次清单，逐行对型号、数量和批准价。',
+      say: '缺个工具，说一句；你和你的 AI 用同一个。',
+      status: PREVIEW,
+    },
+    {
+      id: 'ops-change',
+      title: '范围改了',
+      was: '原来：文档改了，开发那边的 AI 还按旧的做。',
+      say: '改一次，开发那边的 AI 下次读到的就是新的。',
+      status: DEV,
+    },
+    {
+      id: 'ops-morning',
+      title: '早上打开',
+      was: '原来：早上自己翻一遍所有事。',
+      say: '早上打开，就知道今天先做什么。',
+      status: PLAN,
     },
   ],
 };
 
-/* ---------- 想怎么干 ---------- */
+/* ---------- 第二屏 · 为什么、现在、怎么试 ---------- */
 
-export const workWays = {
-  kicker: '想怎么干',
-  title: '同一套插件，换一种工作就换一种拼法。',
-  label: '比如',
-  all: '官方插件',
-  allNote: '持续建设中',
-  yours: '你自己的干法',
-  note: '示意',
-  /** 插件与拼法整体都还在开发中 */
-  status: '开发中',
-  /** 每种干法的顺序跟着身份走；最后一种都是「你自己的」 */
-  order: {
-    dev: ['indie', 'oss', 'techwrite', 'yours'],
-    doc: ['media', 'startup', 'research', 'yours'],
-  } as ByPersona<string[]>,
+export const workWhy = {
+  kicker: '为什么是它',
+  /** 产品运营《推广与用户运营》第 1 节的三句「不」 */
+  nots: [
+    '不把你的工作锁在某一家 AI 里。',
+    '不把「AI 说做完了」当成做完了。',
+    '不替你派单，也不替你点头。',
+  ],
+  ai: '你用的 AI 都接在这里：Claude Code、Codex、OpenCode、Pi Agent、Grok Build 内置接入，其他经 MCP。',
+  data: '数据在你的电脑上，模型你来选：DeepSeek、通义千问、Kimi、GLM、MiniMax、Anthropic、OpenAI 等，费用直接付给模型商；用模型和联网时，相关内容会发给你选的服务。',
 };
 
-/* ---------- 和现在的用法比（页面上不点竞品名） ---------- */
-
-export type CompareRow = { way: string; note: string; cells: string[] };
-
-export const workCompare = {
-  kicker: '和现在的用法比',
-  title: '不用把工作搬进 AI，AI 来你手边。',
-  head: ['现在的做法', '你要做的', '结果在哪', '下次接着做'],
-  us: '在 Molis Work 里',
-  rows: {
-    dev: [
-      {
-        way: '问 AI',
-        note: '对话助手',
-        cells: ['交代背景，贴报错和代码', '在对话里，自己搬回去', '新开对话，再讲一遍'],
-      },
-      {
-        way: '把 issue 指派给 Agent',
-        note: '云端编码 Agent',
-        cells: ['先把 issue 写清楚', '在一个 PR 里', '没写进 issue 的，它不知道'],
-      },
-      {
-        way: '自己拼一套',
-        note: '规则文件、脚本',
-        cells: ['每个 Agent 各写一份规矩', '散在仓库和对话里', '看进度文件写得好不好'],
-      },
-    ],
-    doc: [
-      {
-        way: '问 AI',
-        note: '对话助手',
-        cells: ['传资料，开口交代', '在对话里，自己复制回去', '换个 AI，再传一遍'],
-      },
-      {
-        way: '文档工具里的 AI',
-        note: '笔记软件自带',
-        cells: ['在文档里叫它', '在那份文档里', '视频、邮件、笔记得先搬进来'],
-      },
-      {
-        way: '自动化工具',
-        note: '连应用、画流程',
-        cells: ['先画流程、连账号', '送到各个应用', '流程不看你在写什么'],
-      },
-      {
-        way: '一句话做应用',
-        note: '生成小应用',
-        cells: ['说一句，得到一个小应用', '在那个应用里', '它不认识你的文档'],
-      },
-    ],
-  } as ByPersona<CompareRow[]>,
-  usCells: {
-    dev: ['选中，点一下', '回到同一页，带着依据', '谁来做，都读同一组目标'],
-    doc: ['接着写，下一步递来', '落进该在的地方，带出处', '换个 AI，读的还是同一页'],
-  } as ByPersona<string[]>,
-  gap: {
-    dev: '不如它们的：写代码，编码 Agent 更强；团队、多设备还没有；只支持 macOS。',
-    doc: '不如它们的：要从源码安装；多人编辑、多设备还没有；只支持 macOS。',
-  } as ByPersona,
-};
-
-/* ---------- 现状 ---------- */
-
-export const workStatus = {
-  kicker: '现在能用什么',
-  title: { dev: '今天就能接上，下一版在路上。', doc: '下一版在路上。' } as ByPersona,
-  released: {
-    label: '已发布 · v0.2.0',
-    items: [
-      '目标、依赖、提议与影响',
-      '绑在目标上的终端，菜单栏看进度',
-      'Sessions、Feed、基础版成果',
-      'Codex、Claude Code 等内置接入，其他经 MCP',
-    ],
-    note: 'MIT 开源，从源码构建；发布时叫 GoalBoard。',
+export const workNow = {
+  have: {
+    label: '今天就有',
+    note: '已发布 · v0.2.0（源码，当时名 GoalBoard）',
+    text: '目标与要求、本人验收、决定请求、五家 AI 接入、本机存储。',
   },
-  developing: {
+  building: {
     label: '开发中',
-    items: [
-      '浮条和助理',
-      'Inbox、⌘K 搜索',
-      '工作流程、插件创作工作台',
-      'Pages、PPT、Dataset 等插件',
-      '团队协作、多设备',
-    ],
+    note: '新版 0.3.0，还没有公开安装包',
+    text: '新工作台、二十多个插件、流程、插件创作台（预览）、项目讨论。',
   },
-  start: {
-    title: '三分钟接上',
-    steps: [
-      {
-        title: '装上',
-        hint: 'macOS · Node.js 24+ · pnpm',
-        code: [
-          'git clone --branch v0.2.0 https://github.com/molis-ai/molis-work.git',
-          'cd molis-work',
-          'pnpm install --frozen-lockfile && pnpm install:local',
-          '~/.goalboard/bin/goalboard service install --home ~/.goalboard --confirm',
-          '~/.goalboard/bin/goalboard demo create --confirm',
-        ].join('\n'),
-      },
-      {
-        title: '接上 Agent',
-        hint: '打开 127.0.0.1:4173，在「设置 → Runtime」接入 Claude Code 或 Codex',
-      },
-      {
-        title: '新开会话，说一句',
-        say: '使用 GoalBoard 连接示例项目，打开一条 Goal，告诉我当前判断、已经做成了什么、下一步和完成要求。',
-      },
-    ],
-    note: '装依赖的时间另算。',
-    copy: { idle: '复制', done: '已复制', failed: '请手动选中' },
+  first: {
+    label: '能下载以后，你的第一个十分钟',
+    note: '新版开发中 · 示意',
+    text: {
+      dev: '一键把 Skill 和 MCP 写进 Claude Code、Codex，给手头的功能建第一个目标。',
+      doc: '拖进一个资料文件夹，读完项目建议，写出第一份附「本期采用材料」的稿子。',
+      ops: '粘一段周会纪要，看你答应的和在等别人的分开。',
+    } as ByPersona,
   },
-  follow: {
-    title: '关注下一版',
-    text: '浮条、助理、Pages 和插件创作工作台都在下一版里，日期未定。',
-    friend: '身边有写代码的朋友？把这页切到「写代码」发给他。',
+  notFor: {
+    label: '暂时不适合',
+    text: '全员实时一起改同一份的团队；只想要一个聊天窗口；要在手机上随时处理；只用 Windows。',
   },
-  bounds: [
-    '工作数据保存在本机，使用 AI 时会调用你配置的模型服务。',
-    '外部内容只当资料，不会变成给 AI 的指令。',
-    '改约定、算完成，要你点头；Agent 只能提。',
-    '关掉应用，定时任务和提醒不跑。',
-  ],
 };
 
-/* ---------- 最后：我们为什么做它 ---------- */
+export const workGo = {
+  /** 负责人 2026-10-18 定：要招首批试用；去联系页，预填一句 */
+  trial: '报名首批试用',
+  source: '看 v0.2.0 源码',
+  github: '查看源码',
+  /** 去下载页（还没有安装包：那一页留报名的口子和常见问题） */
+  mac: '在 Mac 上用',
+  /** 首屏按钮下那一行；Work 的 main 从 2026-10-17 起不再是 MIT 许可，不写「开源（MIT）」 */
+  line: 'macOS · 新版安装包在准备 · v0.2.0 源码公开',
+  license: 'macOS · 许可以仓库 LICENSE 为准',
+};
+
+/* ---------- 第三屏 · 我们为什么做它 ---------- */
 
 /**
- * 结尾：从缘起讲起，再问「事情都顺了，那人做什么？」，回到工作室愿景。
- * title 与 letter 是 docs/studio-intro.md 原句，字句不改（tests/site-copy.test.mjs 核对）。
+ * 缘起与三句原句（docs/studio-intro.md 4.1 与第 4 章，逐句核对），
+ * 然后问「事情都顺了，那人做什么？」，用一天的时间条回答（杂事变薄，空出来的时间留给更难的问题、新东西和生活）。
  */
 export const workEnding = {
   kicker: '我们为什么做它',
+  /** 原句 */
   title: '一开始，我们只是想做一个让自己团队用得更顺的工具。',
+  /** 原句 */
   letter: [
     '我们希望这种协作是连续的：你能看见 AI 动了什么，也能随时亲自接手；需要你判断的事情，会清楚地交回你手里。',
     '想要什么、为什么做、什么结果值得接受，这些重要判断留在人手里。',
@@ -400,103 +311,53 @@ export const workEnding = {
     chores: {
       dev: ['贴背景给 AI', '写交接', '追 Agent 进度', '整理发布说明'],
       doc: ['整理周报', '追进度', '找资料出处', '贴背景给 AI'],
+      ops: ['整理纪要', '追谁欠什么', '翻聊天找范围', '贴背景给 AI'],
     } as ByPersona<string[]>,
     work: '手上的活',
     uses: {
       dev: ['啃架构问题', '做个新东西', '早点下班'],
       doc: ['想透一个难题', '写那篇长文', '早点下班'],
+      ops: ['想清楚下一步', '见该见的人', '早点下班'],
     } as ByPersona<string[]>,
     before: '现在',
     after: '交给工作台以后',
     label: '示意：一天从 9 点到 18 点，杂事变薄，空出来的时间留给更难的问题、新东西和生活。',
   },
-  uses: [
-    {
-      title: '去够更难的问题',
-      eg: {
-        dev: '啃下一直不敢动的架构。',
-        doc: '想透用户为什么留不住。',
-      } as ByPersona,
-    },
-    {
-      title: '去创造',
-      eg: {
-        dev: '做一个只有你想得到的工具。',
-        doc: '决定下一个系列写什么。',
-      } as ByPersona,
-    },
-    {
-      title: '留给生活',
-      eg: {
-        dev: '周五准点走。',
-        doc: '写那篇不为交差的长文。',
-      } as ByPersona,
-    },
-  ],
   essay: '读《人的尺度》',
   about: '认识我们',
   closing: '工具可以不断长出来，工作不必一次次重来。',
-};
-
-/**
- * 当前进展：摘自 4.1「当前进展」原句，按「已经有的 / 还没有的 / 现在怎么体验」分开放。
- * 原句里用分号连着的两半分开放时，句末的分号写成句号，字句不改。
- */
-export const workProgress = {
-  have: [
-    'Molis Work 正在开源开发中，目前以个人在本机使用为主。',
-    '工作台、内置工具与 AI 协作能力已有开发实现，正在持续打磨。',
-    '工作数据保存在本机，使用 AI 时会调用你配置的模型服务。',
-  ],
-  notYet: [
-    '插件创作仍处于预览阶段，团队空间、多设备同步和插件分享属于后续方向。',
-    '正在开发的新版尚未提供正式安装包。',
-  ],
-  now: [
-    '可以按仓库说明从源码构建；公开历史版本与当前开发中的工作台需要分别查看。',
-  ],
-};
-
-export const workGo = {
-  github: '查看开源代码',
-  build: '从源码构建说明',
-  follow: '关注新版进展',
-  /** 首屏：主按钮去下载页，次按钮去三分钟上手 */
-  mac: '在 Mac 上用',
-  see: '看它怎么用',
-  line: 'macOS · 开源（MIT）· 新版安装包开发中',
 };
 
 /* ---------- 下载页 /work/download ---------- */
 
 /**
  * 在 Mac 上用：还没到给人下载的时候，这一页只留一个口子。
- * 新版 0.3.0 已合进 main，GitHub 上是发布草稿（未签名公证），不对外分发；不列任何内部包，不写「免费」，只写开源 · MIT。
- * lead 与问答里带「原句」注释的回答摘自 docs/studio-intro.md 4.1，字句不改。
+ * 新版 0.3.0 已合进 Work 的 main，GitHub 上是发布草稿（未签名公证），不对外分发；不列任何内部包，不写「免费」。
+ * Work 的 main 从 2026-10-17 起用 Molis AI Cooperation Source License 1.0，不写「开源（MIT）」，许可以仓库 LICENSE 为准。
+ * 带「原句」注释的回答摘自 docs/studio-intro.md，字句不改。
  */
 export const workDownload = {
   kicker: 'Molis Work · 下载',
   title: '在 Mac 上用 Molis Work',
   /** 原句 */
   lead: '正在开发的新版尚未提供正式安装包。',
-  meta: 'macOS · 开源（MIT）',
+  meta: 'macOS · 源码公开 · 许可以仓库 LICENSE 为准',
   next: {
     label: '开发中',
     title: '新版工作台 0.3.0',
-    text: '正在做公开发布前的检查。能下载的时候，安装包会放在这里。',
-    go: '有了告诉我',
+    text: '新版安装包还在准备。能下载的时候，会放在这里。',
+    go: '报名首批试用',
     note: '在联系页留下联系方式。这不是自动订阅，我们看到后会回复你。',
   },
-  code: { text: '想先看看代码', link: '开源仓库' },
+  code: { text: '想先看看代码', link: '源码仓库' },
   faq: {
     title: '常见问题',
     items: [
       {
-        q: '它和对话式 AI 有什么不同？',
-        /** 原句 */
+        q: '它和聊天 AI、在线文档有什么不同？',
         a: [
-          '一个项目，可能跨过许多天、几个工具和不同的 AI 会话。过程中留下的资料、判断、进展和结果，都需要有地方安放，也需要在下一次继续时找得回来。',
-          'Molis Work 把这些工作放进同一个环境里。',
+          '它不是又一个聊天 AI：助理能读写你的目标、文档和待办，把结果放回原处。',
+          '它也不是全员一起改同一份的在线文档：重心是一个人（和接下来的小团队）带着几个 AI，把一段工作做完。',
         ],
       },
       {
@@ -507,7 +368,11 @@ export const workDownload = {
       {
         q: '能和同事一起用吗？',
         /** 原句 */
-        a: ['Molis Work 正在开源开发中，目前以个人在本机使用为主。', '团队协作依赖服务端，正在开发；我们团队接下来就用 Molis Work 一起工作。'],
+        a: ['Molis Work 正在开发中，源码公开，目前以个人在本机使用为主。', '团队协作依赖服务端，正在开发；我们团队接下来就用 Molis Work 一起工作。'],
+      },
+      {
+        q: '旧版的数据能带过来吗？',
+        a: ['新版 0.3.0 打不开 v0.2.0（当时名 GoalBoard）的数据，目前也没有升级工具。'],
       },
     ],
   },

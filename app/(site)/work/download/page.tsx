@@ -10,7 +10,7 @@ const copy = workDownload;
 export const metadata = pageMetadata(copy.title, copy.lead, WORK_DOWNLOAD);
 
 // 在 Mac 上用 Molis Work：还没到给人下载的时候，只留一个口子。
-// 新版标「开发中」，按钮是「有了告诉我」；能下载的时候，这张卡换成安装包。
+// 新版标「开发中」，按钮是「报名首批试用」；能下载的时候，这张卡换成安装包。
 // 不列任何内部包，不写「免费」。版式跟隐私页一样：左两栏放小标题，正文从第 3 栏起。
 export default function WorkDownloadPage() {
   return (
@@ -38,7 +38,7 @@ export default function WorkDownloadPage() {
             <p>{copy.next.text}</p>
           </div>
           <div className="wdl-next-go">
-            <Btn href={contactHref('work')}>{copy.next.go}</Btn>
+            <Btn href={contactHref('work-trial')}>{copy.next.go}</Btn>
             <p className="wdl-note">{copy.next.note}</p>
           </div>
         </section>
