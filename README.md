@@ -69,6 +69,13 @@ npm run test:http
 - 换了配图：原图放进 `public/` 下的图库目录，在 `scripts/site-media.mjs` 里登记（写清来源和谁定的），再 `npm run media`，输出 `public/site/` 的 WebP 与 `app/_site/media.json`。
 - 更新公开预览：`npm run build:site-preview` 导出到 `outputs/site-preview/`，再进 `deploy/site-preview/` 按里面的说明上传。wrangler 只在那个目录里跑，每次显式写 `--config`，先 `--dry-run`；不要在仓库根目录跑 `wrangler deploy` 或任何 `wrangler pages` 命令。
 
+## 开发流程
+
+- main 是唯一主线，GitHub 上的 main 就是最新的官网代码。
+- 每件事从 main 拉一个短分支，在单独的副本里做：`git worktree add .claude/worktrees/<名字> -b <分支名> main`。验收后合回 main，再删掉分支和副本。
+- main 所在的文件夹只用来看最新版、合并和推送，不在里面开发。
+- 本地预览的端口配置 `.claude/launch.json` 是各自本机的，不进 Git。
+
 ## 代码结构
 
 | 目录                            | 放什么                                                      |
