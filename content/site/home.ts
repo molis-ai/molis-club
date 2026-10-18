@@ -5,15 +5,16 @@
 
 import type { ProductId } from './products';
 
+/** more：舞台里去产品页那颗圆形箭头的读屏名（画面上只有箭头）；github：开源代码按钮上的字 */
 export const homeProducts: Record<
   ProductId,
   { more: string; github?: string }
 > = {
-  work: { more: '了解 Molis Work', github: '查看开源代码' },
+  work: { more: '了解 Molis Work', github: '开源代码' },
   tool: { more: '了解 Molis Tool' },
   life: { more: '了解 Molis Life' },
   story: { more: '了解 Molis Story' },
-  world: { more: '看看这个构想' },
+  world: { more: '看看 Molis World 这个构想' },
 };
 
 export const homeClosing = {

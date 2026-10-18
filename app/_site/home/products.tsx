@@ -199,12 +199,8 @@ export function Products() {
                         </dd>
                       </div>
                     </dl>
+                    {/* 画面上方已经写着是哪件产品：去产品页只留一颗圆形箭头；开源代码没有上下文，留两个词 */}
                     <span className="ix-go">
-                      {product.href ? (
-                        <Link className="m-btn" href={product.href}>
-                          {product.more}
-                        </Link>
-                      ) : null}
                       {product.extra ? (
                         <a
                           className="m-link"
@@ -215,6 +211,17 @@ export function Products() {
                           {product.extra.label}
                           <ArrowUpRight size={13} aria-hidden="true" />
                         </a>
+                      ) : null}
+                      {/* Life、Story、World 暂不开放：没有 href，不放箭头 */}
+                      {product.href ? (
+                        <Link
+                          className="m-go"
+                          href={product.href}
+                          data-dir="right"
+                          aria-label={product.more}
+                        >
+                          <ArrowRight size={18} aria-hidden="true" />
+                        </Link>
                       ) : null}
                     </span>
                   </div>

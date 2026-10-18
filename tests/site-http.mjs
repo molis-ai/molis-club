@@ -86,7 +86,10 @@ assert(
 );
 assert(!home.includes('这些产品怎样联系'), 'no product relations on home');
 assert(!home.includes('目前如何了解与体验'), 'home: removed access overview');
-assert.match(home, /查看开源代码/);
+assert.match(home, /开源代码/);
+// 产品舞台去产品页只留圆形箭头，读屏名写清是哪件（E3）
+for (const name of ['Work', 'Tool', 'Life', 'Story'])
+  assert(home.includes(`aria-label="了解 Molis ${name}"`), `home stage go ${name}`);
 // 结尾：过渡句与企业合作、社区、关于我们三个去处
 assert.match(home, /让口味相近的人/);
 for (const path of ['/enterprise', '/community', '/about'])
@@ -192,6 +195,19 @@ for (const [path, text] of [
   ['/about', '这些信念怎样落到产品里'],
 ])
   assert(!(await html(path)).includes(text), `${path}: no「${text}」`);
+
+// 联系页：只有验收过的一版，不带评审控件，旧版对照已删（E1，负责人 2026-10-18）
+for (const path of ['/contact', '/contact?study=current']) {
+  const contact = await html(path);
+  assert(!contact.includes('m-review-bar'), `${path}: no review switch`);
+  assert(!contact.includes('选一个来意，写几句就好'), `${path}: old lead removed`);
+}
+
+// 行动入口不用下划线文字：卡片里只留圆形箭头，读屏名写清去处（E3）
+assert.match(
+  await html('/community/methods'),
+  /class="m-go"[^>]*aria-label="看方法：/,
+);
 
 console.log(
   'PASS: every page of the rebuilt site, one h1 each, header/footer, honest stages and labels, legacy redirects, 404 and private indexing.',

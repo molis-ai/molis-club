@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useRef, useState, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { ArrowDownToLine, ArrowUpRight, Check, Copy } from 'lucide-react';
 import { communityUi, methodText } from '../../../content/site/community';
 import { contactHref } from '../../_site/routes';
@@ -115,6 +115,19 @@ export function CopyPrompt({
   });
   const state = result.text === text ? result.state : 'idle';
   const field = useRef<HTMLTextAreaElement>(null);
+  // 文字多长，框就多高：不在页面里再套一层滚动（DESIGN.md 常驻约束）。没有 JS 时靠样式里的 field-sizing
+  useLayoutEffect(() => {
+    const node = field.current;
+    if (!node) return;
+    const fit = () => {
+      node.style.height = 'auto';
+      node.style.height = `${node.scrollHeight}px`;
+    };
+    fit();
+    void document.fonts?.ready.then(fit);
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, [text]);
   const copy = async () => {
     const ok = await writeClipboard(text);
     setResult({ text, state: ok ? 'copied' : 'manual' });

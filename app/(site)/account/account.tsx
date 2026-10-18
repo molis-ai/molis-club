@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { authClient } from '../../../lib/auth-client';
 import { accountCopy } from '../../../content/site/auth';
 import { useAccountActions } from '../../account/use-account';
@@ -25,8 +26,9 @@ export function Account() {
       <header className="m-auth-head">
         <h2>{t.guest.title}</h2>
         <p>
-          <Link className="m-btn" href={LOGIN}>
+          <Link className="m-btn" href={LOGIN} data-dir="right">
             {t.guest.go}
+            <ArrowRight size={14} aria-hidden="true" />
           </Link>
         </p>
       </header>
@@ -100,6 +102,7 @@ export function Account() {
         </button>
         <Link className="m-link" href={HOME} data-dir="right">
           {t.back}
+          <ArrowRight size={13} aria-hidden="true" />
         </Link>
       </p>
     </>
