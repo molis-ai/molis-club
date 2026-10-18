@@ -135,6 +135,8 @@ export function Walk({ world, index }: { world: StoryWorld; index: number }) {
   const reduced = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
   const [step, setStep] = useState(scene.steps - 1);
+  // 「带回」那一栏随拱窗淡出（story.css：opacity = g × 3 − 2）；完全透明时不让键盘停在上面
+  const [faded, setFaded] = useState(false);
 
   useEffect(() => {
     const node = ref.current;
@@ -149,6 +151,8 @@ export function Walk({ world, index }: { world: StoryWorld; index: number }) {
       const grow =
         p < 0.5 ? smooth(clamp(p / 0.22)) : smooth(clamp((1 - p) / 0.22));
       node.style.setProperty('--g', grow.toFixed(4));
+      const gone = grow * 3 - 2 <= 0;
+      setFaded((value) => (value === gone ? value : gone));
       const t = clamp((p - 0.24) / 0.5);
       const next =
         p < 0.24 ? 0 : Math.min(scene.steps - 1, Math.floor(t * scene.steps));
@@ -208,7 +212,11 @@ export function Walk({ world, index }: { world: StoryWorld; index: number }) {
               <span className="m-note">{scene.note}</span>
             </figcaption>
           </figure>
-          <div className="st-take" data-ready={last || undefined}>
+          <div
+            className="st-take"
+            data-ready={last || undefined}
+            inert={(!reduced && faded) || undefined}
+          >
             <button
               type="button"
               className="m-btn"

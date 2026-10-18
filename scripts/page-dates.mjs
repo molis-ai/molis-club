@@ -3,11 +3,13 @@
 // 键是路由；以 /* 结尾的键覆盖它下面的所有子页（例如文章、方法详情）；'*' 是兜底。
 
 import { execFileSync } from 'node:child_process';
-import { writeFileSync } from 'node:fs';
+import { existsSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 const root = path.resolve(import.meta.dirname, '..');
 const site = 'app/(site)';
+// 五个产品页共用的模板与第 3、4 章文字（首屏、章节、当前进展）
+const product = ['app/_site/product', 'content/site/products.ts'];
 const pages = {
   '/': [
     `${site}/page.tsx`,
@@ -20,30 +22,29 @@ const pages = {
     'content/site/work.ts',
     'app/_site/scenes/work.tsx',
     'app/_site/scenes/work.css',
+    ...product,
   ],
-  '/tool': [
-    `${site}/tool`,
-    'content/site/tool.ts',
-    'app/_site/scenes/tool.tsx',
-    'app/_site/scenes/tool.css',
-  ],
+  '/tool': [`${site}/tool`, 'content/site/tool.ts', ...product],
   '/life': [
     `${site}/life`,
     'content/site/life.ts',
     'app/_site/scenes/life.tsx',
     'app/_site/scenes/life.css',
+    ...product,
   ],
   '/story': [
     `${site}/story`,
     'content/site/story.ts',
     'app/_site/scenes/story.tsx',
     'app/_site/scenes/story.css',
+    ...product,
   ],
   '/world': [
     `${site}/world`,
     'content/site/world.ts',
     'app/_site/scenes/world.tsx',
     'app/_site/scenes/world.css',
+    ...product,
   ],
   '/enterprise': [`${site}/enterprise`, 'content/site/enterprise.ts'],
   '/community': [
@@ -76,11 +77,16 @@ const pages = {
     'content/site/contact.ts',
     'app/_site/contact-form.tsx',
   ],
-  '/privacy': [`${site}/privacy`],
+  '/privacy': [`${site}/privacy`, 'content/site/privacy.ts'],
   '/login': [`${site}/login`, 'content/site/auth.ts'],
   '/account': [`${site}/account`, 'content/site/auth.ts'],
   '*': ['app/_site/site.css', 'app/_site/chrome.tsx'],
 };
+
+// 列的文件被删或改名时，Git 查不到它，这一页的日期会悄悄停在旧的一天：先停下来，改上面的清单
+for (const file of new Set(Object.values(pages).flat()))
+  if (!existsSync(path.join(root, file)))
+    throw new Error(`page-dates：找不到 ${file}，请改成这一页现在实际用的文件`);
 
 const git = (...args) =>
   execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();

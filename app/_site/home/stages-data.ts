@@ -140,24 +140,6 @@ export const introProducts: IntroProduct[] = productIds.map((id) => {
   };
 });
 
-/** 第 3 章「目前如何了解与体验」：按产品分三行（与第 3 章原文一致，略去「本章」这类文档里的说法） */
-export const access = {
-  title: '目前如何了解与体验',
-  rows: [
-    {
-      who: 'Molis Work',
-      text: '可以查看开源代码，并按仓库说明从源码构建；正在开发的新版工作台尚未提供正式安装包。',
-      link: { label: 'GitHub', href: WORK_GITHUB },
-    },
-    {
-      who: 'Molis Tool · Life · Story',
-      text: '尚未开放公开下载。',
-    },
-    { who: 'Molis World', text: '仍处于概念阶段。' },
-  ] as { who: string; text: string; link?: { label: string; href: string } }[],
-  note: '各产品的详情页会说明当前进展与实际开放的入口。',
-};
-
 /* ---------- 画面里的示意数据 ---------- */
 
 /** Work：两个项目各配一组工具（第 4.1 节的例子），个人工具每个项目都在；最后一块是预览中的「你自己的工具」 */
