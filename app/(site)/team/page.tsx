@@ -4,8 +4,10 @@ import { members, team, teamUi, type Member } from '../../../content/site/team';
 import { story, studio } from '../../../content/site/studio';
 import { alongGroups, flowOf } from '../../../content/site/along';
 import {
+  isSoon,
   productIds,
   products,
+  stageOf,
   type ProductId,
 } from '../../../content/site/products';
 import {
@@ -324,21 +326,29 @@ export default function TeamPage() {
             </h2>
             <p className="tm-care">{care}</p>
             <ol className="tm-qs">
+              {/* 先不开放的产品（Life、Story、World）只留名字和阶段，不是链接 */}
               {nearIds.map((id) => (
                 <li key={id} className="tm-q">
                   <p className="tm-q-text">{studio.standard.questions[id]}</p>
-                  <a className="tm-q-to" href={productHref[id]}>
-                    <span lang="en">{products[id].name}</span>
-                    <Status>{products[id].stage}</Status>
-                  </a>
+                  {isSoon(id) ? (
+                    <p className="tm-q-to" data-soon="">
+                      <span lang="en">{products[id].name}</span>
+                      <Status concept>{stageOf(id)}</Status>
+                    </p>
+                  ) : (
+                    <a className="tm-q-to" href={productHref[id]}>
+                      <span lang="en">{products[id].name}</span>
+                      <Status>{stageOf(id)}</Status>
+                    </a>
+                  )}
                 </li>
               ))}
               <li className="tm-q" data-far>
                 <p className="tm-q-text">{teamUi.far}</p>
-                <a className="tm-q-to" href={productHref.world}>
+                <p className="tm-q-to" data-soon="">
                   <span lang="en">{products.world.name}</span>
-                  <Status concept>{products.world.stage}</Status>
-                </a>
+                  <Status concept>{stageOf('world')}</Status>
+                </p>
               </li>
             </ol>
             <div className="tm-together">

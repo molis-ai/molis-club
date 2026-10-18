@@ -296,7 +296,7 @@
   color: var(--ink);
   transition: color 0.3s var(--ease);
 }
-.tm-q-to:hover {
+a.tm-q-to:hover {
   color: var(--accent-ink);
 }
 .tm-together {

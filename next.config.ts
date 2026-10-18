@@ -25,6 +25,10 @@ const moved: [string, string][] = [
   ['/edition-c', '/'],
   ['/edition-c/:path*', '/'],
   ['/compare', '/'],
+  // 先不开放的产品详情页（负责人 2026-10-18）：页面代码留着，地址先转到首页产品区
+  ['/life', '/#products'],
+  ['/story', '/#products'],
+  ['/world', '/#products'],
 ];
 
 const nextConfig: NextConfig = {
