@@ -87,9 +87,11 @@ assert(
 assert(!home.includes('这些产品怎样联系'), 'no product relations on home');
 assert(!home.includes('目前如何了解与体验'), 'home: removed access overview');
 assert.match(home, /开源代码/);
-// 产品舞台去产品页只留圆形箭头，读屏名写清是哪件（E3）
-for (const name of ['Work', 'Tool', 'Life', 'Story'])
+// 产品舞台去产品页只留圆形箭头，读屏名写清是哪件（E3）；Life、Story、World 暂不开放，不放箭头
+for (const name of ['Work', 'Tool'])
   assert(home.includes(`aria-label="了解 Molis ${name}"`), `home stage go ${name}`);
+for (const name of ['Life', 'Story', 'World'])
+  assert(!home.includes(`aria-label="了解 Molis ${name}"`), `home stage no go ${name}`);
 // 结尾：过渡句与企业合作、社区、关于我们三个去处
 assert.match(home, /让口味相近的人/);
 for (const path of ['/enterprise', '/community', '/about'])
