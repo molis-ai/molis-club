@@ -307,14 +307,6 @@ export const relations = {
     'Life 关注真实生活中的心愿、准备与行动；Story 提供可以进入和经历的世界；World 探索让这些地方、伙伴、经历与作品有一个持续生长的空间。三者各有自己的用途，彼此连接仍是未来方向，目前尚未打通。',
 };
 
-/** 第 3 章「目前如何了解与体验」 */
-export const access = {
-  title: '目前如何了解与体验',
-  work: 'Molis Work 可以查看开源代码，并按仓库说明从源码构建；正在开发的新版工作台尚未提供正式安装包。现有公开版本与本章介绍的新工作台处于不同阶段，具体能力以对应版本说明为准。',
-  others:
-    'Molis Tool、Molis Life、Molis Story 尚未开放公开下载，Molis World 仍处于概念阶段。各产品的详情页会说明当前进展与实际开放的入口。',
-};
-
 export const WORK_GITHUB = 'https://github.com/molis-ai/molis-work';
 /** 仓库 README 的「Run from source」一节（2026-10-15 核对） */
 export const WORK_BUILD =
