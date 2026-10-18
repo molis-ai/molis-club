@@ -61,12 +61,13 @@ const pages = {
     'content/knowledge.ts',
     'content/artists.ts',
   ],
+  // 「关于」是一整页（C1）：团队、来路、文章的去处都在这里，/team 已跳到 /about#people
   '/about': [
     `${site}/about`,
     'content/site/about.ts',
     'content/site/studio.ts',
+    'content/site/team.ts',
   ],
-  '/team': [`${site}/team`, 'content/site/team.ts'],
   '/essays': [`${site}/essays/page.tsx`, 'content/stories.json'],
   '/essays/*': [`${site}/essays`, 'content/stories.json'],
   '/along-the-way': [`${site}/along-the-way`, 'content/site/along.ts'],

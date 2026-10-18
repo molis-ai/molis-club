@@ -1,11 +1,11 @@
-// 团队页「认识我们」＝「关于」展厅 01（主题：人）：开场 · 八个人 · 来时路 · 黑客与画家 · 想做的事 · 找同类。
+// 团队：「关于」一整页里的「我们是谁」（C1，负责人 2026-10-18；原来的 /team「认识我们」已收进来，旧地址跳到 /about#people）。
 // team、members 里的句子全部摘自 docs/studio-intro.md 第 7 章（2026-10-15 版），原句不改写；
-// 其余几屏的原句直接读 studio.ts、along.ts，新写的界面文字（图注、小标签、几个数字的说明）都放在 teamUi。
+// 「关于」页其余几屏的原句直接读 studio.ts、along.ts，新写的界面文字（小标签、几个数字的说明）都放在 teamUi。
 // 顺序按第 7 章：王一骏（发起人），徐晶、赵壮实、谢俊、杨鹏飞、庄昊哲、隋欣怡、靳曲（联合创始人）。
 // 「待补」「待本人补充」只是编辑占位，不上官网：这里直接不收，页面上对应的那一块不出现
 // （徐晶、杨鹏飞没有个性标签；杨鹏飞只显示名字与身份）。
 // 个性标签是成员的玩笑自述，不作正式职务或职业排名；页面上标「自述」，签名标「签名」。
-// 不放头像：插画头像不是本人照片，团队真人照片未定。展厅里的照片来自 Unsplash，展厅末尾写明画面里的人不是团队成员。
+// 不放头像：插画头像不是本人照片，团队真人照片未定。页面里的照片来自 Unsplash，画面里的人不是团队成员。
 
 export type MemberId =
   | 'yijun'
@@ -18,7 +18,7 @@ export type MemberId =
   | 'jinqu';
 
 export type Member = {
-  /** 页内锚点（/team#yijun），企业合作页 5.5 也可以链过来 */
+  /** 页内锚点（/about#yijun），企业合作页 5.5 也可以链过来 */
   id: MemberId;
   name: string;
   role: '发起人' | '联合创始人';
@@ -119,14 +119,9 @@ export const members: Member[] = [
   },
 ];
 
-/** 团队页上的界面文字（新写，不是底稿原句；数字都由数据算出）。展品标题、替代文字与署名在 exhibit.ts */
+/** 「关于」页上团队几屏的界面文字（新写，不是底稿原句；数字都由数据算出）。替代文字与署名在 exhibit.ts */
 export const teamUi = {
-  pageTitle: '认识我们',
-
-  // ① 开场
-  facts: { members: '成员', tries: '具体的尝试', products: '产品方向' },
-
-  // ② 八个人
+  // 我们是谁：八个人
   membersLabel: '成员',
   self: '自述',
   motto: '签名',
@@ -134,23 +129,17 @@ export const teamUi = {
   allSelf: '全部自述',
   selfNote: '「」里是本人的自述：玩笑话，不作职务。',
 
-  // ③ 来时路
+  // 从哪来
   pathLabel: '来时路',
   groups: (n: number) => `件具体的尝试，分在 ${n} 组`,
   intoProducts: (n: number) =>
     `其中 ${n} 件，后来流进了今天的 Molis Work、Tool 与 Story。`,
-  toRoom: (no: string, name: string) => `走进展厅 ${no} · ${name}`,
 
-  // ④ 黑客与画家
-  makersLabel: 'Hackers & Painters',
-
-  // ⑤ 想做的事
+  // 想做的事
   wantLabel: '想做的事',
   far: '更远一点',
-  concept: '概念示意',
   enterprise: '企业合作',
-  community: '去社区看看',
 
-  // ⑥ 找同类
+  // 找同类
   chat: '聊一聊',
 };

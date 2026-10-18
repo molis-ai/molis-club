@@ -1,7 +1,7 @@
 /* =====================================================================
    一页式「关于」样张（C1）：/about?study=one。
    全站的纸色，不换墙；区块之间用留白分开，不画线；标题与内容居中陈列。
-   八个人的名牌沿用 team.css，三种媒介沿用 about.css，这里只排这一页和几处覆盖。
+   八个人的名牌在 plate.css，三种媒介沿用 about.css，这里只排这一页和几处覆盖。
    ===================================================================== */
 
 .ao {
@@ -113,25 +113,11 @@
   text-align: left;
 }
 
-/* ---------- 我们是谁：名牌四列两行，去掉名牌上的墨线，靠留白分组 ---------- */
+/* ---------- 我们是谁：名牌四列两行（plate.css） ---------- */
 .ao-roster {
   width: min(100%, var(--ao-wide));
   margin-inline: auto;
   row-gap: clamp(26px, 4.6vh, 48px);
-}
-.ao .tm-plate {
-  padding: 0;
-  border-top: 0;
-}
-.ao .tm-more > summary {
-  top: -6px;
-}
-.ao .tm-more-body {
-  padding-top: 0;
-  border-top: 0;
-}
-.ao .tm-plate-top {
-  padding-right: 72px;
 }
 
 /* ---------- 左图右文（从哪来、什么变了）：一对居中的两栏 ---------- */
@@ -201,11 +187,12 @@
 .ao-go-line .num {
   color: var(--ink);
 }
+/* 和全站卡片的圆形箭头同一个大小（44px） */
 .ao-go-arrow {
   display: inline-grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   box-shadow: inset 0 0 0 1px var(--hair-2);
   transition:
@@ -414,7 +401,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
+  gap: 12px 28px;
   margin-top: clamp(24px, 4.4vh, 44px);
 }
 

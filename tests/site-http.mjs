@@ -11,6 +11,8 @@ async function html(path) {
   return response.text();
 }
 const count = (text, pattern) => (text.match(pattern) || []).length;
+/** 展厅的名牌、平面图、「下一个展厅」与墙色（「关于」收成一整页后不再出现） */
+const exhibit = /class="ex-(meta|plan|next)[\s"]|data-room=/;
 
 const pages = [
   '/',
@@ -25,7 +27,6 @@ const pages = [
   '/community/methods/stagger',
   '/community/methods/artists/monet-impressionism',
   '/about',
-  '/team',
   '/essays',
   '/essays/human-scale',
   '/essays/idealism',
@@ -41,12 +42,11 @@ for (const path of pages) {
   assert.equal(count(page, /<h1[\s>]/g), 1, `${path}: exactly one h1`);
   assert.match(page, /<meta name="robots" content="noindex, nofollow"/, path);
   assert.match(page, /<html lang="zh-CN"/, path);
-  // 顶栏：产品 ▾ · 企业合作 · 社区 · 关于 ▾ ｜ 登录 · 聊一聊
+  // 顶栏：产品 ▾ · 企业合作 · 社区 · 关于 ｜ 登录 · 聊一聊；页尾目录里有文章、沿途
   for (const href of [
     '/enterprise',
     '/community',
     '/about',
-    '/team',
     '/essays',
     '/along-the-way',
     '/login',
@@ -58,6 +58,13 @@ for (const path of pages) {
     );
   for (const href of ['/work', '/tool', '/life', '/story', '/world'])
     assert(page.includes(`href="${href}"`), `${path}: product link ${href}`);
+  // 「关于」是一整页：顶栏不下拉，不再链到退役的「认识我们」，也没有展厅名牌与「下一个展厅」
+  assert(!page.includes('m-drop-about'), `${path}: no about dropdown`);
+  assert(!page.includes('href="/team'), `${path}: no link to /team`);
+  assert(
+    !exhibit.test(page),
+    `${path}: no exhibit plate, plan, wall or next room`,
+  );
   // 页尾：本页最近修改
   assert.match(
     page,
@@ -140,8 +147,10 @@ for (const [from, to] of [
   ['/journal', '/essays'],
   ['/story/human-scale', '/essays/human-scale'],
   ['/studio', '/about'],
-  ['/creators', '/team'],
-  ['/community/yijun', '/team'],
+  ['/team', '/about#people'],
+  ['/creators', '/about#people'],
+  ['/community/adeptify', '/about#people'],
+  ['/community/yijun', '/about#yijun'],
   ['/join', '/contact'],
   ['/works/niulai', '/along-the-way'],
   ['/atelier', '/'],
@@ -186,20 +195,26 @@ assert(!(await html('/sitemap.xml')).includes('<loc>'));
 for (const [path, text] of [
   ['/community', '往下：四件作品，各自连着做法'],
   ['/enterprise', '先说说，你们卡在哪'],
-  ['/team', '认识每一个人'],
+  ['/about', '认识每一个人'],
   ['/essays/human-scale', '接着读'],
   ['/about', '我们怎样要求自己'],
   ['/about', '这些信念怎样落到产品里'],
 ])
   assert(!(await html(path)).includes(text), `${path}: no「${text}」`);
 
-// 一页式「关于」样张（C1，负责人 2026-10-18）：/about?study=one。默认 /about 照旧是现版，不出现比较条
-assert(
-  !(await html('/about')).includes('m-review-bar'),
-  '/about: no review bar by default',
-);
+// 「关于」是一整页（C1，负责人 2026-10-18 看过样张后切成默认）。旧的展厅版暂留 /about?study=current 对照，
+// 只有带参数时出现比较条
 {
-  const one = await html('/about?study=one');
+  const old = await html('/about?study=current');
+  assert.match(
+    old,
+    /<title>我们相信什么 · Molis AI<\/title>/,
+    'about: old version',
+  );
+  assert(old.includes('m-review-bar'), 'about current: review bar');
+  assert((await html('/about?study=one')).includes('m-review-bar'));
+  const one = await html('/about');
+  assert(!one.includes('m-review-bar'), '/about: no review bar by default');
   const text = one
     .replace(/<script[\s\S]*?<\/script>/g, '')
     .replace(/<style[\s\S]*?<\/style>/g, '')
@@ -250,10 +265,10 @@ assert(
   ])
     assert(one.includes(`href="${href}"`), `about one: link ${href}`);
   // 不再是展厅：没有名牌、平面图、墙色与「下一个展厅」
-  for (const mark of ['ex-meta', 'ex-plan', 'ex-next', 'data-room'])
-    assert(!one.includes(mark), `about one: no exhibit ${mark}`);
   assert(!text.includes('展厅'), 'about one: no room names');
-  assert(one.includes('m-review-bar'), 'about one: review bar');
+  // 八个人的名牌带锚点（旧地址 /community/yijun 跳到 #yijun）
+  for (const id of ['people', 'yijun', 'jinqu'])
+    assert(one.includes(`id="${id}"`), `about one: anchor #${id}`);
 }
 
 console.log(

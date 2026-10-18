@@ -20,22 +20,24 @@ import {
   essayHref,
   productHref,
 } from '../../_site/routes';
-import { Btn, Phrases, Status, type Vars } from '../../_site/ui';
+import { Btn, More, Phrases, Status, type Vars } from '../../_site/ui';
 import { Work } from '../../_site/exhibit/exhibit';
-import { Plate } from '../team/plate';
 import { BeliefGallery } from './belief-gallery';
+import { Plate } from './plate';
 import { Trio } from './trio';
-import '../team/team.css';
 import './one.css';
 
-// 一页式「关于」样张（清单 C1，负责人 2026-10-18 定方向）：/about?study=one。普通访客默认仍看现版四页。
+// 「关于」一整页（清单 C1；负责人 2026-10-18 定方向、看过样张后切成默认）。顶栏「关于」直接到这里，不再有下拉；
+// 旧地址 /team 跳到「我们是谁」（#people），/community/yijun 跳到一骏的名牌；文章、沿途各自留着，从这一页的卡片进去。
 // 一条主线「技术，回到人的尺度。」，把态度、人、来路、文章、做法、信念和产品串在一页里：
 // 开场 · 我们是谁 · 从哪来（去沿途）· 什么变了（去文章）· 三种媒介 · 六条信念 · 想做的事 · 找同类。
-// 不再是四间展厅：没有名牌、平面图、墙色和「下一个展厅」；展品不编号，图下只留媒介与摄影者。
+// 不再是四间展厅：没有名牌、平面图、墙色和「下一个展厅」；展品不编号，图下只留媒介与摄影者（AI 生成的图照实标出）。
 // 区块之间用留白分开，不画线；内容居中陈列。
 // 正文全部是底稿原句，从 studio.ts、team.ts、along.ts、essays.ts 读、用代码切（一字不差），
 // 每句只出现一次：「找同类，不抢货架。」在结尾回扣一次标题，它的正文只在六条信念里。
 // 新写的界面文字只有小标签、去处与几个数的说明，沿用 aboutUi、teamUi、trio 里已有的写法。
+// 去处的写法按全站链接规则（E3）：有标题和说明的卡片整张是链接、只留箭头；独立入口用 More，两三个字说明去处；
+// Btn 的箭头由公共部件自己加，这里不手放。
 
 /** 按句号、问号切句 */
 const sentences = (text: string) =>
@@ -156,12 +158,7 @@ export function AboutOne() {
         </div>
         <ol className="tm-roster ao-roster">
           {members.map((member, index) => (
-            <Plate
-              key={member.id}
-              member={member}
-              index={index}
-              numbered={false}
-            />
+            <Plate key={member.id} member={member} index={index} />
           ))}
         </ol>
         <p className="ao-fine" data-reveal>
@@ -355,14 +352,8 @@ export function AboutOne() {
           </li>
         </ol>
         <div className="ao-together" data-reveal>
-          <Btn href={ENTERPRISE} line>
-            {teamUi.enterprise}
-            <ArrowRight size={14} aria-hidden="true" />
-          </Btn>
-          <Btn href={COMMUNITY} line>
-            {nav.community}
-            <ArrowRight size={14} aria-hidden="true" />
-          </Btn>
+          <More href={ENTERPRISE}>{teamUi.enterprise}</More>
+          <More href={COMMUNITY}>{nav.community}</More>
         </div>
       </section>
 
@@ -391,10 +382,7 @@ export function AboutOne() {
           </h2>
           <p className="ao-text">{studio.ware.view}</p>
           <div className="ao-end-act">
-            <Btn href={contactHref()}>
-              {teamUi.chat}
-              <ArrowRight size={14} aria-hidden="true" />
-            </Btn>
+            <Btn href={contactHref()}>{teamUi.chat}</Btn>
           </div>
         </div>
       </section>

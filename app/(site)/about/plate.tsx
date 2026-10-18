@@ -1,9 +1,10 @@
 import { Plus } from 'lucide-react';
 import { teamUi, type Member } from '../../../content/site/team';
-import { pad, type Vars } from '../../_site/ui';
+import type { Vars } from '../../_site/ui';
+import './plate.css';
 
 // 一个人的名牌：身份、名字、方向，正面露一句本人自述，「经历」点开看全文（details，没有 JS 也能开）。
-// 「认识我们」和一页式「关于」样张共用；样张里不编号（numbered={false}）。
+// 不编号。id 是页内锚点（/about#yijun），旧地址 /community/yijun 跳到这里。
 
 /** 个性标签按原文的分号拆成一行一个，去掉句末的句号 */
 const tagsOf = (tags: string) =>
@@ -12,15 +13,7 @@ const tagsOf = (tags: string) =>
     .map((tag) => tag.replace(/。$/, ''))
     .filter(Boolean);
 
-export function Plate({
-  member,
-  index,
-  numbered = true,
-}: {
-  member: Member;
-  index: number;
-  numbered?: boolean;
-}) {
+export function Plate({ member, index }: { member: Member; index: number }) {
   const tags = member.tags ? tagsOf(member.tags) : [];
   const motto = member.motto?.split('：')[1]?.replace(/。$/, '');
   const fromMotto = Boolean(member.front && motto?.includes(member.front));
@@ -33,11 +26,6 @@ export function Plate({
       style={{ '--delay': `${(index % 4) * 70}ms` } as Vars}
     >
       <p className="tm-plate-top">
-        {numbered ? (
-          <span className="ex-no num" aria-hidden="true">
-            {pad(index + 1)}
-          </span>
-        ) : null}
         <span className="tm-role">{member.role}</span>
       </p>
       <h3 className="tm-name">{member.name}</h3>

@@ -21,7 +21,6 @@ export function GET() {
           (skill) => `/community/methods/artists/${skill.slug}`,
         ),
         '/about',
-        '/team',
         '/essays',
         ...stories.map((story) => `/essays/${story.slug}`),
         '/along-the-way',
