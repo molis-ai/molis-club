@@ -124,9 +124,7 @@ export const contactPage = {
   title: '联系',
   description:
     '企业合作、关注某件产品、社区分享、反馈或别的事，都可以在这里留几句话给 Molis AI 团队。表单内容存入团队私密收件箱，不公开展示，目前不会自动回信。',
-  kicker: '联系',
   heading: '门开着，进来说。',
-  lead: '企业合作、关注某件产品、分享你做的东西、一条反馈，或者别的什么。选一个来意，写几句就好。',
   alt: '白色展厅的天光下，一个人正走过门洞。',
   caption: 'Through the doorway',
   handlingTitle: '这张表怎样处理',

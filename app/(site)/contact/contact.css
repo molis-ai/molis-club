@@ -1,20 +1,22 @@
-/* 联系页的基础布局：左边一扇竖窗（门洞），右边表单。默认的紧凑版叠在上面（contact-compact.css）；
-   只用这一份的是暂留的旧版 ?study=current：窗在桌面上钉住，表单在旁边往下走。 */
+/* 联系页：左边一扇竖窗（门洞）配一张展签式的处理说明，右边标题和整张表。
+   桌面（1100px 以上）首屏只放联系这一件事，整屏居中，页尾和别的页一样留在下面；
+   更窄时自然排列，手机上顺序是：标题 → 门洞（裁成横幅）→ 表单 → 处理方式。
+   表单本身的样式在 app/_site/contact-form.css（企业合作页共用），这里只调联系页的间距与排法。 */
 
 .m-contact {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--col-gap);
   align-items: start;
-  padding-bottom: var(--section-bottom);
+  min-height: 100svh;
+  padding-top: calc(var(--header) + 32px);
+  padding-bottom: 36px;
 }
 .m-contact-door {
   grid-column: 1 / span 5;
-  position: sticky;
-  top: calc(var(--header) + 32px);
 }
 .m-contact-door .m-window-frame {
-  max-height: calc(100svh - var(--header) - 96px);
+  max-height: min(52svh, 500px);
 }
 /* 图注是英文：细斜体（Window 的图注默认按中文排） */
 .m-contact .m-caption [lang='en'] {
@@ -25,63 +27,66 @@
 .m-contact-main {
   grid-column: 7 / -1;
   display: grid;
-  gap: clamp(36px, 6vh, 64px);
-}
-.m-contact-head {
-  display: grid;
-  gap: 18px;
-  padding-top: 20px;
-  border-top: 1px solid var(--ink);
+  gap: 24px;
 }
 .m-contact-title {
-  font: 300 var(--t-h1) / 1.3 var(--sans);
+  font: 300 clamp(32px, 3.5vw, 50px) / 1.3 var(--sans);
   letter-spacing: 0.04em;
 }
-.m-contact-lead {
-  max-width: 30em;
-  font-size: var(--t-lead);
-  line-height: 1.9;
-  letter-spacing: 0.03em;
-  color: var(--ink-2);
-}
+
+/* 处理说明写成展签：一行小标签、两句小字、一个按钮，不加圆点和分隔线 */
 .m-contact-note {
   display: grid;
-  gap: 12px;
-  padding-top: 20px;
-  border-top: 1px solid var(--hair);
+  gap: 8px;
+  margin-top: 20px;
 }
 .m-contact-note ul {
   display: grid;
+  gap: 2px;
+  font-size: var(--t-small);
+  line-height: 1.75;
+  color: var(--mute);
+}
+.m-contact-note p {
+  margin-top: 6px;
+}
+
+/* 表单在联系页收紧一点 */
+.m-contact .m-form {
+  gap: 16px;
+}
+.m-contact .m-form-field {
   gap: 6px;
-  font-size: var(--t-ui);
-  line-height: 1.8;
-  color: var(--ink-2);
 }
-.m-contact-note li {
-  position: relative;
-  padding-left: 16px;
+.m-contact .m-form-set > .m-form-label {
+  margin-bottom: 8px;
 }
-.m-contact-note li::before {
-  content: '';
-  position: absolute;
-  top: 0.8em;
-  left: 2px;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--mute);
+.m-contact .m-form-field input,
+.m-contact .m-form-field textarea {
+  min-height: 44px;
+  padding: 9px 12px;
+  font-size: 16px;
+}
+.m-contact .m-form-field textarea {
+  height: 108px;
+  min-height: 108px;
+}
+.m-contact .m-form-handling {
+  padding-top: 0;
+  border-top: 0;
 }
 
 /* 窄屏：标题 → 门洞（裁成横幅）→ 表单 → 处理方式 */
 @media (max-width: 900px) {
   .m-contact {
-    row-gap: 36px;
+    row-gap: 24px;
   }
-  .m-contact-main {
+  .m-contact-main,
+  .m-contact-door {
     display: contents;
   }
   .m-contact-head,
-  .m-contact-door,
+  .m-contact-door > .m-window,
   .m-contact-form,
   .m-contact-note {
     grid-column: 1 / -1;
@@ -89,12 +94,11 @@
   .m-contact-head {
     order: 1;
   }
-  .m-contact-door {
+  .m-contact-door > .m-window {
     order: 2;
-    position: static;
   }
   .m-contact-door .m-window-frame {
-    --ratio: 4 / 3 !important;
+    --ratio: 16 / 7 !important;
     --focus: 62% 80% !important;
     max-height: none;
   }
@@ -103,5 +107,75 @@
   }
   .m-contact-note {
     order: 4;
+    margin-top: 0;
+  }
+}
+
+/* 桌面：首屏整屏居中、四周留白。高度由内容撑开，报错、缩放和拉长的留言仍可滚动到。 */
+@media (min-width: 1100px) {
+  .m-contact {
+    padding-top: calc(var(--header) + clamp(24px, 5svh, 56px));
+    padding-bottom: clamp(24px, 5svh, 56px);
+    align-content: center;
+    align-items: center;
+  }
+  .m-contact-door {
+    display: grid;
+    gap: 24px;
+  }
+  /* 竖窗按屏高收：给图注和展签留出位置，宽度跟着比例走，不把窗压扁 */
+  .m-contact-door .m-window-frame {
+    width: min(100%, calc((100svh - var(--header) - 280px) * 3 / 4));
+    max-height: none;
+  }
+  .m-contact-main {
+    gap: clamp(24px, 4svh, 36px);
+  }
+  .m-contact-title {
+    font-size: clamp(34px, 3.2vw, 46px);
+  }
+  .m-contact-note {
+    margin-top: 0;
+  }
+  .m-contact .m-form {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 20px 24px;
+  }
+  .m-contact .m-form > * {
+    grid-column: 1 / -1;
+  }
+  .m-contact .m-form-field textarea {
+    height: 96px;
+    min-height: 96px;
+  }
+
+  /* 同意与发送并排，处理方式在下面单独一行；报错、提示都不藏 */
+  .m-contact .m-form-checks {
+    grid-column: 1;
+    align-self: center;
+    order: 1;
+  }
+  .m-contact .m-form-send {
+    grid-column: 2;
+    align-self: start;
+    justify-content: flex-end;
+    max-width: 240px;
+    gap: 6px;
+    order: 1;
+  }
+  .m-contact .m-form-handling {
+    font-size: var(--t-small);
+    color: var(--mute);
+    order: 2;
+  }
+  .m-contact .m-form-nojs {
+    order: 3;
+  }
+}
+
+@media print {
+  .m-contact {
+    min-height: 0;
+    padding-top: 0;
   }
 }

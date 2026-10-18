@@ -196,11 +196,12 @@ for (const [path, text] of [
 ])
   assert(!(await html(path)).includes(text), `${path}: no「${text}」`);
 
-// 联系页：桌面紧凑版是默认，不带评审控件；?study=current 暂留旧版作对照（E1，负责人 2026-10-18）
-const contact = await html('/contact');
-assert(!contact.includes('data-study='), 'contact: compact layout is the default');
-assert(!contact.includes('m-review-bar'), 'contact: no review switch by default');
-assert.match(await html('/contact?study=current'), /data-study="current"/);
+// 联系页：只有验收过的一版，不带评审控件，旧版对照已删（E1，负责人 2026-10-18）
+for (const path of ['/contact', '/contact?study=current']) {
+  const contact = await html(path);
+  assert(!contact.includes('m-review-bar'), `${path}: no review switch`);
+  assert(!contact.includes('选一个来意，写几句就好'), `${path}: old lead removed`);
+}
 
 // 行动入口不用下划线文字：卡片里只留圆形箭头，读屏名写清去处（E3）
 assert.match(
