@@ -114,8 +114,9 @@
 }
 
 /* ---------- 我们是谁：名牌四列两行（plate.css） ---------- */
+/* 八个人的自述要一行放得下，比别的区块宽一点（到版心） */
 .ao-roster {
-  width: min(100%, var(--ao-wide));
+  width: 100%;
   margin-inline: auto;
   row-gap: clamp(26px, 4.6vh, 48px);
 }
