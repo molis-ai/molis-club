@@ -206,7 +206,6 @@ export function Walk({ world, index }: { world: StoryWorld; index: number }) {
             {scene.render({ step: shown })}
             <figcaption className="st-arch-cap">
               <span className="m-note">{scene.note}</span>
-              <span>{world.steps[shown]}</span>
             </figcaption>
           </figure>
           <div className="st-take" data-ready={last || undefined}>

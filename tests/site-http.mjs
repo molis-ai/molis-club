@@ -125,6 +125,38 @@ assert.match(await html('/story'), /尚未开放/);
 const world = await html('/world');
 assert.match(world, /概念设计/);
 assert.match(world, /概念示意/);
+// A1 第二批：产品页同一件事只说一次（标签行不再写产品名；不列每一步的字；进展不再分栏贴标签；关注入口只在页尾）
+for (const path of ['/life', '/story', '/world']) {
+  const page = await html(path);
+  for (const phrase of [
+    '亲手试一次',
+    '已经有的',
+    '现在怎么体验',
+    '未来方向 · 尚未打通',
+    'Life、Story 与 World',
+    '画面在演什么',
+  ])
+    assert(!page.includes(phrase), `${path}: no repeated 「${phrase}」`);
+  const shown = page.replace(/<script[\s\S]*?<\/script>/g, '');
+  assert.equal(
+    count(shown, /关注 Molis (Life|Story|World) 的进展/g),
+    1,
+    `${path}: follow entry once`,
+  );
+}
+assert(!(await html('/life')).includes('一个说了很久的愿望'), 'life: no steps');
+assert(!world.includes('这一页的画面都是概念示意'), 'world: no hero aside');
+assert(!world.includes('和其他产品的关系'), 'world: relation told in 03');
+assert(!world.includes('面馆在你的世界里'), 'world: no steps');
+assert(
+  !(await html('/story')).includes('再来一次，彼此的意思慢慢清楚了一点'),
+  'story: no step captions',
+);
+for (const path of ['/work', '/tool', '/life', '/story', '/world'])
+  assert(
+    !/<p class="m-tagline[^"]*"><b/.test(await html(path)),
+    `${path}: tagline without repeated name`,
+  );
 
 // 旧地址：全部转到新页面里对应的位置
 for (const [from, to] of [

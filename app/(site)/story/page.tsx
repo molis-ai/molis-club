@@ -5,7 +5,6 @@ import {
   hereList,
   rhythmPart,
   storyGo,
-  storyProgress,
 } from '../../../content/site/story';
 import { ProductEnding, ProductHero } from '../../_site/product/product';
 import { contactHref, productHref } from '../../_site/routes';
@@ -83,24 +82,15 @@ export default function StoryPage() {
               ))}
             </div>
           </header>
-          <div className="st-further" data-reveal>
-            <p>{further.text}</p>
-            <Note>{further.tag}</Note>
-          </div>
+          <p className="st-further" data-reveal>
+            {further}
+          </p>
         </section>
         <ProductEnding
           product={story}
           start={6}
-          progress={{
-            have: storyProgress.have,
-            notYet: storyProgress.notYet,
-            now: {
-              text: storyProgress.now,
-              links: <More href={contactHref('story')}>{storyGo.follow}</More>,
-            },
-          }}
+          progress={[story.progress[0]]}
           relation={{
-            title: 'Life、Story 与 World',
             formula: (
               <>
                 <span>Life</span>
@@ -111,7 +101,6 @@ export default function StoryPage() {
               </>
             ),
             text: relations.lifeStoryWorld,
-            tag: '未来方向 · 尚未打通',
           }}
           go={
             <>

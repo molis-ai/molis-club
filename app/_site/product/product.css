@@ -169,6 +169,36 @@
     min-height: 40vh;
   }
 }
+/* 只演画面（不给每一步的字）：文字停在左边，下面一排看不见的节拍推着画面一步步演 */
+.m-ch-beats {
+  display: none;
+}
+@media (min-width: 901px) {
+  .js .m-chapters[data-quiet] .m-ch {
+    display: grid;
+  }
+  .js .m-chapters[data-quiet] .m-ch > * {
+    grid-area: 1 / 1;
+  }
+  .js .m-chapters[data-quiet] .m-ch-copy {
+    position: sticky;
+    top: calc(var(--header) + 5vh);
+    align-self: start;
+    z-index: 1;
+  }
+  .js .m-chapters[data-quiet] .m-ch-beats {
+    display: grid;
+  }
+  .js .m-chapters[data-quiet] .m-ch-beats i {
+    height: 34vh;
+  }
+  .js .m-chapters[data-quiet] .m-ch-beats i:first-child {
+    height: 44vh;
+  }
+  .js .m-chapters[data-quiet] .m-ch-beats i:last-child {
+    height: 56vh;
+  }
+}
 .m-stage-pin {
   position: sticky;
   top: calc(var(--header) + 5vh);
@@ -251,50 +281,28 @@
 }
 .m-pend-progress {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 32px var(--col-gap);
-  margin-left: calc((100% + var(--col-gap)) / 12 * 2);
-}
-.m-pend-progress > div {
-  display: grid;
-  align-content: start;
-  gap: 12px;
-  padding-top: 16px;
-  border-top: 1px solid var(--hair-2);
-}
-.m-pend-progress dt {
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-  color: var(--mute);
-}
-.m-pend-progress dd {
-  display: grid;
-  gap: 0.8em;
-  color: var(--ink-2);
-}
-.m-pend-progress dd .m-actions {
-  margin-top: 6px;
-}
-.m-pend-relation {
-  display: grid;
-  justify-items: start;
-  gap: 16px;
-  max-width: 40em;
+  gap: 1em;
+  max-width: 34em;
   margin-left: calc((100% + var(--col-gap)) / 12 * 2);
   color: var(--ink-2);
+}
+.m-pend-progress p {
+  line-height: 1.95;
 }
 .m-pend-formula {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0 0.4em;
-  font: 300 var(--t-h1) / 1.1 var(--sans);
-  letter-spacing: -0.015em;
-  color: var(--ink);
 }
 .m-pend-formula i {
   font-style: normal;
   color: var(--accent);
+}
+.m-pend-relation {
+  max-width: 40em;
+  margin-left: calc((100% + var(--col-gap)) / 12 * 2);
+  color: var(--ink-2);
 }
 .m-pend-go {
   padding-block: clamp(56px, 9vh, 104px) var(--section-bottom);
@@ -309,9 +317,6 @@
   .m-pend-progress,
   .m-pend-relation {
     margin-left: 0;
-  }
-  .m-pend-progress {
-    grid-template-columns: minmax(0, 1fr);
   }
   .m-pend-go .m-actions {
     padding-left: 0;
