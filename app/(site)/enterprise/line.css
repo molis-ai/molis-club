@@ -302,9 +302,6 @@
   letter-spacing: 0.03em;
   text-wrap: balance;
 }
-.m-ent-onward .m-btn svg {
-  margin-left: 2px;
-}
 
 /* ---------- 钉住：宽屏、够高、不减少动态时（stages.tsx 加 data-live），一页一页在同一个位置换 ---------- */
 .m-ent-line[data-live] {

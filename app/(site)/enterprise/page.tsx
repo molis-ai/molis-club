@@ -191,7 +191,8 @@ export default async function EnterprisePage({
               <p className="m-ent-onward-line">
                 <Phrases text={e.path.lead} />
               </p>
-              <a className="m-btn m-btn-line" href="#talk">
+              {/* 往下到表单：和纸条下「看看这条路怎么走」同一种页内入口（描边胶囊 + 下箭头） */}
+              <a className="m-link" href="#talk" data-dir="down">
                 {e.hook.talk}
                 <ArrowDown size={14} aria-hidden="true" />
               </a>
