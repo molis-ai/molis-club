@@ -9,15 +9,14 @@ import { tilt, untilt } from './keeps';
 // 左上是标题与 5.5 导语；墙脚一排四张半透明的卡，按 FDE 的常见流程排：
 // 诊断 → 方案 → 构建 → 核验与交接。每张写这一步做什么、几个能力点，卡底是与这一步相关的团队经历背书。
 // 个人介绍留给团队页。
-// 样张（D1，lean）：路线已经一站一页写清了做什么，这里不再复述——卡上只留 5.5 的小标题原句与成员经历，
-// 去掉阶段、做什么与能力点；「团队经历背书」不再逐张写，页脚那句说明照旧。
+// 只在旧版（?study=current）里用；主线改成「为什么我们可以」（why.tsx）。
 // 鼠标在墙前移动，照片跟着轻轻错开一点（像站在墙前换了个角度）；停在卡上，卡浮起、跟着鼠标倾斜，
 // 顶边亮一道杏橙，能力点依次亮起来。窄屏上照片收成上方一条，四张卡竖着排（手机左右滑）。
 
 const { people } = enterprise;
 const pad = (n: number) => String(n).padStart(2, '0');
 
-export function People({ lean = false }: { lean?: boolean }) {
+export function People() {
   const image = mediaOf('tool-light');
   const frame = useRef(0);
 
@@ -60,14 +59,14 @@ export function People({ lean = false }: { lean?: boolean }) {
 
       <div className="m-ent-people-body m-wrap">
         <header className="m-ent-people-head" data-reveal>
-          {lean ? null : <p className="m-kicker">{people.kicker}</p>}
+          <p className="m-kicker">{people.kicker}</p>
           <h2 className="m-ent-people-title" id="ent-people-title">
             <Phrases text={people.title} />
           </h2>
           <p className="m-ent-people-lead">{people.lead}</p>
         </header>
 
-        <ol className="m-ent-caps" data-reveal data-lean={lean || undefined}>
+        <ol className="m-ent-caps" data-reveal>
           {people.abilities.map((ability, index) => {
             return (
               <li
@@ -77,39 +76,30 @@ export function People({ lean = false }: { lean?: boolean }) {
                 onPointerMove={tilt}
                 onPointerLeave={untilt}
               >
-                {lean ? (
-                  <>
-                    <h3 className="m-cap-title">{ability.title}</h3>
-                    <p className="m-cap-record">{ability.record}</p>
-                  </>
-                ) : (
-                  <>
-                    <p className="m-cap-stage">
-                      <span aria-hidden="true">{pad(index + 1)}</span>
-                      {ability.stage}
-                    </p>
-                    <h3 className="m-cap-title">{ability.label}</h3>
-                    <p className="m-cap-does">{ability.does}</p>
-                    <ul className="m-cap-points">
-                      {ability.points.map((point, at) => (
-                        <li key={point} style={{ '--j': at } as Vars}>
-                          {point}
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="m-cap-record">
-                      <span>{people.recordLabel}</span>
-                      {ability.record}
-                    </p>
-                  </>
-                )}
+                <p className="m-cap-stage">
+                  <span aria-hidden="true">{pad(index + 1)}</span>
+                  {ability.stage}
+                </p>
+                <h3 className="m-cap-title">{ability.label}</h3>
+                <p className="m-cap-does">{ability.does}</p>
+                <ul className="m-cap-points">
+                  {ability.points.map((point, at) => (
+                    <li key={point} style={{ '--j': at } as Vars}>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+                <p className="m-cap-record">
+                  <span>{people.recordLabel}</span>
+                  {ability.record}
+                </p>
               </li>
             );
           })}
         </ol>
 
         <footer className="m-ent-people-end">
-          <p>{lean ? people.noteLean : people.note}</p>
+          <p>{people.note}</p>
           <More href={TEAM}>{people.link}</More>
         </footer>
       </div>

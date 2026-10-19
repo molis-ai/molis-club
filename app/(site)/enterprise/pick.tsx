@@ -132,7 +132,8 @@ export function Slips({ lean = false }: { lean?: boolean }) {
         {questions.items.map((question) => {
           const item = path.advice[question.id];
           // 样张（D1，lean）：只回问题原句；选过的只带进末尾的表单（负责人 2026-10-19：照原文，不配对）。
-          // 路线就在下面一屏，不再放「看看这条路怎么走」（负责人 2026-10-19 问必要性：不配对之后它只是往下滚一屏）
+          // 路线就在下面一屏，不再放「看看这条路怎么走」（负责人 2026-10-19 问必要性：不配对之后它只是往下滚一屏）；
+          // 「都看看」也去掉了（负责人 2026-10-19），换一张直接点另一张
           if (lean)
             return (
               <div
@@ -142,11 +143,6 @@ export function Slips({ lean = false }: { lean?: boolean }) {
                 data-lean
               >
                 <p className="m-ent-reply-title">{question.title}</p>
-                <p className="m-actions">
-                  <button type="reset" className="m-link">
-                    {hook.reset}
-                  </button>
-                </p>
               </div>
             );
           return (

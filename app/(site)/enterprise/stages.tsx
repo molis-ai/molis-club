@@ -1,33 +1,46 @@
 'use client';
 import { useEffect, useRef, type PointerEvent } from 'react';
-import {
-  enterprise,
-  type Act,
-  type StationId,
-} from '../../../content/site/enterprise';
+import { enterprise, type StationId } from '../../../content/site/enterprise';
 import type { Vars } from '../../_site/ui';
-import { play } from './keeps';
-import { Scene } from './scenes';
+import { Keep, play } from './keeps';
 
-// 样张（D1）：合作路线四站排在一屏上，像展厅里并排的四面墙（负责人 2026-10-19：四站合到一屏，路线人人一样，不配对）。
-// 每面墙一站，四种墙色同「关于」的展厅：顶上一段示意动画演这一站在做什么（scenes.tsx），
-// 下面大字是这一站在路上的位置（开始前、一起做、核验、交接），小字是服务名；
-// 再往下照原文的主语写分工——业务团队、Molis、一起，没有的不写，各墙按自己的长短排，不对齐留空；墙脚是这一站留下的东西。
-// 事与成果都是 5.2 / 5.3 的原句片段。四段动画进屏后从左到右接力演一遍；鼠标移到哪面墙，那面墙重演。窄于 1000 时四面墙竖排。
+// 合作路线（负责人 2026-10-19 重排细节）：四站竖着排成四列，三个角色横着排成三条道，仍在一屏里。
+// 上面一条是业务团队（月白，冷），下面一条是 Molis（一层极淡的杏色，暖），「一起」夹在两条道的接缝上：
+// 那一行的底色上半是月白、下半是杏色，一起做的事写在白卡上，压在接缝正中——两边各出一半。
+// 角色名只在最左边写一次，每件事前面一颗圆点：业务团队墨色、Molis 杏色、一起是墨色与杏色叠在一起。
+// 每件事只留主句（补充说明不再上页面）；字号拉开三档：站名大、事情中、角色与产出小。
+// 「留下」改成「产出」，由动画来体现（keeps.tsx 的四件东西：试点方案、能试用的小工具、问题记录、一叠清单与流程）：
+// 整屏进入视口后从左到右一站一站走：这一站的几件事依次点一下圆点，接着底下的产出从头「做出来」；鼠标移到哪一站，那一站重演。
+// 静止就是做好的样子（没有 JS、减少动态都看这一帧）。窄于 1000 时四站竖着排，每站里三条道上下排、角色名写在道里。
 
 const { path, line } = enterprise;
 const stationIds = Object.keys(path.stations) as StationId[];
-const roles = ['you', 'we', 'both'] as const;
+const roles = ['you', 'both', 'we'] as const;
+type Role = (typeof roles)[number];
 
-/** 这一站某个角色做的事：同一个角色的几件事收在一组，没有的角色不写 */
-const actsOf = (id: StationId, who: (typeof roles)[number]) =>
+/** 这一站某个角色做的事；没有的角色留空 */
+const actsOf = (id: StationId, who: Role) =>
   line.rows[id].flatMap((row) => row[who] ?? []);
 
-/** 鼠标移到墙上：这面墙的动画重演（触屏不触发） */
+/** 一站走多久（毫秒）：几件事点完，再演产出 */
+const STEP = 1300;
+
+/** 这一站演一遍：几件事的圆点依次点一下，同时底下的产出从头做出来 */
+function run(station: Element) {
+  station.removeAttribute('data-on');
+  void (station as HTMLElement).offsetWidth;
+  station.setAttribute('data-on', '');
+  const art = station.querySelector('.m-keep-art');
+  // 第一次：停在第一帧等着的那段放开；之后每次倒回开头重放
+  if (art?.hasAttribute('data-hold')) art.removeAttribute('data-hold');
+  else play(art);
+}
+
+/** 鼠标移到一站：这一站重演（触屏不触发） */
 function replay(event: PointerEvent<HTMLElement>) {
   if (event.pointerType !== 'mouse') return;
-  const scene = event.currentTarget.querySelector('.m-scene');
-  if (scene && !scene.hasAttribute('data-hold')) play(scene);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  run(event.currentTarget);
 }
 
 export function Stages() {
@@ -36,31 +49,31 @@ export function Stages() {
   useEffect(() => {
     const root = ref.current;
     if (!root) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const timers: number[] = [];
-    const scenes = root.querySelectorAll('.m-scene');
-    // 先停在第一帧（没有 JS 时看到的是演完的样子），进屏再接力演
-    for (const scene of scenes) {
-      scene.setAttribute('data-play', '');
-      scene.setAttribute('data-hold', '');
+    const stations = Array.from(root.querySelectorAll('.m-ent-stop'));
+    // 产出先停在第一帧（没有 JS 时看到的是做好的样子），进屏再一站一站走
+    for (const station of stations) {
+      const art = station.querySelector('.m-keep-art');
+      art?.setAttribute('data-play', '');
+      art?.setAttribute('data-hold', '');
     }
+    // 每站各自进屏各自演；同时进屏的（宽屏上四站一起）排队，一站接一站
+    let free = 0;
     const seen = new IntersectionObserver(
       (entries) => {
-        const shown = entries
-          .filter((entry) => entry.isIntersecting)
-          .map((entry) => entry.target);
-        shown.forEach((node, index) => {
-          seen.unobserve(node);
-          timers.push(
-            window.setTimeout(
-              () => node.removeAttribute('data-hold'),
-              250 + index * 900,
-            ),
-          );
-        });
+        const now = performance.now();
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          seen.unobserve(entry.target);
+          const start = Math.max(now + 200, free);
+          free = start + STEP;
+          timers.push(window.setTimeout(() => run(entry.target), start - now));
+        }
       },
-      { threshold: 0.6 },
+      { threshold: 0.4 },
     );
-    for (const scene of scenes) seen.observe(scene);
+    for (const station of stations) seen.observe(station);
     return () => {
       seen.disconnect();
       for (const timer of timers) clearTimeout(timer);
@@ -68,78 +81,94 @@ export function Stages() {
   }, []);
 
   return (
-    <div className="m-ent-bays-screen m-wrap">
-      <div className="m-ent-bays" ref={ref}>
+    <section
+      className="m-ent-flow m-wrap"
+      id="path"
+      aria-labelledby="ent-flow-title"
+    >
+      <h2 className="sr-only" id="ent-flow-title">
+        {path.title}
+      </h2>
+      <div className="m-ent-flow-grid" ref={ref}>
+        {/* 角色名只在最左边写一次（读屏在每站里另有角色名） */}
+        <div className="m-ent-flow-who" aria-hidden="true">
+          {roles.map((who) => (
+            <p key={who} className="m-ent-who" data-who={who}>
+              <i className="m-ent-mark" />
+              <span lang={who === 'we' ? 'en' : undefined}>
+                {line.who[who]}
+              </span>
+            </p>
+          ))}
+        </div>
+
         {stationIds.map((id, index) => {
           const station = path.stations[id];
-          const after = line.after[id];
           return (
             <article
               key={id}
               id={`station-${id}`}
-              className="m-ent-bay"
-              data-wall={id}
+              className="m-ent-stop"
               data-reveal
-              style={{ '--delay': `${index * 120}ms` } as Vars}
+              style={{ '--delay': `${index * 110}ms` } as Vars}
               aria-labelledby={`station-${id}-name`}
               onPointerEnter={replay}
             >
-              <div className="m-ent-bay-scene">
-                <Scene id={id} />
-              </div>
-
-              <header className="m-ent-bay-head">
-                <p className="m-ent-bay-stop">{station.stop}</p>
-                <h3 className="m-ent-bay-name" id={`station-${id}-name`}>
-                  {station.name}
+              <header className="m-ent-stop-head">
+                <h3 className="m-ent-stop-name" id={`station-${id}-name`}>
+                  {station.stop}
                 </h3>
+                <p className="m-ent-stop-service">{station.name}</p>
               </header>
 
-              <div className="m-ent-bay-roles">
-                {roles.map((who) => {
-                  const acts = actsOf(id, who);
-                  if (!acts.length) return null;
-                  return (
-                    <dl key={who} className="m-ent-bay-role" data-who={who}>
-                      <dt lang={who === 'we' ? 'en' : undefined}>
-                        {line.who[who]}
-                      </dt>
-                      {acts.map((act: Act) => (
-                        <dd key={act.text}>
-                          {act.text}
-                          {act.detail ? (
-                            <span className="m-ent-bay-detail">
-                              {act.detail}
-                            </span>
-                          ) : null}
-                        </dd>
-                      ))}
-                    </dl>
-                  );
-                })}
-              </div>
+              {roles.map((who) => {
+                const acts = actsOf(id, who);
+                // 前面几道里已经有几件事：圆点按整站的顺序依次点
+                const before = roles
+                  .slice(0, roles.indexOf(who))
+                  .reduce((sum, role) => sum + actsOf(id, role).length, 0);
+                return (
+                  <div key={who} className="m-ent-lane" data-who={who}>
+                    {acts.length ? (
+                      <>
+                        <p className="m-ent-lane-who">
+                          <i className="m-ent-mark" aria-hidden="true" />
+                          <span lang={who === 'we' ? 'en' : undefined}>
+                            {line.who[who]}
+                          </span>
+                        </p>
+                        <ul className="m-ent-acts">
+                          {acts.map((act, at) => (
+                            <li
+                              key={act.text}
+                              className="m-ent-act"
+                              style={{ '--k': before + at } as Vars}
+                            >
+                              <i className="m-ent-mark" aria-hidden="true" />
+                              {act.text}
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    ) : null}
+                  </div>
+                );
+              })}
 
-              {/* 墙脚：这一站留下的东西 */}
-              <p className="m-ent-bay-keep">
-                <span className="m-ent-bay-kicker">{line.leaves}</span>
-                <strong className="m-ent-bay-leaves">
-                  {station.leaves.join('、')}
-                </strong>
-                {after ? (
-                  <span className="m-ent-bay-after">{after}</span>
-                ) : null}
-                {id === 'build' ? (
-                  <span className="m-ent-forms">
-                    {path.forms.map((form) => (
-                      <span key={form}>{form}</span>
-                    ))}
+              {/* 产出：动画演它被做出来，下面一小行写它是什么 */}
+              <figure className="m-ent-output">
+                <Keep id={id} />
+                <figcaption>
+                  <span className="m-ent-output-kicker">{line.output}</span>
+                  <span className="m-ent-output-name">
+                    {station.leaves.join('、')}
                   </span>
-                ) : null}
-              </p>
+                </figcaption>
+              </figure>
             </article>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }
