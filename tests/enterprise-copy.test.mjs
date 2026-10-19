@@ -26,8 +26,11 @@ void test('合作路线每站的事与产出都是第 5 章原句片段', () => 
   for (const id of ids) {
     // 每项服务三个角色各一件事，不留空格（负责人 2026-10-19）
     for (const who of ['you', 'both', 'we']) {
-      assert.ok(line.rows[id][who], `${id}：${line.who[who]} 那一格是空的`);
-      verbatim(line.rows[id][who], id);
+      assert.ok(
+        line.rows[id][who]?.length,
+        `${id}：${line.who[who]} 那一格是空的`,
+      );
+      verbatim(line.rows[id][who].join(''), id);
     }
     for (const leaf of path.stations[id].leaves) verbatim(leaf, `${id} 产出`);
   }

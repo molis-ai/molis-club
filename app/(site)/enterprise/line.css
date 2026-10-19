@@ -135,18 +135,31 @@
 }
 
 /* =====================================================================
-   我们怎样开展合作：仍在一屏，分两部分（原来的第三部分「产出」负责人 2026-10-19 删去）
-   ① 四张并排的卡（示意动画 + 列名），视觉重点；② 双方分别做什么：每列三格软底小块，一格一句、字小一档
-   角色名只在最左边写一次；颜色、字号只读 site.css 的令牌
+   我们怎样开展合作：一次只看一项服务的展开式长卷（stages.tsx）
+   四项服务像书架上的四本书，书脊竖排；钉住后往下滚一本一本打开。打开的那面：
+   列名在上，动画在中，业务团队在左、Molis 在右（字都朝着中间），一起在动画下面。
+   宽屏有 JS 时才钉住（data-live）；其余情况四项从上到下排开。颜色、字号只读 site.css 的令牌
    ===================================================================== */
 .m-ent-flow {
+  position: relative;
+}
+.m-ent-flow[data-live] {
+  height: calc(100vh + var(--legs) * 55vh);
+  height: calc(100svh + var(--legs) * 55svh);
+}
+.m-ent-flow-stick {
   display: grid;
-  align-content: center;
-  gap: clamp(16px, 3vh, 36px);
-  min-height: 100vh;
-  min-height: 100svh;
-  padding-block: calc(var(--header) + clamp(10px, 2.2vh, 32px))
-    clamp(10px, 2.2vh, 32px);
+  gap: clamp(18px, 3.4vh, 40px);
+  padding-block: var(--section-top) var(--section-bottom);
+}
+.m-ent-flow[data-live] .m-ent-flow-stick {
+  position: sticky;
+  top: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100vh;
+  height: 100svh;
+  padding-block: calc(var(--header) + clamp(16px, 3.6vh, 44px))
+    clamp(16px, 3.6vh, 44px);
 }
 /* 标题（5.3 原文）与 5.2 开头那句排在一行 */
 .m-ent-flow-head {
@@ -164,155 +177,282 @@
   font: 400 clamp(13.5px, 1vw, 15px) / 1.7 var(--sans);
   letter-spacing: 0.03em;
 }
-.m-ent-flow-grid {
-  /* 卡里的字从这里起：② 的字和卡上的列名对齐 */
-  --inset: clamp(14px, 1.2vw, 18px);
+
+/* 四本书：各用「关于」的一种墙色 */
+.m-ent-legs {
+  --gap: clamp(8px, 0.8vw, 12px);
+  --spine: clamp(76px, 7vw, 112px);
   display: grid;
-  grid-template-columns: clamp(72px, 6.2vw, 96px) repeat(4, minmax(0, 1fr));
-  grid-template-rows: repeat(4, auto);
-  gap: 8px clamp(10px, 1.1vw, 18px);
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.m-ent-flow-who {
-  grid-column: 1;
-  grid-row: 2 / span 3;
-  display: grid;
-  grid-template-rows: subgrid;
-}
-.m-ent-stop {
-  grid-row: 1 / span 4;
-  display: grid;
-  grid-template-rows: subgrid;
+.m-ent-leg {
+  --wall: var(--wall-light);
+  --stage: var(--wall-light-2);
   position: relative;
+  border-radius: var(--r-card);
+  background: var(--wall);
 }
-.m-ent-stop:nth-of-type(1) {
-  grid-column: 2;
+.m-ent-leg[data-wall='diagnose'] {
+  --wall: var(--wall-people);
+  --stage: var(--wall-people-2);
 }
-.m-ent-stop:nth-of-type(2) {
-  grid-column: 3;
+.m-ent-leg[data-wall='build'] {
+  box-shadow: 0 0 0 1px var(--hair);
 }
-.m-ent-stop:nth-of-type(3) {
-  grid-column: 4;
+.m-ent-leg[data-wall='assess'] {
+  --wall: var(--wall-read);
+  --stage: var(--wall-read-2);
 }
-.m-ent-stop:nth-of-type(4) {
-  grid-column: 5;
+.m-ent-leg[data-wall='train'] {
+  --wall: var(--wall-road);
+  --stage: var(--wall-road-2);
 }
 
-/* ① 卡：白卡，动画衬一块这项服务的墙色（同「关于」的四种墙），下面是列名与服务全名 */
-.m-ent-stop-card {
-  --stage: var(--wall-light-2);
+/* 打开的那一面：上面列名；中间一行左边业务团队、中间动画、右边 Molis；下面一起 */
+.m-ent-leg-body {
   display: grid;
-  align-content: start;
-  margin-bottom: clamp(8px, 1.8vh, 20px);
-  padding: 8px 8px 0;
-  border-radius: var(--r-card);
-  background: var(--white);
-  box-shadow:
-    0 0 0 1px var(--hair),
-    0 18px 36px -30px rgb(var(--shade) / 0.45);
-  transition:
-    translate 0.5s var(--ease),
-    box-shadow 0.5s var(--ease);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr) minmax(0, 1fr);
+  /* 动画与「一起」是一组，在列名下面的空间里上下居中 */
+  grid-template-areas:
+    'head head head'
+    '. . .'
+    'you scene we'
+    '. both .'
+    '. . .';
+  grid-template-rows: auto minmax(0, 1fr) auto auto minmax(0, 1.2fr);
+  align-items: center;
+  gap: clamp(12px, 2vh, 22px) clamp(20px, 2.6vw, 44px);
+  height: 100%;
+  padding: clamp(20px, 3.4vh, 40px) clamp(24px, 3vw, 48px);
 }
-[data-wall='diagnose'] .m-ent-stop-card {
-  --stage: var(--wall-people);
+.m-ent-leg-head {
+  grid-area: head;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 18px;
 }
-[data-wall='assess'] .m-ent-stop-card {
-  --stage: var(--wall-read);
+.m-ent-leg-word {
+  font: 300 clamp(32px, 3.4vw, 54px) / 1.1 var(--sans);
+  letter-spacing: 0.12em;
 }
-[data-wall='train'] .m-ent-stop-card {
-  --stage: var(--wall-road);
+.m-ent-leg-name {
+  color: var(--ink-2);
+  font: 400 var(--t-ui) / 1.5 var(--sans);
+  letter-spacing: 0.08em;
 }
-.m-ent-stop-scene {
+/* 动画是这一面的主角：占中间最宽的一栏，底衬一块深一档的墙色，高度跟着画走 */
+.m-ent-leg-scene {
+  grid-area: scene;
   display: grid;
   place-items: center;
-  padding: clamp(6px, 1.2vh, 14px) 6px;
-  border-radius: var(--r-inset);
+  min-height: 0;
+  padding: clamp(12px, 2.4vh, 28px) clamp(12px, 1.6vw, 28px);
+  border-radius: var(--r-panel);
   background: var(--stage);
 }
 .m-scene {
   display: block;
   width: 100%;
-  height: clamp(100px, 17vh, 168px);
+  height: auto;
   overflow: visible;
 }
-.m-ent-stop-head {
-  display: grid;
-  gap: 2px;
-  padding: clamp(10px, 1.6vh, 16px) calc(var(--inset) - 8px)
-    clamp(12px, 1.9vh, 20px);
-}
-.m-ent-stop-name {
-  font: 300 clamp(22px, 1.9vw, 30px) / 1.2 var(--sans);
-  letter-spacing: 0.1em;
-}
-.m-ent-stop-service {
-  color: var(--mute);
-  font: 400 var(--t-small) / 1.5 var(--sans);
-  letter-spacing: 0.06em;
-}
 
-/* ② 双方分别做什么：每列三格，一格一句，同一行等高；三个角色只靠底色分，不用圆点
-   业务团队偏冷的月白、一起是中性的浅灰、Molis 一点杏色 */
+/* 三个角色：一个小标签，下面一句；业务团队与 Molis 的字朝着中间 */
 .m-ent-duty {
   display: grid;
-  align-content: center;
+  gap: 8px;
   margin: 0;
-  padding: clamp(10px, 1.7vh, 15px) var(--inset);
-  border-radius: var(--r-inset);
-  color: var(--ink);
-  font: 400 clamp(12.5px, 0.95vw, 13.5px) / 1.65 var(--sans);
-  letter-spacing: 0.02em;
-  text-wrap: pretty;
-  transition: opacity 0.4s var(--ease);
 }
 .m-ent-duty[data-who='you'] {
-  background: color-mix(in srgb, var(--wall-read-2) 62%, var(--white));
-}
-.m-ent-duty[data-who='both'] {
-  background: var(--paper-2);
+  grid-area: you;
+  justify-items: end;
+  text-align: right;
 }
 .m-ent-duty[data-who='we'] {
-  background: color-mix(in srgb, var(--accent) 11%, var(--white));
+  grid-area: we;
 }
-
-/* 最左边：角色名写一次，和那一行的三格对齐 */
-.m-ent-who {
-  align-self: center;
-  margin: 0;
-  color: var(--ink);
-  font: 500 var(--t-label) / 1.6 var(--sans);
-  letter-spacing: 0.14em;
-  white-space: nowrap;
+.m-ent-duty[data-who='both'] {
+  grid-area: both;
+  justify-items: center;
+  text-align: center;
 }
-.m-ent-who[data-who='both'] {
-  color: var(--ink-2);
-}
-.m-ent-who[data-who='we'] {
-  color: var(--accent-ink);
-  font: 500 13px / 1.6 var(--latin);
-  letter-spacing: 0.06em;
-}
-
-/* 每一格里的角色名：宽屏只给读屏（最左边已经写了），窄屏写出来 */
 .m-ent-duty-who {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-2);
+  font: 500 var(--t-label) / 1.6 var(--sans);
+  letter-spacing: 0.16em;
+}
+/* 标签前的小记号：业务团队墨色、Molis 杏色、一起两颗叠在一起 */
+.m-ent-duty-who::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.m-ent-duty[data-who='we'] .m-ent-duty-who {
+  color: var(--accent-ink);
+  font: 500 12.5px / 1.6 var(--latin);
+  letter-spacing: 0.08em;
+}
+.m-ent-duty[data-who='we'] .m-ent-duty-who::before {
+  background: var(--accent);
+}
+.m-ent-duty[data-who='both'] .m-ent-duty-who::before {
+  margin-right: 4px;
+  box-shadow: 4px 0 0 var(--accent);
+}
+.m-ent-duty-text {
+  max-width: 15em;
+  color: var(--ink);
+  font: 400 clamp(15px, 1.15vw, 17px) / 1.7 var(--sans);
+  letter-spacing: 0.03em;
+}
+.m-ent-duty[data-who='both'] .m-ent-duty-text {
+  max-width: 24em;
 }
 
-/* 鼠标在哪一列：那张卡浮起一点、动画重演，别的列的三格退淡，好顺着一列往下读 */
-@media (hover: hover) {
-  .m-ent-stop:hover .m-ent-stop-card {
-    translate: 0 -3px;
-    box-shadow:
-      0 0 0 1px var(--hair-2),
-      0 24px 40px -28px rgb(var(--shade) / 0.55);
-  }
-  .m-ent-flow-grid:has(.m-ent-stop:hover) .m-ent-stop:not(:hover) .m-ent-duty {
-    opacity: 0.42;
+/* 书脊：合着时才出现 */
+.m-ent-leg-spine {
+  display: none;
+}
+
+/* ---------- 钉住：四本书并排，打开的那本铺开 ---------- */
+.m-ent-flow[data-live] .m-ent-legs {
+  container-type: inline-size;
+  display: flex;
+  gap: var(--gap);
+  min-height: 0;
+  max-height: 640px;
+  align-self: center;
+  height: 100%;
+}
+.m-ent-flow[data-live] .m-ent-leg {
+  flex: 0 0 var(--spine);
+  min-width: 0;
+  overflow: hidden;
+  transition: flex-grow 0.9s var(--ease);
+}
+.m-ent-flow[data-live] .m-ent-leg[data-active] {
+  flex-grow: 1;
+}
+/* 打开的那一面按打开后的宽度排好，开合时只是被裁出来，字不跟着重排 */
+.m-ent-flow[data-live] .m-ent-leg-body {
+  width: calc(100cqw - 3 * var(--spine) - 3 * var(--gap));
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+}
+.m-ent-flow[data-live] .m-ent-leg[data-active] .m-ent-leg-body {
+  opacity: 1;
+  transition: opacity 0.6s var(--ease) 0.25s;
+}
+/* 打开时：两边从两侧往中间靠拢，接着一起从下面浮上来 */
+.m-ent-flow[data-live] :is(.m-ent-duty, .m-ent-leg-head) {
+  transition:
+    opacity 0.7s var(--ease),
+    translate 0.9s var(--ease);
+}
+.m-ent-flow[data-live]
+  .m-ent-leg:not([data-active])
+  .m-ent-duty[data-who='you'] {
+  opacity: 0;
+  translate: -28px 0;
+}
+.m-ent-flow[data-live]
+  .m-ent-leg:not([data-active])
+  .m-ent-duty[data-who='we'] {
+  opacity: 0;
+  translate: 28px 0;
+}
+.m-ent-flow[data-live]
+  .m-ent-leg:not([data-active])
+  .m-ent-duty[data-who='both'] {
+  opacity: 0;
+  translate: 0 18px;
+}
+.m-ent-flow[data-live] .m-ent-leg:not([data-active]) .m-ent-leg-head {
+  opacity: 0;
+  translate: 0 10px;
+}
+.m-ent-flow[data-live] .m-ent-leg[data-active] .m-ent-leg-head {
+  transition-delay: 0.3s;
+}
+.m-ent-flow[data-live] .m-ent-leg[data-active] .m-ent-duty[data-who='you'],
+.m-ent-flow[data-live] .m-ent-leg[data-active] .m-ent-duty[data-who='we'] {
+  transition-delay: 0.45s;
+}
+.m-ent-flow[data-live] .m-ent-leg[data-active] .m-ent-duty[data-who='both'] {
+  transition-delay: 0.85s;
+}
+
+/* 书脊：列名竖排在上头，整面可以点 */
+.m-ent-flow[data-live] .m-ent-leg-spine {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--spine);
+  padding: clamp(28px, 4.6vh, 44px) 0 clamp(22px, 3.6vh, 32px);
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    opacity 0.4s var(--ease),
+    background-color 0.4s var(--ease);
+}
+.m-ent-flow[data-live] .m-ent-leg[data-active] .m-ent-leg-spine {
+  opacity: 0;
+  pointer-events: none;
+}
+.m-ent-flow[data-live] .m-ent-leg:not([data-active]) .m-ent-leg-spine {
+  transition-delay: 0.3s;
+}
+.m-ent-flow[data-live] .m-ent-leg-spine:hover {
+  background: rgb(var(--shade) / 0.04);
+  color: var(--ink);
+}
+.m-ent-flow[data-live] .m-ent-leg-spine:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: -6px;
+}
+.m-ent-leg-spine-word {
+  font: 300 clamp(24px, 2.1vw, 32px) / 1 var(--sans);
+  letter-spacing: 0.32em;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}
+/* 书脊底下一颗杏色小方块：「选中的那个场景」，四段动画里都是它 */
+.m-ent-flow[data-live] .m-ent-leg-spine::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  margin-top: auto;
+  border-radius: 2px;
+  background: var(--accent);
+  opacity: 0.7;
+}
+
+/* 减少动态：开合与靠拢都不动画 */
+@media (prefers-reduced-motion: reduce) {
+  .m-ent-flow[data-live]
+    :is(
+      .m-ent-leg,
+      .m-ent-leg-body,
+      .m-ent-duty,
+      .m-ent-leg-head,
+      .m-ent-leg-spine
+    ) {
+    transition: none !important;
   }
 }
 
@@ -887,49 +1027,26 @@
 
 /* ---------- 窄屏 ---------- */
 @media (max-width: 999px) {
-  /* 路线：两列一排，角色名写在每一格里 */
-  .m-ent-flow {
-    min-height: 0;
-    padding-block: var(--section-top) var(--section-bottom);
-  }
-  .m-ent-flow-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* 路线：不钉住，四项服务上下排；每项里列名、动画，三个角色上下排 */
+  .m-ent-leg-body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'head'
+      'scene'
+      'you'
+      'both'
+      'we';
     grid-template-rows: none;
-    gap: 36px 14px;
+    gap: 16px;
+    padding: 18px;
   }
-  .m-ent-flow-who {
-    display: none;
-  }
-  .m-ent-stop,
-  .m-ent-stop:nth-of-type(n) {
-    grid-column: auto;
-    grid-row: auto;
-    grid-template-rows: none;
-    align-content: start;
-    gap: 6px;
-  }
-  .m-ent-stop-card {
-    margin-bottom: 4px;
+  .m-ent-duty[data-who='you'],
+  .m-ent-duty[data-who='both'] {
+    justify-items: start;
+    text-align: left;
   }
   .m-ent-duty {
-    align-content: start;
-    padding: 12px 14px;
-  }
-  .m-ent-duty-who {
-    position: static;
-    width: auto;
-    height: auto;
-    overflow: visible;
-    clip-path: none;
-    margin-bottom: 2px;
-    color: var(--mute);
-    font: 500 var(--t-label) / 1.6 var(--sans);
-    letter-spacing: 0.14em;
-  }
-  .m-ent-duty[data-who='we'] .m-ent-duty-who {
-    color: var(--accent-ink);
-    font-family: var(--latin);
-    letter-spacing: 0.06em;
+    gap: 4px;
   }
 
   /* 为什么：字在上、画面在下 */
