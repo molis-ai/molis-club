@@ -347,24 +347,6 @@ for (const [path, text] of [
       );
     assert(one.includes('data-scene'), 'about one: the pair follows scroll');
   }
-  // 标题下那段两版对照（负责人 2026-10-19「两版都先保留」）：默认是一句，?makers=original 换成原段，带比较条
-  {
-    const original = await html('/about?makers=original');
-    assert(
-      original.includes('我们向往《黑客与画家》里那种创造者的样子'),
-      'about makers=original: the original paragraph',
-    );
-    assert(
-      !one.includes('我们向往《黑客与画家》里那种创造者的样子'),
-      '/about: the one-sentence version by default',
-    );
-    for (const name of ['sentence', 'original'])
-      assert(
-        original.includes(`href="/about?makers=${name}#makers"`),
-        `about makers=original: review link ${name}`,
-      );
-    assert(original.includes('m-review-bar'), 'about makers: review bar');
-  }
   // 八个人的名牌带锚点（旧地址 /community/yijun 跳到 #yijun）
   for (const id of ['people', 'yijun', 'jinqu'])
     assert(one.includes(`id="${id}"`), `about one: anchor #${id}`);

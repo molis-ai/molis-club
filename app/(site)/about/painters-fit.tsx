@@ -4,7 +4,7 @@ import { END_WIDTH, FULL, TARGET } from './painters-plan';
 
 // 《黑客与画家》的轨道：[data-scene] 让全站的滚动钩子写入 --pin；这里只量框的尺寸，
 // 把推近的起点、终点写成 CSS 变量（像素与倍数），推近本身由 painters.css 按 --pin 算。
-// 框变了（窗口缩放、手机转屏）就重新量。标题和下面那段的高度也量出来（--hp-head），框的高度让给它：那段换成长的原段也一屏放下。
+// 框变了（窗口缩放、手机转屏）就重新量。
 
 export function PaintersFit({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -16,8 +16,7 @@ export function PaintersFit({ children }: { children: ReactNode }) {
     const paint = root.querySelector<HTMLElement>('.hp-paint');
     const codeFrame = root.querySelector<HTMLElement>('.hp-frame-code');
     const sheet = root.querySelector<HTMLElement>('.hp-sheet');
-    const head = root.querySelector<HTMLElement>('.hp-head');
-    if (!paintFrame || !paint || !codeFrame || !sheet || !head) return;
+    if (!paintFrame || !paint || !codeFrame || !sheet) return;
 
     const px = (value: number) => `${value.toFixed(2)}px`;
     const set = (node: HTMLElement, vars: Record<string, string | number>) => {
@@ -26,7 +25,6 @@ export function PaintersFit({ children }: { children: ReactNode }) {
     };
 
     const measure = () => {
-      root.style.setProperty('--hp-head', px(head.offsetHeight));
       // 画：整幅先铺满框（多出的部分裁掉），终点处框宽里是原图的 END_WIDTH 像素
       {
         const w = paintFrame.clientWidth;
@@ -95,7 +93,6 @@ export function PaintersFit({ children }: { children: ReactNode }) {
     const observer = new ResizeObserver(measure);
     observer.observe(paintFrame);
     observer.observe(codeFrame);
-    observer.observe(head);
     return () => observer.disconnect();
   }, []);
 

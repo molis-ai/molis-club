@@ -24,7 +24,7 @@ import {
 import { Btn, More, Note, Phrases, Status, type Vars } from '../../_site/ui';
 import { Work } from '../../_site/exhibit/exhibit';
 import { BeliefGallery } from './belief-gallery';
-import { Painters, type Lead } from './painters';
+import { Painters } from './painters';
 import { Plate } from './plate';
 import './one.css';
 
@@ -213,7 +213,7 @@ function Chapter({
   );
 }
 
-export function AboutOne({ lead }: { lead?: Lead }) {
+export function AboutOne() {
   const change = story.change.paragraphs;
   const toLife = story.toLife.paragraphs;
   const further = story.further.paragraphs;
@@ -246,7 +246,7 @@ export function AboutOne({ lead }: { lead?: Lead }) {
         id="makers"
         aria-labelledby="makers-title"
       >
-        <Painters lead={lead} />
+        <Painters />
       </section>
 
       {/* 2.2 当想法更容易变成现实：光照进来，去文章 */}

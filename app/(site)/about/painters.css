@@ -32,7 +32,7 @@
 }
 /* 标题下那句底稿原话：从序过渡到这一章 */
 .hp-lead {
-  max-width: 40em;
+  max-width: 34em;
   margin-bottom: clamp(14px, 3vh, 34px);
   font: 300 var(--t-lead) / 1.85 var(--sans);
   letter-spacing: 0.03em;
@@ -44,12 +44,7 @@
 /* ---------- 一对框：同样大小，比例是这幅画的比例 ---------- */
 .hp-pair {
   --hp-gap: clamp(32px, 5vw, 80px);
-  /* 框的高度：一屏减去顶栏、标题和下面那段（--hp-head，painters-fit 量的）、框上下的小字 */
-  --hp-h: clamp(
-    240px,
-    calc(100svh - var(--header) - var(--hp-head, 160px) - 224px),
-    540px
-  );
+  --hp-h: clamp(240px, calc(100svh - var(--header) - 380px), 540px);
   display: flex;
   justify-content: center;
   align-items: flex-start;
