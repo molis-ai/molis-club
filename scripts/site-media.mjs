@@ -139,6 +139,28 @@ const images = [
     widths: [800, 1672],
     quality: 76,
   },
+  // 关于「黑客与画家」（负责人 2026-10-18 定）：达·芬奇《吉内薇拉·德·班琪》，华盛顿国家美术馆藏，公有领域。
+  // 原图是维基共享资源上 10483×11110 的扫描（Google Art Project），太大不进仓库；这里放三层：
+  // 整幅缩到 2600 高；杜松与天空交界一带 4200×4200 缩一半；终点附近 1600×1600 原样。
+  // 三层在原图里的位置写在 app/(site)/about/painters.tsx，推近时叠在一起。
+  {
+    key: 'ginevra-whole',
+    src: 'public/images/ginevra/whole.jpg',
+    widths: [2000],
+    quality: 78,
+  },
+  {
+    key: 'ginevra-near',
+    src: 'public/images/ginevra/near.jpg',
+    widths: [1800],
+    quality: 72,
+  },
+  {
+    key: 'ginevra-edge',
+    src: 'public/images/ginevra/edge.jpg',
+    widths: [1600],
+    quality: 78,
+  },
   // 关于的三个展厅（负责人 2026-10-15 从 Unsplash 第三轮候选里挑的 21 张，免费授权，取 2400 宽；
   // 摄影者署名与展签写在 content/site/exhibit.ts）。展厅三的开场图是横幅，多出一档宽的
   ...[

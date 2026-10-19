@@ -103,7 +103,10 @@ export function Facts({
   );
 }
 
-/** 展签：编号、标题、媒介 · 摄影者（AI 生成影像写 Molis 图库），下面可以跟一句「诉说」（底稿原句） */
+/**
+ * 展签：编号、标题、媒介 · 摄影者（AI 生成影像写 Molis 图库），下面可以跟一句「诉说」（底稿原句）。
+ * 不给编号时只留「媒介 · 摄影者」一行：一页式「关于」不再是展厅，展品不编号、不起标题。
+ */
 export function Label({
   piece,
   no,
@@ -111,7 +114,7 @@ export function Label({
   children,
 }: {
   piece: PieceKey;
-  no: string;
+  no?: string;
   /** 标题后面的小注（例如「概念示意」） */
   note?: ReactNode;
   children?: ReactNode;
@@ -127,14 +130,17 @@ export function Label({
         : null;
   return (
     <>
-      <span className="ex-label-head">
-        <span className="ex-no num">{no}</span>
-        <span className="ex-title">{info.title}</span>
-        {note}
-      </span>
+      {no ? (
+        <span className="ex-label-head">
+          <span className="ex-no num">{no}</span>
+          <span className="ex-title">{info.title}</span>
+          {note}
+        </span>
+      ) : null}
       <span className="ex-medium">
         {exUi.medium[info.medium]}
         {source ? ` · ${source}` : null}
+        {no ? null : note}
       </span>
       {children ? <span className="ex-tell">{children}</span> : null}
     </>
@@ -160,7 +166,7 @@ export function Work({
   children,
 }: {
   name: PieceKey & Parameters<typeof mediaOf>[0];
-  no: string;
+  no?: string;
   ratio?: string;
   focus?: string;
   maxH?: string;

@@ -11,13 +11,7 @@ import {
 } from '../../../content/site/essays';
 import { ESSAYS, essayHref } from '../../_site/routes';
 import { Btn, pad, Phrases, type Vars } from '../../_site/ui';
-import {
-  Facts,
-  NextRoom,
-  RoomMeta,
-  roomOf,
-  Work,
-} from '../../_site/exhibit/exhibit';
+import { Facts, roomOf, Work } from '../../_site/exhibit/exhibit';
 import { parseEssay } from './markdown';
 import './essays.css';
 
@@ -27,10 +21,10 @@ export const metadata = pageMetadata(
   ESSAYS,
 );
 
-// 展厅 03「文章」· 主题：问（负责人 2026-10-16 定：文章也是「关于」这场展里的一间，月白的墙）。
-// 开场（书架之间的窗，2.2 的那句当副题）· 为什么写（摊开的长桌，2.2 第一段的两句原句）·
-// 两篇各一屏、左右交替（一件展品，展签下是本篇摘句；标题、副标题、篇幅、本篇目录、读全文）· 下一个展厅。
-// 每屏一个视口放得下。
+// 「文章」：开场（书架之间的窗，2.2 的那句当副题）· 为什么写（摊开的长桌，2.2 第一段的两句原句）·
+// 两篇各一屏、左右交替（一张图，图下是本篇摘句；标题、副标题、篇幅、本篇目录、读全文）。每屏一个视口放得下。
+// 「关于」收成一整页后（C1，负责人 2026-10-18），这里不再是展厅：没有名牌、墙色和「下一个展厅」，图不编号；
+// 从「关于」页「什么变了」的卡片和页尾目录进来。
 
 /** 两篇各配一件（展品编号接着开场两件往下数） */
 const works: Record<
@@ -77,10 +71,9 @@ export default function EssaysPage() {
   const [hook, ...rest] = sentences(essaysPage.lead);
 
   return (
-    <div className="ex es" data-room="read">
+    <div className="ex es">
       {/* 开场：书架之间的一扇窗 */}
       <header className="ex-open m-wrap">
-        <RoomMeta room="read" />
         <div className="ex-grid es-open">
           <div className="es-open-text">
             <h1 className="ex-h1 m-rise" style={{ '--delay': '60ms' } as Vars}>
@@ -113,7 +106,6 @@ export default function EssaysPage() {
           </div>
           <Work
             name="ex-library-window"
-            no="01"
             ratio="4 / 5"
             focus="50% 40%"
             maxH="60svh"
@@ -129,7 +121,6 @@ export default function EssaysPage() {
         <div className="ex-grid es-why">
           <Work
             name="ex-sun-table"
-            no="02"
             ratio="4 / 5"
             focus="50% 55%"
             maxH="64svh"
@@ -169,7 +160,6 @@ export default function EssaysPage() {
               {work ? (
                 <Work
                   name={work.name}
-                  no={pad(index + 3)}
                   ratio="4 / 5"
                   focus={work.focus}
                   maxH="60svh"
@@ -211,8 +201,6 @@ export default function EssaysPage() {
           </section>
         );
       })}
-
-      <NextRoom from="read" />
     </div>
   );
 }

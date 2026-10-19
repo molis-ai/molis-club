@@ -89,16 +89,17 @@ assert.equal(
   ).length,
   1,
 );
+// A hostile origin must be rejected and nothing stored. The notes API answers 400
+// (its origin check shares the bad-payload path); vinext dev blocks cross-origin
+// requests before the app with 403. Either is a rejection.
+const hostile = { ...note, id: crypto.randomUUID() };
+r = await call('/api/notes', hostile, true, 'https://evil.example');
+assert.ok([400, 403].includes(r.status), `hostile origin got ${r.status}`);
 assert.equal(
-  (
-    await call(
-      '/api/notes',
-      { ...note, id: crypto.randomUUID() },
-      true,
-      'https://evil.example',
-    )
-  ).status,
-  403,
+  (await call('/api/notes?work=niulai')).data.notes.filter(
+    (n) => n.id === hostile.id,
+  ).length,
+  0,
 );
 r = await call('/api/auth/sign-in/email', { email, password }, false);
 assert.equal(r.status, 200, JSON.stringify(r.data));

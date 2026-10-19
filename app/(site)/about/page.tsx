@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { pageMetadata } from '../../../lib/site';
 import { story, studio } from '../../../content/site/studio';
 import { aboutUi, trio } from '../../../content/site/about';
+import { nav } from '../../../content/site/nav';
 import { ABOUT, essayHref } from '../../_site/routes';
 import { More, pad, Phrases, type Vars } from '../../_site/ui';
 import { Fold } from '../../_site/viz/viz';
@@ -12,16 +13,28 @@ import {
   RoomMeta,
   Work,
 } from '../../_site/exhibit/exhibit';
+import { ReviewSwitch } from '../../_site/review/comparison';
 import { BeliefWall } from './belief-wall';
+import { AboutOne } from './one';
+import { MakersReview } from './makers-review';
 import { Trio } from './trio';
 import './about.css';
 
-export const metadata = pageMetadata(
-  aboutUi.title,
-  studio.standard.character,
-  ABOUT,
-);
+type Props = {
+  searchParams: Promise<{ study?: string; makers?: string }>;
+};
 
+/** 一页式的标题是「关于」（一页里不止信念）；旧版对照照旧是「我们相信什么」 */
+export async function generateMetadata({ searchParams }: Props) {
+  const { study } = await searchParams;
+  return pageMetadata(
+    study === 'current' ? aboutUi.title : nav.about,
+    studio.standard.character,
+    ABOUT,
+  );
+}
+
+// 以下是旧版（/about?study=current 对照用，负责人看过后删）：
 // 展厅 02「我们相信什么」· 主题：光（负责人 2026-10-15 定：「关于」做成一场展，这是第二间，白墙）。
 // 开场（窗前的人）· 什么变了（光照进来）· 三种媒介（互动装置）· 六条信念（一面墙六件，点标题换一件）·
 // 下一个展厅。每屏一个视口放得下。「落到产品里」「我们怎样要求自己」两段按负责人 2026-10-18 的要求删去，
@@ -55,7 +68,32 @@ const beliefWorks = [
   { name: 'ex-paper-plane', focus: '35% 45%' },
 ] as const;
 
-export default function AboutPage() {
+// 「关于」是一整页（C1，负责人 2026-10-18 通过样张后切成默认），正文在 one.tsx。
+// 旧的四间展厅版暂留对照：/about?study=current 是旧版，/about?study=one 是带比较条的一页式；不带参数时没有比较条。
+// 《黑客与画家》一章两版对照（负责人 2026-10-19）：/about?makers=trio 是原版三种媒介，?makers=painters 是推近，都带比较条。
+export default async function AboutPage({ searchParams }: Props) {
+  const { study, makers: asked } = await searchParams;
+  const one = study !== 'current';
+  const makers = asked === 'trio' ? 'trio' : 'painters';
+  return (
+    <>
+      {one ? <AboutOne makers={makers} /> : <AboutCurrent />}
+      {one && asked !== undefined && study === undefined ? (
+        <MakersReview makers={makers} />
+      ) : null}
+      {study === 'one' || study === 'current' ? (
+        <ReviewSwitch
+          label={nav.about}
+          variant={one ? 'sample' : 'current'}
+          currentHref={`${ABOUT}?study=current`}
+          sampleHref={`${ABOUT}?study=one`}
+        />
+      ) : null}
+    </>
+  );
+}
+
+function AboutCurrent() {
   const change = story.change.paragraphs;
   const [why] = change.slice(2, 3);
   const changeLast = change[change.length - 1];

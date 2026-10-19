@@ -1,0 +1,283 @@
+/* =====================================================================
+   《黑客与画家》：画家与黑客左右一对，钉在视口里，往下滚两边一起推近（painters.tsx）。
+   进度 --pin 来自全站滚动钩子；推近的倍数与位移在这里按 --pin 算，框的尺寸由 painters-fit 量好写进来。
+   --e：推近进度（0 整幅 → 1 终点，两头缓）；--end：终点处图注换成第二行、那句话浮现。
+   宽屏时标题、底稿那句与一对框一起钉住；手机上标题和那句先滚过去，只钉一对框（.hp-stage 变成 contents，.hp-body 钉住）。
+   ===================================================================== */
+
+.hp {
+  --x: clamp(0, (var(--pin, 0) - 0.06) / 0.74, 1);
+  --e: calc(var(--x) * var(--x) * (3 - 2 * var(--x)));
+  --end: clamp(0, (var(--pin, 0) - 0.84) / 0.1, 1);
+  --hp-mono:
+    ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  height: 300svh;
+}
+.hp-stage {
+  position: sticky;
+  top: var(--header);
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  height: calc(100svh - var(--header));
+  padding-block: clamp(12px, 3vh, 40px);
+}
+.hp-head,
+.hp-body {
+  display: grid;
+  justify-items: center;
+}
+.hp-title.ao-ch-title {
+  margin-bottom: clamp(6px, 1.2vh, 14px);
+}
+/* 标题下那句底稿原话：从序过渡到这一章 */
+.hp-lead {
+  max-width: 34em;
+  margin-bottom: clamp(14px, 3vh, 34px);
+  font: 300 var(--t-lead) / 1.85 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ---------- 一对框：同样大小，比例是这幅画的比例 ---------- */
+.hp-pair {
+  --hp-gap: clamp(32px, 5vw, 80px);
+  --hp-h: clamp(240px, calc(100svh - var(--header) - 380px), 540px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--hp-gap);
+}
+.hp-fig {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+.hp-medium {
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  color: var(--mute);
+}
+.hp-frame {
+  position: relative;
+  overflow: hidden;
+  width: min(
+    calc(var(--hp-h) * 0.9436),
+    calc((100vw - 2 * var(--gutter) - var(--hp-gap)) / 2)
+  );
+  height: var(--hp-h);
+  border-radius: var(--r-panel);
+}
+
+/* 画：三层叠在一起（整幅、杜松一带、终点附近），越往里越清楚 */
+.hp-frame-paint {
+  background: var(--paper-2);
+}
+.hp-paint {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--pw, 100%);
+  height: var(--ph, 100%);
+  transform-origin: 0 0;
+}
+.hp-layer {
+  position: absolute;
+  display: block;
+  max-width: none;
+}
+.hp-whole {
+  object-fit: cover;
+  background: var(--avg);
+}
+.hp[data-fit] .hp-paint {
+  --s: pow(var(--se), var(--e));
+  transform: translate(
+      clamp(
+        calc(var(--fw) - var(--pw) * var(--s)),
+        calc(
+          var(--x0) + (var(--fw) / 2 - var(--x0)) * var(--e) - var(--fx) *
+            var(--pw) * var(--s)
+        ),
+        0px
+      ),
+      clamp(
+        calc(var(--fh) - var(--ph) * var(--s)),
+        calc(
+          var(--y0) + (var(--fh) / 2 - var(--y0)) * var(--e) - var(--fy) *
+            var(--ph) * var(--s)
+        ),
+        0px
+      )
+    )
+    scale(var(--s));
+}
+
+/* 代码：整张样式表排成五栏，先整张装进框里，再推到那两行 */
+.hp-frame-code {
+  background: var(--white);
+}
+.hp-sheet {
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: content-box;
+  width: calc(5 * 640px + 4 * 48px);
+  height: calc(var(--rows) * 18px);
+  padding: 40px 48px;
+  columns: 5;
+  column-gap: 48px;
+  column-fill: auto;
+  font: 12px / 18px var(--hp-mono);
+  color: var(--ink-2);
+  white-space: pre;
+  transform-origin: 0 0;
+}
+.js .hp:not([data-fit]) .hp-sheet {
+  visibility: hidden;
+}
+.hp[data-fit] .hp-sheet {
+  --s: calc(var(--k0) * pow(var(--kr), var(--e)));
+  transform: translate(
+      calc(
+        var(--x0) + (var(--xe) - var(--x0)) * var(--e) - var(--cx) * var(--s)
+      ),
+      calc(
+        var(--y0) + (var(--ye) - var(--y0)) * var(--e) - var(--cy) * var(--s)
+      )
+    )
+    scale(var(--s));
+}
+.hp-ln[data-target] {
+  position: relative;
+  isolation: isolate;
+  color: var(--ink);
+}
+.hp-ln[data-target]::before {
+  content: '';
+  position: absolute;
+  inset: 0 -12px;
+  z-index: -1;
+  background: var(--accent-wash);
+  opacity: var(--end);
+}
+
+/* 图注：先是这是什么，到终点换成找到了什么；两行叠在同一格，高度不跳 */
+.hp-cap {
+  display: grid;
+  width: 0;
+  min-width: 100%;
+  font-size: var(--t-small);
+  line-height: 1.75;
+  letter-spacing: 0.03em;
+  color: var(--mute);
+  text-align: center;
+  text-wrap: balance;
+}
+.hp-cap > span {
+  grid-area: 1 / 1;
+}
+.hp-cap-start {
+  opacity: calc(1 - var(--end));
+}
+.hp-cap-end {
+  opacity: var(--end);
+  color: var(--ink-2);
+}
+.hp-line {
+  margin-top: clamp(14px, 3vh, 32px);
+  font: 300 var(--t-keys) / 1.6 var(--sans);
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  text-align: center;
+  opacity: var(--end);
+}
+
+/* ---------- 窄屏：两个框上下排 ---------- */
+@media (max-width: 760px) {
+  .hp-stage {
+    display: contents;
+  }
+  .hp-head {
+    padding-bottom: clamp(8px, 2vh, 24px);
+  }
+  .hp-body {
+    position: sticky;
+    top: var(--header);
+    align-content: center;
+    height: calc(100svh - var(--header));
+    padding-block: clamp(12px, 3vh, 40px);
+  }
+  .hp-pair {
+    --hp-h: clamp(150px, calc((100svh - var(--header) - 280px) / 2), 320px);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    width: 100%;
+  }
+  .hp-fig {
+    gap: 8px;
+  }
+  .hp-frame {
+    width: 100%;
+  }
+  .hp-cap {
+    font-size: 12px;
+    line-height: 1.65;
+  }
+}
+
+/* ---------- 减少动态、打印：不钉住，直接是推近后的样子，两行图注都在 ---------- */
+@media (prefers-reduced-motion: reduce), print {
+  .hp {
+    --e: 1;
+    --end: 1;
+    height: auto;
+  }
+  .hp-stage,
+  .hp-body {
+    position: relative;
+    top: auto;
+    height: auto;
+  }
+  .hp-cap > span {
+    grid-area: auto;
+    opacity: 1;
+  }
+}
+
+/* ---------- 没有 JS：整幅画，样式表只露那两行前后，两行图注都在 ---------- */
+html:not(.js) .hp {
+  --e: 0;
+  --end: 1;
+  height: auto;
+}
+html:not(.js) .hp-stage,
+html:not(.js) .hp-body {
+  position: relative;
+  top: auto;
+  height: auto;
+}
+html:not(.js) .hp-cap > span {
+  grid-area: auto;
+  opacity: 1;
+}
+html:not(.js) .hp-layer:not(.hp-whole) {
+  display: none;
+}
+html:not(.js) .hp-frame-code {
+  display: grid;
+  align-content: center;
+}
+html:not(.js) .hp-sheet {
+  position: relative;
+  width: auto;
+  height: auto;
+  padding: 24px;
+  columns: auto;
+}
+html:not(.js) .hp-ln:not([data-near]) {
+  display: none;
+}

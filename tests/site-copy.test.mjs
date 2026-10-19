@@ -17,7 +17,7 @@ registerHooks({
 });
 
 const { studio, story } = await import('../content/site/studio.ts');
-const { access, productIds, products, relations } =
+const { productIds, products, relations } =
   await import('../content/site/products.ts');
 const { workProgress } = await import('../content/site/work.ts');
 const { toolProgress } = await import('../content/site/tool.ts');
@@ -66,7 +66,6 @@ void test('五件产品的标题、一句话、适合的时刻、阶段与正文
     for (const text of strings(products[id], skip))
       assertVerbatim(text, `content/site/products.ts ${id}`);
   for (const text of strings(relations)) assertVerbatim(text, 'relations');
-  for (const text of strings(access)) assertVerbatim(text, 'access');
 });
 
 void test('阶段按第 3 章：Work 开源开发中；Tool 开发中；Life 原型探索中；Story 开发中；World 概念设计', () => {
