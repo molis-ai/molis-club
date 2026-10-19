@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 // 企业合作样张（D1）：每站「业务团队 / Molis / 一起」做的事和留下的东西，都是 docs/studio-intro.md 第 5 章的原句片段，
-// 一个字都没改；五个问题都对应到四站上。
+// 一个字都没改；路线收尾是 5.4 原句。现版的建议起点仍要五个问题都落在四站上（样张不再显示这层对应）。
 
 const { enterprise } = await import('../content/site/enterprise.ts');
 const doc = readFileSync(
@@ -38,7 +38,8 @@ void test('样张里每站的事与留下的东西都是第 5 章原句片段', 
     for (const leaf of path.stations[id].leaves) verbatim(leaf, `${id} 留下`);
   }
   for (const form of path.forms) verbatim(form, '产品形态');
-  verbatim(path.lead, '怎么继续');
+  verbatim(path.lead, '路线开头');
+  verbatim(line.from, '路线收尾');
   for (const text of enterprise.people.abilities.map((item) => item.title))
     verbatim(text, '5.5 小标题');
 });

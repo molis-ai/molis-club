@@ -1,11 +1,10 @@
 /* =====================================================================
-   样张（D1，?study=line）：「你们卡在哪」与合作路线合成一段，一页一页翻（stages.tsx）
-   第 1 页是五张问题纸条；后四页各是一站：顶上一条「你们卡在」，五个问题里对应这一站的亮起来；
+   样张（D1，?study=line）：照原文的主线，不配对——「你们卡在哪」只做开场；合作路线一站一页（stages.tsx），人人一样：
    左边一面墙（四站四种墙色，同「关于」的展厅），正中挂着这一站留下的东西，墙角是展签；右边是站名和分工表。
    不加框线、连接线与编号，用墙色、留白和一点影子分组；颜色、字号只读 site.css 的令牌。
    ===================================================================== */
 
-/* 我们和你们一起做什么：开场第三段原句比原来那句长，左栏放宽一点，短语接着排，不再一组一行 */
+/* 路线开头：开场第三段原句比原来那句长，左栏放宽一点，短语接着排，不再一组一行；下面一小行 5.2 开头原句 */
 @media (min-width: 901px) {
   .m-ent[data-study='line'] .m-ent-path-head {
     grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
@@ -16,6 +15,15 @@
 }
 .m-ent[data-study='line'] .m-ent-path-line .m-phrase {
   display: inline;
+}
+/* 字形用全站的 .m-lead，这里只管宽度与间距；短语整块折行，不把「共建」拆开 */
+.m-ent-path-lead {
+  max-width: 26em;
+  margin-top: clamp(8px, 1.6vh, 16px);
+}
+/* 「看看这条路怎么走」跳到这里：开头一屏自己留了顶栏的位置，正好停在这一屏的顶上 */
+.m-ent[data-study='line'] .m-ent-path {
+  scroll-margin-top: calc(-1 * (var(--header, 64px) + 16px));
 }
 
 .m-ent-line {
@@ -38,14 +46,7 @@
   display: none;
 }
 
-/* 第 1 页：你们卡在哪，五张纸条；选一张，下面只回问题原句和去处 */
-.m-ent-cover {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  min-width: 0;
-  align-content: center;
-  gap: clamp(28px, 5vh, 56px);
-}
+/* 你们卡在哪（lean）：选一张，下面只回问题原句和往下看路线 */
 .m-ent-replies[data-lean] {
   margin-top: clamp(12px, 2.4vh, 28px);
   padding-top: 0;
@@ -66,11 +67,10 @@
   margin: 0;
 }
 
-/* 一站：顶上一条「你们卡在」，下面左边墙、右边站名与分工表 */
+/* 一站：左边墙，右边站名与分工表 */
 .m-ent-stage {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  row-gap: clamp(16px, 3vh, 28px);
+  grid-template-rows: minmax(0, 1fr);
 }
 .m-ent-stage-body {
   display: grid;
@@ -80,75 +80,6 @@
   min-height: 0;
 }
 
-/* 你们卡在：五个问题都在，对应这一站的亮起来（墨字、一点杏橙），选过的铺杏色；点一个就翻到它对应的那一站 */
-.m-ent-strip {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 18px;
-}
-.m-ent-strip-label {
-  color: var(--mute);
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-}
-.m-ent-strip ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.m-ent-strip button {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 30px;
-  padding: 3px 13px 3px 11px;
-  border: 0;
-  border-radius: var(--r-pill);
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--hair);
-  color: var(--mute);
-  font: 400 var(--t-small) / 1.6 var(--sans);
-  letter-spacing: 0.03em;
-  cursor: pointer;
-  transition:
-    background-color 0.5s var(--ease),
-    box-shadow 0.5s var(--ease),
-    color 0.5s var(--ease);
-}
-.m-ent-strip button::before {
-  content: '';
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px currentColor;
-  opacity: 0.6;
-}
-.m-ent-strip button:hover {
-  color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--hair-2);
-}
-.m-ent-strip button[data-lit] {
-  color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--hair-2);
-}
-.m-ent-strip button[data-lit]::before {
-  background: var(--accent);
-  box-shadow: none;
-  opacity: 1;
-}
-.m-ent-strip button[aria-pressed='true'] {
-  background: var(--accent-wash);
-  box-shadow: inset 0 0 0 1px var(--accent);
-  color: var(--ink);
-}
-.m-ent-strip button:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 2px;
-}
 .m-ent-stage-head {
   grid-column: 8 / -1;
   grid-row: 2;
@@ -287,7 +218,7 @@
   margin-top: 4px;
 }
 
-/* 怎么继续：5.2 开头一句，和聊聊 */
+/* 收尾：5.4 原句，和聊聊 */
 .m-ent-onward {
   display: grid;
   justify-items: center;
@@ -305,7 +236,7 @@
 
 /* ---------- 钉住：宽屏、够高、不减少动态时（stages.tsx 加 data-live），一页一页在同一个位置换 ---------- */
 .m-ent-line[data-live] {
-  height: 480vh;
+  height: 400vh;
 }
 .m-ent-line[data-live] .m-ent-line-stick {
   position: sticky;
@@ -354,10 +285,6 @@
 .m-ent-line[data-live] .m-ent-wall {
   min-height: 0;
 }
-/* 钉住时五张纸条排一行（窄一点的宽屏也不折成两行），整页装在一屏里 */
-.m-ent-line[data-live] .m-ent-slips {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-}
 .m-ent-line[data-live] .m-ent-line-dots {
   display: flex;
   justify-content: center;
@@ -385,9 +312,6 @@
 }
 .m-ent-line-dot:hover::before {
   background: var(--mute);
-}
-.m-ent-line-dot[data-mark]::before {
-  background: var(--accent);
 }
 .m-ent-line-dot[aria-current]::before {
   width: 22px;
@@ -453,10 +377,6 @@
   }
 }
 @media (max-width: 700px) {
-  /* 手机：「你们卡在」只留对应这一站的，不铺满五个 */
-  .m-ent-strip li:has(> button:not([data-lit])) {
-    display: none;
-  }
   .m-ent-wall {
     border-radius: 18px;
   }

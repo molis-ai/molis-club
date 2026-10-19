@@ -131,7 +131,7 @@ export function Slips({ lean = false }: { lean?: boolean }) {
         {lean ? null : <p className="m-ent-reply-idle">{hook.idle}</p>}
         {questions.items.map((question) => {
           const item = path.advice[question.id];
-          // 样张（D1，lean）：只回问题原句和去处，不说「起点」，不复述问题，不写理由
+          // 样张（D1，lean）：只回问题原句；选过的只带进末尾的表单，路线人人一样，往下看路线不跳到某一站（负责人 2026-10-19：照原文，不配对）
           if (lean)
             return (
               <div
@@ -144,12 +144,9 @@ export function Slips({ lean = false }: { lean?: boolean }) {
                 <p className="m-actions">
                   <a
                     className="m-link"
-                    href={`#station-${item.start}`}
+                    href="#path"
                     data-dir="down"
-                    onClick={(event) => {
-                      context?.setPick(question.id);
-                      jump(event, item.start);
-                    }}
+                    onClick={() => context?.setPick(question.id)}
                   >
                     {hook.jump}
                     <ArrowDown size={13} aria-hidden="true" />
@@ -209,7 +206,7 @@ export function Slips({ lean = false }: { lean?: boolean }) {
         {/* 读屏：选定了什么，念一遍回应（画面上的那几块不是 live 区，免得重复） */}
         <p className="sr-only" aria-live="polite">
           {advice && pick && lean
-            ? `${questions.items.find((item) => item.id === pick)?.title ?? ''}${[advice.start, advice.next].flatMap((id) => (id ? [path.stations[id].name] : [])).join('、')}`
+            ? (questions.items.find((item) => item.id === pick)?.title ?? '')
             : advice && pick
               ? `${questions.items.find((item) => item.id === pick)?.wish ?? ''}${hook.start}：${path.stations[advice.start].name}${
                   advice.next

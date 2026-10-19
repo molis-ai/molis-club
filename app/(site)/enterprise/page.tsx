@@ -29,11 +29,12 @@ export const metadata = pageMetadata(
 // （路线之后原有一屏柱廊照片，负责人 2026-10-15 删去。）
 // 首屏照片很亮，字用墨色，顶栏透明（data-tone="light"）。
 //
-// 样张（D1，?study=line；现版对照 ?study=current，默认仍是现版）：把页面串成一条线——
-// 长廊 → 我们和你们一起做什么（开场第三段原句，配那双手）
-// → 你们卡在哪与四站合成一段，一页一页翻：先选问题，再看对应那一站业务团队、Molis、一起各做什么，墙上挂着留下的东西（stages.tsx）
-// → 怎么继续（5.2 开头原句，聊聊）→ 做这件事的人（只留小标题与经历）→ 内部探索 → 表单。
-// 首屏去掉四个服务名，路线不再有横线与编号，「能力，留在团队手里。」不再复述标题，不说「起点」。
+// 样张（D1，?study=line；现版对照 ?study=current，默认仍是现版）：照原文的主线，不配对（负责人 2026-10-19 定）——
+// 长廊 → 你们卡在哪（五张纸条只做开场，选一张只带进末尾的表单）
+// → 合作路线：开场第三段原句配那双手，下面一小行 5.2 开头原句；四站一页一页翻，人人一样，
+//   每站业务团队、Molis、一起各做什么，墙上挂着留下的东西（stages.tsx）
+// → 具体合作从团队眼前的问题出发（5.4 原句），聊聊 → 做这件事的人（只留小标题与经历）→ 内部探索 → 表单。
+// 首屏去掉四个服务名，路线不再有横线与编号，不说「起点」，问题与站不一一对应（原文没有这层对应）。
 
 /** 满幅照片：铺满一屏，载入前铺平均色，极慢地推近 */
 function Plate({
@@ -106,7 +107,7 @@ export default async function EnterprisePage({
           {e.hook.ask}
         </h2>
       </header>
-      <Slips />
+      <Slips lean={sample} />
     </section>
   );
 
@@ -150,46 +151,38 @@ export default async function EnterprisePage({
         <PickProvider>
           {hero}
 
-          {/* 我们和你们一起做什么：开场第三段原句，右边一双手在做一件小工具 */}
-          <section
-            className="m-ent-path-head m-wrap"
-            aria-labelledby="ent-promise-title"
-          >
-            <div className="m-ent-path-copy" data-reveal>
-              <h2 className="m-ent-path-line" id="ent-promise-title">
-                <Phrases text={e.intro[2]} />
-              </h2>
-            </div>
-            <Window
-              className="m-ent-path-window"
-              name="enterprise-hands"
-              ratio="3 / 2"
-              focus="50% 45%"
-              sizes="(max-width: 900px) 100vw, 56vw"
-              alt={e.path.alt}
-            />
-          </section>
+          {/* 你们卡在哪：只做开场，选一张只带进末尾的表单 */}
+          {where}
 
-          {/* 你们卡在哪 → 对应的一站：同一段里一页一页翻（stages.tsx） */}
+          {/* 合作路线：开场第三段原句配那双手，下面一小行 5.2 开头原句；四站一页一页翻（stages.tsx） */}
           <section
             className="m-ent-path"
             id="path"
-            aria-labelledby="ent-where-title"
+            aria-labelledby="ent-promise-title"
           >
-            <Stages
-              cover={
-                <>
-                  <h2 className="m-ent-ask" id="ent-where-title">
-                    {e.hook.ask}
-                  </h2>
-                  <Slips lean />
-                </>
-              }
-            />
-            {/* 怎么继续：5.2 开头一句 */}
+            <header className="m-ent-path-head m-wrap">
+              <div className="m-ent-path-copy" data-reveal>
+                <h2 className="m-ent-path-line" id="ent-promise-title">
+                  <Phrases text={e.intro[2]} />
+                </h2>
+                <p className="m-lead m-ent-path-lead">
+                  <Phrases text={e.path.lead} />
+                </p>
+              </div>
+              <Window
+                className="m-ent-path-window"
+                name="enterprise-hands"
+                ratio="3 / 2"
+                focus="50% 45%"
+                sizes="(max-width: 900px) 100vw, 56vw"
+                alt={e.path.alt}
+              />
+            </header>
+            <Stages />
+            {/* 收尾：5.4 原句，回到团队眼前的问题 */}
             <div className="m-ent-onward m-wrap" data-reveal>
               <p className="m-ent-onward-line">
-                <Phrases text={e.path.lead} />
+                <Phrases text={e.line.from} />
               </p>
               {/* 往下到表单：和纸条下「看看这条路怎么走」同一种页内入口（描边胶囊 + 下箭头） */}
               <a className="m-link" href="#talk" data-dir="down">
