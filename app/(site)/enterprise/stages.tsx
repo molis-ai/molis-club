@@ -3,16 +3,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { enterprise, type StationId } from '../../../content/site/enterprise';
 import { Phrases, type Vars } from '../../_site/ui';
 import { play } from './keeps';
-import { Duet } from './duets';
-import { Film, filmed } from './films';
+import { Film } from './films';
 
 // 我们怎样开展合作（负责人 2026-10-19：之前那版「是一个合格的 PPT」——四张卡加十二格，一眼全摊开、每样东西一样重）。
 // 改成一次只看一项服务的展开式长卷：
 // 四项服务像书架上并排的四本书，书脊上竖排着列名（诊断、共建、评估、培训，5.2 开头那句里的词），各用「关于」的一种墙色。
-// 往下滚，整屏钉住，一本一本地打开：打开的那面上头是列名与服务全名，下面是一段短片（films.tsx，先做了诊断）或一出小戏（duets.tsx）——
-// 业务团队站在左边、Molis 站在右边，中间是一起干活的桌面；谁出手谁那边先动、东西飞上桌，最后两边在桌上同一处碰头；
-// 台面下三行字幕对着三个位置，谁出手谁那句浮上来（负责人 2026-10-20：用动画演出 Molis 跟业务怎么合作）。
-// 点一本合着的书，滚到它那一拍；鼠标停在台面上，那出戏重演。
+// 往下滚，整屏钉住，一本一本地打开：打开的那面上头是列名与服务全名，下面整块是一段短片（films.tsx）——
+// 一块共享画板上，业务团队和 Molis 两个带名牌的光标按分镜各做各的、再一起做；每一步做完钉一条带序号的评论（5.3 原句）
+// （负责人 2026-10-20：用动画演出 Molis 跟业务怎么合作，「假装你在拍视频」）。
+// 点一本合着的书，滚到它那一拍；鼠标停在画面上，那段片子重演。
 // 宽屏（≥1000 宽、≥600 高）有 JS 时才钉住；手机、矮屏、没有 JS 时四项服务从上到下排开。
 
 const { path } = enterprise;
@@ -62,7 +61,7 @@ export function Stages() {
     const root = ref.current;
     if (!root) return;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const scenes = Array.from(root.querySelectorAll('.m-duet'));
+    const scenes = Array.from(root.querySelectorAll('.m-film'));
     for (const scene of scenes) {
       scene.setAttribute('data-play', '');
       scene.setAttribute('data-hold', '');
@@ -99,7 +98,7 @@ export function Stages() {
     }
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const scene = ref.current?.querySelector(
-      `.m-ent-leg[data-index="${active}"] .m-duet`,
+      `.m-ent-leg[data-index="${active}"] .m-film`,
     );
     if (!scene) return;
     if (scene.hasAttribute('data-hold')) scene.removeAttribute('data-hold');
@@ -146,7 +145,6 @@ export function Stages() {
                 id={`station-${id}`}
                 className="m-ent-leg"
                 data-wall={id}
-                data-cut={filmed.includes(id) ? 'film' : undefined}
                 data-index={index}
                 data-active={open || undefined}
                 aria-labelledby={`station-${id}-name`}
@@ -163,7 +161,7 @@ export function Stages() {
                   <span className="m-ent-leg-spine-word">{station.word}</span>
                 </button>
 
-                {/* 打开的那一面：列名在上；业务团队在左、Molis 在右，一起在动画下面 */}
+                {/* 打开的那一面：列名在上，下面整块是短片 */}
                 <div className="m-ent-leg-body">
                   <header className="m-ent-leg-head">
                     <h3 className="m-ent-leg-word" id={`station-${id}-name`}>
@@ -179,11 +177,11 @@ export function Stages() {
                         matchMedia('(prefers-reduced-motion: reduce)').matches
                       )
                         return;
-                      const duet = event.currentTarget.querySelector('.m-duet');
-                      if (duet && !duet.hasAttribute('data-hold')) play(duet);
+                      const film = event.currentTarget.querySelector('.m-film');
+                      if (film && !film.hasAttribute('data-hold')) play(film);
                     }}
                   >
-                    {filmed.includes(id) ? <Film id={id} /> : <Duet id={id} />}
+                    <Film id={id} />
                   </div>
                 </div>
               </li>

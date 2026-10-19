@@ -211,14 +211,15 @@
   --stage: var(--wall-road-2);
 }
 
-/* 打开的那一面：上头列名与服务全名，下面一出小戏（台面 + 三行字幕）在剩下的空间里上下居中 */
+/* 打开的那一面：上头列名与服务全名，下面整块都给短片 */
 .m-ent-leg-body {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto minmax(0, 1fr);
-  grid-template-areas: 'head' '.' 'stage' '.';
-  gap: clamp(10px, 1.8vh, 20px);
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: 'head' 'stage';
+  gap: clamp(12px, 2.2vh, 22px);
   height: 100%;
-  padding: clamp(20px, 3.4vh, 40px) clamp(24px, 3vw, 48px);
+  padding: clamp(18px, 3vh, 30px) clamp(20px, 2.4vw, 36px)
+    clamp(20px, 3.4vh, 36px);
 }
 .m-ent-leg-head {
   grid-area: head;
@@ -240,15 +241,8 @@
   grid-area: stage;
   min-height: 0;
 }
-/* 拍成短片的那几本：列名下面整块都给画面 */
-.m-ent-leg[data-cut] .m-ent-leg-body {
-  grid-template-rows: auto minmax(0, 1fr);
-  grid-template-areas: 'head' 'stage';
-  gap: clamp(12px, 2.2vh, 22px);
-  padding: clamp(18px, 3vh, 30px) clamp(20px, 2.4vw, 36px)
-    clamp(20px, 3.4vh, 36px);
-}
-.m-ent-flow[data-live] .m-ent-leg[data-cut] .m-ent-leg-stage {
+/* 钉住时画面在剩下的空间里按 16:9 撑到最大 */
+.m-ent-flow[data-live] .m-ent-leg-stage {
   container-type: size;
   display: grid;
   place-items: center;
@@ -292,10 +286,162 @@
   height: 100%;
   overflow: visible;
 }
-.m-film-art .m-film-pop,
-.m-film-note {
+.m-film-art .m-k-shade {
+  flood-color: rgb(var(--shade));
+  flood-opacity: 0.12;
+}
+.m-film-art :is(.m-film-pop, .m-film-carry, .m-film-grow) {
   transform-box: fill-box;
   transform-origin: center;
+}
+.m-film-art .m-film-grow {
+  transform-origin: 50% 100%;
+}
+.m-film-art .m-film-orbit {
+  transform-box: view-box;
+}
+/* 停在第一帧：外层有 data-hold 时（stages.tsx 等它进屏、等那本书打开） */
+.m-film[data-hold] * {
+  animation-play-state: paused !important;
+}
+.m-film-wish {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 1.3;
+  stroke-dasharray: 3 2.4;
+}
+.m-film-link {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.3;
+  stroke-dasharray: 3 3;
+}
+.m-film-trace {
+  fill: none;
+  stroke: var(--hair-2);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+.m-film-title {
+  fill: rgb(27 26 24 / 0.5);
+}
+.m-film-faint {
+  fill: var(--faint);
+}
+.m-film-field,
+.m-film-box,
+.m-film-chip,
+.m-film-node {
+  fill: var(--white);
+  stroke: var(--hair-2);
+  stroke-width: 1.2;
+}
+.m-film-field,
+.m-film-chip {
+  fill: var(--paper);
+}
+.m-film-tray {
+  fill: var(--paper-2);
+  stroke: var(--hair-2);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+.m-film-run,
+.m-film-orbit,
+.m-film-node-done,
+.m-film-badge {
+  fill: var(--ink);
+}
+.m-film-run-mark,
+.m-film-badge-mark {
+  fill: var(--white);
+}
+.m-film-run-dot {
+  fill: var(--ink);
+  stroke: var(--white);
+  stroke-width: 2;
+}
+.m-film-start,
+.m-film-card-dot {
+  fill: var(--accent);
+}
+.m-film-node-hot,
+.m-film-ok {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 1.4;
+}
+.m-film-done {
+  fill: var(--white);
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.m-film-ink-x,
+.m-film-tick-ink {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-film-lens {
+  fill: rgb(255 255 255 / 0.35);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.m-film-standard,
+.m-film-standard-on {
+  fill: none;
+  stroke: rgb(27 26 24 / 0.55);
+  stroke-width: 1.4;
+  stroke-dasharray: 6 5;
+}
+.m-film-standard-on {
+  stroke: var(--accent-ink);
+  stroke-width: 1.8;
+}
+.m-film-barv {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 1.3;
+}
+.m-film-mini,
+.m-film-mini-line {
+  fill: none;
+  stroke: rgb(27 26 24 / 0.22);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.m-film-mini-line {
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+}
+.m-film-mini-dot {
+  fill: rgb(27 26 24 / 0.35);
+}
+.m-film-switch-on {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 1.2;
+}
+/* 齿轮：一圈粗虚线就是齿 */
+.m-film-gear {
+  fill: none;
+  stroke: rgb(27 26 24 / 0.4);
+  stroke-width: 3;
+  stroke-dasharray: 3 3.28;
+}
+.m-film-alert {
+  fill: var(--accent-wash);
+  stroke: var(--accent-ink);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+.m-film-alert-mark {
+  fill: none;
+  stroke: var(--accent-ink);
+  stroke-width: 1.8;
+  stroke-linecap: round;
 }
 .m-film-sticky {
   fill: #f8efd9;
@@ -355,6 +501,12 @@
   position: absolute;
   white-space: nowrap;
 }
+/* 长的那几句按词组折成两行 */
+.m-film-say {
+  width: max-content;
+  max-width: 26em;
+  white-space: normal;
+}
 .m-film-axis {
   color: var(--mute);
   font: 400 clamp(9px, 1.05cqw, 11px) / 1 var(--sans);
@@ -369,7 +521,7 @@
   gap: 0.55em;
   margin: 0;
   padding: 0.45em 0.95em 0.45em 0.45em;
-  border-radius: 999px;
+  border-radius: 1.3em;
   background: var(--white);
   box-shadow:
     0 0 0 1px rgb(var(--shade) / 0.07),
@@ -479,230 +631,6 @@
   display: none;
 }
 
-/* ---------- 一出小戏（duets.tsx）：左边业务团队、右边 Molis、中间桌面；下面三行字幕对着三个位置 ---------- */
-.m-duet {
-  display: grid;
-  gap: clamp(10px, 2vh, 22px);
-}
-.m-scene {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-/* 钉住时，矮屏上整出戏（台面连字幕）一起等比缩小，字幕始终对着台上的人 */
-.m-ent-flow[data-live] .m-duet:not(.m-film) {
-  justify-self: center;
-  width: min(100%, calc((100svh - 470px) * 2.4));
-}
-/* 两边的人：业务团队墨色线描，Molis 杏色；脚下一抹影子 */
-.m-d-people * {
-  stroke-width: 1.4;
-  stroke-linejoin: round;
-}
-.m-d-side[data-who='you'] .m-d-people * {
-  fill: var(--white);
-  stroke: var(--ink-2);
-}
-.m-d-side[data-who='we'] .m-d-people * {
-  fill: color-mix(in srgb, var(--accent) 18%, var(--white));
-  stroke: var(--accent);
-}
-.m-d-floor {
-  fill: rgb(var(--shade) / 0.07);
-}
-.m-d-ring {
-  fill: none;
-  stroke-width: 1.4;
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-.m-d-side[data-who='you'] .m-d-ring {
-  stroke: var(--ink-2);
-}
-.m-d-side[data-who='we'] .m-d-ring {
-  stroke: var(--accent);
-}
-.m-d-people {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-}
-/* 两边各送到桌上的小圆点：业务团队墨色，Molis 杏色 */
-.m-d-meet[data-who='you'] {
-  fill: var(--ink);
-}
-.m-d-meet[data-who='we'] {
-  fill: var(--accent);
-}
-.m-d-dot {
-  fill: var(--faint);
-}
-.m-d-wish {
-  fill: var(--accent-wash);
-  stroke: var(--accent);
-  stroke-width: 1.3;
-  stroke-dasharray: 3 2.4;
-}
-.m-d-link {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.3;
-  stroke-dasharray: 3 3;
-}
-.m-d-source {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.2;
-}
-.m-d-lens circle,
-.m-d-lens path {
-  fill: rgb(255 255 255 / 0.4);
-  stroke: var(--ink);
-  stroke-width: 1.8;
-  stroke-linecap: round;
-}
-.m-d-standard {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 1.4;
-  stroke-dasharray: 5 4;
-}
-.m-d-switch {
-  fill: var(--faint);
-}
-.m-d-switch[data-on] {
-  fill: var(--accent);
-}
-.m-d-knob {
-  fill: var(--white);
-}
-.m-d-team {
-  fill: var(--ink);
-}
-.m-d-alert {
-  fill: none;
-  stroke: var(--accent-ink);
-  stroke-width: 1.4;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-
-/* 字幕：三格对着三个位置——业务团队在左四分之一、一起在中间一半、Molis 在右四分之一 */
-.m-duet-says {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
-  gap: 0 clamp(12px, 1.6vw, 24px);
-  text-align: center;
-}
-.m-duet-say {
-  display: grid;
-  justify-items: center;
-  align-content: start;
-  gap: 6px;
-  margin: 0;
-}
-.m-duet-who {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--ink-2);
-  font: 500 var(--t-label) / 1.6 var(--sans);
-  letter-spacing: 0.16em;
-}
-.m-duet-who::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ink);
-}
-.m-duet-say[data-who='we'] .m-duet-who {
-  color: var(--accent-ink);
-  font: 500 12.5px / 1.6 var(--latin);
-  letter-spacing: 0.08em;
-}
-.m-duet-say[data-who='we'] .m-duet-who::before {
-  background: var(--accent);
-}
-.m-duet-say[data-who='both'] .m-duet-who::before {
-  margin-right: 4px;
-  box-shadow: 4px 0 0 var(--accent);
-}
-.m-duet-text {
-  color: var(--ink);
-  font: 400 13.5px / 1.7 var(--sans);
-  letter-spacing: 0.03em;
-}
-
-/* 演：谁出手谁那边轻轻一跳、亮一圈（--a1 自己出手、--a2 一起那一步）；字幕在那一刻浮上来 */
-.m-duet[data-play] .m-d-people {
-  animation:
-    m-d-hop 0.7s var(--ease) var(--a1),
-    m-d-hop 0.7s var(--ease) var(--a2);
-}
-.m-duet[data-play] .m-d-ring {
-  animation:
-    m-d-ring 1.3s ease-out var(--a1),
-    m-d-ring 1.3s ease-out var(--a2);
-}
-.m-duet[data-play] .m-duet-say {
-  animation: m-d-say 0.8s var(--ease) var(--d) both;
-}
-.m-duet[data-play] .m-d-run {
-  animation: m-d-run 1.6s cubic-bezier(0.45, 0, 0.4, 1) var(--d) both;
-}
-.m-duet[data-play] .m-d-scan {
-  animation: m-d-scan 1.1s ease-in-out var(--d) both;
-}
-@keyframes m-d-hop {
-  35% {
-    translate: 0 -5px;
-  }
-}
-@keyframes m-d-ring {
-  from {
-    opacity: 0.6;
-    scale: 0.7;
-  }
-  to {
-    opacity: 0;
-    scale: 1.35;
-  }
-}
-@keyframes m-d-say {
-  from {
-    opacity: 0;
-    translate: 0 10px;
-  }
-}
-/* 使用者沿四个节点走一遍（节点相隔 92） */
-@keyframes m-d-run {
-  0%,
-  6% {
-    translate: 0 0;
-  }
-  33% {
-    translate: 92px 0;
-  }
-  62% {
-    translate: 184px 0;
-  }
-  92%,
-  100% {
-    translate: 276px 0;
-  }
-}
-/* 放大镜从第一行扫到第三行（行距 42） */
-@keyframes m-d-scan {
-  from {
-    translate: 0 0;
-  }
-  to {
-    translate: 0 84px;
-  }
-}
-
 /* 书脊：合着时才出现 */
 .m-ent-leg-spine {
   display: none;
@@ -737,7 +665,7 @@
   opacity: 1;
   transition: opacity 0.6s var(--ease) 0.25s;
 }
-/* 打开时：列名浮上来，小戏从头演（duets.tsx） */
+/* 打开时：列名浮上来，短片从头演（films.tsx） */
 .m-ent-flow[data-live] .m-ent-leg-head {
   transition:
     opacity 0.7s var(--ease),
@@ -801,219 +729,11 @@
   opacity: 0.7;
 }
 
-/* 减少动态：开合不动画，小戏停在演完的样子 */
+/* 减少动态：开合不动画，短片停在最后一帧 */
 @media (prefers-reduced-motion: reduce) {
   .m-ent-flow[data-live]
     :is(.m-ent-leg, .m-ent-leg-body, .m-ent-leg-head, .m-ent-leg-spine) {
     transition: none !important;
-  }
-}
-
-/* ---------- 小戏里沿用的画法与动作（m-s-）：静止是演完的样子；.m-duet 有 data-play 时演，data-hold 时停在第一帧 ---------- */
-/* 诊断那张的两条轴 */
-.m-s-axis {
-  fill: var(--mute);
-  font: 400 9.5px / 1 var(--sans);
-  letter-spacing: 0.08em;
-}
-.m-scene .m-k-shade {
-  flood-color: rgb(var(--shade));
-  flood-opacity: 0.12;
-}
-.m-scene
-  :is(.m-k-pop, .m-k-stamp, .m-k-press, .m-k-type, .m-s-grow, .m-s-scope) {
-  transform-box: fill-box;
-  transform-origin: center;
-}
-/* 输入框里的字从左往右打出来 */
-.m-scene .m-k-type {
-  transform-origin: left center;
-}
-.m-scene .m-s-grow {
-  transform-origin: center bottom;
-}
-.m-s-spot,
-.m-s-base {
-  fill: var(--faint);
-}
-.m-s-heat,
-.m-s-now,
-.m-s-feed {
-  fill: var(--accent);
-}
-.m-s-feed {
-  opacity: 0;
-}
-.m-s-scope {
-  fill: var(--accent-wash);
-  stroke: var(--accent);
-  stroke-width: 1.2;
-  stroke-dasharray: 3 3;
-}
-.m-s-node {
-  fill: var(--accent-wash);
-  stroke: var(--accent);
-  stroke-width: 1.4;
-}
-.m-s-dot {
-  fill: var(--white);
-  stroke: var(--ink-2);
-  stroke-width: 1.1;
-}
-.m-s-run {
-  fill: var(--ink);
-}
-.m-s-play {
-  fill: var(--white);
-}
-.m-s-pointer {
-  fill: var(--ink);
-  stroke: var(--white);
-  stroke-width: 1.2;
-  stroke-linejoin: round;
-}
-.m-s-x {
-  fill: none;
-  stroke: var(--accent-ink);
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  opacity: 0;
-}
-.m-scene .m-s-card {
-  translate: var(--tx) var(--ty);
-  rotate: var(--r);
-  transform-box: fill-box;
-  transform-origin: center;
-}
-.m-scene .m-s-tweak {
-  transform-box: fill-box;
-  transform-origin: center;
-}
-.m-scene .m-s-orbit {
-  transform-box: view-box;
-  transform-origin: var(--ox, 200px) var(--oy, 75px);
-}
-
-.m-duet[data-play] .m-s-move {
-  animation: m-s-move 0.8s var(--ease) var(--d) both;
-}
-.m-duet[data-play] .m-s-heat {
-  animation:
-    m-s-move 0.8s var(--ease) var(--d) both,
-    m-s-heat 0.4s ease-out calc(var(--d) + 0.7s) both;
-}
-.m-duet[data-play] .m-s-scope {
-  animation: m-s-scope 0.6s var(--ease) var(--d) both;
-}
-.m-duet[data-play] .m-s-grow {
-  animation: m-s-grow 0.6s var(--ease) var(--d) both;
-}
-.m-duet[data-play] .m-s-feed {
-  animation: m-s-feed 0.7s ease-in var(--d) both;
-}
-.m-duet[data-play] .m-s-node {
-  animation: m-s-light 0.35s ease-out var(--d) both;
-}
-.m-duet[data-play] .m-s-cursor {
-  animation: m-s-move 0.5s var(--ease) var(--d) both;
-}
-.m-duet[data-play] .m-s-x {
-  animation: m-s-x 1.1s linear var(--d) both;
-}
-.m-duet[data-play] .m-s-ok {
-  animation: m-k-fade 0.4s var(--ease) var(--d) both;
-}
-.m-duet[data-play] .m-s-tweak {
-  animation: m-s-tweak 0.5s ease-in-out var(--d) both;
-}
-.m-duet[data-play] .m-s-card {
-  animation: m-s-hand 0.8s var(--ease) var(--d) both;
-}
-.m-duet[data-play] .m-s-orbit {
-  animation: m-s-orbit 1.7s cubic-bezier(0.45, 0, 0.4, 1) var(--d) both;
-}
-.m-duet[data-hold] * {
-  animation-play-state: paused !important;
-}
-@keyframes m-s-move {
-  from {
-    opacity: 0;
-    translate: var(--fx) var(--fy);
-  }
-}
-@keyframes m-s-heat {
-  from {
-    fill: var(--faint);
-  }
-}
-@keyframes m-s-scope {
-  from {
-    opacity: 0;
-    scale: 1.3;
-  }
-}
-@keyframes m-s-grow {
-  from {
-    scale: 1 0;
-  }
-}
-@keyframes m-s-feed {
-  0% {
-    opacity: 0;
-    translate: 0 0;
-  }
-  25% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    translate: var(--fx) var(--fy);
-  }
-}
-@keyframes m-s-light {
-  from {
-    fill: var(--white);
-    stroke: var(--hair-2);
-  }
-}
-/* 结果先是 ✕，一会儿收起，换成 ✓ */
-@keyframes m-s-x {
-  0% {
-    opacity: 0;
-  }
-  12%,
-  78% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-@keyframes m-s-tweak {
-  25% {
-    rotate: -14deg;
-  }
-  60% {
-    rotate: 10deg;
-  }
-}
-@keyframes m-s-hand {
-  from {
-    opacity: 0;
-    translate: calc(var(--tx) + 90px) var(--ty);
-  }
-}
-@keyframes m-s-orbit {
-  from {
-    rotate: 0turn;
-  }
-  to {
-    rotate: 1turn;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .m-scene * {
-    animation: none !important;
   }
 }
 
@@ -1385,25 +1105,10 @@
 
 /* ---------- 窄屏 ---------- */
 @media (max-width: 999px) {
-  /* 路线：不钉住，四项服务上下排；每项里列名、小戏，字幕上下排 */
+  /* 路线：不钉住，四项服务上下排；每项里列名、短片、三句上下排 */
   .m-ent-leg-body {
     gap: 14px;
     padding: 18px;
-  }
-  .m-duet-says {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
-    text-align: left;
-  }
-  .m-duet-say {
-    justify-items: start;
-    gap: 2px;
-  }
-  .m-duet-say[data-who='both'] {
-    order: 1;
-  }
-  .m-duet-say[data-who='we'] {
-    order: 2;
   }
   /* 短片：画面里的评论收起，三句按出手顺序排在画面下面 */
   .m-film-say {
