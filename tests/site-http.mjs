@@ -347,6 +347,25 @@ for (const [path, text] of [
       );
     assert(one.includes('data-scene'), 'about one: the pair follows scroll');
   }
+  // 《黑客与画家》两版对照（负责人 2026-10-19「两版都先保留」）：默认是推近；?makers=trio 是原版三种媒介，带比较条
+  {
+    const trioPage = await html('/about?makers=trio');
+    assert(
+      trioPage.includes('ab-say-step'),
+      'about makers=trio: the sentence drives the three windows',
+    );
+    assert(
+      !trioPage.includes('class="hp-sheet"'),
+      'about makers=trio: no zoom pair',
+    );
+    assert(!one.includes('ab-trio'), '/about: the zoom pair by default');
+    for (const name of ['trio', 'painters'])
+      assert(
+        trioPage.includes(`href="/about?makers=${name}#makers"`),
+        `about makers=trio: review link ${name}`,
+      );
+    assert(trioPage.includes('m-review-bar'), 'about makers: review bar');
+  }
   // 八个人的名牌带锚点（旧地址 /community/yijun 跳到 #yijun）
   for (const id of ['people', 'yijun', 'jinqu'])
     assert(one.includes(`id="${id}"`), `about one: anchor #${id}`);

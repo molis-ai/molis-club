@@ -5,7 +5,7 @@ import { members, team, teamUi } from '../../../content/site/team';
 import { alongGroups } from '../../../content/site/along';
 import { essays, splitTitle } from '../../../content/site/essays';
 import { nav } from '../../../content/site/nav';
-import { aboutUi } from '../../../content/site/about';
+import { aboutUi, trio } from '../../../content/site/about';
 import {
   isSoon,
   products,
@@ -24,9 +24,12 @@ import {
 import { Btn, More, Note, Phrases, Status, type Vars } from '../../_site/ui';
 import { Work } from '../../_site/exhibit/exhibit';
 import { BeliefGallery } from './belief-gallery';
+import type { Makers } from './makers-review';
 import { Painters } from './painters';
 import { Plate } from './plate';
+import { Trio } from './trio';
 import './one.css';
+import './trio-one.css';
 
 // 「关于」一整页（清单 C1；负责人 2026-10-18 定方向、看过样张后切成默认）。顶栏「关于」直接到这里，不再有下拉；
 // 旧地址 /team 跳到「我们是谁」（#people），/community/yijun 跳到一骏的名牌；文章、沿途各自留着，从这一页进去。
@@ -213,7 +216,7 @@ function Chapter({
   );
 }
 
-export function AboutOne() {
+export function AboutOne({ makers = 'painters' }: { makers?: Makers }) {
   const change = story.change.paragraphs;
   const toLife = story.toLife.paragraphs;
   const further = story.further.paragraphs;
@@ -240,14 +243,23 @@ export function AboutOne() {
         />
       </header>
 
-      {/* 《黑客与画家》：画家与黑客左右一对，往下滚一起推近（负责人 2026-10-18 定，替掉三栏演示） */}
-      <section
-        className="ao-ch m-wrap"
-        id="makers"
-        aria-labelledby="makers-title"
-      >
-        <Painters />
-      </section>
+      {/* 《黑客与画家》：画家与黑客左右一对，往下滚一起推近（负责人 2026-10-18 定，替掉三栏演示）。
+          原版三种媒介先留着对照（负责人 2026-10-19）：?makers=trio 换回底稿 1.3 那句当控件、推动三扇窗的样子 */}
+      {makers === 'trio' ? (
+        <Chapter id="makers" title={trio.title} quiet>
+          <div className="ao-wide ao-makers">
+            <Trio flow lead={studio.standard.makers} />
+          </div>
+        </Chapter>
+      ) : (
+        <section
+          className="ao-ch m-wrap"
+          id="makers"
+          aria-labelledby="makers-title"
+        >
+          <Painters />
+        </section>
+      )}
 
       {/* 2.2 当想法更容易变成现实：光照进来，去文章 */}
       <Chapter id="change" title={story.change.title}>
