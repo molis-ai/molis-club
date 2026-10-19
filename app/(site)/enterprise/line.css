@@ -97,7 +97,7 @@
   justify-items: start;
   gap: 0.14em;
   margin: 0;
-  font: 300 clamp(26px, 3.2vw, 50px) / 1.34 var(--sans);
+  font: 300 clamp(22px, 2.7vw, 42px) / 1.4 var(--sans);
   letter-spacing: 0.04em;
   text-shadow: 0 1px 30px rgb(0 0 0 / 0.32);
   /* 不平衡断行：窄屏上前面的动作先排满一行，要紧的词连着尾巴整组换到下一行 */
