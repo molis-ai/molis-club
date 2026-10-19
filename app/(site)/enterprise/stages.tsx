@@ -4,11 +4,12 @@ import { enterprise, type StationId } from '../../../content/site/enterprise';
 import { Phrases, type Vars } from '../../_site/ui';
 import { play } from './keeps';
 import { Duet } from './duets';
+import { Film, filmed } from './films';
 
 // 我们怎样开展合作（负责人 2026-10-19：之前那版「是一个合格的 PPT」——四张卡加十二格，一眼全摊开、每样东西一样重）。
 // 改成一次只看一项服务的展开式长卷：
 // 四项服务像书架上并排的四本书，书脊上竖排着列名（诊断、共建、评估、培训，5.2 开头那句里的词），各用「关于」的一种墙色。
-// 往下滚，整屏钉住，一本一本地打开：打开的那面上头是列名与服务全名，下面是一出小戏（duets.tsx）——
+// 往下滚，整屏钉住，一本一本地打开：打开的那面上头是列名与服务全名，下面是一段短片（films.tsx，先做了诊断）或一出小戏（duets.tsx）——
 // 业务团队站在左边、Molis 站在右边，中间是一起干活的桌面；谁出手谁那边先动、东西飞上桌，最后两边在桌上同一处碰头；
 // 台面下三行字幕对着三个位置，谁出手谁那句浮上来（负责人 2026-10-20：用动画演出 Molis 跟业务怎么合作）。
 // 点一本合着的书，滚到它那一拍；鼠标停在台面上，那出戏重演。
@@ -145,6 +146,7 @@ export function Stages() {
                 id={`station-${id}`}
                 className="m-ent-leg"
                 data-wall={id}
+                data-cut={filmed.includes(id) ? 'film' : undefined}
                 data-index={index}
                 data-active={open || undefined}
                 aria-labelledby={`station-${id}-name`}
@@ -181,7 +183,7 @@ export function Stages() {
                       if (duet && !duet.hasAttribute('data-hold')) play(duet);
                     }}
                   >
-                    <Duet id={id} />
+                    {filmed.includes(id) ? <Film id={id} /> : <Duet id={id} />}
                   </div>
                 </div>
               </li>

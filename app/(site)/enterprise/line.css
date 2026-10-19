@@ -169,13 +169,13 @@
   gap: 6px clamp(20px, 3vw, 48px);
 }
 .m-ent-flow-title {
-  font: 300 var(--t-h2) / 1.3 var(--sans);
-  letter-spacing: 0.04em;
+  font: 400 clamp(19px, 1.55vw, 24px) / 1.3 var(--sans);
+  letter-spacing: 0.08em;
 }
 .m-ent-flow-lead {
-  color: var(--ink-2);
-  font: 400 clamp(13.5px, 1vw, 15px) / 1.7 var(--sans);
-  letter-spacing: 0.03em;
+  color: var(--mute);
+  font: 400 var(--t-small) / 1.7 var(--sans);
+  letter-spacing: 0.04em;
 }
 
 /* 四本书：各用「关于」的一种墙色 */
@@ -228,17 +228,255 @@
   gap: 4px 18px;
 }
 .m-ent-leg-word {
-  font: 300 clamp(32px, 3.4vw, 54px) / 1.1 var(--sans);
-  letter-spacing: 0.12em;
+  font: 400 clamp(16px, 1.25vw, 19px) / 1.2 var(--sans);
+  letter-spacing: 0.24em;
 }
 .m-ent-leg-name {
-  color: var(--ink-2);
-  font: 400 var(--t-ui) / 1.5 var(--sans);
+  color: var(--mute);
+  font: 400 12.5px / 1.5 var(--sans);
   letter-spacing: 0.08em;
 }
 .m-ent-leg-stage {
   grid-area: stage;
   min-height: 0;
+}
+/* 拍成短片的那几本：列名下面整块都给画面 */
+.m-ent-leg[data-cut] .m-ent-leg-body {
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: 'head' 'stage';
+  gap: clamp(12px, 2.2vh, 22px);
+  padding: clamp(18px, 3vh, 30px) clamp(20px, 2.4vw, 36px)
+    clamp(20px, 3.4vh, 36px);
+}
+.m-ent-flow[data-live] .m-ent-leg[data-cut] .m-ent-leg-stage {
+  container-type: size;
+  display: grid;
+  place-items: center;
+}
+
+/* ---------- 一段短片（films.tsx）：16:9 的共享画板，两个带名牌的光标，镜头推拉，评论钉在做事的地方 ---------- */
+.m-film {
+  container-type: inline-size;
+  width: 100%;
+}
+.m-ent-flow[data-live] .m-film {
+  width: min(100cqw, 100cqh * 16 / 9);
+}
+.m-film-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(var(--shade) / 0.05),
+    0 22px 48px -30px rgb(var(--shade) / 0.4);
+}
+/* 镜头：整块画板（点阵、画、字、光标）一起推拉 */
+.m-film-cam {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+  background-image: radial-gradient(
+    circle,
+    rgb(27 26 24 / 0.13) 0.09cqw,
+    transparent 0.12cqw
+  );
+  background-size: 2.5cqw 2.5cqw;
+  background-position: 1.25cqw 1.25cqw;
+}
+.m-film-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.m-film-art .m-film-pop,
+.m-film-note {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.m-film-sticky {
+  fill: #f8efd9;
+}
+.m-film-dot {
+  fill: rgb(27 26 24 / 0.18);
+}
+.m-film-ink {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+}
+.m-film-axis-line {
+  fill: none;
+  stroke: var(--hair-2);
+  stroke-width: 1.2;
+  stroke-dasharray: 1;
+}
+.m-film-card {
+  fill: var(--white);
+  stroke: var(--hair-2);
+  stroke-width: 1;
+}
+.m-film-card-hot {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 1.3;
+}
+.m-film-card-dot {
+  fill: var(--accent);
+}
+.m-film-card-line {
+  stroke: rgb(27 26 24 / 0.16);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.m-film-lasso {
+  fill: rgb(234 146 96 / 0.07);
+  stroke: var(--accent);
+  stroke-width: 1.4;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
+}
+.m-film-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  opacity: 0;
+}
+/* 画面里的字：按画面宽度定字号，镜头推近时跟着放大 */
+.m-film-axis,
+.m-film-say,
+.m-film-hand {
+  position: absolute;
+  white-space: nowrap;
+}
+.m-film-axis {
+  color: var(--mute);
+  font: 400 clamp(9px, 1.05cqw, 11px) / 1 var(--sans);
+  letter-spacing: 0.12em;
+}
+.m-film-axis-end {
+  translate: -100% 0;
+}
+.m-film-say {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  margin: 0;
+  padding: 0.45em 0.95em 0.45em 0.45em;
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px rgb(var(--shade) / 0.07),
+    0 8px 20px -12px rgb(var(--shade) / 0.45);
+  font-size: clamp(10.5px, 1.3cqw, 12.5px);
+}
+.m-film-step {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 1.7em;
+  height: 1.7em;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--white);
+  font: 500 0.8em / 1 var(--latin);
+}
+[data-who='we'] > .m-film-step {
+  background: var(--accent);
+  color: var(--ink);
+}
+[data-who='both'] > .m-film-step {
+  box-shadow:
+    0 0 0 1.5px var(--white),
+    0 0 0 3px var(--accent);
+}
+.m-film-who {
+  color: var(--mute);
+  font: 500 0.88em / 1 var(--sans);
+  letter-spacing: 0.12em;
+}
+[data-who='we'] > .m-film-who {
+  color: var(--accent-ink);
+  font-family: var(--latin);
+  letter-spacing: 0.06em;
+}
+.m-film-text {
+  color: var(--ink);
+  font: 400 1em / 1.5 var(--sans);
+  letter-spacing: 0.04em;
+}
+/* 光标：箭头尖在定位点上，名牌挂在右下 */
+.m-film-hand {
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-start;
+  pointer-events: none;
+  font-size: clamp(9.5px, 1.1cqw, 11.5px);
+}
+.m-film-arrow {
+  width: 1.45em;
+  height: auto;
+  margin: -0.1em 0 0 -0.12em;
+  overflow: visible;
+  filter: drop-shadow(0 1px 1.5px rgb(var(--shade) / 0.35));
+}
+.m-film-arrow path {
+  fill: var(--ink);
+  stroke: var(--white);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+[data-who='we'] > .m-film-arrow path {
+  fill: var(--accent);
+}
+.m-film-tag {
+  margin: 1.55em 0 0 -0.35em;
+  padding: 0.38em 0.7em;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--white);
+  font: 500 1em / 1 var(--sans);
+  letter-spacing: 0.08em;
+}
+[data-who='we'] > .m-film-tag {
+  background: var(--accent);
+  color: var(--ink);
+  font-family: var(--latin);
+  letter-spacing: 0.04em;
+}
+/* 示意的章与进度：钉在画框上，不跟镜头走 */
+.m-film-mark {
+  position: absolute;
+  top: clamp(10px, 1.8cqw, 18px);
+  left: clamp(10px, 1.8cqw, 18px);
+}
+.m-film-mark .m-note {
+  background: rgb(255 255 255 / 0.8);
+}
+.m-film-bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: rgb(27 26 24 / 0.05);
+}
+.m-film-bar > span {
+  display: block;
+  height: 100%;
+  background: rgb(27 26 24 / 0.28);
+  transform-origin: left center;
+}
+/* 画面下面那三句：只在窄屏上出现 */
+.m-film-lines {
+  display: none;
 }
 
 /* ---------- 一出小戏（duets.tsx）：左边业务团队、右边 Molis、中间桌面；下面三行字幕对着三个位置 ---------- */
@@ -253,7 +491,7 @@
   overflow: visible;
 }
 /* 钉住时，矮屏上整出戏（台面连字幕）一起等比缩小，字幕始终对着台上的人 */
-.m-ent-flow[data-live] .m-duet {
+.m-ent-flow[data-live] .m-duet:not(.m-film) {
   justify-self: center;
   width: min(100%, calc((100svh - 470px) * 2.4));
 }
@@ -393,7 +631,7 @@
 }
 .m-duet-text {
   color: var(--ink);
-  font: 400 clamp(14px, 1.05vw, 16px) / 1.7 var(--sans);
+  font: 400 13.5px / 1.7 var(--sans);
   letter-spacing: 0.03em;
 }
 
@@ -547,8 +785,8 @@
   outline-offset: -6px;
 }
 .m-ent-leg-spine-word {
-  font: 300 clamp(24px, 2.1vw, 32px) / 1 var(--sans);
-  letter-spacing: 0.32em;
+  font: 400 clamp(14px, 1.1vw, 16px) / 1 var(--sans);
+  letter-spacing: 0.5em;
   writing-mode: vertical-rl;
   text-orientation: upright;
 }
@@ -1166,6 +1404,31 @@
   }
   .m-duet-say[data-who='we'] {
     order: 2;
+  }
+  /* 短片：画面里的评论收起，三句按出手顺序排在画面下面 */
+  .m-film-say {
+    display: none;
+  }
+  .m-film-hand,
+  .m-film-axis {
+    font-size: 8.5px;
+  }
+  .m-film-lines {
+    display: grid;
+    gap: 12px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13.5px;
+  }
+  .m-film-line {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 2px 10px;
+  }
+  .m-film-line .m-film-text {
+    grid-column: 2;
   }
 
   /* 为什么：字在上、画面在下 */
