@@ -131,7 +131,8 @@ export function Slips({ lean = false }: { lean?: boolean }) {
         {lean ? null : <p className="m-ent-reply-idle">{hook.idle}</p>}
         {questions.items.map((question) => {
           const item = path.advice[question.id];
-          // 样张（D1，lean）：只回问题原句；选过的只带进末尾的表单，路线人人一样，往下看路线不跳到某一站（负责人 2026-10-19：照原文，不配对）
+          // 样张（D1，lean）：只回问题原句；选过的只带进末尾的表单（负责人 2026-10-19：照原文，不配对）。
+          // 路线就在下面一屏，不再放「看看这条路怎么走」（负责人 2026-10-19 问必要性：不配对之后它只是往下滚一屏）
           if (lean)
             return (
               <div
@@ -142,15 +143,6 @@ export function Slips({ lean = false }: { lean?: boolean }) {
               >
                 <p className="m-ent-reply-title">{question.title}</p>
                 <p className="m-actions">
-                  <a
-                    className="m-link"
-                    href="#path"
-                    data-dir="down"
-                    onClick={() => context?.setPick(question.id)}
-                  >
-                    {hook.jump}
-                    <ArrowDown size={13} aria-hidden="true" />
-                  </a>
                   <button type="reset" className="m-link">
                     {hook.reset}
                   </button>

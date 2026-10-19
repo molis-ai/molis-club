@@ -5,208 +5,134 @@ import {
   type Act,
   type StationId,
 } from '../../../content/site/enterprise';
+import type { Vars } from '../../_site/ui';
 import { Keep, play } from './keeps';
 
-// 样张（D1）：合作路线，像展厅里一间一间看过去，一站一页，共四页；路线人人一样，不随选过的问题变（负责人 2026-10-19 定：照原文，不配对）。
-// 每页左边一面墙（四站四种墙色，同「关于」的展厅），挂着这一站留下的东西（keeps.tsx 的动画），墙角是展签；
-// 右边是站名和一张分工表：业务团队做什么、Molis 做什么、一起做什么。事与成果都是 5.2 / 5.3 的原句片段。
-//
-// 宽屏（≥1000 宽、≥720 高）且不减少动态时，这一段钉在视口里，往下滚翻下一页，像画廊在同一个位置换一幅（常驻约束「同类内容同一种看法」）；
-// 底下四个点是走到第几站，点一下翻过去。其余情况（手机、矮屏、减少动态、没有 JS）四页竖着排开。
+// 样张（D1）：合作路线四站排在一屏上，像展厅里并排的四面墙（负责人 2026-10-19：四站合到一屏，路线人人一样，不配对）。
+// 每面墙一站，四种墙色同「关于」的展厅：顶上站名；中间三行分工——业务团队、Molis、一起；墙脚挂着这一站留下的东西（keeps.tsx 的动画）和展签。
+// 四面墙的同一行对齐（CSS subgrid）：竖着读是这一站谁做什么，横着读是同一个角色从头到尾做什么。
+// 事与成果都是 5.2 / 5.3 的原句片段。最左边一列行名只给眼睛看；每面墙里自己也写着角色名，读屏按站读。
+// 墙一面面从左到右浮上来，墙脚的东西跟着一件件演一遍。窄于 1000 时四面墙竖排，角色名写回每一格。
 
 const { path, line } = enterprise;
 const stationIds = Object.keys(path.stations) as StationId[];
-const count = stationIds.length;
 const roles = ['you', 'we', 'both'] as const;
 
-/** 分工表：同一个角色的事收在一行，顺序固定是业务团队、Molis、一起；没有的角色不写 */
-function Roles({ id }: { id: StationId }) {
-  const rows = roles.flatMap((who) => {
-    const acts = line.rows[id].flatMap((row) => row[who] ?? []);
-    return acts.length ? [{ who, acts }] : [];
-  });
-  return (
-    <dl className="m-ent-roles">
-      {rows.map(({ who, acts }) => (
-        <div key={who} data-who={who}>
-          <dt lang={who === 'we' ? 'en' : undefined}>{line.who[who]}</dt>
-          {acts.map((act: Act) => (
-            <dd key={act.text}>
-              {act.text}
-              {act.detail ? (
-                <span className="m-ent-roles-detail">{act.detail}</span>
-              ) : null}
-            </dd>
-          ))}
-        </div>
-      ))}
-    </dl>
-  );
-}
+/** 这一站某个角色做的事：同一个角色的几件事收在一格，没有的角色不写 */
+const actsOf = (id: StationId, who: (typeof roles)[number]) =>
+  line.rows[id].flatMap((row) => row[who] ?? []);
 
 export function Stages() {
   const ref = useRef<HTMLDivElement>(null);
-  const jumpTo = useRef<((index: number) => void) | null>(null);
 
   useEffect(() => {
     const root = ref.current;
     if (!root) return;
-    const wide = matchMedia('(min-width: 1000px) and (min-height: 720px)');
-    const still = matchMedia('(prefers-reduced-motion: reduce)');
-    const pages = Array.from(root.querySelectorAll<HTMLElement>('.m-ent-page'));
-    const dots = Array.from(
-      root.querySelectorAll<HTMLElement>('.m-ent-line-dot'),
-    );
-    let live = false;
-    let step = -1;
-    let frame = 0;
-
-    const progress = () => {
-      const rect = root.getBoundingClientRect();
-      const span = rect.height - window.innerHeight;
-      return span > 0 ? Math.min(1, Math.max(0, -rect.top / span)) : 0;
-    };
-    const paint = () => {
-      frame = 0;
-      if (!live) return;
-      const next = Math.min(count - 1, Math.floor(progress() * count));
-      if (next === step) return;
-      step = next;
-      pages.forEach((page, index) => {
-        const shown = index === step;
-        // 刚翻到的这一站：墙上的东西从头演一遍
-        if (shown && !page.hasAttribute('data-shown'))
-          play(page.querySelector('.m-ent-wall-art'));
-        page.toggleAttribute('data-shown', shown);
-      });
-      dots.forEach((dot, index) => {
-        if (index === step) dot.setAttribute('aria-current', 'step');
-        else dot.removeAttribute('aria-current');
-      });
-    };
-    const request = () => {
-      if (!frame) frame = requestAnimationFrame(paint);
-    };
-    const sync = () => {
-      live = wide.matches && !still.matches;
-      root.toggleAttribute('data-live', live);
-      if (!live) {
-        step = -1;
-        for (const page of pages) page.removeAttribute('data-shown');
-        for (const dot of dots) dot.removeAttribute('aria-current');
-      }
-      request();
-    };
-    sync();
-
-    // 竖排时：每面墙上的东西第一次进入视口演一遍
+    const timers: number[] = [];
+    // 一起进入视口的几件，从左到右隔一会儿演一遍
     const seen = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting || live) continue;
-          play(entry.target);
-          seen.unobserve(entry.target);
-        }
+        const shown = entries
+          .filter((entry) => entry.isIntersecting)
+          .map((entry) => entry.target);
+        shown.forEach((node, index) => {
+          seen.unobserve(node);
+          timers.push(window.setTimeout(() => play(node), 300 + index * 380));
+        });
       },
-      { threshold: 0.4 },
+      { threshold: 0.5 },
     );
     root
-      .querySelectorAll('.m-ent-wall-art')
+      .querySelectorAll('.m-ent-bay-art')
       .forEach((node) => seen.observe(node));
-
-    window.addEventListener('scroll', request, { passive: true });
-    window.addEventListener('resize', request);
-    wide.addEventListener('change', sync);
-    still.addEventListener('change', sync);
-
-    // 翻到第几页：钉住时滚到那一页的位置，否则直接跳过去
-    jumpTo.current = (index: number) => {
-      if (!live) {
-        pages[index]?.scrollIntoView({ block: 'start' });
-        return;
-      }
-      const top = root.getBoundingClientRect().top + window.scrollY;
-      const span = root.offsetHeight - window.innerHeight;
-      window.scrollTo({ top: top + span * ((index + 0.2) / count) });
-    };
-
     return () => {
-      if (frame) cancelAnimationFrame(frame);
       seen.disconnect();
-      window.removeEventListener('scroll', request);
-      window.removeEventListener('resize', request);
-      wide.removeEventListener('change', sync);
-      still.removeEventListener('change', sync);
-      jumpTo.current = null;
+      for (const timer of timers) clearTimeout(timer);
     };
   }, []);
 
   return (
-    <div className="m-ent-line" ref={ref}>
-      <div className="m-ent-line-stick">
-        <div className="m-ent-stages">
-          {stationIds.map((id, index) => {
-            const station = path.stations[id];
-            const after = line.after[id];
-            return (
-              <article
-                key={id}
-                id={`station-${id}`}
-                className="m-ent-page m-ent-stage"
-                data-i={index}
-                data-wall={id}
-                aria-labelledby={`station-${id}-name`}
-              >
-                <div className="m-ent-stage-body">
-                  <header className="m-ent-stage-head">
-                    <p className="m-ent-stage-where">{station.stop}</p>
-                    <h3 className="m-ent-stage-name" id={`station-${id}-name`}>
-                      {station.name}
-                    </h3>
-                  </header>
-
-                  <Roles id={id} />
-
-                  {/* 墙：留下的东西挂在正中，墙角是展签 */}
-                  <figure className="m-ent-wall">
-                    <div className="m-ent-wall-art">
-                      <Keep id={id} />
-                    </div>
-                    <figcaption className="m-ent-wall-label">
-                      <span className="m-ent-wall-kicker">{line.leaves}</span>
-                      <strong className="m-ent-wall-name">
-                        {station.leaves.join('、')}
-                      </strong>
-                      {after ? (
-                        <span className="m-ent-wall-after">{after}</span>
-                      ) : null}
-                      {id === 'build' ? (
-                        <span className="m-ent-forms">
-                          {path.forms.map((form) => (
-                            <span key={form}>{form}</span>
-                          ))}
-                        </span>
-                      ) : null}
-                    </figcaption>
-                  </figure>
-                </div>
-              </article>
-            );
-          })}
+    <div className="m-ent-bays-screen m-wrap">
+      <div className="m-ent-bays" ref={ref}>
+        {/* 行名：只给眼睛看，每面墙里自己写着角色名 */}
+        <div className="m-ent-bays-legend" aria-hidden="true">
+          {roles.map((who) => (
+            <span
+              key={who}
+              data-who={who}
+              lang={who === 'we' ? 'en' : undefined}
+            >
+              {line.who[who]}
+            </span>
+          ))}
+          <span data-who="leaves">{line.leaves}</span>
         </div>
 
-        {/* 钉住时才显出：走到第几站，点一下翻过去 */}
-        <nav className="m-ent-line-dots" aria-label={path.kicker}>
-          {stationIds.map((id, index) => (
-            <button
+        {stationIds.map((id, index) => {
+          const station = path.stations[id];
+          const after = line.after[id];
+          return (
+            <article
               key={id}
-              type="button"
-              className="m-ent-line-dot"
-              aria-label={path.stations[id].name}
-              onClick={() => jumpTo.current?.(index)}
-            />
-          ))}
-        </nav>
+              id={`station-${id}`}
+              className="m-ent-bay"
+              data-wall={id}
+              data-reveal
+              style={{ '--delay': `${index * 120}ms` } as Vars}
+              aria-labelledby={`station-${id}-name`}
+            >
+              <header className="m-ent-bay-head">
+                <p className="m-ent-bay-stop">{station.stop}</p>
+                <h3 className="m-ent-bay-name" id={`station-${id}-name`}>
+                  {station.name}
+                </h3>
+              </header>
+
+              {roles.map((who) => {
+                const acts = actsOf(id, who);
+                if (!acts.length) return null;
+                return (
+                  <dl key={who} className="m-ent-bay-role" data-who={who}>
+                    <dt lang={who === 'we' ? 'en' : undefined}>
+                      {line.who[who]}
+                    </dt>
+                    {acts.map((act: Act) => (
+                      <dd key={act.text}>
+                        {act.text}
+                        {act.detail ? (
+                          <span className="m-ent-bay-detail">{act.detail}</span>
+                        ) : null}
+                      </dd>
+                    ))}
+                  </dl>
+                );
+              })}
+
+              {/* 墙脚：留下的东西，和一张展签 */}
+              <figure className="m-ent-bay-keep">
+                <div className="m-ent-bay-art">
+                  <Keep id={id} />
+                </div>
+                <figcaption className="m-ent-bay-label">
+                  <span className="m-ent-bay-kicker">{line.leaves}</span>
+                  <strong className="m-ent-bay-leaves">
+                    {station.leaves.join('、')}
+                  </strong>
+                  {after ? (
+                    <span className="m-ent-bay-after">{after}</span>
+                  ) : null}
+                  {id === 'build' ? (
+                    <span className="m-ent-forms">
+                      {path.forms.map((form) => (
+                        <span key={form}>{form}</span>
+                      ))}
+                    </span>
+                  ) : null}
+                </figcaption>
+              </figure>
+            </article>
+          );
+        })}
       </div>
     </div>
   );

@@ -30,9 +30,9 @@ export const metadata = pageMetadata(
 // 首屏照片很亮，字用墨色，顶栏透明（data-tone="light"）。
 //
 // 样张（D1，?study=line；现版对照 ?study=current，默认仍是现版）：照原文的主线，不配对（负责人 2026-10-19 定）——
-// 长廊 → 你们卡在哪（五张纸条只做开场，选一张只带进末尾的表单）
-// → 合作路线：开场第三段原句配那双手，下面一小行 5.2 开头原句；四站一页一页翻，人人一样，
-//   每站业务团队、Molis、一起各做什么，墙上挂着留下的东西（stages.tsx）
+// 长廊 → 你们卡在哪（五张纸条只做开场，选一张只带进末尾的表单，不再放「看看这条路怎么走」）
+// → 合作路线：开场第三段原句配那双手，下面一小行 5.2 开头原句；四站并排在一屏上，人人一样，
+//   四面墙同一行对齐：业务团队、Molis、一起各做什么，墙脚挂着留下的东西（stages.tsx）
 // → 具体合作从团队眼前的问题出发（5.4 原句），聊聊 → 做这件事的人（只留小标题与经历）→ 内部探索 → 表单。
 // 首屏去掉四个服务名，路线不再有横线与编号，不说「起点」，问题与站不一一对应（原文没有这层对应）。
 
@@ -154,7 +154,7 @@ export default async function EnterprisePage({
           {/* 你们卡在哪：只做开场，选一张只带进末尾的表单 */}
           {where}
 
-          {/* 合作路线：开场第三段原句配那双手，下面一小行 5.2 开头原句；四站一页一页翻（stages.tsx） */}
+          {/* 合作路线：开场第三段原句配那双手，下面一小行 5.2 开头原句；四站并排一屏（stages.tsx） */}
           <section
             className="m-ent-path"
             id="path"
@@ -184,7 +184,7 @@ export default async function EnterprisePage({
               <p className="m-ent-onward-line">
                 <Phrases text={e.line.from} />
               </p>
-              {/* 往下到表单：和纸条下「看看这条路怎么走」同一种页内入口（描边胶囊 + 下箭头） */}
+              {/* 往下到表单：页内入口（描边胶囊 + 下箭头） */}
               <a className="m-link" href="#talk" data-dir="down">
                 {e.hook.talk}
                 <ArrowDown size={14} aria-hidden="true" />

@@ -1,6 +1,6 @@
 /* =====================================================================
-   样张（D1，?study=line）：照原文的主线，不配对——「你们卡在哪」只做开场；合作路线一站一页（stages.tsx），人人一样：
-   左边一面墙（四站四种墙色，同「关于」的展厅），正中挂着这一站留下的东西，墙角是展签；右边是站名和分工表。
+   样张（D1，?study=line）：照原文的主线，不配对——「你们卡在哪」只做开场；合作路线四站并排在一屏上（stages.tsx），人人一样：
+   四面墙（四种墙色，同「关于」的展厅）并排，顶上站名，中间三行分工，墙脚挂着这一站留下的东西和展签；同一行在四面墙上对齐。
    不加框线、连接线与编号，用墙色、留白和一点影子分组；颜色、字号只读 site.css 的令牌。
    ===================================================================== */
 
@@ -21,32 +21,8 @@
   max-width: 26em;
   margin-top: clamp(8px, 1.6vh, 16px);
 }
-/* 「看看这条路怎么走」跳到这里：开头一屏自己留了顶栏的位置，正好停在这一屏的顶上 */
-.m-ent[data-study='line'] .m-ent-path {
-  scroll-margin-top: calc(-1 * (var(--header, 64px) + 16px));
-}
 
-.m-ent-line {
-  position: relative;
-}
-.m-ent-line-stick {
-  width: 100%;
-  max-width: calc(var(--wrap) + 2 * var(--gutter));
-  margin: 0 auto;
-  padding-inline: var(--gutter);
-}
-/* 竖排（手机、矮屏、减少动态、没有 JS）：四站依次排开 */
-.m-ent-stages {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(88px, 14vh, 144px);
-  padding-top: clamp(24px, 6vh, 64px);
-}
-.m-ent-line-dots {
-  display: none;
-}
-
-/* 你们卡在哪（lean）：选一张，下面只回问题原句和往下看路线 */
+/* 你们卡在哪（lean）：选一张，下面只回问题原句 */
 .m-ent-replies[data-lean] {
   margin-top: clamp(12px, 2.4vh, 28px);
   padding-top: 0;
@@ -67,155 +43,179 @@
   margin: 0;
 }
 
-/* 一站：左边墙，右边站名与分工表 */
-.m-ent-stage {
+/* ---------- 合作路线：四面墙并排一屏 ---------- */
+.m-ent-bays-screen {
   display: grid;
-  grid-template-rows: minmax(0, 1fr);
+  align-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: calc(var(--header) + clamp(8px, 1.8vh, 28px))
+    clamp(8px, 1.8vh, 28px);
 }
-.m-ent-stage-body {
+/* 第一列是行名，后四列是四面墙；五行：站名、业务团队、Molis、一起、留下 */
+.m-ent-bays {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr);
-  column-gap: var(--col-gap);
-  min-height: 0;
+  grid-template-columns: 4.4em repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(5, auto);
+  column-gap: clamp(10px, 1.1vw, 16px);
+  row-gap: clamp(12px, 2vh, 22px);
 }
-
-.m-ent-stage-head {
-  grid-column: 8 / -1;
+.m-ent-bays-legend {
+  grid-column: 1;
+  grid-row: 1 / span 5;
+  display: grid;
+  grid-template-rows: subgrid;
+}
+.m-ent-bays-legend > span {
+  align-self: start;
+  color: var(--mute);
+  font: 500 var(--t-small) / 24px var(--sans);
+  letter-spacing: 0.12em;
+}
+.m-ent-bays-legend [data-who='you'] {
   grid-row: 2;
-  display: grid;
-  justify-items: start;
-  gap: 12px;
 }
-.m-ent-roles {
-  grid-column: 8 / -1;
+.m-ent-bays-legend [data-who='we'] {
   grid-row: 3;
+  color: var(--accent-ink);
+  font: 400 14.5px / 24px var(--latin);
+  letter-spacing: 0.02em;
 }
-.m-ent-wall {
-  grid-column: 1 / span 6;
-  grid-row: 1 / -1;
+.m-ent-bays-legend [data-who='both'] {
+  grid-row: 4;
+}
+.m-ent-bays-legend [data-who='leaves'] {
+  grid-row: 5;
+  color: var(--accent-ink);
 }
 
-.m-ent-stage-where {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 24px;
+/* 一面墙：一站。五行跟着整张表走（subgrid），四面墙的同一行对齐 */
+.m-ent-bay {
+  --wall: var(--paper-2);
+  grid-row: 1 / span 5;
+  display: grid;
+  grid-template-rows: subgrid;
+  padding-inline: clamp(16px, 1.5vw, 24px);
+  border-radius: 20px;
+  background: var(--wall);
+}
+.m-ent-bay[data-wall='diagnose'] {
+  --wall: var(--wall-people);
+}
+.m-ent-bay[data-wall='build'] {
+  --wall: var(--wall-light-2);
+}
+.m-ent-bay[data-wall='assess'] {
+  --wall: var(--wall-read);
+}
+.m-ent-bay[data-wall='train'] {
+  --wall: var(--wall-road);
+}
+.m-ent-bay-head {
+  grid-row: 1;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding-top: clamp(16px, 2.6vh, 26px);
+}
+.m-ent-bay-stop {
   color: var(--ink-2);
   font: 500 var(--t-label) / 1.4 var(--sans);
   letter-spacing: 0.16em;
 }
-.m-ent-stage-name {
-  font: 300 var(--t-h2) / 1.3 var(--sans);
-  letter-spacing: 0.03em;
+.m-ent-bay-name {
+  font: 300 clamp(19px, 1.5vw, 23px) / 1.35 var(--sans);
+  letter-spacing: 0.02em;
+  text-wrap: balance;
 }
 
-/* 分工表：左边角色名，右边这一站它做的事；同一个角色的几件事上下排 */
-.m-ent-roles {
+/* 分工：这一站这个角色做的事，几件上下排；角色名在宽屏上由最左一列代写 */
+.m-ent-bay-role {
   display: grid;
-  gap: clamp(18px, 3vh, 28px);
-  margin: clamp(28px, 5vh, 52px) 0 0;
+  align-content: start;
+  gap: 10px;
+  margin: 0;
 }
-.m-ent-roles > div {
-  display: grid;
-  grid-template-columns: 5.5em minmax(0, 1fr);
-  column-gap: 20px;
-  row-gap: 10px;
-  align-items: baseline;
+.m-ent-bay-role[data-who='you'] {
+  grid-row: 2;
 }
-.m-ent-roles dt {
-  grid-column: 1;
-  color: var(--mute);
-  font: 500 var(--t-small) / 1.6 var(--sans);
-  letter-spacing: 0.12em;
+.m-ent-bay-role[data-who='we'] {
+  grid-row: 3;
 }
-.m-ent-roles [data-who='we'] dt {
-  color: var(--accent-ink);
-  font: 400 15px / 1.45 var(--latin);
-  letter-spacing: 0.02em;
+.m-ent-bay-role[data-who='both'] {
+  grid-row: 4;
 }
-.m-ent-roles dd {
-  grid-column: 2;
+.m-ent-bay-role dt,
+.m-ent-bay-kicker {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.m-ent-bay-role dd {
   margin: 0;
   color: var(--ink);
-  font: 400 clamp(15.5px, 1.15vw, 17px) / 1.7 var(--sans);
+  font: 400 clamp(14px, 1.05vw, 15.5px) / 1.6 var(--sans);
   letter-spacing: 0.02em;
+  text-wrap: pretty;
 }
-.m-ent-roles-detail {
+.m-ent-bay-detail {
   display: block;
   margin-top: 2px;
   color: var(--mute);
-  font-size: var(--t-small);
-  line-height: 1.75;
+  font-size: 12.5px;
+  line-height: 1.7;
   letter-spacing: 0.03em;
 }
 
-/* 墙：这一站的墙色，留下的东西挂在正中，墙角是展签 */
-.m-ent-wall {
-  --wall: var(--paper-2);
-  position: relative;
+/* 墙脚：留下的东西挂在正中，下面是展签 */
+.m-ent-bay-keep {
+  grid-row: 5;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  min-height: clamp(420px, 68vh, 640px);
+  align-content: start;
+  gap: 8px;
   margin: 0;
-  padding: clamp(24px, 4vh, 44px) clamp(24px, 3vw, 44px);
-  border-radius: 24px;
-  background: var(--wall);
-  transition: background-color 0.8s var(--ease);
+  padding-bottom: clamp(16px, 2.6vh, 24px);
 }
-.m-ent-stage[data-wall='diagnose'] .m-ent-wall {
-  --wall: var(--wall-people);
-}
-.m-ent-stage[data-wall='build'] .m-ent-wall {
-  --wall: var(--wall-light-2);
-}
-.m-ent-stage[data-wall='assess'] .m-ent-wall {
-  --wall: var(--wall-read);
-}
-.m-ent-stage[data-wall='train'] .m-ent-wall {
-  --wall: var(--wall-road);
-}
-.m-ent-wall-art {
+.m-ent-bay-art {
   display: grid;
-  place-items: center;
-  min-height: 0;
+  justify-items: center;
 }
-.m-ent-wall-art .m-keep-art {
-  width: min(100%, 560px);
-  height: auto;
-  max-height: 100%;
+.m-ent-bay-art .m-keep-art {
+  width: auto;
+  max-width: 100%;
+  height: clamp(72px, 10vh, 100px);
   aspect-ratio: 240 / 170;
   overflow: visible;
   border-radius: 0;
   background: transparent;
 }
-.m-ent-wall .m-k-shade {
+.m-ent-bay .m-k-shade {
   flood-opacity: 0.16;
 }
-/* 展签：留下 · 名字 · 拿去做什么 */
-.m-ent-wall-label {
+.m-ent-bay-label {
   display: grid;
   justify-items: start;
-  gap: 6px;
-  max-width: 30em;
+  gap: 4px;
 }
-.m-ent-wall-kicker {
-  color: var(--accent-ink);
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
+.m-ent-bay-leaves {
+  font: 400 clamp(15px, 1.15vw, 17px) / 1.5 var(--sans);
+  letter-spacing: 0.02em;
 }
-.m-ent-wall-name {
-  font: 400 var(--t-h3) / 1.45 var(--sans);
-  letter-spacing: 0.03em;
-}
-.m-ent-wall-after {
+.m-ent-bay-after {
   color: var(--ink-2);
-  font-size: var(--t-small);
-  line-height: 1.85;
+  font-size: 12.5px;
+  line-height: 1.75;
   letter-spacing: 0.03em;
 }
-.m-ent-wall .m-ent-forms {
+.m-ent-bay .m-ent-forms {
+  gap: 5px;
   margin-top: 4px;
+}
+.m-ent-bay .m-ent-forms > span {
+  font-size: 12px;
 }
 
 /* 收尾：5.4 原句，和聊聊 */
@@ -234,95 +234,6 @@
   text-wrap: balance;
 }
 
-/* ---------- 钉住：宽屏、够高、不减少动态时（stages.tsx 加 data-live），一页一页在同一个位置换 ---------- */
-.m-ent-line[data-live] {
-  height: 400vh;
-}
-.m-ent-line[data-live] .m-ent-line-stick {
-  position: sticky;
-  top: 0;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 12px;
-  height: 100vh;
-  height: 100svh;
-  padding-top: calc(var(--header) + clamp(16px, 3vh, 32px));
-  padding-bottom: clamp(12px, 2.4vh, 24px);
-}
-.m-ent-line[data-live] .m-ent-stages {
-  display: grid;
-  grid-template-areas: 'one';
-  min-height: 0;
-  padding: 0;
-}
-.m-ent-line[data-live] .m-ent-page {
-  grid-area: one;
-  min-height: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 0.6s var(--ease),
-    visibility 0s linear 0.6s;
-}
-.m-ent-line[data-live] .m-ent-page[data-shown] {
-  opacity: 1;
-  visibility: visible;
-  transition:
-    opacity 0.8s var(--ease),
-    visibility 0s;
-}
-/* 换页时墙只换颜色，右边的字轻轻浮上来 */
-.m-ent-line[data-live] .m-ent-stage-head,
-.m-ent-line[data-live] .m-ent-roles {
-  translate: 0 14px;
-  transition: translate 0.8s var(--ease);
-}
-.m-ent-line[data-live] .m-ent-stage[data-shown] .m-ent-stage-head,
-.m-ent-line[data-live] .m-ent-stage[data-shown] .m-ent-roles {
-  translate: 0 0;
-  transition: translate 1s var(--ease) 0.1s;
-}
-.m-ent-line[data-live] .m-ent-wall {
-  min-height: 0;
-}
-.m-ent-line[data-live] .m-ent-line-dots {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-}
-.m-ent-line-dot {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 28px;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-.m-ent-line-dot::before {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: var(--r-pill);
-  background: var(--hair-2);
-  transition:
-    width 0.5s var(--ease),
-    background-color 0.5s var(--ease);
-}
-.m-ent-line-dot:hover::before {
-  background: var(--mute);
-}
-.m-ent-line-dot[aria-current]::before {
-  width: 22px;
-  background: var(--ink);
-}
-.m-ent-line-dot:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: -2px;
-  border-radius: 8px;
-}
-
 /* ---------- 团队（lean）：卡上只有 5.5 小标题与经历 ---------- */
 .m-ent-caps[data-lean] .m-cap {
   grid-row: span 2;
@@ -335,59 +246,81 @@
   line-height: 1.8;
 }
 
-/* ---------- 窄屏 ---------- */
-@media (max-width: 1180px) {
-  .m-ent-wall {
-    grid-column: 1 / span 6;
-  }
-  .m-ent-stage-head,
-  .m-ent-roles {
-    grid-column: 7 / -1;
-  }
-  .m-ent-roles > div {
-    grid-template-columns: 4.8em minmax(0, 1fr);
-    column-gap: 14px;
-  }
-}
-@media (max-width: 900px) {
-  /* 站名在上，墙在中间，分工表在下 */
-  .m-ent-stage-body {
-    grid-template-rows: none;
-    row-gap: 24px;
-  }
-  .m-ent-stage-head,
-  .m-ent-roles,
-  .m-ent-wall {
-    grid-column: 1 / -1;
-  }
-  .m-ent-stage-head {
-    grid-row: 1;
-  }
-  .m-ent-wall {
-    grid-row: 2;
+/* ---------- 窄屏：四面墙竖排，角色名写回每一格 ---------- */
+@media (max-width: 999px) {
+  .m-ent-bays-screen {
     min-height: 0;
-    gap: 16px;
+    padding-block: clamp(24px, 6vh, 64px) 0;
   }
-  .m-ent-wall-art .m-keep-art {
-    width: min(100%, 420px);
+  .m-ent-bays {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    row-gap: 16px;
   }
-  .m-ent-roles {
-    grid-row: 3;
-    margin-top: 8px;
+  .m-ent-bays-legend {
+    display: none;
+  }
+  .m-ent-bay {
+    grid-row: auto;
+    grid-template-rows: none;
+    row-gap: 20px;
+    padding-inline: clamp(18px, 4vw, 32px);
+  }
+  .m-ent-bay-head,
+  .m-ent-bay-role,
+  .m-ent-bay-keep {
+    grid-row: auto;
+  }
+  .m-ent-bay-role {
+    grid-template-columns: 5em minmax(0, 1fr);
+    column-gap: 14px;
+    align-items: baseline;
+  }
+  .m-ent-bay-role dt,
+  .m-ent-bay-kicker {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+  }
+  .m-ent-bay-role dt {
+    grid-column: 1;
+    color: var(--mute);
+    font: 500 var(--t-small) / 1.6 var(--sans);
+    letter-spacing: 0.12em;
+  }
+  .m-ent-bay-role[data-who='we'] dt {
+    color: var(--accent-ink);
+    font: 400 14.5px / 1.5 var(--latin);
+    letter-spacing: 0.02em;
+  }
+  .m-ent-bay-role dd {
+    grid-column: 2;
+    font-size: 15px;
+  }
+  .m-ent-bay-kicker {
+    color: var(--accent-ink);
+    font: 500 var(--t-label) / 1.4 var(--sans);
+    letter-spacing: 0.16em;
+  }
+  .m-ent-bay-art .m-keep-art {
+    height: clamp(120px, 22vh, 170px);
   }
 }
 @media (max-width: 700px) {
-  .m-ent-wall {
+  .m-ent-bay {
     border-radius: 18px;
   }
-  .m-ent-roles > div {
+  .m-ent-bay-role {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 4px;
+    gap: 4px;
   }
-  .m-ent-roles dd {
+  .m-ent-bay-role dd {
     grid-column: 1;
   }
-  .m-ent-roles dd + dd {
+  .m-ent-bay-role dd + dd {
     margin-top: 6px;
   }
   .m-ent-onward {
@@ -405,14 +338,5 @@
     margin-inline: 0;
     padding: 0;
     overflow: visible;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .m-ent-stage,
-  .m-ent-stage-head,
-  .m-ent-roles,
-  .m-ent-wall {
-    transition: none !important;
   }
 }
