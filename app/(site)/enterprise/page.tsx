@@ -20,6 +20,7 @@ export const metadata = pageMetadata(
   ENTERPRISE,
 );
 
+// 以下六屏是旧版（/enterprise?study=current 对照用，负责人看过后删）：
 // 企业合作（负责人 2026-10-15 定的六屏）：一张满幅照片开场，之后是纸面；每屏一句主句，不放「展开看全文」。
 // ① 满幅照片：挂满小画的白色长廊，尽头一扇亮窗；一句标题、一行往下读的钩子。
 // ② 你们卡在哪：五张纸条，每张一幅会动的小图；选一张，页面回一句「你们希望……」和建议起点。
@@ -29,7 +30,8 @@ export const metadata = pageMetadata(
 // （路线之后原有一屏柱廊照片，负责人 2026-10-15 删去。）
 // 首屏照片很亮，字用墨色，顶栏透明（data-tone="light"）。
 //
-// 样张（D1，?study=line；现版对照 ?study=current，默认仍是现版）：照原文的主线，不配对（负责人 2026-10-19 定）——
+// 企业合作默认是照原文的主线（D1，负责人 2026-10-19 通过样张后切成默认）。旧的六屏暂留对照：
+// /enterprise?study=current 是旧版，/enterprise?study=line 是带比较条的新版；不带参数时没有比较条。主线：
 // 长廊 → 你们卡在哪（五张纸条只做开场，选一张只带进末尾的表单，不再放「看看这条路怎么走」）
 // → 合作路线：开场第三段原句配那双手，下面一小行 5.2 开头原句；四站并排在一屏上，人人一样，
 //   每面墙顶上一段示意动画演这一站在做什么（scenes.tsx），下面业务团队、Molis、一起各做什么，墙脚是留下的东西（stages.tsx）
@@ -73,8 +75,8 @@ export default async function EnterprisePage({
   searchParams: Promise<{ study?: string }>;
 }) {
   const { study } = await searchParams;
-  const sample = study === 'line';
-  const review = sample || study === 'current';
+  const sample = study !== 'current';
+  const review = study === 'line' || study === 'current';
   const [titleA, titleB] = e.title.split('，');
 
   const hero = (
