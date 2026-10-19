@@ -2,44 +2,40 @@
 import { useEffect, useRef, type PointerEvent } from 'react';
 import { enterprise, type StationId } from '../../../content/site/enterprise';
 import { Phrases, type Vars } from '../../_site/ui';
-import { Keep, play } from './keeps';
+import { play } from './keeps';
+import { Scene } from './scenes';
 
-// 我们怎样开展合作（负责人 2026-10-19 重排细节，又从用户视角复看过一遍）：仍在一屏里。
+// 我们怎样开展合作（负责人 2026-10-19：方向对了，视觉再舒服一点）：仍在一屏里，切成三部分，重点在第一部分。
 // 上面一行标题（5.3 原文）与 5.2 开头那句：可以从一项具体服务开始，也可以组合——不让人以为非得四步走完。
-// 四项服务各是一张竖着的白卡，列名是那句里的四个词：诊断、共建、评估、培训，下面一小行是服务全名。
-// 卡里三条道：业务团队（淡淡的月白）、一起（白，夹在两条道中间）、Molis（淡淡的杏色），卡底是这项服务的产出。
+// ① 四张并排的卡：每项服务一段示意动画演它在干什么（scenes.tsx），下面是列名（诊断、共建、评估、培训，5.2 开头那句里的词）与服务全名；
+// ② 双方分别做什么：一块浅底，业务团队、一起、Molis 三行，字小一档；
+// ③ 每项服务的产出：一行，字小一档。
 // 角色名与「产出」只在最左边写一次，每件事前面一颗圆点：业务团队墨色、Molis 杏色、一起是墨色与杏色叠在一起。
-// 底色压淡、卡与卡之间留缝，眼睛先竖着读一项服务，再横着比三个角色。
-// 产出由动画演出来（keeps.tsx 的四件东西：试点方案、能试用的小工具、问题记录、一叠清单与流程）：
-// 每张卡进入视口后，几件事的圆点依次点一下，接着卡底的产出从头「做出来」；宽屏上四张卡一张接一张，鼠标移到哪张，那张重演。
-// 静止就是做好的样子（没有 JS、减少动态都看这一帧）。窄于 1000 时两张一排、窄于 640 一张一排，角色名与「产出」写在卡里。
+// 四段动画进屏后从左到右接力演一遍；鼠标移到哪一列，那一列的动画重演，别的列的 ②③ 退淡一点，好顺着一列往下读。
+// 静止就是演完的样子（没有 JS、减少动态都看这一帧）。窄于 1000 时两列一排、窄于 640 一列一排，角色名与「产出」写在列里。
 
 const { path, line } = enterprise;
 const stationIds = Object.keys(path.stations) as StationId[];
 const roles = ['you', 'both', 'we'] as const;
+type Role = (typeof roles)[number];
 /** 最左边那一列：三个角色，再加一行产出 */
 const rows = [...roles, 'output'] as const;
-type Role = (typeof roles)[number];
 
-/** 这一站某个角色做的事；没有的角色留空 */
+/** 这一列某个角色做的事 */
 const actsOf = (id: StationId, who: Role) =>
   line.rows[id].flatMap((row) => row[who] ?? []);
 
-/** 一站走多久（毫秒）：几件事点完，再演产出 */
-const STEP = 1300;
+/** 四段动画接力：后一段比前一段晚多久开始（毫秒） */
+const STEP = 900;
 
-/** 这一站演一遍：几件事的圆点依次点一下，同时底下的产出从头做出来 */
+/** 这一列的动画演一遍：第一次放开停在第一帧的那段，之后倒回开头重放 */
 function run(station: Element) {
-  station.removeAttribute('data-on');
-  void (station as HTMLElement).offsetWidth;
-  station.setAttribute('data-on', '');
-  const art = station.querySelector('.m-keep-art');
-  // 第一次：停在第一帧等着的那段放开；之后每次倒回开头重放
-  if (art?.hasAttribute('data-hold')) art.removeAttribute('data-hold');
-  else play(art);
+  const scene = station.querySelector('.m-scene');
+  if (scene?.hasAttribute('data-hold')) scene.removeAttribute('data-hold');
+  else play(scene);
 }
 
-/** 鼠标移到一站：这一站重演（触屏不触发） */
+/** 鼠标移到一列：这一列的动画重演（触屏不触发） */
 function replay(event: PointerEvent<HTMLElement>) {
   if (event.pointerType !== 'mouse') return;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -55,13 +51,13 @@ export function Stages() {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const timers: number[] = [];
     const stations = Array.from(root.querySelectorAll('.m-ent-stop'));
-    // 产出先停在第一帧（没有 JS 时看到的是做好的样子），进屏再一站一站走
+    // 动画先停在第一帧（没有 JS 时看到的是演完的样子），卡进屏再演
     for (const station of stations) {
-      const art = station.querySelector('.m-keep-art');
-      art?.setAttribute('data-play', '');
-      art?.setAttribute('data-hold', '');
+      const scene = station.querySelector('.m-scene');
+      scene?.setAttribute('data-play', '');
+      scene?.setAttribute('data-hold', '');
     }
-    // 每站各自进屏各自演；同时进屏的（宽屏上四站一起）排队，一站接一站
+    // 每张卡各自进屏各自演；同时进屏的（宽屏上四张一起）排队，一张接一张
     let free = 0;
     const seen = new IntersectionObserver(
       (entries) => {
@@ -71,12 +67,17 @@ export function Stages() {
           seen.unobserve(entry.target);
           const start = Math.max(now + 200, free);
           free = start + STEP;
-          timers.push(window.setTimeout(() => run(entry.target), start - now));
+          const station = entry.target.closest('.m-ent-stop');
+          if (station)
+            timers.push(window.setTimeout(() => run(station), start - now));
         }
       },
-      { threshold: 0.4 },
+      { threshold: 0.6 },
     );
-    for (const station of stations) seen.observe(station);
+    for (const station of stations) {
+      const card = station.querySelector('.m-ent-stop-card');
+      if (card) seen.observe(card);
+    }
     return () => {
       seen.disconnect();
       for (const timer of timers) clearTimeout(timer);
@@ -98,7 +99,9 @@ export function Stages() {
         </p>
       </header>
       <div className="m-ent-flow-grid" ref={ref}>
-        {/* 角色名与「产出」只在最左边写一次（读屏在每张卡里另有） */}
+        {/* ② 那块浅底：铺在三行分工后面 */}
+        <div className="m-ent-flow-panel" aria-hidden="true" />
+        {/* 角色名与「产出」只在最左边写一次（读屏在每一列里另有） */}
         <div className="m-ent-flow-who" aria-hidden="true">
           {rows.map((row) => (
             <p key={row} className="m-ent-who" data-who={row}>
@@ -117,58 +120,52 @@ export function Stages() {
               key={id}
               id={`station-${id}`}
               className="m-ent-stop"
+              data-wall={id}
               data-reveal
               style={{ '--delay': `${index * 110}ms` } as Vars}
               aria-labelledby={`station-${id}-name`}
               onPointerEnter={replay}
             >
-              <header className="m-ent-stop-head">
-                <h3 className="m-ent-stop-name" id={`station-${id}-name`}>
-                  {station.word}
-                </h3>
-                <p className="m-ent-stop-service">{station.name}</p>
-              </header>
+              {/* ① 卡：动画演这项服务在干什么，下面是列名与服务全名 */}
+              <div className="m-ent-stop-card">
+                <div className="m-ent-stop-scene">
+                  <Scene id={id} />
+                </div>
+                <header className="m-ent-stop-head">
+                  <h3 className="m-ent-stop-name" id={`station-${id}-name`}>
+                    {station.word}
+                  </h3>
+                  <p className="m-ent-stop-service">{station.name}</p>
+                </header>
+              </div>
 
-              {roles.map((who) => {
-                const acts = actsOf(id, who);
-                // 前面几道里已经有几件事：圆点按整张卡的顺序依次点
-                const before = roles
-                  .slice(0, roles.indexOf(who))
-                  .reduce((sum, role) => sum + actsOf(id, role).length, 0);
-                return (
-                  <div key={who} className="m-ent-lane" data-who={who}>
-                    <p className="m-ent-lane-who">
-                      <i className="m-ent-mark" aria-hidden="true" />
-                      <span lang={who === 'we' ? 'en' : undefined}>
-                        {line.who[who]}
-                      </span>
-                    </p>
-                    <ul className="m-ent-acts">
-                      {acts.map((act, at) => (
-                        <li
-                          key={act.text}
-                          className="m-ent-act"
-                          style={{ '--k': before + at } as Vars}
-                        >
-                          <i className="m-ent-mark" aria-hidden="true" />
-                          {act.text}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              })}
+              {/* ② 双方分别做什么 */}
+              {roles.map((who) => (
+                <div key={who} className="m-ent-lane" data-who={who}>
+                  <p className="m-ent-lane-who">
+                    <i className="m-ent-mark" aria-hidden="true" />
+                    <span lang={who === 'we' ? 'en' : undefined}>
+                      {line.who[who]}
+                    </span>
+                  </p>
+                  <ul className="m-ent-acts">
+                    {actsOf(id, who).map((act) => (
+                      <li key={act.text} className="m-ent-act">
+                        <i className="m-ent-mark" aria-hidden="true" />
+                        {act.text}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
 
-              {/* 产出：动画演它被做出来，下面一小行写它是什么 */}
-              <figure className="m-ent-output">
-                <Keep id={id} />
-                <figcaption>
-                  <span className="m-ent-output-kicker">{line.output}</span>
-                  <span className="m-ent-output-name">
-                    {station.leaves.join('、')}
-                  </span>
-                </figcaption>
-              </figure>
+              {/* ③ 产出 */}
+              <p className="m-ent-output">
+                <span className="m-ent-output-kicker">{line.output}</span>
+                <span className="m-ent-output-name">
+                  {station.leaves.join('、')}
+                </span>
+              </p>
             </article>
           );
         })}

@@ -135,13 +135,14 @@
 }
 
 /* =====================================================================
-   我们怎样开展合作：四项服务四张竖着的白卡，卡里三条道，卡底是产出，仍在一屏
-   底色压淡、卡与卡之间留缝，先竖着读一项服务；角色名与「产出」只在最左边写一次
+   我们怎样开展合作：仍在一屏，切成三部分
+   ① 四张并排的卡（示意动画 + 列名），视觉重点；② 双方分别做什么，一块浅底、字小一档；③ 产出，一行、字小一档
+   角色名与「产出」只在最左边写一次；颜色、字号只读 site.css 的令牌
    ===================================================================== */
 .m-ent-flow {
   display: grid;
   align-content: center;
-  gap: clamp(14px, 2.6vh, 32px);
+  gap: clamp(16px, 3vh, 36px);
   min-height: 100vh;
   min-height: 100svh;
   padding-block: calc(var(--header) + clamp(10px, 2.2vh, 32px))
@@ -164,14 +165,19 @@
   letter-spacing: 0.03em;
 }
 .m-ent-flow-grid {
-  /* 两条道的底色都压淡：月白（业务团队）与杏色（Molis）兑进白里 */
-  --you: color-mix(in srgb, var(--wall-read-2) 42%, var(--white));
-  --we: color-mix(in srgb, var(--accent) 8%, var(--white));
-  --pad: clamp(12px, 1.1vw, 18px);
+  /* 卡里的字从这里起：② ③ 的字和卡上的列名对齐 */
+  --inset: clamp(14px, 1.2vw, 18px);
   display: grid;
-  grid-template-columns: clamp(76px, 6.6vw, 104px) repeat(4, minmax(0, 1fr));
+  grid-template-columns: clamp(72px, 6.2vw, 96px) repeat(4, minmax(0, 1fr));
   grid-template-rows: repeat(5, auto);
-  column-gap: clamp(8px, 0.9vw, 14px);
+  column-gap: clamp(10px, 1.1vw, 18px);
+}
+/* ② 那块浅底：从最左边的角色名一直铺到最后一列 */
+.m-ent-flow-panel {
+  grid-column: 1 / -1;
+  grid-row: 2 / span 3;
+  border-radius: var(--r-panel);
+  background: var(--paper-2);
 }
 .m-ent-flow-who {
   grid-column: 1;
@@ -179,16 +185,11 @@
   display: grid;
   grid-template-rows: subgrid;
 }
-/* 一项服务一张竖着的白卡 */
 .m-ent-stop {
   grid-row: 1 / span 5;
   display: grid;
   grid-template-rows: subgrid;
   position: relative;
-  overflow: hidden;
-  border-radius: var(--r-card);
-  background: var(--white);
-  box-shadow: 0 0 0 1px var(--hair);
 }
 .m-ent-stop:nth-of-type(1) {
   grid-column: 2;
@@ -203,16 +204,53 @@
   grid-column: 5;
 }
 
-/* 列名大、服务全名小 */
+/* ① 卡：白卡，动画衬一块这项服务的墙色（同「关于」的四种墙），下面是列名与服务全名 */
+.m-ent-stop-card {
+  --stage: var(--wall-light-2);
+  display: grid;
+  align-content: start;
+  margin-bottom: clamp(14px, 2.4vh, 26px);
+  padding: 8px 8px 0;
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 18px 36px -30px rgb(var(--shade) / 0.45);
+  transition:
+    translate 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+[data-wall='diagnose'] .m-ent-stop-card {
+  --stage: var(--wall-people);
+}
+[data-wall='assess'] .m-ent-stop-card {
+  --stage: var(--wall-read);
+}
+[data-wall='train'] .m-ent-stop-card {
+  --stage: var(--wall-road);
+}
+.m-ent-stop-scene {
+  display: grid;
+  place-items: center;
+  padding: clamp(6px, 1.2vh, 14px) 6px;
+  border-radius: var(--r-inset);
+  background: var(--stage);
+}
+.m-scene {
+  display: block;
+  width: 100%;
+  height: clamp(100px, 17vh, 168px);
+  overflow: visible;
+}
 .m-ent-stop-head {
   display: grid;
-  align-content: end;
   gap: 2px;
-  padding: clamp(12px, 2vh, 22px) var(--pad) clamp(10px, 1.6vh, 16px);
+  padding: clamp(10px, 1.6vh, 16px) calc(var(--inset) - 8px)
+    clamp(12px, 1.9vh, 20px);
 }
 .m-ent-stop-name {
-  font: 300 clamp(24px, 2.2vw, 34px) / 1.2 var(--sans);
-  letter-spacing: 0.08em;
+  font: 300 clamp(22px, 1.9vw, 30px) / 1.2 var(--sans);
+  letter-spacing: 0.1em;
 }
 .m-ent-stop-service {
   color: var(--mute);
@@ -220,50 +258,75 @@
   letter-spacing: 0.06em;
 }
 
-/* 卡里三条道：业务团队淡月白，一起是白（夹在两条道中间），Molis 淡杏色 */
+/* ② 双方分别做什么：三行，字小一档；行与行只靠留白分开 */
 .m-ent-lane {
   display: grid;
   align-content: start;
-  padding: clamp(10px, 1.6vh, 16px) var(--pad);
+  padding: 9px var(--inset);
 }
 .m-ent-lane[data-who='you'] {
-  background: var(--you);
-}
-.m-ent-lane[data-who='both'] {
-  align-content: center;
+  padding-top: clamp(14px, 2.2vh, 22px);
 }
 .m-ent-lane[data-who='we'] {
-  background: var(--we);
+  padding-bottom: clamp(14px, 2.2vh, 22px);
+}
+.m-ent-acts {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.m-ent-act {
+  display: grid;
+  grid-template-columns: 6px minmax(0, 1fr);
+  column-gap: 9px;
+  align-items: baseline;
+  color: var(--ink-2);
+  font: 400 clamp(12.5px, 0.95vw, 13.5px) / 1.65 var(--sans);
+  letter-spacing: 0.02em;
+  text-wrap: pretty;
+}
+[data-who='both'] .m-ent-act {
+  grid-template-columns: 10px minmax(0, 1fr);
+}
+.m-ent-act .m-ent-mark {
+  translate: 0 -0.15em;
 }
 
-/* 最左边：角色名与「产出」各写一次 */
+/* 最左边：角色名与「产出」各写一次，和那一行的第一件事对齐 */
 .m-ent-who {
   display: flex;
   align-items: center;
-  align-self: center;
-  gap: 9px;
+  align-self: start;
+  gap: 8px;
   margin: 0;
+  padding: 9px 0 9px var(--inset);
   color: var(--ink);
-  font: 400 clamp(13.5px, 1.05vw, 15.5px) / 1.4 var(--sans);
-  letter-spacing: 0.08em;
+  font: 500 var(--t-label) / 1.9 var(--sans);
+  letter-spacing: 0.12em;
   white-space: nowrap;
+}
+.m-ent-who[data-who='you'] {
+  padding-top: clamp(14px, 2.2vh, 22px);
 }
 .m-ent-who[data-who='both'] {
   color: var(--ink-2);
 }
 .m-ent-who[data-who='we'] {
   color: var(--accent-ink);
-  font: 500 clamp(14.5px, 1.15vw, 16.5px) / 1.4 var(--latin);
-  letter-spacing: 0.04em;
+  font: 500 12.5px / 1.75 var(--latin);
+  letter-spacing: 0.06em;
 }
 .m-ent-who[data-who='output'] {
+  padding-top: clamp(12px, 2vh, 18px);
   color: var(--mute);
 }
 /* 圆点：业务团队墨色，Molis 杏色，一起是两颗叠在一起 */
 .m-ent-mark {
   flex: none;
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--ink);
 }
@@ -275,7 +338,20 @@
   box-shadow: 4px 0 0 var(--accent);
 }
 
-/* 卡里的角色名与「产出」：宽屏只给读屏（最左边已经写了），窄屏写出来 */
+/* ③ 产出：一行，字小一档 */
+.m-ent-output {
+  display: grid;
+  align-content: start;
+  margin: 0;
+  padding: clamp(12px, 2vh, 18px) var(--inset) 0;
+}
+.m-ent-output-name {
+  color: var(--ink);
+  font: 400 clamp(12.5px, 0.95vw, 13.5px) / 1.65 var(--sans);
+  letter-spacing: 0.03em;
+}
+
+/* 每一列里的角色名与「产出」：宽屏只给读屏（最左边已经写了），窄屏写出来 */
 .m-ent-lane-who,
 .m-ent-output-kicker {
   position: absolute;
@@ -285,62 +361,227 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
-.m-ent-acts {
-  display: grid;
-  gap: 7px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.m-ent-act {
-  display: grid;
-  grid-template-columns: 7px minmax(0, 1fr);
-  column-gap: 10px;
-  align-items: baseline;
-  color: var(--ink);
-  font: 400 clamp(13.5px, 1.02vw, 15px) / 1.6 var(--sans);
-  letter-spacing: 0.02em;
-  text-wrap: pretty;
-}
-[data-who='both'] .m-ent-act {
-  grid-template-columns: 11px minmax(0, 1fr);
-}
-.m-ent-act .m-ent-mark {
-  translate: 0 -0.12em;
-}
 
-/* 卡底的产出：动画演它被做出来，下面一小行写它是什么 */
+/* 鼠标在哪一列：那张卡浮起一点、动画重演，别的列的 ② ③ 退淡，好顺着一列往下读 */
+.m-ent-lane,
 .m-ent-output {
-  display: grid;
-  align-content: start;
-  justify-items: center;
-  gap: 6px;
-  margin: 0;
-  padding: clamp(10px, 1.6vh, 16px) var(--pad) clamp(12px, 1.8vh, 18px);
-  text-align: center;
+  transition: opacity 0.4s var(--ease);
 }
-.m-ent-output .m-keep-art {
-  height: clamp(72px, 11.5vh, 128px);
-  border-radius: var(--r-inset);
-  background: var(--paper-2);
-}
-.m-ent-output-name {
-  color: var(--ink);
-  font: 400 var(--t-small) / 1.6 var(--sans);
-  letter-spacing: 0.04em;
-}
-
-/* 一张卡演一遍：几件事的圆点依次点一下（产出的动画在 enterprise.css 的 m-k-） */
-.m-ent-stop[data-on] .m-ent-act .m-ent-mark {
-  animation: m-ent-tap 0.7s var(--ease) calc(var(--k) * 0.18s) both;
-}
-@keyframes m-ent-tap {
-  35% {
-    scale: 2;
+@media (hover: hover) {
+  .m-ent-stop:hover .m-ent-stop-card {
+    translate: 0 -3px;
+    box-shadow:
+      0 0 0 1px var(--hair-2),
+      0 24px 40px -28px rgb(var(--shade) / 0.55);
+  }
+  .m-ent-flow-grid:has(.m-ent-stop:hover)
+    .m-ent-stop:not(:hover)
+    :is(.m-ent-lane, .m-ent-output) {
+    opacity: 0.42;
   }
 }
-.m-keep-art[data-hold] * {
+
+/* ---------- 四列卡上的示意动画（scenes.tsx）：静止是演完的样子；data-play 时演，data-hold 时停在第一帧 ---------- */
+/* 诊断那张的两条轴 */
+.m-s-axis {
+  fill: var(--mute);
+  font: 400 9.5px / 1 var(--sans);
+  letter-spacing: 0.08em;
+}
+.m-scene .m-k-shade {
+  flood-color: rgb(var(--shade));
+  flood-opacity: 0.12;
+}
+.m-scene :is(.m-k-pop, .m-k-stamp, .m-k-press, .m-s-grow, .m-s-scope) {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.m-scene .m-s-grow {
+  transform-origin: center bottom;
+}
+.m-s-spot,
+.m-s-base {
+  fill: var(--faint);
+}
+.m-s-heat,
+.m-s-now,
+.m-s-feed {
+  fill: var(--accent);
+}
+.m-s-feed {
+  opacity: 0;
+}
+.m-s-scope {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 1.2;
+  stroke-dasharray: 3 3;
+}
+.m-s-node {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 1.4;
+}
+.m-s-dot {
+  fill: var(--white);
+  stroke: var(--ink-2);
+  stroke-width: 1.1;
+}
+.m-s-run {
+  fill: var(--ink);
+}
+.m-s-play {
+  fill: var(--white);
+}
+.m-s-pointer {
+  fill: var(--ink);
+  stroke: var(--white);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+.m-s-x {
+  fill: none;
+  stroke: var(--accent-ink);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.m-scene .m-s-card {
+  translate: var(--tx) var(--ty);
+  rotate: var(--r);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.m-scene .m-s-tweak {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.m-scene .m-s-orbit {
+  transform-box: view-box;
+  transform-origin: 200px 75px;
+}
+
+.m-scene[data-play] .m-s-move {
+  animation: m-s-move 0.8s var(--ease) var(--d) both;
+}
+.m-scene[data-play] .m-s-heat {
+  animation:
+    m-s-move 0.8s var(--ease) var(--d) both,
+    m-s-heat 0.4s ease-out 1.2s both;
+}
+.m-scene[data-play] .m-s-scope {
+  animation: m-s-scope 0.6s var(--ease) var(--d) both;
+}
+.m-scene[data-play] .m-s-grow {
+  animation: m-s-grow 0.6s var(--ease) var(--d) both;
+}
+.m-scene[data-play] .m-s-feed {
+  animation: m-s-feed 0.7s ease-in var(--d) both;
+}
+.m-scene[data-play] .m-s-node {
+  animation: m-s-light 0.35s ease-out var(--d) both;
+}
+.m-scene[data-play] .m-s-cursor {
+  animation: m-s-move 0.5s var(--ease) var(--d) both;
+}
+.m-scene[data-play] .m-s-x {
+  animation: m-s-x 1.1s linear var(--d) both;
+}
+.m-scene[data-play] .m-s-ok {
+  animation: m-k-fade 0.4s var(--ease) var(--d) both;
+}
+.m-scene[data-play] .m-s-tweak {
+  animation: m-s-tweak 0.5s ease-in-out var(--d) both;
+}
+.m-scene[data-play] .m-s-card {
+  animation: m-s-hand 0.8s var(--ease) var(--d) both;
+}
+.m-scene[data-play] .m-s-orbit {
+  animation: m-s-orbit 1.7s cubic-bezier(0.45, 0, 0.4, 1) var(--d) both;
+}
+.m-scene[data-hold] * {
   animation-play-state: paused !important;
+}
+@keyframes m-s-move {
+  from {
+    opacity: 0;
+    translate: var(--fx) var(--fy);
+  }
+}
+@keyframes m-s-heat {
+  from {
+    fill: var(--faint);
+  }
+}
+@keyframes m-s-scope {
+  from {
+    opacity: 0;
+    scale: 1.3;
+  }
+}
+@keyframes m-s-grow {
+  from {
+    scale: 1 0;
+  }
+}
+@keyframes m-s-feed {
+  0% {
+    opacity: 0;
+    translate: 0 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: var(--fx) var(--fy);
+  }
+}
+@keyframes m-s-light {
+  from {
+    fill: var(--white);
+    stroke: var(--hair-2);
+  }
+}
+/* 结果先是 ✕，一会儿收起，换成 ✓ */
+@keyframes m-s-x {
+  0% {
+    opacity: 0;
+  }
+  12%,
+  78% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes m-s-tweak {
+  25% {
+    rotate: -14deg;
+  }
+  60% {
+    rotate: 10deg;
+  }
+}
+@keyframes m-s-hand {
+  from {
+    opacity: 0;
+    translate: calc(var(--tx) + 90px) var(--ty);
+  }
+}
+@keyframes m-s-orbit {
+  from {
+    rotate: 0turn;
+  }
+  to {
+    rotate: 1turn;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-scene * {
+    animation: none !important;
+  }
 }
 
 /* =====================================================================
@@ -711,7 +952,7 @@
 
 /* ---------- 窄屏 ---------- */
 @media (max-width: 999px) {
-  /* 路线：两张一排，角色名与「产出」写在卡里 */
+  /* 路线：两列一排，角色名与「产出」写在列里；② 那块浅底收进每一列 */
   .m-ent-flow {
     min-height: 0;
     padding-block: var(--section-top) var(--section-bottom);
@@ -719,9 +960,10 @@
   .m-ent-flow-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: none;
-    gap: 14px;
+    gap: 36px 14px;
   }
-  .m-ent-flow-who {
+  .m-ent-flow-who,
+  .m-ent-flow-panel {
     display: none;
   }
   .m-ent-stop,
@@ -731,8 +973,17 @@
     grid-template-rows: none;
     align-content: start;
   }
-  .m-ent-lane[data-who='both'] {
-    padding-block: 14px;
+  .m-ent-lane {
+    padding-block: 8px;
+    background: var(--paper-2);
+  }
+  .m-ent-lane[data-who='you'] {
+    padding-top: 14px;
+    border-radius: var(--r-panel) var(--r-panel) 0 0;
+  }
+  .m-ent-lane[data-who='we'] {
+    padding-bottom: 14px;
+    border-radius: 0 0 var(--r-panel) var(--r-panel);
   }
   .m-ent-lane-who,
   .m-ent-output-kicker {
@@ -746,7 +997,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     color: var(--ink-2);
     font: 500 var(--t-label) / 1.6 var(--sans);
     letter-spacing: 0.14em;
@@ -755,16 +1006,10 @@
     color: var(--accent-ink);
     font-family: var(--latin);
   }
-  .m-ent-output figcaption {
-    display: grid;
-  }
   .m-ent-output-kicker {
     color: var(--mute);
     font: 500 var(--t-label) / 1.6 var(--sans);
     letter-spacing: 0.16em;
-  }
-  .m-ent-output .m-keep-art {
-    height: clamp(110px, 30vw, 150px);
   }
 
   /* 为什么：字在上、画面在下 */
