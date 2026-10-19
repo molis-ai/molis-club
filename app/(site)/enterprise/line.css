@@ -985,16 +985,11 @@
 .m-why-orgs {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px 0;
+  gap: 2px 1.1em;
   margin-top: 4px;
   color: var(--ink);
   font: 500 15px / 1.6 var(--sans);
   letter-spacing: 0.06em;
-}
-.m-why-orgs > span + span::before {
-  content: '·';
-  margin: 0 0.55em;
-  color: var(--faint);
 }
 .m-why-craft {
   display: flex;
@@ -1037,7 +1032,7 @@
   font-size: 16px;
 }
 
-/* ---------- 右边：一块白板，同一组方块换样子 ---------- */
+/* ---------- 右边：一块画板，同一段业务换四种样子 ---------- */
 .m-why-figure {
   display: none;
   margin: 0;
@@ -1049,14 +1044,15 @@
   min-height: 0;
 }
 .m-why-stage {
-  --lift: 0 1px 2px rgb(var(--shade) / 0.06),
-    0 22px 44px -26px rgb(var(--shade) / 0.3);
+  --u: calc(100cqw / 900);
+  --lift: 0 1px 2px rgb(var(--shade) / 0.05),
+    0 22px 44px -28px rgb(var(--shade) / 0.3);
   position: relative;
   container-type: inline-size;
-  width: min(100cqw, 100cqh * 1.6);
-  aspect-ratio: 8 / 5;
+  width: min(100cqw, 100cqh * 1.5);
+  aspect-ratio: 3 / 2;
   border-radius: var(--r-inset);
-  background: var(--white);
+  background: var(--paper-2);
   box-shadow:
     inset 0 0 0 1px var(--hair),
     var(--lift);
@@ -1068,234 +1064,391 @@
   height: 100%;
   overflow: visible;
 }
-.m-why-art *,
+.m-why-art .m-k-shade,
+.m-why-thumb .m-k-shade {
+  flood-color: rgb(var(--shade));
+  flood-opacity: 0.1;
+}
+/* 缩小的小画里线不跟着变细 */
+.m-why-mini *,
 .m-why-thumb * {
   vector-effect: non-scaling-stroke;
 }
-/* 陪衬：轮到哪种样子亮哪种 */
-.m-why-decor {
-  opacity: 0;
-  transition: opacity 0.5s var(--ease);
-}
-.m-why-decor[data-on] {
-  opacity: 1;
-  transition-delay: 0.25s;
-}
-.m-why-d-line,
-.m-why-d-grid,
-.m-why-d-base,
-.m-why-d-window,
-.m-why-d-ink {
-  fill: none;
-  stroke: var(--hair-2);
-  stroke-width: 1.4;
-  stroke-linecap: round;
-}
-.m-why-d-grid {
-  stroke: var(--hair);
-  stroke-dasharray: 3 5;
-}
-.m-why-d-base {
-  stroke: rgb(27 26 24 / 0.4);
-  stroke-width: 1.2;
-}
-.m-why-d-window {
-  fill: var(--paper);
-}
-.m-why-d-light {
-  fill: var(--faint);
-}
-.m-why-d-ink {
-  stroke: var(--ink);
-  stroke-width: 2;
-}
-/* 定格的小画：五块的画法跟着样子变 */
-.m-why-b {
+
+/* 画法：白卡片、细线、三档字条、线描小图标、一点杏色 */
+.m-why-card,
+.m-why-field,
+.m-why-node {
   fill: var(--white);
+  stroke: var(--hair);
+  stroke-width: 1;
+}
+.m-why-field,
+.m-why-node {
   stroke: var(--hair-2);
+}
+.m-why-t0 {
+  fill: rgb(27 26 24 / 0.08);
+}
+.m-why-t1 {
+  fill: rgb(27 26 24 / 0.16);
+}
+.m-why-t2 {
+  fill: rgb(27 26 24 / 0.34);
+}
+.m-why-t-wash {
+  fill: rgb(27 26 24 / 0.045);
+}
+.m-why-bar {
+  fill: rgb(27 26 24 / 0.1);
+}
+.m-why-chev,
+.m-why-rule,
+.m-why-line,
+.m-why-grid,
+.m-why-base,
+.m-why-target,
+.m-why-mark,
+.m-why-wire,
+.m-why-icon,
+.m-why-caret {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-why-chev {
+  stroke: rgb(27 26 24 / 0.3);
+  stroke-width: 1.6;
+}
+.m-why-rule,
+.m-why-line {
+  stroke: var(--hair-2);
+  stroke-width: 1;
+}
+.m-why-grid {
+  stroke: var(--hair);
+  stroke-dasharray: 2 5;
+}
+.m-why-base {
+  stroke: rgb(27 26 24 / 0.32);
   stroke-width: 1.2;
 }
-.m-why-b[data-lens='1'] {
-  fill: var(--faint);
-  stroke: none;
+.m-why-target {
+  stroke: rgb(27 26 24 / 0.42);
+  stroke-width: 1.2;
+  stroke-dasharray: 6 5;
 }
-.m-why-b[data-lens='4'] {
-  fill: var(--paper-2);
-  stroke: none;
+.m-why-mark {
+  stroke: var(--accent-ink);
+  stroke-width: 1.8;
 }
-.m-why-b[data-head] {
-  fill: rgb(27 26 24 / 0.45);
-  stroke: none;
+.m-why-wire {
+  stroke: rgb(27 26 24 / 0.24);
+  stroke-width: 1.4;
 }
-.m-why-b[data-hot] {
+.m-why-icon {
+  stroke: var(--ink-2);
+  stroke-width: 1.4;
+}
+.m-why-caret {
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.m-why-dot-hot,
+.m-why-packet,
+.m-why-hot-ink {
+  fill: var(--accent);
+}
+.m-why-hot-shape {
   fill: color-mix(in srgb, var(--accent) 13%, var(--white));
   stroke: var(--accent);
   stroke-width: 1.5;
 }
-.m-why-b-line {
-  fill: var(--faint);
+.m-why-hot-soft {
+  fill: rgb(234 146 96 / 0.4);
 }
-.m-why-b-line[data-hot],
-.m-why-b-dot {
-  fill: var(--accent);
+.m-why-hot-line {
+  fill: none;
+  stroke: var(--accent-ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
-/* 会换样子的那五块 */
-.m-why-block {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  padding-left: 1.6cqw;
-  border: 1px solid var(--hair-2);
-  background: var(--white);
+
+/* 进场：一张张浮上来、线画出来、柱子长起来；离场先淡掉 */
+.m-why-scene .m-why-in {
+  opacity: 0;
+  translate: 0 8px;
   transition:
-    left 0.85s var(--ease),
-    top 0.85s var(--ease),
-    width 0.85s var(--ease),
-    height 0.85s var(--ease),
-    border-radius 0.85s var(--ease),
-    background-color 0.5s var(--ease),
-    border-color 0.5s var(--ease),
-    opacity 0.5s var(--ease);
-  transition-delay: calc(var(--i) * 45ms);
+    opacity 0.3s var(--ease),
+    translate 0.4s var(--ease);
 }
-.m-why-stage[data-lens='1'] .m-why-block {
-  border-color: transparent;
-  background: var(--faint);
+.m-why-scene[data-on] .m-why-in {
+  opacity: 1;
+  translate: none;
+  transition:
+    opacity 0.6s var(--ease) calc(0.3s + var(--d, 0s)),
+    translate 0.8s var(--ease) calc(0.3s + var(--d, 0s));
 }
-.m-why-stage[data-lens='4'] .m-why-block {
-  border-color: transparent;
-  background: var(--paper-2);
+.m-why-grow {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
 }
-.m-why-block[data-head] {
-  border-color: transparent;
-  background: rgb(27 26 24 / 0.45);
+.m-why-art > .m-why-scene .m-why-grow {
+  scale: 1 0;
+  transition: scale 0.3s var(--ease);
 }
-.m-why-stage .m-why-block[data-hot] {
+.m-why-art > .m-why-scene[data-on] .m-why-grow {
+  scale: 1 1;
+  transition: scale 0.9s var(--ease) calc(0.4s + var(--d, 0s));
+}
+.m-why-art > .m-why-scene .m-why-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.m-why-art > .m-why-scene[data-on] .m-why-draw {
+  stroke-dashoffset: 0;
+  transition:
+    opacity 0.6s var(--ease) calc(0.3s + var(--d, 0s)),
+    stroke-dashoffset 1s var(--ease) calc(0.4s + var(--d, 0s));
+}
+.m-why-packet {
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+.m-why-scene[data-on] .m-why-packet {
+  opacity: 0.9;
+  transition: opacity 0.4s var(--ease) 1.4s;
+}
+.m-why-art > .m-why-scene[data-on] .m-why-caret {
+  animation: m-why-blink 1.1s steps(1) 1.2s infinite;
+}
+@keyframes m-why-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* 杏色那块：同一块在几种样子之间变形，里面的小东西跟着换 */
+.m-why-hot {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  overflow: hidden;
   border: 1.5px solid var(--accent);
   background: color-mix(in srgb, var(--accent) 13%, var(--white));
+  box-shadow: 0 8px 20px -12px rgb(var(--shade) / 0.4);
+  transition:
+    left 0.9s var(--ease),
+    top 0.9s var(--ease),
+    width 0.9s var(--ease),
+    height 0.9s var(--ease),
+    border-radius 0.9s var(--ease);
 }
-.m-why-stage[data-lens='all'] .m-why-block {
-  opacity: 0;
-  transition-delay: 0s;
-}
-.m-why-block-line {
-  width: 40%;
-  height: 0.75cqw;
-  border-radius: 1cqw;
-  background: var(--faint);
-  opacity: 0;
-  transition: opacity 0.4s var(--ease);
-}
-.m-why-block[data-hot] .m-why-block-line {
-  background: var(--accent);
-}
-.m-why-block[data-lined] .m-why-block-line {
-  opacity: 1;
-  transition-delay: 0.5s;
-}
-.m-why-block-dots {
-  position: absolute;
-  left: 3.4cqw;
+.m-why-hot-v {
+  grid-area: 1 / 1;
+  min-width: 0;
   display: flex;
-  gap: 1.1cqw;
+  align-items: center;
+  gap: calc(var(--u) * 10);
+  padding: 0 calc(var(--u) * 20);
   opacity: 0;
-  transition: opacity 0.4s var(--ease);
+  transition: opacity 0.2s var(--ease);
 }
-.m-why-block-dots > b {
-  width: 1.1cqw;
-  height: 1.1cqw;
+.m-why-stage[data-lens='0'] [data-v='0'],
+.m-why-stage[data-lens='2'] [data-v='2'],
+.m-why-stage[data-lens='3'] [data-v='3'],
+.m-why-stage[data-lens='4'] [data-v='4'],
+.m-why-stage[data-lens='5'] [data-v='5'] {
+  opacity: 1;
+  transition: opacity 0.5s var(--ease) 0.7s;
+}
+.m-why-hot-v b {
+  display: block;
+  height: calc(var(--u) * 6);
+  border-radius: calc(var(--u) * 3);
+  background: rgb(234 146 96 / 0.45);
+}
+.m-why-hot-v[data-v='0'] {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-content: center;
+  align-items: center;
+  gap: calc(var(--u) * 10) calc(var(--u) * 8);
+  padding: 0 calc(var(--u) * 21);
+}
+.m-why-hot-dot {
+  width: calc(var(--u) * 12);
+  height: calc(var(--u) * 12);
   border-radius: 50%;
   background: var(--accent);
 }
-.m-why-stage[data-lens='4'] .m-why-block-dots {
-  opacity: 1;
-  transition-delay: 0.6s;
+.m-why-hot-bars {
+  display: grid;
+  gap: calc(var(--u) * 8);
 }
+.m-why-hot-v[data-v='0'] .m-why-hot-bars {
+  display: contents;
+}
+.m-why-hot-v[data-v='0'] .m-why-hot-bars b:first-child {
+  width: calc(var(--u) * 64);
+  height: calc(var(--u) * 7);
+  background: var(--accent);
+}
+.m-why-hot-v[data-v='0'] .m-why-hot-bars b:nth-child(2) {
+  grid-column: 1 / -1;
+  width: calc(var(--u) * 96);
+}
+.m-why-hot-v[data-v='0'] .m-why-hot-bars b:nth-child(3) {
+  grid-column: 1 / -1;
+  width: calc(var(--u) * 66);
+}
+.m-why-hot-v svg {
+  flex: none;
+  fill: none;
+  stroke: var(--accent-ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-why-hot-v[data-v='2'] {
+  justify-content: center;
+}
+.m-why-hot-v[data-v='2'] svg {
+  width: calc(var(--u) * 16);
+}
+.m-why-hot-v[data-v='2'] > b {
+  width: calc(var(--u) * 60);
+  background: var(--accent);
+}
+.m-why-hot-v[data-v='3'] {
+  gap: calc(var(--u) * 16);
+  padding: 0 calc(var(--u) * 22);
+}
+.m-why-hot-v[data-v='3'] svg {
+  width: calc(var(--u) * 40);
+}
+.m-why-hot-v[data-v='3'] .m-why-hot-bars b:first-child {
+  width: calc(var(--u) * 64);
+  height: calc(var(--u) * 7);
+  background: var(--accent);
+}
+.m-why-hot-v[data-v='3'] .m-why-hot-bars b:last-child {
+  width: calc(var(--u) * 46);
+}
+.m-why-hot-v[data-v='4'] {
+  gap: calc(var(--u) * 8);
+  padding: 0 calc(var(--u) * 28);
+}
+.m-why-hot-v[data-v='4'] > b {
+  width: calc(var(--u) * 10);
+  height: calc(var(--u) * 10);
+  border-radius: 50%;
+  background: var(--accent);
+  animation: m-why-wait 1.2s ease-in-out infinite;
+}
+.m-why-hot-v[data-v='4'] > b:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.m-why-hot-v[data-v='4'] > b:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes m-why-wait {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    translate: 0 0;
+  }
+  30% {
+    opacity: 1;
+    translate: 0 calc(var(--u) * -3);
+  }
+}
+.m-why-hot-v[data-v='5'] {
+  justify-content: center;
+  padding: 0;
+  color: var(--accent-ink);
+  font: 500 clamp(11px, 1.45cqw, 13px) / 1 var(--sans);
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+}
+/* 一段业务：流程下面的那道括线下写着 */
 .m-why-caption {
   position: absolute;
-  top: 61%;
+  top: 64.6%;
   left: 50%;
-  z-index: 1;
   color: var(--mute);
-  font: 400 clamp(11.5px, 1.5cqw, 13px) / 1 var(--sans);
+  font: 400 clamp(11px, 1.4cqw, 13px) / 1 var(--sans);
   letter-spacing: 0.24em;
   white-space: nowrap;
   translate: -50% 0;
-  transition: opacity 0.4s var(--ease);
+  transition: opacity 0.4s var(--ease) 0.6s;
 }
-.m-why-stage:not([data-lens='0'], [data-lens='all']) .m-why-caption {
+.m-why-stage:not([data-lens='0']) .m-why-caption {
   opacity: 0;
+  transition-delay: 0s;
 }
-/* 最后一拍：「一段业务」挪到四根线汇合的那一点，成一枚小签 */
-.m-why-stage[data-lens='all'] .m-why-caption {
-  top: 50.4%;
-  padding: 0.55em 0.9em 0.55em 1.1em;
-  border-radius: var(--r-pill);
-  background: var(--white);
-  box-shadow:
-    inset 0 0 0 1.5px var(--accent),
-    0 6px 16px -8px rgb(var(--shade) / 0.35);
-  color: var(--accent-ink);
-  translate: -50% -50%;
-  transition: opacity 0.5s var(--ease) 1.4s;
-}
-/* 最后一拍：四张小画各在一角，四个杏色块各牵一根细线汇到正中「一段业务」 */
+
+/* 最后一拍：四张小画 2×2，杏色块一起轻轻亮一下 */
 .m-why-mini {
   opacity: 0;
-  translate: 0 40px;
+  translate: 0 30px;
   transition:
-    opacity 0.6s var(--ease),
-    translate 0.8s var(--ease);
+    opacity 0.4s var(--ease),
+    translate 0.5s var(--ease);
 }
 .m-why-mini[data-on] {
   opacity: 1;
   translate: none;
-  transition-delay: calc(0.15s + var(--i) * 0.08s);
+  transition:
+    opacity 0.6s var(--ease) calc(0.2s + var(--i) * 0.08s),
+    translate 0.9s var(--ease) calc(0.2s + var(--i) * 0.08s);
 }
 .m-why-mini-frame {
   fill: var(--paper);
-  stroke: var(--hair-2);
+  stroke: var(--hair);
   stroke-width: 1;
 }
-.m-why-art .m-why-thread {
+.m-why-pulse {
   fill: none;
   stroke: var(--accent);
-  stroke-width: 1.4;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
+  stroke-width: 1.5;
   opacity: 0;
-  vector-effect: none;
-  transition:
-    stroke-dashoffset 0.4s var(--ease),
-    opacity 0.3s var(--ease);
+  transform-box: fill-box;
+  transform-origin: center;
 }
-.m-why-art .m-why-thread[data-on] {
-  stroke-dashoffset: 0;
-  opacity: 1;
-  transition:
-    stroke-dashoffset 0.9s var(--ease) calc(0.7s + var(--i) * 0.12s),
-    opacity 0.2s var(--ease) calc(0.7s + var(--i) * 0.12s);
+.m-why-mini[data-on] .m-why-pulse {
+  animation: m-why-pulse 2.6s ease-out 1.4s infinite;
 }
-/* 四只光标：没钉住时叠成一只「Molis」，钉住后各站一角；轮到的那只去看杏色那块 */
+@keyframes m-why-pulse {
+  0% {
+    opacity: 0.8;
+    scale: 0.5;
+  }
+  70%,
+  100% {
+    opacity: 0;
+    scale: 1.5;
+  }
+}
+
+/* 四只光标：没钉住时一只「Molis」；钉住后四只各站一角；轮到谁只留谁指着杏色那块 */
 .m-why-hand {
+  z-index: 2;
   padding: 0;
   border: 0;
   background: none;
   pointer-events: auto;
   cursor: pointer;
-  opacity: 0.45;
+  opacity: 0;
   transition:
     transform 0.9s var(--ease),
-    opacity 0.5s var(--ease);
-  transition-delay: calc(var(--i) * 60ms);
+    opacity 0.45s var(--ease);
+  transition-delay: calc(var(--i) * 50ms);
 }
 .m-why-hand[data-on] {
-  opacity: 1;
-}
-.m-why-stage[data-beat='-1'] .m-why-hand {
-  opacity: 0;
-}
-.m-why-stage[data-beat='-1'] .m-why-hand:first-of-type {
   opacity: 1;
 }
 .m-why-tag-molis,
@@ -1313,10 +1466,14 @@
   width: 100%;
   height: auto;
   border-radius: var(--r-label);
-  background: var(--white);
+  background: var(--paper-2);
   box-shadow: inset 0 0 0 1px var(--hair);
 }
 .m-ent-why[data-live] .m-why-thumb {
+  display: none;
+}
+/* 缩得很小时，图表上的虚线网格会挤成一排排点，收起来 */
+.m-why-thumb .m-why-grid {
   display: none;
 }
 
