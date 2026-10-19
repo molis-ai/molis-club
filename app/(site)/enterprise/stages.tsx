@@ -8,20 +8,16 @@ import { Scene } from './scenes';
 // 我们怎样开展合作（负责人 2026-10-19：方向对了，视觉再舒服一点）：仍在一屏里，分两部分，重点在第一部分。
 // 上面一行标题（5.3 原文）与 5.2 开头那句：可以从一项具体服务开始，也可以组合——不让人以为非得四步走完。
 // ① 四张并排的卡：每项服务一段示意动画演它在干什么（scenes.tsx），下面是列名（诊断、共建、评估、培训，5.2 开头那句里的词）与服务全名；
-// ② 双方分别做什么：一块浅底，业务团队、一起、Molis 三行，字小一档。
-// 原来还有一行产出（负责人 2026-10-19 删去）。
-// 角色名只在最左边写一次，每件事前面一颗圆点：业务团队墨色、Molis 杏色、一起是墨色与杏色叠在一起。
-// 四段动画进屏后从左到右接力演一遍；鼠标移到哪一列，那一列的动画重演，别的列的 ② 退淡一点，好顺着一列往下读。
+// ② 双方分别做什么：每列下面三格，业务团队、一起、Molis 各一件事，字小一档。
+// 负责人 2026-10-19 嫌原来那块像表格：十六条长短不一的圆点列表、行高被最长那格撑开、到处是空洞——
+// 改成十二格一样的软底小块，一格一句，同一行等高；三个角色只靠底色分：业务团队偏冷的月白、一起是中性的浅灰、Molis 一点杏色，
+// 不再用圆点。角色名只在最左边写一次。原来还有一行产出（负责人 2026-10-19 删去）。
+// 四段动画进屏后从左到右接力演一遍；鼠标移到哪一列，那一列的动画重演，别的列的三格退淡一点，好顺着一列往下读。
 // 静止就是演完的样子（没有 JS、减少动态都看这一帧）。窄于 1000 时两列一排、窄于 640 一列一排，角色名写在列里。
 
 const { path, line } = enterprise;
 const stationIds = Object.keys(path.stations) as StationId[];
 const roles = ['you', 'both', 'we'] as const;
-type Role = (typeof roles)[number];
-
-/** 这一列某个角色做的事 */
-const actsOf = (id: StationId, who: Role) =>
-  line.rows[id].flatMap((row) => row[who] ?? []);
 
 /** 四段动画接力：后一段比前一段晚多久开始（毫秒） */
 const STEP = 900;
@@ -97,16 +93,16 @@ export function Stages() {
         </p>
       </header>
       <div className="m-ent-flow-grid" ref={ref}>
-        {/* ② 那块浅底：铺在三行分工后面 */}
-        <div className="m-ent-flow-panel" aria-hidden="true" />
         {/* 角色名只在最左边写一次（读屏在每一列里另有） */}
         <div className="m-ent-flow-who" aria-hidden="true">
           {roles.map((who) => (
-            <p key={who} className="m-ent-who" data-who={who}>
-              <i className="m-ent-mark" />
-              <span lang={who === 'we' ? 'en' : undefined}>
-                {line.who[who]}
-              </span>
+            <p
+              key={who}
+              className="m-ent-who"
+              data-who={who}
+              lang={who === 'we' ? 'en' : undefined}
+            >
+              {line.who[who]}
             </p>
           ))}
         </div>
@@ -137,24 +133,17 @@ export function Stages() {
                 </header>
               </div>
 
-              {/* ② 双方分别做什么 */}
+              {/* ② 双方分别做什么：三格，一格一句 */}
               {roles.map((who) => (
-                <div key={who} className="m-ent-lane" data-who={who}>
-                  <p className="m-ent-lane-who">
-                    <i className="m-ent-mark" aria-hidden="true" />
-                    <span lang={who === 'we' ? 'en' : undefined}>
-                      {line.who[who]}
-                    </span>
-                  </p>
-                  <ul className="m-ent-acts">
-                    {actsOf(id, who).map((act) => (
-                      <li key={act.text} className="m-ent-act">
-                        <i className="m-ent-mark" aria-hidden="true" />
-                        {act.text}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <p key={who} className="m-ent-duty" data-who={who}>
+                  <span
+                    className="m-ent-duty-who"
+                    lang={who === 'we' ? 'en' : undefined}
+                  >
+                    {line.who[who]}
+                  </span>
+                  <span>{line.rows[id][who]}</span>
+                </p>
               ))}
             </article>
           );

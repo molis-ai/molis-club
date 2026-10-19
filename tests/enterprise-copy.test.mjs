@@ -24,14 +24,10 @@ void test('合作路线每站的事与产出都是第 5 章原句片段', () => 
   const ids = Object.keys(path.stations);
   assert.deepEqual(Object.keys(line.rows), ids);
   for (const id of ids) {
-    assert.ok(line.rows[id].length > 0, `${id} 没有写双方的事`);
-    for (const row of line.rows[id]) {
-      assert.ok(
-        row.both ? !row.you && !row.we : row.you || row.we,
-        `${id}：一行要么一起做，要么分给业务团队 / Molis`,
-      );
-      for (const act of [row.you, row.we, row.both].filter(Boolean))
-        verbatim(act.text, id);
+    // 每项服务三个角色各一件事，不留空格（负责人 2026-10-19）
+    for (const who of ['you', 'both', 'we']) {
+      assert.ok(line.rows[id][who], `${id}：${line.who[who]} 那一格是空的`);
+      verbatim(line.rows[id][who], id);
     }
     for (const leaf of path.stations[id].leaves) verbatim(leaf, `${id} 产出`);
   }
@@ -47,13 +43,6 @@ void test('合作路线每站的事与产出都是第 5 章原句片段', () => 
     at,
     [...at].sort((a, b) => a - b),
   );
-  // 每一列三个角色都有事做（负责人 2026-10-19：不留空格）
-  for (const id of ids)
-    for (const who of ['you', 'both', 'we'])
-      assert.ok(
-        line.rows[id].some((row) => row[who]),
-        `${id}：${line.who[who]} 那一道是空的`,
-      );
   verbatim(path.lead, '路线开头');
   for (const text of enterprise.people.abilities.map((item) => item.title))
     verbatim(text, '5.5 小标题');

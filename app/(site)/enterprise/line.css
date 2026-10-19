@@ -136,7 +136,7 @@
 
 /* =====================================================================
    我们怎样开展合作：仍在一屏，分两部分（原来的第三部分「产出」负责人 2026-10-19 删去）
-   ① 四张并排的卡（示意动画 + 列名），视觉重点；② 双方分别做什么，一块浅底、字小一档
+   ① 四张并排的卡（示意动画 + 列名），视觉重点；② 双方分别做什么：每列三格软底小块，一格一句、字小一档
    角色名只在最左边写一次；颜色、字号只读 site.css 的令牌
    ===================================================================== */
 .m-ent-flow {
@@ -170,14 +170,7 @@
   display: grid;
   grid-template-columns: clamp(72px, 6.2vw, 96px) repeat(4, minmax(0, 1fr));
   grid-template-rows: repeat(4, auto);
-  column-gap: clamp(10px, 1.1vw, 18px);
-}
-/* ② 那块浅底：从最左边的角色名一直铺到最后一列 */
-.m-ent-flow-panel {
-  grid-column: 1 / -1;
-  grid-row: 2 / span 3;
-  border-radius: var(--r-panel);
-  background: var(--paper-2);
+  gap: 8px clamp(10px, 1.1vw, 18px);
 }
 .m-ent-flow-who {
   grid-column: 1;
@@ -209,7 +202,7 @@
   --stage: var(--wall-light-2);
   display: grid;
   align-content: start;
-  margin-bottom: clamp(14px, 2.4vh, 26px);
+  margin-bottom: clamp(8px, 1.8vh, 20px);
   padding: 8px 8px 0;
   border-radius: var(--r-card);
   background: var(--white);
@@ -258,84 +251,50 @@
   letter-spacing: 0.06em;
 }
 
-/* ② 双方分别做什么：三行，字小一档；行与行只靠留白分开 */
-.m-ent-lane {
+/* ② 双方分别做什么：每列三格，一格一句，同一行等高；三个角色只靠底色分，不用圆点
+   业务团队偏冷的月白、一起是中性的浅灰、Molis 一点杏色 */
+.m-ent-duty {
   display: grid;
-  align-content: start;
-  padding: 9px var(--inset);
-}
-.m-ent-lane[data-who='you'] {
-  padding-top: clamp(14px, 2.2vh, 22px);
-}
-.m-ent-lane[data-who='we'] {
-  padding-bottom: clamp(14px, 2.2vh, 22px);
-}
-.m-ent-acts {
-  display: grid;
-  gap: 4px;
+  align-content: center;
   margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.m-ent-act {
-  display: grid;
-  grid-template-columns: 6px minmax(0, 1fr);
-  column-gap: 9px;
-  align-items: baseline;
-  color: var(--ink-2);
+  padding: clamp(10px, 1.7vh, 15px) var(--inset);
+  border-radius: var(--r-inset);
+  color: var(--ink);
   font: 400 clamp(12.5px, 0.95vw, 13.5px) / 1.65 var(--sans);
   letter-spacing: 0.02em;
   text-wrap: pretty;
+  transition: opacity 0.4s var(--ease);
 }
-[data-who='both'] .m-ent-act {
-  grid-template-columns: 10px minmax(0, 1fr);
+.m-ent-duty[data-who='you'] {
+  background: color-mix(in srgb, var(--wall-read-2) 62%, var(--white));
 }
-.m-ent-act .m-ent-mark {
-  translate: 0 -0.15em;
+.m-ent-duty[data-who='both'] {
+  background: var(--paper-2);
+}
+.m-ent-duty[data-who='we'] {
+  background: color-mix(in srgb, var(--accent) 11%, var(--white));
 }
 
-/* 最左边：角色名写一次，和那一行的第一件事对齐 */
+/* 最左边：角色名写一次，和那一行的三格对齐 */
 .m-ent-who {
-  display: flex;
-  align-items: center;
-  align-self: start;
-  gap: 8px;
+  align-self: center;
   margin: 0;
-  padding: 9px 0 9px var(--inset);
   color: var(--ink);
-  font: 500 var(--t-label) / 1.9 var(--sans);
-  letter-spacing: 0.12em;
+  font: 500 var(--t-label) / 1.6 var(--sans);
+  letter-spacing: 0.14em;
   white-space: nowrap;
-}
-.m-ent-who[data-who='you'] {
-  padding-top: clamp(14px, 2.2vh, 22px);
 }
 .m-ent-who[data-who='both'] {
   color: var(--ink-2);
 }
 .m-ent-who[data-who='we'] {
   color: var(--accent-ink);
-  font: 500 12.5px / 1.75 var(--latin);
+  font: 500 13px / 1.6 var(--latin);
   letter-spacing: 0.06em;
 }
-/* 圆点：业务团队墨色，Molis 杏色，一起是两颗叠在一起 */
-.m-ent-mark {
-  flex: none;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ink);
-}
-[data-who='we'] .m-ent-mark {
-  background: var(--accent);
-}
-[data-who='both'] .m-ent-mark {
-  margin-right: 4px;
-  box-shadow: 4px 0 0 var(--accent);
-}
 
-/* 每一列里的角色名：宽屏只给读屏（最左边已经写了），窄屏写出来 */
-.m-ent-lane-who {
+/* 每一格里的角色名：宽屏只给读屏（最左边已经写了），窄屏写出来 */
+.m-ent-duty-who {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -344,10 +303,7 @@
   white-space: nowrap;
 }
 
-/* 鼠标在哪一列：那张卡浮起一点、动画重演，别的列的 ② 退淡，好顺着一列往下读 */
-.m-ent-lane {
-  transition: opacity 0.4s var(--ease);
-}
+/* 鼠标在哪一列：那张卡浮起一点、动画重演，别的列的三格退淡，好顺着一列往下读 */
 @media (hover: hover) {
   .m-ent-stop:hover .m-ent-stop-card {
     translate: 0 -3px;
@@ -355,7 +311,7 @@
       0 0 0 1px var(--hair-2),
       0 24px 40px -28px rgb(var(--shade) / 0.55);
   }
-  .m-ent-flow-grid:has(.m-ent-stop:hover) .m-ent-stop:not(:hover) .m-ent-lane {
+  .m-ent-flow-grid:has(.m-ent-stop:hover) .m-ent-stop:not(:hover) .m-ent-duty {
     opacity: 0.42;
   }
 }
@@ -931,7 +887,7 @@
 
 /* ---------- 窄屏 ---------- */
 @media (max-width: 999px) {
-  /* 路线：两列一排，角色名写在列里；② 那块浅底收进每一列 */
+  /* 路线：两列一排，角色名写在每一格里 */
   .m-ent-flow {
     min-height: 0;
     padding-block: var(--section-top) var(--section-bottom);
@@ -941,8 +897,7 @@
     grid-template-rows: none;
     gap: 36px 14px;
   }
-  .m-ent-flow-who,
-  .m-ent-flow-panel {
+  .m-ent-flow-who {
     display: none;
   }
   .m-ent-stop,
@@ -951,38 +906,30 @@
     grid-row: auto;
     grid-template-rows: none;
     align-content: start;
+    gap: 6px;
   }
-  .m-ent-lane {
-    padding-block: 8px;
-    background: var(--paper-2);
+  .m-ent-stop-card {
+    margin-bottom: 4px;
   }
-  .m-ent-lane[data-who='you'] {
-    padding-top: 14px;
-    border-radius: var(--r-panel) var(--r-panel) 0 0;
+  .m-ent-duty {
+    align-content: start;
+    padding: 12px 14px;
   }
-  .m-ent-lane[data-who='we'] {
-    padding-bottom: 14px;
-    border-radius: 0 0 var(--r-panel) var(--r-panel);
-  }
-  .m-ent-lane-who {
+  .m-ent-duty-who {
     position: static;
     width: auto;
     height: auto;
     overflow: visible;
     clip-path: none;
-  }
-  .m-ent-lane-who {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-    color: var(--ink-2);
+    margin-bottom: 2px;
+    color: var(--mute);
     font: 500 var(--t-label) / 1.6 var(--sans);
     letter-spacing: 0.14em;
   }
-  .m-ent-lane[data-who='we'] .m-ent-lane-who {
+  .m-ent-duty[data-who='we'] .m-ent-duty-who {
     color: var(--accent-ink);
     font-family: var(--latin);
+    letter-spacing: 0.06em;
   }
 
   /* 为什么：字在上、画面在下 */
