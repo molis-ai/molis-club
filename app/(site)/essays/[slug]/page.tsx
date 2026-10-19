@@ -13,7 +13,6 @@ import {
 } from '../../../../content/site/essays';
 import { ESSAYS, essayHref } from '../../../_site/routes';
 import { More, type Vars } from '../../../_site/ui';
-import { RoomMeta } from '../../../_site/exhibit/exhibit';
 import { EssayBlocks, parseEssay } from '../markdown';
 import { ReadingProgress } from '../progress';
 import '../essays.css';
@@ -76,7 +75,7 @@ export default async function EssayPage({ params }: Props) {
   };
 
   return (
-    <article className="m-essay ex" data-room="read">
+    <article className="m-essay ex">
       <script
         type="application/ld+json"
         // oxlint-disable-next-line react/no-danger -- 本站自己的静态数据，转义了 <
@@ -87,7 +86,6 @@ export default async function EssayPage({ params }: Props) {
       <ReadingProgress target="essay-body" toc="essay-toc" />
 
       <header className="m-wrap m-top m-essay-head">
-        <RoomMeta room="read" />
         <p className="m-essay-kicker m-rise m-noprint">
           <Link className="m-essay-back" href={ESSAYS}>
             {essayUi.all}

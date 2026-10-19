@@ -8,7 +8,8 @@ export const ENTERPRISE = '/enterprise';
 export const COMMUNITY = '/community';
 export const METHODS = '/community/methods';
 export const ABOUT = '/about';
-export const TEAM = '/team';
+/** 团队收进了「关于」一整页（C1）：/team 已退役，指到「我们是谁」那一屏 */
+export const TEAM = '/about#people';
 export const ESSAYS = '/essays';
 export const ALONG = '/along-the-way';
 export const CONTACT = '/contact';

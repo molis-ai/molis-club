@@ -871,13 +871,15 @@ body:has(.m) .skip-link {
   .m-menu > summary::-webkit-details-marker {
     display: none;
   }
+  /* 手机上一屏放下，不在菜单里再滚（D3）：390×844、360×800 留足浏览器地址栏的高度，
+     375×667 也刚好放下；更矮的屏幕才退回菜单内滚动 */
   .m-menu-sheet {
     position: fixed;
     inset: var(--header) 0 0;
     z-index: 49;
     overflow-y: auto;
     overscroll-behavior: contain;
-    padding: 8px var(--gutter) 40px;
+    padding: 4px var(--gutter) 12px;
     background: var(--paper);
     color: var(--ink);
     text-shadow: none;
@@ -885,10 +887,13 @@ body:has(.m) .skip-link {
     animation: m-page-in 0.4s var(--ease) both;
   }
   .m-menu-sheet h2 {
-    margin: 24px 0 6px;
+    margin: 18px 0 4px;
     font: 500 var(--t-label) / 1.4 var(--sans);
     letter-spacing: 0.16em;
     color: var(--mute);
+  }
+  .m-menu-sheet h2:first-child {
+    margin-top: 12px;
   }
   .m-menu-sheet a,
   .m-menu-sheet .m-soon {
@@ -896,10 +901,10 @@ body:has(.m) .skip-link {
     align-items: baseline;
     justify-content: space-between;
     gap: 16px;
-    min-height: 48px;
-    padding: 10px 0;
+    min-height: 44px;
+    padding: 8px 0;
     border-bottom: 1px solid var(--hair);
-    font: 300 22px/1.4 var(--sans);
+    font: 300 21px/1.35 var(--sans);
     letter-spacing: 0.02em;
   }
   .m-menu-sheet .m-soon {
@@ -914,7 +919,7 @@ body:has(.m) .skip-link {
   .m-menu-sheet .m-btn {
     display: flex;
     justify-content: center;
-    margin-top: 28px;
+    margin-top: 20px;
     font: 500 15px/1 var(--sans);
     border: 0;
   }

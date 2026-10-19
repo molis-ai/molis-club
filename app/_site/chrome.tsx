@@ -22,22 +22,21 @@ import {
   LOGIN,
   METHODS,
   PRIVACY,
-  TEAM,
   productHref,
 } from './routes';
 
 // 顶栏与页尾。顶栏固定在上方：平时是实心的纸，滚动后下面出现一道细线；
-// 首页前两屏压在画面上时透明、白字（读 [data-tone="film"]）；压在明亮的建筑照片上时透明、墨字（[data-tone="light"]）。两个下拉和窄屏菜单都用 <details>，没有 JS 也能打开；
+// 首页前两屏压在画面上时透明、白字（读 [data-tone="film"]）；压在明亮的建筑照片上时透明、墨字（[data-tone="light"]）。「产品」下拉和窄屏菜单都用 <details>，没有 JS 也能打开；
 // 有 JS 时补上点外面、按 Esc、换页时收起。
 // 先不开放的产品（Life、Story、World）在下拉、菜单和页尾都留着名字，但不是链接，阶段写「探索中，敬请期待」。
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
+// 「关于」是一整页（C1，负责人 2026-10-18）：顶栏直接链过去，不下拉；文章、沿途只在页尾目录和「关于」页里出现。
 const aboutLinks = [
-  { href: TEAM, label: nav.aboutItems.team, line: nav.aboutLines.team },
-  { href: ABOUT, label: nav.aboutItems.about, line: nav.aboutLines.about },
-  { href: ESSAYS, label: nav.aboutItems.essays, line: nav.aboutLines.essays },
-  { href: ALONG, label: nav.aboutItems.along, line: nav.aboutLines.along },
+  { href: ABOUT, label: nav.about },
+  { href: ESSAYS, label: nav.aboutItems.essays },
+  { href: ALONG, label: nav.aboutItems.along },
 ];
 
 const isUnder = (path: string, href: string) =>
@@ -134,7 +133,6 @@ export function Header() {
   const productCurrent = productIds.some((id) =>
     isUnder(path, productHref[id]),
   );
-  const aboutCurrent = aboutLinks.some((link) => isUnder(path, link.href));
   return (
     <header
       ref={ref}
@@ -207,24 +205,12 @@ export function Header() {
         >
           {nav.community}
         </Link>
-        <details className="m-drop" data-current={aboutCurrent || undefined}>
-          <summary>
-            {nav.about}
-            <ChevronDown size={14} aria-hidden="true" />
-          </summary>
-          <div className="m-drop-panel m-drop-about">
-            {aboutLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={isUnder(path, link.href) ? 'page' : undefined}
-              >
-                <strong>{link.label}</strong>
-                <small>{link.line}</small>
-              </Link>
-            ))}
-          </div>
-        </details>
+        <Link
+          href={ABOUT}
+          aria-current={isUnder(path, ABOUT) ? 'page' : undefined}
+        >
+          {nav.about}
+        </Link>
       </nav>
       <div className="m-head-end">
         <Link className="m-login" href={LOGIN}>
@@ -259,11 +245,7 @@ export function Header() {
             <h2>{footer.columns.studio}</h2>
             <Link href={ENTERPRISE}>{nav.enterprise}</Link>
             <Link href={COMMUNITY}>{nav.community}</Link>
-            {aboutLinks.map((link) => (
-              <Link key={link.href} href={link.href}>
-                {link.label}
-              </Link>
-            ))}
+            <Link href={ABOUT}>{nav.about}</Link>
             <Link href={LOGIN}>{nav.login}</Link>
             <Link className="m-btn" href={CONTACT}>
               {nav.chat}

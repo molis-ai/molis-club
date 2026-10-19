@@ -1,0 +1,248 @@
+/* =====================================================================
+   八个人（「关于」一页的「我们是谁」）：先是本人怎么说自己，名字像落款跟在下面。
+   不排成表格：四列错落，像围坐在一张桌边；没有框线、分割线和编号，靠留白分组。居中陈列。
+   ===================================================================== */
+
+.tm-roster {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: start;
+  column-gap: clamp(20px, 2.2vw, 32px);
+  row-gap: clamp(28px, 5vh, 56px);
+  text-align: center;
+}
+/* 错落：每个人站的高低不一样 */
+.tm-p:nth-child(2) {
+  margin-top: clamp(28px, 5.4vh, 56px);
+}
+.tm-p:nth-child(3) {
+  margin-top: clamp(8px, 1.4vh, 14px);
+}
+.tm-p:nth-child(4) {
+  margin-top: clamp(40px, 7vh, 72px);
+}
+.tm-p:nth-child(5) {
+  margin-top: clamp(16px, 3vh, 32px);
+}
+.tm-p:nth-child(7) {
+  margin-top: clamp(36px, 6.4vh, 64px);
+}
+.tm-p:nth-child(8) {
+  margin-top: clamp(12px, 2vh, 20px);
+}
+
+.tm-p {
+  display: grid;
+  justify-items: center;
+  scroll-margin-top: calc(var(--header) + 32px);
+}
+/* 没有自述的人：名字落在和别人差不多的高度 */
+.tm-p[data-quiet] {
+  padding-top: calc(clamp(17px, 1.3vw, 19.5px) * 1.6 + 14px);
+}
+
+/* ---------- 自述：暖色、大一点；几句叠在一格里，只露出当前一句 ---------- */
+.tm-say {
+  max-width: 100%;
+}
+.tm-quote {
+  display: grid;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: center;
+  font: 300 clamp(17px, 1.3vw, 19.5px) / 1.6 var(--sans);
+  letter-spacing: 0.03em;
+  font-feature-settings: 'palt' 1;
+  color: var(--accent-ink);
+  text-wrap: balance;
+}
+.tm-line {
+  grid-area: 1 / 1;
+  align-self: center;
+}
+.tm-line:not([data-on]) {
+  visibility: hidden;
+}
+.tm-line[data-turned] {
+  animation: tm-turn 0.7s var(--ease) both;
+}
+@keyframes tm-turn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.tm-kind {
+  margin-left: 6px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--mute);
+}
+/* 好几句的人：整句是按钮，句尾一个换一换的记号；悬停时记号转半圈 */
+button.tm-quote {
+  cursor: pointer;
+  border-radius: var(--r-label);
+}
+.tm-again {
+  display: inline-block;
+  margin-left: 5px;
+  vertical-align: -1px;
+  color: var(--mute);
+  transition:
+    rotate 0.6s var(--ease),
+    color 0.35s var(--ease);
+}
+button.tm-quote:hover .tm-again {
+  rotate: 180deg;
+  color: var(--accent-ink);
+}
+button.tm-quote:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+}
+/* 没有 JS：换不了，记号不出现（全部自述在「经历」里） */
+html:not(.js) .tm-again {
+  display: none;
+}
+html:not(.js) button.tm-quote {
+  cursor: default;
+}
+
+/* ---------- 落款：名字、身份、方向 ---------- */
+.tm-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px 10px;
+  margin-top: 12px;
+  font: 400 17px / 1.4 var(--sans);
+  letter-spacing: 0.14em;
+  color: var(--ink);
+}
+.tm-role {
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: var(--mute);
+}
+.tm-focus {
+  max-width: 18em;
+  margin-top: 4px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+
+/* ---------- 经历：点开在名字下面展开 ---------- */
+.tm-more {
+  display: grid;
+  justify-items: center;
+}
+.tm-more > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  margin-top: 4px;
+  padding: 0 4px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--mute);
+  cursor: pointer;
+  list-style: none;
+  transition: color 0.3s var(--ease);
+}
+.tm-more > summary::-webkit-details-marker {
+  display: none;
+}
+.tm-more > summary svg {
+  transition: rotate 0.4s var(--ease);
+}
+.tm-more > summary:hover {
+  color: var(--ink);
+}
+.tm-more > summary:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: var(--r-label);
+}
+.tm-more[open] > summary svg {
+  rotate: 45deg;
+}
+.tm-more-body {
+  display: grid;
+  gap: 12px;
+  max-width: 22em;
+  margin-top: 6px;
+  font-size: 12.5px;
+  line-height: 1.85;
+  letter-spacing: 0.02em;
+  text-align: left;
+  color: var(--ink-2);
+}
+.tm-more[open] .tm-more-body {
+  animation: tm-more-in 0.5s var(--ease) both;
+}
+@keyframes tm-more-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+.tm-more-self ul {
+  display: grid;
+  gap: 2px;
+  margin-top: 4px;
+}
+.tm-more-self li::before {
+  content: '「';
+  color: var(--faint);
+}
+.tm-more-self li::after {
+  content: '」';
+  color: var(--faint);
+}
+/* 有 JS 时自述已经可以一句句换着看，「经历」里不再重复 */
+.js .tm-more-self {
+  display: none;
+}
+
+/* ---------- 窄屏：两列错落，再窄一列 ---------- */
+@media (max-width: 1100px) {
+  .tm-roster {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tm-p:nth-child(n) {
+    margin-top: 0;
+  }
+  .tm-p:nth-child(2n) {
+    margin-top: clamp(28px, 5vh, 48px);
+  }
+}
+@media (max-width: 560px) {
+  .tm-roster {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 44px;
+  }
+  .tm-p:nth-child(2n) {
+    margin-top: 0;
+  }
+  .tm-p[data-quiet] {
+    padding-top: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tm-line[data-turned],
+  .tm-more[open] .tm-more-body {
+    animation: none;
+  }
+  .tm-again,
+  .tm-more > summary svg {
+    transition: none;
+  }
+}

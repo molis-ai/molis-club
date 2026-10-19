@@ -32,14 +32,19 @@
   border-top: 1px solid var(--hair);
 }
 
-/* 开场：顶栏下面一屏，名牌一行在上，展厅名与开场展品在下 */
+/* 开场：顶栏下面一屏，名牌一行在上，展厅名与开场展品在下；没有名牌（文章、沿途）时开场竖向居中 */
 .ex-open {
   min-height: 100svh;
   display: grid;
   grid-template-rows: auto 1fr;
+  align-content: center;
   row-gap: clamp(20px, 4vh, 44px);
   padding-top: calc(var(--header) + clamp(16px, 3.4vh, 36px));
   padding-bottom: clamp(24px, 5vh, 56px);
+}
+
+.ex-open:not(:has(> .ex-meta)) {
+  grid-template-rows: auto;
 }
 
 .ex-grid {

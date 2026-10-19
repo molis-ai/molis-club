@@ -1,5 +1,5 @@
 // 顶栏与页尾的文字。栏目按 specs/site-rebuild/spec.md 第 3 节：
-// Logo ｜ 产品 ▾ · 企业合作 · 社区 · 关于 ▾ ｜ 登录 · 聊一聊。
+// Logo ｜ 产品 ▾ · 企业合作 · 社区 · 关于 ｜ 登录 · 聊一聊。「关于」是一整页，不下拉（C1，负责人 2026-10-18）。
 
 export const nav = {
   home: 'Molis AI 首页',
@@ -7,18 +7,12 @@ export const nav = {
   enterprise: '企业合作',
   community: '社区',
   about: '关于',
+  /** 「关于」页里的去处与页尾目录；team、about 两个名字只留给旧版展厅对照（/about?study=current） */
   aboutItems: {
     team: '认识我们',
     about: '我们相信什么',
     essays: '文章',
     along: '沿途',
-  },
-  /** 下拉里关于各项的一行说明 */
-  aboutLines: {
-    team: '八个人、来时路，和我们想做的事',
-    about: '六条信念',
-    essays: '《人的尺度》《落地主义》',
-    along: '那些具体的尝试',
   },
   login: '登录',
   account: '我的账号',
