@@ -63,7 +63,7 @@
   transform: scale(calc(1.14 - 0.1 * var(--open-s) - 0.04 * var(--pull)));
   will-change: transform;
 }
-/* 压字的那层暗：底下与左边浓一点；字浮上来时跟着加深 */
+/* 压字的那层暗：只铺在左下，窗外的远处留得最亮，字、屋里的人、远山分出前后；字浮上来时跟着加深 */
 .m-ent-vista-media::after {
   content: '';
   position: absolute;
@@ -71,11 +71,16 @@
   background:
     linear-gradient(
       to top,
-      rgb(24 17 10 / 0.66),
-      rgb(24 17 10 / 0.2) 44%,
-      rgb(24 17 10 / 0) 68%
+      rgb(24 17 10 / 0.62),
+      rgb(24 17 10 / 0.18) 38%,
+      rgb(24 17 10 / 0) 58%
     ),
-    linear-gradient(to right, rgb(24 17 10 / 0.3), rgb(24 17 10 / 0) 62%);
+    linear-gradient(
+      to right,
+      rgb(24 17 10 / 0.34),
+      rgb(24 17 10 / 0.08) 42%,
+      rgb(24 17 10 / 0) 64%
+    );
   opacity: calc(0.3 + 0.7 * clamp(0, var(--pull) / 0.12, 1));
   pointer-events: none;
 }
@@ -90,15 +95,16 @@
 .m-ent-vista-line {
   display: grid;
   justify-items: start;
-  gap: 0.12em;
+  gap: 0.14em;
   margin: 0;
-  font: 300 clamp(28px, 3.5vw, 56px) / 1.34 var(--sans);
+  font: 300 clamp(26px, 3.2vw, 50px) / 1.34 var(--sans);
   letter-spacing: 0.04em;
-  text-shadow: 0 1px 30px rgb(0 0 0 / 0.3);
-  text-wrap: balance;
+  text-shadow: 0 1px 30px rgb(0 0 0 / 0.32);
+  /* 不平衡断行：窄屏上前面的动作先排满一行，要紧的词连着尾巴整组换到下一行 */
+  text-wrap: wrap;
   font-feature-settings: 'palt' 1;
 }
-/* 每一拍：--t 开始浮上来；--next 是下一拍，那时退半步；最后一截三拍一起亮着 */
+/* 每一拍：--t 开始浮上来，从虚到实对上焦；--next 是下一拍，那时退半步、略虚；最后一截三拍一起亮着 */
 .m-ent-vista-line > span {
   --next: 9;
   --in: clamp(0, (var(--pull) - var(--t)) / 0.08, 1);
@@ -108,9 +114,22 @@
   );
   opacity: calc(var(--in) * (1 - 0.5 * var(--back)));
   translate: 0 calc((1 - var(--in)) * 0.5em);
+  filter: blur(calc((1 - var(--in)) * 8px + var(--back) * 1.5px));
+}
+/* 三拍往右一级级错开；要紧的词最亮，其余的字退一档 */
+.m-ent-vista-beat {
+  padding-left: calc(var(--step) * 1.5em);
+  color: rgb(255 255 255 / 0.66);
+}
+.m-ent-vista-key {
+  white-space: nowrap;
+}
+.m-ent-vista-beat b {
+  color: #fff;
+  font-weight: 400;
 }
 .m-ent-vista-lead {
-  margin-bottom: 0.7em;
+  margin-bottom: 0.9em;
   font: 400 clamp(14px, 1.15vw, 17px) / 1.6 var(--sans);
   letter-spacing: 0.24em;
 }
@@ -688,6 +707,7 @@
   .m-ent-vista-line > span {
     opacity: 1;
     translate: none;
+    filter: none;
   }
   .m-ent-why *,
   .m-ent-why *::before {
@@ -803,5 +823,8 @@
   }
   .m-ent-vista-body {
     padding-bottom: clamp(40px, 9vh, 72px);
+  }
+  .m-ent-vista-beat {
+    padding-left: calc(var(--step) * 0.8em);
   }
 }

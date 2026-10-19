@@ -43,7 +43,7 @@ void test('合作路线每站的事与产出都是第 5 章原句片段', () => 
 
 void test('满幅那一屏：引子与三拍连起来是开场第三段原句', () => {
   const { vista, intro } = enterprise;
-  assert.equal(vista.lead + vista.beats.join(''), intro[2]);
+  assert.equal(vista.lead + vista.beats.flat().join(''), intro[2]);
   assert.ok(Object.keys(vista.plates).includes('a'), '默认的那张图要在候选里');
 });
 
