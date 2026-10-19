@@ -1,14 +1,17 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { enterprise, type StationId } from '../../../content/site/enterprise';
-import { Phrases, type Vars } from '../../_site/ui';
+import { Note, Phrases, type Vars } from '../../_site/ui';
 import { play } from './keeps';
 import { Film } from './films';
 
 // 我们怎样开展合作（负责人 2026-10-19：之前那版「是一个合格的 PPT」——四张卡加十二格，一眼全摊开、每样东西一样重）。
 // 改成一次只看一项服务的展开式长卷：
-// 四项服务像书架上并排的四本书，书脊上竖排着列名（诊断、共建、评估、培训，5.2 开头那句里的词），各用「关于」的一种墙色。
-// 往下滚，整屏钉住，一本一本地打开：打开的那面上头是列名与服务全名，下面整块是一段短片（films.tsx）——
+// 四项服务像书架上并排的四本书（负责人 2026-10-20：底色和书的造型粗糙简陋——去掉四块彩色底，做成真的书）：
+// 同一种纸色的书脊立在一道细线（书架）上，高矮略有参差；书脊从上到下是编号、列名（诊断、共建、评估、培训，5.2 开头那句里的词）、
+// 服务全名，底下一颗小圆点。打开的那本书脊还在左边，右边翻出一页白纸，纸上是一张插图（短片）和一行图注（编号、列名、全名、示意），
+// 纸的左上角垂下一根杏色书签带。鼠标停在合着的书脊上，那本书往上抽出一点。
+// 往下滚，整屏钉住，一本一本地打开；打开那页上的短片（films.tsx）——
 // 一块共享画板上，业务团队和 Molis 两个带名牌的光标按分镜各做各的、再一起做；每一步做完钉一条带序号的评论（5.3 原句）
 // （负责人 2026-10-20：用动画演出 Molis 跟业务怎么合作，「假装你在拍视频」）。
 // 点一本合着的书，滚到它那一拍；鼠标停在画面上，那段片子重演。
@@ -17,6 +20,8 @@ import { Film } from './films';
 const { path } = enterprise;
 const stationIds = Object.keys(path.stations) as StationId[];
 const LEGS = stationIds.length;
+/** 书脊和图注上的编号：01–04 */
+const number = (index: number) => String(index + 1).padStart(2, '0');
 
 export function Stages() {
   const ref = useRef<HTMLElement>(null);
@@ -144,12 +149,11 @@ export function Stages() {
                 key={id}
                 id={`station-${id}`}
                 className="m-ent-leg"
-                data-wall={id}
                 data-index={index}
                 data-active={open || undefined}
                 aria-labelledby={`station-${id}-name`}
               >
-                {/* 书脊：合着的时候竖排列名；点一下打开（服务全名在打开的那一面上） */}
+                {/* 书脊：编号、列名、服务全名；合着的书点一下打开 */}
                 <button
                   type="button"
                   className="m-ent-leg-spine"
@@ -158,17 +162,24 @@ export function Stages() {
                   aria-label={`${station.word}：${station.name}`}
                   onClick={() => go(index)}
                 >
+                  <span className="m-ent-leg-no">{number(index)}</span>
                   <span className="m-ent-leg-spine-word">{station.word}</span>
+                  <span className="m-ent-leg-spine-name">
+                    {/* 竖排里的英文横躺着排，字距收回来，不散成一个个字母 */}
+                    {station.name.split(/([A-Za-z]+)/).map((part, i) =>
+                      i % 2 ? (
+                        <span key={i} className="m-ent-leg-latin">
+                          {part}
+                        </span>
+                      ) : (
+                        part
+                      ),
+                    )}
+                  </span>
                 </button>
 
-                {/* 打开的那一面：列名在上，下面整块是短片 */}
+                {/* 翻开的那一页：一张插图（短片）和一行图注；图注在源码里排在前面，宽屏上显示在插图下面 */}
                 <div className="m-ent-leg-body">
-                  <header className="m-ent-leg-head">
-                    <h3 className="m-ent-leg-word" id={`station-${id}-name`}>
-                      {station.word}
-                    </h3>
-                    <p className="m-ent-leg-name">{station.name}</p>
-                  </header>
                   <div
                     className="m-ent-leg-stage"
                     onPointerEnter={(event) => {
@@ -181,6 +192,18 @@ export function Stages() {
                       if (film && !film.hasAttribute('data-hold')) play(film);
                     }}
                   >
+                    <header className="m-ent-leg-head">
+                      <span className="m-ent-leg-no" aria-hidden="true">
+                        {number(index)}
+                      </span>
+                      <h3 className="m-ent-leg-word" id={`station-${id}-name`}>
+                        {station.word}
+                      </h3>
+                      <p className="m-ent-leg-name">{station.name}</p>
+                      <span className="m-ent-leg-note">
+                        <Note>示意</Note>
+                      </span>
+                    </header>
                     <Film id={id} />
                   </div>
                 </div>

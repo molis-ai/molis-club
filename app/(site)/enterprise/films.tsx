@@ -1,6 +1,5 @@
 import { useId, type CSSProperties, type ReactNode } from 'react';
 import { enterprise, type StationId } from '../../../content/site/enterprise';
-import { Note } from '../../_site/ui';
 import { Shadow } from './keeps';
 
 // 合作路线每本书打开后的一段短片（负责人 2026-10-20：「假装你在拍视频」，按脚本写出谁、做什么、镜头怎么走；诊断做样片，认可后四本都拍）。
@@ -203,7 +202,7 @@ function Lines({ id, order }: { id: StationId; order: Who[] }) {
   );
 }
 
-/** 片子的外壳：画框、镜头、画、字、示意章、进度，和窄屏上的三句 */
+/** 片子的外壳：画框、镜头、画、字、进度，和窄屏上的三句（「示意」写在书页的图注里，stages.tsx） */
 function Reel({
   id,
   cut,
@@ -219,10 +218,12 @@ function Reel({
   art: ReactNode;
   overlay: ReactNode;
 }) {
+  // 进度条走完就收起，停住的那一帧上不留一道深线
   const bar = cut.track(
     [
-      [0, 'transform:scaleX(0)'],
-      [cut.length, 'transform:scaleX(1)'],
+      [0, 'opacity:1;transform:scaleX(0)'],
+      [cut.length - 0.4, 'opacity:1;transform:scaleX(1)'],
+      [cut.length, 'opacity:0;transform:scaleX(1)'],
     ],
     'linear',
   );
@@ -239,9 +240,6 @@ function Reel({
           </svg>
           {overlay}
         </div>
-        <span className="m-film-mark">
-          <Note>示意</Note>
-        </span>
         <span className="m-film-bar" aria-hidden="true">
           <span className={bar} />
         </span>
@@ -606,7 +604,7 @@ function Build() {
       [cue.close, 282, 330],
       [cue.close + 0.8, 798, 174],
       [cue.wide, 798, 174],
-      [cue.wide + 0.8, 800, 226],
+      [cue.wide + 0.8, 760, 226],
     ]),
     GLIDE,
   );

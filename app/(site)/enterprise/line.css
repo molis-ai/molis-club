@@ -136,9 +136,10 @@
 
 /* =====================================================================
    我们怎样开展合作：一次只看一项服务的展开式长卷（stages.tsx）
-   四项服务像书架上的四本书，书脊竖排；钉住后往下滚一本一本打开。打开的那面：
-   列名在上，动画在中，业务团队在左、Molis 在右（字都朝着中间），一起在动画下面。
-   宽屏有 JS 时才钉住（data-live）；其余情况四项从上到下排开。颜色、字号只读 site.css 的令牌
+   四项服务像书架上的四本书：同一种纸色的书脊立在一道细线上，钉住后往下滚一本一本打开；
+   打开的那本书脊留在左边，右边翻出一页白纸，纸上一张插图（短片）、一行图注、一根杏色书签带。
+   不用彩色大底、不画假光影；颜色、字号、圆角只读 site.css 的令牌。
+   宽屏有 JS 时才钉住（data-live）；其余情况四项从上到下排开
    ===================================================================== */
 .m-ent-flow {
   position: relative;
@@ -178,10 +179,10 @@
   letter-spacing: 0.04em;
 }
 
-/* 四本书：各用「关于」的一种墙色 */
+/* 四本书 */
 .m-ent-legs {
-  --gap: clamp(8px, 0.8vw, 12px);
-  --spine: clamp(76px, 7vw, 112px);
+  --gap: clamp(6px, 0.6vw, 10px);
+  --spine: clamp(56px, 4.6vw, 72px);
   display: grid;
   gap: 18px;
   margin: 0;
@@ -189,47 +190,43 @@
   list-style: none;
 }
 .m-ent-leg {
-  --wall: var(--wall-light);
-  --stage: var(--wall-light-2);
   position: relative;
-  border-radius: var(--r-card);
-  background: var(--wall);
-}
-.m-ent-leg[data-wall='diagnose'] {
-  --wall: var(--wall-people);
-  --stage: var(--wall-people-2);
-}
-.m-ent-leg[data-wall='build'] {
-  box-shadow: 0 0 0 1px var(--hair);
-}
-.m-ent-leg[data-wall='assess'] {
-  --wall: var(--wall-read);
-  --stage: var(--wall-read-2);
-}
-.m-ent-leg[data-wall='train'] {
-  --wall: var(--wall-road);
-  --stage: var(--wall-road-2);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-label);
+  background: var(--white);
 }
 
-/* 打开的那一面：上头列名与服务全名，下面整块都给短片 */
+/* 翻开的那一页：插图（短片）在上，图注在下（窄屏图注在上） */
 .m-ent-leg-body {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  grid-template-areas: 'head' 'stage';
-  gap: clamp(12px, 2.2vh, 22px);
   height: 100%;
-  padding: clamp(18px, 3vh, 30px) clamp(20px, 2.4vw, 36px)
-    clamp(20px, 3.4vh, 36px);
+  padding: 18px;
 }
+.m-ent-leg-stage {
+  display: grid;
+  grid-template-areas: 'head' 'film';
+  gap: 14px;
+  min-height: 0;
+}
+.m-ent-leg-stage > .m-film {
+  grid-area: film;
+}
+/* 图注：编号 · 列名 · 服务全名，「示意」靠右 */
 .m-ent-leg-head {
   grid-area: head;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 18px;
+  gap: 4px 14px;
+}
+.m-ent-leg-no {
+  color: var(--mute);
+  font: italic 300 13px / 1 var(--latin);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
 }
 .m-ent-leg-word {
-  font: 400 clamp(16px, 1.25vw, 19px) / 1.2 var(--sans);
+  font: 500 var(--t-small) / 1.5 var(--sans);
   letter-spacing: 0.24em;
 }
 .m-ent-leg-name {
@@ -237,15 +234,9 @@
   font: 400 12.5px / 1.5 var(--sans);
   letter-spacing: 0.08em;
 }
-.m-ent-leg-stage {
-  grid-area: stage;
-  min-height: 0;
-}
-/* 钉住时画面在剩下的空间里按 16:9 撑到最大 */
-.m-ent-flow[data-live] .m-ent-leg-stage {
-  container-type: size;
-  display: grid;
-  place-items: center;
+.m-ent-leg-note {
+  align-self: center;
+  margin-left: auto;
 }
 
 /* ---------- 一段短片（films.tsx）：16:9 的共享画板，两个带名牌的光标，镜头推拉，评论钉在做事的地方 ---------- */
@@ -253,18 +244,13 @@
   container-type: inline-size;
   width: 100%;
 }
-.m-ent-flow[data-live] .m-film {
-  width: min(100cqw, 100cqh * 16 / 9);
-}
 .m-film-frame {
   position: relative;
   overflow: hidden;
   aspect-ratio: 16 / 9;
-  border-radius: 14px;
-  background: var(--white);
-  box-shadow:
-    0 0 0 1px rgb(var(--shade) / 0.05),
-    0 22px 48px -30px rgb(var(--shade) / 0.4);
+  border-radius: var(--r-label);
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--hair);
 }
 /* 镜头：整块画板（点阵、画、字、光标）一起推拉 */
 .m-film-cam {
@@ -603,15 +589,7 @@
   font-family: var(--latin);
   letter-spacing: 0.04em;
 }
-/* 示意的章与进度：钉在画框上，不跟镜头走 */
-.m-film-mark {
-  position: absolute;
-  top: clamp(10px, 1.8cqw, 18px);
-  left: clamp(10px, 1.8cqw, 18px);
-}
-.m-film-mark .m-note {
-  background: rgb(255 255 255 / 0.8);
-}
+/* 进度：钉在画框底边，不跟镜头走 */
 .m-film-bar {
   position: absolute;
   right: 0;
@@ -631,33 +609,142 @@
   display: none;
 }
 
-/* 书脊：合着时才出现 */
+/* 书脊：钉住时才出现 */
 .m-ent-leg-spine {
   display: none;
 }
 
-/* ---------- 钉住：四本书并排，打开的那本铺开 ---------- */
+/* ---------- 钉住：四本书立在一道细线（书架）上，打开的那本翻出一页 ---------- */
 .m-ent-flow[data-live] .m-ent-legs {
   container-type: inline-size;
   display: flex;
+  align-items: flex-end;
   gap: var(--gap);
+  height: 100%;
   min-height: 0;
   max-height: 640px;
   align-self: center;
-  height: 100%;
+  box-shadow: 0 1px 0 var(--hair-2);
 }
+/* 一本书 = 书脊 + 一页纸；合着时那页纸被裁掉。高矮略有参差，像真的一排书 */
 .m-ent-flow[data-live] .m-ent-leg {
+  display: flex;
   flex: 0 0 var(--spine);
+  height: calc(100% - var(--short, 0px));
   min-width: 0;
   overflow: hidden;
-  transition: flex-grow 0.9s var(--ease);
+  border: 0;
+  border-radius: var(--r-label) var(--r-label) 0 0;
+  background: none;
+  transition:
+    flex-grow 0.9s var(--ease),
+    translate 0.5s var(--ease);
+}
+.m-ent-flow[data-live] .m-ent-leg:nth-child(2) {
+  --short: 22px;
+}
+.m-ent-flow[data-live] .m-ent-leg:nth-child(3) {
+  --short: 8px;
+}
+.m-ent-flow[data-live] .m-ent-leg:nth-child(4) {
+  --short: 30px;
 }
 .m-ent-flow[data-live] .m-ent-leg[data-active] {
   flex-grow: 1;
 }
-/* 打开的那一面按打开后的宽度排好，开合时只是被裁出来，字不跟着重排 */
+/* 停在合着的书脊上：那本书往上抽出一点 */
+.m-ent-flow[data-live] .m-ent-leg:not([data-active]):hover,
+.m-ent-flow[data-live] .m-ent-leg:not([data-active]):focus-within {
+  translate: 0 -8px;
+}
+
+/* 书脊：编号、一道短线、列名，底下竖排服务全名和一颗小圆点 */
+.m-ent-flow[data-live] .m-ent-leg-spine {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  width: var(--spine);
+  height: 100%;
+  padding: clamp(18px, 3vh, 26px) 0 clamp(16px, 2.6vh, 22px);
+  border: 1px solid var(--hair);
+  border-bottom: 0;
+  border-radius: var(--r-label) var(--r-label) 0 0;
+  background: var(--paper-2);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    background-color 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+.m-ent-flow[data-live] .m-ent-leg[data-active] .m-ent-leg-spine {
+  border-radius: var(--r-label) 0 0 0;
+  color: var(--ink);
+  cursor: default;
+}
+.m-ent-flow[data-live] .m-ent-leg-spine:hover {
+  color: var(--ink);
+}
+.m-ent-flow[data-live] .m-ent-leg-spine:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: -5px;
+}
+.m-ent-leg-spine .m-ent-leg-no {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  font-size: 12px;
+  font-style: normal;
+}
+.m-ent-leg-spine .m-ent-leg-no::after {
+  content: '';
+  width: 14px;
+  height: 1px;
+  background: var(--hair-2);
+}
+.m-ent-leg-spine-word {
+  margin-top: 16px;
+  font: 400 15px / 1 var(--sans);
+  letter-spacing: 0.5em;
+  writing-mode: vertical-rl;
+}
+.m-ent-leg-spine-name {
+  margin-top: auto;
+  color: var(--mute);
+  font: 400 11.5px / 1 var(--sans);
+  letter-spacing: 0.28em;
+  writing-mode: vertical-rl;
+}
+.m-ent-leg-latin {
+  letter-spacing: 0.04em;
+}
+.m-ent-flow[data-live] .m-ent-leg-spine::after {
+  content: '';
+  flex: none;
+  width: 5px;
+  height: 5px;
+  margin-top: 16px;
+  border-radius: 50%;
+  background: var(--faint);
+  transition: background-color 0.4s var(--ease);
+}
+.m-ent-flow[data-live] .m-ent-leg[data-active] .m-ent-leg-spine::after {
+  background: var(--accent);
+}
+
+/* 那一页：按打开后的宽度排好，开合时只是被裁出来，字不跟着重排 */
 .m-ent-flow[data-live] .m-ent-leg-body {
-  width: calc(100cqw - 3 * var(--spine) - 3 * var(--gap));
+  position: relative;
+  flex: none;
+  width: calc(100cqw - 4 * var(--spine) - 3 * var(--gap));
+  height: 100%;
+  padding: clamp(16px, 3vh, 28px) clamp(20px, 2.4vw, 36px)
+    clamp(14px, 2.4vh, 22px);
+  border: 1px solid var(--hair);
+  border-bottom: 0;
+  border-left: 0;
+  border-radius: 0 var(--r-label) 0 0;
+  background: var(--white);
   opacity: 0;
   transition: opacity 0.35s var(--ease);
 }
@@ -665,74 +752,57 @@
   opacity: 1;
   transition: opacity 0.6s var(--ease) 0.25s;
 }
-/* 打开时：列名浮上来，短片从头演（films.tsx） */
+/* 书签带：一根杏色细带从页顶垂下来，打开时落下 */
+.m-ent-flow[data-live] .m-ent-leg-body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: clamp(14px, 1.4vw, 22px);
+  width: 5px;
+  height: clamp(34px, 6vh, 52px);
+  background: var(--accent);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+  translate: 0 -100%;
+  transition: translate 0.7s var(--ease);
+}
+.m-ent-flow[data-live] .m-ent-leg[data-active] .m-ent-leg-body::before {
+  translate: 0 0;
+  transition-delay: 0.6s;
+}
+/* 插图在剩下的空间里按 16:9 撑到最大，图注贴在它下面、和它一样宽 */
+.m-ent-flow[data-live] .m-ent-leg-body {
+  container-type: size;
+  display: grid;
+  place-items: center;
+}
+.m-ent-flow[data-live] .m-ent-leg-stage {
+  grid-template-areas: 'film' 'head';
+  width: min(100%, (100cqh - 46px) * 16 / 9);
+}
+.m-ent-flow[data-live] .m-film {
+  width: 100%;
+}
 .m-ent-flow[data-live] .m-ent-leg-head {
+  flex-wrap: nowrap;
+  white-space: nowrap;
   transition:
     opacity 0.7s var(--ease),
     translate 0.9s var(--ease);
 }
 .m-ent-flow[data-live] .m-ent-leg:not([data-active]) .m-ent-leg-head {
   opacity: 0;
-  translate: 0 10px;
+  translate: 0 6px;
 }
 .m-ent-flow[data-live] .m-ent-leg[data-active] .m-ent-leg-head {
-  transition-delay: 0.3s;
-}
-/* 书脊：列名竖排在上头，整面可以点 */
-.m-ent-flow[data-live] .m-ent-leg-spine {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: var(--spine);
-  padding: clamp(28px, 4.6vh, 44px) 0 clamp(22px, 3.6vh, 32px);
-  border: 0;
-  border-radius: inherit;
-  background: none;
-  color: var(--ink-2);
-  cursor: pointer;
-  transition:
-    opacity 0.4s var(--ease),
-    background-color 0.4s var(--ease);
-}
-.m-ent-flow[data-live] .m-ent-leg[data-active] .m-ent-leg-spine {
-  opacity: 0;
-  pointer-events: none;
-}
-.m-ent-flow[data-live] .m-ent-leg:not([data-active]) .m-ent-leg-spine {
-  transition-delay: 0.3s;
-}
-.m-ent-flow[data-live] .m-ent-leg-spine:hover {
-  background: rgb(var(--shade) / 0.04);
-  color: var(--ink);
-}
-.m-ent-flow[data-live] .m-ent-leg-spine:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: -6px;
-}
-.m-ent-leg-spine-word {
-  font: 400 clamp(14px, 1.1vw, 16px) / 1 var(--sans);
-  letter-spacing: 0.5em;
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-}
-/* 书脊底下一颗杏色小方块：「选中的那个场景」，四段动画里都是它 */
-.m-ent-flow[data-live] .m-ent-leg-spine::after {
-  content: '';
-  width: 7px;
-  height: 7px;
-  margin-top: auto;
-  border-radius: 2px;
-  background: var(--accent);
-  opacity: 0.7;
+  transition-delay: 0.45s;
 }
 
 /* 减少动态：开合不动画，短片停在最后一帧 */
 @media (prefers-reduced-motion: reduce) {
   .m-ent-flow[data-live]
-    :is(.m-ent-leg, .m-ent-leg-body, .m-ent-leg-head, .m-ent-leg-spine) {
+    :is(.m-ent-leg, .m-ent-leg-body, .m-ent-leg-head, .m-ent-leg-spine),
+  .m-ent-flow[data-live] :is(.m-ent-leg-body, .m-ent-leg-spine)::before,
+  .m-ent-flow[data-live] :is(.m-ent-leg-body, .m-ent-leg-spine)::after {
     transition: none !important;
   }
 }
@@ -1107,8 +1177,7 @@
 @media (max-width: 999px) {
   /* 路线：不钉住，四项服务上下排；每项里列名、短片、三句上下排 */
   .m-ent-leg-body {
-    gap: 14px;
-    padding: 18px;
+    padding: 16px;
   }
   /* 短片：画面里的评论收起，三句按出手顺序排在画面下面 */
   .m-film-say {
