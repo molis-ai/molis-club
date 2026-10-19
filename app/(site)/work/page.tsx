@@ -12,8 +12,8 @@ import {
 import { ABOUT, contactHref, essayHref, productHref, WORK_DOWNLOAD } from '../../_site/routes';
 import { Btn, More, Note, pad, Phrases, SectionHead, Status, type Vars } from '../../_site/ui';
 import { Day } from './day';
-import { personaBoot, PersonaRoot, RoutePick, WorkNav } from './persona';
-import { Stage, StageText } from './stage';
+import { personaBoot, PersonaRoot, WorkNav } from './persona';
+import { Yours } from './stage';
 import '../../_site/demo/demo.css';
 import '../../_site/product/product.css';
 import './work.css';
@@ -23,49 +23,57 @@ const work = products.work;
 const WORK_V020 = 'https://github.com/molis-ai/molis-work/tree/v0.2.0';
 
 export const metadata = pageMetadata(
-  `${work.name} · ${work.headline}`,
+  `${work.name} · ${workHero.slogan.join(' ')}`,
   workHero.what,
   productHref.work,
 );
 
-// Molis Work：工作室最核心的产品页。第四版「一个舞台」（specs/work-product-page/spec.md 末节）：一共三屏。
-// 首屏左边是舞台（每条路八段，case 都在动画里演），右边是名字、解释句、选路和报名；
-// 第二屏三句「不」和现在能拿到什么；第三屏我们为什么做它。页内顶栏只有产品名、三条路和报名。
+// Molis Work：工作室最核心的产品页。第五版「先讲人」（specs/work-product-page/spec.md 末节）：一共四屏。
+// 首屏只有口号和信念；第二屏「你的」四样和舞台（case 都在动画里演），下面「如果你」按人换演示；
+// 第三屏三句「不」和现在能拿到什么；第四屏我们为什么做它。页内顶栏只有产品名、三条路和报名。
 export default function WorkPage() {
   return (
     <PersonaRoot className="m-product m-work wp" id="top">
       <script dangerouslySetInnerHTML={{ __html: personaBoot }} />
       <header className="wp-hero m-wrap m-top">
-        <div className="wp-hero-copy">
-          <p className="m-tagline m-rise">
-            <span>{work.form}</span>
-            <Status>{work.stage}</Status>
+        <p className="m-tagline m-rise">
+          <span>{work.form}</span>
+          <Status>{work.stage}</Status>
+        </p>
+        <h1 className="wp-hero-name m-rise" lang="en">
+          {work.name}
+        </h1>
+        <p className="wp-slogan" lang="en">
+          {/* 词之间留真空格：读屏和复制出来是一句话 */}
+          {workHero.slogan.flatMap((word, index) => [
+            index > 0 ? ' ' : null,
+            <span
+              key={word}
+              className="m-rise"
+              style={{ '--delay': `${160 + index * 140}ms` } as Vars}
+            >
+              {word}
+            </span>,
+          ])}
+        </p>
+        <div className="wp-belief m-rise" style={{ '--delay': '900ms' } as Vars}>
+          <p className="wp-belief-big">
+            <Phrases text={workHero.belief} />
           </p>
-          <h1 className="m-phero-name m-rise" lang="en">
-            {work.name}
-          </h1>
-          <p className="m-phero-title m-rise" style={{ '--delay': '120ms' } as Vars}>
-            <Phrases text={work.headline} />
-          </p>
-          <p className="m-phero-what m-rise" style={{ '--delay': '200ms' } as Vars}>
-            {workHero.what}
-          </p>
-          <div className="m-rise" style={{ '--delay': '280ms' } as Vars}>
-            <RoutePick />
-          </div>
-          <div className="wp-go m-rise" style={{ '--delay': '340ms' } as Vars}>
+          <p>{workHero.keep}</p>
+          <div className="wp-go">
             <div className="m-actions">
               <Btn href={contactHref('work-trial')}>{workGo.trial}</Btn>
             </div>
             <p className="wp-go-line">{workGo.line}</p>
           </div>
         </div>
-        <div className="wp-hero-stage m-rise" style={{ '--delay': '160ms' } as Vars}>
-          <Stage />
-          <StageText />
-        </div>
       </header>
       <WorkNav />
+
+      <section className="m-sig wp-yours" id="yours" aria-labelledby="yours-title">
+        <Yours />
+      </section>
 
       <section className="m-sig wp-why" id="why" aria-labelledby="why-title">
         <div className="wp-why-in">

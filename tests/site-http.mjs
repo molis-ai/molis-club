@@ -107,9 +107,14 @@ assert.match(home, new RegExp(`rel="canonical" href="${canonicalOrigin}/?"`));
 const work = await html('/work');
 assert.match(work, /开发中/);
 assert.match(work, /界面示意 · 示例数据/);
-// Work 分三条路（写代码 / 写文档、做研究 / 管事情、跟进度）；状态三档：已发布 · v0.2.0 / 开发中 / 规划中；
-// 许可不写「开源」（Work 的 main 从 2026-10-17 起不是 MIT）；Issue 插件是内部工具，不上官网
-assert.match(work, /你主要做什么/);
+// Work 先讲人：负责人定的口号、信念，再讲四样「你的」，再「如果你」分三条路（写代码 / 写文档、做研究 / 管事情、跟进度）；
+// 状态三档：已发布 · v0.2.0 / 开发中 / 规划中；许可不写「开源」（Work 的 main 从 2026-10-17 起不是 MIT）；Issue 插件是内部工具，不上官网
+assert.match(work, /get connected better than ever/);
+assert.match(work, /我们相信，每个人在工作里的价值都不一样。/);
+for (const keep of ['你的工具，长成你的样子', '你的 AI，按你的做法做事', '要紧的事，你说了算', '工作接得上，换一种样子'])
+  assert(work.includes(keep), `work: keep ${keep}`);
+assert(!/永远和别人不一样|只属于你|完全听你的/.test(work), 'work: no overclaim about yours');
+assert.match(work, /如果你/);
 for (const route of ['写代码', '写文档、做研究', '管事情、跟进度'])
   assert(work.includes(route), `work: route ${route}`);
 assert.match(work, /已发布 · v0\.2\.0/);

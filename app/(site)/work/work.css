@@ -1,5 +1,5 @@
-/* Molis Work 页（第四版「一个舞台」）：一共三屏。首屏左边是舞台（木色的桌面，窗口里是 Molis Work 自己的配色），
-   右边是名字、解释句、选路和报名；第二屏三句「不」和现在能拿到什么；第三屏我们为什么做它。
+/* Molis Work 页（第五版「先讲人」）：一共四屏。首屏只有口号和信念；第二屏左边是舞台（木色的桌面，窗口里是 Molis Work 自己的配色），
+   右边「你的」四样和「如果你」三条路；第三屏三句「不」和现在能拿到什么；第四屏我们为什么做它。
    页面本身只读官网令牌：近白的纸、细字、1px 线、一种杏橙。三条路各看各的，用外层的 data-persona 换。 */
 
 .m-work {
@@ -16,36 +16,55 @@
   display: none !important;
 }
 
-/* ---------- 首屏：左边舞台（八栏），右边名字、解释句、选路、报名（四栏） ---------- */
+/* ---------- 首屏：口号占满一行，信念放在右下，像展墙上的一段说明 ---------- */
 .wp-hero {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--col-gap);
-  align-items: start;
-  padding-bottom: clamp(40px, 8vh, 96px);
+  align-content: center;
+  min-height: calc(100svh - var(--header) - 54px);
+  padding-bottom: clamp(48px, 9vh, 112px);
 }
-.wp-hero-stage {
-  grid-column: 1 / span 8;
-  grid-row: 1;
-  min-width: 0;
+.wp-hero > .m-tagline,
+.wp-hero-name,
+.wp-slogan {
+  grid-column: 1 / -1;
 }
-.wp-hero-copy {
-  grid-column: 9 / -1;
-  grid-row: 1;
+.wp-hero-name {
+  margin-top: clamp(10px, 2vh, 20px);
+  font: 400 var(--t-h3) / 1.2 var(--sans);
+  letter-spacing: 0.02em;
+}
+/* 口号：四个词一个一个落下，第二行接着出来 */
+.wp-slogan {
+  margin-top: clamp(14px, 3vh, 32px);
+  font: 300 var(--t-display) / 1.04 var(--sans);
+  letter-spacing: -0.02em;
+}
+.wp-slogan span {
+  display: inline-block;
+}
+.wp-slogan span:last-child {
+  display: block;
+}
+.wp-belief {
+  grid-column: 7 / -1;
   display: grid;
-  gap: clamp(12px, 2vh, 20px);
-  min-width: 0;
+  gap: 14px;
+  max-width: 34em;
+  margin-top: clamp(36px, 7vh, 88px);
 }
-.wp-hero .m-phero-name {
-  margin-top: 4px;
-  font-size: var(--t-h1);
+.wp-belief p {
+  font: 400 var(--t-read) / 1.95 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
 }
-.wp-hero .m-phero-title {
-  font-size: var(--t-h3);
-  line-height: 1.6;
+.wp-belief .wp-belief-big {
+  font: 400 var(--t-h3) / 1.6 var(--sans);
+  color: var(--ink);
 }
-.wp-hero .m-phero-what {
-  line-height: 1.8;
+.wp-belief .wp-go {
+  margin-top: 14px;
 }
 .wp-go {
   display: grid;
@@ -57,27 +76,125 @@
   color: var(--mute);
 }
 
-/* 选路：三行，每行路名加一行提示（职业版列角色，卡点版写那一刻）；选中的那行描一圈墨线 */
+/* ---------- 第二屏：左边舞台（八栏，中屏七栏），右边「你的」四样和「如果你」（四栏，中屏五栏） ---------- */
+.wp-yours-in {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 32px;
+}
+.wp-yours-stage {
+  grid-column: 1 / span 8;
+  grid-row: 1;
+  min-width: 0;
+}
+.wp-yours-copy {
+  grid-column: 9 / -1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+.wp-yours-title {
+  font: 300 var(--t-h2) / 1.45 var(--sans);
+  letter-spacing: 0.04em;
+  font-feature-settings: 'palt' 1;
+}
+/* 四样：演到哪一样就亮哪一样、展开它的一句；没有 JS 时四样全展开 */
+.wp-keeps {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.wp-keeps button {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 0;
+  font: 400 var(--t-lead) / 1.5 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--mute);
+  cursor: pointer;
+  transition: color 0.4s var(--ease);
+}
+.wp-keeps button::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.2px var(--hair-2);
+  transition:
+    background-color 0.4s var(--ease),
+    box-shadow 0.4s var(--ease);
+}
+.wp-keeps button:hover,
+.wp-keeps li[data-on] button {
+  color: var(--ink);
+}
+.wp-keeps li[data-on] button::before {
+  background: var(--accent);
+  box-shadow: none;
+}
+.wp-keeps button:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 3px;
+}
+.wp-keep-more {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.7s var(--ease);
+}
+.wp-keep-more > div {
+  min-height: 0;
+  overflow: hidden;
+  padding-left: 18px;
+}
+.wp-keeps li[data-on] .wp-keep-more,
+html:not(.js) .wp-keep-more {
+  grid-template-rows: 1fr;
+}
+.wp-keep-more p {
+  font-size: var(--t-body);
+  line-height: 1.85;
+  color: var(--ink-2);
+}
+.wp-keep-more .wp-keep-status {
+  padding: 4px 0 12px;
+  font-size: var(--t-small);
+  letter-spacing: 0.02em;
+  color: var(--mute);
+}
+/* 「如果你」压在右栏底下：四样展开收起时它不跟着跳 */
+.wp-yours-copy .wp-pick {
+  margin-top: auto;
+}
+
+/* 如果你：三行，每行路名加一行角色；选中的那行描一圈墨线 */
 .wp-pick {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
   margin: 4px 0 0;
   padding: 0;
   border: 0;
 }
 .wp-pick legend {
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   padding: 0;
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-  color: var(--mute);
+  font: 400 var(--t-lead) / 1.5 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink);
 }
 .wp-pick button {
   all: unset;
   display: grid;
-  gap: 3px;
-  padding: 10px 14px;
+  gap: 2px;
+  padding: 8px 14px;
   border-radius: var(--r-inset);
   background: var(--white);
   box-shadow: inset 0 0 0 1px var(--hair);
@@ -95,7 +212,7 @@
   letter-spacing: 0.04em;
 }
 .wp-pick small {
-  font: 400 var(--t-small) / 1.55 var(--sans);
+  font: 400 var(--t-small) / 1.5 var(--sans);
   letter-spacing: 0.02em;
   color: var(--mute);
 }
@@ -249,7 +366,7 @@ html:has(.wp-nav) {
   padding-inline: 18px;
 }
 
-/* ---------- 第二屏：左边三句「不」和两行约定；右边现在能拿到什么、怎么试 ---------- */
+/* ---------- 第三屏：左边三句「不」和两行约定；右边现在能拿到什么、怎么试 ---------- */
 .wp-why-in {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -338,8 +455,7 @@ html:has(.wp-nav) {
   margin-top: 8px;
 }
 
-/* ---------- 第三屏：事情都顺了，那人做什么？ ---------- */
-/* ---------- 最后：事情都顺了，那人做什么？ ---------- */
+/* ---------- 第四屏：我们为什么做它；事情都顺了，那人做什么？ ---------- */
 .wd {
   display: grid;
   gap: 10px;
@@ -478,23 +594,54 @@ html:has(.wp-nav) {
 }
 
 /* ---------- 窄屏 ---------- */
-/* 两栏首屏在 901–1240 之间舞台只有六七百像素宽：画面高一些，画面里的字放得下 */
+/* 第二屏两栏在 901–1240 之间舞台只有六七百像素宽：画面高一些，画面里的字放得下；右栏多给一栏，四样和如果你不出一屏 */
 @media (min-width: 901px) and (max-width: 1240px) {
   .wp-stage .m-reel-view {
     --view: 16 / 11 !important;
   }
+  .wp-yours-stage {
+    grid-column: 1 / span 7;
+  }
+  .wp-yours-copy {
+    grid-column: 8 / -1;
+    gap: 16px;
+  }
+  /* 章节线占满一行，「界面示意」和暂停挪到下一行右边：八段的名字最多折两行 */
+  .wp-stage .m-reel-bottom {
+    flex-wrap: wrap;
+  }
+  .wp-stage .m-segs {
+    flex: 1 1 100%;
+  }
+  .wp-stage .m-reel-tools {
+    margin-left: auto;
+  }
+  .wp-pick button {
+    padding-block: 6px;
+  }
 }
 @media (max-width: 900px) {
-  /* 手机、平板竖着：文字在前，舞台在后 */
+  /* 手机、平板竖着：信念占满宽；第二屏标题、舞台、四样、如果你从上到下（四样在舞台下面，展开收起时舞台不跳） */
   .wp-hero {
-    row-gap: 36px;
+    min-height: 0;
   }
-  .wp-hero-copy,
-  .wp-hero-stage,
+  .wp-belief,
+  .wp-yours-stage,
   .wp-why-not,
   .wp-now {
     grid-column: 1 / -1;
     grid-row: auto;
+  }
+  .wp-yours-copy {
+    display: contents;
+  }
+  .wp-yours-title {
+    order: -1;
+    grid-column: 1 / -1;
+  }
+  .wp-keeps,
+  .wp-yours-copy .wp-pick {
+    grid-column: 1 / -1;
   }
   .wd,
   .wp-close,
@@ -525,9 +672,6 @@ html:has(.wp-nav) {
   .wp-stage .m-seg {
     flex: 1 1 calc(25% - 6px);
   }
-  .wp-stage[data-intro] .m-seg {
-    flex-basis: calc(33% - 6px);
-  }
   .wp-stage .m-reel-tools {
     margin-left: auto;
   }
@@ -557,7 +701,10 @@ html:has(.wp-nav) {
 @media (prefers-reduced-motion: reduce) {
   .wd-blk,
   .wd-blk > span,
-  .wp-pick button {
+  .wp-pick button,
+  .wp-keep-more,
+  .wp-keeps button,
+  .wp-keeps button::before {
     transition: none !important;
   }
 }

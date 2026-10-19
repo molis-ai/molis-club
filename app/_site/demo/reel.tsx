@@ -3,10 +3,12 @@ import { Pause, Play } from 'lucide-react';
 import {
   memo,
   useEffect,
+  useImperativeHandle,
   useRef,
   useState,
   type CSSProperties,
   type ReactNode,
+  type Ref,
 } from 'react';
 import { pad } from '../ui';
 import type { Scene } from './demo';
@@ -17,8 +19,12 @@ import type { Scene } from './demo';
 // Work 首屏的舞台多两样（都可选）：细线下写每段的短标题（titles）；画面下一行字幕（subtitles）——
 // 先是灰字「原来……」（was），演到最后一步时亮出这一段的一句（say）和状态（tag）；
 // 不轮播（loop={false}）时演完最后一段就停在它的结果上，点任意一条细线重看。
+// 旁边的文字要跟着画面走时：onNow 告诉外面现在演到第几段，control 让外面点了别处也能换段。
 
 export type Segment = { title: string; scene: Scene; tag?: string; was?: string; say?: string };
+
+/** 外面换段用 */
+export type ReelControl = { go: (index: number) => void };
 
 const Frame = memo(function Frame({
   scene,
@@ -58,6 +64,8 @@ export function Reel({
   titles = false,
   subtitles = false,
   loop = true,
+  onNow,
+  control,
 }: {
   name: string;
   segments: Segment[];
@@ -75,6 +83,10 @@ export function Reel({
   subtitles?: boolean;
   /** 演完最后一段接着从头演；false 时停在最后一段的结果上 */
   loop?: boolean;
+  /** 换段时告诉外面现在是第几段 */
+  onNow?: (index: number) => void;
+  /** 外面换段：control.current.go(第几段) */
+  control?: Ref<ReelControl>;
 }) {
   const [now, setNow] = useState(0);
   // 服务端与没有 JS 时停在结果上；开始播时从第一步演起
@@ -129,6 +141,12 @@ export function Reel({
     setRound((value) => value + 1);
     paint(fills.current, segments, index, reduced ? Infinity : 0);
   };
+
+  useEffect(() => {
+    onNow?.(now);
+  }, [now, onNow]);
+
+  useImperativeHandle(control, () => ({ go }));
 
   // 减少动态：不播，停在这一段的结果上
   const shown = reduced ? segments[now].scene.steps - 1 : step;

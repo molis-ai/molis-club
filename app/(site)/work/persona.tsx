@@ -7,7 +7,7 @@ import { Btn } from '../../_site/ui';
 // 三条路各看各的：写代码（默认）/ 写文档、做研究 / 管事情、跟进度。
 // 选择记在本机（localStorage），链接里的 #dev / #doc / #ops 直接指定；没有 JS 时就是「写代码」那一版。
 // 按路变的静态内容三版都在页面里，由外层的 data-persona 用样式藏掉另外两版（不闪、无 JS 也可读）；
-// 首屏舞台读这里的状态：还没选过路时轮演三条路各自最要紧的一段，选了路演这条路的八段。
+// 第二屏的舞台读这里的状态：还没选过路时四样「你的」各演一段，选了路演这条路的八段。
 
 const KEY = 'molis-work-persona';
 const HASH = /^#(dev|doc|ops)$/;
@@ -57,7 +57,7 @@ function choose(next: Persona) {
   listeners.forEach((listener) => listener());
 }
 
-/** persona：按哪条路显示（没选过时是写代码）；chosen：访客自己选过没有（舞台用它决定演三句反转还是八段） */
+/** persona：按哪条路显示（没选过时是写代码）；chosen：访客自己选过没有（舞台用它决定演四样各一段还是八段） */
 export function usePersona() {
   const chosen = useSyncExternalStore(subscribe, readChosen, () => null);
   return { persona: chosen ?? 'dev', chosen, set: choose };
@@ -80,7 +80,7 @@ export function PersonaRoot({
   );
 }
 
-/** 首屏右边：你主要做什么？三条路，每条下面一行角色，各种人靠这一行认出自己 */
+/** 第二屏右边，四样「你的」下面：如果你……三条路，每条下面一行角色，各种人靠这一行认出自己 */
 export function RoutePick() {
   const { chosen, set } = usePersona();
   return (
@@ -96,7 +96,7 @@ export function RoutePick() {
   );
 }
 
-/** 页内顶栏：钉在全站顶栏下面；产品名、三条路、报名按钮。一共三屏，不再列段落 */
+/** 页内顶栏：钉在全站顶栏下面；产品名、三条路、报名按钮。不列段落 */
 export function WorkNav() {
   const { chosen, set } = usePersona();
   return (
