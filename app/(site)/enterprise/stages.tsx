@@ -3,20 +3,19 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { enterprise, type StationId } from '../../../content/site/enterprise';
 import { Phrases, type Vars } from '../../_site/ui';
 import { play } from './keeps';
-import { Scene } from './scenes';
+import { Duet } from './duets';
 
 // 我们怎样开展合作（负责人 2026-10-19：之前那版「是一个合格的 PPT」——四张卡加十二格，一眼全摊开、每样东西一样重）。
 // 改成一次只看一项服务的展开式长卷：
 // 四项服务像书架上并排的四本书，书脊上竖排着列名（诊断、共建、评估、培训，5.2 开头那句里的词），各用「关于」的一种墙色。
-// 往下滚，整屏钉住，一本一本地打开：打开的那本铺成一面宽墙，中间是这项服务的示意动画（scenes.tsx），
-// 业务团队站在左边、Molis 站在右边，两边的字都朝着中间；一起做的事落在动画下面——两边走到一起的地方。
-// 打开时左右两段从两边往中间靠拢，接着「一起」从下面浮上来，动画从头演一遍。
-// 点一本合着的书，滚到它那一拍；鼠标停在动画上，动画重演。
-// 宽屏（≥1000 宽、≥600 高）有 JS 时才钉住；手机、矮屏、没有 JS 时四项服务从上到下排开，每项里三个角色上下排。
+// 往下滚，整屏钉住，一本一本地打开：打开的那面上头是列名与服务全名，下面是一出小戏（duets.tsx）——
+// 业务团队站在左边、Molis 站在右边，中间是一起干活的桌面；谁出手谁那边先动、东西飞上桌，最后两边在桌上同一处碰头；
+// 台面下三行字幕对着三个位置，谁出手谁那句浮上来（负责人 2026-10-20：用动画演出 Molis 跟业务怎么合作）。
+// 点一本合着的书，滚到它那一拍；鼠标停在台面上，那出戏重演。
+// 宽屏（≥1000 宽、≥600 高）有 JS 时才钉住；手机、矮屏、没有 JS 时四项服务从上到下排开。
 
-const { path, line } = enterprise;
+const { path } = enterprise;
 const stationIds = Object.keys(path.stations) as StationId[];
-const roles = ['you', 'both', 'we'] as const;
 const LEGS = stationIds.length;
 
 export function Stages() {
@@ -62,7 +61,7 @@ export function Stages() {
     const root = ref.current;
     if (!root) return;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const scenes = Array.from(root.querySelectorAll('.m-scene'));
+    const scenes = Array.from(root.querySelectorAll('.m-duet'));
     for (const scene of scenes) {
       scene.setAttribute('data-play', '');
       scene.setAttribute('data-hold', '');
@@ -99,7 +98,7 @@ export function Stages() {
     }
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const scene = ref.current?.querySelector(
-      `.m-ent-leg[data-index="${active}"] .m-scene`,
+      `.m-ent-leg[data-index="${active}"] .m-duet`,
     );
     if (!scene) return;
     if (scene.hasAttribute('data-hold')) scene.removeAttribute('data-hold');
@@ -171,39 +170,19 @@ export function Stages() {
                     <p className="m-ent-leg-name">{station.name}</p>
                   </header>
                   <div
-                    className="m-ent-leg-scene"
+                    className="m-ent-leg-stage"
                     onPointerEnter={(event) => {
                       if (event.pointerType !== 'mouse') return;
                       if (
                         matchMedia('(prefers-reduced-motion: reduce)').matches
                       )
                         return;
-                      const scene =
-                        event.currentTarget.querySelector('.m-scene');
-                      if (scene && !scene.hasAttribute('data-hold'))
-                        play(scene);
+                      const duet = event.currentTarget.querySelector('.m-duet');
+                      if (duet && !duet.hasAttribute('data-hold')) play(duet);
                     }}
                   >
-                    <Scene id={id} />
+                    <Duet id={id} />
                   </div>
-                  {roles.map((who) => (
-                    <p key={who} className="m-ent-duty" data-who={who}>
-                      <span
-                        className="m-ent-duty-who"
-                        lang={who === 'we' ? 'en' : undefined}
-                      >
-                        {line.who[who]}
-                      </span>
-                      {/* 按词组排，只在词组之间折行 */}
-                      <span className="m-ent-duty-text">
-                        {line.rows[id][who].map((group) => (
-                          <span key={group} className="m-phrase">
-                            {group}
-                          </span>
-                        ))}
-                      </span>
-                    </p>
-                  ))}
                 </div>
               </li>
             );
