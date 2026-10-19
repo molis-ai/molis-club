@@ -107,7 +107,7 @@ void test('内部编辑备注不对外', () => {
 });
 
 const { team, members } = await import('../content/site/team.ts');
-const { aboutUi } = await import('../content/site/about.ts');
+const { aboutUi, painters } = await import('../content/site/about.ts');
 const { enterprise } = await import('../content/site/enterprise.ts');
 const { form } = await import('../content/site/contact.ts');
 const { along, alongGroups } = await import('../content/site/along.ts');
@@ -124,8 +124,9 @@ void test('团队、关于、企业合作、联系、沿途页里取自底稿的
         `team ${member.name}：正面那句「${member.front}」不在本人的标签或签名里`,
       );
   }
-  // 关于：大标题是 1.4 的小标题
+  // 关于：大标题是 1.4 的小标题；《黑客与画家》对照用的原段留在底稿的编辑决定里
   assertVerbatim(aboutUi.title, 'about');
+  assertVerbatim(painters.original, 'about painters original');
   // 企业合作：标题、开场三段、5.1 五个问题、5.2 开头一句
   assertVerbatim(enterprise.title, 'enterprise');
   for (const text of enterprise.intro) assertVerbatim(text, 'enterprise intro');

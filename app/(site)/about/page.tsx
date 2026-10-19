@@ -16,10 +16,13 @@ import {
 import { ReviewSwitch } from '../../_site/review/comparison';
 import { BeliefWall } from './belief-wall';
 import { AboutOne } from './one';
+import { MakersReview } from './painters';
 import { Trio } from './trio';
 import './about.css';
 
-type Props = { searchParams: Promise<{ study?: string }> };
+type Props = {
+  searchParams: Promise<{ study?: string; makers?: string }>;
+};
 
 /** 一页式的标题是「关于」（一页里不止信念）；旧版对照照旧是「我们相信什么」 */
 export async function generateMetadata({ searchParams }: Props) {
@@ -67,12 +70,17 @@ const beliefWorks = [
 
 // 「关于」是一整页（C1，负责人 2026-10-18 通过样张后切成默认），正文在 one.tsx。
 // 旧的四间展厅版暂留对照：/about?study=current 是旧版，/about?study=one 是带比较条的一页式；不带参数时没有比较条。
+// 《黑客与画家》标题下那段两版对照（负责人 2026-10-19）：/about?makers=original 是原段，?makers=sentence 是一句，都带比较条。
 export default async function AboutPage({ searchParams }: Props) {
-  const { study } = await searchParams;
+  const { study, makers } = await searchParams;
   const one = study !== 'current';
+  const lead = makers === 'original' ? 'original' : 'sentence';
   return (
     <>
-      {one ? <AboutOne /> : <AboutCurrent />}
+      {one ? <AboutOne lead={lead} /> : <AboutCurrent />}
+      {one && makers !== undefined && study === undefined ? (
+        <MakersReview lead={lead} />
+      ) : null}
       {study === 'one' || study === 'current' ? (
         <ReviewSwitch
           label={nav.about}

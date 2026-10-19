@@ -5,10 +5,13 @@ import { studio } from '../../../content/site/studio';
 import { Phrases, type Vars } from '../../_site/ui';
 import { PaintersFit } from './painters-fit';
 import { FULL, LAYERS } from './painters-plan';
+import { ABOUT } from '../../_site/routes';
+import '../../_site/review/comparison.css';
 import './painters.css';
 
 // 《黑客与画家》（负责人 2026-10-18 定）：左边画家，右边黑客，同一次滚动一起推近。
 // 标题下是底稿 1.3 那句原话，当从序到这一章的过渡（负责人 2026-10-19：「不然好突兀」）。
+// 收成一句之前的原段也留着对照（负责人 2026-10-19：「两版都先保留」）：lead="original" 换成原段，MakersReview 是切换条。
 // 宽屏时标题、那句话和一对框一起钉住；手机上标题和那句话先正常滚过去，只钉一对框，不然一屏放不下。
 // 左边是达·芬奇的《吉内薇拉·德·班琪》，从整幅推进她身后的杜松，停在杜松与天空交界的地方；
 // 右边是本站真实的样式表（构建时原样读进来），从整张推到全站那条缓动曲线和它的注释。
@@ -37,7 +40,9 @@ const sheet = [
   return { ...block, text: text.endsWith('\n') ? `${text}\n` : text };
 });
 
-export function Painters() {
+export type Lead = 'sentence' | 'original';
+
+export function Painters({ lead = 'sentence' }: { lead?: Lead }) {
   return (
     <PaintersFit>
       <div className="hp-stage">
@@ -46,7 +51,11 @@ export function Painters() {
             {painters.title}
           </h2>
           <p className="hp-lead">
-            <Phrases text={studio.standard.makers} />
+            <Phrases
+              text={
+                lead === 'original' ? painters.original : studio.standard.makers
+              }
+            />
           </p>
         </div>
         <div className="hp-body">
@@ -135,5 +144,26 @@ export function Painters() {
         </div>
       </div>
     </PaintersFit>
+  );
+}
+
+/** 标题下那段两版对照的切换条（只在带 ?makers= 时出现，样子同全站的样张比较条） */
+export function MakersReview({ lead }: { lead: Lead }) {
+  const { review } = painters;
+  return (
+    <aside className="m-review-bar" aria-label={`${review.label}样张比较`}>
+      <span className="m-review-label">{review.label} · 本地样张比较</span>
+      <nav aria-label={`${review.label}版本`}>
+        {(['sentence', 'original'] as const).map((name) => (
+          <a
+            key={name}
+            href={`${ABOUT}?makers=${name}#makers`}
+            aria-current={lead === name ? 'page' : undefined}
+          >
+            {review[name]}
+          </a>
+        ))}
+      </nav>
+    </aside>
   );
 }
