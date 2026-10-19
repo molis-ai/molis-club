@@ -2,6 +2,7 @@
    《黑客与画家》：画家与黑客左右一对，钉在视口里，往下滚两边一起推近（painters.tsx）。
    进度 --pin 来自全站滚动钩子；推近的倍数与位移在这里按 --pin 算，框的尺寸由 painters-fit 量好写进来。
    --e：推近进度（0 整幅 → 1 终点，两头缓）；--end：终点处图注换成第二行、那句话浮现。
+   宽屏时标题、底稿那句与一对框一起钉住；手机上标题和那句先滚过去，只钉一对框（.hp-stage 变成 contents，.hp-body 钉住）。
    ===================================================================== */
 
 .hp {
@@ -21,14 +22,29 @@
   height: calc(100svh - var(--header));
   padding-block: clamp(12px, 3vh, 40px);
 }
+.hp-head,
+.hp-body {
+  display: grid;
+  justify-items: center;
+}
 .hp-title.ao-ch-title {
-  margin-bottom: clamp(12px, 2.6vh, 28px);
+  margin-bottom: clamp(6px, 1.2vh, 14px);
+}
+/* 标题下那句底稿原话：从序过渡到这一章 */
+.hp-lead {
+  max-width: 34em;
+  margin-bottom: clamp(14px, 3vh, 34px);
+  font: 300 var(--t-lead) / 1.85 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+  text-align: center;
+  text-wrap: balance;
 }
 
 /* ---------- 一对框：同样大小，比例是这幅画的比例 ---------- */
 .hp-pair {
   --hp-gap: clamp(32px, 5vw, 80px);
-  --hp-h: clamp(240px, calc(100svh - var(--header) - 300px), 560px);
+  --hp-h: clamp(240px, calc(100svh - var(--header) - 380px), 540px);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -181,8 +197,21 @@
 
 /* ---------- 窄屏：两个框上下排 ---------- */
 @media (max-width: 760px) {
+  .hp-stage {
+    display: contents;
+  }
+  .hp-head {
+    padding-bottom: clamp(8px, 2vh, 24px);
+  }
+  .hp-body {
+    position: sticky;
+    top: var(--header);
+    align-content: center;
+    height: calc(100svh - var(--header));
+    padding-block: clamp(12px, 3vh, 40px);
+  }
   .hp-pair {
-    --hp-h: clamp(170px, calc((100svh - var(--header) - 300px) / 2), 320px);
+    --hp-h: clamp(150px, calc((100svh - var(--header) - 280px) / 2), 320px);
     flex-direction: column;
     align-items: stretch;
     gap: 14px;
@@ -207,7 +236,8 @@
     --end: 1;
     height: auto;
   }
-  .hp-stage {
+  .hp-stage,
+  .hp-body {
     position: relative;
     top: auto;
     height: auto;
@@ -224,7 +254,8 @@ html:not(.js) .hp {
   --end: 1;
   height: auto;
 }
-html:not(.js) .hp-stage {
+html:not(.js) .hp-stage,
+html:not(.js) .hp-body {
   position: relative;
   top: auto;
   height: auto;
