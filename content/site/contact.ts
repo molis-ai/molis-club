@@ -82,9 +82,9 @@ export const followIdea = (name: string) => `想关注 ${name} 的进展。`;
 export const form = {
   intentLegend: '来意',
   productLegend: '哪一件',
-  /** 企业合作页：来意固定，不给选；别的事指去联系页（新写） */
+  /** 企业合作页：来意固定，不给选；旁边一个入口去联系页，按钮只写去处（常驻约束：不写引导，新写） */
   fixedLabel: '来意',
-  elsewhere: '别的事，走联系页',
+  elsewhere: '联系页',
   name: '怎么称呼你',
   email: '联系邮箱',
   emailPlaceholder: 'you@example.com',

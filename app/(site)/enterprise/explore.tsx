@@ -549,7 +549,7 @@ function Sketch({ row }: { row: Exploration }) {
   return <Aether w={row.words} />;
 }
 
-export function Explore() {
+export function Explore({ lean = false }: { lean?: boolean }) {
   const list = useRef<HTMLUListElement>(null);
 
   // 卡进入视口时，各自的示意画一遍（只一次）；减少动态时直接是画好的样子
@@ -582,7 +582,8 @@ export function Explore() {
       aria-labelledby="ent-explore-title"
     >
       <header className="m-ent-explore-head" data-reveal>
-        <p className="m-kicker">{explore.kicker}</p>
+        {/* 样张（D1，lean）：页脚的章已写「内部探索」，眉题不再重复 */}
+        {lean ? null : <p className="m-kicker">{explore.kicker}</p>}
         <h2 className="m-ent-explore-title" id="ent-explore-title">
           <Phrases text={explore.title} />
         </h2>

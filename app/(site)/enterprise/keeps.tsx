@@ -9,9 +9,9 @@ import type { Vars } from '../../_site/ui';
 // 画布 240 × 170，墨色细线、白纸、一点杏橙，纸张带一层柔和的影子。动画在 enterprise.css（m-k- 开头）。
 
 const VIEW = '0 0 240 170';
-const at = (seconds: number) => ({ '--d': `${seconds}s` }) as Vars;
+export const at = (seconds: number) => ({ '--d': `${seconds}s` }) as Vars;
 
-function Shadow({ id }: { id: string }) {
+export function Shadow({ id }: { id: string }) {
   return (
     <defs>
       <filter id={id} x="-25%" y="-20%" width="150%" height="150%">

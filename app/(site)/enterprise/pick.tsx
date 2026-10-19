@@ -69,7 +69,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
  * 离开纸条和回应这一整块，回到选定的那张，没选过就回到那句提示。触屏上点一下就是选定。
  * 回应叠在同一格里，高度按最长的那条留好，换来换去下面的内容不跳。
  */
-export function Slips() {
+export function Slips({ lean = false }: { lean?: boolean }) {
   const context = usePick();
   const pick = context?.pick ?? null;
   const [hover, setHover] = useState<QuestionId | null>(null);
@@ -127,10 +127,28 @@ export function Slips() {
         ))}
       </fieldset>
 
-      <div className="m-ent-replies">
-        <p className="m-ent-reply-idle">{hook.idle}</p>
+      <div className="m-ent-replies" data-lean={lean || undefined}>
+        {lean ? null : <p className="m-ent-reply-idle">{hook.idle}</p>}
         {questions.items.map((question) => {
           const item = path.advice[question.id];
+          // 样张（D1，lean）：只回问题原句；选过的只带进末尾的表单（负责人 2026-10-19：照原文，不配对）。
+          // 路线就在下面一屏，不再放「看看这条路怎么走」（负责人 2026-10-19 问必要性：不配对之后它只是往下滚一屏）
+          if (lean)
+            return (
+              <div
+                key={question.id}
+                className="m-ent-reply"
+                data-for={question.id}
+                data-lean
+              >
+                <p className="m-ent-reply-title">{question.title}</p>
+                <p className="m-actions">
+                  <button type="reset" className="m-link">
+                    {hook.reset}
+                  </button>
+                </p>
+              </div>
+            );
           return (
             <div
               key={question.id}
@@ -179,13 +197,15 @@ export function Slips() {
         })}
         {/* 读屏：选定了什么，念一遍回应（画面上的那几块不是 live 区，免得重复） */}
         <p className="sr-only" aria-live="polite">
-          {advice && pick
-            ? `${questions.items.find((item) => item.id === pick)?.wish ?? ''}${hook.start}：${path.stations[advice.start].name}${
-                advice.next
-                  ? `，${hook.next}：${path.stations[advice.next].name}`
-                  : ''
-              }。${advice.reason}${hook.caveat}`
-            : ''}
+          {advice && pick && lean
+            ? (questions.items.find((item) => item.id === pick)?.title ?? '')
+            : advice && pick
+              ? `${questions.items.find((item) => item.id === pick)?.wish ?? ''}${hook.start}：${path.stations[advice.start].name}${
+                  advice.next
+                    ? `，${hook.next}：${path.stations[advice.next].name}`
+                    : ''
+                }。${advice.reason}${hook.caveat}`
+              : ''}
         </p>
       </div>
     </form>
