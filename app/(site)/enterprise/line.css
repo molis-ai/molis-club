@@ -138,7 +138,7 @@
    我们怎样开展合作：一次只看一项服务的展开式长卷（stages.tsx）
    四项服务像书架上的四本书：同一种纸色的书脊立在一道细线上，钉住后往下滚一本一本打开；
    打开的那本书脊留在左边，右边翻出一页白纸，纸上一张插图（短片）、一行图注、一根杏色书签带。
-   不用彩色大底、不画假光影；颜色、字号、圆角只读 site.css 的令牌。
+   书是圆角、带一层很淡的暖色影子（负责人 2026-10-20）；不用彩色大底；颜色、字号、圆角只读 site.css 的令牌。
    宽屏有 JS 时才钉住（data-live）；其余情况四项从上到下排开
    ===================================================================== */
 .m-ent-flow {
@@ -190,10 +190,13 @@
   list-style: none;
 }
 .m-ent-leg {
+  --lift: 0 1px 2px rgb(var(--shade) / 0.05),
+    0 10px 22px -14px rgb(var(--shade) / 0.24);
   position: relative;
   border: 1px solid var(--hair);
-  border-radius: var(--r-label);
+  border-radius: var(--r-inset);
   background: var(--white);
+  box-shadow: var(--lift);
 }
 
 /* 翻开的那一页：插图（短片）在上，图注在下（窄屏图注在上） */
@@ -589,7 +592,10 @@
   font-family: var(--latin);
   letter-spacing: 0.04em;
 }
-/* 进度：钉在画框底边，不跟镜头走 */
+/* 进度：钉在画框底边，不跟镜头走；不演的时候（没有 JS、减少动态）不出现 */
+.m-film:not([data-play]) .m-film-bar {
+  display: none;
+}
 .m-film-bar {
   position: absolute;
   right: 0;
@@ -626,19 +632,23 @@
   align-self: center;
   box-shadow: 0 1px 0 var(--hair-2);
 }
-/* 一本书 = 书脊 + 一页纸；合着时那页纸被裁掉。高矮略有参差，像真的一排书 */
+/* 一本书 = 书脊 + 一页纸；合着时那页纸被裁掉。圆角、一层淡影子，高矮略有参差，像真的一排书 */
 .m-ent-flow[data-live] .m-ent-leg {
+  --book: calc(var(--spine) + 2px);
   display: flex;
-  flex: 0 0 var(--spine);
+  flex: 0 0 var(--book);
   height: calc(100% - var(--short, 0px));
   min-width: 0;
   overflow: hidden;
-  border: 0;
-  border-radius: var(--r-label) var(--r-label) 0 0;
-  background: none;
+  background: var(--paper-2);
   transition:
     flex-grow 0.9s var(--ease),
-    translate 0.5s var(--ease);
+    translate 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+.m-ent-flow[data-live] .m-ent-leg[data-active] {
+  --lift: 0 1px 2px rgb(var(--shade) / 0.06),
+    0 22px 44px -26px rgb(var(--shade) / 0.34);
 }
 .m-ent-flow[data-live] .m-ent-leg:nth-child(2) {
   --short: 22px;
@@ -655,6 +665,8 @@
 /* 停在合着的书脊上：那本书往上抽出一点 */
 .m-ent-flow[data-live] .m-ent-leg:not([data-active]):hover,
 .m-ent-flow[data-live] .m-ent-leg:not([data-active]):focus-within {
+  --lift: 0 2px 3px rgb(var(--shade) / 0.06),
+    0 18px 30px -14px rgb(var(--shade) / 0.32);
   translate: 0 -8px;
 }
 
@@ -667,9 +679,7 @@
   width: var(--spine);
   height: 100%;
   padding: clamp(18px, 3vh, 26px) 0 clamp(16px, 2.6vh, 22px);
-  border: 1px solid var(--hair);
-  border-bottom: 0;
-  border-radius: var(--r-label) var(--r-label) 0 0;
+  border: 0;
   background: var(--paper-2);
   color: var(--ink-2);
   cursor: pointer;
@@ -678,7 +688,7 @@
     color 0.4s var(--ease);
 }
 .m-ent-flow[data-live] .m-ent-leg[data-active] .m-ent-leg-spine {
-  border-radius: var(--r-label) 0 0 0;
+  box-shadow: inset -1px 0 0 var(--hair);
   color: var(--ink);
   cursor: default;
 }
@@ -736,14 +746,10 @@
 .m-ent-flow[data-live] .m-ent-leg-body {
   position: relative;
   flex: none;
-  width: calc(100cqw - 4 * var(--spine) - 3 * var(--gap));
+  width: calc(100cqw - 3 * var(--book) - 3 * var(--gap) - var(--spine) - 2px);
   height: 100%;
   padding: clamp(16px, 3vh, 28px) clamp(20px, 2.4vw, 36px)
     clamp(14px, 2.4vh, 22px);
-  border: 1px solid var(--hair);
-  border-bottom: 0;
-  border-left: 0;
-  border-radius: 0 var(--r-label) 0 0;
   background: var(--white);
   opacity: 0;
   transition: opacity 0.35s var(--ease);
