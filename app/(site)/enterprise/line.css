@@ -135,9 +135,9 @@
 }
 
 /* =====================================================================
-   我们怎样开展合作：仍在一屏，切成三部分
-   ① 四张并排的卡（示意动画 + 列名），视觉重点；② 双方分别做什么，一块浅底、字小一档；③ 产出，一行、字小一档
-   角色名与「产出」只在最左边写一次；颜色、字号只读 site.css 的令牌
+   我们怎样开展合作：仍在一屏，分两部分（原来的第三部分「产出」负责人 2026-10-19 删去）
+   ① 四张并排的卡（示意动画 + 列名），视觉重点；② 双方分别做什么，一块浅底、字小一档
+   角色名只在最左边写一次；颜色、字号只读 site.css 的令牌
    ===================================================================== */
 .m-ent-flow {
   display: grid;
@@ -165,11 +165,11 @@
   letter-spacing: 0.03em;
 }
 .m-ent-flow-grid {
-  /* 卡里的字从这里起：② ③ 的字和卡上的列名对齐 */
+  /* 卡里的字从这里起：② 的字和卡上的列名对齐 */
   --inset: clamp(14px, 1.2vw, 18px);
   display: grid;
   grid-template-columns: clamp(72px, 6.2vw, 96px) repeat(4, minmax(0, 1fr));
-  grid-template-rows: repeat(5, auto);
+  grid-template-rows: repeat(4, auto);
   column-gap: clamp(10px, 1.1vw, 18px);
 }
 /* ② 那块浅底：从最左边的角色名一直铺到最后一列 */
@@ -181,12 +181,12 @@
 }
 .m-ent-flow-who {
   grid-column: 1;
-  grid-row: 2 / span 4;
+  grid-row: 2 / span 3;
   display: grid;
   grid-template-rows: subgrid;
 }
 .m-ent-stop {
-  grid-row: 1 / span 5;
+  grid-row: 1 / span 4;
   display: grid;
   grid-template-rows: subgrid;
   position: relative;
@@ -294,7 +294,7 @@
   translate: 0 -0.15em;
 }
 
-/* 最左边：角色名与「产出」各写一次，和那一行的第一件事对齐 */
+/* 最左边：角色名写一次，和那一行的第一件事对齐 */
 .m-ent-who {
   display: flex;
   align-items: center;
@@ -318,10 +318,6 @@
   font: 500 12.5px / 1.75 var(--latin);
   letter-spacing: 0.06em;
 }
-.m-ent-who[data-who='output'] {
-  padding-top: clamp(12px, 2vh, 18px);
-  color: var(--mute);
-}
 /* 圆点：业务团队墨色，Molis 杏色，一起是两颗叠在一起 */
 .m-ent-mark {
   flex: none;
@@ -338,22 +334,8 @@
   box-shadow: 4px 0 0 var(--accent);
 }
 
-/* ③ 产出：一行，字小一档 */
-.m-ent-output {
-  display: grid;
-  align-content: start;
-  margin: 0;
-  padding: clamp(12px, 2vh, 18px) var(--inset) 0;
-}
-.m-ent-output-name {
-  color: var(--ink);
-  font: 400 clamp(12.5px, 0.95vw, 13.5px) / 1.65 var(--sans);
-  letter-spacing: 0.03em;
-}
-
-/* 每一列里的角色名与「产出」：宽屏只给读屏（最左边已经写了），窄屏写出来 */
-.m-ent-lane-who,
-.m-ent-output-kicker {
+/* 每一列里的角色名：宽屏只给读屏（最左边已经写了），窄屏写出来 */
+.m-ent-lane-who {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -362,9 +344,8 @@
   white-space: nowrap;
 }
 
-/* 鼠标在哪一列：那张卡浮起一点、动画重演，别的列的 ② ③ 退淡，好顺着一列往下读 */
-.m-ent-lane,
-.m-ent-output {
+/* 鼠标在哪一列：那张卡浮起一点、动画重演，别的列的 ② 退淡，好顺着一列往下读 */
+.m-ent-lane {
   transition: opacity 0.4s var(--ease);
 }
 @media (hover: hover) {
@@ -374,9 +355,7 @@
       0 0 0 1px var(--hair-2),
       0 24px 40px -28px rgb(var(--shade) / 0.55);
   }
-  .m-ent-flow-grid:has(.m-ent-stop:hover)
-    .m-ent-stop:not(:hover)
-    :is(.m-ent-lane, .m-ent-output) {
+  .m-ent-flow-grid:has(.m-ent-stop:hover) .m-ent-stop:not(:hover) .m-ent-lane {
     opacity: 0.42;
   }
 }
@@ -952,7 +931,7 @@
 
 /* ---------- 窄屏 ---------- */
 @media (max-width: 999px) {
-  /* 路线：两列一排，角色名与「产出」写在列里；② 那块浅底收进每一列 */
+  /* 路线：两列一排，角色名写在列里；② 那块浅底收进每一列 */
   .m-ent-flow {
     min-height: 0;
     padding-block: var(--section-top) var(--section-bottom);
@@ -985,8 +964,7 @@
     padding-bottom: 14px;
     border-radius: 0 0 var(--r-panel) var(--r-panel);
   }
-  .m-ent-lane-who,
-  .m-ent-output-kicker {
+  .m-ent-lane-who {
     position: static;
     width: auto;
     height: auto;
@@ -1005,11 +983,6 @@
   .m-ent-lane[data-who='we'] .m-ent-lane-who {
     color: var(--accent-ink);
     font-family: var(--latin);
-  }
-  .m-ent-output-kicker {
-    color: var(--mute);
-    font: 500 var(--t-label) / 1.6 var(--sans);
-    letter-spacing: 0.16em;
   }
 
   /* 为什么：字在上、画面在下 */

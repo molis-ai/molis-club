@@ -5,21 +5,19 @@ import { Phrases, type Vars } from '../../_site/ui';
 import { play } from './keeps';
 import { Scene } from './scenes';
 
-// 我们怎样开展合作（负责人 2026-10-19：方向对了，视觉再舒服一点）：仍在一屏里，切成三部分，重点在第一部分。
+// 我们怎样开展合作（负责人 2026-10-19：方向对了，视觉再舒服一点）：仍在一屏里，分两部分，重点在第一部分。
 // 上面一行标题（5.3 原文）与 5.2 开头那句：可以从一项具体服务开始，也可以组合——不让人以为非得四步走完。
 // ① 四张并排的卡：每项服务一段示意动画演它在干什么（scenes.tsx），下面是列名（诊断、共建、评估、培训，5.2 开头那句里的词）与服务全名；
-// ② 双方分别做什么：一块浅底，业务团队、一起、Molis 三行，字小一档；
-// ③ 每项服务的产出：一行，字小一档。
-// 角色名与「产出」只在最左边写一次，每件事前面一颗圆点：业务团队墨色、Molis 杏色、一起是墨色与杏色叠在一起。
-// 四段动画进屏后从左到右接力演一遍；鼠标移到哪一列，那一列的动画重演，别的列的 ②③ 退淡一点，好顺着一列往下读。
-// 静止就是演完的样子（没有 JS、减少动态都看这一帧）。窄于 1000 时两列一排、窄于 640 一列一排，角色名与「产出」写在列里。
+// ② 双方分别做什么：一块浅底，业务团队、一起、Molis 三行，字小一档。
+// 原来还有一行产出（负责人 2026-10-19 删去）。
+// 角色名只在最左边写一次，每件事前面一颗圆点：业务团队墨色、Molis 杏色、一起是墨色与杏色叠在一起。
+// 四段动画进屏后从左到右接力演一遍；鼠标移到哪一列，那一列的动画重演，别的列的 ② 退淡一点，好顺着一列往下读。
+// 静止就是演完的样子（没有 JS、减少动态都看这一帧）。窄于 1000 时两列一排、窄于 640 一列一排，角色名写在列里。
 
 const { path, line } = enterprise;
 const stationIds = Object.keys(path.stations) as StationId[];
 const roles = ['you', 'both', 'we'] as const;
 type Role = (typeof roles)[number];
-/** 最左边那一列：三个角色，再加一行产出 */
-const rows = [...roles, 'output'] as const;
 
 /** 这一列某个角色做的事 */
 const actsOf = (id: StationId, who: Role) =>
@@ -101,13 +99,13 @@ export function Stages() {
       <div className="m-ent-flow-grid" ref={ref}>
         {/* ② 那块浅底：铺在三行分工后面 */}
         <div className="m-ent-flow-panel" aria-hidden="true" />
-        {/* 角色名与「产出」只在最左边写一次（读屏在每一列里另有） */}
+        {/* 角色名只在最左边写一次（读屏在每一列里另有） */}
         <div className="m-ent-flow-who" aria-hidden="true">
-          {rows.map((row) => (
-            <p key={row} className="m-ent-who" data-who={row}>
-              {row === 'output' ? null : <i className="m-ent-mark" />}
-              <span lang={row === 'we' ? 'en' : undefined}>
-                {row === 'output' ? line.output : line.who[row]}
+          {roles.map((who) => (
+            <p key={who} className="m-ent-who" data-who={who}>
+              <i className="m-ent-mark" />
+              <span lang={who === 'we' ? 'en' : undefined}>
+                {line.who[who]}
               </span>
             </p>
           ))}
@@ -158,14 +156,6 @@ export function Stages() {
                   </ul>
                 </div>
               ))}
-
-              {/* ③ 产出 */}
-              <p className="m-ent-output">
-                <span className="m-ent-output-kicker">{line.output}</span>
-                <span className="m-ent-output-name">
-                  {station.leaves.join('、')}
-                </span>
-              </p>
             </article>
           );
         })}
