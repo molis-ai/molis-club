@@ -36,6 +36,24 @@ void test('合作路线每站的事与产出都是第 5 章原句片段', () => 
     for (const leaf of path.stations[id].leaves) verbatim(leaf, `${id} 产出`);
   }
   for (const form of path.forms) verbatim(form, '产品形态');
+  // 列名是 5.2 开头那句里的四个词，按原文顺序
+  const words = ids.map((id) => path.stations[id].word);
+  const at = words.map((word) => path.lead.indexOf(word));
+  assert.ok(
+    at.every((i) => i >= 0),
+    `列名要是「${path.lead}」里的词`,
+  );
+  assert.deepEqual(
+    at,
+    [...at].sort((a, b) => a - b),
+  );
+  // 每一列三个角色都有事做（负责人 2026-10-19：不留空格）
+  for (const id of ids)
+    for (const who of ['you', 'both', 'we'])
+      assert.ok(
+        line.rows[id].some((row) => row[who]),
+        `${id}：${line.who[who]} 那一道是空的`,
+      );
   verbatim(path.lead, '路线开头');
   for (const text of enterprise.people.abilities.map((item) => item.title))
     verbatim(text, '5.5 小标题');

@@ -135,35 +135,60 @@
 }
 
 /* =====================================================================
-   合作路线：四站四列、三个角色三条道，仍在一屏
-   业务团队一条月白的道（冷），Molis 一条极淡的杏色道（暖），「一起」夹在接缝上：底色上半月白、下半杏色，事情写在压着接缝的白卡上
+   我们怎样开展合作：四项服务四张竖着的白卡，卡里三条道，卡底是产出，仍在一屏
+   底色压淡、卡与卡之间留缝，先竖着读一项服务；角色名与「产出」只在最左边写一次
    ===================================================================== */
 .m-ent-flow {
   display: grid;
   align-content: center;
+  gap: clamp(14px, 2.6vh, 32px);
   min-height: 100vh;
   min-height: 100svh;
-  padding-block: calc(var(--header) + clamp(12px, 2.6vh, 36px))
-    clamp(12px, 2.6vh, 36px);
+  padding-block: calc(var(--header) + clamp(10px, 2.2vh, 32px))
+    clamp(10px, 2.2vh, 32px);
+}
+/* 标题（5.3 原文）与 5.2 开头那句排在一行 */
+.m-ent-flow-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px clamp(20px, 3vw, 48px);
+}
+.m-ent-flow-title {
+  font: 300 var(--t-h2) / 1.3 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-ent-flow-lead {
+  color: var(--ink-2);
+  font: 400 clamp(13.5px, 1vw, 15px) / 1.7 var(--sans);
+  letter-spacing: 0.03em;
 }
 .m-ent-flow-grid {
-  --you: var(--wall-read);
-  --we: rgb(234 146 96 / 0.12);
-  --pad: clamp(12px, 1.2vw, 18px);
+  /* 两条道的底色都压淡：月白（业务团队）与杏色（Molis）兑进白里 */
+  --you: color-mix(in srgb, var(--wall-read-2) 42%, var(--white));
+  --we: color-mix(in srgb, var(--accent) 8%, var(--white));
+  --pad: clamp(12px, 1.1vw, 18px);
   display: grid;
-  grid-template-columns: clamp(108px, 8.6vw, 136px) repeat(4, minmax(0, 1fr));
+  grid-template-columns: clamp(76px, 6.6vw, 104px) repeat(4, minmax(0, 1fr));
   grid-template-rows: repeat(5, auto);
+  column-gap: clamp(8px, 0.9vw, 14px);
 }
 .m-ent-flow-who {
   grid-column: 1;
-  grid-row: 2 / span 3;
+  grid-row: 2 / span 4;
   display: grid;
   grid-template-rows: subgrid;
 }
+/* 一项服务一张竖着的白卡 */
 .m-ent-stop {
   grid-row: 1 / span 5;
   display: grid;
   grid-template-rows: subgrid;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: 0 0 0 1px var(--hair);
 }
 .m-ent-stop:nth-of-type(1) {
   grid-column: 2;
@@ -178,16 +203,16 @@
   grid-column: 5;
 }
 
-/* 站名大、服务名小 */
+/* 列名大、服务全名小 */
 .m-ent-stop-head {
   display: grid;
   align-content: end;
-  gap: 4px;
-  padding: 0 var(--pad) clamp(14px, 2.4vh, 26px);
+  gap: 2px;
+  padding: clamp(12px, 2vh, 22px) var(--pad) clamp(10px, 1.6vh, 16px);
 }
 .m-ent-stop-name {
-  font: 300 clamp(24px, 2.3vw, 36px) / 1.2 var(--sans);
-  letter-spacing: 0.06em;
+  font: 300 clamp(24px, 2.2vw, 34px) / 1.2 var(--sans);
+  letter-spacing: 0.08em;
 }
 .m-ent-stop-service {
   color: var(--mute);
@@ -195,55 +220,44 @@
   letter-spacing: 0.06em;
 }
 
-/* 三条道：底色连成一整条，最外的四个角圆起来 */
-.m-ent-who,
+/* 卡里三条道：业务团队淡月白，一起是白（夹在两条道中间），Molis 淡杏色 */
 .m-ent-lane {
-  margin: 0;
-  padding: clamp(12px, 2vh, 20px) var(--pad);
+  display: grid;
+  align-content: start;
+  padding: clamp(10px, 1.6vh, 16px) var(--pad);
 }
-.m-ent-who[data-who='you'],
 .m-ent-lane[data-who='you'] {
   background: var(--you);
 }
-.m-ent-who[data-who='both'],
 .m-ent-lane[data-who='both'] {
-  background: linear-gradient(var(--you) 50%, var(--we) 50%);
-  padding-block: clamp(6px, 1vh, 10px);
+  align-content: center;
 }
-.m-ent-who[data-who='we'],
 .m-ent-lane[data-who='we'] {
   background: var(--we);
 }
-.m-ent-who[data-who='you'] {
-  border-top-left-radius: var(--r-card);
-}
-.m-ent-who[data-who='we'] {
-  border-bottom-left-radius: var(--r-card);
-}
-.m-ent-stop:nth-of-type(4) .m-ent-lane[data-who='you'] {
-  border-top-right-radius: var(--r-card);
-}
-.m-ent-stop:nth-of-type(4) .m-ent-lane[data-who='we'] {
-  border-bottom-right-radius: var(--r-card);
-}
 
-/* 角色名：只在最左边写一次 */
+/* 最左边：角色名与「产出」各写一次 */
 .m-ent-who {
   display: flex;
   align-items: center;
-  gap: 10px;
-  white-space: nowrap;
+  align-self: center;
+  gap: 9px;
+  margin: 0;
   color: var(--ink);
-  font: 400 clamp(14px, 1.1vw, 16px) / 1.4 var(--sans);
+  font: 400 clamp(13.5px, 1.05vw, 15.5px) / 1.4 var(--sans);
   letter-spacing: 0.08em;
+  white-space: nowrap;
 }
 .m-ent-who[data-who='both'] {
   color: var(--ink-2);
 }
 .m-ent-who[data-who='we'] {
   color: var(--accent-ink);
-  font: 500 clamp(15px, 1.2vw, 17px) / 1.4 var(--latin);
+  font: 500 clamp(14.5px, 1.15vw, 16.5px) / 1.4 var(--latin);
   letter-spacing: 0.04em;
+}
+.m-ent-who[data-who='output'] {
+  color: var(--mute);
 }
 /* 圆点：业务团队墨色，Molis 杏色，一起是两颗叠在一起 */
 .m-ent-mark {
@@ -261,8 +275,9 @@
   box-shadow: 4px 0 0 var(--accent);
 }
 
-/* 每站里的角色名：宽屏只给读屏，窄屏写出来 */
-.m-ent-lane-who {
+/* 卡里的角色名与「产出」：宽屏只给读屏（最左边已经写了），窄屏写出来 */
+.m-ent-lane-who,
+.m-ent-output-kicker {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -270,16 +285,9 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
-.m-ent-lane {
-  display: grid;
-  align-content: start;
-}
-.m-ent-lane[data-who='both'] {
-  align-content: center;
-}
 .m-ent-acts {
   display: grid;
-  gap: 8px;
+  gap: 7px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -290,45 +298,31 @@
   column-gap: 10px;
   align-items: baseline;
   color: var(--ink);
-  font: 400 clamp(14px, 1.05vw, 15.5px) / 1.6 var(--sans);
+  font: 400 clamp(13.5px, 1.02vw, 15px) / 1.6 var(--sans);
   letter-spacing: 0.02em;
   text-wrap: pretty;
+}
+[data-who='both'] .m-ent-act {
+  grid-template-columns: 11px minmax(0, 1fr);
 }
 .m-ent-act .m-ent-mark {
   translate: 0 -0.12em;
 }
-[data-who='both'] .m-ent-act {
-  grid-template-columns: 11px minmax(0, 1fr);
-  padding: 9px 12px;
-  border-radius: var(--r-inset);
-  background: var(--white);
-  box-shadow:
-    0 0 0 1px var(--hair),
-    0 12px 24px -20px rgb(var(--shade) / 0.55);
-}
 
-/* 产出：动画演它被做出来，下面一小行写它是什么 */
+/* 卡底的产出：动画演它被做出来，下面一小行写它是什么 */
 .m-ent-output {
   display: grid;
   align-content: start;
   justify-items: center;
-  gap: 8px;
+  gap: 6px;
   margin: 0;
-  padding: clamp(14px, 2.4vh, 26px) var(--pad) 0;
+  padding: clamp(10px, 1.6vh, 16px) var(--pad) clamp(12px, 1.8vh, 18px);
   text-align: center;
 }
 .m-ent-output .m-keep-art {
-  height: clamp(92px, 15vh, 150px);
+  height: clamp(72px, 11.5vh, 128px);
+  border-radius: var(--r-inset);
   background: var(--paper-2);
-}
-.m-ent-output figcaption {
-  display: grid;
-  gap: 2px;
-}
-.m-ent-output-kicker {
-  color: var(--accent-ink);
-  font: 500 var(--t-label) / 1.6 var(--sans);
-  letter-spacing: 0.16em;
 }
 .m-ent-output-name {
   color: var(--ink);
@@ -336,7 +330,7 @@
   letter-spacing: 0.04em;
 }
 
-/* 一站一站走：几件事的圆点依次点一下（产出的动画在 enterprise.css 的 m-k-） */
+/* 一张卡演一遍：几件事的圆点依次点一下（产出的动画在 enterprise.css 的 m-k-） */
 .m-ent-stop[data-on] .m-ent-act .m-ent-mark {
   animation: m-ent-tap 0.7s var(--ease) calc(var(--k) * 0.18s) both;
 }
@@ -717,7 +711,7 @@
 
 /* ---------- 窄屏 ---------- */
 @media (max-width: 999px) {
-  /* 路线：两站一排，每站里三条道上下排，角色名写在道里 */
+  /* 路线：两张一排，角色名与「产出」写在卡里 */
   .m-ent-flow {
     min-height: 0;
     padding-block: var(--section-top) var(--section-bottom);
@@ -725,7 +719,7 @@
   .m-ent-flow-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: none;
-    gap: 36px 14px;
+    gap: 14px;
   }
   .m-ent-flow-who {
     display: none;
@@ -737,31 +731,22 @@
     grid-template-rows: none;
     align-content: start;
   }
-  .m-ent-stop-head {
-    padding-inline: 0;
+  .m-ent-lane[data-who='both'] {
+    padding-block: 14px;
   }
-  .m-ent-lane:empty {
-    display: none;
-  }
-  .m-ent-lane:not(:empty):nth-child(2) {
-    border-top-left-radius: var(--r-card);
-    border-top-right-radius: var(--r-card);
-  }
-  .m-ent-stop .m-ent-lane[data-who='we'],
-  .m-ent-stop:has(.m-ent-lane[data-who='we']:empty)
-    .m-ent-lane[data-who='both'] {
-    border-bottom-left-radius: var(--r-card);
-    border-bottom-right-radius: var(--r-card);
+  .m-ent-lane-who,
+  .m-ent-output-kicker {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
   }
   .m-ent-lane-who {
-    position: static;
     display: flex;
     align-items: center;
     gap: 8px;
-    width: auto;
-    height: auto;
     margin-bottom: 8px;
-    clip-path: none;
     color: var(--ink-2);
     font: 500 var(--t-label) / 1.6 var(--sans);
     letter-spacing: 0.14em;
@@ -770,11 +755,16 @@
     color: var(--accent-ink);
     font-family: var(--latin);
   }
-  .m-ent-lane[data-who='both'] {
-    padding-block: 12px;
+  .m-ent-output figcaption {
+    display: grid;
   }
-  .m-ent-output {
-    padding-inline: 0;
+  .m-ent-output-kicker {
+    color: var(--mute);
+    font: 500 var(--t-label) / 1.6 var(--sans);
+    letter-spacing: 0.16em;
+  }
+  .m-ent-output .m-keep-art {
+    height: clamp(110px, 30vw, 150px);
   }
 
   /* 为什么：字在上、画面在下 */
