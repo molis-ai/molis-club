@@ -814,329 +814,510 @@
 }
 
 /* =====================================================================
-   为什么我们可以：一拍一拍点亮「一段业务」；有 JS 时钉住，每拍 42 屏高的百分之一
+   为什么我们可以（why.tsx）：同一段业务，四个位置看。有 JS 的宽屏钉住，六拍，每拍 30 屏高的百分之一；
+   左边四个位置（小标题一直在，轮到的那项展开成员经历），右边一块白板上同一组方块换四种样子
    ===================================================================== */
 .m-ent-why {
   position: relative;
 }
 .m-ent-why[data-live] {
-  height: calc(100vh + var(--beats) * 42vh);
-  height: calc(100svh + var(--beats) * 42svh);
+  height: calc(100vh + var(--beats) * 30vh);
+  height: calc(100svh + var(--beats) * 30svh);
 }
 .m-ent-why-stick {
   display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-  grid-template-rows: minmax(0, 1fr) auto;
-  column-gap: clamp(32px, 5vw, 96px);
-  row-gap: clamp(12px, 2vh, 24px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(20px, 3.4vh, 40px);
   padding-block: var(--section-top) var(--section-bottom);
 }
 .m-ent-why[data-live] .m-ent-why-stick {
   position: sticky;
   top: 0;
+  grid-template-columns: minmax(260px, 3.4fr) minmax(0, 8.6fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  column-gap: clamp(32px, 4vw, 72px);
   height: 100vh;
   height: 100svh;
-  padding-block: calc(var(--header) + clamp(20px, 5vh, 64px))
-    clamp(16px, 3vh, 36px);
+  padding-block: calc(var(--header) + clamp(16px, 3.6vh, 44px))
+    clamp(16px, 3vh, 32px);
 }
-.m-ent-why-text {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: clamp(20px, 4vh, 48px);
-  min-height: 0;
-}
-.m-ent-why-title {
-  font: 300 clamp(36px, 4.4vw, 64px) / 1.2 var(--sans);
-  letter-spacing: 0.02em;
-}
-.m-ent-why-beats {
-  display: grid;
-  align-items: center;
-  gap: 48px;
-}
-.m-ent-why[data-live] .m-ent-why-beats {
-  gap: 0;
-}
-.m-ent-why[data-live] .m-ent-why-beat {
-  grid-area: 1 / 1;
-  opacity: 0;
-  translate: 0 14px;
-  transition:
-    opacity 0.45s var(--ease),
-    translate 0.7s var(--ease);
-  pointer-events: none;
-}
-.m-ent-why[data-live] .m-ent-why-beat[data-shown] {
-  opacity: 1;
-  translate: 0 0;
-  transition-delay: 0.12s;
-  pointer-events: auto;
-}
-.m-ent-why-say {
-  max-width: 21em;
-  color: var(--ink-2);
-  font: 300 clamp(20px, 1.9vw, 28px) / 1.75 var(--sans);
-  letter-spacing: 0.03em;
-}
-.m-ent-why-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  color: var(--accent-ink);
-  font: 500 var(--t-label) / 1.4 var(--sans);
-  letter-spacing: 0.18em;
-}
-.m-ent-why-label::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-.m-ent-why-cap {
-  font: 300 clamp(26px, 2.6vw, 40px) / 1.4 var(--sans);
-  letter-spacing: 0.04em;
-}
-.m-ent-why-proof {
-  display: grid;
-  gap: 18px;
-  margin-top: clamp(20px, 3.6vh, 36px);
-}
-.m-ent-why-count {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-}
-.m-ent-why-count b {
-  font: 300 clamp(52px, 5.4vw, 88px) / 1 var(--latin);
-  letter-spacing: 0.01em;
-}
-.m-ent-why-unit {
-  color: var(--ink-2);
-  font: 400 var(--t-ui) / 1.4 var(--sans);
-  letter-spacing: 0.08em;
-}
-.m-ent-why-orgs {
-  display: grid;
-  gap: 6px;
-}
-.m-ent-why-record {
-  color: var(--mute);
-  font: 500 var(--t-label) / 1.6 var(--sans);
-  letter-spacing: 0.16em;
-}
-.m-ent-why-names {
+/* 标题与导语第一句排在一行，和「我们怎样开展合作」同一套 */
+.m-ent-why-head {
+  grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
-  gap: 2px 20px;
-  color: var(--ink);
-  font: 400 clamp(17px, 1.45vw, 21px) / 1.5 var(--sans);
-  letter-spacing: 0.06em;
+  align-items: baseline;
+  gap: 6px clamp(20px, 3vw, 48px);
 }
-.m-ent-why-craft {
-  color: var(--ink-2);
+.m-ent-why-title {
+  font: 400 clamp(19px, 1.55vw, 24px) / 1.3 var(--sans);
+  letter-spacing: 0.08em;
+}
+.m-ent-why-need {
+  color: var(--mute);
   font: 400 var(--t-small) / 1.7 var(--sans);
   letter-spacing: 0.04em;
 }
 
-/* 画面：方块和四个角上的位置 */
-.m-ent-why-figure {
+/* ---------- 左边：四个位置 ---------- */
+.m-why-side {
   display: grid;
-  place-items: center;
+  align-content: start;
+  gap: 28px;
   min-height: 0;
+}
+.m-why-rail {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--hair);
+  list-style: none;
+}
+.m-why-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: clamp(112px, 30%, 168px) minmax(0, 1fr);
+  grid-template-areas: 'thumb head' 'thumb cap' 'proof proof';
+  align-content: start;
+  column-gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.m-ent-why[data-live] .m-why-item {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'head' 'cap' 'proof';
+  padding: 14px 0 14px 18px;
+}
+.m-why-item-head {
+  grid-area: head;
+  align-self: end;
+}
+.m-why-cap {
+  grid-area: cap;
+  align-self: start;
+}
+.m-why-proof {
+  grid-area: proof;
+}
+/* 轮到的那项：左边一道杏色细线 */
+.m-why-item::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: 0;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--accent);
+  scale: 1 0;
+  transform-origin: top;
+  transition: scale 0.6s var(--ease);
+}
+.m-why-item[data-on]::before {
+  scale: 1 1;
+}
+.m-why-item-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mute);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.m-why-item-head:disabled {
+  cursor: default;
+}
+.m-why-item-head:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 4px;
+  border-radius: var(--r-label);
+}
+.m-why-no {
+  font: italic 300 12px / 1 var(--latin);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+.m-why-label {
+  font: 500 12.5px / 1.4 var(--sans);
+  letter-spacing: 0.16em;
+  transition: color 0.4s var(--ease);
+}
+.m-why-item[data-on] .m-why-label,
+.m-why-item-head:not(:disabled):hover .m-why-label {
+  color: var(--accent-ink);
+}
+.m-why-cap {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font: 400 clamp(15px, 1.12vw, 17px) / 1.55 var(--sans);
+  letter-spacing: 0.04em;
+  transition: color 0.4s var(--ease);
+}
+.m-why-item[data-on] .m-why-cap {
+  color: var(--ink);
+}
+/* 成员经历：轮到的那项展开 */
+.m-why-proof {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+.m-why-proof > div {
+  min-height: 0;
+  overflow: hidden;
+}
+.m-ent-why[data-live] .m-why-proof {
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.6s var(--ease);
+}
+.m-ent-why[data-live] .m-why-item[data-on] .m-why-proof {
+  grid-template-rows: 1fr;
+}
+.m-why-record {
+  margin-top: 12px;
+  color: var(--mute);
+  font: 400 11.5px / 1.4 var(--sans);
+  letter-spacing: 0.14em;
+}
+.m-why-orgs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 0;
+  margin-top: 4px;
+  color: var(--ink);
+  font: 500 15px / 1.6 var(--sans);
+  letter-spacing: 0.06em;
+}
+.m-why-orgs > span + span::before {
+  content: '·';
+  margin: 0 0.55em;
+  color: var(--faint);
+}
+.m-why-craft {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  margin-top: 2px;
+  color: var(--mute);
+  font: 400 12.5px / 1.6 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-why-count {
+  color: var(--ink-2);
+}
+.m-why-count b {
+  margin-right: 0.3em;
+  color: var(--ink);
+  font: 400 15px / 1 var(--latin);
+  letter-spacing: 0.02em;
+}
+/* 最后一拍：导语第二句和成员经历里的公司 */
+.m-ent-why[data-live] .m-why-close {
+  opacity: 0;
+  translate: 0 8px;
+  transition:
+    opacity 0.6s var(--ease),
+    translate 0.8s var(--ease);
+}
+.m-ent-why[data-live] .m-why-close[data-on] {
+  opacity: 1;
+  translate: none;
+  transition-delay: 0.5s;
+}
+.m-why-close-say {
+  color: var(--ink);
+  font: 400 clamp(15px, 1.12vw, 17px) / 1.7 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-why-all {
+  font-size: 16px;
+}
+
+/* ---------- 右边：一块白板，同一组方块换样子 ---------- */
+.m-why-figure {
+  display: none;
   margin: 0;
 }
-.m-ent-why-art {
+.m-ent-why[data-live] .m-why-figure {
+  container-type: size;
+  display: grid;
+  place-items: start center;
+  min-height: 0;
+}
+.m-why-stage {
+  --lift: 0 1px 2px rgb(var(--shade) / 0.06),
+    0 22px 44px -26px rgb(var(--shade) / 0.3);
   position: relative;
-  width: min(100%, 560px);
-  aspect-ratio: 1;
+  container-type: inline-size;
+  width: min(100cqw, 100cqh * 1.6);
+  aspect-ratio: 8 / 5;
+  border-radius: var(--r-inset);
+  background: var(--white);
+  box-shadow:
+    inset 0 0 0 1px var(--hair),
+    var(--lift);
 }
-.m-ent-why[data-live] .m-ent-why-art {
-  width: min(
-    100%,
-    560px,
-    calc(100svh - var(--header) - clamp(20px, 5vh, 64px) - 120px)
-  );
-}
-.m-ent-why-art svg {
-  display: block;
+.m-why-art {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   overflow: visible;
 }
-.m-why-beam {
-  fill: var(--accent-wash);
+.m-why-art *,
+.m-why-thumb * {
+  vector-effect: non-scaling-stroke;
+}
+/* 陪衬：轮到哪种样子亮哪种 */
+.m-why-decor {
   opacity: 0;
-  transition: opacity 0.8s var(--ease);
+  transition: opacity 0.5s var(--ease);
 }
-.m-why-beam[data-lit] {
-  opacity: 0.5;
-}
-.m-why-beam[data-current] {
+.m-why-decor[data-on] {
   opacity: 1;
+  transition-delay: 0.25s;
 }
-.m-why-tile {
-  fill: var(--white);
+.m-why-d-line,
+.m-why-d-grid,
+.m-why-d-base,
+.m-why-d-window,
+.m-why-d-ink {
+  fill: none;
   stroke: var(--hair-2);
-  stroke-width: 1;
-  filter: drop-shadow(0 18px 26px rgb(var(--shade) / 0.1));
-  transition: fill 1s var(--ease);
-}
-.m-why-cross {
-  fill: none;
-  stroke: var(--hair);
-  stroke-width: 1;
-  transition: opacity 0.8s var(--ease);
-}
-.m-why-edge {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 2;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset 1.4s var(--ease);
-}
-.m-ent-why[data-whole] .m-why-edge {
-  stroke-dashoffset: 0;
-}
-.m-ent-why[data-whole] .m-why-cross {
-  opacity: 0;
-}
-.m-ent-why[data-whole] .m-why-tile {
-  fill: #fffaf6;
-}
-
-/* 每一格的小画：点亮时线画出来、柱子长起来、杏色的小块弹出来 */
-.m-why-ink,
-.m-why-thin {
-  fill: none;
-  stroke-width: 1.3;
+  stroke-width: 1.4;
   stroke-linecap: round;
-  stroke-linejoin: round;
 }
-.m-why-ink {
-  stroke: var(--ink-2);
+.m-why-d-grid {
+  stroke: var(--hair);
+  stroke-dasharray: 3 5;
 }
-.m-why-thin {
-  stroke: var(--mute);
-  stroke-width: 1;
+.m-why-d-base {
+  stroke: rgb(27 26 24 / 0.4);
+  stroke-width: 1.2;
 }
-.m-why-bar {
+.m-why-d-window {
+  fill: var(--paper);
+}
+.m-why-d-light {
   fill: var(--faint);
 }
-.m-why-hot {
+.m-why-d-ink {
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+/* 定格的小画：五块的画法跟着样子变 */
+.m-why-b {
+  fill: var(--white);
+  stroke: var(--hair-2);
+  stroke-width: 1.2;
+}
+.m-why-b[data-lens='1'] {
+  fill: var(--faint);
+  stroke: none;
+}
+.m-why-b[data-lens='4'] {
+  fill: var(--paper-2);
+  stroke: none;
+}
+.m-why-b[data-head] {
+  fill: rgb(27 26 24 / 0.45);
+  stroke: none;
+}
+.m-why-b[data-hot] {
+  fill: color-mix(in srgb, var(--accent) 13%, var(--white));
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.m-why-b-line {
+  fill: var(--faint);
+}
+.m-why-b-line[data-hot],
+.m-why-b-dot {
   fill: var(--accent);
 }
-.m-why-draw {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  /* 还没画的线连圆头也藏起来 */
-  opacity: 0;
-  transition:
-    stroke-dashoffset 0.9s var(--ease) 0.15s,
-    opacity 0.2s linear 0.15s;
-}
-.m-why-bar,
-.m-why-pop {
-  transform-box: fill-box;
-  transition:
-    scale 0.7s var(--ease) calc(0.25s + var(--j, 0) * 0.12s),
-    opacity 0.5s var(--ease) calc(0.25s + var(--j, 0) * 0.12s);
-}
-.m-why-bar {
-  transform-origin: center bottom;
-  scale: 1 0;
-}
-.m-why-pop {
-  transform-origin: center;
-  opacity: 0;
-  scale: 0.3;
-}
-.m-why-cell[data-lit] .m-why-draw {
-  stroke-dashoffset: 0;
-  opacity: 1;
-}
-.m-why-cell[data-lit] .m-why-bar {
-  scale: 1;
-}
-.m-why-cell[data-lit] .m-why-pop {
-  opacity: 1;
-  scale: 1;
-}
-/* 方块还空着时，中间写着「一段业务」 */
-.m-ent-why-center {
+/* 会换样子的那五块 */
+.m-why-block {
   position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  color: var(--mute);
-  font: 400 var(--t-ui) / 1 var(--sans);
-  letter-spacing: 0.24em;
-  pointer-events: none;
-  transition: opacity 0.6s var(--ease);
-}
-.m-ent-why-art:has(.m-why-cell[data-lit]) .m-ent-why-center {
-  opacity: 0;
-}
-
-/* 四个位置：可以点，停上去先看它那一拍 */
-.m-ent-why-view {
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 6px 8px;
-  border: 0;
-  border-radius: var(--r-label);
-  background: none;
-  color: var(--mute);
-  font: 400 var(--t-ui) / 1.3 var(--sans);
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-  translate: -50% calc(-100% + 13px);
-  cursor: pointer;
-  transition: color 0.4s var(--ease);
+  padding-left: 1.6cqw;
+  border: 1px solid var(--hair-2);
+  background: var(--white);
+  transition:
+    left 0.85s var(--ease),
+    top 0.85s var(--ease),
+    width 0.85s var(--ease),
+    height 0.85s var(--ease),
+    border-radius 0.85s var(--ease),
+    background-color 0.5s var(--ease),
+    border-color 0.5s var(--ease),
+    opacity 0.5s var(--ease);
+  transition-delay: calc(var(--i) * 45ms);
 }
-.m-ent-why-view[data-at='bottom'] {
-  flex-direction: column-reverse;
-  translate: -50% -13px;
+.m-why-stage[data-lens='1'] .m-why-block {
+  border-color: transparent;
+  background: var(--faint);
 }
-.m-ent-why-view:disabled {
-  cursor: default;
+.m-why-stage[data-lens='4'] .m-why-block {
+  border-color: transparent;
+  background: var(--paper-2);
 }
-.m-ent-why-view[data-lit] {
-  color: var(--ink-2);
+.m-why-block[data-head] {
+  border-color: transparent;
+  background: rgb(27 26 24 / 0.45);
 }
-.m-ent-why-view[data-current],
-.m-ent-why-view:not(:disabled):hover {
-  color: var(--ink);
+.m-why-stage .m-why-block[data-hot] {
+  border: 1.5px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 13%, var(--white));
 }
-.m-ent-why-dot {
-  width: 12px;
-  height: 12px;
+.m-why-stage[data-lens='all'] .m-why-block {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.m-why-block-line {
+  width: 40%;
+  height: 0.75cqw;
+  border-radius: 1cqw;
+  background: var(--faint);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+.m-why-block[data-hot] .m-why-block-line {
+  background: var(--accent);
+}
+.m-why-block[data-lined] .m-why-block-line {
+  opacity: 1;
+  transition-delay: 0.5s;
+}
+.m-why-block-dots {
+  position: absolute;
+  left: 3.4cqw;
+  display: flex;
+  gap: 1.1cqw;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+.m-why-block-dots > b {
+  width: 1.1cqw;
+  height: 1.1cqw;
   border-radius: 50%;
+  background: var(--accent);
+}
+.m-why-stage[data-lens='4'] .m-why-block-dots {
+  opacity: 1;
+  transition-delay: 0.6s;
+}
+.m-why-caption {
+  position: absolute;
+  top: 61%;
+  left: 50%;
+  z-index: 1;
+  color: var(--mute);
+  font: 400 clamp(11.5px, 1.5cqw, 13px) / 1 var(--sans);
+  letter-spacing: 0.24em;
+  white-space: nowrap;
+  translate: -50% 0;
+  transition: opacity 0.4s var(--ease);
+}
+.m-why-stage:not([data-lens='0'], [data-lens='all']) .m-why-caption {
+  opacity: 0;
+}
+/* 最后一拍：「一段业务」挪到四根线汇合的那一点，成一枚小签 */
+.m-why-stage[data-lens='all'] .m-why-caption {
+  top: 50.4%;
+  padding: 0.55em 0.9em 0.55em 1.1em;
+  border-radius: var(--r-pill);
   background: var(--white);
   box-shadow:
-    0 0 0 1px var(--hair-2),
-    0 0 0 0 var(--accent-wash);
+    inset 0 0 0 1.5px var(--accent),
+    0 6px 16px -8px rgb(var(--shade) / 0.35);
+  color: var(--accent-ink);
+  translate: -50% -50%;
+  transition: opacity 0.5s var(--ease) 1.4s;
+}
+/* 最后一拍：四张小画各在一角，四个杏色块各牵一根细线汇到正中「一段业务」 */
+.m-why-mini {
+  opacity: 0;
+  translate: 0 40px;
   transition:
-    background-color 0.5s var(--ease),
-    box-shadow 0.6s var(--ease);
+    opacity 0.6s var(--ease),
+    translate 0.8s var(--ease);
 }
-.m-ent-why-view[data-lit] .m-ent-why-dot {
-  background: var(--accent);
-  box-shadow:
-    0 0 0 1px var(--accent),
-    0 0 0 0 var(--accent-wash);
+.m-why-mini[data-on] {
+  opacity: 1;
+  translate: none;
+  transition-delay: calc(0.15s + var(--i) * 0.08s);
 }
-.m-ent-why-view[data-current] .m-ent-why-dot {
-  box-shadow:
-    0 0 0 1px var(--accent),
-    0 0 0 8px var(--accent-wash);
+.m-why-mini-frame {
+  fill: var(--paper);
+  stroke: var(--hair-2);
+  stroke-width: 1;
+}
+.m-why-art .m-why-thread {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.4;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  vector-effect: none;
+  transition:
+    stroke-dashoffset 0.4s var(--ease),
+    opacity 0.3s var(--ease);
+}
+.m-why-art .m-why-thread[data-on] {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition:
+    stroke-dashoffset 0.9s var(--ease) calc(0.7s + var(--i) * 0.12s),
+    opacity 0.2s var(--ease) calc(0.7s + var(--i) * 0.12s);
+}
+/* 四只光标：没钉住时叠成一只「Molis」，钉住后各站一角；轮到的那只去看杏色那块 */
+.m-why-hand {
+  padding: 0;
+  border: 0;
+  background: none;
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0.45;
+  transition:
+    transform 0.9s var(--ease),
+    opacity 0.5s var(--ease);
+  transition-delay: calc(var(--i) * 60ms);
+}
+.m-why-hand[data-on] {
+  opacity: 1;
+}
+.m-why-stage[data-beat='-1'] .m-why-hand {
+  opacity: 0;
+}
+.m-why-stage[data-beat='-1'] .m-why-hand:first-of-type {
+  opacity: 1;
+}
+.m-why-tag-molis,
+.m-why-stage[data-beat='-1'] .m-why-tag-view {
+  display: none;
+}
+.m-why-stage[data-beat='-1'] .m-why-tag-molis {
+  display: inline;
+  font-family: var(--latin);
+}
+/* 窄屏和没有 JS：每项一张定格的小画 */
+.m-why-thumb {
+  grid-area: thumb;
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-label);
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.m-ent-why[data-live] .m-why-thumb {
+  display: none;
 }
 
 .m-ent-why-end {
@@ -1211,41 +1392,12 @@
     grid-column: 2;
   }
 
-  /* 为什么：字在上、画面在下 */
-  .m-ent-why-stick {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr) auto;
+  /* 为什么：四项上下排，每项一张定格的小画 */
+  .m-why-item {
+    padding-left: 0;
   }
-  .m-ent-why[data-live] .m-ent-why-stick {
-    padding-top: calc(var(--header) + 20px);
-  }
-  .m-ent-why-text {
-    grid-template-rows: auto auto;
-    gap: 16px;
-  }
-  .m-ent-why-title {
-    font-size: clamp(30px, 8vw, 40px);
-  }
-  .m-ent-why-say {
-    font-size: clamp(17px, 4.6vw, 20px);
-    font-weight: 400;
-  }
-  .m-ent-why-cap {
-    font-size: clamp(22px, 6vw, 28px);
-  }
-  .m-ent-why-proof {
-    gap: 10px;
-    margin-top: 14px;
-  }
-  .m-ent-why-count b {
-    font-size: 44px;
-  }
-  .m-ent-why[data-live] .m-ent-why-art {
-    width: min(100%, 380px, 40svh);
-  }
-  .m-ent-why-view {
-    font-size: 12.5px;
-    gap: 6px;
+  .m-why-item::before {
+    display: none;
   }
   .m-ent-why-end {
     justify-content: flex-start;
