@@ -2,53 +2,48 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   enterprise,
-  type MemberId,
+  type ProofId,
   type View,
 } from '../../../content/site/enterprise';
 import { TEAM } from '../../_site/routes';
 import { More, Phrases, type Vars } from '../../_site/ui';
 
 // 为什么我们可以（负责人 2026-10-20 第三版：沿用上一屏「从左到右一本本打开」的交互，让人知道这一屏接着上一屏；
-// 重点讲为什么我们可以——把每个位置的目标、要用到的能力、团队里谁有这项能力，组合成一段会动的图）。
+// 重点讲为什么我们可以——把每个位置的目标、要用到的能力、撑得起这项能力的经历，组合成一段会动的图；这一屏不写人名）。
 // 四个位置（5.5 导语原词：业务目标、产品体验、工程实现、使用者的处境）像上一屏的四本书一样并排，
-// 合着时是一条窄脊：编号、竖排的位置名，底下是这个位置上的成员（姓氏小圆章）；往下滚一块一块打开。
-// 打开的那一面从右往左读成一句话：要达成的（5.5 小标题）← 用到的能力 ← 团队里谁有（名字和第 7 章经历压成的一行）。
-// 打开时先亮目标，能力一个个浮上来、连到目标，成员从左边进来、连到自己的能力。
-// 鼠标停在一个人身上，只亮他的能力和连线；停在一项能力上，只亮有这项能力的人；每个人下面写着他还在哪些位置——能力是相通的。
-// 能力是从成员自述里推断的（负责人 2026-10-20 让大胆推断，由负责人判断），见 content/site/enterprise.ts。
+// 合着时是一条窄脊：编号、竖排的位置名；往下滚一块一块打开。
+// 打开的那一面从右往左读成一句话：要达成的（5.5 小标题）← 用到的能力 ← 经历背书（飞书「哇塞的履历」去掉人名、合并相通的几条）。
+// 打开时先亮目标，能力一个个浮上来、连到目标，经历从左边进来、连到它撑起的能力。
+// 鼠标停在一条经历上，只亮它撑起的能力；停在一项能力上，只亮撑起它的经历。
+// 能力是从履历里推断的（负责人 2026-10-20 让大胆推断，由负责人判断），见 content/site/enterprise.ts。
 // 「不代表固定分工、不是客户项目」那句常驻页脚，旁边是导语第二句。
-// 宽屏（≥1000 宽、≥600 高）有 JS 时才钉住；手机、矮屏、没有 JS 时四个位置上下排，每个位置里目标、能力、成员上下排，不画连线。
+// 宽屏（≥1000 宽、≥600 高）有 JS 时才钉住；手机、矮屏、没有 JS 时四个位置上下排，每个位置里目标、能力、经历上下排，不画连线。
 
 const { why } = enterprise;
 const VIEWS = why.views;
 const PANELS = VIEWS.length;
 const number = (index: number) => String(index + 1).padStart(2, '0');
-/** 这个位置上的成员，按第一次出现的顺序 */
-const crew = (view: View) => [
-  ...new Set(view.skills.flatMap((skill) => skill.who)),
+/** 这个位置用到的经历，按第一次出现的顺序 */
+const proofsOf = (view: View) => [
+  ...new Set(view.skills.flatMap((skill) => skill.from)),
 ];
-/** 这位成员还在哪些位置 */
-const elsewhere = (id: MemberId, self: number) =>
-  VIEWS.filter((view, i) => i !== self && crew(view).includes(id)).map(
-    (view) => view.label,
-  );
 
 type Wire = {
   d: string;
-  /** 人连到能力：是谁；能力连到目标：没有 */
-  who?: MemberId;
+  /** 经历连到能力：是哪条经历；能力连到目标：没有 */
+  proof?: ProofId;
   skill: number;
   n: number;
 };
-type Focus = { who: MemberId } | { skill: number } | null;
+type Focus = { proof: ProofId } | { skill: number } | null;
 
-/** 打开的那一面：要达成的 ← 用到的能力 ← 团队里谁有 */
-function Graph({ view, index }: { view: View; index: number }) {
+/** 打开的那一面：要达成的 ← 用到的能力 ← 经历背书 */
+function Graph({ view }: { view: View }) {
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [wires, setWires] = useState<Wire[]>([]);
   const [focus, setFocus] = useState<Focus>(null);
-  const people = crew(view);
+  const proofs = proofsOf(view);
 
   // 量出每张卡在图里的位置（offset 不算动画里的位移），画连线
   const measure = useCallback(() => {
@@ -72,9 +67,9 @@ function Graph({ view, index }: { view: View; index: number }) {
     let n = 0;
     /** 同一个点上进出的几根线，上下错开 */
     const fan = (k: number, count: number) => (k - (count - 1) / 2) * 7;
-    const out = new Map<MemberId, number>();
-    const outCount = (who: MemberId) =>
-      view.skills.filter((skill) => skill.who.includes(who)).length;
+    const out = new Map<ProofId, number>();
+    const outCount = (proof: ProofId) =>
+      view.skills.filter((skill) => skill.from.includes(proof)).length;
     view.skills.forEach((skill, i) => {
       const chip = at(root.querySelector(`[data-skill="${i}"]`));
       if (!chip) return;
@@ -84,19 +79,19 @@ function Graph({ view, index }: { view: View; index: number }) {
         skill: i,
         n: i,
       });
-      skill.who.forEach((who, k) => {
-        const person = at(root.querySelector(`[data-person="${who}"]`));
-        if (!person) return;
-        const from = out.get(who) ?? 0;
-        out.set(who, from + 1);
+      skill.from.forEach((proof, k) => {
+        const card = at(root.querySelector(`[data-proof="${proof}"]`));
+        if (!card) return;
+        const from = out.get(proof) ?? 0;
+        out.set(proof, from + 1);
         next.push({
           d: curve(
-            person.right,
-            person.y + fan(from, outCount(who)),
+            card.right,
+            card.y + fan(from, outCount(proof)),
             chip.left,
-            chip.y + fan(k, skill.who.length) * 0.6,
+            chip.y + fan(k, skill.from.length) * 0.6,
           ),
-          who,
+          proof,
           skill: i,
           n: n++,
         });
@@ -119,18 +114,18 @@ function Graph({ view, index }: { view: View; index: number }) {
     !focus ||
     ('skill' in focus
       ? focus.skill === i
-      : view.skills[i].who.includes(focus.who));
-  const personLit = (id: MemberId) =>
+      : view.skills[i].from.includes(focus.proof));
+  const proofLit = (id: ProofId) =>
     !focus ||
-    ('who' in focus
-      ? focus.who === id
-      : view.skills[focus.skill].who.includes(id));
+    ('proof' in focus
+      ? focus.proof === id
+      : view.skills[focus.skill].from.includes(id));
   const wireLit = (wire: Wire) => {
     if (!focus) return true;
     if ('skill' in focus) return wire.skill === focus.skill;
-    return wire.who
-      ? wire.who === focus.who
-      : view.skills[wire.skill].who.includes(focus.who);
+    return wire.proof
+      ? wire.proof === focus.proof
+      : view.skills[wire.skill].from.includes(focus.proof);
   };
   const dim = (lit: boolean) => (lit ? undefined : '');
 
@@ -151,9 +146,9 @@ function Graph({ view, index }: { view: View; index: number }) {
         >
           {wires.map((wire) => (
             <path
-              key={`${wire.who ?? 'goal'}-${wire.skill}`}
+              key={`${wire.proof ?? 'goal'}-${wire.skill}`}
               className="m-why-wire"
-              data-to={wire.who ? 'skill' : 'goal'}
+              data-to={wire.proof ? 'skill' : 'goal'}
               data-dim={dim(wireLit(wire))}
               style={{ '--n': wire.n } as Vars}
               pathLength={1}
@@ -163,45 +158,31 @@ function Graph({ view, index }: { view: View; index: number }) {
         </svg>
       ) : null}
 
-      {/* 团队里谁有 */}
-      <div className="m-why-col" data-col="who">
-        <p className="m-why-col-head">{why.columns.who}</p>
-        <ul className="m-why-people">
-          {people.map((id, n) => {
-            const member = why.members[id];
-            const also = elsewhere(id, index);
+      {/* 经历背书 */}
+      <div className="m-why-col" data-col="proof">
+        <p className="m-why-col-head">{why.columns.proof}</p>
+        <ul className="m-why-proofs">
+          {proofs.map((id, n) => {
+            const proof = why.proofs[id];
             return (
               <li key={id}>
                 <button
                   type="button"
-                  className="m-why-person"
-                  data-person={id}
-                  data-dim={dim(personLit(id))}
+                  className="m-why-proof"
+                  data-proof={id}
+                  data-dim={dim(proofLit(id))}
                   style={{ '--n': n } as Vars}
                   aria-pressed={
-                    focus !== null && 'who' in focus && focus.who === id
+                    focus !== null && 'proof' in focus && focus.proof === id
                   }
-                  onPointerEnter={() => setFocus({ who: id })}
-                  onFocus={() => setFocus({ who: id })}
+                  onPointerEnter={() => setFocus({ proof: id })}
+                  onFocus={() => setFocus({ proof: id })}
                   onBlur={() => setFocus(null)}
                 >
-                  <span className="m-why-seal" aria-hidden="true">
-                    {member.name.slice(0, 1)}
-                  </span>
-                  <span className="m-why-person-text">
-                    <span className="m-why-person-top">
-                      <b>{member.name}</b>
-                      {also.length ? (
-                        <span className="m-why-also">
-                          也在
-                          {also.map((label) => (
-                            <i key={label}>{label}</i>
-                          ))}
-                        </span>
-                      ) : null}
-                    </span>
-                    <span className="m-why-brief">{member.brief}</span>
-                  </span>
+                  <b>{proof.title}</b>
+                  {'detail' in proof ? (
+                    <span className="m-why-proof-detail">{proof.detail}</span>
+                  ) : null}
                 </button>
               </li>
             );
@@ -328,7 +309,7 @@ export function Why() {
                 data-active={open || undefined}
                 aria-labelledby={`why-${view.id}`}
               >
-                {/* 窄脊：编号、位置名，底下是这个位置上的成员 */}
+                {/* 窄脊：编号、位置名 */}
                 <button
                   type="button"
                   className="m-why-spine"
@@ -339,15 +320,10 @@ export function Why() {
                 >
                   <span className="m-why-spine-no">{number(index)}</span>
                   <span className="m-why-spine-word">{view.label}</span>
-                  <span className="m-why-spine-crew">
-                    {crew(view).map((id) => (
-                      <i key={id}>{why.members[id].name.slice(0, 1)}</i>
-                    ))}
-                  </span>
                 </button>
 
                 <div className="m-why-page">
-                  <Graph view={view} index={index} />
+                  <Graph view={view} />
                 </div>
               </li>
             );

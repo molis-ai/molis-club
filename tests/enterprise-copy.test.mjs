@@ -82,38 +82,38 @@ void test('为什么我们可以：导语两头、四个位置与小标题都照
   assert.match(why.note, /不是 Molis 已完成的客户项目/);
 });
 
-void test('为什么我们可以：每项能力都落到有经历的成员身上，成员和经历里的公司都在第 7 章里', () => {
+void test('为什么我们可以：每项能力都有经历撑着，每条经历都用上；这一屏不写人名', () => {
   const { why } = enterprise;
-  const team = doc.slice(doc.indexOf('## 7. 团队'));
-  for (const [id, member] of Object.entries(why.members)) {
-    assert.ok(
-      team.includes(member.name),
-      `${id}：「${member.name}」不在第 7 章`,
-    );
-    for (const org of [
-      '美团',
-      '字节',
-      '快手',
-      '小红书',
-      '滴滴',
-      'LinkedIn',
-      '英语流利说',
-      'Teambition',
-    ])
-      if (member.brief.includes(org))
-        assert.ok(
-          team.slice(team.indexOf(member.name)).split('\n')[0].includes(org),
-          `${member.name}的经历里没有「${org}」`,
-        );
-  }
+  const used = new Set();
   for (const view of why.views) {
     assert.ok(view.skills.length >= 3, `${view.id} 至少要有三项能力`);
     for (const skill of view.skills) {
-      assert.ok(skill.who.length > 0, `${view.id}「${skill.name}」没有人`);
-      for (const who of skill.who)
-        assert.ok(who in why.members, `${who} 不是成员`);
+      assert.ok(
+        skill.from.length > 0,
+        `${view.id}「${skill.name}」没有经历撑着`,
+      );
+      for (const id of skill.from) {
+        assert.ok(id in why.proofs, `${id} 不是一条经历`);
+        used.add(id);
+      }
     }
   }
+  for (const id of Object.keys(why.proofs))
+    assert.ok(used.has(id), `经历「${id}」没用上`);
+  const names = [
+    '王一骏',
+    '徐晶',
+    '赵壮实',
+    '谢俊',
+    '杨鹏飞',
+    '庄昊哲',
+    '隋欣怡',
+    '靳曲',
+  ];
+  const text = JSON.stringify(why);
+  for (const name of names)
+    assert.ok(!text.includes(name), `这一屏不写人名：${name}`);
+  assert.ok(!text.includes('月百万'), '成员过往业绩口径不上页面');
 });
 
 void test('五个问题都对应到四站上，每一站至少亮起一个问题', () => {
