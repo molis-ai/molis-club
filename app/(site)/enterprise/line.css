@@ -826,14 +826,26 @@
   gap: clamp(24px, 4.6vh, 52px);
   padding-block: var(--section-top) var(--section-bottom);
 }
-/* 四列：位置在第一行，经历从第二行起一股一行 */
+/* 宽屏合在一屏里（负责人 2026-10-20）：整节正好一屏高、内容居中，竖向的间距和行高跟着屏幕高度收放 */
+@media (min-width: 1000px) and (min-height: 600px) {
+  .m-why {
+    align-content: center;
+    gap: clamp(16px, 3.4vh, 44px);
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-block: calc(var(--header) + clamp(12px, 3vh, 40px))
+      clamp(12px, 3vh, 40px);
+  }
+}
+/* 四列：位置在第一行，经历从第二行起一股一行；--head 是名字那一行的高度 */
 .m-why-board {
   --seam: clamp(22px, 2.3vw, 38px);
   --bleed: clamp(10px, 0.9vw, 14px);
+  --head: clamp(22px, 3vh, 28px);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-rows: auto repeat(var(--rows), auto);
-  gap: 11px var(--seam);
+  gap: clamp(4px, 1.05vh, 12px) var(--seam);
 }
 .m-why-seats,
 .m-why-strands {
@@ -860,8 +872,8 @@
   grid-column: var(--col);
   display: grid;
   align-content: start;
-  gap: 9px;
-  padding-bottom: clamp(18px, 3.2vh, 34px);
+  gap: clamp(4px, 0.9vh, 10px);
+  padding-bottom: clamp(10px, 2.6vh, 34px);
 }
 .m-why-seat-label {
   display: flex;
@@ -908,7 +920,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 28px;
+  height: var(--head);
 }
 .m-why-figure {
   flex: none;
@@ -944,16 +956,15 @@
   background: var(--ink-2);
 }
 .m-why-strand-detail {
-  margin-top: 1px;
   color: var(--mute);
-  font: 400 var(--t-small) / 1.55 var(--sans);
+  font: 400 var(--t-small) / 1.5 var(--sans);
   letter-spacing: 0.04em;
 }
 /* 跨过缝的那几截：和名字那一行一样高、压在线上，位置按这股跨几列算出来 */
 .m-why-knots {
   position: absolute;
   inset: 0 0 auto;
-  height: 28px;
+  height: var(--head);
 }
 .m-why-knots > i {
   position: absolute;
@@ -975,13 +986,13 @@
   align-self: end;
   display: grid;
   justify-items: start;
-  gap: 10px;
+  gap: clamp(6px, 1.1vh, 10px);
   padding-right: var(--seam);
 }
 .m-why-close {
   max-width: 24em;
   color: var(--ink);
-  font: 400 var(--t-lead) / 1.75 var(--sans);
+  font: 400 var(--t-lead) / 1.65 var(--sans);
   letter-spacing: 0.05em;
 }
 .m-why-orgs {
