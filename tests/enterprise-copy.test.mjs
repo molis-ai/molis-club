@@ -80,7 +80,7 @@ void test('为什么我们可以：导语两头、四个位置与小标题都照
   assert.match(why.note, /不是 Molis 已完成的客户项目/);
 });
 
-void test('为什么我们可以：每个位置都有经历顶上，每道缝都有经历跨过；公司都出自经历，不写人名与业绩口径', () => {
+void test('为什么我们可以：每个位置都有经历顶上，每道缝都有经历跨过；不写人名与业绩口径', () => {
   const { why } = enterprise;
   const seats = why.views.map((view) => view.id);
   const spans = why.strands.map((strand) => [
@@ -102,9 +102,6 @@ void test('为什么我们可以：每个位置都有经历顶上，每道缝都
       spans.some(([from, to]) => from < seam && seam <= to),
       `「${why.views[seam - 1].label}」和「${why.views[seam].label}」之间没有经历跨过`,
     );
-  const details = why.strands.map((strand) => strand.detail).join('');
-  for (const name of why.orgs.names)
-    assert.ok(details.includes(name), `「${name}」不在任何一股经历里`);
   const names = [
     '王一骏',
     '徐晶',

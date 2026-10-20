@@ -830,7 +830,7 @@
 @media (min-width: 1000px) and (min-height: 600px) {
   .m-why {
     align-content: center;
-    gap: clamp(16px, 3.4vh, 44px);
+    gap: clamp(20px, 4.8vh, 60px);
     min-height: 100vh;
     min-height: 100svh;
     padding-block: calc(var(--header) + clamp(12px, 3vh, 40px))
@@ -841,11 +841,11 @@
 .m-why-board {
   --seam: clamp(22px, 2.3vw, 38px);
   --bleed: clamp(10px, 0.9vw, 14px);
-  --head: clamp(22px, 3vh, 28px);
+  --head: clamp(20px, 2.6vh, 24px);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-rows: auto repeat(var(--rows), auto);
-  gap: clamp(4px, 1.05vh, 12px) var(--seam);
+  gap: clamp(6px, 1.6vh, 20px) var(--seam);
 }
 .m-why-seats,
 .m-why-strands {
@@ -872,8 +872,8 @@
   grid-column: var(--col);
   display: grid;
   align-content: start;
-  gap: clamp(4px, 0.9vh, 10px);
-  padding-bottom: clamp(10px, 2.6vh, 34px);
+  gap: clamp(5px, 1vh, 10px);
+  padding-bottom: clamp(14px, 3.8vh, 48px);
 }
 .m-why-seat-label {
   display: flex;
@@ -893,7 +893,7 @@
 }
 .m-why-seat-ask {
   color: var(--ink);
-  font: 400 var(--t-keys) / 1.4 var(--sans);
+  font: 400 var(--t-lead) / 1.45 var(--sans);
   letter-spacing: 0.04em;
 }
 .m-why-seat-title {
@@ -925,14 +925,14 @@
 .m-why-figure {
   flex: none;
   color: var(--ink);
-  font: 400 var(--t-keys) / 1 var(--sans);
+  font: 400 var(--t-lead) / 1 var(--sans);
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
 }
 .m-why-strand-title {
   flex: none;
   color: var(--ink);
-  font: 400 var(--t-ui) / 1.4 var(--sans);
+  font: 400 var(--t-small) / 1.4 var(--sans);
   letter-spacing: 0.05em;
 }
 /* 线：接在名字后面拉到这股经历的最后一列，末端一颗小圆点 */
@@ -940,24 +940,25 @@
   position: relative;
   flex: 1;
   min-width: 16px;
-  height: 1.5px;
-  margin-left: 2px;
-  background: rgb(27 26 24 / 0.3);
+  height: 1px;
+  margin-left: 4px;
+  background: rgb(27 26 24 / 0.24);
   transition: background-color 0.3s var(--ease);
 }
 .m-why-line::after {
   content: '';
   position: absolute;
-  top: -2.25px;
-  right: -3px;
-  width: 6px;
-  height: 6px;
+  top: -2px;
+  right: -2.5px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--ink-2);
 }
 .m-why-strand-detail {
+  margin-top: 1px;
   color: var(--mute);
-  font: 400 var(--t-small) / 1.5 var(--sans);
+  font: 400 var(--t-label) / 1.5 var(--sans);
   letter-spacing: 0.04em;
 }
 /* 跨过缝的那几截：和名字那一行一样高、压在线上，位置按这股跨几列算出来 */
@@ -968,25 +969,25 @@
 }
 .m-why-knots > i {
   position: absolute;
-  top: calc(50% - 1.75px);
+  top: calc(50% - 1.5px);
   left: calc(
     var(--k) * (100% - (var(--span) - 1) * var(--seam)) / var(--span) +
       (var(--k) - 1) * var(--seam)
   );
   width: var(--seam);
-  height: 3.5px;
+  height: 3px;
   border-radius: 2px;
   background: var(--accent);
 }
 
-/* 左下那一角：导语第二句、公司、说明与「认识我们」，压在台阶底下 */
+/* 左下那一角：导语第二句、说明与「认识我们」，压在台阶底下 */
 .m-why-end {
   grid-row: var(--corner) / -1;
   grid-column: 1 / 3;
   align-self: end;
   display: grid;
   justify-items: start;
-  gap: clamp(6px, 1.1vh, 10px);
+  gap: clamp(8px, 1.6vh, 16px);
   padding-right: var(--seam);
 }
 .m-why-close {
@@ -995,24 +996,11 @@
   font: 400 var(--t-lead) / 1.65 var(--sans);
   letter-spacing: 0.05em;
 }
-.m-why-orgs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px 15px;
-  color: var(--ink-2);
-  font: 400 var(--t-small) / 1.7 var(--sans);
-  letter-spacing: 0.06em;
-}
-.m-why-orgs-label {
-  margin-right: 3px;
-  color: var(--mute);
-  letter-spacing: 0.24em;
-}
 .m-why-note {
-  max-width: 32em;
-  margin-bottom: 6px;
+  max-width: 34em;
+  margin-bottom: 8px;
   color: var(--mute);
-  font: 400 var(--t-small) / 1.7 var(--sans);
+  font: 400 var(--t-label) / 1.75 var(--sans);
   letter-spacing: 0.04em;
 }
 
