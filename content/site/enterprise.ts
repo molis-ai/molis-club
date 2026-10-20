@@ -83,6 +83,26 @@ export type View = {
   craft: string;
   /** 只有「使用者的处境」用：对接过的客户团队数（第 7 章隋欣怡） */
   count?: { value: number; suffix: string; unit: string };
+  /**
+   * 新写（负责人 2026-10-20：从成员自述里大胆推断各自可能具备的能力，再对到四个位置上，负责人来判断）：
+   * 这个位置要用到的能力，和团队里谁有这项能力
+   */
+  skills: { name: string; who: MemberId[] }[];
+};
+
+/** 第 7 章成员短版里有经历的七位（杨鹏飞资料待补，不推断） */
+export type MemberId =
+  | 'wang'
+  | 'xu'
+  | 'zhao'
+  | 'xie'
+  | 'zhuang'
+  | 'sui'
+  | 'jin';
+export type Member = {
+  name: string;
+  /** 新写：第 7 章「经历」一栏压成一行，只取原文里有的公司、职能与年限 */
+  brief: string;
 };
 
 export type Exploration = {
@@ -629,6 +649,12 @@ export const enterprise = {
         title: '理解业务，找到值得投入的场景',
         orgs: ['美团', '字节', '快手', '小红书'],
         craft: '数据科学',
+        skills: [
+          { name: '机会识别与优先级判断', who: ['xu', 'jin'] },
+          { name: '指标体系与增长分析', who: ['xu', 'sui'] },
+          { name: '数据洞察与决策建模', who: ['jin', 'xu'] },
+          { name: '多个行业的业务理解', who: ['xu', 'jin', 'sui'] },
+        ],
       },
       {
         id: 'product',
@@ -636,6 +662,12 @@ export const enterprise = {
         title: '梳理复杂要求，形成产品方案',
         orgs: ['字节', '美团'],
         craft: 'AI 数据产品',
+        skills: [
+          { name: '复杂需求的梳理与抽象', who: ['zhao'] },
+          { name: '数据产品与 AI 产品设计', who: ['zhao', 'xu'] },
+          { name: '把洞察写成产品方案', who: ['xu', 'zhao'] },
+          { name: '方案的技术可行性判断', who: ['wang', 'xie'] },
+        ],
       },
       {
         id: 'engineering',
@@ -643,6 +675,13 @@ export const enterprise = {
         title: '把方案做成工具与系统',
         orgs: ['美团', '字节', '滴滴', 'LinkedIn'],
         craft: '核心研发与架构，企业知识库、RAG 与 Agent 实践',
+        skills: [
+          { name: '复杂系统架构', who: ['wang', 'xie'] },
+          { name: '企业知识库、RAG 与 Agent', who: ['xie'] },
+          { name: '数据与计算平台', who: ['xie', 'zhuang'] },
+          { name: 'BI 与数据看板', who: ['zhuang'] },
+          { name: 'AI Coding 与研发自动化', who: ['xie', 'zhuang'] },
+        ],
       },
       {
         id: 'use',
@@ -651,8 +690,39 @@ export const enterprise = {
         orgs: ['美团', '字节', '小红书'],
         craft: '数据运营',
         count: { value: 100, suffix: '+', unit: '客户团队' },
+        skills: [
+          { name: '客户访谈与共创', who: ['sui'] },
+          { name: '一线运营与使用反馈', who: ['sui', 'jin'] },
+          { name: '工作流梳理与 AI 改造', who: ['jin'] },
+          { name: '培训与方法分享', who: ['zhao', 'wang'] },
+        ],
       },
     ] satisfies View[],
+    /** 第 7 章成员短版：名字，和经历压成的一行 */
+    members: {
+      wang: {
+        name: '王一骏',
+        brief:
+          '美团、字节、滴滴、LinkedIn 与硅谷创业公司核心研发，负责架构与管理',
+      },
+      xu: {
+        name: '徐晶',
+        brief: '前美团、小红书、英语流利说、Teambition 资深数据科学家',
+      },
+      zhao: { name: '赵壮实', brief: '字节、美团核心团队 AI 数据产品资深专家' },
+      xie: {
+        name: '谢俊',
+        brief: '8 年美团研发，企业知识库、RAG 与 Agent 实践',
+      },
+      zhuang: { name: '庄昊哲', brief: '3 年美团 BI 研发' },
+      sui: {
+        name: '隋欣怡',
+        brief: '美团、字节、小红书数据运营专家，对接过 100+ 客户团队',
+      },
+      jin: { name: '靳曲', brief: '前美团、快手、字节数据科学家' },
+    } satisfies Record<MemberId, Member>,
+    /** 新写：三列的小标题 */
+    columns: { who: '团队里谁有', skills: '用到的能力', goal: '要达成的' },
     /** 新写：5.5 编辑注释的意思，对外的短句 */
     note: '这些经历来自成员过往的工作：不代表固定分工，也不是 Molis 已完成的客户项目或交付成效。',
     /** 新写 */

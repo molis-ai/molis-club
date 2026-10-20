@@ -82,6 +82,40 @@ void test('为什么我们可以：导语两头、四个位置与小标题都照
   assert.match(why.note, /不是 Molis 已完成的客户项目/);
 });
 
+void test('为什么我们可以：每项能力都落到有经历的成员身上，成员和经历里的公司都在第 7 章里', () => {
+  const { why } = enterprise;
+  const team = doc.slice(doc.indexOf('## 7. 团队'));
+  for (const [id, member] of Object.entries(why.members)) {
+    assert.ok(
+      team.includes(member.name),
+      `${id}：「${member.name}」不在第 7 章`,
+    );
+    for (const org of [
+      '美团',
+      '字节',
+      '快手',
+      '小红书',
+      '滴滴',
+      'LinkedIn',
+      '英语流利说',
+      'Teambition',
+    ])
+      if (member.brief.includes(org))
+        assert.ok(
+          team.slice(team.indexOf(member.name)).split('\n')[0].includes(org),
+          `${member.name}的经历里没有「${org}」`,
+        );
+  }
+  for (const view of why.views) {
+    assert.ok(view.skills.length >= 3, `${view.id} 至少要有三项能力`);
+    for (const skill of view.skills) {
+      assert.ok(skill.who.length > 0, `${view.id}「${skill.name}」没有人`);
+      for (const who of skill.who)
+        assert.ok(who in why.members, `${who} 不是成员`);
+    }
+  }
+});
+
 void test('五个问题都对应到四站上，每一站至少亮起一个问题', () => {
   const { advice, stations } = enterprise.path;
   const lit = new Set();
