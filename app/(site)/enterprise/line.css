@@ -817,326 +817,273 @@
 }
 
 /* =====================================================================
-   为什么我们可以（why.tsx）：和合作路线同一个书架（shelf.tsx），每本里一段接力短片（relay.tsx）；
-   四本看完再滚一拍，书架退下去，片尾字幕滚上来
+   为什么我们可以（why.tsx）：一张覆盖图，像一根绳——四个位置四列，九股经历一股一行，
+   名字打头，一根线从能顶上的第一个位置拉到最后一个；线跨过列与列之间的缝时那一截是杏色。
+   经历排成一道台阶，左下那一角放收尾。不加框，不钉住，进屏画一遍就停；颜色、字号、圆角只读 site.css 的令牌
    ===================================================================== */
-/* 钉住时三行：标题、书架（片尾叠在同一格）、说明与「认识我们」；都写明了行，片尾才不会把书架挤到下一行 */
-.m-ent-flow[data-live] .m-ent-flow-stick {
-  grid-auto-rows: auto;
-}
-.m-ent-flow[data-live] .m-ent-flow-head {
-  grid-row: 1;
-}
-.m-ent-flow[data-live] .m-ent-legs {
-  grid-row: 2;
-  grid-column: 1;
-}
-.m-ent-flow[data-live] .m-ent-flow-stick > footer {
-  grid-row: 3;
-}
-/* 片尾：钉住时和书架叠在同一格里，到最后一拍才出来；没钉住时排在书架后面 */
-.m-ent-coda {
+.m-why {
   display: grid;
-  place-items: center;
+  gap: clamp(24px, 4.6vh, 52px);
+  padding-block: var(--section-top) var(--section-bottom);
 }
-.m-ent-flow[data-live] .m-ent-coda {
-  grid-row: 2;
-  grid-column: 1;
-  z-index: 2;
-  min-height: 0;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition:
-    opacity 0.6s var(--ease),
-    visibility 0s linear 0.6s;
-}
-.m-ent-flow[data-coda] .m-ent-coda {
-  opacity: 1;
-  visibility: visible;
-  transition:
-    opacity 0.8s var(--ease) 0.35s,
-    visibility 0s linear 0s;
-}
-.m-ent-flow[data-live] .m-ent-legs {
-  transition:
-    opacity 0.6s var(--ease),
-    translate 0.8s var(--ease);
-}
-.m-ent-flow[data-coda] .m-ent-legs {
-  opacity: 0;
-  translate: 0 -18px;
-  pointer-events: none;
-}
-/* 片尾字幕：上下两头淡出，像片尾从画面底下滚上来 */
-.m-relay-credits {
-  width: min(100%, 640px);
-  max-height: 100%;
-  overflow: hidden;
-  text-align: center;
-  mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent);
-}
-.m-ent-flow[data-live] .m-relay-credits {
-  height: 100%;
-}
-.m-relay-roll {
+/* 四列：位置在第一行，经历从第二行起一股一行 */
+.m-why-board {
+  --seam: clamp(22px, 2.3vw, 38px);
+  --bleed: clamp(10px, 0.9vw, 14px);
   display: grid;
-  justify-items: center;
-  gap: 14px;
-  padding-block: 36px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: auto repeat(var(--rows), auto);
+  gap: 11px var(--seam);
 }
-.m-ent-flow[data-live] .m-relay-roll {
-  min-height: 100%;
-  align-content: center;
+.m-why-seats,
+.m-why-strands {
+  display: contents;
 }
-.m-ent-flow[data-coda] .m-relay-roll {
-  animation: m-relay-roll 4.8s cubic-bezier(0.2, 0.6, 0.2, 1) 0.4s both;
-}
-@keyframes m-relay-roll {
-  from {
-    opacity: 0;
-    translate: 0 45%;
-  }
-  15% {
-    opacity: 1;
-  }
-  to {
-    translate: 0 0;
-  }
-}
-.m-relay-role {
-  margin-top: 10px;
-  color: var(--mute);
-  font: 400 11.5px / 1 var(--sans);
-  letter-spacing: 0.4em;
-}
-.m-relay-cast,
-.m-relay-orgs {
-  display: grid;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  color: var(--ink);
-  font: 400 clamp(14px, 1.05vw, 16px) / 1.6 var(--sans);
-  letter-spacing: 0.08em;
-}
-.m-relay-orgs {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px 18px;
-  color: var(--ink-2);
-  font-size: 14px;
-}
-.m-relay-close {
-  max-width: 26em;
-  margin-top: 22px;
-  padding-top: 22px;
-  border-top: 1px solid var(--hair);
-  color: var(--ink);
-  font: 400 clamp(16px, 1.25vw, 19px) / 1.7 var(--sans);
-  letter-spacing: 0.05em;
+.m-why-axis,
+.m-why-cells {
+  display: none;
 }
 
-/* ---------- 接力短片里的画法（relay.tsx）：光标、名牌、接力的杏色小卡 ---------- */
-.m-relay-hand[data-tone='deep'] > .m-film-arrow path {
-  fill: var(--accent-ink);
+/* 一列的底：铺满整列（前两列到左下那一角为止）、往外多出一圈，平时看不见 */
+.m-why-lane {
+  grid-row: 1 / var(--end);
+  grid-column: var(--col);
+  margin: calc(-1 * var(--bleed));
+  border-radius: var(--r-panel);
+  transition: background-color 0.3s var(--ease);
 }
-.m-relay-tag {
+
+/* 位置：一颗杏色小点和位置名、客户会问的一句、5.5 小标题 */
+.m-why-seat {
+  position: relative;
+  grid-row: 1;
+  grid-column: var(--col);
   display: grid;
-  gap: 0.2em;
-  margin: 1.55em 0 0 -0.35em;
-  padding: 0.42em 0.75em 0.5em;
-  border-radius: 0.7em;
+  align-content: start;
+  gap: 9px;
+  padding-bottom: clamp(18px, 3.2vh, 34px);
+}
+.m-why-seat-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--mute);
+  font: 500 var(--t-label) / 1.4 var(--sans);
+  letter-spacing: 0.24em;
+}
+.m-why-seat-label::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
   background: var(--accent);
+}
+.m-why-seat-ask {
   color: var(--ink);
-  font-size: 1em;
-  line-height: 1.15;
-}
-.m-relay-hand[data-tone='deep'] > .m-relay-tag {
-  background: var(--accent-ink);
-  color: var(--white);
-}
-.m-relay-tag > b {
-  font: 500 1em / 1.15 var(--sans);
+  font: 400 var(--t-keys) / 1.4 var(--sans);
   letter-spacing: 0.04em;
 }
-.m-relay-tag > small {
-  font: 400 0.82em / 1.2 var(--sans);
-  letter-spacing: 0.02em;
-  opacity: 0.85;
-}
-.m-relay-baton {
-  fill: color-mix(in srgb, var(--accent) 13%, var(--white));
-  stroke: var(--accent);
-  stroke-width: 1.5;
-}
-.m-relay-baton-dot,
-.m-relay-baton-ink,
-.m-relay-dot-hot,
-.m-relay-packet {
-  fill: var(--accent);
-}
-.m-relay-baton-soft {
-  fill: rgb(234 146 96 / 0.4);
-}
-.m-relay-t0 {
-  fill: rgb(27 26 24 / 0.08);
-}
-.m-relay-t1 {
-  fill: rgb(27 26 24 / 0.16);
-}
-.m-relay-t2 {
-  fill: rgb(27 26 24 / 0.34);
-}
-.m-relay-t-on {
-  fill: var(--accent);
-}
-.m-relay-dot {
-  fill: rgb(27 26 24 / 0.16);
-}
-.m-relay-dot-real {
-  fill: var(--ink);
-}
-.m-relay-axis,
-.m-relay-axis-tip,
-.m-relay-tangle,
-.m-relay-wire,
-.m-relay-smooth,
-.m-relay-bump,
-.m-relay-person,
-.m-relay-icon,
-.m-relay-sketch {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.m-relay-axis,
-.m-relay-axis-tip {
-  stroke: rgb(27 26 24 / 0.3);
-  stroke-width: 1.3;
-}
-.m-relay-axis,
-.m-relay-tangle,
-.m-relay-wire,
-.m-relay-smooth {
-  stroke-dasharray: 1;
-}
-.m-relay-tangle {
-  stroke: rgb(27 26 24 / 0.28);
-  stroke-width: 1.2;
-}
-.m-relay-wire {
-  stroke: rgb(27 26 24 / 0.26);
-  stroke-width: 1.4;
-}
-.m-relay-smooth {
-  stroke: var(--accent);
-  stroke-width: 2;
-}
-.m-relay-bump {
-  fill: var(--accent-wash);
-  stroke: var(--accent);
-  stroke-width: 1.8;
-}
-.m-relay-person,
-.m-relay-icon {
-  stroke: var(--ink-2);
-  stroke-width: 1.5;
-}
-.m-relay-sketch {
-  stroke: rgb(27 26 24 / 0.35);
-  stroke-width: 1.4;
-  stroke-dasharray: 6 5;
-}
-.m-relay-note {
-  fill: #f8efd9;
-}
-.m-relay-flash {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 2;
-  opacity: 0;
-}
-.m-relay-block {
-  fill: var(--white);
-  stroke: var(--hair-2);
-  stroke-width: 1.2;
-}
-.m-relay-block[data-kind='title'] {
-  fill: rgb(27 26 24 / 0.34);
-  stroke: none;
-}
-.m-relay-block[data-kind='button'] {
-  fill: var(--white);
-  stroke: rgb(27 26 24 / 0.45);
-}
-.m-relay-real {
-  fill: color-mix(in srgb, var(--accent) 13%, var(--white));
-  stroke: var(--accent);
-  stroke-width: 1.4;
-}
-.m-relay-merged {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.6;
-}
-.m-relay-live {
-  fill: var(--accent);
-}
-.m-relay-grid-dot {
-  fill: rgb(27 26 24 / 0.14);
-}
-.m-relay-code-hot {
-  fill: rgb(234 146 96 / 0.55);
-}
-.m-relay-track {
-  fill: rgb(27 26 24 / 0.08);
-}
-.m-relay-fill {
-  fill: var(--accent);
-}
-.m-relay-badge {
-  fill: var(--white);
-  stroke: var(--hair-2);
-  stroke-width: 1.2;
-}
-.m-relay-check {
-  fill: var(--accent);
-}
-.m-relay-check-mark {
-  fill: none;
-  stroke: var(--white);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.m-relay-walker {
-  fill: var(--ink);
-  stroke: var(--white);
-  stroke-width: 2;
-}
-/* 变形的基准点：套索从右下角张开，代码从左往右打出来，鼓包从底边长起来 */
-.m-film-art :is(.m-relay-corner, .m-relay-type, .m-relay-rise) {
-  transform-box: fill-box;
-}
-.m-film-art .m-relay-corner {
-  transform-origin: 100% 100%;
-}
-.m-film-art .m-relay-type {
-  transform-origin: 0 50%;
-}
-.m-film-art .m-relay-rise {
-  transform-origin: 50% 100%;
+.m-why-seat-title {
+  color: var(--mute);
+  font: 400 var(--t-small) / 1.65 var(--sans);
+  letter-spacing: 0.04em;
 }
 
-.m-ent-why-end {
+/* 一股经历：第一行是名字和线，第二行是在哪里、做过什么；整行不接鼠标，只有这两行接 */
+.m-why-strand {
+  --t0: calc(480ms + var(--row) * 110ms);
+  --run: calc(0.2s + var(--span) * 0.26s);
+  position: relative;
+  grid-row: var(--r);
+  grid-column: var(--a) / var(--b);
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease);
+}
+.m-why-strand-head,
+.m-why-strand-detail {
+  pointer-events: auto;
+}
+.m-why-strand-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 28px;
+}
+.m-why-figure {
+  flex: none;
+  color: var(--ink);
+  font: 400 var(--t-keys) / 1 var(--sans);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.m-why-strand-title {
+  flex: none;
+  color: var(--ink);
+  font: 400 var(--t-ui) / 1.4 var(--sans);
+  letter-spacing: 0.05em;
+}
+/* 线：接在名字后面拉到这股经历的最后一列，末端一颗小圆点 */
+.m-why-line {
+  position: relative;
+  flex: 1;
+  min-width: 16px;
+  height: 1.5px;
+  margin-left: 2px;
+  background: rgb(27 26 24 / 0.3);
+  transition: background-color 0.3s var(--ease);
+}
+.m-why-line::after {
+  content: '';
+  position: absolute;
+  top: -2.25px;
+  right: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-2);
+}
+.m-why-strand-detail {
+  margin-top: 1px;
+  color: var(--mute);
+  font: 400 var(--t-small) / 1.55 var(--sans);
+  letter-spacing: 0.04em;
+}
+/* 跨过缝的那几截：和名字那一行一样高、压在线上，位置按这股跨几列算出来 */
+.m-why-knots {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 28px;
+}
+.m-why-knots > i {
+  position: absolute;
+  top: calc(50% - 1.75px);
+  left: calc(
+    var(--k) * (100% - (var(--span) - 1) * var(--seam)) / var(--span) +
+      (var(--k) - 1) * var(--seam)
+  );
+  width: var(--seam);
+  height: 3.5px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+/* 左下那一角：导语第二句、公司、说明与「认识我们」，压在台阶底下 */
+.m-why-end {
+  grid-row: var(--corner) / -1;
+  grid-column: 1 / 3;
+  align-self: end;
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  padding-right: var(--seam);
+}
+.m-why-close {
+  max-width: 24em;
+  color: var(--ink);
+  font: 400 var(--t-lead) / 1.75 var(--sans);
+  letter-spacing: 0.05em;
+}
+.m-why-orgs {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px 32px;
+  gap: 2px 15px;
+  color: var(--ink-2);
+  font: 400 var(--t-small) / 1.7 var(--sans);
+  letter-spacing: 0.06em;
+}
+.m-why-orgs-label {
+  margin-right: 3px;
+  color: var(--mute);
+  letter-spacing: 0.24em;
+}
+.m-why-note {
+  max-width: 32em;
+  margin-bottom: 6px;
+  color: var(--mute);
+  font: 400 var(--t-small) / 1.7 var(--sans);
+  letter-spacing: 0.04em;
+}
+
+/* 停在一列上：只亮跨过它的经历，那一列染一点杏色；停在一股经历上：其余的退下去，它跨过的列染色 */
+@media (hover: hover) {
+  .m-why-board:has(.m-why-strand:hover) .m-why-strand:not(:hover),
+  .m-why-board:has([data-lane='0']:hover) .m-why-strand:not([data-covers~='0']),
+  .m-why-board:has([data-lane='1']:hover) .m-why-strand:not([data-covers~='1']),
+  .m-why-board:has([data-lane='2']:hover) .m-why-strand:not([data-covers~='2']),
+  .m-why-board:has([data-lane='3']:hover)
+    .m-why-strand:not([data-covers~='3']) {
+    opacity: 0.2;
+  }
+  .m-why-board:has([data-lane='0']:hover, .m-why-strand[data-covers~='0']:hover)
+    .m-why-lane[data-lane='0'],
+  .m-why-board:has([data-lane='1']:hover, .m-why-strand[data-covers~='1']:hover)
+    .m-why-lane[data-lane='1'],
+  .m-why-board:has([data-lane='2']:hover, .m-why-strand[data-covers~='2']:hover)
+    .m-why-lane[data-lane='2'],
+  .m-why-board:has([data-lane='3']:hover, .m-why-strand[data-covers~='3']:hover)
+    .m-why-lane[data-lane='3'] {
+    background: var(--accent-wash);
+  }
+  .m-why-strand:hover .m-why-line {
+    background: var(--ink-2);
+  }
+}
+
+/* 进屏才画（有 JS、不减少动态）：位置从左到右浮上来；经历一股股先出名字、再从左往右拉线，
+   线走到缝上时那一截杏色跟着亮；跨得越宽拉得越久；最后收尾那一角浮上来 */
+.m-why-board[data-wait]
+  :is(
+    .m-why-seat,
+    .m-why-figure,
+    .m-why-strand-title,
+    .m-why-strand-detail,
+    .m-why-knots > i,
+    .m-why-end
+  ) {
+  opacity: 0;
+}
+.m-why-board[data-wait] .m-why-line {
+  clip-path: inset(-4px 100% -4px -4px);
+}
+.m-why-board[data-draw] .m-why-seat {
+  animation: m-why-rise 0.7s var(--ease) calc(var(--i) * 90ms) both;
+}
+.m-why-board[data-draw]
+  :is(.m-why-figure, .m-why-strand-title, .m-why-strand-detail) {
+  animation: m-why-rise 0.6s var(--ease) var(--t0) both;
+}
+.m-why-board[data-draw] .m-why-line {
+  animation: m-why-draw var(--run) cubic-bezier(0.45, 0, 0.2, 1)
+    calc(var(--t0) + 120ms) both;
+}
+.m-why-board[data-draw] .m-why-knots > i {
+  animation: m-why-knot 0.35s var(--ease)
+    calc(var(--t0) + 120ms + var(--run) * var(--k) / var(--span)) both;
+}
+.m-why-board[data-draw] .m-why-end {
+  animation: m-why-rise 0.8s var(--ease)
+    calc(480ms + var(--rows) * 110ms + 200ms) both;
+}
+@keyframes m-why-rise {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+@keyframes m-why-draw {
+  from {
+    clip-path: inset(-4px 100% -4px -4px);
+  }
+  to {
+    clip-path: inset(-4px -4px -4px -4px);
+  }
+}
+@keyframes m-why-knot {
+  from {
+    opacity: 0;
+    scale: 0.2 1;
+  }
 }
 
 /* ---------- 减少动态：图不推拉、整句都在；路线与「为什么」的过渡都去掉 ---------- */
@@ -1158,8 +1105,7 @@
     translate: none;
     filter: none;
   }
-  .m-ent-why *,
-  .m-ent-why *::before {
+  .m-why * {
     transition: none !important;
   }
 }
@@ -1177,9 +1123,6 @@
   .m-film-hand,
   .m-film-axis {
     font-size: 8.5px;
-  }
-  .m-relay-tag > small {
-    display: none;
   }
   .m-film-lines {
     display: grid;
@@ -1199,11 +1142,74 @@
     grid-column: 2;
   }
 
-  .m-ent-why-end {
-    justify-content: flex-start;
+  /* 为什么我们可以：不画线；四个位置两两一排，每股经历下面一条四格的小条，上面一行位置名 */
+  .m-why-board {
+    display: block;
+  }
+  .m-why-lane,
+  .m-why-line,
+  .m-why-knots {
+    display: none;
+  }
+  .m-why-seats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .m-why-seat,
+  .m-why-strand {
+    grid-row: auto;
+    grid-column: auto;
+  }
+  .m-why-seat {
+    gap: 8px;
+    padding: 16px;
+    border: 1px solid var(--hair);
+    border-radius: var(--r-inset);
+    background: var(--white);
+  }
+  .m-why-axis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    margin: 30px 0 14px;
+    color: var(--mute);
+    font: 400 var(--t-label) / 1.35 var(--sans);
+    letter-spacing: 0.04em;
+  }
+  .m-why-strands {
+    display: grid;
+    gap: 18px;
+  }
+  .m-why-strand {
+    pointer-events: auto;
+  }
+  .m-why-strand-head {
+    height: auto;
+  }
+  .m-why-cells {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .m-why-cells > i {
+    height: 3px;
+    border-radius: 2px;
+    background: var(--faint);
+  }
+  .m-why-cells > i[data-on] {
+    background: var(--accent);
+  }
+  .m-why-end {
+    margin-top: 40px;
+    padding-right: 0;
   }
 }
 @media (max-width: 640px) {
+  .m-why-seats {
+    grid-template-columns: minmax(0, 1fr);
+  }
   .m-ent-flow-grid {
     grid-template-columns: minmax(0, 1fr);
   }

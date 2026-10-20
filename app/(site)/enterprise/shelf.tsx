@@ -9,12 +9,11 @@ import {
 import { Note, Phrases, type Vars } from '../../_site/ui';
 import { play } from './keeps';
 
-// 书架：「我们怎样开展合作」和「为什么我们可以」共用的展开式长卷（负责人 2026-10-20：后一屏沿用前一屏的交互，看得出是接着的）。
+// 书架：「我们怎样开展合作」的展开式长卷（从 stages.tsx 拆出来；「为什么我们可以」用过一版，后来改成覆盖图）。
 // 四本书并排，同一种纸色的圆角书立在一道细线上，高矮略有参差；书脊从上到下是编号、短名、竖排的全名，底下一颗小圆点。
 // 往下滚，整屏钉住，一本一本地打开：书脊留在左边，右边翻出一页白纸，纸顶垂下一根杏色书签带，
 // 纸上一张插图（一段短片）和一行图注（编号、短名、全名、示意）。点合着的书脊，滚到它那一拍；鼠标停在插图上，片子重演。
-// 还可以多一拍「片尾」（coda）：四本都看完后，书架退下去，片尾字幕在原地滚上来。
-// 宽屏（≥1000 宽、≥600 高）有 JS 时才钉住；手机、矮屏、没有 JS 时几本书从上到下排开，片尾排在最后。
+// 宽屏（≥1000 宽、≥600 高）有 JS 时才钉住；手机、矮屏、没有 JS 时几本书从上到下排开。
 // 短片的动画：先停在第一帧（没有 JS 时看到的是演完的样子）；钉住时打开哪一本演哪一本，不钉住时各自进屏各演一遍。
 
 export type ShelfBook = {
@@ -36,8 +35,6 @@ export function Shelf({
   title,
   lead,
   books,
-  coda,
-  footer,
 }: {
   /** section 的锚点 */
   id: string;
@@ -47,17 +44,11 @@ export function Shelf({
   title: string;
   lead: string;
   books: ShelfBook[];
-  /** 最后一拍：四本都看完后滚上来的片尾 */
-  coda?: ReactNode;
-  footer?: ReactNode;
 }) {
   const ref = useRef<HTMLElement>(null);
   const [live, setLive] = useState(false);
   const [active, setActive] = useState(0);
   const BOOKS = books.length;
-  const BEATS = BOOKS + (coda ? 1 : 0);
-  const open = Math.min(active, BOOKS - 1);
-  const ending = coda !== undefined && active === BOOKS;
 
   // 宽屏才钉住；钉住时按滚动走到哪一拍
   useEffect(() => {
@@ -71,7 +62,7 @@ export function Shelf({
       const rect = root.getBoundingClientRect();
       const span = rect.height - window.innerHeight;
       const pin = span > 0 ? Math.min(1, Math.max(0, -rect.top / span)) : 0;
-      setActive(Math.min(BEATS - 1, Math.floor(pin * BEATS)));
+      setActive(Math.min(BOOKS - 1, Math.floor(pin * BOOKS)));
     };
     const request = () => {
       if (!frame) frame = requestAnimationFrame(read);
@@ -90,7 +81,7 @@ export function Shelf({
       window.removeEventListener('scroll', request);
       window.removeEventListener('resize', request);
     };
-  }, [BEATS]);
+  }, [BOOKS]);
 
   // 动画：先停在第一帧；钉住时只放打开的那一本，不钉住时各自进屏各演一遍
   useEffect(() => {
@@ -132,12 +123,12 @@ export function Shelf({
     }
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const scene = ref.current?.querySelector(
-      `.m-ent-leg[data-index="${open}"] .m-film`,
+      `.m-ent-leg[data-index="${active}"] .m-film`,
     );
     if (!scene) return;
     if (scene.hasAttribute('data-hold')) scene.removeAttribute('data-hold');
     else play(scene);
-  }, [open, live]);
+  }, [active, live]);
 
   /** 点一本合着的书：滚到它那一拍的正中 */
   const go = useCallback(
@@ -146,11 +137,11 @@ export function Shelf({
       if (!root) return;
       const rect = root.getBoundingClientRect();
       const span = rect.height - window.innerHeight;
-      const top = window.scrollY + rect.top + ((index + 0.5) / BEATS) * span;
+      const top = window.scrollY + rect.top + ((index + 0.5) / BOOKS) * span;
       const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
       window.scrollTo({ top, behavior: still ? 'auto' : 'smooth' });
     },
-    [BEATS],
+    [BOOKS],
   );
 
   const titleId = `${prefix}-title`;
@@ -160,9 +151,8 @@ export function Shelf({
       className={`m-ent-flow ${className}`}
       id={id}
       data-live={live || undefined}
-      data-coda={ending || undefined}
       aria-labelledby={titleId}
-      style={{ '--legs': BEATS } as Vars}
+      style={{ '--legs': BOOKS } as Vars}
     >
       <div className="m-ent-flow-stick m-wrap">
         <header className="m-ent-flow-head">
@@ -176,7 +166,7 @@ export function Shelf({
 
         <ol className="m-ent-legs">
           {books.map((book, index) => {
-            const shown = !live || index === open;
+            const shown = !live || index === active;
             return (
               <li
                 key={book.id}
@@ -247,9 +237,6 @@ export function Shelf({
             );
           })}
         </ol>
-
-        {coda ? <div className="m-ent-coda">{coda}</div> : null}
-        {footer}
       </div>
     </section>
   );

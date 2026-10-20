@@ -60,7 +60,6 @@ void test('满幅那一屏：引子与三拍连起来是开场第三段原句', 
 void test('为什么我们可以：导语两头、四个位置与小标题都照 5.5 原文，位置按原文顺序', () => {
   const { why, people } = enterprise;
   assert.equal(why.need + why.close, people.lead);
-  verbatim(why.center, '5.5 导语');
   const order = why.views.map((view) => why.need.indexOf(view.label));
   assert.ok(
     order.every((at) => at >= 0),
@@ -76,20 +75,36 @@ void test('为什么我们可以：导语两头、四个位置与小标题都照
   );
   for (const view of why.views) {
     verbatim(view.title, '5.5 小标题');
-    for (const org of view.orgs)
-      assert.ok(doc.includes(org), `${view.id}：「${org}」不在成员经历里`);
+    assert.ok(view.ask, `${view.label}：缺客户会问的那一句`);
   }
   assert.match(why.note, /不是 Molis 已完成的客户项目/);
 });
 
-void test('为什么我们可以：经历背书不写人名，片尾的公司都出自经历，业绩口径不上页面', () => {
+void test('为什么我们可以：每个位置都有经历顶上，每道缝都有经历跨过；公司都出自经历，不写人名与业绩口径', () => {
   const { why } = enterprise;
-  const proofs = Object.values(why.proofs);
-  for (const proof of proofs)
-    assert.ok(proof.tag, `「${proof.title}」缺光标名牌`);
-  const details = proofs.map((proof) => proof.detail ?? '').join('');
-  for (const org of why.credits.orgs)
-    assert.ok(details.includes(org), `片尾的「${org}」不在任何一条经历里`);
+  const seats = why.views.map((view) => view.id);
+  const spans = why.strands.map((strand) => [
+    seats.indexOf(strand.from),
+    seats.indexOf(strand.to),
+  ]);
+  for (const [index, [from, to]] of spans.entries())
+    assert.ok(
+      from >= 0 && to >= from,
+      `「${why.strands[index].title}」的起止位置不对`,
+    );
+  for (let seat = 0; seat < seats.length; seat++)
+    assert.ok(
+      spans.some(([from, to]) => from <= seat && seat <= to),
+      `「${why.views[seat].label}」没有经历顶上`,
+    );
+  for (let seam = 1; seam < seats.length; seam++)
+    assert.ok(
+      spans.some(([from, to]) => from < seam && seam <= to),
+      `「${why.views[seam - 1].label}」和「${why.views[seam].label}」之间没有经历跨过`,
+    );
+  const details = why.strands.map((strand) => strand.detail).join('');
+  for (const name of why.orgs.names)
+    assert.ok(details.includes(name), `「${name}」不在任何一股经历里`);
   const names = [
     '王一骏',
     '徐晶',

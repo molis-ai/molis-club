@@ -70,42 +70,31 @@ export type Advice = {
  */
 export type Duty = Record<'you' | 'both' | 'we', string[]>;
 
-/** 「为什么我们可以」里的一个位置：5.5 导语里的四个位置，各配 5.5 的一个小标题与成员经历 */
+/** 「为什么我们可以」的四个位置：5.5 导语里的原词，从左到右排开 */
+export type ViewId = 'business' | 'product' | 'engineering' | 'use';
 export type View = {
-  id: 'business' | 'product' | 'engineering' | 'use';
+  id: ViewId;
   /** 5.5 导语原词 */
   label: string;
+  /** 新写：企业负责人站在这个位置上会问的一句 */
+  ask: string;
   /** 5.5 小标题原文 */
   title: string;
-  /** 新写：成员过往任职的公司（第 7 章成员短版） */
-  orgs: string[];
-  /** 新写：在那里做什么（第 7 章成员短版） */
-  craft: string;
-  /** 只有「使用者的处境」用：对接过的客户团队数（第 7 章隋欣怡） */
-  count?: { value: number; suffix: string; unit: string };
 };
 
-/** 经历背书：飞书「哇塞的履历」（负责人 2026-10-20 截图）里的职业经历，去掉人名、合并相通的几条 */
-export type ProofId =
-  | 'data'
-  | 'product'
-  | 'arch'
-  | 'systems'
-  | 'bi'
-  | 'ops'
-  | 'workflow'
-  | 'coding'
-  | 'writing'
-  | 'talks';
-export type Proof = {
-  /** 这条经历说的是什么（片尾字幕「出演」那一栏） */
+/**
+ * 一股经历：飞书「哇塞的履历」（负责人 2026-10-20 截图）里的职业经历，去掉人名、合并相通的几条；
+ * 从一个位置横跨到另一个位置（含两头），跨哪几个是从履历推断的，负责人判断
+ */
+export type Strand = {
+  id: string;
+  /** 打头的一个数（年数、团队数），没有就不写 */
+  figure?: string;
   title: string;
-  /** 在哪里、多久、做过什么（只取履历里写了的） */
-  detail?: string;
-  /** 短片里光标名牌的大字 */
-  tag: string;
-  /** 名牌下面一小行 */
-  sub?: string;
+  /** 在哪里、做过什么（只取履历里写了的） */
+  detail: string;
+  from: ViewId;
+  to: ViewId;
 };
 
 export type Exploration = {
@@ -641,104 +630,105 @@ export const enterprise = {
     need: '把 AI 用进一段业务，往往需要同时理解业务目标、产品体验、工程实现和使用者的处境。',
     /** 5.5 导语原文第二句 */
     close: '团队成员各自的专业经历，让我们能从这些不同的位置共同看问题。',
-    /** 画面中间那块：5.5 导语原词 */
-    center: '一段业务',
-    /** 新写：经历那一行的小标签 */
-    record: '成员经历',
     views: [
       {
         id: 'business',
         label: '业务目标',
+        ask: '场景选得对吗？',
         title: '理解业务，找到值得投入的场景',
-        orgs: ['美团', '字节', '快手', '小红书'],
-        craft: '数据科学',
       },
       {
         id: 'product',
         label: '产品体验',
+        ask: '要求理得清吗？',
         title: '梳理复杂要求，形成产品方案',
-        orgs: ['字节', '美团'],
-        craft: 'AI 数据产品',
       },
       {
         id: 'engineering',
         label: '工程实现',
+        ask: '做得出、跑得稳吗？',
         title: '把方案做成工具与系统',
-        orgs: ['美团', '字节', '滴滴', 'LinkedIn'],
-        craft: '核心研发与架构，企业知识库、RAG 与 Agent 实践',
       },
       {
         id: 'use',
         label: '使用者的处境',
+        ask: '有人用、用得顺吗？',
         title: '贴近实际使用，与业务团队一起改进',
-        orgs: ['美团', '字节', '小红书'],
-        craft: '数据运营',
-        count: { value: 100, suffix: '+', unit: '客户团队' },
       },
     ] satisfies View[],
-    /** 经历背书（飞书「哇塞的履历」，不写人名；玩笑自述、校友、「月百万+」这类业绩口径都不用） */
-    proofs: {
-      data: {
-        title: '十年数据科学与策略分析',
-        detail: '美团、小红书、快手、字节、英语流利说、Teambition',
-        tag: '数据科学 10 年',
-        sub: '美团 · 小红书 · 快手 · 字节',
+    /** 九股经历，按起点从左到右、再按跨度排（玩笑自述、校友、「月百万+」这类业绩口径都不用） */
+    strands: [
+      {
+        id: 'data',
+        figure: '10 年',
+        title: '数据科学与策略分析',
+        detail: '美团 · 小红书 · 快手 · 字节 · 英语流利说 · Teambition',
+        from: 'business',
+        to: 'product',
       },
-      product: {
+      {
+        id: 'product',
         title: 'AI 数据产品资深专家',
-        detail: '字节、美团核心团队；《基于抖音数据管理及功能拓展》软著',
-        tag: 'AI 数据产品专家',
-        sub: '字节 · 美团核心团队',
+        detail: '字节 · 美团核心团队',
+        from: 'business',
+        to: 'engineering',
       },
-      arch: {
+      {
+        id: 'arch',
         title: '核心研发团队的架构与管理',
-        detail: '美团、字节、滴滴、LinkedIn 与硅谷创业公司',
-        tag: '核心研发架构',
-        sub: '美团 · 字节 · 滴滴 · LinkedIn',
+        detail: '美团 · 字节 · 滴滴 · LinkedIn · 硅谷创业公司',
+        from: 'product',
+        to: 'engineering',
       },
-      systems: {
-        title: '8 年大型复杂系统研发',
-        detail: '业内第一批企业知识库、RAG、Prompt Engineering 与 Agent 实践',
-        tag: '复杂系统与 Agent',
-        sub: '8 年 · 知识库 · RAG',
-      },
-      bi: {
-        title: 'BI 与数据研发',
-        detail: '美团 BI 高级研发工程师',
-        tag: 'BI 研发',
-        sub: '美团',
-      },
-      ops: {
-        title: '数据运营与客户共创',
-        detail: '美团、字节、小红书核心团队；对接过 100+ 客户团队',
-        tag: '数据运营',
-        sub: '100+ 客户团队',
-      },
-      workflow: {
+      {
+        id: 'workflow',
         title: '以 AI 重构工作流',
         detail: '把有效经验沉淀为可复用的工具与工作方法',
-        tag: '以 AI 重构工作流',
+        from: 'product',
+        to: 'use',
       },
-      coding: {
+      {
+        id: 'systems',
+        figure: '8 年',
+        title: '大型复杂系统研发',
+        detail: '业内第一批知识库、RAG 与 Agent 实践',
+        from: 'engineering',
+        to: 'engineering',
+      },
+      {
+        id: 'coding',
         title: 'AI Coding 实战',
-        detail: '字节 MarsCode 编程挑战赛队长；聚焦 AI Agent 与 AI Native 架构',
-        tag: 'AI Coding',
-        sub: 'MarsCode 挑战赛队长',
+        detail: '字节 MarsCode 编程挑战赛队长',
+        from: 'engineering',
+        to: 'engineering',
       },
-      writing: { title: '复旦大学中文系', tag: '复旦中文系' },
-      talks: {
+      {
+        id: 'bi',
+        title: 'BI 与数据研发',
+        detail: '美团 BI 高级研发工程师',
+        from: 'engineering',
+        to: 'use',
+      },
+      {
+        id: 'ops',
+        figure: '100+',
+        title: '对接过的客户团队',
+        detail: '美团 · 字节 · 小红书数据运营',
+        from: 'use',
+        to: 'use',
+      },
+      {
+        id: 'talks',
         title: '行业分享与讲师',
-        detail:
-          'DataFun、美团大学、山禾讲师；CSDI 软件研发管理技术峰会受邀嘉宾',
-        tag: '讲师',
-        sub: 'DataFun · 美团大学 · 山禾',
+        detail: 'DataFun · 美团大学 · 山禾',
+        from: 'use',
+        to: 'use',
       },
-    } satisfies Record<ProofId, Proof>,
-    /** 新写：片尾字幕（接上一屏「拍视频」的意思） */
-    credits: {
-      cast: '出演',
-      from: '曾在',
-      orgs: [
+    ] satisfies Strand[],
+    /** 新写：图下面一行，经历里出现过的公司 */
+    orgs: {
+      label: '曾在',
+      names: [
         '美团',
         '字节',
         '小红书',
@@ -749,8 +739,6 @@ export const enterprise = {
         'Teambition',
       ],
     },
-    /** 新写：每段短片里的两条轴（业务目标那段） */
-    axes: { x: '价值', y: '可行性' },
     /** 新写：5.5 编辑注释的意思，对外的短句 */
     note: '这些经历来自成员过往的工作：不代表固定分工，也不是 Molis 已完成的客户项目或交付成效。',
     /** 新写 */
