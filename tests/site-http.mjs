@@ -211,6 +211,9 @@ assert(!(await html('/sitemap.xml')).includes('<loc>'));
 for (const [path, text] of [
   ['/community', '往下：四件作品，各自连着做法'],
   ['/enterprise', '先说说，你们卡在哪'],
+  // 负责人 2026-10-19：「都看看」、5.4 收尾那句与它下面的「聊聊企业合作」那一屏删去（旧版 ?study=current 里还有）
+  ['/enterprise', '都看看'],
+  ['/enterprise', '具体合作从团队眼前的问题出发'],
   ['/about', '认识每一个人'],
   ['/essays/human-scale', '接着读'],
   ['/about', '我们怎样要求自己'],
