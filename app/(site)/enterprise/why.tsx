@@ -7,10 +7,11 @@ import { More, Phrases, type Vars } from '../../_site/ui';
 // 为什么我们可以（负责人 2026-10-20 第五版：不要光标，从企业负责人的视角看——他想五秒内看到这些人的段位，
 // 和一段业务从头到尾会不会在交接处断档）。
 // 一张覆盖图，像一根绳：四个位置（5.5 导语原词）从左到右四列，顶上是客户会问的一句和 5.5 小标题；
-// 九股经历（飞书履历，不写人名）一股一行，名字打头，一根线从它能顶上的第一个位置拉到最后一个——
+// 九股经历（飞书履历，不写人名）一股一行：黑字是能力，一根线接着从它能顶上的第一个位置拉到最后一个，
+// 下面的灰字是背书（在哪里、多久或多大、什么头衔，数字打头）——
 // 没有哪股贯穿全程，叠起来就一处不断；线跨过列与列之间的缝时那一截是杏色，交接的地方有经历接着。
 // 经历按起点从左往右排成一道台阶，左下空出来的那一角放导语第二句和「不是客户项目」。
-// 字分四档（负责人 2026-10-20：要有区分度、更干净、留白更多）：标题 > 问句、结论、数字 > 经历名、小标题 > 明细、说明。
+// 字分四档（负责人 2026-10-20：要有区分度、更干净、留白更多）：标题 > 问句、结论 > 能力、小标题 > 背书、说明。
 // 进屏时四列从左到右浮上来，经历一股股从左画到右，两秒内画完就停；
 // 停在一列上只亮跨过它的经历，停在一股经历上亮它跨过的列。
 // 窄屏（<1000）不画线：四个位置两两一排，每股经历下面一条四格的小条标出它跨过哪几个位置。
@@ -119,16 +120,16 @@ export function Why() {
                   } as Vars
                 }
               >
-                {/* 名字打头，线接着拉到最后一列 */}
+                {/* 黑字是能力，线接着拉到最后一列；灰字是背书，数字打头 */}
                 <p className="m-why-strand-head">
-                  {strand.figure ? (
-                    <b className="m-why-figure">{strand.figure}</b>
-                  ) : null}
                   <span className="m-why-strand-title">{strand.title}</span>
                   <span className="m-why-line" aria-hidden="true" />
                 </p>
                 <p className="m-why-strand-detail">
-                  {strand.detail}
+                  {strand.figure ? (
+                    <b className="m-why-figure">{strand.figure}</b>
+                  ) : null}
+                  {strand.proof}
                   <span className="sr-only">
                     （{covers.map((index) => why.views[index].label).join('、')}
                     ）

@@ -80,7 +80,7 @@ void test('为什么我们可以：导语两头、四个位置与小标题都照
   assert.match(why.note, /不是 Molis 已完成的客户项目/);
 });
 
-void test('为什么我们可以：每个位置都有经历顶上，每道缝都有经历跨过；不写人名与业绩口径', () => {
+void test('为什么我们可以：每个位置都有经历顶上，每道缝都有经历跨过；黑字只写能力，不写人名与业绩口径', () => {
   const { why } = enterprise;
   const seats = why.views.map((view) => view.id);
   const spans = why.strands.map((strand) => [
@@ -101,6 +101,14 @@ void test('为什么我们可以：每个位置都有经历顶上，每道缝都
     assert.ok(
       spans.some(([from, to]) => from < seam && seam <= to),
       `「${why.views[seam - 1].label}」和「${why.views[seam].label}」之间没有经历跨过`,
+    );
+  // 黑字是能力：不带年数、公司、头衔（这些是灰字的背书）
+  for (const strand of why.strands)
+    assert.ok(
+      !/\d|美团|字节|小红书|快手|滴滴|LinkedIn|专家|工程师|讲师|队长/.test(
+        strand.title,
+      ),
+      `黑字只写能力：「${strand.title}」`,
     );
   const names = [
     '王一骏',

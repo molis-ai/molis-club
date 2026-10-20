@@ -902,7 +902,7 @@
   letter-spacing: 0.04em;
 }
 
-/* 一股经历：第一行是名字和线，第二行是在哪里、做过什么；整行不接鼠标，只有这两行接 */
+/* 一股经历：第一行是能力（黑字）和线，第二行是背书（灰字，数字打头深一档）；整行不接鼠标，只有这两行接 */
 .m-why-strand {
   --t0: calc(480ms + var(--row) * 110ms);
   --run: calc(0.2s + var(--span) * 0.26s);
@@ -923,9 +923,9 @@
   height: var(--head);
 }
 .m-why-figure {
-  flex: none;
+  margin-right: 0.45em;
   color: var(--ink);
-  font: 400 var(--t-lead) / 1 var(--sans);
+  font-weight: 400;
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
 }
@@ -935,7 +935,7 @@
   font: 400 var(--t-small) / 1.4 var(--sans);
   letter-spacing: 0.05em;
 }
-/* 线：接在名字后面拉到这股经历的最后一列，末端一颗小圆点 */
+/* 线：接在能力后面拉到这股经历的最后一列，末端一颗小圆点 */
 .m-why-line {
   position: relative;
   flex: 1;
@@ -1034,7 +1034,6 @@
 .m-why-board[data-wait]
   :is(
     .m-why-seat,
-    .m-why-figure,
     .m-why-strand-title,
     .m-why-strand-detail,
     .m-why-knots > i,
@@ -1048,8 +1047,7 @@
 .m-why-board[data-draw] .m-why-seat {
   animation: m-why-rise 0.7s var(--ease) calc(var(--i) * 90ms) both;
 }
-.m-why-board[data-draw]
-  :is(.m-why-figure, .m-why-strand-title, .m-why-strand-detail) {
+.m-why-board[data-draw] :is(.m-why-strand-title, .m-why-strand-detail) {
   animation: m-why-rise 0.6s var(--ease) var(--t0) both;
 }
 .m-why-board[data-draw] .m-why-line {

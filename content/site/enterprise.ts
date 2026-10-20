@@ -84,15 +84,18 @@ export type View = {
 
 /**
  * 一股经历：飞书「哇塞的履历」（负责人 2026-10-20 截图）里的职业经历，去掉人名、合并相通的几条；
- * 从一个位置横跨到另一个位置（含两头），跨哪几个是从履历推断的，负责人判断
+ * 从一个位置横跨到另一个位置（含两头），跨哪几个是从履历推断的，负责人判断。
+ * 一行两层（负责人 2026-10-20 定）：黑字是能力——这股经历能替业务做什么，一句动作，不带年数、公司、头衔；
+ * 灰字是背书——在哪里做过、做了多久或多大、什么头衔，只写能核对的事实，数字打头
  */
 export type Strand = {
   id: string;
-  /** 打头的一个数（年数、团队数），没有就不写 */
-  figure?: string;
+  /** 黑字：能力 */
   title: string;
-  /** 在哪里、做过什么（只取履历里写了的） */
-  detail: string;
+  /** 灰字打头的数（年数、团队数），颜色深一档；没有就不写 */
+  figure?: string;
+  /** 灰字：背书 */
+  proof: string;
   from: ViewId;
   to: ViewId;
 };
@@ -660,67 +663,70 @@ export const enterprise = {
     strands: [
       {
         id: 'data',
+        title: '把数据洞察变成增长策略',
         figure: '10 年',
-        title: '数据科学与策略分析',
-        detail: '美团 · 小红书 · 快手 · 字节 · 英语流利说 · Teambition',
+        proof: '数据科学与策略分析 · 美团 · 小红书 · 快手 · 字节',
         from: 'business',
         to: 'product',
       },
       {
         id: 'product',
-        title: 'AI 数据产品资深专家',
-        detail: '字节 · 美团核心团队',
+        title: '设计数据产品与复杂业务',
+        proof: '字节、美团核心团队 AI 数据产品资深专家',
         from: 'business',
         to: 'engineering',
       },
       {
         id: 'arch',
-        title: '核心研发团队的架构与管理',
-        detail: '美团 · 字节 · 滴滴 · LinkedIn · 硅谷创业公司',
+        title: '定架构，带研发团队',
+        proof: '美团 · 字节 · 滴滴 · LinkedIn 核心研发团队',
         from: 'product',
         to: 'engineering',
       },
       {
         id: 'workflow',
-        title: '以 AI 重构工作流',
-        detail: '把有效经验沉淀为可复用的工具与工作方法',
+        title: '用 AI 重构工作流',
+        /** 待负责人补：还缺一条能核对的背书，暂用飞书原话 */
+        proof: '把有效经验沉淀为可复用的工具与工作方法',
         from: 'product',
         to: 'use',
       },
       {
         id: 'systems',
+        title: '搭企业知识库、RAG 与 Agent',
         figure: '8 年',
-        title: '大型复杂系统研发',
-        detail: '业内第一批知识库、RAG 与 Agent 实践',
+        proof: '大型复杂系统研发，业内第一批实践',
         from: 'engineering',
         to: 'engineering',
       },
       {
         id: 'coding',
-        title: 'AI Coding 实战',
-        detail: '字节 MarsCode 编程挑战赛队长',
+        /** 推断，待负责人确认 */
+        title: '用 AI Coding 快速做出原型',
+        proof: '字节 MarsCode 编程挑战赛队长',
         from: 'engineering',
         to: 'engineering',
       },
       {
         id: 'bi',
-        title: 'BI 与数据研发',
-        detail: '美团 BI 高级研发工程师',
+        /** 推断，待负责人确认 */
+        title: '让数据进到日常决策',
+        proof: '美团 BI 高级研发工程师',
         from: 'engineering',
         to: 'use',
       },
       {
         id: 'ops',
+        title: '和客户一起把 AI 用进业务',
         figure: '100+',
-        title: '对接过的客户团队',
-        detail: '美团 · 字节 · 小红书数据运营',
+        proof: '客户团队 · 美团 · 字节 · 小红书数据运营',
         from: 'use',
         to: 'use',
       },
       {
         id: 'talks',
-        title: '行业分享与讲师',
-        detail: 'DataFun · 美团大学 · 山禾',
+        title: '把方法讲清楚，教会团队',
+        proof: 'DataFun · 美团大学 · 山禾讲师',
         from: 'use',
         to: 'use',
       },
