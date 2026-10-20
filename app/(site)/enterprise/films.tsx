@@ -32,20 +32,20 @@ import { Shadow } from './keeps';
 // 画面坐标 960 × 540；字都是 HTML，按画面宽度（cqw）定位、定字号，跟着镜头一起推拉；窄屏上画面里的字收起，三句排在画面下面。
 
 const { line } = enterprise;
-const W = 960;
-const H = 540;
+export const W = 960;
+export const H = 540;
 /** 落定：出手、浮现 */
-const OUT = 'cubic-bezier(.2,.7,.1,1)';
+export const OUT = 'cubic-bezier(.2,.7,.1,1)';
 /** 走位：光标和镜头的移动，起落都缓 */
-const GLIDE = 'cubic-bezier(.6,0,.25,1)';
+export const GLIDE = 'cubic-bezier(.6,0,.25,1)';
 
 type Who = 'you' | 'we' | 'both';
-type Frame = [seconds: number, css: string];
-type Point = [seconds: number, x: number, y: number];
+export type Frame = [seconds: number, css: string];
+export type Point = [seconds: number, x: number, y: number];
 const round = (n: number) => Math.round(n * 1000) / 1000;
 
 /** 一卷片子：每条轨道给一个类名，最后合成一段样式 */
-function reel(name: string, length: number) {
+export function reel(name: string, length: number) {
   const rules: string[] = [];
   let count = 0;
   const pct = (t: number) => `${round((t / length) * 100)}%`;
@@ -70,59 +70,59 @@ function reel(name: string, length: number) {
     css: () => rules.join('\n'),
   };
 }
-type Cut = ReturnType<typeof reel>;
+export type Cut = ReturnType<typeof reel>;
 
 /** HTML 东西在画面里的位置（光标、名牌）：按画面宽度换算 */
-const spot = (x: number, y: number) =>
+export const spot = (x: number, y: number) =>
   `transform:translate(${round(x / 9.6)}cqw,${round(y / 9.6)}cqw)`;
 /** 光标走的一串点 */
-const walk = (points: Point[]): Frame[] =>
+export const walk = (points: Point[]): Frame[] =>
   points.map(([t, x, y]) => [t, spot(x, y)]);
 /** HTML 字钉在画面里的哪一点 */
-const pin = (x: number, y: number): CSSProperties => ({
+export const pin = (x: number, y: number): CSSProperties => ({
   left: `${round((x / W) * 100)}%`,
   top: `${round((y / H) * 100)}%`,
 });
 /** 镜头：以 (cx, cy) 为中心放大 s 倍，不拍到画板外面 */
-function shot(cx: number, cy: number, s: number) {
+export function shot(cx: number, cy: number, s: number) {
   const x = Math.min(Math.max(cx, W / (2 * s)), W - W / (2 * s));
   const y = Math.min(Math.max(cy, H / (2 * s)), H - H / (2 * s));
   const tx = (0.5 - (s * x) / W) * 100;
   const ty = (0.5 - (s * y) / H) * 100;
   return `transform:translate(${round(tx)}%,${round(ty)}%) scale(${s})`;
 }
-const WIDE = shot(480, 270, 1);
-const HIDE = 'opacity:0;transform:scale(.4)';
-const SHOW = 'opacity:1;transform:scale(1)';
-const pop = (t: number, length = 0.4): Frame[] => [
+export const WIDE = shot(480, 270, 1);
+export const HIDE = 'opacity:0;transform:scale(.4)';
+export const SHOW = 'opacity:1;transform:scale(1)';
+export const pop = (t: number, length = 0.4): Frame[] => [
   [t, HIDE],
   [t + length, SHOW],
 ];
 /** 大一点的东西：轻轻浮出来，不缩那么多 */
-const open = (t: number): Frame[] => [
+export const open = (t: number): Frame[] => [
   [t, 'opacity:0;transform:scale(.94)'],
   [t + 0.5, SHOW],
 ];
-const rise = (t: number): Frame[] => [
+export const rise = (t: number): Frame[] => [
   [t, 'opacity:0;transform:translateY(8px)'],
   [t + 0.5, 'opacity:1;transform:none'],
 ];
-const fade = (t: number, length = 0.5): Frame[] => [
+export const fade = (t: number, length = 0.5): Frame[] => [
   [t, 'opacity:0'],
   [t + length, 'opacity:1'],
 ];
-const draw = (t: number, length = 0.5): Frame[] => [
+export const draw = (t: number, length = 0.5): Frame[] => [
   [t, 'opacity:0;stroke-dashoffset:1'],
   [t + length, 'opacity:1;stroke-dashoffset:0'],
 ];
 /** 一闪就散的一圈：碰头、改好的那一下 */
-const ping = (t: number): Frame[] => [
+export const ping = (t: number): Frame[] => [
   [t, 'opacity:0;transform:scale(.4)'],
   [t + 0.1, 'opacity:1;transform:scale(.7)'],
   [t + 0.8, 'opacity:0;transform:scale(1.8)'],
 ];
 /** 按下去：每个时刻按一下 */
-const press = (...times: number[]): Frame[] =>
+export const press = (...times: number[]): Frame[] =>
   times.flatMap((t): Frame[] => [
     [t, 'transform:scale(1)'],
     [t + 0.1, 'transform:scale(.84)'],
@@ -202,21 +202,19 @@ function Lines({ id, order }: { id: StationId; order: Who[] }) {
   );
 }
 
-/** 片子的外壳：画框、镜头、画、字、进度，和窄屏上的三句（「示意」写在书页的图注里，stages.tsx） */
-function Reel({
-  id,
+/** 片子的外壳：画框、镜头、画、画面里的字、进度；children 排在画框下面（窄屏上的字） */
+export function Screen({
   cut,
   camera,
-  order,
   art,
   overlay,
+  children,
 }: {
-  id: StationId;
   cut: Cut;
   camera: string;
-  order: Who[];
   art: ReactNode;
   overlay: ReactNode;
+  children?: ReactNode;
 }) {
   // 进度条走完就收起，停住的那一帧上不留一道深线
   const bar = cut.track(
@@ -244,14 +242,37 @@ function Reel({
           <span className={bar} />
         </span>
       </div>
-      <Lines id={id} order={order} />
+      {children}
       <style>{cut.css()}</style>
     </div>
   );
 }
 
+/** 合作路线的短片：外壳加窄屏上的三句（「示意」写在书页的图注里，shelf.tsx） */
+function Reel({
+  id,
+  cut,
+  camera,
+  order,
+  art,
+  overlay,
+}: {
+  id: StationId;
+  cut: Cut;
+  camera: string;
+  order: Who[];
+  art: ReactNode;
+  overlay: ReactNode;
+}) {
+  return (
+    <Screen cut={cut} camera={camera} art={art} overlay={overlay}>
+      <Lines id={id} order={order} />
+    </Screen>
+  );
+}
+
 /** 一张白卡片（带影子） */
-function Paper({
+export function Paper({
   shadow,
   ...rect
 }: {
@@ -705,7 +726,14 @@ function Build() {
 
       {/* Molis 搭出来的工具窗 */}
       <g className={`m-film-pop ${cut.track(open(cue.window))}`}>
-        <Paper shadow={shadow} x={400} y={92} width={480} height={320} rx={12} />
+        <Paper
+          shadow={shadow}
+          x={400}
+          y={92}
+          width={480}
+          height={320}
+          rx={12}
+        />
         <path className="m-k-cell" d="M400 124 H880" />
         {[420, 434, 448].map((cx) => (
           <circle key={cx} className="m-k-light" cx={cx} cy="108" r="3.5" />
@@ -732,9 +760,7 @@ function Build() {
       </g>
       {/* 运行键 */}
       <g className={`m-film-pop ${cut.track(pop(cue.parts + 0.2))}`}>
-        <g
-          className={`m-film-pop ${cut.track(press(cue.press1, cue.press2))}`}
-        >
+        <g className={`m-film-pop ${cut.track(press(cue.press1, cue.press2))}`}>
           <circle className="m-film-run" cx="796" cy="170" r="20" />
           <path className="m-film-run-mark" d="M789 161 L804 170 L789 179 Z" />
         </g>
@@ -783,10 +809,7 @@ function Build() {
             height="20"
             rx="10"
           />
-          <path
-            className="m-film-card-line"
-            d={`M${cx - 9} 348 H${cx + 9}`}
-          />
+          <path className="m-film-card-line" d={`M${cx - 9} 348 H${cx + 9}`} />
         </g>
       ))}
 
@@ -818,12 +841,7 @@ function Build() {
         cy="170"
         r="24"
       />
-      <circle
-        className={`m-film-run-dot ${run}`}
-        cx="480"
-        cy="290"
-        r="6"
-      />
+      <circle className={`m-film-run-dot ${run}`} cx="480" cy="290" r="6" />
       <g className={`m-film-pop ${cut.track(pop(cue.pass, 0.45))}`}>
         <circle className="m-film-ok" cx="820" cy="290" r="14" />
         <path className="m-k-tick" d="M813.5 290 l4.5 4.5 l8 -9" />
@@ -986,7 +1004,9 @@ function Assess() {
             rx="10"
           />
           <circle className="m-film-dot" cx={cx} cy="130" r="3.5" />
-          <g className={`m-film-pop ${cut.track(pop(cue.clicks[i] + 0.05, 0.3))}`}>
+          <g
+            className={`m-film-pop ${cut.track(pop(cue.clicks[i] + 0.05, 0.3))}`}
+          >
             <rect
               className="m-film-done"
               x={cx - 22}
@@ -1009,7 +1029,14 @@ function Assess() {
           [cue.result + 0.5, 'opacity:1;transform:none'],
         ])}
       >
-        <Paper shadow={shadow} x={150} y={196} width={180} height={160} rx={10} />
+        <Paper
+          shadow={shadow}
+          x={150}
+          y={196}
+          width={180}
+          height={160}
+          rx={10}
+        />
         <rect
           className="m-film-title"
           x="170"
@@ -1018,7 +1045,10 @@ function Assess() {
           height="6"
           rx="3"
         />
-        <path className="m-k-thin" d="M170 242 H306 M170 262 H290 M170 282 H300" />
+        <path
+          className="m-k-thin"
+          d="M170 242 H306 M170 262 H290 M170 282 H300"
+        />
         {[14, 22, 18, 26].map((h, i) => (
           <rect
             key={i}
@@ -1038,7 +1068,14 @@ function Assess() {
         d="M332 242 C372 242 384 240 420 240 M332 262 C376 264 384 280 420 280 M332 282 C380 286 386 318 420 320"
       />
       <g className={`m-film-pop ${cut.track(open(cue.panel))}`}>
-        <Paper shadow={shadow} x={420} y={200} width={180} height={160} rx={10} />
+        <Paper
+          shadow={shadow}
+          x={420}
+          y={200}
+          width={180}
+          height={160}
+          rx={10}
+        />
         {rows.map((y) => (
           <g key={y}>
             <rect
@@ -1254,7 +1291,13 @@ function Train() {
     (x: number, y: number) => (
       <>
         {[15, 24, 33].map((d) => (
-          <circle key={d} className="m-film-mini-dot" cx={x + 14} cy={y + d} r="2.4" />
+          <circle
+            key={d}
+            className="m-film-mini-dot"
+            cx={x + 14}
+            cy={y + d}
+            r="2.4"
+          />
         ))}
         <path
           className="m-film-mini"
@@ -1278,9 +1321,28 @@ function Train() {
     // 配置：两个开关
     (x: number, y: number) => (
       <>
-        <rect className="m-film-switch-on" x={x + 16} y={y + 11} width="26" height="11" rx="5.5" />
-        <circle className="m-film-card-dot" cx={x + 36.5} cy={y + 16.5} r="3.6" />
-        <rect className="m-film-mini-line" x={x + 16} y={y + 27} width="26" height="11" rx="5.5" />
+        <rect
+          className="m-film-switch-on"
+          x={x + 16}
+          y={y + 11}
+          width="26"
+          height="11"
+          rx="5.5"
+        />
+        <circle
+          className="m-film-card-dot"
+          cx={x + 36.5}
+          cy={y + 16.5}
+          r="3.6"
+        />
+        <rect
+          className="m-film-mini-line"
+          x={x + 16}
+          y={y + 27}
+          width="26"
+          height="11"
+          rx="5.5"
+        />
         <circle className="m-film-dot" cx={x + 21.5} cy={y + 32.5} r="3.6" />
       </>
     ),
@@ -1289,9 +1351,22 @@ function Train() {
       <>
         {[12, 27].map((d) => (
           <g key={d}>
-            <rect className="m-film-mini-line" x={x + 12} y={y + d} width="10" height="10" rx="2.5" />
-            <path className="m-k-tick" d={`M${x + 14.2} ${y + d + 5} l2.2 2.2 l4 -4.4`} />
-            <path className="m-film-mini" d={`M${x + 28} ${y + d + 5} H${x + 48}`} />
+            <rect
+              className="m-film-mini-line"
+              x={x + 12}
+              y={y + d}
+              width="10"
+              height="10"
+              rx="2.5"
+            />
+            <path
+              className="m-k-tick"
+              d={`M${x + 14.2} ${y + d + 5} l2.2 2.2 l4 -4.4`}
+            />
+            <path
+              className="m-film-mini"
+              d={`M${x + 28} ${y + d + 5} H${x + 48}`}
+            />
           </g>
         ))}
       </>
@@ -1367,7 +1442,14 @@ function Train() {
         style={{ transformOrigin: `${C.x}px ${C.y}px` }}
       />
       <g className={`m-film-pop ${cut.track(open(cue.round - 0.2))}`}>
-        <Paper shadow={shadow} x={660} y={186} width={160} height={138} rx={10} />
+        <Paper
+          shadow={shadow}
+          x={660}
+          y={186}
+          width={160}
+          height={138}
+          rx={10}
+        />
         {rows.map((y) => (
           <g key={y}>
             <rect
@@ -1418,7 +1500,10 @@ function Train() {
       <g className={`m-film-pop ${cut.track(pop(cue.owner))}`}>
         <circle className="m-film-badge" cx="566" cy="74" r="15" />
         <circle className="m-film-badge-mark" cx="566" cy="70" r="4" />
-        <path className="m-film-badge-mark" d="M558.5 83 C559.5 76.5 572.5 76.5 573.5 83 Z" />
+        <path
+          className="m-film-badge-mark"
+          d="M558.5 83 C559.5 76.5 572.5 76.5 573.5 83 Z"
+        />
       </g>
       <g className={`m-film-pop ${cut.track(pop(cue.ok, 0.45))}`}>
         <circle className="m-film-ok" cx="540" cy="52" r="9" />

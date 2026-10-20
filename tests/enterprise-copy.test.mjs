@@ -82,24 +82,14 @@ void test('为什么我们可以：导语两头、四个位置与小标题都照
   assert.match(why.note, /不是 Molis 已完成的客户项目/);
 });
 
-void test('为什么我们可以：每项能力都有经历撑着，每条经历都用上；这一屏不写人名', () => {
+void test('为什么我们可以：经历背书不写人名，片尾的公司都出自经历，业绩口径不上页面', () => {
   const { why } = enterprise;
-  const used = new Set();
-  for (const view of why.views) {
-    assert.ok(view.skills.length >= 3, `${view.id} 至少要有三项能力`);
-    for (const skill of view.skills) {
-      assert.ok(
-        skill.from.length > 0,
-        `${view.id}「${skill.name}」没有经历撑着`,
-      );
-      for (const id of skill.from) {
-        assert.ok(id in why.proofs, `${id} 不是一条经历`);
-        used.add(id);
-      }
-    }
-  }
-  for (const id of Object.keys(why.proofs))
-    assert.ok(used.has(id), `经历「${id}」没用上`);
+  const proofs = Object.values(why.proofs);
+  for (const proof of proofs)
+    assert.ok(proof.tag, `「${proof.title}」缺光标名牌`);
+  const details = proofs.map((proof) => proof.detail ?? '').join('');
+  for (const org of why.credits.orgs)
+    assert.ok(details.includes(org), `片尾的「${org}」不在任何一条经历里`);
   const names = [
     '王一骏',
     '徐晶',

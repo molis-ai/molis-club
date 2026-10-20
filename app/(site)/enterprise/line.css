@@ -817,436 +817,320 @@
 }
 
 /* =====================================================================
-   为什么我们可以（why.tsx）：和上一屏一样，四块从左到右一块块打开；
-   打开的那一面是一句话：要达成的 ← 用到的能力 ← 团队里谁有，用连线连起来
+   为什么我们可以（why.tsx）：和合作路线同一个书架（shelf.tsx），每本里一段接力短片（relay.tsx）；
+   四本看完再滚一拍，书架退下去，片尾字幕滚上来
    ===================================================================== */
-.m-ent-why {
-  position: relative;
+/* 钉住时三行：标题、书架（片尾叠在同一格）、说明与「认识我们」；都写明了行，片尾才不会把书架挤到下一行 */
+.m-ent-flow[data-live] .m-ent-flow-stick {
+  grid-auto-rows: auto;
 }
-.m-ent-why[data-live] {
-  height: calc(100vh + var(--panels) * 50vh);
-  height: calc(100svh + var(--panels) * 50svh);
+.m-ent-flow[data-live] .m-ent-flow-head {
+  grid-row: 1;
 }
-.m-ent-why-stick {
+.m-ent-flow[data-live] .m-ent-legs {
+  grid-row: 2;
+  grid-column: 1;
+}
+.m-ent-flow[data-live] .m-ent-flow-stick > footer {
+  grid-row: 3;
+}
+/* 片尾：钉住时和书架叠在同一格里，到最后一拍才出来；没钉住时排在书架后面 */
+.m-ent-coda {
   display: grid;
-  gap: clamp(18px, 3.4vh, 40px);
-  padding-block: var(--section-top) var(--section-bottom);
+  place-items: center;
 }
-.m-ent-why[data-live] .m-ent-why-stick {
-  position: sticky;
-  top: 0;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  height: 100vh;
-  height: 100svh;
-  padding-block: calc(var(--header) + clamp(16px, 3.6vh, 44px))
-    clamp(14px, 2.6vh, 28px);
-}
-/* 标题与导语第一句排在一行，和「我们怎样开展合作」同一套 */
-.m-ent-why-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 6px clamp(20px, 3vw, 48px);
-}
-.m-ent-why-title {
-  font: 400 clamp(19px, 1.55vw, 24px) / 1.3 var(--sans);
-  letter-spacing: 0.08em;
-}
-.m-ent-why-need {
-  color: var(--mute);
-  font: 400 var(--t-small) / 1.7 var(--sans);
-  letter-spacing: 0.04em;
-}
-
-/* ---------- 四块：窄屏和没有 JS 时上下排 ---------- */
-.m-why-shelf {
-  --spine: clamp(56px, 4.6vw, 72px);
-  --gap: clamp(6px, 0.6vw, 10px);
-  --lift:
-    0 1px 2px rgb(var(--shade) / 0.05),
-    0 10px 22px -14px rgb(var(--shade) / 0.24);
-  display: grid;
-  gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.m-why-panel {
-  position: relative;
-  border: 1px solid var(--hair);
-  border-radius: var(--r-inset);
-  background: var(--white);
-  box-shadow: var(--lift);
-}
-.m-why-spine {
-  display: none;
-}
-.m-why-page {
-  padding: 18px;
-}
-
-/* ---------- 打开的那一面：目标、能力、成员 ---------- */
-.m-why-graph {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-.m-why-col {
-  display: grid;
-  align-content: center;
-  gap: 10px;
-  min-width: 0;
-}
-.m-why-col[data-col='goal'] {
-  order: -2;
-}
-.m-why-col[data-col='skills'] {
-  order: -1;
-}
-.m-why-col-head {
-  color: var(--mute);
-  font: 400 11.5px / 1.4 var(--sans);
-  letter-spacing: 0.16em;
-}
-.m-why-wires {
-  display: none;
-}
-/* 要达成的：5.5 小标题，杏色描边的一块 */
-.m-why-goal {
-  padding: clamp(18px, 2.6vh, 26px) clamp(18px, 1.8vw, 26px);
-  border: 1.5px solid var(--accent);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--accent) 9%, var(--white));
-  box-shadow: 0 10px 24px -16px rgb(var(--shade) / 0.4);
-}
-.m-why-goal-label {
-  color: var(--accent-ink);
-  font: 500 12px / 1.4 var(--sans);
-  letter-spacing: 0.18em;
-}
-.m-why-goal-title {
-  margin-top: 8px;
-  color: var(--ink);
-  font: 400 clamp(17px, 1.3vw, 20px) / 1.55 var(--sans);
-  letter-spacing: 0.04em;
-}
-/* 用到的能力：一排胶囊 */
-.m-why-skills,
-.m-why-proofs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.m-why-skill,
-.m-why-proof {
-  border: 0;
-  font: inherit;
-  text-align: left;
-  cursor: default;
-}
-.m-why-skill {
-  display: block;
-  width: fit-content;
-  padding: 8px 15px;
-  border-radius: var(--r-pill);
-  background: var(--white);
-  box-shadow:
-    inset 0 0 0 1px var(--hair-2),
-    0 4px 10px -8px rgb(var(--shade) / 0.35);
-  color: var(--ink);
-  font: 400 13.5px / 1.4 var(--sans);
-  letter-spacing: 0.03em;
-  white-space: nowrap;
-}
-/* 经历背书：说的是什么，在哪里、做过什么 */
-.m-why-proofs {
-  display: grid;
-}
-.m-why-proof {
-  position: relative;
-  display: grid;
-  gap: 3px;
-  width: 100%;
-  padding: 10px 14px 11px 16px;
-  border-radius: 12px;
-  background: var(--white);
-  box-shadow:
-    inset 0 0 0 1px var(--hair),
-    0 6px 16px -12px rgb(var(--shade) / 0.35);
-}
-/* 左边一道细竖线，停上去变杏色 */
-.m-why-proof::before {
-  content: '';
-  position: absolute;
-  top: 12px;
-  bottom: 12px;
-  left: 0;
-  width: 2px;
-  border-radius: 1px;
-  background: var(--hair-2);
-  transition: background-color 0.3s var(--ease);
-}
-.m-why-proof > b {
-  color: var(--ink);
-  font: 500 13.5px / 1.5 var(--sans);
-  letter-spacing: 0.04em;
-}
-.m-why-proof-detail {
-  color: var(--mute);
-  font: 400 12px / 1.6 var(--sans);
-  letter-spacing: 0.02em;
-}
-/* 停在一条经历或一项能力上：只亮相关的，其余退下去 */
-.m-why-graph :is(.m-why-proof, .m-why-skill) {
-  transition: filter 0.25s var(--ease);
-}
-.m-why-graph :is(.m-why-proof, .m-why-skill)[data-dim] {
-  filter: opacity(0.3);
-}
-.m-why-graph[data-focus] .m-why-proof:not([data-dim])::before {
-  background: var(--accent);
-}
-.m-why-graph[data-focus] .m-why-skill:not([data-dim]) {
-  box-shadow:
-    inset 0 0 0 1.5px var(--accent),
-    0 4px 10px -8px rgb(var(--shade) / 0.35);
-}
-.m-why-graph :is(.m-why-proof, .m-why-skill):focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 3px;
-}
-
-/* ---------- 钉住：四块并排，打开的那块铺开 ---------- */
-.m-ent-why[data-live] .m-why-shelf {
-  container-type: inline-size;
-  display: flex;
-  gap: var(--gap);
-  height: 100%;
+.m-ent-flow[data-live] .m-ent-coda {
+  grid-row: 2;
+  grid-column: 1;
+  z-index: 2;
   min-height: 0;
-  max-height: 600px;
-  align-self: center;
-}
-.m-ent-why[data-live] .m-why-panel {
-  --lift:
-    0 1px 2px rgb(var(--shade) / 0.05),
-    0 10px 22px -14px rgb(var(--shade) / 0.24);
-  display: flex;
-  flex: 0 0 calc(var(--spine) + 2px);
-  min-width: 0;
-  overflow: hidden;
-  background: var(--paper-2);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
   transition:
-    flex-grow 0.9s var(--ease),
-    translate 0.5s var(--ease),
-    box-shadow 0.5s var(--ease);
+    opacity 0.6s var(--ease),
+    visibility 0s linear 0.6s;
 }
-.m-ent-why[data-live] .m-why-panel[data-active] {
-  --lift:
-    0 1px 2px rgb(var(--shade) / 0.06),
-    0 22px 44px -26px rgb(var(--shade) / 0.34);
-  flex-grow: 1;
+.m-ent-flow[data-coda] .m-ent-coda {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.8s var(--ease) 0.35s,
+    visibility 0s linear 0s;
 }
-.m-ent-why[data-live] .m-why-panel:not([data-active]):hover,
-.m-ent-why[data-live] .m-why-panel:not([data-active]):focus-within {
-  --lift:
-    0 2px 3px rgb(var(--shade) / 0.06),
-    0 18px 30px -14px rgb(var(--shade) / 0.32);
-  translate: 0 -6px;
+.m-ent-flow[data-live] .m-ent-legs {
+  transition:
+    opacity 0.6s var(--ease),
+    translate 0.8s var(--ease);
 }
-/* 窄脊：编号、短线、竖排的位置名，底下是这个位置上的成员 */
-.m-ent-why[data-live] .m-why-spine {
-  display: flex;
-  flex: none;
-  flex-direction: column;
-  align-items: center;
-  width: var(--spine);
+.m-ent-flow[data-coda] .m-ent-legs {
+  opacity: 0;
+  translate: 0 -18px;
+  pointer-events: none;
+}
+/* 片尾字幕：上下两头淡出，像片尾从画面底下滚上来 */
+.m-relay-credits {
+  width: min(100%, 640px);
+  max-height: 100%;
+  overflow: hidden;
+  text-align: center;
+  mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent);
+}
+.m-ent-flow[data-live] .m-relay-credits {
   height: 100%;
-  padding: clamp(18px, 3vh, 26px) 0 clamp(14px, 2.4vh, 20px);
-  border: 0;
-  background: var(--paper-2);
-  color: var(--ink-2);
-  font: inherit;
-  cursor: pointer;
 }
-.m-ent-why[data-live] .m-why-panel[data-active] .m-why-spine {
-  box-shadow: inset -1px 0 0 var(--hair);
-  color: var(--ink);
-  cursor: default;
-}
-.m-ent-why[data-live] .m-why-spine:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: -5px;
-}
-.m-why-spine-no {
+.m-relay-roll {
   display: grid;
   justify-items: center;
   gap: 14px;
+  padding-block: 36px;
+}
+.m-ent-flow[data-live] .m-relay-roll {
+  min-height: 100%;
+  align-content: center;
+}
+.m-ent-flow[data-coda] .m-relay-roll {
+  animation: m-relay-roll 4.8s cubic-bezier(0.2, 0.6, 0.2, 1) 0.4s both;
+}
+@keyframes m-relay-roll {
+  from {
+    opacity: 0;
+    translate: 0 45%;
+  }
+  15% {
+    opacity: 1;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+.m-relay-role {
+  margin-top: 10px;
   color: var(--mute);
-  font: 300 12px / 1 var(--latin);
-  letter-spacing: 0.12em;
+  font: 400 11.5px / 1 var(--sans);
+  letter-spacing: 0.4em;
 }
-.m-why-spine-no::after {
-  content: '';
-  width: 14px;
-  height: 1px;
-  background: var(--hair-2);
-}
-.m-why-spine-word {
-  margin-top: 16px;
-  font: 400 15px / 1 var(--sans);
-  letter-spacing: 0.42em;
-  writing-mode: vertical-rl;
-}
-/* 窄脊底下一颗小圆点：打开的那块是杏色 */
-.m-ent-why[data-live] .m-why-spine::after {
-  content: '';
-  width: 5px;
-  height: 5px;
-  margin-top: auto;
-  border-radius: 50%;
-  background: var(--faint);
-  transition: background-color 0.4s var(--ease);
-}
-.m-ent-why[data-live] .m-why-panel[data-active] .m-why-spine::after {
-  background: var(--accent);
-}
-/* 那一面：按打开后的宽度排好，开合时只是被裁出来 */
-.m-ent-why[data-live] .m-why-page {
-  flex: none;
-  width: calc(
-    100cqw - 3 * (var(--spine) + 2px) - 3 * var(--gap) - var(--spine) - 2px
-  );
-  height: 100%;
-  padding: clamp(18px, 3.2vh, 34px) clamp(24px, 3vw, 48px);
-  background: var(--white);
-  opacity: 0;
-  transition: opacity 0.35s var(--ease);
-}
-.m-ent-why[data-live] .m-why-panel[data-active] .m-why-page {
-  opacity: 1;
-  transition: opacity 0.6s var(--ease) 0.25s;
-}
-/* 三列：团队里谁有 → 用到的能力 → 要达成的；连线垫在卡片下面 */
-.m-ent-why[data-live] .m-why-graph {
+.m-relay-cast,
+.m-relay-orgs {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 0.95fr);
-  align-items: stretch;
-  column-gap: clamp(44px, 5.5cqw, 92px);
-  height: 100%;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink);
+  font: 400 clamp(14px, 1.05vw, 16px) / 1.6 var(--sans);
+  letter-spacing: 0.08em;
 }
-.m-ent-why[data-live] .m-why-col {
-  grid-template-rows: auto minmax(0, 1fr);
-  align-content: stretch;
-  gap: 0;
-  order: 0;
-}
-.m-ent-why[data-live] .m-why-col-head {
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--hair);
-}
-.m-ent-why[data-live] .m-why-col > :last-child {
-  align-self: center;
-}
-.m-ent-why[data-live] .m-why-skills {
-  display: grid;
-  justify-items: start;
-  gap: 10px;
-}
-.m-ent-why[data-live] .m-why-wires {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  display: block;
-  overflow: visible;
-  pointer-events: none;
-}
-.m-why-wire {
-  fill: none;
-  stroke: rgb(27 26 24 / 0.2);
-  stroke-width: 1.2;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-  transition: opacity 0.25s var(--ease);
-}
-.m-why-wire[data-to='goal'] {
-  stroke: var(--accent);
-  stroke-width: 1.4;
-  opacity: 0.75;
-}
-.m-why-wire[data-dim] {
-  opacity: 0.12;
-}
-.m-why-graph[data-focus] .m-why-wire:not([data-dim]) {
-  stroke: var(--accent);
-  opacity: 1;
-}
-
-/* 打开时：先亮目标，能力一个个浮上来、连到目标，成员从左边进来、连到自己的能力 */
-.m-ent-why[data-live]
-  .m-why-panel
-  :is(.m-why-goal, .m-why-skill, .m-why-proof, .m-why-col-head) {
-  opacity: 0;
-  translate: 0 8px;
-  transition:
-    opacity 0.25s var(--ease),
-    translate 0.3s var(--ease),
-    filter 0.25s var(--ease);
-}
-.m-ent-why[data-live] .m-why-panel .m-why-proof {
-  translate: -14px 0;
-}
-.m-ent-why[data-live] .m-why-panel .m-why-wire {
-  stroke-dashoffset: 1;
-  transition:
-    stroke-dashoffset 0.3s var(--ease),
-    opacity 0.25s var(--ease);
-}
-.m-ent-why[data-live]
-  .m-why-panel[data-active]
-  :is(.m-why-goal, .m-why-skill, .m-why-proof, .m-why-col-head) {
-  --at: 0.35s;
-  opacity: 1;
-  translate: none;
-  transition:
-    opacity 0.6s var(--ease) var(--at),
-    translate 0.8s var(--ease) var(--at),
-    filter 0.25s var(--ease);
-}
-.m-ent-why[data-live] .m-why-panel[data-active] .m-why-skill {
-  --at: calc(0.6s + var(--n) * 0.08s);
-}
-.m-ent-why[data-live] .m-why-panel[data-active] .m-why-proof {
-  --at: calc(1.25s + var(--n) * 0.1s);
-}
-.m-ent-why[data-live] .m-why-panel[data-active] .m-why-wire {
-  stroke-dashoffset: 0;
-  transition:
-    stroke-dashoffset 0.8s var(--ease) calc(1s + var(--n) * 0.07s),
-    opacity 0.25s var(--ease);
-}
-.m-ent-why[data-live] .m-why-panel[data-active] .m-why-wire[data-to='skill'] {
-  transition:
-    stroke-dashoffset 0.8s var(--ease) calc(1.55s + var(--n) * 0.05s),
-    opacity 0.25s var(--ease);
-}
-
-/* 页脚：导语第二句、说明，和「认识我们」 */
-.m-ent-why-close {
+.m-relay-orgs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 18px;
   color: var(--ink-2);
-  font: 400 var(--t-small) / 1.7 var(--sans);
+  font-size: 14px;
+}
+.m-relay-close {
+  max-width: 26em;
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--hair);
+  color: var(--ink);
+  font: 400 clamp(16px, 1.25vw, 19px) / 1.7 var(--sans);
+  letter-spacing: 0.05em;
+}
+
+/* ---------- 接力短片里的画法（relay.tsx）：光标、名牌、接力的杏色小卡 ---------- */
+.m-relay-hand[data-tone='deep'] > .m-film-arrow path {
+  fill: var(--accent-ink);
+}
+.m-relay-tag {
+  display: grid;
+  gap: 0.2em;
+  margin: 1.55em 0 0 -0.35em;
+  padding: 0.42em 0.75em 0.5em;
+  border-radius: 0.7em;
+  background: var(--accent);
+  color: var(--ink);
+  font-size: 1em;
+  line-height: 1.15;
+}
+.m-relay-hand[data-tone='deep'] > .m-relay-tag {
+  background: var(--accent-ink);
+  color: var(--white);
+}
+.m-relay-tag > b {
+  font: 500 1em / 1.15 var(--sans);
   letter-spacing: 0.04em;
 }
-.m-ent-why-note {
-  margin-top: 2px;
-  color: var(--mute);
-  font: 400 12px / 1.7 var(--sans);
-  letter-spacing: 0.03em;
+.m-relay-tag > small {
+  font: 400 0.82em / 1.2 var(--sans);
+  letter-spacing: 0.02em;
+  opacity: 0.85;
 }
+.m-relay-baton {
+  fill: color-mix(in srgb, var(--accent) 13%, var(--white));
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.m-relay-baton-dot,
+.m-relay-baton-ink,
+.m-relay-dot-hot,
+.m-relay-packet {
+  fill: var(--accent);
+}
+.m-relay-baton-soft {
+  fill: rgb(234 146 96 / 0.4);
+}
+.m-relay-t0 {
+  fill: rgb(27 26 24 / 0.08);
+}
+.m-relay-t1 {
+  fill: rgb(27 26 24 / 0.16);
+}
+.m-relay-t2 {
+  fill: rgb(27 26 24 / 0.34);
+}
+.m-relay-t-on {
+  fill: var(--accent);
+}
+.m-relay-dot {
+  fill: rgb(27 26 24 / 0.16);
+}
+.m-relay-dot-real {
+  fill: var(--ink);
+}
+.m-relay-axis,
+.m-relay-axis-tip,
+.m-relay-tangle,
+.m-relay-wire,
+.m-relay-smooth,
+.m-relay-bump,
+.m-relay-person,
+.m-relay-icon,
+.m-relay-sketch {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-relay-axis,
+.m-relay-axis-tip {
+  stroke: rgb(27 26 24 / 0.3);
+  stroke-width: 1.3;
+}
+.m-relay-axis,
+.m-relay-tangle,
+.m-relay-wire,
+.m-relay-smooth {
+  stroke-dasharray: 1;
+}
+.m-relay-tangle {
+  stroke: rgb(27 26 24 / 0.28);
+  stroke-width: 1.2;
+}
+.m-relay-wire {
+  stroke: rgb(27 26 24 / 0.26);
+  stroke-width: 1.4;
+}
+.m-relay-smooth {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.m-relay-bump {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 1.8;
+}
+.m-relay-person,
+.m-relay-icon {
+  stroke: var(--ink-2);
+  stroke-width: 1.5;
+}
+.m-relay-sketch {
+  stroke: rgb(27 26 24 / 0.35);
+  stroke-width: 1.4;
+  stroke-dasharray: 6 5;
+}
+.m-relay-note {
+  fill: #f8efd9;
+}
+.m-relay-flash {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0;
+}
+.m-relay-block {
+  fill: var(--white);
+  stroke: var(--hair-2);
+  stroke-width: 1.2;
+}
+.m-relay-block[data-kind='title'] {
+  fill: rgb(27 26 24 / 0.34);
+  stroke: none;
+}
+.m-relay-block[data-kind='button'] {
+  fill: var(--white);
+  stroke: rgb(27 26 24 / 0.45);
+}
+.m-relay-real {
+  fill: color-mix(in srgb, var(--accent) 13%, var(--white));
+  stroke: var(--accent);
+  stroke-width: 1.4;
+}
+.m-relay-merged {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6;
+}
+.m-relay-live {
+  fill: var(--accent);
+}
+.m-relay-grid-dot {
+  fill: rgb(27 26 24 / 0.14);
+}
+.m-relay-code-hot {
+  fill: rgb(234 146 96 / 0.55);
+}
+.m-relay-track {
+  fill: rgb(27 26 24 / 0.08);
+}
+.m-relay-fill {
+  fill: var(--accent);
+}
+.m-relay-badge {
+  fill: var(--white);
+  stroke: var(--hair-2);
+  stroke-width: 1.2;
+}
+.m-relay-check {
+  fill: var(--accent);
+}
+.m-relay-check-mark {
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.m-relay-walker {
+  fill: var(--ink);
+  stroke: var(--white);
+  stroke-width: 2;
+}
+/* 变形的基准点：套索从右下角张开，代码从左往右打出来，鼓包从底边长起来 */
+.m-film-art :is(.m-relay-corner, .m-relay-type, .m-relay-rise) {
+  transform-box: fill-box;
+}
+.m-film-art .m-relay-corner {
+  transform-origin: 100% 100%;
+}
+.m-film-art .m-relay-type {
+  transform-origin: 0 50%;
+}
+.m-film-art .m-relay-rise {
+  transform-origin: 50% 100%;
+}
+
 .m-ent-why-end {
   display: flex;
   flex-wrap: wrap;
@@ -1293,6 +1177,9 @@
   .m-film-hand,
   .m-film-axis {
     font-size: 8.5px;
+  }
+  .m-relay-tag > small {
+    display: none;
   }
   .m-film-lines {
     display: grid;
