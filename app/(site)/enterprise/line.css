@@ -144,9 +144,10 @@
 .m-ent-flow {
   position: relative;
 }
+/* 每本书一屏的滚动：短片跟着滚动演完，再停一小截（shelf.tsx） */
 .m-ent-flow[data-live] {
-  height: calc(100vh + var(--legs) * 55vh);
-  height: calc(100svh + var(--legs) * 55svh);
+  height: calc(100vh + var(--legs) * 100vh);
+  height: calc(100svh + var(--legs) * 100svh);
 }
 .m-ent-flow-stick {
   display: grid;
@@ -290,7 +291,7 @@
 .m-film-art .m-film-orbit {
   transform-box: view-box;
 }
-/* 停在第一帧：外层有 data-hold 时（stages.tsx 等它进屏、等那本书打开） */
+/* 停住：外层有 data-hold 时（shelf.tsx 不钉住时等它进屏；钉住时由滚动定在哪一帧） */
 .m-film[data-hold] * {
   animation-play-state: paused !important;
 }
@@ -484,22 +485,29 @@
   stroke-width: 1.5;
   opacity: 0;
 }
-/* 画面里的字：按画面宽度定字号，镜头推近时跟着放大 */
+/* 画面里的字：按画面宽度定字号，镜头推近时跟着放大（负责人 2026-10-22 放大约三分之一：宽屏评论约 16px、名牌约 13px）；
+   下限压低，1024 宽钉住时画面约 645px，字和画的比例不变，评论不互相压住 */
 .m-film-axis,
 .m-film-say,
 .m-film-hand {
   position: absolute;
   white-space: nowrap;
 }
-/* 长的那几句按词组折成两行 */
+/* 长的那几句按词组折成两行；位置窄的（data-fold）一个词组一行 */
 .m-film-say {
   width: max-content;
   max-width: 26em;
   white-space: normal;
 }
+.m-film-say[data-fold] {
+  width: min-content;
+}
+.m-film-say[data-fold] .m-phrase {
+  white-space: nowrap;
+}
 .m-film-axis {
   color: var(--mute);
-  font: 400 clamp(9px, 1.05cqw, 11px) / 1 var(--sans);
+  font: 400 clamp(9.5px, 1.3cqw, 13px) / 1 var(--sans);
   letter-spacing: 0.12em;
 }
 .m-film-axis-end {
@@ -516,7 +524,7 @@
   box-shadow:
     0 0 0 1px rgb(var(--shade) / 0.07),
     0 8px 20px -12px rgb(var(--shade) / 0.45);
-  font-size: clamp(10.5px, 1.3cqw, 12.5px);
+  font-size: clamp(11px, 1.66cqw, 16.5px);
 }
 .m-film-step {
   display: inline-grid;
@@ -539,6 +547,7 @@
     0 0 0 3px var(--accent);
 }
 .m-film-who {
+  white-space: nowrap;
   color: var(--mute);
   font: 500 0.88em / 1 var(--sans);
   letter-spacing: 0.12em;
@@ -560,7 +569,7 @@
   display: flex;
   align-items: flex-start;
   pointer-events: none;
-  font-size: clamp(9.5px, 1.1cqw, 11.5px);
+  font-size: clamp(10px, 1.38cqw, 14px);
 }
 .m-film-arrow {
   width: 1.45em;
@@ -1189,9 +1198,10 @@
   .m-film-say {
     display: none;
   }
+  /* 名牌随画面宽度：手机上和原来一样小，不挤出画框；平板上到 10px */
   .m-film-hand,
   .m-film-axis {
-    font-size: 8.5px;
+    font-size: clamp(8.5px, 2.8cqw, 10px);
   }
   .m-film-lines {
     display: grid;

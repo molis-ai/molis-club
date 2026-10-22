@@ -28,7 +28,8 @@ import { Shadow } from './keeps';
 //     推近上边      7.0–9.2    两边      冒出一个异常，两边碰头；它连到托盘里的维护说明，挂上由谁维护的那枚头像，✓ → 评论 3
 //
 // 实现：脚本里每样东西一条轨道（几个时刻各是什么样子），合成一段 CSS 关键帧，全片同一个长度，所以百分比就是时间线。
-// 静止是最后一帧（没有 JS、减少动态都看这一帧）；外层 .m-film 有 data-play 时从头演，data-hold 时停在第一帧（stages.tsx）。
+// 静止是最后一帧（没有 JS、减少动态都看这一帧）；外层 .m-film 有 data-play 时从头演，data-hold 时停在第一帧；
+// 书架钉住时不按时间演，由 shelf.tsx 按滚动进度定格到哪一秒。
 // 画面坐标 960 × 540；字都是 HTML，按画面宽度（cqw）定位、定字号，跟着镜头一起推拉；窄屏上画面里的字收起，三句排在画面下面。
 
 const { line } = enterprise;
@@ -162,16 +163,24 @@ function Say({
   who,
   order,
   at,
+  fold,
   className,
 }: {
   id: StationId;
   who: Who;
   order: Who[];
   at: [number, number];
+  /** 位置窄，一个词组一行 */
+  fold?: boolean;
   className: string;
 }) {
   return (
-    <p className={`m-film-say ${className}`} data-who={who} style={pin(...at)}>
+    <p
+      className={`m-film-say ${className}`}
+      data-who={who}
+      data-fold={fold || undefined}
+      style={pin(...at)}
+    >
       <span className="m-film-step" aria-hidden="true">
         {order.indexOf(who) + 1}
       </span>
@@ -341,7 +350,7 @@ function Diagnose() {
       [cue.lasso, 522, 178],
       [cue.lasso + 0.8, 462, 100],
       [cue.wide, 462, 100],
-      [cue.wide + 0.8, 400, 330],
+      [cue.wide + 0.8, 280, 420],
     ]),
     GLIDE,
   );
@@ -351,8 +360,8 @@ function Diagnose() {
       [cue.enter, 1010, 330],
       [cue.enter + 0.7, 846, 322],
       [cue.deal, 846, 322],
-      [cue.deal + 1, 812, 420],
-      [cue.close, 812, 420],
+      [cue.deal + 1, 812, 396],
+      [cue.close, 812, 396],
       [cue.meet, 552, 150],
       [cue.lasso, 552, 150],
       [cue.lasso + 0.8, 620, 232],
@@ -550,7 +559,7 @@ function Diagnose() {
         id="diagnose"
         who="both"
         order={order}
-        at={[462, 56]}
+        at={[430, 40]}
         className={cut.track(rise(cue.say3))}
       />
       <Hand who="you" className={you} />
@@ -621,8 +630,8 @@ function Build() {
       [cue.drop + 0.3, 236, 172],
       [cue.mark, 204, 244],
       [cue.mark + 0.6, 98, 252],
-      [cue.mark + 1, 282, 330],
-      [cue.close, 282, 330],
+      [cue.mark + 1, 296, 314],
+      [cue.close, 296, 314],
       [cue.close + 0.8, 798, 174],
       [cue.wide, 798, 174],
       [cue.wide + 0.8, 760, 226],
@@ -641,7 +650,7 @@ function Build() {
       [cue.fix - 0.6, 748, 372],
       [cue.fix, 612, 304],
       [cue.fix + 0.4, 612, 304],
-      [cue.fix + 0.9, 652, 384],
+      [cue.fix + 0.9, 652, 376],
     ]),
     GLIDE,
   );
@@ -862,7 +871,7 @@ function Build() {
         id="build"
         who="we"
         order={order}
-        at={[500, 430]}
+        at={[500, 446]}
         className={cut.track(rise(cue.say2))}
       />
       <Say
@@ -938,8 +947,8 @@ function Assess() {
         [cue.clicks[i] - 0.05, x + 4, 136],
         [cue.clicks[i] + 0.1, x + 4, 136],
       ]),
-      [cue.say1 - 0.1, 366, 300],
-      [cue.close, 366, 300],
+      [cue.say1 - 0.1, 344, 300],
+      [cue.close, 344, 300],
       [cue.hold, 704, 262],
       [cue.wide, 704, 262],
       [cue.wide + 0.8, 620, 300],
@@ -961,7 +970,7 @@ function Assess() {
       [cue.close, 446, 326],
       [cue.hold, 900, 262],
       [cue.wide, 900, 262],
-      [cue.wide + 0.8, 780, 432],
+      [cue.wide + 0.8, 806, 436],
     ]),
     GLIDE,
   );
@@ -1142,21 +1151,21 @@ function Assess() {
         id="assess"
         who="you"
         order={order}
-        at={[90, 380]}
+        at={[64, 392]}
         className={cut.track(rise(cue.say1))}
       />
       <Say
         id="assess"
         who="we"
         order={order}
-        at={[410, 380]}
+        at={[432, 392]}
         className={cut.track(rise(cue.say2))}
       />
       <Say
         id="assess"
         who="both"
         order={order}
-        at={[636, 84]}
+        at={[476, 84]}
         className={cut.track(rise(cue.say3))}
       />
       <Hand who="you" className={you} />
@@ -1238,7 +1247,7 @@ function Train() {
       [cue.close, 680, 302],
       [cue.meet, 496, 110],
       [cue.wide, 496, 110],
-      [cue.wide + 0.8, 700, 400],
+      [cue.wide + 0.8, 720, 436],
     ]),
     GLIDE,
   );
@@ -1250,11 +1259,11 @@ function Train() {
       [cue.drop + 0.2, 300, 196],
       [cue.drop + 1, 334, 222],
       [cue.loop, 334, 222],
-      ...nodes.map((n, i): Point => [at[i] + 0.4, n.x + 70, n.y + 50]),
-      [cue.round + 0.4, nodes[0].x + 70, nodes[0].y + 50],
-      [cue.close, nodes[0].x + 70, nodes[0].y + 50],
-      [cue.meet, 600, 100],
-      [cue.wide, 600, 100],
+      ...nodes.map((n, i): Point => [at[i] + 0.4, n.x + 70, n.y + 58]),
+      [cue.round + 0.4, nodes[0].x + 70, nodes[0].y + 58],
+      [cue.close, nodes[0].x + 70, nodes[0].y + 58],
+      [cue.meet, 612, 126],
+      [cue.wide, 612, 126],
       [cue.wide + 0.8, 790, 140],
     ]),
     GLIDE,
@@ -1542,14 +1551,15 @@ function Train() {
         id="train"
         who="you"
         order={order}
-        at={[640, 340]}
+        at={[540, 362]}
         className={cut.track(rise(cue.say2))}
       />
       <Say
         id="train"
         who="both"
         order={order}
-        at={[600, 58]}
+        at={[600, 40]}
+        fold
         className={cut.track(rise(cue.say3))}
       />
       <Hand who="you" className={you} />
