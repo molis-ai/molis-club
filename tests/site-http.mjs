@@ -1,7 +1,6 @@
 // 新站的 HTTP 检查（本地服务运行时：npm run test:http）。
 // 覆盖 specs/site-rebuild/spec.md 第 3 节的全部页面、旧地址重定向、私有收录边界、诚实标注与 404。
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 
 const origin = process.env.TEST_ORIGIN || 'http://localhost:3000';
 const canonicalOrigin = 'https://molis-club.yijunw0212.chatgpt.site';
@@ -231,65 +230,110 @@ for (const [path, text] of [
   assert((await html('/about?study=one')).includes('m-review-bar'));
   const one = await html('/about');
   assert(!one.includes('m-review-bar'), '/about: no review bar by default');
-  // 《黑客与画家》右边是整张样式表（字很小，当作画面）；读正文时先拿掉它
+  // 第二版（负责人 2026-10-19）：上一版留在 ?study=previous 对照，?study=next 是带比较条的第二版
+  {
+    const previous = await html('/about?study=previous');
+    assert(previous.includes('m-review-bar'), 'about previous: review bar');
+    assert(
+      previous.includes('class="hp-sheet"'),
+      'about previous: the zoom pair of the previous version',
+    );
+    assert((await html('/about?study=next')).includes('m-review-bar'));
+  }
   const text = one
-    .replace(/<div class="hp-sheet"[\s\S]*?<p class="sr-only">/, '')
     .replace(/<script[\s\S]*?<\/script>/g, '')
     .replace(/<style[\s\S]*?<\/style>/g, '')
     .replace(/<[^>]+>/g, '');
   assert.equal(count(one, /<h1[\s>]/g), 1, 'about one: one h1');
+  // 首屏（负责人 2026-10-19）：正中是 Molis AI，右下角两行画外音
   assert.match(
     one,
-    /<h1[^>]*>[\s\S]*?技术，[\s\S]*?回到人的尺度。[\s\S]*?<\/h1>/,
-    'about one: the main line is the h1',
+    /<h1[^>]*>[\s\S]*?Molis AI[\s\S]*?<\/h1>/,
+    'about one: Molis AI is the h1',
   );
   assert.match(one, /<title>关于 · Molis AI<\/title>/, 'about one: title');
-  // 读起来是一篇故事（负责人 2026-10-18）：愿景与黑客与画家在前，成员在最后
+  // 首屏是满幅大图（图库「光-03」），顶栏压在图上（data-tone="light"），主线用打字机打出来；叶影那层画布
+  assert(one.includes('/site/about-light-'), 'about one: the hero image');
+  assert(
+    one.includes('class="an-hero-leaves"'),
+    'about one: the moving leaf shadows',
+  );
+  assert(one.includes('class="tw"'), 'about one: typewriter');
+  // 顺序（负责人 2026-10-20 选了「方案二 · 读一个故事」，2026-10-22 第四版删去「我们相信什么」）：
+  // 首屏 → 当想法更容易变成现实（摊开）→ 一扇窗，一天 → 绘图桌 → 联创团队 → 来路 → 《黑客与画家》→ 一句邀请，四个去处
   let at = 0;
   for (const line of [
-    '技术，回到人的尺度。',
-    // 《黑客与画家》（负责人 2026-10-18 定，替掉三栏演示）：画家与黑客一起推近
-    '《黑客与画家》',
-    // 标题下是底稿 1.3 那句，当过渡（负责人 2026-10-19）
-    '像《黑客与画家》里那样，写代码、做设计、讲故事，都是同一种创造：先起稿，再一遍遍修改，直到经得起真实使用。',
-    '达·芬奇《吉内薇拉·德·班琪》',
-    '1991 年修复时，人们在杜松和天空交界的地方，发现了达·芬奇的指纹。',
-    '没人细看的地方，也一样认真。',
+    'Molis AI',
+    // 大字 Molis AI 下面接底稿 1.1 的后半句
+    '是一间围绕工作、生活与体验研发 AI 产品的工作室。',
+    '愿每个人，都有余地。',
+    '把事情做好之后，还能去生活、去体验、去创造。',
     '当想法更容易变成现实',
-    '我们相信什么',
-    '有自己的判断，也有把它做成的本事。',
-    '让更多人成为创造者，让作品找到最早的相信者。',
+    '在整理 Molis 的介绍时，一骏曾打算把仓库摊开，让作品自己说话。',
+    '对于一个小团队，这意味着可以走进更多以前难以涉足的地方。',
+    '当越来越多想法能够被做出来，选择做什么、为什么做，反而变得更重要。',
+    '我们想在产品里寻找这些答案。',
     '从怎样工作，走向怎样生活',
     '我们希望，技术带来的能力，能变成人手里的选择',
     '工作是其中一条清晰的线索。',
+    '另一条线索伸向工作之外。',
     '从这些探索，看向更远的构想',
+    'Molis World 是沿着这个问题生出的构想。',
+    '它们共同构成 Molis 正在发生的故事',
+    '联创团队',
+    // 旧版团队页的导语，把产品接到人
+    '做这些产品的，是下面这群人。',
+    '王一骏',
+    '发起人',
+    '前美团 · 字节 · 滴滴 · LinkedIn',
+    '靳曲',
     '从同事，到共同创造的伙伴',
     '我们曾是美团的同事。',
-    '一群同类，一起创造。',
-    '找同类，不抢货架。',
-    '我们做自己用着舒服的产品',
+    'Molis 则给了我们一个共同探索的空间',
+    // 《黑客与画家》一屏的开头是负责人写的一句过渡（2026-10-22）；底稿 1.3 那句跟着四张手稿，书名在过渡句里说过了
+    '我们希望带着《黑客与画家》里说的那种匠人精神去创造。',
+    '没人细看的地方，也一样认真。',
+    '达·芬奇《吉内薇拉·德·班琪》',
+    // 典故：书里写到的就是这一幅（上面那句已有书名，这里只说「书里」）
+    'Paul Graham 在书里写到这幅画',
+    '1991 年修复时，人们在杜松和天空交界的地方，发现了达·芬奇的指纹。',
+    '写代码、做设计、讲故事，都是同一种创造：先起稿，再一遍遍修改，直到经得起真实使用。',
+    '产品设计',
+    '写代码',
+    '拍视频',
+    '写故事',
+    // 结尾一屏：两行邀请，「树下，总有空位」，一句话，四个横排的去处
+    '我们做自己用着舒服的产品，',
+    '也想遇见和我们口味相投的你。',
+    '树下，总有空位',
+    '我们的产品',
+    '企业合作',
+    '聊一聊',
+    '社区',
   ]) {
     const next = text.indexOf(line, at);
     assert(next >= 0, `about one: 「${line}」 in order`);
     at = next;
   }
-  // 原句只出现一次（「找同类，不抢货架。」只在结尾回扣标题，正文只在信念里）
+  // 只有王一骏写身份，其余人不写「联合创始人」
+  assert.equal(count(one, /class="cr-founder"/g), 1, 'about one: one founder');
+  assert(!text.includes('联合创始人'), 'about one: no co-founder labels');
+  // 原句只出现一次
   for (const line of [
     '这些经历构成了我们的来路。',
     '我们想在产品里寻找这些答案。',
     '工作是其中一条清晰的线索。',
     '我们曾是美团的同事。',
-    '让口味相近的人认出彼此。',
-    '决定什么值得做，本身就是创造的一部分。',
   ])
     assert.equal(text.split(line).length - 1, 1, `about one: 「${line}」 once`);
-  // 去处：沿途、两篇文章、正文里的 Work 与 Tool、企业合作、社区、聊一聊
+  // 去处：沿途、两篇文章、正文里的 Work 与 Tool，最后四个：产品、企业合作、聊一聊、社区
   for (const href of [
     '/along-the-way',
     '/essays/human-scale',
     '/essays/idealism',
     '/work',
     '/tool',
+    '/#products',
     '/enterprise',
     '/community',
     '/contact',
@@ -315,39 +359,28 @@ for (const [path, text] of [
     );
   // 不再是展厅：没有名牌、平面图、墙色与「下一个展厅」
   assert(!text.includes('展厅'), 'about one: no room names');
-  // 《黑客与画家》：右边是本站真实的样式表，行号跟着文件走；推近的终点是缓动曲线和它的注释
-  // （落款的日期与提交说明写在 content/site/about.ts，改了这两行要同步那里）
-  {
-    const css = readFileSync(
-      new URL('../app/_site/site.css', import.meta.url),
-      'utf8',
-    )
-      .replace(/\n$/, '')
-      .split('\n');
-    const ease = css.findIndex((line) => /^\s*--ease:/.test(line));
-    assert.equal(
-      css[ease - 1].trim(),
-      '/* ---------- 动效：全站一条缓动曲线（开头快、收尾慢，像物体落定） ---------- */',
-      'site.css: the ease comment the about page zooms into',
-    );
-    assert.equal(css[ease].trim(), '--ease: cubic-bezier(0.2, 0.7, 0.1, 1);');
+  // 《黑客与画家》：那句话就是这一屏的标题，书名在画面上只出现一次；画可以点着推近，右边四格
+  assert.match(
+    one,
+    /<h2 class="mk-title" id="makers-title">/,
+    'about one: the sentence is the heading',
+  );
+  assert.equal(
+    text.split('《黑客与画家》').length - 1,
+    1,
+    'about one: book title once',
+  );
+  assert(
+    /class="mk-paint"[^>]*aria-pressed="false"/.test(one),
+    'about one: the painting zooms on click',
+  );
+  assert.equal(count(one, /class="mk-sheet"/g), 4, 'about one: four crafts');
+  for (const layer of ['whole', 'near', 'edge'])
     assert(
-      text.includes(`第 ${ease}–${ease + 1} 行`),
-      'about one: the zoomed lines are numbered as in site.css',
+      one.includes(`/site/ginevra-${layer}-`),
+      `about one: painting layer ${layer}`,
     );
-    assert(
-      text.includes(`Molis AI 网站的样式表，${css.length} 行`),
-      'about one: the whole stylesheet is shown',
-    );
-    assert(one.includes('class="hp-sheet"'), 'about one: stylesheet sheet');
-    for (const layer of ['whole', 'near', 'edge'])
-      assert(
-        one.includes(`/site/ginevra-${layer}-`),
-        `about one: painting layer ${layer}`,
-      );
-    assert(one.includes('data-scene'), 'about one: the pair follows scroll');
-  }
-  // 《黑客与画家》两版对照（负责人 2026-10-19「两版都先保留」）：默认是推近；?makers=trio 是原版三种媒介，带比较条
+  // 上一版里《黑客与画家》两版对照照旧：?makers=trio 是原版三种媒介，带比较条
   {
     const trioPage = await html('/about?makers=trio');
     assert(
@@ -358,7 +391,7 @@ for (const [path, text] of [
       !trioPage.includes('class="hp-sheet"'),
       'about makers=trio: no zoom pair',
     );
-    assert(!one.includes('ab-trio'), '/about: the zoom pair by default');
+    assert(!one.includes('ab-trio'), '/about: no old trio');
     for (const name of ['trio', 'painters'])
       assert(
         trioPage.includes(`href="/about?makers=${name}#makers"`),
@@ -366,8 +399,45 @@ for (const [path, text] of [
       );
     assert(trioPage.includes('m-review-bar'), 'about makers: review bar');
   }
-  // 八个人的名牌带锚点（旧地址 /community/yijun 跳到 #yijun）
-  for (const id of ['people', 'yijun', 'jinqu'])
+  // 「我们相信什么」一屏负责人 2026-10-22 删去（原句仍在 content/site/studio.ts）
+  assert(
+    !text.includes('有自己的判断，也有把它做成的本事。'),
+    'about one: no beliefs screen',
+  );
+  // 第四版（负责人 2026-10-22）：摊开、一扇窗、绘图桌；人的那一厅（群像、一排肖像、来路）；结尾一张画
+  for (const cls of [
+    'class="sp"',
+    'class="dy"',
+    'class="wd"',
+    'class="an-hall"',
+    'class="cr-row"',
+  ])
+    assert(one.includes(cls), `about one: ${cls}`);
+  assert.equal(count(one, /class="cr-pc"/g), 8, 'about one: eight portraits');
+  // 摊开的就是沿途那些真实的尝试，留下的是并进 Work、Tool、Story 的那几件
+  assert.equal(
+    count(one, /class="sp-it"/g),
+    count(await html('/along-the-way'), /class="al-row"/g),
+    'about one: every try along the way is spread out',
+  );
+  assert(count(one, /data-keep="(work|tool|story)"/g) > 0, 'about one: kept');
+  for (const name of ['boat', 'sun', 'house', 'seat'])
+    assert(one.includes(`/site/art-${name}-`), `about one: team art ${name}`);
+  assert(
+    !one.includes('/site/film-s') && !one.includes('/site/lib-'),
+    'about one: no film stills or library images',
+  );
+  // 八个人带锚点（旧地址 /team 跳到 #people，/community/yijun 跳到 #yijun）；故事三章的锚点照旧
+  for (const id of [
+    'people',
+    'yijun',
+    'jinqu',
+    'makers',
+    'origin',
+    'change',
+    'products',
+    'further',
+  ])
     assert(one.includes(`id="${id}"`), `about one: anchor #${id}`);
 }
 

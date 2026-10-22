@@ -90,7 +90,12 @@ function useCloseDetails(path: string) {
 
 type Tone = 'film' | 'light' | 'paper';
 /** 首屏是满幅照片的页：服务端渲染时就按压在照片上画（没有 JS 时也是这个样子） */
-const topTone: Record<string, Tone> = { '/': 'film', [ENTERPRISE]: 'light' };
+const topTone: Record<string, Tone> = {
+  '/': 'film',
+  [ENTERPRISE]: 'light',
+  // 「关于」第二版首屏是压暗的白展厅，白字（负责人 2026-10-19）
+  [ABOUT]: 'film',
+};
 
 /** 顶栏下面压着的是画面还是纸：读顶栏中线下方最近的 [data-tone] */
 function useTone(path: string) {

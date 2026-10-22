@@ -219,6 +219,314 @@
       ]
     ]
   },
+  "about-light": {
+    "width": 3072,
+    "height": 2048,
+    "avg": "#bdb6af",
+    "src": "/site/about-light-2560.webp",
+    "srcset": [
+      [
+        "/site/about-light-1280.webp",
+        1280
+      ],
+      [
+        "/site/about-light-1920.webp",
+        1920
+      ],
+      [
+        "/site/about-light-2560.webp",
+        2560
+      ]
+    ]
+  },
+  "art-boat": {
+    "width": 1254,
+    "height": 1254,
+    "avg": "#e1c49b",
+    "src": "/site/art-boat-900.webp",
+    "srcset": [
+      [
+        "/site/art-boat-480.webp",
+        480
+      ],
+      [
+        "/site/art-boat-900.webp",
+        900
+      ]
+    ]
+  },
+  "art-sun": {
+    "width": 1254,
+    "height": 1254,
+    "avg": "#d1a97e",
+    "src": "/site/art-sun-900.webp",
+    "srcset": [
+      [
+        "/site/art-sun-480.webp",
+        480
+      ],
+      [
+        "/site/art-sun-900.webp",
+        900
+      ]
+    ]
+  },
+  "art-house": {
+    "width": 1254,
+    "height": 1254,
+    "avg": "#d7b47f",
+    "src": "/site/art-house-900.webp",
+    "srcset": [
+      [
+        "/site/art-house-480.webp",
+        480
+      ],
+      [
+        "/site/art-house-900.webp",
+        900
+      ]
+    ]
+  },
+  "art-seat": {
+    "width": 1672,
+    "height": 941,
+    "avg": "#c19c71",
+    "src": "/site/art-seat-1672.webp",
+    "srcset": [
+      [
+        "/site/art-seat-960.webp",
+        960
+      ],
+      [
+        "/site/art-seat-1672.webp",
+        1672
+      ]
+    ]
+  },
+  "sketch-design": {
+    "width": 1536,
+    "height": 1024,
+    "avg": "#d2b289",
+    "src": "/site/sketch-design-1280.webp",
+    "srcset": [
+      [
+        "/site/sketch-design-720.webp",
+        720
+      ],
+      [
+        "/site/sketch-design-1280.webp",
+        1280
+      ]
+    ]
+  },
+  "sketch-code": {
+    "width": 1536,
+    "height": 1024,
+    "avg": "#d1af88",
+    "src": "/site/sketch-code-1280.webp",
+    "srcset": [
+      [
+        "/site/sketch-code-720.webp",
+        720
+      ],
+      [
+        "/site/sketch-code-1280.webp",
+        1280
+      ]
+    ]
+  },
+  "sketch-film": {
+    "width": 1536,
+    "height": 1024,
+    "avg": "#d7b791",
+    "src": "/site/sketch-film-1280.webp",
+    "srcset": [
+      [
+        "/site/sketch-film-720.webp",
+        720
+      ],
+      [
+        "/site/sketch-film-1280.webp",
+        1280
+      ]
+    ]
+  },
+  "sketch-story": {
+    "width": 1536,
+    "height": 1024,
+    "avg": "#d8b38b",
+    "src": "/site/sketch-story-1280.webp",
+    "srcset": [
+      [
+        "/site/sketch-story-720.webp",
+        720
+      ],
+      [
+        "/site/sketch-story-1280.webp",
+        1280
+      ]
+    ]
+  },
+  "face-yijun": {
+    "width": 1024,
+    "height": 1024,
+    "avg": "#eed2aa",
+    "src": "/site/face-yijun-1024.webp",
+    "srcset": [
+      [
+        "/site/face-yijun-320.webp",
+        320
+      ],
+      [
+        "/site/face-yijun-640.webp",
+        640
+      ],
+      [
+        "/site/face-yijun-1024.webp",
+        1024
+      ]
+    ]
+  },
+  "face-xujing": {
+    "width": 1024,
+    "height": 1024,
+    "avg": "#e7c39c",
+    "src": "/site/face-xujing-1024.webp",
+    "srcset": [
+      [
+        "/site/face-xujing-320.webp",
+        320
+      ],
+      [
+        "/site/face-xujing-640.webp",
+        640
+      ],
+      [
+        "/site/face-xujing-1024.webp",
+        1024
+      ]
+    ]
+  },
+  "face-xiejun": {
+    "width": 1024,
+    "height": 1024,
+    "avg": "#c8b6a4",
+    "src": "/site/face-xiejun-1024.webp",
+    "srcset": [
+      [
+        "/site/face-xiejun-320.webp",
+        320
+      ],
+      [
+        "/site/face-xiejun-640.webp",
+        640
+      ],
+      [
+        "/site/face-xiejun-1024.webp",
+        1024
+      ]
+    ]
+  },
+  "face-pengfei": {
+    "width": 1024,
+    "height": 1024,
+    "avg": "#dcc7a3",
+    "src": "/site/face-pengfei-1024.webp",
+    "srcset": [
+      [
+        "/site/face-pengfei-320.webp",
+        320
+      ],
+      [
+        "/site/face-pengfei-640.webp",
+        640
+      ],
+      [
+        "/site/face-pengfei-1024.webp",
+        1024
+      ]
+    ]
+  },
+  "face-haozhe": {
+    "width": 1024,
+    "height": 1024,
+    "avg": "#d6b59a",
+    "src": "/site/face-haozhe-1024.webp",
+    "srcset": [
+      [
+        "/site/face-haozhe-320.webp",
+        320
+      ],
+      [
+        "/site/face-haozhe-640.webp",
+        640
+      ],
+      [
+        "/site/face-haozhe-1024.webp",
+        1024
+      ]
+    ]
+  },
+  "face-zhuangshi": {
+    "width": 1024,
+    "height": 1024,
+    "avg": "#e9c2aa",
+    "src": "/site/face-zhuangshi-1024.webp",
+    "srcset": [
+      [
+        "/site/face-zhuangshi-320.webp",
+        320
+      ],
+      [
+        "/site/face-zhuangshi-640.webp",
+        640
+      ],
+      [
+        "/site/face-zhuangshi-1024.webp",
+        1024
+      ]
+    ]
+  },
+  "face-xinyi": {
+    "width": 1024,
+    "height": 1024,
+    "avg": "#d7c8ad",
+    "src": "/site/face-xinyi-1024.webp",
+    "srcset": [
+      [
+        "/site/face-xinyi-320.webp",
+        320
+      ],
+      [
+        "/site/face-xinyi-640.webp",
+        640
+      ],
+      [
+        "/site/face-xinyi-1024.webp",
+        1024
+      ]
+    ]
+  },
+  "face-jinqu": {
+    "width": 1024,
+    "height": 1024,
+    "avg": "#deb793",
+    "src": "/site/face-jinqu-1024.webp",
+    "srcset": [
+      [
+        "/site/face-jinqu-320.webp",
+        320
+      ],
+      [
+        "/site/face-jinqu-640.webp",
+        640
+      ],
+      [
+        "/site/face-jinqu-1024.webp",
+        1024
+      ]
+    ]
+  },
   "about-window": {
     "width": 1672,
     "height": 941,

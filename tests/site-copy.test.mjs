@@ -107,7 +107,7 @@ void test('内部编辑备注不对外', () => {
 });
 
 const { team, members } = await import('../content/site/team.ts');
-const { aboutUi } = await import('../content/site/about.ts');
+const { aboutUi, aboutNext } = await import('../content/site/about.ts');
 const { enterprise } = await import('../content/site/enterprise.ts');
 const { form } = await import('../content/site/contact.ts');
 const { along, alongGroups } = await import('../content/site/along.ts');
@@ -126,6 +126,12 @@ void test('团队、关于、企业合作、联系、沿途页里取自底稿的
   }
   // 关于：大标题是 1.4 的小标题
   assertVerbatim(aboutUi.title, 'about');
+  // 关于第二版的四个去处：产品、企业合作、社区三句是底稿原句（聊一聊那句是联系页的大标题，新写）
+  for (const id of ['products', 'enterprise', 'community'])
+    assertVerbatim(aboutNext.doors[id].line, `about doors ${id}`);
+  // 关于第四版的绘图桌：岛上三处地方是 4.5 那句的原文片段
+  for (const place of aboutNext.world.places)
+    assertVerbatim(place, `about world ${place}`);
   // 企业合作：标题、开场三段、5.1 五个问题、5.2 开头一句
   assertVerbatim(enterprise.title, 'enterprise');
   for (const text of enterprise.intro) assertVerbatim(text, 'enterprise intro');

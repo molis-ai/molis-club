@@ -15,6 +15,7 @@ import {
 } from '../../_site/exhibit/exhibit';
 import { ReviewSwitch } from '../../_site/review/comparison';
 import { BeliefWall } from './belief-wall';
+import { AboutNext } from './next';
 import { AboutOne } from './one';
 import { MakersReview } from './makers-review';
 import { Trio } from './trio';
@@ -68,25 +69,50 @@ const beliefWorks = [
   { name: 'ex-paper-plane', focus: '35% 45%' },
 ] as const;
 
-// 「关于」是一整页（C1，负责人 2026-10-18 通过样张后切成默认），正文在 one.tsx。
-// 旧的四间展厅版暂留对照：/about?study=current 是旧版，/about?study=one 是带比较条的一页式；不带参数时没有比较条。
-// 《黑客与画家》一章两版对照（负责人 2026-10-19）：/about?makers=trio 是原版三种媒介，?makers=painters 是推近，都带比较条。
+// 「关于」是一整页（C1，负责人 2026-10-18 通过样张后切成默认）。2026-10-19 负责人给了五条修改，第二版（next.tsx）是默认。
+// 对照：/about?study=previous 是上一版一整页（带比较条，样张是第二版）；/about?study=current 是更早的四间展厅版；
+// 上一版里《黑客与画家》的两版对照照旧：?makers=trio 是原版三种媒介，?makers=painters 是推近，都带比较条。
 export default async function AboutPage({ searchParams }: Props) {
   const { study, makers: asked } = await searchParams;
-  const one = study !== 'current';
-  const makers = asked === 'trio' ? 'trio' : 'painters';
-  return (
-    <>
-      {one ? <AboutOne makers={makers} /> : <AboutCurrent />}
-      {one && asked !== undefined && study === undefined ? (
-        <MakersReview makers={makers} />
-      ) : null}
-      {study === 'one' || study === 'current' ? (
+  if (study === 'current')
+    return (
+      <>
+        <AboutCurrent />
         <ReviewSwitch
           label={nav.about}
-          variant={one ? 'sample' : 'current'}
+          variant="current"
           currentHref={`${ABOUT}?study=current`}
           sampleHref={`${ABOUT}?study=one`}
+        />
+      </>
+    );
+  if (study === 'one' || study === 'previous' || asked !== undefined) {
+    const makers = asked === 'trio' ? 'trio' : 'painters';
+    return (
+      <>
+        <AboutOne makers={makers} />
+        {asked !== undefined ? (
+          <MakersReview makers={makers} />
+        ) : (
+          <ReviewSwitch
+            label={nav.about}
+            variant="current"
+            currentHref={`${ABOUT}?study=previous`}
+            sampleHref={`${ABOUT}?study=next`}
+          />
+        )}
+      </>
+    );
+  }
+  return (
+    <>
+      <AboutNext />
+      {study === 'next' ? (
+        <ReviewSwitch
+          label={nav.about}
+          variant="sample"
+          currentHref={`${ABOUT}?study=previous`}
+          sampleHref={`${ABOUT}?study=next`}
         />
       ) : null}
     </>
