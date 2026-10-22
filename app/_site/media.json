@@ -171,82 +171,22 @@
       ]
     ]
   },
-  "enterprise-vista-a": {
+  "enterprise-vista": {
     "width": 2400,
     "height": 1600,
     "avg": "#ac9988",
-    "src": "/site/enterprise-vista-a-2400.webp",
+    "src": "/site/enterprise-vista-2400.webp",
     "srcset": [
       [
-        "/site/enterprise-vista-a-1280.webp",
+        "/site/enterprise-vista-1280.webp",
         1280
       ],
       [
-        "/site/enterprise-vista-a-1920.webp",
+        "/site/enterprise-vista-1920.webp",
         1920
       ],
       [
-        "/site/enterprise-vista-a-2400.webp",
-        2400
-      ]
-    ]
-  },
-  "enterprise-vista-b": {
-    "width": 2400,
-    "height": 1600,
-    "avg": "#b7a189",
-    "src": "/site/enterprise-vista-b-2400.webp",
-    "srcset": [
-      [
-        "/site/enterprise-vista-b-1280.webp",
-        1280
-      ],
-      [
-        "/site/enterprise-vista-b-1920.webp",
-        1920
-      ],
-      [
-        "/site/enterprise-vista-b-2400.webp",
-        2400
-      ]
-    ]
-  },
-  "enterprise-vista-c": {
-    "width": 2400,
-    "height": 1600,
-    "avg": "#907a66",
-    "src": "/site/enterprise-vista-c-2400.webp",
-    "srcset": [
-      [
-        "/site/enterprise-vista-c-1280.webp",
-        1280
-      ],
-      [
-        "/site/enterprise-vista-c-1920.webp",
-        1920
-      ],
-      [
-        "/site/enterprise-vista-c-2400.webp",
-        2400
-      ]
-    ]
-  },
-  "enterprise-vista-d": {
-    "width": 2400,
-    "height": 1351,
-    "avg": "#796756",
-    "src": "/site/enterprise-vista-d-2400.webp",
-    "srcset": [
-      [
-        "/site/enterprise-vista-d-1280.webp",
-        1280
-      ],
-      [
-        "/site/enterprise-vista-d-1920.webp",
-        1920
-      ],
-      [
-        "/site/enterprise-vista-d-2400.webp",
+        "/site/enterprise-vista-2400.webp",
         2400
       ]
     ]

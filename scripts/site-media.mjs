@@ -84,20 +84,15 @@ const images = [
     widths: [800, 1536],
     quality: 78,
   },
-  // 企业合作第三屏（负责人 2026-10-19：换图、满幅、沉浸地过渡）：Molis 官方图库（molis-ai/molis-image-library）的四张候选，
-  // 原图是 3072–3344 宽的 PNG（6–7 MB），这里放缩到 2400 宽的 JPEG（public/images/library/）。
-  // 默认是「人-03 长桌尽头还有山」；其余三张在 /enterprise?plate=b|c|d 对照，选定后删掉另外三张
-  ...[
-    { key: 'enterprise-vista-a', file: 'human-03' },
-    { key: 'enterprise-vista-b', file: 'community-02' },
-    { key: 'enterprise-vista-c', file: 'community-06' },
-    { key: 'enterprise-vista-d', file: 'human-01' },
-  ].map(({ key, file }) => ({
-    key,
-    src: `public/images/library/${file}.jpg`,
+  // 企业合作第三屏（负责人 2026-10-19：换图、满幅、沉浸地过渡）：Molis 官方图库（molis-ai/molis-image-library）
+  // 「人-03 长桌尽头还有山」（负责人 2026-10-22 从四张候选里定下，另外三张已删）。
+  // 原图是图库里 6–7 MB 的 PNG，这里放缩到 2400 宽的 JPEG（public/images/library/）
+  {
+    key: 'enterprise-vista',
+    src: 'public/images/library/human-03.jpg',
     widths: [1280, 1920, 2400],
     quality: 76,
-  })),
+  },
   // 其余各页
   // 社区（负责人 2026-10-15 定的方向）：结尾沙上那道线改成画出来的，不再用照片；「带点什么走」满幅是比稿 D1 那张围桌的人
   // （桌上有小牛摆件和带触角的小玩偶）；「再带点什么回来」满幅是品牌图库社区 A 雾感版（树下挂着各自的颜色）；

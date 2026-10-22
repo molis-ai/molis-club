@@ -127,9 +127,10 @@
   padding: 12px 12px 18px;
   border-radius: 10px;
   background: var(--white);
+  /* 全站卡片的写法：一圈细线，几乎无阴影（2026-10-22 减轻） */
   box-shadow:
     0 0 0 1px var(--hair),
-    0 16px 30px -26px rgb(var(--shade) / 0.5);
+    0 1px 2px rgb(var(--shade) / 0.04);
   cursor: pointer;
   rotate: var(--tilt);
   translate: 0 var(--lift);
@@ -184,10 +185,10 @@
 .m-ent-slip[data-on],
 html:not(.js) .m-ent-slip:has(input:checked) {
   --tilt: 0deg;
-  --lift: -10px;
+  --lift: -8px;
   box-shadow:
     0 0 0 1px var(--ink),
-    0 30px 48px -30px rgb(var(--shade) / 0.6);
+    0 14px 26px -22px rgb(var(--shade) / 0.3);
 }
 .m-ent-slips[data-any] .m-ent-slip:not([data-on]) {
   --shrink: 0.97;
@@ -1911,9 +1912,10 @@ html:not(.js) .m-ent-slip:has(input:checked)::before {
   padding: clamp(20px, 2.2vw, 28px);
   border-radius: 16px;
   background: var(--white);
+  /* 一圈细线，几乎无阴影（2026-10-22 减轻） */
   box-shadow:
     0 0 0 1px var(--hair),
-    0 24px 40px -34px rgb(var(--shade) / 0.5);
+    0 1px 2px rgb(var(--shade) / 0.04);
 }
 .m-ent-lab-top {
   display: flex;
@@ -1985,7 +1987,7 @@ html:not(.js) .m-ent-slip:has(input:checked)::before {
   translate: 0 -4px;
   box-shadow:
     0 0 0 1px var(--hair-2),
-    0 32px 50px -34px rgb(var(--shade) / 0.6);
+    0 14px 28px -24px rgb(var(--shade) / 0.3);
 }
 .m-ent-lab:hover .m-ent-hn {
   opacity: 1;
