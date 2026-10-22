@@ -20,7 +20,7 @@
     "build:folio-preview": "npm run build && node scripts/export-folio-preview.mjs",
     "build:site-preview": "npm run build && node scripts/export-site-preview.mjs",
     "dates": "node scripts/page-dates.mjs",
-    "media": "node scripts/site-media.mjs"
+    "media": "node scripts/site-media.mjs && node scripts/about-light-shade.mjs"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.7.3",

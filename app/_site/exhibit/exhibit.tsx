@@ -104,17 +104,20 @@ export function Facts({
 }
 
 /**
- * 展签：编号、标题、媒介 · 摄影者（AI 生成影像写 Molis 图库），下面可以跟一句「诉说」（底稿原句）。
- * 不给编号时只留「媒介 · 摄影者」一行：一页式「关于」不再是展厅，展品不编号、不起标题。
+ * 展签：编号、标题、媒介 · 摄影者（AI 生成影像写 Molis 图库，团队插画写团队画册），下面可以跟一句「诉说」（底稿原句）。
+ * 不给编号时只留「媒介 · 摄影者」一行；titled 时不编号、只把标题写回来（「关于」第四版，负责人 2026-10-22）。
  */
 export function Label({
   piece,
   no,
+  titled = false,
   note,
   children,
 }: {
   piece: PieceKey;
   no?: string;
+  /** 不编号，但写出标题 */
+  titled?: boolean;
   /** 标题后面的小注（例如「概念示意」） */
   note?: ReactNode;
   children?: ReactNode;
@@ -127,12 +130,15 @@ export function Label({
       ? info.by
       : info.medium === 'ai'
         ? exUi.source.ai
-        : null;
+        : info.medium === 'album'
+          ? exUi.source.album
+          : null;
+  const head = Boolean(no) || titled;
   return (
     <>
-      {no ? (
+      {head ? (
         <span className="ex-label-head">
-          <span className="ex-no num">{no}</span>
+          {no ? <span className="ex-no num">{no}</span> : null}
           <span className="ex-title">{info.title}</span>
           {note}
         </span>
@@ -140,7 +146,7 @@ export function Label({
       <span className="ex-medium">
         {exUi.medium[info.medium]}
         {source ? ` · ${source}` : null}
-        {no ? null : note}
+        {head ? null : note}
       </span>
       {children ? <span className="ex-tell">{children}</span> : null}
     </>
@@ -154,6 +160,7 @@ export function Label({
 export function Work({
   name,
   no,
+  titled = false,
   ratio = '3 / 2',
   focus,
   maxH,
@@ -167,6 +174,7 @@ export function Work({
 }: {
   name: PieceKey & Parameters<typeof mediaOf>[0];
   no?: string;
+  titled?: boolean;
   ratio?: string;
   focus?: string;
   maxH?: string;
@@ -210,7 +218,7 @@ export function Work({
         />
       </div>
       <figcaption className="ex-label">
-        <Label piece={name} no={no} note={note}>
+        <Label piece={name} no={no} titled={titled} note={note}>
           {children}
         </Label>
       </figcaption>

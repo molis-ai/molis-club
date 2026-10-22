@@ -46,7 +46,7 @@ export const rooms: Room[] = [
   { id: 'road', no: '04', name: nav.aboutItems.along, theme: '路', en: 'Road' },
 ];
 
-type Medium = 'photo' | 'ai' | 'drawing' | 'interactive';
+type Medium = 'photo' | 'ai' | 'drawing' | 'interactive' | 'album';
 
 export type Piece = {
   /** 展签上的标题（新写） */
@@ -126,6 +126,62 @@ export const pieces = {
     medium: 'photo',
     by: 'zero take',
     alt: '雪白的沙滩尽头，一个穿深色大衣的人站在蓝绿色的海边。',
+  },
+
+  // 「关于」一整页第二版（负责人 2026-10-19）：首屏是 Molis 官方图库的「光-03」，愿景一段里的工作室
+  'about-light': {
+    title: '天光落下的地方',
+    medium: 'ai',
+    alt: '白色的小展厅，天窗外是一棵橄榄树，阳光落在石地上，印着摇动的叶影；左边门口，一个人刚走过。',
+  },
+  'work-studio': {
+    title: '窗边伏案的人',
+    medium: 'ai',
+    alt: '白色的工作室里，一个人坐在大窗边的木桌前，墙边是书架和几盆绿植。',
+  },
+
+  // 「关于」的团队画册（负责人选定；标题沿用插画图库的题目）
+  'art-boat': {
+    title: '一船脑洞',
+    medium: 'album',
+    alt: '一只纸船上挤着一只小狐狸、一只小猫，和大家各自的东西：小房子、头盔、向日葵、书和电脑。',
+  },
+  'art-sun': {
+    title: '围着一团小太阳',
+    medium: 'album',
+    alt: '八个人和一只小狐狸挤坐在一起，围着中间一团发光的小太阳，手里拿着书、电脑、向日葵和一个装着风景的玻璃球。',
+  },
+  'art-house': {
+    title: '脑洞共居所',
+    medium: 'album',
+    alt: '一座爬满绿植的小房子，窗里有小狐狸和小猫，门里是一张书桌；屋顶上搁着书、头盔和一个装着风景的玻璃球。',
+  },
+  'art-seat': {
+    title: '树下，总有空位',
+    medium: 'album',
+    alt: '海边的大树下，一群人围着圆木桌画画、看书、喝茶，桌上摆着向日葵和一座小小的模型；前面空着两把木椅。',
+  },
+
+  // 《黑客与画家》四种创造的方式（负责人 2026-10-20 生成的达·芬奇手稿风格四张）
+  'sketch-design': {
+    title: '一台手机的拆解手稿',
+    medium: 'ai',
+    alt: '达·芬奇手稿风格的赭红素描：一台手机拆成一层层零件，旁边是几种屏幕版式的小稿，右边一只手握着铅笔在画。',
+  },
+  'sketch-code': {
+    title: '写代码的手',
+    medium: 'ai',
+    alt: '达·芬奇手稿风格的素描：一双手在笔记本电脑上打字，屏幕上是一行行代码；四周是转轴、键帽的拆解和一张方框连线的流程图。',
+  },
+  'sketch-film': {
+    title: '一台摄影机的拆解手稿',
+    medium: 'ai',
+    alt: '达·芬奇手稿风格的素描：架在三脚架上的摄影机，镜片沿光轴一片片拆开，窗外的风景经过镜头落进机身。',
+  },
+  'sketch-story': {
+    title: '画分镜的手',
+    medium: 'ai',
+    alt: '达·芬奇手稿风格的素描：一只握着铅笔的手在画一排分镜，旁边是几个人物小稿，右上角是一枝杜松。',
   },
 
   // 展厅 02 · 光
@@ -314,6 +370,7 @@ export const exUi = {
     ai: 'AI 生成影像',
     drawing: '线描',
     interactive: '互动装置',
+    album: 'AI 插画',
   } satisfies Record<Medium, string>,
-  source: { ai: 'Molis 图库' },
+  source: { ai: 'Molis 图库', album: '团队画册' },
 };
