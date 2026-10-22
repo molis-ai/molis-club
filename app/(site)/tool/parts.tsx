@@ -56,7 +56,11 @@ export function Ico({ icon: Icon, tone }: { icon: LucideIcon; tone: Tone }) {
 /** 示意光标：白箭头描墨边 */
 export function Pointer({ className = '' }: { className?: string }) {
   return (
-    <svg className={`tl-pointer ${className}`} viewBox="0 0 16 20">
+    <svg
+      className={`tl-pointer ${className}`}
+      viewBox="0 0 16 20"
+      aria-hidden="true"
+    >
       <path
         d="M1.5 1.5v14.2l3.9-3.6 2.6 6 2.4-1-2.6-5.9h5.3z"
         fill="#fff"
@@ -71,7 +75,11 @@ export function Pointer({ className = '' }: { className?: string }) {
 /** 选字时的 I 形光标 */
 export function Beam({ className = '' }: { className?: string }) {
   return (
-    <svg className={`tl-beam ${className}`} viewBox="0 0 10 22">
+    <svg
+      className={`tl-beam ${className}`}
+      viewBox="0 0 10 22"
+      aria-hidden="true"
+    >
       <path
         d="M2 1.5c1.6 0 2.6.5 3 1.4.4-.9 1.4-1.4 3-1.4M5 3v16M2 20.5c1.6 0 2.6-.5 3-1.4.4.9 1.4 1.4 3 1.4"
         fill="none"

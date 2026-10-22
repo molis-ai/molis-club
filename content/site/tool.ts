@@ -42,6 +42,8 @@ export const desk = {
 export const shift = {
   kicker: '软件不必再是一个要去的地方',
   title: '能力来到光标旁，而不是人去找应用。',
+  /** 标题里被荧光笔划过的几个字（只是强调，不改原句） */
+  mark: '光标旁',
   /** 格式乱掉的一句：片段之间多出来的空格，清理时收拢 */
   messy: ['会议改到', '周四', '下午三点，', '地点：', '二楼小会议室'],
   before: {
@@ -66,6 +68,7 @@ export const shift = {
 export const layers = {
   kicker: '由近到远的三层',
   title: '离你越近，打扰越少。',
+  mark: '打扰越少',
   near: {
     name: '光标旁',
     text: '选区末端出现 1 到 3 个动作。',
@@ -121,6 +124,7 @@ export const moments = {
   kicker: '一天里的几个时刻',
   /** 原句 */
   title: small.title,
+  mark: '就在手边处理',
   lead: tool.opening[0],
   /** 原句：「正在打磨」三个字从这里来 */
   wip: chain.paragraphs[1],
@@ -180,6 +184,7 @@ export const moments = {
 export const plugins = {
   kicker: '插件就是能力',
   title: '登记一次，处处可用。',
+  mark: '处处可用',
   facts: [
     {
       title: '插件写下能做什么，不画界面',
@@ -220,6 +225,7 @@ export const measure = {
   kicker: '分寸',
   /** 原句 */
   title: later.paragraphs[1],
+  mark: '你当下的需要',
   is: {
     label: '它会',
     items: [

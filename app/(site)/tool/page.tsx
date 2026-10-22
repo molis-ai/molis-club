@@ -11,15 +11,8 @@ import {
 } from '../../../content/site/tool';
 import { ProductHero } from '../../_site/product/product';
 import { COMMUNITY, contactHref, productHref } from '../../_site/routes';
-import {
-  Btn,
-  More,
-  Note,
-  Phrases,
-  Status,
-  Window,
-  type Vars,
-} from '../../_site/ui';
+import type { ReactNode } from 'react';
+import { Btn, More, Note, Status, Window, type Vars } from '../../_site/ui';
 import { Desk, TryHint } from './hero';
 import { Moments, Plugins, Relay, Shift } from './scenes';
 import { SelectionBar } from './selection';
@@ -34,30 +27,58 @@ export const metadata = pageMetadata(
   productHref.tool,
 );
 
-// Molis Tool（specs/site-rebuild/tool-page.md 第 9 节）：骨架取自 Folio 版 Tool 页。
-// 首屏光标演示 → 以前与现在 → 由近到远的三层 → 眼前的小事 → 插件 → 分寸 → 收尾，约七屏，一屏一个重点。
-// 每屏一面墙色，一个动作一种颜色（翻译天蓝、整理成日程杏橙……），演示里和整页真的动作条用同一套。
-// 这一页本身就是 Tool：任意选中一段字，光标旁出现动作条。
+// Molis Tool（specs/site-rebuild/tool-page.md 第 10 节）：纸上的荧光笔。
+// 首屏光标演示 → 以前与现在 → 由近到远的三层 → 眼前的小事 → 插件 → 分寸 → 收尾，一屏一个重点。
+// 纸是安静的，颜色只落在被选中、被处理的地方：一个动作一支荧光笔（翻译天蓝、整理成日程杏橙……），
+// 每屏标题里最要紧的几个字被这支笔划过。这一页本身就是 Tool：任意选中一段字，光标旁出现动作条；
+// 演示里的「清理格式」、插件开关和六件小事，访客都可以亲手按。
+
+/** 标题按标点分成不断行的几截；mark 那几个字被荧光笔划过 */
+function Marked({ text, mark }: { text: string; mark?: string }) {
+  const parts = text.match(/[^，。、；！？：]+[，。、；！？：]?/g) ?? [text];
+  return (
+    <>
+      {parts.map((part, index) => {
+        const at = mark ? part.indexOf(mark) : -1;
+        return (
+          <span key={index} className="m-phrase">
+            {at < 0 || !mark ? (
+              part
+            ) : (
+              <>
+                {part.slice(0, at)}
+                <mark className="tl-mark">{mark}</mark>
+                {part.slice(at + mark.length)}
+              </>
+            )}
+          </span>
+        );
+      })}
+    </>
+  );
+}
 
 /** 区块开头：一行小标签 + 大标题（新块不加墨线和编号） */
 function Head({
   id,
   kicker,
   title,
+  mark,
   size,
   children,
 }: {
   id: string;
   kicker: string;
   title: string;
+  mark?: string;
   size?: 'h2';
-  children?: React.ReactNode;
+  children?: ReactNode;
 }) {
   return (
     <header className="tl-head" data-size={size} data-reveal>
       <p className="m-kicker">{kicker}</p>
       <h2 className="tl-head-title" id={id}>
-        <Phrases text={title} />
+        <Marked text={title} mark={mark} />
       </h2>
       {children}
     </header>
@@ -81,6 +102,7 @@ export default function ToolPage() {
               id="tl-shift-title"
               kicker={shift.kicker}
               title={shift.title}
+              mark={shift.mark}
             />
             <Shift />
           </div>
@@ -96,33 +118,34 @@ export default function ToolPage() {
               id="tl-layers-title"
               kicker={layers.kicker}
               title={layers.title}
+              mark={layers.mark}
             />
             <Relay />
           </div>
         </section>
 
         <section
-          className="tl-sec"
-          data-wall="rose"
+          className="tl-sec tl-gal-sec"
+          data-wall="paper"
           aria-labelledby="tl-moments-title"
         >
-          <div className="m-wrap tl-split">
-            <Head
-              id="tl-moments-title"
-              kicker={moments.kicker}
-              title={moments.title}
-            >
-              <p className="tl-head-lead">{moments.lead}</p>
-              <p className="tl-head-foot">{moments.wip}</p>
-              <Note>{moments.note}</Note>
-            </Head>
-            <Moments />
-          </div>
+          <Moments
+            head={
+              <Head
+                id="tl-moments-title"
+                kicker={moments.kicker}
+                title={moments.title}
+                mark={moments.mark}
+              >
+                <p className="tl-head-lead">{moments.lead}</p>
+              </Head>
+            }
+          />
         </section>
 
         <section
           className="tl-sec"
-          data-wall="butter"
+          data-wall="lilac"
           aria-labelledby="tl-plugins-title"
         >
           <div className="m-wrap tl-split" data-side="plug">
@@ -130,6 +153,7 @@ export default function ToolPage() {
               id="tl-plugins-title"
               kicker={plugins.kicker}
               title={plugins.title}
+              mark={plugins.mark}
             >
               <dl className="tl-facts">
                 {plugins.facts.map((fact) => (
@@ -154,6 +178,7 @@ export default function ToolPage() {
               id="tl-measure-title"
               kicker={measure.kicker}
               title={measure.title}
+              mark={measure.mark}
             />
             <Window
               className="tl-measure-photo"
@@ -193,78 +218,83 @@ export default function ToolPage() {
           </div>
         </section>
 
-        <section className="tl-end m-wrap" aria-labelledby="tl-end-title">
-          <Head
-            id="tl-end-title"
-            kicker="适合这样的时刻"
-            title={tool.fit}
-            size="h2"
-          />
+        <section
+          className="tl-sec tl-end"
+          data-wall="paper"
+          aria-labelledby="tl-end-title"
+        >
+          <div className="m-wrap">
+            <Head
+              id="tl-end-title"
+              kicker="适合这样的时刻"
+              title={tool.fit}
+              size="h2"
+            />
 
-          <div className="tl-end-grid">
-            <div className="tl-end-progress" data-reveal>
-              <p className="m-kicker">当前进展</p>
-              <p className="tl-end-stage">
-                <Status>{tool.stage}</Status>
-              </p>
-              <p className="tl-end-note">{tool.stageNote}</p>
-              <div className="tl-blocks">
-                <p className="tl-blocks-key">
-                  <i aria-hidden="true" />
-                  {toolGo.have}
+            <div className="tl-end-grid">
+              <div className="tl-end-progress" data-reveal>
+                <p className="m-kicker">当前进展</p>
+                <p className="tl-end-stage">
+                  <Status>{tool.stage}</Status>
                 </p>
-                <ul>
-                  {blocks.have.map((item) => (
-                    <li key={item}>{item}</li>
+                <p className="tl-end-note">{tool.stageNote}</p>
+                <div className="tl-blocks">
+                  <p className="tl-blocks-key">
+                    <i aria-hidden="true" />
+                    {toolGo.have}
+                  </p>
+                  <ul>
+                    {blocks.have.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <p className="tl-blocks-key" data-not="">
+                    <i aria-hidden="true" />
+                    {toolGo.notYet}
+                  </p>
+                  <ul data-not="">
+                    {blocks.notYet.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <details className="tl-fold">
+                  <summary>{toolGo.original}</summary>
+                  {toolProgress.have.map((text) => (
+                    <p key={text}>{text}</p>
                   ))}
-                </ul>
-                <p className="tl-blocks-key" data-not="">
-                  <i aria-hidden="true" />
-                  {toolGo.notYet}
+                  <p>{toolProgress.notYet[0]}</p>
+                </details>
+                <p className="tl-end-go">
+                  <Btn href={contactHref('tool')}>{toolGo.follow}</Btn>
                 </p>
-                <ul data-not="">
-                  {blocks.notYet.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
               </div>
-              <details className="tl-fold">
-                <summary>{toolGo.original}</summary>
-                {toolProgress.have.map((text) => (
-                  <p key={text}>{text}</p>
-                ))}
-                <p>{toolProgress.notYet[0]}</p>
-              </details>
-            </div>
 
-            <div
-              className="tl-end-side"
-              data-reveal
-              style={{ '--delay': '120ms' } as Vars}
-            >
-              <div>
-                <p className="m-kicker">{toolGo.relation}</p>
-                <p>{toolProgress.notYet[1]}</p>
-                <p className="m-actions">
-                  <Note>{toolGo.relationTag}</Note>
-                  <More href={productHref.work}>{toolGo.work}</More>
-                </p>
-              </div>
-              <div>
-                <p className="m-kicker">{toolGo.tryNow}</p>
-                <p>
-                  {toolGo.now}
-                  {toolProgress.siblings}
-                </p>
-                <p className="m-actions">
-                  <More href={`${COMMUNITY}#take`}>{toolGo.community}</More>
-                </p>
+              <div
+                className="tl-end-side"
+                data-reveal
+                style={{ '--delay': '120ms' } as Vars}
+              >
+                <div>
+                  <p className="m-kicker">{toolGo.relation}</p>
+                  <p>{toolProgress.notYet[1]}</p>
+                  <p className="m-actions">
+                    <Note>{toolGo.relationTag}</Note>
+                    <More href={productHref.work}>{toolGo.work}</More>
+                  </p>
+                </div>
+                <div>
+                  <p className="m-kicker">{toolGo.tryNow}</p>
+                  <p>
+                    {toolGo.now}
+                    {toolProgress.siblings}
+                  </p>
+                  <p className="m-actions">
+                    <More href={`${COMMUNITY}#take`}>{toolGo.community}</More>
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className="tl-end-go" data-reveal>
-            <Btn href={contactHref('tool')}>{toolGo.follow}</Btn>
           </div>
         </section>
       </div>

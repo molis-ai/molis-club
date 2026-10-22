@@ -14,11 +14,14 @@ import {
   Puzzle,
   Table2,
 } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { layers, moments, plugins, shift } from '../../../content/site/tool';
-import { mediaOf, type Vars } from '../../_site/ui';
+import { mediaOf, Note, type Vars } from '../../_site/ui';
+import { CleanButton, PlugSwitch } from './controls';
+import { Gallery } from './gallery';
 import { Mine } from './mine';
 import { Hl, Ico, Pointer, Stream } from './parts';
-import { Loop, Replay } from './stage';
+import { Loop } from './stage';
 
 // Tool 页首屏之后的几段演示。时间轴都在 tool.css 里，这里只摆好「做完了」的样子。
 
@@ -43,7 +46,7 @@ function Messy({
   );
 }
 
-/** 以前与现在：同一句话，老路绕四站，Molis Tool 一步 */
+/** 以前与现在：同一句话，老路绕四站，Molis Tool 一步；右边的「清理格式」访客可以亲手按 */
 export function Shift() {
   const { before, after } = shift;
   return (
@@ -53,9 +56,10 @@ export function Shift() {
       note={shift.note}
       duration={10}
       skip={0.2}
+      interactive
     >
       <div className="tl-lane" data-lane="before">
-        <div className="tl-lane-art">
+        <div className="tl-lane-art" data-open="" aria-hidden="true">
           <p className="tl-lane-paper tl-a-paper">
             <Messy parts={shift.messy} className="tl-a-text" />
           </p>
@@ -79,22 +83,27 @@ export function Shift() {
       </div>
 
       <div className="tl-lane" data-lane="after">
-        <div className="tl-lane-art">
+        <div className="tl-lane-art" data-open="">
           <p className="tl-lane-paper tl-b-paper">
-            <Hl className="tl-b-hl">
-              <Messy parts={shift.messy} className="tl-b-text" />
-            </Hl>
+            <span aria-hidden="true">
+              <Hl className="tl-b-hl">
+                <Messy parts={shift.messy} className="tl-b-text" />
+              </Hl>
+            </span>
             <span className="tl-anchor">
               <span className="tl-bar tl-b-bar">
-                <span className="tl-bar-btn" data-first>
+                <CleanButton
+                  action={after.action}
+                  text={`${shift.messy.join('')}。`}
+                >
                   <Ico icon={Eraser} tone="butter" />
                   {after.action}
                   <Pointer className="tl-b-pointer" />
-                </span>
+                </CleanButton>
               </span>
             </span>
           </p>
-          <p className="tl-done tl-b-done">
+          <p className="tl-done tl-b-done" aria-hidden="true">
             <Check />
             {after.done}
           </p>
@@ -259,12 +268,22 @@ export function Relay() {
 
 const tagOf = (kind: 'local' | 'ai' | 'wip') => moments.tags[kind];
 
-/** 眼前的小事：六张小样品，进入视口各播一遍，指过去重播 */
-export function Moments() {
+const iconOf = {
+  clean: Eraser,
+  pages: FileText,
+  table: Table2,
+  caption: ImageIcon,
+  poster: CalendarDays,
+  todo: ListTodo,
+};
+
+/** 眼前的小事：六件小样品挂在同一面墙上，滚到哪件演哪件（gallery.tsx） */
+export function Moments({ head }: { head: ReactNode }) {
   const { clean, pages, table, caption, poster, todo } = moments;
   const photo = mediaOf('tool-light');
   const cards = [
     {
+      key: 'clean',
       item: clean,
       art: (
         <div className="tl-m-clean">
@@ -281,6 +300,7 @@ export function Moments() {
       ),
     },
     {
+      key: 'pages',
       item: pages,
       art: (
         <div className="tl-m-pages">
@@ -309,6 +329,7 @@ export function Moments() {
       ),
     },
     {
+      key: 'table',
       item: table,
       art: (
         <div className="tl-m-table">
@@ -349,6 +370,7 @@ export function Moments() {
       ),
     },
     {
+      key: 'caption',
       item: caption,
       art: (
         <div className="tl-m-caption">
@@ -372,6 +394,7 @@ export function Moments() {
       ),
     },
     {
+      key: 'poster',
       item: poster,
       art: (
         <div className="tl-m-poster">
@@ -403,6 +426,7 @@ export function Moments() {
       ),
     },
     {
+      key: 'todo',
       item: todo,
       art: (
         <div className="tl-m-todo">
@@ -432,23 +456,30 @@ export function Moments() {
   ];
 
   return (
-    <ul className="tl-moments">
-      {cards.map(({ item, art }, index) => (
-        <li key={item.title} className="tl-moment" data-tone={item.tone}>
-          <Replay index={index} className="tl-moment-art">
-            {art}
-          </Replay>
-          <h3>{item.title}</h3>
-          <p className="tl-tags">
-            <span data-kind={item.kind}>{tagOf(item.kind)}</span>
-          </p>
-        </li>
-      ))}
-    </ul>
+    <Gallery
+      label={moments.kicker}
+      head={head}
+      foot={
+        <div className="tl-gal-foot">
+          <p>{moments.wip}</p>
+          <Note>{moments.note}</Note>
+        </div>
+      }
+      pieces={cards.map(({ key, item, art }) => ({
+        title: item.title,
+        tone: item.tone,
+        kind: item.kind,
+        tag: tagOf(item.kind),
+        icon: (
+          <Ico icon={iconOf[key as keyof typeof iconOf]} tone={item.tone} />
+        ),
+        art,
+      }))}
+    />
   );
 }
 
-/** 插件就是能力：登记一次 → 四个入口同时出现 → 结果接着交给下一个能力 → 停用时处处收起 */
+/** 插件就是能力：登记一次 → 四个入口同时出现 → 结果接着交给下一个能力 → 停用时处处收起；开关访客可以亲手拨 */
 export function Plugins() {
   const { surfaces } = plugins;
   return (
@@ -458,18 +489,18 @@ export function Plugins() {
       note={plugins.note}
       duration={13}
       skip={0.08}
+      interactive
     >
       <div className="tl-card tl-slip">
         <p className="tl-slip-head">
           <Ico icon={Puzzle} tone="butter" />
-          <span>
+          <span id="tl-plug-name">
             <small>{plugins.kind}</small>
             <b>{plugins.name}</b>
           </span>
-          <span className="tl-toggle">
-            <i />
+          <PlugSwitch labelledBy="tl-plug-name">
             <Pointer className="tl-plug-pointer" />
-          </span>
+          </PlugSwitch>
         </p>
         <dl>
           {plugins.spec.map(([key, value]) => (
@@ -481,7 +512,7 @@ export function Plugins() {
         </dl>
       </div>
 
-      <div className="tl-surfaces">
+      <div className="tl-surfaces" aria-hidden="true">
         <div className="tl-surface" style={{ '--n': 0 } as Vars}>
           <small>{surfaces.near.label}</small>
           <p className="tl-s-chips">
@@ -521,7 +552,7 @@ export function Plugins() {
         </div>
       </div>
 
-      <p className="tl-chain">
+      <p className="tl-chain" aria-hidden="true">
         <span className="tl-file">{plugins.chain[0]}</span>
         <ArrowRight className="tl-chain-a" />
         <b className="tl-step" data-tone="butter">

@@ -1,10 +1,13 @@
-/* Molis Tool 页（specs/site-rebuild/tool-page.md 第 9 节）。骨架取自 Folio 版：
-   每屏一面墙色；一个动作一种颜色（整理成日程杏橙、翻译天蓝、表格鼠尾草、清理奶油黄、记下玫瑰、待办丁香），演示和整页真的动作条用同一套。
-   演示都是纯 CSS 时间轴（stage.tsx）：基础样式就是「做完了」的样子，没有 JS、减少动态时停在结果上；[data-play] 才接上动画。 */
+/* Molis Tool 页（specs/site-rebuild/tool-page.md 第 10 节）：纸上的荧光笔。
+   纸是安静的，颜色只落在被选中、被处理的地方。一个动作一支荧光笔（整理成日程杏橙、翻译天蓝、表格薄荷、
+   清理柠檬黄、记下桃粉、待办丁香），演示和整页真的动作条用同一套；每屏标题里最要紧的几个字被笔划过。
+   每屏是一张圆角的纸，压在上一屏上；两面彩墙（天蓝、丁香）、一面深蓝，其余是纸和白。
+   演示都是纯 CSS 时间轴（stage.tsx）：基础样式就是「做完了」的样子，没有 JS、减少动态时停在结果上；[data-play] 才接上动画。
+   访客亲手按过的演示（清理格式、插件开关）停在 [data-hold] 上，由过渡接着演。 */
 
 /* 整页真的动作条挂在 .m-tool 外面，阴影这几档放在最外层 */
 .tl-select-root {
-  --sel: rgb(234 146 96 / 0.3);
+  --sel: rgb(255 160 104 / 0.42);
   --pop:
     0 0 0 1px rgb(27 26 24 / 0.08), 0 18px 36px -18px rgb(var(--shade) / 0.45);
   --lift:
@@ -13,44 +16,50 @@
     0 0 0 1px rgb(27 26 24 / 0.05), 0 40px 72px -30px rgb(var(--shade) / 0.55);
 }
 
-/* 动作的颜色：--tone 画块，--tone-ink 写字（白底上过 4.5:1），--tone-wash 铺底 */
+/* 六支荧光笔：--tone 是笔色（画块、划字、按下去的图标底），--tone-ink 写字和画线（在 --tone 与白底上都清楚），
+   --tone-wash 淡淡铺底（没按下去的图标、新出现的入口） */
 .tl-select-root [data-tone='apricot'] {
-  --tone: #ea9260;
-  --tone-ink: #a4552f;
-  --tone-wash: rgb(234 146 96 / 0.2);
+  --tone: #ffb07c;
+  --tone-ink: #8a3a0e;
+  --tone-wash: #ffe8d8;
 }
 .tl-select-root [data-tone='sky'] {
-  --tone: #6f9fd3;
-  --tone-ink: #2d5d91;
-  --tone-wash: rgb(111 159 211 / 0.2);
+  --tone: #92c6f8;
+  --tone-ink: #174a80;
+  --tone-wash: #deedfd;
 }
 .tl-select-root [data-tone='sage'] {
-  --tone: #74ad8a;
-  --tone-ink: #2e6947;
-  --tone-wash: rgb(116 173 138 / 0.22);
+  --tone: #8fdab1;
+  --tone-ink: #165c3b;
+  --tone-wash: #dbf4e6;
 }
 .tl-select-root [data-tone='butter'] {
-  --tone: #e5b23f;
-  --tone-ink: #7c5b0d;
-  --tone-wash: rgb(229 178 63 / 0.26);
+  --tone: #ffd650;
+  --tone-ink: #5f4500;
+  --tone-wash: #fff1c4;
 }
 .tl-select-root [data-tone='rose'] {
-  --tone: #e08891;
-  --tone-ink: #a03f4b;
-  --tone-wash: rgb(224 136 145 / 0.22);
+  --tone: #ffa9c1;
+  --tone-ink: #8c2045;
+  --tone-wash: #ffe4ec;
 }
 .tl-select-root [data-tone='lilac'] {
-  --tone: #9d8dd4;
-  --tone-ink: #57479b;
-  --tone-wash: rgb(157 141 212 / 0.22);
+  --tone: #c1b0ff;
+  --tone-ink: #43349a;
+  --tone-wash: #ede7ff;
 }
 
 /* =====================================================================
-   每屏一面墙：内容在一屏里居中
+   每屏一张圆角的纸，压在上一屏的下沿上；内容在一屏里居中
    ===================================================================== */
 .tl-sec {
   --wall: var(--paper);
-  padding-block: clamp(72px, 11vh, 132px);
+  --sheet: clamp(24px, 2.8vw, 44px);
+  position: relative;
+  margin-top: calc(-1 * var(--sheet));
+  padding-block: clamp(72px, 11vh, 132px)
+    calc(clamp(72px, 11vh, 132px) + var(--sheet));
+  border-radius: var(--sheet) var(--sheet) 0 0;
   background: var(--wall);
 }
 /* 宽屏一屏一段：上边留出顶栏的高度，演示的宽度跟着屏幕高度收，矮屏也放得下 */
@@ -60,38 +69,51 @@
     align-content: center;
     min-height: 100svh;
     padding-block: calc(var(--header) + clamp(16px, 4vh, 64px))
-      clamp(32px, 6vh, 96px);
+      calc(clamp(32px, 6vh, 96px) + var(--sheet));
   }
   /* 85svh 是扣掉上下留白后的可用高度，min(5.72vw, 88px) 是一行大标题的高度 */
   .tl-shift .tl-loop-stage {
-    max-width: calc((85svh - min(5.72vw, 88px) - 251px) * 3.2 + var(--col-gap));
+    max-width: calc(
+      (85svh - min(5.72vw, 88px) - 262px - var(--sheet)) * 3.2 + var(--col-gap)
+    );
   }
   .tl-relay {
     max-width: calc(
-      (85svh - min(5.72vw, 88px) - 239px) * 3.57 + var(--col-gap) * 2
+      (85svh - min(5.72vw, 88px) - 239px - var(--sheet)) * 3.57 +
+        var(--col-gap) * 2
     );
   }
 }
 .tl-sec[data-wall='white'] {
   --wall: #ffffff;
+  --mark: #ffbe94;
 }
+.tl-sec[data-wall='paper'] {
+  --wall: var(--paper);
+  --mark: #a6e6c3;
+}
+/* 两面彩墙：辅助字换成和墙同一色相的深色，在墙上也过 4.5:1 */
 .tl-sec[data-wall='sky'] {
-  --wall: #e8eff6;
+  --wall: #c2defa;
+  --mute: #3c4e66;
+  --ink-2: #283547;
+  --mark: #ffd650;
 }
-.tl-sec[data-wall='rose'] {
-  --wall: #f6e5df;
+.tl-sec[data-wall='lilac'] {
+  --wall: #dcd3fd;
+  --mute: #4a4362;
+  --ink-2: #312b45;
+  --mark: #ffd650;
 }
-.tl-sec[data-wall='butter'] {
-  --wall: #f6ecca;
-}
-/* 分寸：一面深蓝，字反白，强调用奶油黄 */
+/* 分寸：一面深蓝，字反白，强调用柠檬黄 */
 .tl-sec[data-wall='navy'] {
-  --wall: #1e2a44;
+  --wall: #1c2541;
   --ink: #f7f5ef;
   --ink-2: rgb(247 245 239 / 0.84);
   --mute: rgb(247 245 239 / 0.66);
   --hair: rgb(247 245 239 / 0.16);
   --hair-2: rgb(247 245 239 / 0.26);
+  --mark: #ffd650;
   color: var(--ink);
 }
 
@@ -111,6 +133,43 @@
 .tl-head[data-size='h2'] .tl-head-title {
   font-size: var(--t-h2);
   line-height: 1.45;
+}
+/* 荧光笔：标题浮上来以后，从左往右划过最要紧的几个字；笔压在字的下半截，像真的划过一样 */
+.tl-mark {
+  margin-inline: -0.08em;
+  padding-inline: 0.08em;
+  border-radius: 0.12em 0.2em 0.16em 0.1em;
+  background: linear-gradient(var(--mark), var(--mark)) no-repeat 0 92% / 100%
+    48%;
+  color: inherit;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 0.9s cubic-bezier(0.65, 0, 0.25, 1) 0.55s;
+}
+.js .tl-head:not(.is-in) .tl-mark {
+  background-size: 0% 48%;
+}
+/* 深蓝墙上字是浅的：笔只划在字脚下，字自己变成柠檬黄 */
+.tl-sec[data-wall='navy'] .tl-mark {
+  background-position: 0 100%;
+  background-size: 100% 0.09em;
+  color: var(--mark);
+  transition:
+    background-size 0.9s cubic-bezier(0.65, 0, 0.25, 1) 0.55s,
+    color 0.6s var(--ease) 0.9s;
+}
+.js .tl-sec[data-wall='navy'] .tl-head:not(.is-in) .tl-mark {
+  background-size: 0% 0.09em;
+  color: inherit;
+}
+/* 开窗：平的一块从中间往两边打开（带投影的纸不用，clip-path 会把影子也剪掉） */
+.js .tl-lane-art[data-open],
+.js .tl-gal-stage[data-open] {
+  transition: clip-path 1.3s var(--ease);
+}
+.js .tl-lane-art[data-open]:not(.is-in),
+.js .tl-gal-stage[data-open]:not(.is-in) {
+  clip-path: inset(0 30% round var(--r-card));
 }
 .tl-head-lead {
   max-width: 30em;
@@ -400,7 +459,7 @@
   left: 0;
   width: 58cqi;
   height: 64cqi;
-  background: #f5c4a1;
+  background: #ffbe94;
   rotate: -4deg;
 }
 .tl-sheet-b {
@@ -408,7 +467,7 @@
   bottom: 5cqi;
   width: 54cqi;
   height: 46cqi;
-  background: #b8d1ec;
+  background: #a9d2fa;
   rotate: 3deg;
 }
 .tl-web {
@@ -485,7 +544,7 @@
 /* 做完的样子：「翻译」已经点下去 */
 .tl-desk-bar [data-first] .tl-ico {
   background: var(--tone);
-  color: #fff;
+  color: var(--tone-ink);
 }
 .tl-desk-card {
   right: 0;
@@ -494,8 +553,8 @@
   font-size: 2.45cqi;
 }
 .tl-desk-card .tl-card-head small {
-  background: rgb(111 159 211 / 0.18);
-  color: #2d5d91;
+  background: #deedfd;
+  color: #174a80;
 }
 .tl-desk-out {
   font-size: 1.28em;
@@ -628,7 +687,7 @@
   0%,
   26% {
     background: var(--tone);
-    color: #fff;
+    color: var(--tone-ink);
   }
   29%,
   61% {
@@ -638,7 +697,7 @@
   62.5%,
   100% {
     background: var(--tone);
-    color: #fff;
+    color: var(--tone-ink);
   }
 }
 @keyframes tl-desk-pointer {
@@ -741,8 +800,9 @@
 .tl-lane[data-lane='before'] .tl-lane-art {
   background: #efede8;
 }
+/* 右边是 Molis Tool：整块涂上「清理格式」那支柠檬黄，老路留在灰里 */
 .tl-lane[data-lane='after'] .tl-lane-art {
-  background: #fcefe4;
+  background: #ffe27e;
 }
 .tl-lane-cap {
   display: grid;
@@ -770,7 +830,7 @@
   background: #b3aea4;
 }
 .tl-lane[data-lane='after'] .tl-lane-cap b::before {
-  background: var(--accent);
+  background: #ffc61a;
 }
 .tl-lane-paper {
   position: absolute;
@@ -863,7 +923,7 @@
 }
 .tl-b-bar [data-first] .tl-ico {
   background: var(--tone);
-  color: #fff;
+  color: var(--tone-ink);
 }
 .tl-done {
   position: absolute;
@@ -881,9 +941,64 @@
   height: 1.45em;
   padding: 0.24em;
   border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
+  background: var(--ink);
+  color: #ffe27e;
   stroke-width: 3;
+}
+
+/* 真的「清理格式」：访客可以亲手按。按下去乱的那句收拢，再按一下退回去 */
+.tl-act {
+  border: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.25s var(--ease),
+    scale 0.2s var(--ease);
+}
+.tl-act:hover {
+  background: #ebe7de;
+}
+.tl-act:active {
+  scale: 0.96;
+}
+.tl-act:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+}
+.tl-loop[data-hold='messy'] .tl-b-text .tl-gap {
+  width: 1.1em;
+}
+.tl-loop[data-hold='messy'] .tl-b-text .tl-gap::after {
+  opacity: 1;
+}
+.tl-loop[data-hold='messy'] .tl-b-text .tl-stop {
+  opacity: 0;
+}
+.tl-loop[data-hold='messy'] .tl-b-done {
+  opacity: 0;
+  transform: translateY(0.5em);
+}
+.tl-loop[data-hold='messy'] .tl-b-bar [data-first] .tl-ico {
+  background: var(--tone-wash);
+}
+/* 只在收拢时有过渡：小点先收，句号随后补上，最后「一步」浮上来；退回去是一下子的 */
+.tl-shift[data-hold='clean'] .tl-b-text .tl-gap {
+  transition: width 0.7s var(--ease) 0.1s;
+}
+.tl-shift[data-hold='clean'] .tl-b-text .tl-gap::after {
+  transition: opacity 0.35s var(--ease) 0.1s;
+}
+.tl-shift[data-hold='clean'] .tl-b-text .tl-stop {
+  transition: opacity 0.4s var(--ease) 0.6s;
+}
+.tl-shift[data-hold='clean'] .tl-b-done {
+  transition:
+    opacity 0.6s var(--ease) 0.8s,
+    transform 0.8s var(--ease) 0.8s;
+}
+.tl-shift[data-hold='clean'] .tl-b-bar [data-first] .tl-ico {
+  transition: background-color 0.2s var(--ease);
 }
 
 /* 一轮 10 秒，首次从 20% 开始：0–12% 两边都停在做完的样子 → 退回乱的 → 22% 同时开始 */
@@ -1163,7 +1278,7 @@
   0%,
   12% {
     background: var(--tone);
-    color: #fff;
+    color: var(--tone-ink);
   }
   15%,
   35.5% {
@@ -1173,7 +1288,7 @@
   36.5%,
   100% {
     background: var(--tone);
-    color: #fff;
+    color: var(--tone-ink);
   }
 }
 @keyframes tl-pointer-b {
@@ -1346,7 +1461,7 @@
 }
 .tl-near-bar [data-first] .tl-ico {
   background: var(--tone);
-  color: #fff;
+  color: var(--tone-ink);
 }
 .tl-near-done {
   position: absolute;
@@ -1358,7 +1473,7 @@
   gap: 1.8cqi;
   padding: 2.4cqi 3cqi;
   border-radius: 2.2cqi;
-  background: rgb(234 146 96 / 0.14);
+  background: #ffe8d8;
   font-size: 3.6cqi;
   line-height: 1.4;
   color: var(--ink);
@@ -1402,7 +1517,7 @@
   width: 12cqi;
   height: 12cqi;
   border-radius: 50%;
-  background: #e5b23f;
+  background: #ffd650;
 }
 .tl-poster b {
   font: 300 12cqi / 1 var(--latin);
@@ -1535,8 +1650,9 @@
 .tl-panel li:first-child {
   background: var(--paper-2);
 }
+/* 访客自己刚才在这一页做过的事：桃粉的一行，排在最上面 */
 .tl-panel li.tl-mine {
-  background: rgb(224 136 145 / 0.14);
+  background: #ffe4ec;
 }
 .tl-panel li .tl-ico {
   grid-row: span 2;
@@ -1761,7 +1877,7 @@
   22.4%,
   100% {
     background: var(--tone);
-    color: #fff;
+    color: var(--tone-ink);
   }
 }
 @keyframes tl-near-pointer {
@@ -1926,8 +2042,10 @@
 }
 
 /* =====================================================================
-   眼前的小事：左边一段话，右边六张小样品（每张一种动作色）
+   眼前的小事：像画廊那样在一个位置看完六件（gallery.tsx）。
+   左边六件事的名字，当下这一件被它自己那支笔划过；右边一面跟着换色的墙，挂着当下这一件
    ===================================================================== */
+/* 左右分栏（插件那屏也用） */
 .tl-split {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -1938,65 +2056,183 @@
   grid-column: 1 / span 5;
   margin-bottom: 0;
 }
-.tl-split > .tl-moments {
+
+.tl-gal-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  align-items: center;
+}
+.tl-gal-text {
+  grid-column: 1 / span 5;
+  display: grid;
+  gap: clamp(22px, 4vh, 44px);
+}
+.tl-gal-text .tl-head {
+  margin-bottom: 0;
+}
+.tl-gal-list {
+  display: grid;
+  justify-items: start;
+  gap: clamp(0px, 0.6vh, 6px);
+}
+.tl-gal-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: -8px;
+  padding: 5px 12px 5px 8px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  font-size: var(--t-keys);
+  line-height: 1.45;
+  letter-spacing: 0.03em;
+  text-align: left;
+  color: var(--mute);
+  transition:
+    color 0.35s var(--ease),
+    background-color 0.35s var(--ease);
+}
+.tl-gal-tab:hover {
+  background: rgb(27 26 24 / 0.04);
+  color: var(--ink);
+}
+.tl-gal-tab:focus-visible {
+  outline-offset: 0;
+}
+.tl-gal-tab .tl-ico {
+  font-size: 0.82em;
+  background: var(--paper-2);
+  color: var(--mute);
+  transition:
+    background-color 0.35s var(--ease),
+    color 0.35s var(--ease);
+}
+.tl-gal-name {
+  margin-inline: -0.1em;
+  padding-inline: 0.1em;
+  border-radius: 0.12em 0.2em 0.16em 0.1em;
+  background: linear-gradient(var(--tone), var(--tone)) no-repeat 0 92% / 0% 48%;
+  transition: background-size 0.6s cubic-bezier(0.65, 0, 0.25, 1);
+}
+.tl-gal-tab[aria-selected='true'] {
+  color: var(--ink);
+}
+.tl-gal-tab[aria-selected='true'] .tl-ico {
+  background: var(--tone);
+  color: var(--tone-ink);
+}
+.tl-gal-tab[aria-selected='true'] .tl-gal-name {
+  background-size: 100% 48%;
+}
+.tl-gal-tag {
+  padding: 0 7px;
+  border-radius: var(--r-label);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  font-size: 11.5px;
+  line-height: 1.7;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: var(--mute);
+}
+.tl-gal-tag[data-kind='wip'] {
+  box-shadow: none;
+  outline: 1px dashed rgb(27 26 24 / 0.32);
+  outline-offset: -1px;
+}
+
+.tl-gal-show {
   grid-column: 6 / -1;
-}
-.tl-split .tl-head .m-note {
-  margin-top: 4px;
-}
-.tl-moments {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(18px, 3vh, 30px) var(--col-gap);
+  gap: 14px;
 }
-.tl-moment {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: baseline;
-  gap: 12px 10px;
-}
-.tl-moment-art {
-  grid-column: 1 / -1;
-  cursor: default;
-}
-.tl-moment-art .tl-replay-in {
+/* 墙：跟着当下这一件换色；小样品挂在正中，按墙的高度定大小 */
+.tl-gal-stage {
   position: relative;
+  display: grid;
+  place-items: center;
+  height: clamp(300px, calc(100svh - var(--header) - 240px), 540px);
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: color-mix(in srgb, var(--tone) 72%, #fff);
+  transition:
+    background-color 0.8s var(--ease),
+    clip-path 1.3s var(--ease);
+}
+.tl-gal-art {
+  grid-area: 1 / 1;
+  height: 76%;
+  max-width: 86%;
+  aspect-ratio: 4 / 3.1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(18px) scale(0.98);
+  transition:
+    opacity 0.45s var(--ease),
+    transform 0.6s var(--ease),
+    visibility 0s linear 0.45s;
+}
+.tl-gal-art[data-on] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.6s var(--ease) 0.12s,
+    transform 0.8s var(--ease) 0.12s,
+    visibility 0s;
+}
+.tl-gal-art .tl-replay-in {
+  position: relative;
+  height: 100%;
   overflow: hidden;
   container-type: inline-size;
-  aspect-ratio: 4 / 3.1;
   border-radius: var(--r-panel);
-  background: color-mix(in srgb, var(--tone) 16%, #fff);
+  background: color-mix(in srgb, var(--tone) 14%, #fff);
+  box-shadow: var(--lift);
 }
-.tl-moment-art .tl-replay-in > div {
+.tl-gal-art .tl-replay-in > div {
   position: absolute;
   inset: 0;
-  font-size: clamp(11px, 5cqi, 15px);
+  font-size: 4.4cqi;
   line-height: 1.5;
   color: var(--ink);
 }
-.tl-moment h3 {
-  font: 400 15.5px / 1.5 var(--sans);
-  letter-spacing: 0.04em;
-}
-.tl-tags span {
-  display: inline-block;
-  padding: 1px 8px;
-  border-radius: var(--r-label);
-  background: #fff;
-  font-size: 11.5px;
-  line-height: 1.6;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-  color: var(--ink-2);
-}
-.tl-tags span[data-kind='ai'] {
-  color: var(--accent-ink);
-}
-.tl-tags span[data-kind='wip'] {
-  background: none;
-  box-shadow: inset 0 0 0 1px rgb(27 26 24 / 0.28);
+.tl-gal-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+  font-size: var(--t-small);
+  line-height: 1.8;
   color: var(--mute);
 }
+.tl-gal-foot p {
+  max-width: 36em;
+}
+
+/* 宽屏一屏放得下：整段钉住，滚过的距离一件一件地换（原生滚动，倒回去也行） */
+@media (min-width: 901px) and (min-height: 600px) {
+  .js .tl-gal-sec {
+    display: block;
+    min-height: 0;
+    padding-block: 0;
+  }
+  .js .tl-gal {
+    height: calc(100svh + (var(--count) - 1) * 40svh + var(--sheet));
+  }
+  .js .tl-gal-pin {
+    position: sticky;
+    top: 0;
+    display: grid;
+    align-content: center;
+    min-height: 100svh;
+    padding-block: calc(var(--header) + clamp(16px, 4vh, 64px))
+      clamp(32px, 6vh, 96px);
+  }
+}
+
 /* 小样品里的白纸、动作片 */
 .tl-m-paper {
   position: absolute;
@@ -2013,7 +2249,7 @@
 }
 .tl-m-chip .tl-ico {
   background: var(--tone);
-  color: #fff;
+  color: var(--tone-ink);
 }
 
 /* 清理格式 */
@@ -2255,7 +2491,7 @@
   justify-self: end;
   border-radius: 0.8em 0.8em 0.2em 0.8em;
   background: var(--tone);
-  color: #fff;
+  color: var(--tone-ink);
 }
 .tl-m-list {
   right: 7%;
@@ -2395,7 +2631,7 @@
   28%,
   100% {
     background: var(--tone);
-    color: #fff;
+    color: var(--tone-ink);
   }
 }
 @keyframes tl-m-pick {
@@ -2623,8 +2859,25 @@
   width: 2.5em;
   height: 1.45em;
   margin-left: auto;
+  padding: 0;
+  border: 0;
   border-radius: var(--r-pill);
-  background: #e5b23f;
+  background: var(--ink);
+  font-size: inherit;
+  cursor: pointer;
+}
+/* 开关比画面里别的东西大一圈的点按范围：四周各多出半个开关 */
+.tl-toggle::before {
+  content: '';
+  position: absolute;
+  inset: -0.6em -0.5em;
+}
+.tl-toggle:hover i {
+  scale: 1.08;
+}
+.tl-toggle:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 3px;
 }
 .tl-toggle i {
   position: absolute;
@@ -2635,6 +2888,7 @@
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+  transition: scale 0.2s var(--ease);
 }
 .tl-plug-pointer {
   top: 55%;
@@ -2678,15 +2932,16 @@
   letter-spacing: 0.1em;
   color: var(--mute);
 }
+/* 新出现的入口：整块涂上插件的那支柠檬黄 */
 .tl-new {
-  background: var(--tone-wash);
-  color: var(--tone-ink);
+  background: var(--tone);
+  color: var(--ink);
   font-weight: 500;
 }
 .tl-plug {
-  --tone: #e5b23f;
-  --tone-ink: #7c5b0d;
-  --tone-wash: rgb(229 178 63 / 0.3);
+  --tone: #ffd650;
+  --tone-ink: #5f4500;
+  --tone-wash: #fff1c4;
 }
 .tl-s-chips {
   display: flex;
@@ -2701,7 +2956,7 @@
   white-space: nowrap;
 }
 .tl-s-chips span.tl-new {
-  background: var(--tone-wash);
+  background: var(--tone);
   box-shadow: none;
 }
 .tl-s-menu {
@@ -2793,10 +3048,7 @@
   background: var(--tone);
   font-weight: 500;
   white-space: nowrap;
-  color: #fff;
-}
-.tl-step[data-tone='butter'] {
-  color: #3d2d06;
+  color: var(--tone-ink);
 }
 .tl-kept {
   grid-column: 1 / -1;
@@ -2906,7 +3158,7 @@
   }
   13.5%,
   63% {
-    background: #e5b23f;
+    background: var(--ink);
   }
   64.5%,
   100% {
@@ -3121,6 +3373,47 @@
   }
 }
 
+/* 访客亲手拨了开关：循环停下，四处的入口跟着开关一起出现、一起收起（错开一点，像依次亮起）；
+   链条上的字幕文件一直在，只有「生成字幕」这一步变灰 */
+.tl-loop[data-hold] .tl-pointer {
+  visibility: hidden;
+}
+.tl-loop[data-hold='off'] .tl-toggle {
+  background: #cfcbc2;
+}
+.tl-loop[data-hold='off'] .tl-toggle i {
+  left: 0.18em;
+}
+.tl-loop[data-hold='off'] .tl-slip dl {
+  opacity: 0.55;
+}
+.tl-loop[data-hold='off'] .tl-new {
+  opacity: 0;
+  transform: scale(0.92);
+}
+.tl-loop[data-hold='off'] .tl-chain .tl-step[data-tone='butter'] {
+  filter: grayscale(1) opacity(0.4);
+}
+.tl-plug[data-hold] .tl-toggle {
+  transition: background-color 0.3s var(--ease);
+}
+.tl-plug[data-hold] .tl-toggle i {
+  transition:
+    left 0.3s var(--ease),
+    scale 0.2s var(--ease);
+}
+.tl-plug[data-hold] .tl-slip dl {
+  transition: opacity 0.4s var(--ease);
+}
+.tl-plug[data-hold] .tl-new {
+  transition:
+    opacity 0.4s var(--ease) calc(0.12s + var(--n, 0) * 0.09s),
+    transform 0.6s var(--ease) calc(0.12s + var(--n, 0) * 0.09s);
+}
+.tl-plug[data-hold] .tl-chain .tl-step {
+  transition: filter 0.5s var(--ease) 0.45s;
+}
+
 /* =====================================================================
    分寸：一面深蓝。左边一扇天窗，右边「它会」和「它不是」
    ===================================================================== */
@@ -3186,9 +3479,6 @@
 /* =====================================================================
    收尾：一屏
    ===================================================================== */
-.tl-end {
-  padding-block: var(--section-top) clamp(64px, 10vh, 120px);
-}
 .tl-end-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -3196,7 +3486,7 @@
   row-gap: 48px;
 }
 .tl-end-progress {
-  grid-column: 3 / span 5;
+  grid-column: 1 / span 6;
   display: grid;
   align-content: start;
   gap: 14px;
@@ -3270,31 +3560,27 @@
   color: var(--ink-2);
 }
 .tl-end-side {
-  grid-column: 9 / -1;
+  grid-column: 8 / -1;
   display: grid;
   align-content: start;
-  gap: 32px;
+  gap: 14px;
 }
+/* 另外两条路：两张白纸，压在纸面上 */
 .tl-end-side > div {
   display: grid;
   gap: 10px;
-  padding-top: 14px;
-  border-top: 1px solid var(--hair-2);
+  padding: clamp(18px, 2.2vw, 28px);
+  border-radius: var(--r-card);
+  background: var(--white);
   color: var(--ink-2);
 }
 .tl-end-go {
-  margin-top: clamp(48px, 8vh, 88px);
-  padding-top: 24px;
-  padding-left: calc((100% + var(--col-gap)) / 12 * 2);
-  border-top: 1px solid var(--ink);
+  margin-top: 18px;
 }
 @media (max-width: 900px) {
   .tl-end-progress,
   .tl-end-side {
     grid-column: 1 / -1;
-  }
-  .tl-end-go {
-    padding-left: 0;
   }
 }
 
@@ -3360,7 +3646,7 @@
 .tl-select-actions button:hover .tl-ico,
 .tl-select-actions button:focus-visible .tl-ico {
   background: var(--tone);
-  color: #fff;
+  color: var(--tone-ink);
 }
 .tl-select-close svg {
   width: 15px;
@@ -3447,7 +3733,6 @@
     row-gap: 40px;
   }
   .tl-split > .tl-head,
-  .tl-split > .tl-moments,
   .tl-split[data-side='plug'] > .tl-head,
   .tl-split[data-side='plug'] > .tl-plug {
     grid-column: 1 / -1;
@@ -3455,8 +3740,29 @@
   .tl-split > .tl-head {
     margin-bottom: 32px;
   }
-  .tl-moments {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* 画廊：标题、六件事的名字、墙，从上往下；点名字换 */
+  .tl-gal-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 28px;
+  }
+  .tl-gal-text {
+    display: contents;
+  }
+  .tl-gal-text .tl-head {
+    order: 0;
+  }
+  .tl-gal-list {
+    order: 1;
+  }
+  .tl-gal-show {
+    order: 2;
+  }
+  .tl-gal-stage {
+    height: auto;
+    aspect-ratio: 4 / 3.4;
+    scroll-margin-block: calc(var(--header) + 16px) 16px;
   }
   .tl-plug .tl-loop-stage {
     grid-template-columns: minmax(0, 1fr);
@@ -3477,8 +3783,18 @@
   .tl-select {
     animation: none;
   }
-  .tl-not s {
-    transition: none;
+  .tl-not s,
+  .tl-mark,
+  .tl-gal-tab,
+  .tl-gal-tab .tl-ico,
+  .tl-gal-name,
+  .tl-gal-stage,
+  .tl-gal-art,
+  .tl-gal-art[data-on],
+  .tl-lane-art[data-open],
+  .tl-loop[data-hold] *,
+  .tl-toggle i {
+    transition: none !important;
   }
 }
 
@@ -3486,6 +3802,9 @@
   .tl-select,
   .tl-hint,
   .tl-loop-toggle {
+    display: none;
+  }
+  .tl-gal-art:not([data-on]) {
     display: none;
   }
 }
