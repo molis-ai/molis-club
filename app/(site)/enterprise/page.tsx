@@ -1,4 +1,3 @@
-import { ArrowDown } from 'lucide-react';
 import { pageMetadata } from '../../../lib/site';
 import { enterprise } from '../../../content/site/enterprise';
 import { ReviewSwitch } from '../../_site/review/comparison';
@@ -9,6 +8,8 @@ import { People } from './people';
 import { EnterpriseForm, PickProvider, Slips } from './pick';
 import { Route } from './course';
 import { Stages } from './stages';
+import { plates, Vista, type Plate } from './vista';
+import { Why } from './why';
 import './enterprise.css';
 import './line.css';
 
@@ -32,10 +33,11 @@ export const metadata = pageMetadata(
 //
 // 企业合作默认是照原文的主线（D1，负责人 2026-10-19 通过样张后切成默认）。旧的六屏暂留对照：
 // /enterprise?study=current 是旧版，/enterprise?study=line 是带比较条的新版；不带参数时没有比较条。主线：
-// 长廊 → 你们卡在哪（五张纸条只做开场，选一张只带进末尾的表单，不再放「看看这条路怎么走」）
-// → 合作路线：开场第三段原句配那双手，下面一小行 5.2 开头原句；四站并排在一屏上，人人一样，
-//   每面墙顶上一段示意动画演这一站在做什么（scenes.tsx），下面业务团队、Molis、一起各做什么，墙脚是留下的东西（stages.tsx）
-// → 具体合作从团队眼前的问题出发（5.4 原句），聊聊 → 做这件事的人（只留小标题与经历）→ 内部探索 → 表单。
+// 长廊 → 你们卡在哪（五张纸条只做开场，选一张只带进末尾的表单；不再有「都看看」）
+// → 满幅的一张图，开场第三段原句一拍一拍浮上来（vista.tsx；四张候选图在 ?plate=a|b|c|d 对照）
+// → 合作路线：四站竖排成四列、业务团队 / 一起 / Molis 横排成三条道，底下是动画演出来的产出，仍在一屏（stages.tsx）
+// → 为什么我们可以：四个位置四条道、九股经历横跨它们的覆盖图（why.tsx）→ 内部探索 → 表单。
+// 负责人 2026-10-19 删去：「都看看」、合作路线前那双手与 5.2 开头那句、路线后 5.4 那句与「聊聊企业合作」那一屏、墙上的示意动画。
 // 首屏去掉四个服务名，路线不再有横线与编号，不说「起点」，问题与站不一一对应（原文没有这层对应）。
 
 /** 满幅照片：铺满一屏，载入前铺平均色，极慢地推近 */
@@ -72,9 +74,10 @@ function Plate({
 export default async function EnterprisePage({
   searchParams,
 }: {
-  searchParams: Promise<{ study?: string }>;
+  searchParams: Promise<{ study?: string; plate?: string }>;
 }) {
-  const { study } = await searchParams;
+  const { study, plate } = await searchParams;
+  const vistaPlate = plates.includes(plate as Plate) ? (plate as Plate) : 'a';
   const sample = study !== 'current';
   const review = study === 'line' || study === 'current';
   const [titleA, titleB] = e.title.split('，');
@@ -156,45 +159,14 @@ export default async function EnterprisePage({
           {/* 你们卡在哪：只做开场，选一张只带进末尾的表单 */}
           {where}
 
-          {/* 合作路线：开场第三段原句配那双手，下面一小行 5.2 开头原句；四站并排一屏（stages.tsx） */}
-          <section
-            className="m-ent-path"
-            id="path"
-            aria-labelledby="ent-promise-title"
-          >
-            <header className="m-ent-path-head m-wrap">
-              <div className="m-ent-path-copy" data-reveal>
-                <h2 className="m-ent-path-line" id="ent-promise-title">
-                  <Phrases text={e.intro[2]} />
-                </h2>
-                <p className="m-lead m-ent-path-lead">
-                  <Phrases text={e.path.lead} />
-                </p>
-              </div>
-              <Window
-                className="m-ent-path-window"
-                name="enterprise-hands"
-                ratio="3 / 2"
-                focus="50% 45%"
-                sizes="(max-width: 900px) 100vw, 56vw"
-                alt={e.path.alt}
-              />
-            </header>
-            <Stages />
-            {/* 收尾：5.4 原句，回到团队眼前的问题 */}
-            <div className="m-ent-onward m-wrap" data-reveal>
-              <p className="m-ent-onward-line">
-                <Phrases text={e.line.from} />
-              </p>
-              {/* 往下到表单：页内入口（描边胶囊 + 下箭头） */}
-              <a className="m-link" href="#talk" data-dir="down">
-                {e.hook.talk}
-                <ArrowDown size={14} aria-hidden="true" />
-              </a>
-            </div>
-          </section>
+          {/* 满幅的一张图，开场第三段原句一拍一拍浮上来 */}
+          <Vista plate={vistaPlate} />
 
-          <People lean />
+          {/* 合作路线：四站四列、三个角色三条道，底下是产出（stages.tsx） */}
+          <Stages />
+
+          {/* 为什么我们可以（why.tsx） */}
+          <Why />
           <Explore lean />
           {talk}
         </PickProvider>
