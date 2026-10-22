@@ -1,4 +1,4 @@
-import { useId, type CSSProperties, type ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { enterprise, type StationId } from '../../../content/site/enterprise';
 import { Shadow } from './keeps';
 
@@ -280,6 +280,12 @@ function Reel({
   );
 }
 
+/**
+ * 影子滤镜的 id：按站写死，一页上每段短片只有一段。不用 useId——它按整棵树里的位置算，
+ * 框架外壳在服务端和浏览器里差一层时两边算出来不一样，水合时报 id 对不上
+ */
+const shadowOf = (id: StationId) => `m-film-shadow-${id}`;
+
 /** 一张白卡片（带影子） */
 export function Paper({
   shadow,
@@ -301,7 +307,7 @@ export function Paper({
 
 /* ================================ 诊断 ================================ */
 function Diagnose() {
-  const shadow = useId();
+  const shadow = shadowOf('diagnose');
   const cue = {
     push: 0.4, // 镜头推近左边
     drag: 0.4, // 业务团队拖着便签进场
@@ -581,7 +587,7 @@ function Diagnose() {
 
 /* ================================ 共建 ================================ */
 function Build() {
-  const shadow = useId();
+  const shadow = shadowOf('build');
   const cue = {
     push: 0.4, // 镜头推近左边
     drag: 0.4, // 业务团队拖着两页资料进场
@@ -900,7 +906,7 @@ function Build() {
 
 /* ================================ 评估 ================================ */
 function Assess() {
-  const shadow = useId();
+  const shadow = shadowOf('assess');
   const cue = {
     push: 0.4, // 镜头推近左边；业务团队进场
     clicks: [1.15, 1.6, 2.05, 2.5], // 四步一步步点过
@@ -1187,7 +1193,7 @@ function Assess() {
 
 /* ================================ 培训 ================================ */
 function Train() {
-  const shadow = useId();
+  const shadow = shadowOf('train');
   const cue = {
     enter: 0.4, // Molis 拖着一叠卡进场；镜头推近左边
     drop: 1.3,

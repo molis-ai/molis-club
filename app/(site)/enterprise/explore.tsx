@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { enterprise, type Exploration } from '../../../content/site/enterprise';
 import { Note, Phrases, Status, type Vars } from '../../_site/ui';
 import { play } from './keeps';
@@ -38,8 +38,15 @@ const place = (
     '--d': `${d}s`,
   }) as Vars;
 
-function Art({ children }: { children: (shadow: string) => ReactNode }) {
-  const id = useId();
+/** 一张示意的画布；影子滤镜的 id 按插件名写死（不用 useId，原因见 films.tsx 的 shadowOf） */
+function Art({
+  name,
+  children,
+}: {
+  name: string;
+  children: (shadow: string) => ReactNode;
+}) {
+  const id = `m-lab-shadow-${name}`;
   return (
     <svg className="m-lab-art" viewBox={VIEW} aria-hidden="true">
       <defs>
@@ -76,7 +83,7 @@ function Cgs({ w }: { w: string[] }) {
     [316, w[3], 2.5],
   ];
   return (
-    <Art>
+    <Art name="cgs">
       {(shadow) => (
         <>
           {/* 材料：三张小纸片从四处聚过来 */}
@@ -234,7 +241,7 @@ function Cgs({ w }: { w: string[] }) {
 /** Evrik：Agent 拿着目标，读当前情况，在权限和业务规则里调用软件能力 */
 function Evrik({ w }: { w: string[] }) {
   return (
-    <Art>
+    <Art name="evrik">
       {(shadow) => (
         <>
           {/* 软件窗口 */}
@@ -429,7 +436,7 @@ function Aether({ w }: { w: string[] }) {
     </g>,
   ];
   return (
-    <Art>
+    <Art name="aether">
       {(shadow) => (
         <>
           {ys.map((y, index) => (
