@@ -115,6 +115,118 @@ const images = [
     widths: [800, 1536],
     quality: 80,
   },
+  // 「关于」首屏（负责人 2026-10-19 从 Molis 官方图库 molis-ai/molis-image-library 选的「光-03 · 天光落下的地方」）：
+  // 原图是 3072×2048 的 PNG（4.9 MB，sha256 f1e99778…），存成 q90 的 JPEG 放在 public/images/library/；
+  // 地上的叶影另由 scripts/about-light-shade.mjs 分出来，页面上用 WebGL 让它慢慢动
+  {
+    key: 'about-light',
+    src: 'public/images/library/light-03.jpg',
+    widths: [1280, 1920, 2560],
+    quality: 78,
+  },
+  // 「关于」的团队画册（负责人从团队插画图库里选定）：来路三段各配一张小幅——
+  // 「一船脑洞」G01-01、「围着一团小太阳」G02-01、「脑洞共居所」G03-01；结尾是「树下，总有空位」W03-02。
+  // 都用同一种挂法：四周淡进墙里，若隐若现（负责人 2026-10-22）。原图是 PNG，存成 q90 的 JPEG 放在 public/images/team-art/
+  {
+    key: 'art-boat',
+    src: 'public/images/team-art/paper-boat.jpg',
+    widths: [480, 900],
+    quality: 80,
+  },
+  {
+    key: 'art-sun',
+    src: 'public/images/team-art/little-sun.jpg',
+    widths: [480, 900],
+    quality: 80,
+  },
+  {
+    key: 'art-house',
+    src: 'public/images/team-art/shared-studio.jpg',
+    widths: [480, 900],
+    quality: 80,
+  },
+  {
+    key: 'art-seat',
+    src: 'public/images/team-art/seat-at-the-table.jpg',
+    widths: [960, 1672],
+    quality: 80,
+  },
+  // 《黑客与画家》右边四格（负责人 2026-10-20 用 GPT 按「达·芬奇手稿」那一版提示词生成，1536×1024）：
+  // 产品设计、写代码、拍视频、写故事，存成 q90 的 JPEG 放在 public/images/makers/
+  {
+    key: 'sketch-design',
+    src: 'public/images/makers/design.jpg',
+    widths: [720, 1280],
+    quality: 80,
+  },
+  {
+    key: 'sketch-code',
+    src: 'public/images/makers/code.jpg',
+    widths: [720, 1280],
+    quality: 80,
+  },
+  {
+    key: 'sketch-film',
+    src: 'public/images/makers/film.jpg',
+    widths: [720, 1280],
+    quality: 80,
+  },
+  {
+    key: 'sketch-story',
+    src: 'public/images/makers/story.jpg',
+    widths: [720, 1280],
+    quality: 80,
+  },
+  // 联创团队的头像（负责人 2026-10-20 用 outputs/team-avatar-prompts.md 的「B 彩铅淡彩手稿」一组重新生成，
+  // 八张同一种纸、笔触和圆形色块，1024×1024）：存成 q90 的 JPEG 放在 public/images/team/<id>.jpg；页面上最大约 500px 宽
+  {
+    key: 'face-yijun',
+    src: 'public/images/team/yijun.jpg',
+    widths: [320, 640, 1024],
+    quality: 80,
+  },
+  {
+    key: 'face-xujing',
+    src: 'public/images/team/xujing.jpg',
+    widths: [320, 640, 1024],
+    quality: 80,
+  },
+  {
+    key: 'face-xiejun',
+    src: 'public/images/team/xiejun.jpg',
+    widths: [320, 640, 1024],
+    quality: 80,
+  },
+  {
+    key: 'face-pengfei',
+    src: 'public/images/team/pengfei.jpg',
+    widths: [320, 640, 1024],
+    quality: 80,
+  },
+  {
+    key: 'face-haozhe',
+    src: 'public/images/team/haozhe.jpg',
+    widths: [320, 640, 1024],
+    quality: 80,
+  },
+  {
+    key: 'face-zhuangshi',
+    src: 'public/images/team/zhuangshi.jpg',
+    widths: [320, 640, 1024],
+    quality: 80,
+  },
+  {
+    key: 'face-xinyi',
+    src: 'public/images/team/xinyi.jpg',
+    widths: [320, 640, 1024],
+    quality: 80,
+  },
+  {
+    key: 'face-jinqu',
+    src: 'public/images/team/jinqu.jpg',
+    widths: [320, 640, 1024],
+    quality: 80,
+  },
   {
     key: 'about-window',
     src: 'public/r8-candidates-v2/images/about-v2-b.png',
