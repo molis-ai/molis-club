@@ -4,23 +4,22 @@ import { mediaOf, type Vars } from '../../_site/ui';
 // 合作路线前的一屏（负责人 2026-10-19：换图、满幅、文字再精炼，要有沉浸式的过渡感）。
 // 从「你们卡在哪」的纸面往下滚，一张图像一扇窗从纸里开到满屏（读 --p），开满后钉住；
 // 再往下滚（读 --pin），开场第三段原句一拍一拍浮上来：先是引子「我们和你们一起」，再是三拍，
-// 新的一拍从虚到实对上焦浮上来，前一拍退半步，最后三拍一起亮着；图同时极慢地往回拉开一点，像走进这间屋子。
+// 新的一拍从虚到实对上焦浮上来，浮上来的就一直亮着（2026-10-22：前一拍不再退成半透明，压在图上发糊）；
+// 图同时极慢地往回拉开一点，像走进这间屋子。整段 220 屏高（原 300），三拍在钉住的前半段浮完，后面留一截整句读完。
 // 层次（负责人 2026-10-19）：三拍往右一级级错开，像一步一步往前走；每拍里要紧的词（场景、工具与流程、方法）最亮，
 // 其余的字退一档；压字的暗只铺在左下，窗外的山留得最亮，前景的字、屋里的人、远处的山分出前后。
 // 只用原生滚动与 useSiteMotion 写的两个进度，不另挂脚本。没有 JS 与减少动态：图开满、不推拉，整句都在。
 // 顶栏压在图上时透明白字：data-tone 挂在钉住的那一屏上（它的上沿碰到顶栏时窗已经开满，裁切只剩一两像素）。
 
 const { vista } = enterprise;
-export type Plate = keyof typeof vista.plates;
-export const plates = Object.keys(vista.plates) as Plate[];
 
-/** 每一拍开始浮上来时的 --pin；引子在最前面 */
-const LEAD_AT = 0.04;
-const beatAt = (index: number) => 0.14 + index * 0.2;
+/** 每一拍开始浮上来时的 --pin；引子在最前面，第三拍在 0.6 开始、0.66 浮完，余下一截是整句一起亮着 */
+const LEAD_AT = 0.02;
+const beatAt = (index: number) => 0.12 + index * 0.24;
 
-export function Vista({ plate = 'a' }: { plate?: Plate }) {
-  const image = mediaOf(`enterprise-vista-${plate}`);
-  const { alt, focus } = vista.plates[plate];
+export function Vista() {
+  const image = mediaOf('enterprise-vista');
+  const { alt, focus } = vista;
   return (
     <section
       className="m-ent-vista"
@@ -58,12 +57,7 @@ export function Vista({ plate = 'a' }: { plate?: Plate }) {
                 key={key}
                 className="m-ent-vista-beat"
                 style={
-                  {
-                    '--t': beatAt(index),
-                    '--next':
-                      index < vista.beats.length - 1 ? beatAt(index + 1) : 9,
-                    '--step': index,
-                  } as Vars
+                  { '--t': beatAt(index), '--step': index } as Vars
                 }
               >
                 {before}

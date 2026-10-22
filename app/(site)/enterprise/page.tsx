@@ -8,7 +8,7 @@ import { People } from './people';
 import { EnterpriseForm, PickProvider, Slips } from './pick';
 import { Route } from './course';
 import { Stages } from './stages';
-import { plates, Vista, type Plate } from './vista';
+import { Vista } from './vista';
 import { Why } from './why';
 import './enterprise.css';
 import './line.css';
@@ -34,7 +34,7 @@ export const metadata = pageMetadata(
 // 企业合作默认是照原文的主线（D1，负责人 2026-10-19 通过样张后切成默认）。旧的六屏暂留对照：
 // /enterprise?study=current 是旧版，/enterprise?study=line 是带比较条的新版；不带参数时没有比较条。主线：
 // 长廊 → 你们卡在哪（五张纸条只做开场，选一张只带进末尾的表单；不再有「都看看」）
-// → 满幅的一张图，开场第三段原句一拍一拍浮上来（vista.tsx；四张候选图在 ?plate=a|b|c|d 对照）
+// → 满幅的一张图，开场第三段原句一拍一拍浮上来（vista.tsx）
 // → 合作路线：四站竖排成四列、业务团队 / 一起 / Molis 横排成三条道，底下是动画演出来的产出，仍在一屏（stages.tsx）
 // → 为什么我们可以：四个位置四条道、九股经历横跨它们的覆盖图（why.tsx）→ 内部探索 → 表单。
 // 负责人 2026-10-19 删去：「都看看」、合作路线前那双手与 5.2 开头那句、路线后 5.4 那句与「聊聊企业合作」那一屏、墙上的示意动画。
@@ -74,10 +74,9 @@ function Plate({
 export default async function EnterprisePage({
   searchParams,
 }: {
-  searchParams: Promise<{ study?: string; plate?: string }>;
+  searchParams: Promise<{ study?: string }>;
 }) {
-  const { study, plate } = await searchParams;
-  const vistaPlate = plates.includes(plate as Plate) ? (plate as Plate) : 'a';
+  const { study } = await searchParams;
   const sample = study !== 'current';
   const review = study === 'line' || study === 'current';
   const [titleA, titleB] = e.title.split('，');
@@ -86,10 +85,15 @@ export default async function EnterprisePage({
     <header className="m-ent-hero" data-tone="light">
       <Plate name="enterprise-gallery" alt={e.hero.alt} focus="50% 46%" eager />
       <div className="m-ent-hero-body">
-        <p className="m-tagline m-rise">
-          <b>{e.hero.kicker}</b>
-          {sample ? null : e.tags.map((tag) => <span key={tag}>{tag}</span>)}
-        </p>
+        {/* 样张（D1）：顶栏已经亮着「企业合作」，首屏不再放眉题（2026-10-22） */}
+        {sample ? null : (
+          <p className="m-tagline m-rise">
+            <b>{e.hero.kicker}</b>
+            {e.tags.map((tag) => (
+              <span key={tag}>{tag}</span>
+            ))}
+          </p>
+        )}
         <h1
           className="m-ent-title m-rise"
           style={{ '--delay': '120ms' } as Vars}
@@ -160,7 +164,7 @@ export default async function EnterprisePage({
           {where}
 
           {/* 满幅的一张图，开场第三段原句一拍一拍浮上来 */}
-          <Vista plate={vistaPlate} />
+          <Vista />
 
           {/* 合作路线：四站四列、三个角色三条道，底下是产出（stages.tsx） */}
           <Stages />

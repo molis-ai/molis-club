@@ -128,13 +128,15 @@ export function Slips({ lean = false }: { lean?: boolean }) {
       </fieldset>
 
       <div className="m-ent-replies" data-lean={lean || undefined}>
-        {lean ? null : <p className="m-ent-reply-idle">{hook.idle}</p>}
+        <p className="m-ent-reply-idle">{hook.idle}</p>
         {questions.items.map((question) => {
           const item = path.advice[question.id];
-          // 样张（D1，lean）：只回问题原句；选过的只带进末尾的表单（负责人 2026-10-19：照原文，不配对）。
-          // 路线就在下面一屏，不再放「看看这条路怎么走」（负责人 2026-10-19 问必要性：不配对之后它只是往下滚一屏）；
-          // 「都看看」也去掉了（负责人 2026-10-19），换一张直接点另一张
-          if (lean)
+          // 样张（D1，lean）：选过的只带进末尾的表单，不配对路线（负责人 2026-10-19：照原文）。
+          // 路线就在下面一屏，不再放「看看这条路怎么走」；「都看看」也去掉了，换一张直接点另一张（负责人 2026-10-19）。
+          // 回应不再重复纸条上的问题（2026-10-22）：回 5.1 第二段那句「你们希望……」，
+          // 再说清选了有什么用——停着时是「点一下，带进最后的表单」，选定后是「已写进最后的表单」和一条去表单的近路
+          if (lean) {
+            const picked = pick === question.id;
             return (
               <div
                 key={question.id}
@@ -142,9 +144,28 @@ export function Slips({ lean = false }: { lean?: boolean }) {
                 data-for={question.id}
                 data-lean
               >
-                <p className="m-ent-reply-title">{question.title}</p>
+                <p className="m-ent-reply-wish">{question.wish}</p>
+                <p
+                  className="m-ent-reply-carry"
+                  data-done={picked || undefined}
+                >
+                  {picked ? (
+                    <>
+                      <span className="m-ent-reply-carried">
+                        {hook.carried}
+                      </span>
+                      <a className="m-link" href="#talk" data-dir="down">
+                        {hook.go}
+                        <ArrowDown size={13} aria-hidden="true" />
+                      </a>
+                    </>
+                  ) : (
+                    hook.carry
+                  )}
+                </p>
               </div>
             );
+          }
           return (
             <div
               key={question.id}
@@ -194,7 +215,7 @@ export function Slips({ lean = false }: { lean?: boolean }) {
         {/* 读屏：选定了什么，念一遍回应（画面上的那几块不是 live 区，免得重复） */}
         <p className="sr-only" aria-live="polite">
           {advice && pick && lean
-            ? (questions.items.find((item) => item.id === pick)?.title ?? '')
+            ? `${questions.items.find((item) => item.id === pick)?.wish ?? ''}${hook.carried}。`
             : advice && pick
               ? `${questions.items.find((item) => item.id === pick)?.wish ?? ''}${hook.start}：${path.stations[advice.start].name}${
                   advice.next

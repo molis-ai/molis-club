@@ -239,7 +239,7 @@ export function Shelf({
                   <span className="m-ent-leg-no">{number(index)}</span>
                   <span className="m-ent-leg-spine-word">{book.word}</span>
                   <span className="m-ent-leg-spine-name">
-                    {/* 竖排里的英文横躺着排，字距收回来，不散成一个个字母 */}
+                    {/* 竖排里的英文单独包一层：立着排，字距另算（line.css） */}
                     {book.name.split(/([A-Za-z]+)/).map((part, i) =>
                       i % 2 ? (
                         <span key={i} className="m-ent-leg-latin">
