@@ -8,11 +8,13 @@ import {
 } from 'react';
 import type { Tone } from '../../../content/site/tool';
 import type { Vars } from '../../_site/ui';
-import { useStill } from './stage';
+import { useCue } from './cue';
+import { LoopToggle, useOnScreen, useStill } from './stage';
 
-// 眼前的小事：像画廊那样在一个位置看完六件。左边是六件事的名字，右边一面跟着变色的墙挂着当下这一件。
-// 宽屏一屏放得下时整段钉住，滚到哪件换到哪件（原生滚动，倒回去也行）；点名字直接滚到那一件。
-// 窄屏不钉，名字在墙上面，点名字换。减少动态时没有过渡，小样品停在做完的样子。没有 JS 时停在第一件，名字都在。
+// 眼前的小事：像画廊那样在一个位置看完六件。左边是六件事的名字，右边一块墙板挂着当下这一件。
+// 宽屏一屏放得下时整段钉住，滚到哪件换到哪件（原生滚动，倒回去也行）；点名字直接滚到那一件，再点一下重演。
+// 每一件有自己的编排（scripts.ts 的 m-*）：换到它时从空白开始演，换走时停在原处淡出。
+// 窄屏不钉，名字在墙板上面，点名字换。减少动态时停在做完的样子。没有 JS 时停在第一件，名字都在。
 
 export type Piece = {
   title: string;
@@ -20,8 +22,38 @@ export type Piece = {
   kind: 'local' | 'ai' | 'wip';
   tag: string;
   icon: ReactNode;
+  /** scripts.ts 里那一段编排的名字 */
+  cue: string;
   art: ReactNode;
 };
+
+/** 墙板上的一件：自己的舞台，自己的编排 */
+function Art({
+  piece,
+  active,
+  live,
+  still,
+  round,
+}: {
+  piece: Piece;
+  active: boolean;
+  live: boolean;
+  still: boolean;
+  round: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  useCue(ref, piece.cue, { live, still, active, round });
+  return (
+    <div
+      ref={ref}
+      className="tl-gal-art"
+      data-on={active || undefined}
+      aria-hidden="true"
+    >
+      {piece.art}
+    </div>
+  );
+}
 
 const PIN = '(min-width: 901px) and (min-height: 600px)';
 
@@ -40,6 +72,8 @@ export function Gallery({
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const stage = useRef<HTMLDivElement>(null);
   const still = useStill();
+  const shown = useOnScreen(stage);
+  const [paused, setPaused] = useState(false);
   const [active, setActive] = useState(0);
   const [round, setRound] = useState(0);
   // 点名字滚过去的路上，不让中间几件一闪而过
@@ -131,7 +165,6 @@ export function Gallery({
     go(to);
   };
 
-  const current = pieces[active];
   return (
     <div ref={root} className="tl-gal" style={{ '--count': count } as Vars}>
       <div className="tl-gal-pin">
@@ -173,30 +206,27 @@ export function Gallery({
               data-open=""
               role="tabpanel"
               aria-labelledby={`tl-gal-tab-${active}`}
-              data-tone={current.tone}
             >
               {pieces.map((piece, index) => (
-                <div
+                <Art
                   key={piece.title}
-                  className="tl-replay tl-gal-art"
-                  data-tone={piece.tone}
-                  data-on={index === active || undefined}
-                  data-play={
-                    still ? undefined : index === active ? 'on' : 'wait'
-                  }
-                  style={{ '--i': 0 } as Vars}
-                  aria-hidden="true"
-                >
-                  <div
-                    key={index === active ? `on-${round}` : 'off'}
-                    className="tl-replay-in"
-                  >
-                    {piece.art}
-                  </div>
-                </div>
+                  piece={piece}
+                  active={index === active}
+                  live={shown && !paused}
+                  still={still}
+                  round={index === active ? round : 0}
+                />
               ))}
             </div>
-            {foot}
+            <div className="tl-gal-foot">
+              {foot}
+              {still ? null : (
+                <LoopToggle
+                  stopped={paused}
+                  onToggle={() => setPaused((value) => !value)}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>

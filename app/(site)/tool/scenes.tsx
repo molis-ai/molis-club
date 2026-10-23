@@ -1,5 +1,6 @@
 import {
   ArrowRight,
+  ArrowUp,
   ArrowUpRight,
   CalendarDays,
   Check,
@@ -13,36 +14,94 @@ import {
   ListTodo,
   Puzzle,
   Table2,
+  type LucideIcon,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { layers, moments, plugins, shift } from '../../../content/site/tool';
+import {
+  layers,
+  moments,
+  plugins,
+  shift,
+  type Tone,
+} from '../../../content/site/tool';
 import { mediaOf, Note, type Vars } from '../../_site/ui';
 import { CleanButton, PlugSwitch } from './controls';
 import { Gallery } from './gallery';
 import { Mine } from './mine';
-import { Hl, Ico, Pointer, Stream } from './parts';
+import { Cursor, Hl, Ico, Stream } from './parts';
 import { Loop } from './stage';
 
-// Tool 页首屏之后的几段演示。时间轴都在 tool.css 里，这里只摆好「做完了」的样子。
+// Tool 页首屏之后的几段演示。这里只摆好「做完了」的样子和光标；怎么一拍一拍演出来写在 scripts.ts，
+// 每一拍的样子写在 tool.css。data-c 是脚本找零件用的名字。
 
-/** 一句格式乱掉的话：片段之间的空格画成小点，清理时收拢 */
+/**
+ * 一句格式乱掉的话：从别处贴来的，带着圆点、缩进、粗细不一和换行。编排时先是乱的（tool.css），
+ * 清理时每一截从原处滑进干净的一句，句末补上句号。end 挂在最后一截末尾（选区末端的动作条）
+ */
 function Messy({
   parts,
-  className = '',
+  c,
+  hl = false,
+  end,
 }: {
   parts: readonly string[];
+  c: string;
+  /** 会被拖选：每一截各自铺选中色 */
+  hl?: boolean;
+  end?: ReactNode;
+}) {
+  return (
+    <span className="tl-messy" data-c={c}>
+      {parts.map((part, index) => (
+        <span
+          key={part}
+          className={hl ? 'tl-frag tl-hl' : 'tl-frag'}
+          data-c={`${c}-${index}`}
+        >
+          <span aria-hidden="true">{part}</span>
+          {index === parts.length - 1 ? end : null}
+        </span>
+      ))}
+      <span className="tl-stop" aria-hidden="true">
+        。
+      </span>
+    </span>
+  );
+}
+
+/** 选区末端的动作条（演示里只有一个动作，不能按） */
+function Bar({
+  c,
+  icon,
+  tone,
+  label,
+  className = 'tl-anchor',
+}: {
+  c: string;
+  icon: LucideIcon;
+  tone: Tone;
+  label: string;
   className?: string;
 }) {
   return (
-    <span className={`tl-messy ${className}`}>
-      {parts.map((part, index) => (
-        <span key={part}>
-          {index > 0 ? <i className="tl-gap" /> : null}
-          {part}
+    <span className={className}>
+      <span className="tl-bar">
+        <span className="tl-bar-btn" data-first="" data-c={c}>
+          <Ico icon={icon} tone={tone} />
+          {label}
         </span>
-      ))}
-      <b className="tl-stop">。</b>
+      </span>
     </span>
+  );
+}
+
+/** 做完以后留在画面上的一句 */
+function Done({ text }: { text: string }) {
+  return (
+    <p className="tl-done" aria-hidden="true">
+      <Check />
+      {text}
+    </p>
   );
 }
 
@@ -54,27 +113,31 @@ export function Shift() {
       className="tl-shift"
       label={shift.label}
       note={shift.note}
-      duration={10}
-      skip={0.2}
+      cue="shift"
       interactive
     >
       <div className="tl-lane" data-lane="before">
         <div className="tl-lane-art" data-open="" aria-hidden="true">
-          <p className="tl-lane-paper tl-a-paper">
-            <Messy parts={shift.messy} className="tl-a-text" />
+          <p className="tl-lane-paper" data-c="before-paper">
+            <Messy parts={shift.messy} c="before" />
           </p>
           {before.steps.map((step, index) => (
-            <span key={step} className="tl-app" data-step={index + 1}>
+            <span
+              key={step}
+              className="tl-app"
+              data-step={index + 1}
+              data-c={`app-${index}`}
+            >
               <i />
               {step}
             </span>
           ))}
-          <Pointer className="tl-a-pointer" />
           <span className="tl-count">
-            {before.steps.map((step) => (
-              <i key={step} />
+            {before.steps.map((step, index) => (
+              <i key={step} data-c={`dot-${index}`} />
             ))}
           </span>
+          <Cursor name="before" />
         </div>
         <p className="tl-lane-cap">
           <b>{before.label}</b>
@@ -84,29 +147,29 @@ export function Shift() {
 
       <div className="tl-lane" data-lane="after">
         <div className="tl-lane-art" data-open="">
-          <p className="tl-lane-paper tl-b-paper">
-            <span aria-hidden="true">
-              <Hl className="tl-b-hl">
-                <Messy parts={shift.messy} className="tl-b-text" />
-              </Hl>
-            </span>
-            <span className="tl-anchor">
-              <span className="tl-bar tl-b-bar">
-                <CleanButton
-                  action={after.action}
-                  text={`${shift.messy.join('')}。`}
-                >
-                  <Ico icon={Eraser} tone="butter" />
-                  {after.action}
-                  <Pointer className="tl-b-pointer" />
-                </CleanButton>
-              </span>
-            </span>
+          <p className="tl-lane-paper" data-c="after-paper">
+            <Messy
+              parts={shift.messy}
+              c="after"
+              hl
+              end={
+                <span className="tl-anchor">
+                  <span className="tl-bar tl-b-bar">
+                    <CleanButton
+                      c="after-btn"
+                      action={after.action}
+                      text={`${shift.messy.join('')}。`}
+                    >
+                      <Ico icon={Eraser} tone="butter" />
+                      {after.action}
+                    </CleanButton>
+                  </span>
+                </span>
+              }
+            />
           </p>
-          <p className="tl-done tl-b-done" aria-hidden="true">
-            <Check />
-            {after.done}
-          </p>
+          <Done text={after.done} />
+          <Cursor name="after" />
         </div>
         <p className="tl-lane-cap">
           <b>{after.label}</b>
@@ -117,7 +180,7 @@ export function Shift() {
   );
 }
 
-/** 由近到远的三层：同一场秋日市集，一层接一层地处理 */
+/** 由近到远的三层：同一场秋日市集，一层接一层地处理；每层一只光标，轮到哪层哪层动 */
 export function Relay() {
   const { near, beside, later } = layers;
   return (
@@ -125,8 +188,7 @@ export function Relay() {
       className="tl-relay"
       label={layers.label}
       note={layers.note}
-      duration={14}
-      skip={0.1}
+      cue="relay"
     >
       <ol className="tl-relay-row">
         <li className="tl-layer" data-layer="near">
@@ -135,22 +197,20 @@ export function Relay() {
             <p className="tl-near-text">
               {near.before}
               <span className="tl-anchor">
-                <Hl className="tl-near-hl">{near.mark}</Hl>
+                <Hl c="near-hl">{near.mark}</Hl>
                 <span className="tl-bar tl-near-bar">
                   {near.chips.map((chip, index) => (
                     <span
                       key={chip.label}
                       className="tl-bar-btn"
                       data-first={index === 0 || undefined}
+                      data-c={index === 0 ? 'near-btn' : undefined}
                     >
                       <Ico
                         icon={index === 0 ? CalendarDays : Languages}
                         tone={chip.tone}
                       />
                       {chip.label}
-                      {index === 0 ? (
-                        <Pointer className="tl-near-pointer" />
-                      ) : null}
                     </span>
                   ))}
                 </span>
@@ -164,6 +224,7 @@ export function Relay() {
               <span>{near.result}</span>
               <u>{near.undo}</u>
             </p>
+            <Cursor name="near" />
           </div>
           <div className="tl-layer-cap">
             <h3>{near.name}</h3>
@@ -184,7 +245,7 @@ export function Relay() {
                   <br />
                   {beside.poster.title[1]}
                 </strong>
-                <span className="tl-frame" />
+                <span className="tl-frame" data-c="beside-frame" />
               </div>
               <div className="tl-card tl-draft">
                 <p className="tl-card-head">
@@ -211,6 +272,7 @@ export function Relay() {
                 </p>
               </div>
             </div>
+            <Cursor name="beside" />
           </div>
           <div className="tl-layer-cap">
             <h3>{beside.name}</h3>
@@ -225,7 +287,7 @@ export function Relay() {
               <i />
               <i />
               <i />
-              <span className="tl-menubar-icon">
+              <span className="tl-menubar-icon" data-c="later-icon">
                 <img
                   src="/site/molis-logo-64.png"
                   width="64"
@@ -250,11 +312,12 @@ export function Relay() {
                   </li>
                 ))}
               </ul>
-              <p className="tl-panel-back">
+              <p className="tl-panel-back" data-c="later-back">
                 <CornerUpLeft />
                 {later.back}
               </p>
             </div>
+            <Cursor name="later" />
           </div>
           <div className="tl-layer-cap">
             <h3>{later.name}</h3>
@@ -268,16 +331,7 @@ export function Relay() {
 
 const tagOf = (kind: 'local' | 'ai' | 'wip') => moments.tags[kind];
 
-const iconOf = {
-  clean: Eraser,
-  pages: FileText,
-  table: Table2,
-  caption: ImageIcon,
-  poster: CalendarDays,
-  todo: ListTodo,
-};
-
-/** 眼前的小事：六件小样品挂在同一面墙上，滚到哪件演哪件（gallery.tsx） */
+/** 眼前的小事：六件小样品挂在同一面墙上，滚到哪件演哪件（gallery.tsx）；编排在 scripts.ts 的 m-* */
 export function Moments({ head }: { head: ReactNode }) {
   const { clean, pages, table, caption, poster, todo } = moments;
   const photo = mediaOf('tool-light');
@@ -285,35 +339,52 @@ export function Moments({ head }: { head: ReactNode }) {
     {
       key: 'clean',
       item: clean,
+      icon: Eraser,
       art: (
-        <div className="tl-m-clean">
-          <p className="tl-m-paper">
-            <Messy parts={clean.messy} />
+        <div className="tl-m tl-m-clean">
+          <p className="tl-m-paper" data-c="paper">
+            <Messy
+              parts={clean.messy}
+              c="text"
+              hl
+              end={
+                <Bar
+                  c="btn"
+                  icon={Eraser}
+                  tone={clean.tone}
+                  label={clean.action}
+                />
+              }
+            />
           </p>
-          <span className="tl-bar tl-m-chip">
-            <span className="tl-bar-btn" data-first>
-              <Ico icon={Eraser} tone="butter" />
-              {clean.title}
-            </span>
-          </span>
+          <Done text={clean.done} />
+          <Cursor />
         </div>
       ),
     },
     {
       key: 'pages',
       item: pages,
+      icon: FileText,
       art: (
-        <div className="tl-m-pages">
+        <div className="tl-m tl-m-pages">
           <p className="tl-m-file">
             <FileText />
             {pages.file}
           </p>
           <span className="tl-m-pgs">
             {Array.from({ length: 6 }, (_, index) => (
-              <i key={index} data-pick={(index > 0 && index < 4) || undefined}>
+              <i key={index} data-c={`pg-${index}`}>
                 {index + 1}
               </i>
             ))}
+            <Bar
+              c="btn"
+              icon={FileText}
+              tone={pages.tone}
+              label={pages.action}
+              className="tl-anchor tl-m-pgs-bar"
+            />
           </span>
           <span className="tl-m-copy">
             <i />
@@ -321,95 +392,127 @@ export function Moments({ head }: { head: ReactNode }) {
             <i />
             <b>{pages.copy}</b>
           </span>
-          <span className="tl-m-kept">
-            <Check />
-            {pages.kept}
-          </span>
+          <Done text={pages.done} />
+          <Cursor />
         </div>
       ),
     },
     {
       key: 'table',
       item: table,
+      icon: Table2,
       art: (
-        <div className="tl-m-table">
-          <p className="tl-m-lines">
-            {table.text.map((line) => (
-              <span key={line}>{line}</span>
-            ))}
-          </p>
-          <table>
-            <thead>
-              <tr>
+        <div className="tl-m tl-m-table">
+          <div className="tl-m-swap">
+            <p className="tl-m-lines">
+              {table.text.map((line, index) => (
+                <span key={line}>
+                  <Hl c={`line-${index}`}>{line}</Hl>
+                  {index === table.text.length - 1 ? (
+                    <Bar
+                      c="btn"
+                      icon={Table2}
+                      tone={table.tone}
+                      label={table.action}
+                    />
+                  ) : null}
+                </span>
+              ))}
+            </p>
+            <div className="tl-m-tab" data-c="table">
+              <p className="tl-m-row" data-head="">
                 {table.head.map((cell, index) => (
-                  <th key={index}>{cell}</th>
+                  <span key={index} data-c={index === 1 ? 'price' : undefined}>
+                    {cell}
+                    {index === 1 ? <ArrowUp className="tl-m-sort" /> : null}
+                  </span>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
+              </p>
               {table.rows.map((row, index) => (
-                <tr
+                <p
                   key={row[0]}
-                  data-best={index === 1 || undefined}
+                  className="tl-m-row"
+                  data-c={`row-${index}`}
                   style={{ '--n': index } as Vars}
                 >
                   {row.map((cell, cellIndex) => (
-                    <td key={cellIndex}>{cell}</td>
+                    <span key={cellIndex}>{cell}</span>
                   ))}
-                </tr>
+                </p>
               ))}
-            </tbody>
-          </table>
-          <span className="tl-bar tl-m-chip">
-            <span className="tl-bar-btn" data-first>
-              <Ico icon={Table2} tone="sage" />
-              整理成表格
-            </span>
-          </span>
+            </div>
+          </div>
+          <Done text={table.done} />
+          <Cursor />
         </div>
       ),
     },
     {
       key: 'caption',
       item: caption,
+      icon: ImageIcon,
       art: (
-        <div className="tl-m-caption">
-          <span className="tl-m-photo">
-            <img
-              src={photo.src}
-              srcSet={photo.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
-              sizes="240px"
-              width={photo.width}
-              height={photo.height}
-              alt=""
-              loading="lazy"
-              decoding="async"
+        <div className="tl-m tl-m-caption">
+          <span className="tl-m-shot">
+            <span className="tl-m-photo" data-c="photo">
+              <img
+                src={photo.src}
+                srcSet={photo.srcset
+                  .map(([src, w]) => `${src} ${w}w`)
+                  .join(', ')}
+                sizes="240px"
+                width={photo.width}
+                height={photo.height}
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </span>
+            <Bar
+              c="btn"
+              icon={ImageIcon}
+              tone={caption.tone}
+              label={caption.action}
+              className="tl-anchor tl-m-shot-bar"
             />
           </span>
-          <p className="tl-m-says">
-            <Ico icon={ImageIcon} tone="rose" />
-            <Stream text={caption.text} />
+          <p className="tl-card tl-m-says">
+            <Ico icon={ImageIcon} tone={caption.tone} />
+            <span data-c="says">
+              <Stream text={caption.text} />
+            </span>
           </p>
+          <Done text={caption.done} />
+          <Cursor />
         </div>
       ),
     },
     {
       key: 'poster',
       item: poster,
+      icon: CalendarDays,
       art: (
-        <div className="tl-m-poster">
+        <div className="tl-m tl-m-poster">
           <span className="tl-m-flyer">
-            <b>SAT</b>
+            <b>{poster.flyer.day}</b>
             <strong>
-              工作坊
+              {poster.flyer.title[0]}
               <br />
-              开放日
+              {poster.flyer.title[1]}
             </strong>
+            <span className="tl-frame" data-c="frame" />
+            <Bar
+              c="btn"
+              icon={CalendarDays}
+              tone={poster.tone}
+              label={poster.action}
+              className="tl-anchor tl-m-flyer-bar"
+            />
           </span>
           <span className="tl-card tl-m-draft">
             <span className="tl-card-head">
-              <Ico icon={CalendarDays} tone="apricot" />
-              日程草稿
+              <Ico icon={CalendarDays} tone={poster.tone} />
+              {poster.card}
             </span>
             {poster.fields.map(([key, value], index) => (
               <span
@@ -422,22 +525,35 @@ export function Moments({ head }: { head: ReactNode }) {
               </span>
             ))}
           </span>
+          <Done text={poster.done} />
+          <Cursor />
         </div>
       ),
     },
     {
       key: 'todo',
       item: todo,
+      icon: ListTodo,
       art: (
-        <div className="tl-m-todo">
+        <div className="tl-m tl-m-todo">
           <span className="tl-m-chat">
-            <span>{todo.chat[0]}</span>
-            <span data-me="">{todo.chat[1]}</span>
+            <span>
+              <Hl c="msg-0">{todo.chat[0]}</Hl>
+            </span>
+            <span data-me="">
+              <Hl c="msg-1">{todo.chat[1]}</Hl>
+              <Bar
+                c="btn"
+                icon={ListTodo}
+                tone={todo.tone}
+                label={todo.action}
+              />
+            </span>
           </span>
           <span className="tl-card tl-m-list">
             <span className="tl-card-head">
-              <Ico icon={ListTodo} tone="lilac" />
-              待办
+              <Ico icon={ListTodo} tone={todo.tone} />
+              {todo.card}
             </span>
             {todo.items.map((item, index) => (
               <span
@@ -450,6 +566,8 @@ export function Moments({ head }: { head: ReactNode }) {
               </span>
             ))}
           </span>
+          <Done text={todo.done} />
+          <Cursor />
         </div>
       ),
     },
@@ -460,19 +578,18 @@ export function Moments({ head }: { head: ReactNode }) {
       label={moments.kicker}
       head={head}
       foot={
-        <div className="tl-gal-foot">
+        <>
           <p>{moments.wip}</p>
           <Note>{moments.note}</Note>
-        </div>
+        </>
       }
-      pieces={cards.map(({ key, item, art }) => ({
+      pieces={cards.map(({ key, item, icon, art }) => ({
         title: item.title,
         tone: item.tone,
         kind: item.kind,
         tag: tagOf(item.kind),
-        icon: (
-          <Ico icon={iconOf[key as keyof typeof iconOf]} tone={item.tone} />
-        ),
+        icon: <Ico icon={icon} tone={item.tone} />,
+        cue: `m-${key}`,
         art,
       }))}
     />
@@ -487,8 +604,7 @@ export function Plugins() {
       className="tl-plug"
       label={plugins.label}
       note={plugins.note}
-      duration={13}
-      skip={0.08}
+      cue="plug"
       interactive
     >
       <div className="tl-card tl-slip">
@@ -498,9 +614,7 @@ export function Plugins() {
             <small>{plugins.kind}</small>
             <b>{plugins.name}</b>
           </span>
-          <PlugSwitch labelledBy="tl-plug-name">
-            <Pointer className="tl-plug-pointer" />
-          </PlugSwitch>
+          <PlugSwitch c="plug-toggle" labelledBy="tl-plug-name" />
         </p>
         <dl>
           {plugins.spec.map(([key, value]) => (
@@ -510,10 +624,11 @@ export function Plugins() {
             </div>
           ))}
         </dl>
+        <Cursor />
       </div>
 
       <div className="tl-surfaces" aria-hidden="true">
-        <div className="tl-surface" style={{ '--n': 0 } as Vars}>
+        <div className="tl-surface" data-s="1">
           <small>{surfaces.near.label}</small>
           <p className="tl-s-chips">
             <span className="tl-new">{plugins.name}</span>
@@ -522,7 +637,7 @@ export function Plugins() {
             ))}
           </p>
         </div>
-        <div className="tl-surface" style={{ '--n': 1 } as Vars}>
+        <div className="tl-surface" data-s="2">
           <small>{surfaces.menu.label}</small>
           <ul className="tl-s-menu">
             {surfaces.menu.others.map((name) => (
@@ -531,7 +646,7 @@ export function Plugins() {
             <li className="tl-new">{plugins.name}</li>
           </ul>
         </div>
-        <div className="tl-surface" style={{ '--n': 2 } as Vars}>
+        <div className="tl-surface" data-s="3">
           <small>{surfaces.drop.label}</small>
           <p className="tl-s-drop">
             <FileAudio />
@@ -539,7 +654,7 @@ export function Plugins() {
             <b className="tl-new">{plugins.name}</b>
           </p>
         </div>
-        <div className="tl-surface" style={{ '--n': 3 } as Vars}>
+        <div className="tl-surface" data-s="4">
           <small>{surfaces.bar.label}</small>
           <p className="tl-s-query">
             <Command />
@@ -553,17 +668,23 @@ export function Plugins() {
       </div>
 
       <p className="tl-chain" aria-hidden="true">
-        <span className="tl-file">{plugins.chain[0]}</span>
-        <ArrowRight className="tl-chain-a" />
-        <b className="tl-step" data-tone="butter">
+        <span className="tl-file" data-k="1">
+          {plugins.chain[0]}
+        </span>
+        <ArrowRight data-k="2" />
+        <b className="tl-step" data-tone="butter" data-k="2">
           {plugins.name}
         </b>
-        <span className="tl-file tl-chain-b">{plugins.chain[1]}</span>
-        <ArrowRight className="tl-chain-c" />
-        <b className="tl-step tl-chain-d" data-tone="sky">
+        <span className="tl-file" data-k="3">
+          {plugins.chain[1]}
+        </span>
+        <ArrowRight data-k="4" />
+        <b className="tl-step" data-tone="sky" data-k="4">
           {plugins.next}
         </b>
-        <span className="tl-file tl-chain-e">{plugins.chain[2]}</span>
+        <span className="tl-file" data-k="5">
+          {plugins.chain[2]}
+        </span>
       </p>
       <p className="tl-kept">{plugins.kept}</p>
     </Loop>

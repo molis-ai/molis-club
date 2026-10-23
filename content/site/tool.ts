@@ -119,7 +119,8 @@ export const layers = {
     '示意：同一场秋日市集在三层里接着处理。光标旁，选中日期，点「整理成日程」，当场记下；身旁，框住海报，旁边展开一张日程草稿，逐项核对；离开以后，从菜单栏的「接续」找回草稿，回到离开的地方。',
 };
 
-/** 眼前的小事：六件，每件一张小样品（4.2 里写到的能力与正在打磨的场景） */
+/** 眼前的小事：六件，每件一张小样品（4.2 里写到的能力与正在打磨的场景）。
+ * action 是光标旁那个动作的名字，done 是做完以后画面上留下的一句（示意，新写） */
 export const moments = {
   kicker: '一天里的几个时刻',
   /** 原句 */
@@ -134,6 +135,8 @@ export const moments = {
     kind: 'local',
     tone: 'butter',
     messy: ['报名截止', '周五', '晚上八点，', '名额 30 人'],
+    action: '清理格式',
+    done: '已清理 · 本机',
   },
   pages: {
     title: '取出 PDF 里的几页',
@@ -141,7 +144,8 @@ export const moments = {
     tone: 'sky',
     file: '报价.pdf',
     copy: '第 2–4 页',
-    kept: '原件保留',
+    action: '取出这几页',
+    done: '已取出 3 页 · 原件保留',
   },
   table: {
     title: '整理成表格，再比较',
@@ -154,21 +158,29 @@ export const moments = {
       ['乙', '2.15', '5000'],
       ['丙', '2.60', '3000'],
     ],
+    action: '整理成表格',
+    done: '已整理 · 按单价排序',
   },
   caption: {
     title: '给图片写一句说明',
     kind: 'ai',
     tone: 'rose',
     text: '白墙上，一道午后的天光。',
+    action: '写一句说明',
+    done: '已写好 · AI',
   },
   poster: {
     title: '海报变日程草稿',
     kind: 'wip',
     tone: 'apricot',
+    flyer: { day: 'SAT', title: ['工作坊', '开放日'] },
+    card: '日程草稿',
     fields: [
       ['时间', '周六 15:00'],
       ['地点', '老厂房 2 号馆'],
     ],
+    action: '整理成日程',
+    done: '草稿等你确认',
   },
   todo: {
     title: '讨论整理成待办',
@@ -176,6 +188,9 @@ export const moments = {
     tone: 'lilac',
     chat: ['发布页周五前改好，我来补文案。', '好，周五上线。'],
     items: ['周五前改好发布页', '补文案'],
+    card: '待办',
+    action: '整理成待办',
+    done: '2 条待办 · 等你确认',
   },
   note: '界面示意 · 示例数据',
 } as const;

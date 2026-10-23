@@ -27,13 +27,13 @@ export const metadata = pageMetadata(
   productHref.tool,
 );
 
-// Molis Tool（specs/site-rebuild/tool-page.md 第 10 节）：纸上的荧光笔。
+// Molis Tool（specs/site-rebuild/tool-page.md 第 11 节）：展厅的墙。
 // 首屏光标演示 → 以前与现在 → 由近到远的三层 → 眼前的小事 → 插件 → 分寸 → 收尾，一屏一个重点。
-// 纸是安静的，颜色只落在被选中、被处理的地方：一个动作一支荧光笔（翻译天蓝、整理成日程杏橙……），
-// 每屏标题里最要紧的几个字被这支笔划过。这一页本身就是 Tool：任意选中一段字，光标旁出现动作条；
-// 演示里的「清理格式」、插件开关和六件小事，访客都可以亲手按。
+// 每屏一面安静的墙（亚麻、月白、雾、沙、石板），唯一亮的颜色是选中色；动作的颜色都压低了。
+// 演示里光标是主角，带着人看：一次只动一样，选中 → 动作条 → 按下 → 结果在原处发生。
+// 这一页本身就是 Tool：任意选中一段字，光标旁出现动作条；「清理格式」、插件开关访客可以亲手按。
 
-/** 标题按标点分成不断行的几截；mark 那几个字被荧光笔划过 */
+/** 标题按标点分成不断行的几截；mark 那几个字像被选中一样铺上选中色 */
 function Marked({ text, mark }: { text: string; mark?: string }) {
   const parts = text.match(/[^，。、；！？：]+[，。、；！？：]?/g) ?? [text];
   return (
@@ -94,7 +94,7 @@ export default function ToolPage() {
 
         <section
           className="tl-sec"
-          data-wall="white"
+          data-wall="linen"
           aria-labelledby="tl-shift-title"
         >
           <div className="m-wrap">
@@ -110,7 +110,7 @@ export default function ToolPage() {
 
         <section
           className="tl-sec"
-          data-wall="sky"
+          data-wall="moon"
           aria-labelledby="tl-layers-title"
         >
           <div className="m-wrap">
@@ -126,7 +126,7 @@ export default function ToolPage() {
 
         <section
           className="tl-sec tl-gal-sec"
-          data-wall="paper"
+          data-wall="mist"
           aria-labelledby="tl-moments-title"
         >
           <Moments
@@ -145,7 +145,7 @@ export default function ToolPage() {
 
         <section
           className="tl-sec"
-          data-wall="lilac"
+          data-wall="sand"
           aria-labelledby="tl-plugins-title"
         >
           <div className="m-wrap tl-split" data-side="plug">
@@ -170,7 +170,7 @@ export default function ToolPage() {
 
         <section
           className="tl-sec"
-          data-wall="navy"
+          data-wall="slate"
           aria-labelledby="tl-measure-title"
         >
           <div className="m-wrap tl-measure">
