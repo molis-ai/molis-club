@@ -32,17 +32,19 @@ export async function writeClipboard(text: string) {
   }
 }
 
-/** 一个复制按钮（文字链接样式），复制成功后带上分享入口；没有 JS 时不显示 */
+/** 一个复制按钮（描边胶囊；solid 时是实心按钮），复制成功后带上分享入口；没有 JS 时不显示 */
 export function CopyAction({
   text,
   id,
   label,
   topic,
+  solid = false,
 }: {
   text: string;
   id: string;
   label: string;
   topic?: string;
+  solid?: boolean;
 }) {
   // 记着复制的是哪段文字：文字换了（例如换了一个效果），提示自然回到初始
   const [result, setResult] = useState<{ text: string; state: CopyState }>({
@@ -58,14 +60,14 @@ export function CopyAction({
     <div className="m-com-copy m-com-js">
       <button
         type="button"
-        className="m-link m-com-act"
+        className={solid ? 'm-btn' : 'm-link m-com-act'}
         onClick={copy}
         aria-describedby={`${id}-status`}
       >
         {state === 'copied' ? (
-          <Check size={14} aria-hidden="true" />
+          <Check size={solid ? 15 : 14} aria-hidden="true" />
         ) : (
-          <Copy size={14} aria-hidden="true" />
+          <Copy size={solid ? 15 : 14} aria-hidden="true" />
         )}
         {label}
       </button>
