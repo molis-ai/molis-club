@@ -1,3 +1,4 @@
+import { ArrowDown } from 'lucide-react';
 import { pageMetadata } from '../../../lib/site';
 import { enterprise } from '../../../content/site/enterprise';
 import { ReviewSwitch } from '../../_site/review/comparison';
@@ -174,6 +175,14 @@ export default async function EnterprisePage({
 
           {/* 合作路线：四站四列、三个角色三条道，底下是产出（stages.tsx） */}
           <Stages />
+          {/* 路线读完的出口：书架右下角一颗按钮去末尾的表单，不必等到页尾（2026-10-24）；
+              只是一颗按钮，不占一屏（负责人 2026-10-19 删过路线后「聊聊企业合作」那一屏） */}
+          <p className="m-ent-exit m-wrap">
+            <a className="m-link" href="#talk" data-dir="down">
+              {e.hook.go}
+              <ArrowDown size={13} aria-hidden="true" />
+            </a>
+          </p>
 
           {/* 为什么我们可以（why.tsx） */}
           <Why />

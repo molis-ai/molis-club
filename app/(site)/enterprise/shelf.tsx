@@ -10,13 +10,14 @@ import { Note, Phrases, type Vars } from '../../_site/ui';
 import { play } from './keeps';
 
 // 书架：「我们怎样开展合作」的展开式长卷（从 stages.tsx 拆出来；「为什么我们可以」用过一版，后来改成覆盖图）。
-// 四本书并排，同一种纸色的圆角书立在一道细线上，高矮略有参差；书脊从上到下是编号、短名、竖排的全名，底下一颗小圆点。
+// 四本书并排，同一种纸色的圆角书立在一道细线上，高矮略有参差；书脊上只有编号、短名，底下一颗小圆点
+// （全名在图注里，竖排里不再有英文；2026-10-24）。
 // 往下滚，整屏钉住，一本一本地打开：书脊留在左边，右边翻出一页白纸，纸顶垂下一根杏色书签带，
 // 纸上一张插图（一段短片）和图注：第一行编号、短名、全名、示意，第二行几对短句（合作路线是「适合」「留下」）。
-// 点合着的书脊，滚到它那本演完的地方。
+// 点合着的书脊，直接翻到那本演完的样子（不从中间几本一路翻过去）。
 // 宽屏（≥1000 宽、≥600 高）有 JS 时才钉住；手机、矮屏、没有 JS 时几本书从上到下排开。
 // 短片（没有 JS、减少动态时停在演完的样子）：
-//   钉住时跟着滚动走（负责人 2026-10-22：按时间演，正常滑过去只看得到开头）——每本书占一段滚动，
+//   钉住时跟着滚动走（负责人 2026-10-22：按时间演，正常滑过去只看得到开头）——每本书占四分之三屏的滚动（2026-10-24 从一屏缩短），
 //   前一小截等书翻开，中间按滚动演完，最后一小截停在演完的样子；往回滚就倒回去。滚动进度和全站一样跟随缓动。
 //   不钉住时各自进屏按时间演一遍，鼠标停在插图上重演。
 
@@ -24,7 +25,7 @@ export type ShelfBook = {
   id: string;
   /** 书脊上的短名 */
   word: string;
-  /** 竖排在书脊下半截的全名 */
+  /** 全名：写在图注第一行，书脊上不写 */
   name: string;
   /** 图注第二行：几对「标签 + 一句」（合作路线是「适合」「留下」） */
   facts?: { label: string; text: string }[];
@@ -85,6 +86,8 @@ export function Shelf({
   const ref = useRef<HTMLElement>(null);
   const [live, setLive] = useState(false);
   const [active, setActive] = useState(0);
+  /** 点了书脊：下一帧不跟随缓动，直接定在那本书 */
+  const snap = useRef(false);
   const BOOKS = books.length;
 
   // 宽屏才钉住：滚到哪一本打开哪一本，短片跟着滚动演；不钉住时短片各自进屏按时间演
@@ -109,7 +112,9 @@ export function Shelf({
       target = span > 0 ? Math.min(1, Math.max(0, -rect.top / span)) : 0;
       const dt = last ? Math.min(64, now - last) : 16.7;
       last = now;
-      const k = still.matches ? 1 : 1 - Math.pow(1 - FOLLOW, dt / 16.7);
+      const k =
+        still.matches || snap.current ? 1 : 1 - Math.pow(1 - FOLLOW, dt / 16.7);
+      snap.current = false;
       current =
         current < 0 || Math.abs(target - current) < 0.0004
           ? target
@@ -184,7 +189,7 @@ export function Shelf({
     };
   }, [BOOKS]);
 
-  /** 点一本合着的书：滚到它刚演完的地方 */
+  /** 点一本合着的书：直接跳到它刚演完的地方，书和短片都不跟随缓动（中间几本不一路翻过去） */
   const go = useCallback(
     (index: number) => {
       const root = ref.current;
@@ -192,8 +197,8 @@ export function Shelf({
       const rect = root.getBoundingClientRect();
       const span = rect.height - window.innerHeight;
       const top = window.scrollY + rect.top + ((index + LAND) / BOOKS) * span;
-      const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      window.scrollTo({ top, behavior: still ? 'auto' : 'smooth' });
+      snap.current = true;
+      window.scrollTo({ top, behavior: 'instant' });
     },
     [BOOKS],
   );
@@ -230,7 +235,7 @@ export function Shelf({
                 data-active={shown || undefined}
                 aria-labelledby={`${prefix}-${book.id}-name`}
               >
-                {/* 书脊：编号、短名、全名；合着的书点一下打开 */}
+                {/* 书脊：编号、短名；合着的书点一下打开 */}
                 <button
                   type="button"
                   className="m-ent-leg-spine"
@@ -241,18 +246,6 @@ export function Shelf({
                 >
                   <span className="m-ent-leg-no">{number(index)}</span>
                   <span className="m-ent-leg-spine-word">{book.word}</span>
-                  <span className="m-ent-leg-spine-name">
-                    {/* 竖排里的英文单独包一层：立着排，字距另算（line.css） */}
-                    {book.name.split(/([A-Za-z]+)/).map((part, i) =>
-                      i % 2 ? (
-                        <span key={i} className="m-ent-leg-latin">
-                          {part}
-                        </span>
-                      ) : (
-                        part
-                      ),
-                    )}
-                  </span>
                 </button>
 
                 {/* 翻开的那一页：一张插图（短片）和一行图注；图注在源码里排在前面，宽屏上显示在插图下面 */}
