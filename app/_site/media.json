@@ -191,51 +191,51 @@
       ]
     ]
   },
-  "community-table": {
+  "art-window": {
     "width": 1672,
     "height": 941,
-    "avg": "#81766a",
-    "src": "/site/community-table-1672.webp",
+    "avg": "#d6b080",
+    "src": "/site/art-window-1672.webp",
     "srcset": [
       [
-        "/site/community-table-1280.webp",
-        1280
+        "/site/art-window-960.webp",
+        960
       ],
       [
-        "/site/community-table-1672.webp",
+        "/site/art-window-1672.webp",
         1672
       ]
     ]
   },
-  "community-colors": {
-    "width": 1672,
-    "height": 941,
-    "avg": "#898272",
-    "src": "/site/community-colors-1672.webp",
-    "srcset": [
-      [
-        "/site/community-colors-1280.webp",
-        1280
-      ],
-      [
-        "/site/community-colors-1672.webp",
-        1672
-      ]
-    ]
-  },
-  "community-blocks": {
+  "art-book": {
     "width": 1536,
     "height": 1024,
-    "avg": "#e8e2db",
-    "src": "/site/community-blocks-1536.webp",
+    "avg": "#d3ab7a",
+    "src": "/site/art-book-1280.webp",
     "srcset": [
       [
-        "/site/community-blocks-800.webp",
-        800
+        "/site/art-book-720.webp",
+        720
       ],
       [
-        "/site/community-blocks-1536.webp",
-        1536
+        "/site/art-book-1280.webp",
+        1280
+      ]
+    ]
+  },
+  "art-greenhouse": {
+    "width": 1536,
+    "height": 1024,
+    "avg": "#d6b073",
+    "src": "/site/art-greenhouse-1280.webp",
+    "srcset": [
+      [
+        "/site/art-greenhouse-720.webp",
+        720
+      ],
+      [
+        "/site/art-greenhouse-1280.webp",
+        1280
       ]
     ]
   },

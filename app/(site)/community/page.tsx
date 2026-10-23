@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Search } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Search } from 'lucide-react';
 import { pageMetadata } from '../../../lib/site';
 import { artistSkills } from '../../../content/artists';
 import { isResourceEntry, knowledge } from '../../../content/knowledge';
@@ -7,14 +7,13 @@ import {
   community,
   communityUi,
   methodText,
+  showcase,
 } from '../../../content/site/community';
-import { COMMUNITY, METHODS } from '../../_site/routes';
+import { exUi } from '../../../content/site/exhibit';
+import { COMMUNITY, contactHref, METHODS } from '../../_site/routes';
 import { mediaOf, Phrases, type Vars } from '../../_site/ui';
-import { Acts } from './acts';
-import { Bench } from './bench';
-import { FlowerToy } from './flower';
-import { Clothesline } from './line';
-import { Ending } from './end';
+import { Ending } from './ending';
+import { WorksGallery } from './gallery';
 import '../../_site/demo/demo.css';
 import './methods/methods.css';
 import './community.css';
@@ -25,232 +24,147 @@ export const metadata = pageMetadata(
   COMMUNITY,
 );
 
-// 社区（负责人 2026-10-15 定的方向）：整页就是结尾那句话——带着好奇来 → 带点什么走 → 再带点什么回来。
-// ① 首屏就是玩具：纸上那朵「一朵好奇」，小家伙从纸后面探头举牌；票根就是下载。
-// ② 满幅照片：围桌的人，桌上有小牛摆件和带触角的玩偶（比稿 D1）。
-// ③ 工作台：四件作品，先玩 / 看怎么做 / 带走。④ 方法目录：铅笔插画 + 搜索 + 三个抽屉。
-// ⑤ 满幅照片：树下挂着各自的颜色。⑥ 晾衣绳：访客自己那朵花、三张签、空夹子。
-// ⑦ 结尾：画出来的沙上那道线，小家伙沿线走完，三个停靠点各写一段那句话。
-// 比白房子的其它页更活泼：粗墨线、硬投影、票根、印章、举牌的小家伙（比稿 E1 的画风），但顶栏、页尾、字体不变。
+// 社区（负责人 2026-10-22 改回白房子，D2）：近白的纸、细线、白卡片、大量留白，一屏一个重点。
+// ① 首屏：两句标题，一张团队插画「开窗，开始创造」（W01-01）。
+// ② 五件作品一个画廊：一朵好奇、Artist Skill、网页动效、niul.ai、DropAgent；窗在左边钉住，字跟着滚动换（gallery.tsx）。
+// ③ 方法目录：「翻开，另一片天地」（W04-01）+ 搜索 + 三个整张是链接的去处，数量只写数字。
+// ④ 再带点什么回来：「把想法种出来」（W02-01）+ 三个去处；作品墙还空着时只写一句。
+// ⑤ 结尾：首页挪来的那段画室，那句话和一行当前进展（ending.tsx）。
+// 三张插画的挂法同「关于」：不装框，四周淡进墙里。字只用第 6 章与附录 A.1 的原句，新写的只有标签和按钮。
 
 const ui = communityUi;
 
-/** 满幅照片屏：随滚动从一扇窄窗开到满幅；一句大字写在贴上去的一张纸签上 */
-function Photo({
+/** 团队插画：不装框，四周淡进墙里（同「关于」的挂法） */
+function Vignette({
   name,
-  alt,
-  line,
-  lead,
-  caption,
-  note,
-  focus,
-  id,
-  act,
-}: {
-  name: 'community-table' | 'community-colors';
-  alt: string;
-  line: string;
-  lead?: string;
-  caption: string;
-  note: string;
-  focus: string;
-  id: string;
-  act: number;
-}) {
-  const image = mediaOf(name);
-  return (
-    <section
-      className="m-com-photo"
-      id={id}
-      data-act={act}
-      data-scene
-      aria-label={line}
-    >
-      <div
-        className="m-com-photo-frame"
-        style={{ '--avg': image.avg, '--focus': focus } as Vars}
-      >
-        <img
-          src={image.src}
-          srcSet={image.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
-          sizes="100vw"
-          width={image.width}
-          height={image.height}
-          alt={alt}
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
-      <div className="m-com-photo-label" data-reveal>
-        <p className="m-com-photo-line">
-          <Phrases text={line} />
-        </p>
-        {lead ? <p className="m-com-photo-lead">{lead}</p> : null}
-      </div>
-      <p className="m-com-photo-cap">
-        <span lang="en">{caption}</span>
-        <span>{note}</span>
-      </p>
-    </section>
-  );
-}
-
-/** 粗墨线的画框（比稿 E1）：框先在，画面进入视口时从一道窄缝开到完整 */
-function Frame({
-  name,
-  alt,
-  ratio,
-  focus,
   sizes,
-  caption,
-  note,
   className,
+  eager = false,
 }: {
-  name: 'community-blocks';
-  alt: string;
-  ratio: string;
-  focus: string;
+  name: keyof typeof communityUi.art;
   sizes: string;
-  caption: string;
-  note?: string;
   className: string;
+  eager?: boolean;
 }) {
   const image = mediaOf(name);
+  const art = ui.art[name];
   return (
-    <figure className={`m-com-frame ${className}`} data-reveal>
-      <div
-        className="m-com-frame-img"
-        style={{ '--ratio': ratio, '--avg': image.avg, '--focus': focus } as Vars}
-      >
-        <img
-          src={image.src}
-          srcSet={image.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
-          sizes={sizes}
-          width={image.width}
-          height={image.height}
-          alt={alt}
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
-      <figcaption>
-        <span className="m-caption" lang="en">
-          {caption}
-        </span>
-        {note ? <span className="m-caption">{note}</span> : null}
+    <figure className={`m-com-art ${className}`} data-open>
+      <img
+        src={image.src}
+        srcSet={image.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
+        sizes={sizes}
+        width={image.width}
+        height={image.height}
+        alt={art.alt}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={eager ? 'high' : undefined}
+        decoding="async"
+      />
+      <figcaption className="m-com-art-name">
+        {art.title} · {exUi.medium.album}
       </figcaption>
     </figure>
   );
 }
 
-/** 方法目录的三个抽屉：鼠标停上去拉开，露出里面几样的名字 */
+/** 方法目录的三个去处：整张是链接，名字、数量和头几样 */
 const techniques = knowledge.filter((entry) => !isResourceEntry(entry));
 const sources = knowledge.filter(isResourceEntry);
-const drawers = [
+const shelves = [
   {
     type: 'artists',
     label: methodText.groups.artists,
-    count: artistSkills.length,
-    names: artistSkills.map((skill) => skill.name),
+    names: artistSkills.map((skill) => skill.name.split(' · ')[0]),
   },
   {
     type: 'web',
     label: methodText.groups.web,
-    count: techniques.length,
     names: techniques.map((entry) => entry.name),
   },
   {
     type: 'sources',
     label: methodText.groups.sources,
-    count: sources.length,
     names: sources.map((entry) => entry.name),
   },
 ];
+
+/** 有标题和说明的去处：整张是链接，只留一颗圆形箭头 */
+function Door({
+  href,
+  title,
+  count,
+  text,
+  external = false,
+}: {
+  href: string;
+  title: string;
+  count?: number;
+  text: string;
+  external?: boolean;
+}) {
+  const body = (
+    <>
+      <span className="m-com-door-head">
+        <b>{title}</b>
+        {count === undefined ? null : <span className="num">{count}</span>}
+      </span>
+      <span className="m-com-door-text">{text}</span>
+      <span className="m-com-door-go" aria-hidden="true">
+        {external ? <ArrowUpRight size={17} /> : <ArrowRight size={17} />}
+      </span>
+    </>
+  );
+  return external ? (
+    <a className="m-com-door" href={href} target="_blank" rel="noreferrer">
+      {body}
+    </a>
+  ) : (
+    <Link className="m-com-door" href={href}>
+      {body}
+    </Link>
+  );
+}
 
 export default function CommunityPage() {
   const [titleA, titleB] = community.title[0].split(/(?<=，)/);
   return (
     <div className="m-com">
-      <Acts />
-
-      {/* ① 带着好奇来：首屏就是玩具 */}
-      <header className="m-com-hero m-wrap m-top" id="come" data-act={0}>
-        <div className="m-com-hero-text">
-          <p className="m-com-label m-rise">
-            <b>{ui.kicker}</b>
-            <span>{ui.tag}</span>
-          </p>
-          <h1
-            className="m-com-title m-rise"
-            style={{ '--delay': '90ms' } as Vars}
-          >
-            <span>{titleA}</span>
-            <span>{titleB}</span>
-          </h1>
-          <p
-            className="m-com-sub m-rise"
-            style={{ '--delay': '180ms' } as Vars}
-          >
-            {community.title[1]}
-          </p>
-        </div>
-        <FlowerToy />
+      {/* ① 首屏：两句标题，一张团队插画 */}
+      <header className="m-com-hero m-wrap m-top">
+        <h1 className="m-com-title m-rise">
+          <span>{titleA}</span>
+          <span>{titleB}</span>
+        </h1>
+        <p className="m-com-sub m-rise" style={{ '--delay': '140ms' } as Vars}>
+          {community.title[1]}
+        </p>
+        <Vignette
+          name="art-window"
+          sizes="(max-width: 900px) 100vw, 64vw"
+          className="m-com-hero-art"
+          eager
+        />
       </header>
 
-      {/* ② 带点什么走：围桌的人 */}
-      <Photo
-        name="community-table"
-        alt={ui.table.alt}
-        line={ui.table.line}
-        caption={ui.table.caption}
-        note={ui.table.note}
-        focus="50% 44%"
-        id="take"
-        act={1}
-      />
-
-      {/* ③ 工作台：四件作品，各自连着做法 */}
-      <section
-        className="m-com-bench m-wrap"
-        data-act={1}
-        aria-labelledby="bench-title"
-      >
-        <header className="m-com-head" data-reveal>
-          <p className="m-com-label">
-            <b>{ui.acts[1]}</b>
-            <span>{ui.tag}</span>
-          </p>
-          <h2 id="bench-title" className="m-com-h2">
-            <Phrases text={community.try.title} />
-          </h2>
-        </header>
-        <Bench />
+      {/* ② 五件作品，一个画廊 */}
+      <section className="m-com-works m-wrap" aria-labelledby="works-title">
+        <WorksGallery />
       </section>
 
-      {/* ④ 方法目录：拿到积木，搭出自己的版本 */}
+      {/* ③ 方法目录 */}
       <section
-        className="m-com-cabinet m-wrap"
-        data-act={1}
-        aria-labelledby="cabinet-title"
+        className="m-com-methods m-com-room m-wrap"
+        aria-labelledby="methods-title"
       >
-        <Frame
-          name="community-blocks"
-          alt={ui.methods.alt}
-          ratio="3 / 2"
-          focus="50% 50%"
-          sizes="(max-width: 900px) 100vw, 50vw"
-          caption={ui.methods.caption}
-          note={ui.methods.note}
-          className="m-com-cabinet-window"
+        <Vignette
+          name="art-book"
+          sizes="(max-width: 900px) 100vw, 46vw"
+          className="m-com-room-art"
         />
-        <div className="m-com-cabinet-body">
-          <p className="m-com-label" data-reveal>
-            <b>{methodText.kicker}</b>
-          </p>
-          <h2 id="cabinet-title" className="m-com-h2" data-reveal>
-            {ui.methods.title.map((part) => (
-              <span key={part}>{part}</span>
-            ))}
+        <div className="m-com-room-body">
+          <h2 id="methods-title" className="m-com-h2" data-reveal>
+            <Phrases text={community.methods.title} />
           </h2>
           <search>
             <form
@@ -262,7 +176,7 @@ export default function CommunityPage() {
               <label className="sr-only" htmlFor="community-search">
                 {ui.methods.searchLabel}
               </label>
-              <Search size={18} aria-hidden="true" />
+              <Search size={17} aria-hidden="true" />
               <input
                 id="community-search"
                 type="search"
@@ -270,36 +184,24 @@ export default function CommunityPage() {
                 placeholder={ui.methods.search}
                 autoComplete="off"
               />
-              <button type="submit">{ui.methods.go}</button>
+              <button type="submit" className="m-btn">
+                {ui.methods.go}
+              </button>
             </form>
           </search>
-          <ul className="m-com-drawers">
-            {drawers.map((drawer, i) => (
+          <ul className="m-com-doors">
+            {shelves.map((shelf, index) => (
               <li
-                key={drawer.type}
+                key={shelf.type}
                 data-reveal
-                style={{ '--delay': `${i * 90}ms` } as Vars}
+                style={{ '--delay': `${index * 90}ms` } as Vars}
               >
-                <Link
-                  className="m-com-drawer"
-                  href={`${METHODS}?type=${drawer.type}`}
-                >
-                  <span className="m-com-drawer-face">
-                    <b>{drawer.label}</b>
-                    <span className="m-com-drawer-n num">{drawer.count}</span>
-                  </span>
-                  <span className="m-com-drawer-in">
-                    {drawer.names.slice(0, 3).map((name) => (
-                      <span key={name}>{name}</span>
-                    ))}
-                    <em>
-                      {drawer.count > 3
-                        ? `${ui.methods.more} ${drawer.count - 3} 个`
-                        : ui.methods.open}
-                      <ArrowRight size={12} aria-hidden="true" />
-                    </em>
-                  </span>
-                </Link>
+                <Door
+                  href={`${METHODS}?type=${shelf.type}`}
+                  title={shelf.label}
+                  count={shelf.names.length}
+                  text={`${shelf.names.slice(0, 3).join('、')}${shelf.names.length > 3 ? '……' : ''}`}
+                />
               </li>
             ))}
           </ul>
@@ -310,39 +212,63 @@ export default function CommunityPage() {
         </div>
       </section>
 
-      {/* ⑤ 再带点什么回来：树下挂着各自的颜色 */}
-      <Photo
-        name="community-colors"
-        alt={ui.back.alt}
-        line={ui.back.line}
-        lead={ui.back.lead}
-        caption={ui.back.caption}
-        note={ui.back.note}
-        focus="50% 40%"
-        id="back"
-        act={2}
-      />
-
-      {/* ⑥ 大家做的：一根晾衣绳 */}
+      {/* ④ 再带点什么回来 */}
       <section
-        className="m-com-wall m-wrap"
-        data-act={2}
-        aria-labelledby="wall-title"
+        className="m-com-back m-com-room m-wrap"
+        aria-labelledby="back-title"
       >
-        <header className="m-com-head" data-reveal>
-          <p className="m-com-label">
-            <b>{ui.wall.kicker}</b>
-            <span>{ui.acts[2]}</span>
-          </p>
-          <h2 id="wall-title" className="m-com-h2">
-            {ui.wall.title}
+        <div className="m-com-room-body">
+          <h2 id="back-title" className="m-com-h2" data-reveal>
+            <Phrases text={community.back.title} />
           </h2>
-          <p className="m-com-head-lead">{ui.wall.lead}</p>
-        </header>
-        <Clothesline />
+          <p className="m-com-room-lead" data-reveal>
+            {community.back.lead}
+          </p>
+          <ul className="m-com-doors">
+            {ui.back.paths.map((path, index) => (
+              <li
+                key={path.title}
+                data-reveal
+                style={{ '--delay': `${index * 90}ms` } as Vars}
+              >
+                <Door
+                  href={path.href ?? contactHref(path.topic ?? 'creator')}
+                  title={path.title}
+                  text={path.text}
+                  external={Boolean(path.href)}
+                />
+              </li>
+            ))}
+          </ul>
+          {showcase.length ? (
+            <ul className="m-com-showcase" data-reveal>
+              {showcase.map((item) => (
+                <li key={item.href}>
+                  <a href={item.href} target="_blank" rel="noreferrer">
+                    <b>{item.title}</b>
+                    <span>
+                      {item.by}
+                      {item.method ? ` · ${item.method}` : ''}
+                    </span>
+                    {item.note ? <span>{item.note}</span> : null}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="m-com-fine" data-reveal>
+              {ui.back.empty}
+            </p>
+          )}
+        </div>
+        <Vignette
+          name="art-greenhouse"
+          sizes="(max-width: 900px) 100vw, 46vw"
+          className="m-com-room-art"
+        />
       </section>
 
-      {/* ⑦ 结尾：小家伙沿沙上那道线走完，那句话写在线下 */}
+      {/* ⑤ 结尾：那段画室 */}
       <Ending />
     </div>
   );
