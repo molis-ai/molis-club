@@ -5,7 +5,7 @@ import { ENTERPRISE } from '../../_site/routes';
 import { mediaOf, Phrases, Window, type Vars } from '../../_site/ui';
 import { Explore } from './explore';
 import { People } from './people';
-import { EnterpriseForm, PickProvider, Slips } from './pick';
+import { Carry, EnterpriseForm, PickProvider, Slips } from './pick';
 import { Route } from './course';
 import { Stages } from './stages';
 import { Vista } from './vista';
@@ -33,7 +33,7 @@ export const metadata = pageMetadata(
 //
 // 企业合作默认是照原文的主线（D1，负责人 2026-10-19 通过样张后切成默认）。旧的六屏暂留对照：
 // /enterprise?study=current 是旧版，/enterprise?study=line 是带比较条的新版；不带参数时没有比较条。主线：
-// 长廊 → 你们卡在哪（五张纸条只做开场，选一张只带进末尾的表单；不再有「都看看」）
+// 长廊 → 你们卡在哪（五张纸条只做开场，选一张只带进末尾的表单，往下读时那张纸条留在左下角；不再有「都看看」）
 // → 满幅的一张图，开场第三段原句一拍一拍浮上来（vista.tsx）
 // → 合作路线：四站竖排成四列、业务团队 / 一起 / Molis 横排成三条道，底下是动画演出来的产出，仍在一屏（stages.tsx）
 // → 为什么我们可以：四个位置四条道、九股经历横跨它们的覆盖图（why.tsx）→ 内部探索 → 表单。
@@ -139,6 +139,12 @@ export default async function EnterprisePage({
           <h2 className="m-ent-talk-title" id="ent-talk-title">
             {e.talk.title}
           </h2>
+          {/* 样张（D1）：标题下面是 5.3 开头那句，来聊之前知道要讲什么（2026-10-24） */}
+          {sample ? (
+            <p className="m-ent-talk-lead">
+              <Phrases text={e.talk.lead} />
+            </p>
+          ) : null}
         </header>
         <EnterpriseForm />
       </div>
@@ -172,6 +178,8 @@ export default async function EnterprisePage({
           {/* 为什么我们可以（why.tsx） */}
           <Why />
           <Explore lean />
+          {/* 选过的纸条：读路线、「为什么」和内部探索时留在左下角，回指表单 */}
+          <Carry />
           {talk}
         </PickProvider>
         {switcher}

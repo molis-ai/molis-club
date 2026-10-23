@@ -3,6 +3,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -20,7 +21,8 @@ import type { Vars } from '../../_site/ui';
 import { Symptom } from './symptoms';
 
 // 企业合作页的一条线：在「你们卡在哪」选一张纸条，页面围着这个选择回应——
-// 纸条下面回一句「你们希望……」和建议起点，路线上那一站标出「建议起点」，末尾的表单替你写好第一句。
+// 纸条下面回一句「你们希望……」和建议起点，路线上那一站标出「建议起点」，末尾的表单替你写好第一句；
+// 主线上往下读时，选过的那张纸条留在左下角（Carry）。
 // 鼠标停在纸条上就预览它的回应，点一下才算选定（选定的才传给路线和表单）。
 // 纸条不靠 JS 也能用：每张是原生单选框，回应用 :has() 跟着显出来（enterprise.css）；
 // JS 负责悬停预览、把选择传给路线和表单，以及「看看这条路怎么走」在钉住的路线里滚到对的位置。
@@ -226,6 +228,78 @@ export function Slips({ lean = false }: { lean?: boolean }) {
         </p>
       </div>
     </form>
+  );
+}
+
+/** 读到这几节时，选过的纸条留在左下角（钉住的路线、「为什么我们可以」、内部探索） */
+const ALONG = ['path', 'people', 'explore'];
+/** 纸条在屏幕底边占的高（line.css 里钉住的两节底下也留这么多） */
+const ROOM = 64;
+
+/** 「为什么我们可以」钉住时一屏放不下（矮屏），左下角的收尾会被纸条盖住：这一节里先收起 */
+function crowded(section: Element) {
+  const stick = section.querySelector('.m-why-stick');
+  const end = section.querySelector('.m-why-end');
+  if (!section.hasAttribute('data-live') || !stick || !end) return false;
+  const bottom =
+    end.getBoundingClientRect().bottom - stick.getBoundingClientRect().top;
+  return bottom > window.innerHeight - ROOM;
+}
+
+/**
+ * 选过的纸条一路跟着（负责人 2026-10-24）：选定以后往下读，左下角留一张小纸条——
+ * 选的是哪一张、已写进最后的表单、一条去表单的近路。只回指表单，不配对路线（负责人 2026-10-19：原文没有这层对应）。
+ * 屏幕底边落在上面那几节里才显出来；回到「你们卡在哪」、满幅那张图上、表单进屏时收起。没选过就没有。
+ */
+export function Carry() {
+  const context = usePick();
+  const pick = context?.pick ?? null;
+  const [along, setAlong] = useState(false);
+
+  useEffect(() => {
+    const sections = ALONG.flatMap((id) => {
+      const section = document.getElementById(id);
+      return section ? [section] : [];
+    });
+    const inside = new Set<Element>();
+    const settle = () =>
+      setAlong(
+        Array.from(inside).some(
+          (section) => section.id !== 'people' || !crowded(section),
+        ),
+      );
+    // 只看屏幕最底下那一条：纸条就停在那里
+    const watch = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) inside.add(entry.target);
+          else inside.delete(entry.target);
+        }
+        settle();
+      },
+      { rootMargin: '-88% 0px 0px 0px' },
+    );
+    for (const section of sections) watch.observe(section);
+    window.addEventListener('resize', settle);
+    return () => {
+      watch.disconnect();
+      window.removeEventListener('resize', settle);
+    };
+  }, []);
+
+  const question = pick
+    ? questions.items.find((item) => item.id === pick)
+    : undefined;
+  if (!question) return null;
+  return (
+    <p className="m-ent-carry" data-on={along || undefined}>
+      <span className="m-ent-carry-pick">{question.short}</span>
+      <span className="m-ent-carry-done">{hook.carried}</span>
+      <a className="m-ent-carry-go" href="#talk">
+        {hook.go}
+        <ArrowDown size={13} aria-hidden="true" />
+      </a>
+    </p>
   );
 }
 

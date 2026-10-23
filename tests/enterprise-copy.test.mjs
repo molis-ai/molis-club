@@ -47,6 +47,7 @@ void test('合作路线每站的事与产出都是第 5 章原句片段', () => 
     [...at].sort((a, b) => a - b),
   );
   verbatim(path.lead, '路线开头');
+  verbatim(enterprise.talk.lead, '表单前那句');
   for (const text of enterprise.people.abilities.map((item) => item.title))
     verbatim(text, '5.5 小标题');
 });

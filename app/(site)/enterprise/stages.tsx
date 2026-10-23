@@ -22,6 +22,14 @@ export function Stages() {
         id,
         word: path.stations[id].word,
         name: path.stations[id].name,
+        // 图注第二行：5.2 开头「适合……的团队」的短句，和原文里这一项留下的成果名（负责人 2026-10-24）
+        facts: [
+          { label: path.labels.fit, text: path.stations[id].fit },
+          {
+            label: path.labels.leaves,
+            text: path.stations[id].leaves.join('、'),
+          },
+        ],
         film: <Film id={id} />,
       }))}
     />
