@@ -9,13 +9,14 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { selectTry } from '../../../content/site/tool';
+import { selectTry, type Tone } from '../../../content/site/tool';
 import { remember } from './memory';
+import { Ico } from './parts';
 
 // Tool 页的标志性交互：在这一页任意选中一段字，动作条出现在光标旁（触屏与键盘选中时，出现在选区下方）。
 // 选的东西不同，第一个动作不同：带日期时间的先给「整理成日程」，英文先给「翻译」，一串数字先给「整理成表格」。
 // 「清理格式」「数一数」「复制纯文本」「整理成表格」是真的在浏览器里做；「整理成日程」「翻译」要 AI，只演示会出现在哪里（示意）。
-// 做过的事记进内存（memory.ts），墙上下午 4:30 的「接续」会读到。Esc、点别处、滚走都会收起。
+// 做过的事记进内存（memory.ts），三层里「离开以后」的接续面板会读到。Esc、点别处、滚走都会收起。
 
 type Action = keyof typeof selectTry.actions;
 type Result = { text: string; rows?: [string, string][] };
@@ -27,6 +28,15 @@ const icons: Record<Action, typeof Hash> = {
   clean: Eraser,
   count: Hash,
   plain: Copy,
+};
+/** 和演示里同一套颜色：整理成日程杏橙、翻译天蓝、表格鼠尾草、清理奶油黄 */
+const tones: Record<Action, Tone> = {
+  calendar: 'apricot',
+  translate: 'sky',
+  table: 'sage',
+  clean: 'butter',
+  count: 'lilac',
+  plain: 'rose',
 };
 const ai: Partial<Record<Action, true>> = { calendar: true, translate: true };
 
@@ -233,7 +243,6 @@ export function SelectionBar({ children }: { children: ReactNode }) {
         >
           <div className="tl-select-actions">
             {state.actions.map((id, index) => {
-              const Icon = icons[id];
               return (
                 <button
                   key={id}
@@ -244,7 +253,7 @@ export function SelectionBar({ children }: { children: ReactNode }) {
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => void run(id)}
                 >
-                  <Icon aria-hidden="true" />
+                  <Ico icon={icons[id]} tone={tones[id]} />
                   {selectTry.actions[id]}
                   <small data-ai={ai[id]}>
                     {ai[id] ? selectTry.ai : selectTry.local}
