@@ -43,10 +43,17 @@ const WASH: Keyframe[] = [
   { backgroundSize: '100% 100%' },
 ];
 
+/** 弧线的控制点：两点中间往旁边鼓出去 */
+function control(from: Point, to: Point, bend: number): Point {
+  return {
+    x: (from.x + to.x) / 2 - (to.y - from.y) * bend,
+    y: (from.y + to.y) / 2 + (to.x - from.x) * bend,
+  };
+}
+
 /** 两点之间一段二次贝塞尔弧线，取 24 段 */
 function arc(from: Point, to: Point, bend: number): Keyframe[] {
-  const cx = (from.x + to.x) / 2 - (to.y - from.y) * bend;
-  const cy = (from.y + to.y) / 2 + (to.x - from.x) * bend;
+  const { x: cx, y: cy } = control(from, to, bend);
   return Array.from({ length: 25 }, (_, index) => {
     const t = index / 24;
     const u = 1 - t;
@@ -67,6 +74,7 @@ export class Cue {
   private flags: [HTMLElement, string][] = [];
   private spots = new Map<HTMLElement, Point>();
   private hand: HTMLElement | null = null;
+  private pen: SVGSVGElement | null = null;
 
   constructor(
     readonly stage: HTMLElement,
@@ -82,6 +90,7 @@ export class Cue {
     delete this.stage.dataset.cue;
     this.unflag();
     this.hide();
+    this.wipe();
   }
 
   /** 准备好从头演：首屏停在结果上，往下的段落摆回空白 */
@@ -203,6 +212,13 @@ export class Cue {
     delete this.stage.dataset.snap;
   }
 
+  /** 接下来光标走过的路画成一道线（tool.css 的 .tl-trail）；不给名字就停笔 */
+  draw(name?: string) {
+    this.pen = name
+      ? this.stage.querySelector<SVGSVGElement>(`[data-trail='${name}']`)
+      : null;
+  }
+
   /** 接下来用哪只光标（一个舞台里几块屏幕，各有各的） */
   use(name?: string) {
     this.hand = this.stage.querySelector<HTMLElement>(
@@ -230,11 +246,13 @@ export class Cue {
     const hand = this.hand!;
     const from = this.spot();
     const to = this.point(target, at);
+    const duration = dur ?? this.time(from, to);
     const flight = this.animate(hand, arc(from, to, bend), {
-      duration: dur ?? this.time(from, to),
+      duration,
       easing: HAND,
       fill: 'forwards',
     });
+    if (this.pen) this.stroke(from, to, bend, duration);
     this.spots.set(hand, to);
     await flight.done;
     hand.style.transform = `translate(${to.x}px, ${to.y}px)`;
@@ -387,6 +405,31 @@ export class Cue {
     this.stage.dataset.cue = '';
     this.unflag();
     this.hide();
+    this.wipe();
+  }
+
+  /** 一段路：和光标同一条弧线，跟着光标一起画出来 */
+  private stroke(from: Point, to: Point, bend: number, duration: number) {
+    const mid = control(from, to, bend);
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute(
+      'd',
+      `M${from.x.toFixed(1)} ${from.y.toFixed(1)}Q${mid.x.toFixed(1)} ${mid.y.toFixed(1)} ${to.x.toFixed(1)} ${to.y.toFixed(1)}`,
+    );
+    path.setAttribute('pathLength', '1');
+    this.pen!.appendChild(path);
+    this.animate(path, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], {
+      duration,
+      easing: HAND,
+    });
+  }
+
+  /** 擦掉走过的路 */
+  private wipe() {
+    this.pen = null;
+    this.stage
+      .querySelectorAll('[data-trail]')
+      .forEach((trail) => trail.replaceChildren());
   }
 
   private hide() {

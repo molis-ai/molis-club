@@ -49,6 +49,28 @@ const images = [
     widths: [800, 1672],
     quality: 78,
   },
+  // Tool 页 Mac 桌面的壁纸（负责人 2026-10-24 选）：莫奈伦敦系列，早上、午后、傍晚各一张，
+  // 分给「眼前的小事」的三个时刻，首屏、以前与现在、插件也从这三张里取。
+  // 来源 Wikimedia Commons：查令十字桥 1899（Google Art Project，公有领域，原图 3080 宽）、
+  // 滑铁卢桥 1903（Google Art Project，公有领域，取 3840 宽档）、国会大厦·日落 1904（美国国家美术馆开放版权 CC0，取 3840 宽档）
+  {
+    key: 'wall-morning',
+    src: 'public/images/r8/picks/monet-charing-cross-1899.jpg',
+    widths: [1200, 1800],
+    quality: 70,
+  },
+  {
+    key: 'wall-noon',
+    src: 'public/images/r8/picks/monet-waterloo-1903.jpg',
+    widths: [1200, 1800],
+    quality: 70,
+  },
+  {
+    key: 'wall-dusk',
+    src: 'public/images/r8/picks/monet-parliament-sunset-1904.jpg',
+    widths: [1200, 1800],
+    quality: 70,
+  },
   {
     key: 'life-shore',
     src: 'public/r8-candidates-v2/images/life-v2-b.png',

@@ -11,17 +11,21 @@ import type { Vars } from '../../_site/ui';
 import { useCue } from './cue';
 import { LoopToggle, useOnScreen, useStill } from './stage';
 
-// 眼前的小事：像画廊那样在一个位置看完六件。左边是六件事的名字，右边一块墙板挂着当下这一件。
-// 宽屏一屏放得下时整段钉住，滚到哪件换到哪件（原生滚动，倒回去也行）；点名字直接滚到那一件，再点一下重演。
-// 每一件有自己的编排（scripts.ts 的 m-*）：换到它时从空白开始演，换走时停在原处淡出。
-// 窄屏不钉，名字在墙板上面，点名字换。减少动态时停在做完的样子。没有 JS 时停在第一件，名字都在。
+// 眼前的小事：三件事挂在同一块屏幕上看完。左边是三件事（哪一层、什么时候、怎么处理），右边一块 Mac 屏幕演当下这一件。
+// 宽屏一屏放得下时整段钉住，滚到哪件换到哪件（原生滚动，倒回去也行）；点一件直接滚到那里，再点一下重演。
+// 每一件有自己的编排（scripts.ts 的 c-*）：换到它时从空白开始演，换走时停在原处淡出（只交叉淡入淡出，不位移）。
+// 窄屏不钉，三件在屏幕上面，点哪件换哪件。减少动态时停在做完的样子。没有 JS 时停在第一件，三件的字都在。
 
 export type Piece = {
-  title: string;
+  /** 哪一层：光标旁、身旁、离开以后 */
+  layer: string;
+  /** 4.2 开头那句里的一件事 */
+  moment: string;
+  /** 这一层怎么处理（当下这一件才显示） */
+  result: string;
   tone: Tone;
-  kind: 'local' | 'ai' | 'wip';
-  tag: string;
-  icon: ReactNode;
+  /** 正在打磨的那件 */
+  tag?: string;
   /** scripts.ts 里那一段编排的名字 */
   cue: string;
   art: ReactNode;
@@ -60,12 +64,16 @@ const PIN = '(min-width: 901px) and (min-height: 600px)';
 export function Gallery({
   label,
   head,
-  foot,
+  note,
+  wip,
   pieces,
 }: {
   label: string;
   head: ReactNode;
-  foot: ReactNode;
+  /** 屏幕下面那行「示意」 */
+  note: string;
+  /** 「正在打磨」从哪里来（原句） */
+  wip: string;
   pieces: Piece[];
 }) {
   const root = useRef<HTMLDivElement>(null);
@@ -80,6 +88,8 @@ export function Gallery({
   const lock = useRef<number | null>(null);
   const unlock = useRef(0);
   const count = pieces.length;
+  // 「正在打磨」的出处只跟着那一件出来
+  const wipAt = pieces.findIndex((piece) => piece.tag);
 
   useEffect(() => {
     const node = root.current;
@@ -171,45 +181,54 @@ export function Gallery({
         <div className="m-wrap tl-gal-grid">
           <div className="tl-gal-text">
             {head}
-            <div className="tl-gal-list" role="tablist" aria-label={label}>
-              {pieces.map((piece, index) => (
-                <button
-                  key={piece.title}
-                  ref={(node) => {
-                    tabs.current[index] = node;
-                  }}
-                  type="button"
-                  role="tab"
-                  id={`tl-gal-tab-${index}`}
-                  aria-selected={index === active}
-                  aria-controls="tl-gal-stage"
-                  tabIndex={index === active ? 0 : -1}
-                  className="tl-gal-tab"
-                  data-tone={piece.tone}
-                  onClick={() => go(index)}
-                  onKeyDown={(event) => onKey(event, index)}
-                >
-                  {piece.icon}
-                  <span className="tl-gal-name">{piece.title}</span>
-                  <small className="tl-gal-tag" data-kind={piece.kind}>
-                    {piece.tag}
-                  </small>
-                </button>
-              ))}
+            <div>
+              <div className="tl-gal-list" role="tablist" aria-label={label}>
+                {pieces.map((piece, index) => (
+                  <button
+                    key={piece.layer}
+                    ref={(node) => {
+                      tabs.current[index] = node;
+                    }}
+                    type="button"
+                    role="tab"
+                    id={`tl-gal-tab-${index}`}
+                    aria-selected={index === active}
+                    aria-controls="tl-gal-stage"
+                    tabIndex={index === active ? 0 : -1}
+                    className="tl-gal-tab"
+                    data-tone={piece.tone}
+                    onClick={() => go(index)}
+                    onKeyDown={(event) => onKey(event, index)}
+                  >
+                    <small className="tl-gal-layer">
+                      {piece.layer}
+                      {piece.tag ? (
+                        <i className="tl-gal-tag">{piece.tag}</i>
+                      ) : null}
+                    </small>
+                    <span className="tl-gal-name">{piece.moment}</span>
+                    <span className="tl-gal-result">
+                      <span>{piece.result}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <p className="tl-gal-wip" data-on={active === wipAt || undefined}>
+                {wip}
+              </p>
             </div>
           </div>
           <div className="tl-gal-show">
             <div
               ref={stage}
               id="tl-gal-stage"
-              className="tl-gal-stage"
-              data-open=""
+              className="tl-gal-stage tl-mac"
               role="tabpanel"
               aria-labelledby={`tl-gal-tab-${active}`}
             >
               {pieces.map((piece, index) => (
                 <Art
-                  key={piece.title}
+                  key={piece.layer}
                   piece={piece}
                   active={index === active}
                   live={shown && !paused}
@@ -218,15 +237,15 @@ export function Gallery({
                 />
               ))}
             </div>
-            <div className="tl-gal-foot">
-              {foot}
+            <p className="tl-foot">
+              <span className="tl-note">{note}</span>
               {still ? null : (
                 <LoopToggle
                   stopped={paused}
                   onToggle={() => setPaused((value) => !value)}
                 />
               )}
-            </div>
+            </p>
           </div>
         </div>
       </div>

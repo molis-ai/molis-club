@@ -87,6 +87,54 @@
       ]
     ]
   },
+  "wall-morning": {
+    "width": 3080,
+    "height": 2503,
+    "avg": "#adbabf",
+    "src": "/site/wall-morning-1800.webp",
+    "srcset": [
+      [
+        "/site/wall-morning-1200.webp",
+        1200
+      ],
+      [
+        "/site/wall-morning-1800.webp",
+        1800
+      ]
+    ]
+  },
+  "wall-noon": {
+    "width": 3840,
+    "height": 2501,
+    "avg": "#98a6b7",
+    "src": "/site/wall-noon-1800.webp",
+    "srcset": [
+      [
+        "/site/wall-noon-1200.webp",
+        1200
+      ],
+      [
+        "/site/wall-noon-1800.webp",
+        1800
+      ]
+    ]
+  },
+  "wall-dusk": {
+    "width": 3840,
+    "height": 3392,
+    "avg": "#979a9b",
+    "src": "/site/wall-dusk-1800.webp",
+    "srcset": [
+      [
+        "/site/wall-dusk-1200.webp",
+        1200
+      ],
+      [
+        "/site/wall-dusk-1800.webp",
+        1800
+      ]
+    ]
+  },
   "life-shore": {
     "width": 1672,
     "height": 941,

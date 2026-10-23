@@ -1,9 +1,8 @@
 import { pageMetadata } from '../../../lib/site';
 import { products } from '../../../content/site/products';
 import {
-  layers,
+  cases,
   measure,
-  moments,
   plugins,
   shift,
   toolGo,
@@ -12,9 +11,9 @@ import {
 import { ProductHero } from '../../_site/product/product';
 import { COMMUNITY, contactHref, productHref } from '../../_site/routes';
 import type { ReactNode } from 'react';
-import { Btn, More, Note, Status, Window, type Vars } from '../../_site/ui';
+import { Btn, mediaOf, More, Status, type Vars } from '../../_site/ui';
 import { Desk, TryHint } from './hero';
-import { Moments, Plugins, Relay, Shift } from './scenes';
+import { Cases, Plugins, Shift } from './scenes';
 import { SelectionBar } from './selection';
 import '../../_site/product/product.css';
 import './tool.css';
@@ -27,11 +26,11 @@ export const metadata = pageMetadata(
   productHref.tool,
 );
 
-// Molis Tool（specs/site-rebuild/tool-page.md 第 11 节）：展厅的墙。
-// 首屏光标演示 → 以前与现在 → 由近到远的三层 → 眼前的小事 → 插件 → 分寸 → 收尾，一屏一个重点。
-// 每屏一面安静的墙（亚麻、月白、雾、沙、石板），唯一亮的颜色是选中色；动作的颜色都压低了。
-// 演示里光标是主角，带着人看：一次只动一样，选中 → 动作条 → 按下 → 结果在原处发生。
-// 这一页本身就是 Tool：任意选中一段字，光标旁出现动作条；「清理格式」、插件开关访客可以亲手按。
+// Molis Tool（specs/site-rebuild/tool-page.md 第 12 节）：六屏，每屏一块 Mac 屏幕当主角。
+// 首屏翻译 → 以前与现在（只比路程）→ 眼前的小事（三件事对三层，早午晚三张莫奈）→ 插件 → 分寸 → 收尾。
+// 整页一张纸色底，只有「分寸」是深色；每屏只有标题、一句话、最多三条要点；示意统一是屏幕下面一行小字。
+// 「选中 → 动作条 → 结果在旁边」只在首屏完整演一次，往下每屏演新东西。
+// 这一页本身就是 Tool：任意选中一段字，光标旁出现动作条；插件开关访客可以亲手拨。
 
 /** 标题按标点分成不断行的几截；mark 那几个字像被选中一样铺上选中色 */
 function Marked({ text, mark }: { text: string; mark?: string }) {
@@ -58,17 +57,15 @@ function Marked({ text, mark }: { text: string; mark?: string }) {
   );
 }
 
-/** 区块开头：一行小标签 + 大标题（新块不加墨线和编号） */
+/** 区块开头：标题，下面至多一句话或三条要点（标题已经说清，不加眉题） */
 function Head({
   id,
-  kicker,
   title,
   mark,
   size,
   children,
 }: {
   id: string;
-  kicker: string;
   title: string;
   mark?: string;
   size?: 'h2';
@@ -76,7 +73,6 @@ function Head({
 }) {
   return (
     <header className="tl-head" data-size={size} data-reveal>
-      <p className="m-kicker">{kicker}</p>
       <h2 className="tl-head-title" id={id}>
         <Marked text={title} mark={mark} />
       </h2>
@@ -87,110 +83,73 @@ function Head({
 
 export default function ToolPage() {
   const { blocks } = toolProgress;
+  const photo = mediaOf('ex-skylight');
   return (
     <SelectionBar>
       <div className="m-product m-tool">
         <ProductHero product={tool} visual={<Desk />} aside={<TryHint />} />
 
-        <section
-          className="tl-sec"
-          data-wall="linen"
-          aria-labelledby="tl-shift-title"
-        >
+        <section className="tl-sec" aria-labelledby="tl-shift-title">
           <div className="m-wrap">
-            <Head
-              id="tl-shift-title"
-              kicker={shift.kicker}
-              title={shift.title}
-              mark={shift.mark}
-            />
+            <Head id="tl-shift-title" title={shift.title} mark={shift.mark} />
             <Shift />
           </div>
         </section>
 
-        <section
-          className="tl-sec"
-          data-wall="moon"
-          aria-labelledby="tl-layers-title"
-        >
-          <div className="m-wrap">
-            <Head
-              id="tl-layers-title"
-              kicker={layers.kicker}
-              title={layers.title}
-              mark={layers.mark}
-            />
-            <Relay />
-          </div>
-        </section>
-
-        <section
-          className="tl-sec tl-gal-sec"
-          data-wall="mist"
-          aria-labelledby="tl-moments-title"
-        >
-          <Moments
+        <section className="tl-sec tl-gal-sec" aria-labelledby="tl-cases-title">
+          <Cases
             head={
-              <Head
-                id="tl-moments-title"
-                kicker={moments.kicker}
-                title={moments.title}
-                mark={moments.mark}
-              >
-                <p className="tl-head-lead">{moments.lead}</p>
+              <Head id="tl-cases-title" title={cases.title} mark={cases.mark}>
+                <p className="tl-head-lead">{cases.lead}</p>
               </Head>
             }
           />
         </section>
 
-        <section
-          className="tl-sec"
-          data-wall="sand"
-          aria-labelledby="tl-plugins-title"
-        >
-          <div className="m-wrap tl-split" data-side="plug">
+        <section className="tl-sec" aria-labelledby="tl-plugins-title">
+          <div className="m-wrap tl-plug-grid">
             <Head
               id="tl-plugins-title"
-              kicker={plugins.kicker}
               title={plugins.title}
               mark={plugins.mark}
             >
-              <dl className="tl-facts">
-                {plugins.facts.map((fact) => (
-                  <div key={fact.title}>
-                    <dt>{fact.title}</dt>
-                    <dd>{fact.text}</dd>
-                  </div>
+              <p className="tl-head-lead">{plugins.lead}</p>
+              <ul className="tl-points">
+                {plugins.points.map((point) => (
+                  <li key={point}>{point}</li>
                 ))}
-              </dl>
+              </ul>
             </Head>
             <Plugins />
           </div>
         </section>
 
         <section
-          className="tl-sec"
+          className="tl-sec tl-measure"
           data-wall="slate"
           aria-labelledby="tl-measure-title"
         >
-          <div className="m-wrap tl-measure">
+          <figure className="tl-measure-photo">
+            <img
+              src={photo.src}
+              srcSet={photo.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
+              sizes="(max-width: 900px) 100vw, 50vw"
+              width={photo.width}
+              height={photo.height}
+              alt={measure.photo.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <div className="tl-measure-text">
             <Head
               id="tl-measure-title"
-              kicker={measure.kicker}
               title={measure.title}
               mark={measure.mark}
             />
-            <Window
-              className="tl-measure-photo"
-              name="ex-skylight"
-              alt={measure.photo.alt}
-              ratio="3 / 2"
-              caption={measure.photo.caption}
-              sizes="(max-width: 900px) 100vw, 40vw"
-            />
             <div className="tl-promise">
               <div className="tl-is" data-reveal>
-                <p className="m-kicker">{measure.is.label}</p>
+                <h3>{measure.is.label}</h3>
                 <dl>
                   {measure.is.items.map(([term, text]) => (
                     <div key={term}>
@@ -205,12 +164,10 @@ export default function ToolPage() {
                 data-reveal
                 style={{ '--delay': '160ms' } as Vars}
               >
-                <p className="m-kicker">{measure.not.label}</p>
+                <h3>{measure.not.label}</h3>
                 <ul>
-                  {measure.not.items.map((item, index) => (
-                    <li key={item} style={{ '--n': index } as Vars}>
-                      <s>{item}</s>
-                    </li>
+                  {measure.not.items.map((item) => (
+                    <li key={item}>{item}</li>
                   ))}
                 </ul>
               </div>
@@ -218,83 +175,58 @@ export default function ToolPage() {
           </div>
         </section>
 
-        <section
-          className="tl-sec tl-end"
-          data-wall="paper"
-          aria-labelledby="tl-end-title"
-        >
-          <div className="m-wrap">
-            <Head
-              id="tl-end-title"
-              kicker="适合这样的时刻"
-              title={tool.fit}
-              size="h2"
-            />
-
-            <div className="tl-end-grid">
-              <div className="tl-end-progress" data-reveal>
-                <p className="m-kicker">当前进展</p>
-                <p className="tl-end-stage">
-                  <Status>{tool.stage}</Status>
-                </p>
-                <p className="tl-end-note">{tool.stageNote}</p>
-                <div className="tl-blocks">
-                  <p className="tl-blocks-key">
-                    <i aria-hidden="true" />
-                    {toolGo.have}
-                  </p>
-                  <ul>
-                    {blocks.have.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                  <p className="tl-blocks-key" data-not="">
-                    <i aria-hidden="true" />
-                    {toolGo.notYet}
-                  </p>
-                  <ul data-not="">
-                    {blocks.notYet.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-                <details className="tl-fold">
-                  <summary>{toolGo.original}</summary>
-                  {toolProgress.have.map((text) => (
-                    <p key={text}>{text}</p>
+        <section className="tl-sec tl-end" aria-labelledby="tl-end-title">
+          <div className="m-wrap tl-end-grid">
+            <div className="tl-end-main" data-reveal>
+              <Head id="tl-end-title" title={tool.fit} size="h2" />
+              <p className="tl-end-stage">
+                <Status>{tool.stage}</Status>
+                <span>{tool.stageNote}</span>
+              </p>
+              <p className="tl-end-go">
+                <Btn href={contactHref('tool')}>{toolGo.follow}</Btn>
+              </p>
+            </div>
+            <div
+              className="tl-end-lists"
+              data-reveal
+              style={{ '--delay': '120ms' } as Vars}
+            >
+              <div>
+                <h3>{toolGo.have}</h3>
+                <ul>
+                  {blocks.have.map((item) => (
+                    <li key={item}>{item}</li>
                   ))}
-                  <p>{toolProgress.notYet[0]}</p>
-                </details>
-                <p className="tl-end-go">
-                  <Btn href={contactHref('tool')}>{toolGo.follow}</Btn>
-                </p>
+                </ul>
               </div>
-
-              <div
-                className="tl-end-side"
-                data-reveal
-                style={{ '--delay': '120ms' } as Vars}
-              >
-                <div>
-                  <p className="m-kicker">{toolGo.relation}</p>
-                  <p>{toolProgress.notYet[1]}</p>
-                  <p className="m-actions">
-                    <Note>{toolGo.relationTag}</Note>
-                    <More href={productHref.work}>{toolGo.work}</More>
-                  </p>
-                </div>
-                <div>
-                  <p className="m-kicker">{toolGo.tryNow}</p>
-                  <p>
-                    {toolGo.now}
-                    {toolProgress.siblings}
-                  </p>
-                  <p className="m-actions">
-                    <More href={`${COMMUNITY}#take`}>{toolGo.community}</More>
-                  </p>
-                </div>
+              <div data-not="">
+                <h3>{toolGo.notYet}</h3>
+                <ul>
+                  {blocks.notYet.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
               </div>
             </div>
+          </div>
+          <div className="m-wrap tl-end-more" data-reveal>
+            <p>
+              {toolProgress.notYet[1]}
+              <More href={productHref.work}>{toolGo.work}</More>
+            </p>
+            <p>
+              {toolGo.now}
+              {toolProgress.siblings}
+              <More href={`${COMMUNITY}#take`}>{toolGo.community}</More>
+            </p>
+            <details className="tl-fold">
+              <summary>{toolGo.original}</summary>
+              {toolProgress.have.map((text) => (
+                <p key={text}>{text}</p>
+              ))}
+              <p>{toolProgress.notYet[0]}</p>
+            </details>
           </div>
         </section>
       </div>
