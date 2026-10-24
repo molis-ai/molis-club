@@ -8,8 +8,9 @@ import {
 } from 'react';
 import type { Tone } from '../../../content/site/tool';
 import type { Vars } from '../../_site/ui';
+import { useOnScreen, useStill } from '../../_site/cue';
 import { useCue } from './cue';
-import { LoopToggle, useOnScreen, useStill } from './stage';
+import { LoopToggle } from './stage';
 
 // 眼前的小事：像画廊那样在一个位置看完六件。左边是六件事的名字，右边一块墙板挂着当下这一件。
 // 宽屏一屏放得下时整段钉住，滚到哪件换到哪件（原生滚动，倒回去也行）；点名字直接滚到那一件，再点一下重演。
