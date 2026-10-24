@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, type RefObject } from 'react';
 // 没有 data-run 时就是「做完了」的样子：没有 JS、减少动态时停在那里。
 // 光标的弧线、按下由这里用 Web Animations 画；时钟能停（离开视口、切到后台、按了暂停），回来接着走。
 // 要访客亲手定的一下（ask）：舞台带上 data-ask，访客的鼠标在画面上变成「你」；没人按，过一会儿由画面里的光标按下去。
+// 一个舞台里并排几台（data-side，Tool 页的以前与现在）时，每台各有一只光标、各走一条线（side），拍子和时钟是同一份。
 
 type Point = { x: number; y: number };
 type Target = string | Element | Point;
@@ -70,6 +71,8 @@ export class Cue {
   private flags: [HTMLElement, string][] = [];
   private spots = new Map<HTMLElement, Point>();
   private hand: HTMLElement | null = null;
+  /** 当下在哪一台上演：找零件只在这里面找；没有就是整个舞台 */
+  private scope: HTMLElement | null = null;
   private asking = new Set<() => void>();
   /** 有它时只演一遍：演完、停够 rest 以后交给它，不再循环 */
   onEnd: OnEnd | null = null;
@@ -167,13 +170,17 @@ export class Cue {
   }
 
   el(name: string) {
-    return this.stage.querySelector<HTMLElement>(`[data-c='${name}']`);
+    return (this.scope ?? this.stage).querySelector<HTMLElement>(
+      `[data-c='${name}']`,
+    );
   }
 
   /** 同一拍里的几样：b-0、b-1……按顺序 */
   all(prefix: string) {
     return Array.from(
-      this.stage.querySelectorAll<HTMLElement>(`[data-c^='${prefix}-']`),
+      (this.scope ?? this.stage).querySelectorAll<HTMLElement>(
+        `[data-c^='${prefix}-']`,
+      ),
     ).filter((node) => /^\d+$/.test(node.dataset.c!.slice(prefix.length + 1)));
   }
 
@@ -220,11 +227,31 @@ export class Cue {
     delete this.stage.dataset.snap;
   }
 
-  /** 接下来用哪只光标（一个舞台里几块屏幕，各有各的） */
-  use(name?: string) {
-    this.hand = this.stage.querySelector<HTMLElement>(
-      name ? `[data-hand='${name}']` : '[data-hand]',
+  /** 接下来在哪一台上演：用那一台的光标，零件也只在那一台里找；不给名字就是整个舞台和它的光标 */
+  use(side?: string) {
+    this.scope = side
+      ? this.stage.querySelector<HTMLElement>(`[data-side='${side}']`)
+      : null;
+    this.hand = (this.scope ?? this.stage).querySelector<HTMLElement>(
+      '[data-hand]',
     );
+  }
+
+  /**
+   * 并排的那几台同时演：每台一条线，各拿一份。这一份每做一步之前先换到自己那一台（use），
+   * 所以两条线交替着走也不会拿错光标；拍子（data-cue）、时钟、暂停还是同一份，一起停、一起从头
+   */
+  side(name: string): Cue {
+    return new Proxy(this, {
+      get: (cue, key) => {
+        const value: unknown = Reflect.get(cue, key);
+        if (typeof value !== 'function') return value;
+        return (...args: unknown[]) => {
+          cue.use(name);
+          return value.apply(cue, args);
+        };
+      },
+    });
   }
 
   /** 光标从画框外进来，落到目标上 */
@@ -325,7 +352,10 @@ export class Cue {
   async ask(
     names: string[],
     fallback: string,
-    { wait = 5200, at = [0.3, 0.55] }: { wait?: number; at?: readonly [number, number] } = {},
+    {
+      wait = 5200,
+      at = [0.3, 0.55],
+    }: { wait?: number; at?: readonly [number, number] } = {},
   ) {
     if (this.quiet) return fallback;
     const run = this.run;
@@ -544,7 +574,7 @@ export class Cue {
 
 /**
  * 把一个舞台交给编排：live 时播（进入视口、页面在前台、没按暂停），否则停在原处；
- * active 为假时只停不重摆（画廊里换走的那一件，淡出时保持原样），再轮到它时从空白开始；
+ * active 为假时只停不重摆（钉住的屏幕换走的那一块、画廊里换走的那一件，淡出时保持原样），再轮到它时从空白开始；
  * hold 是访客亲手按出来的样子；still（减少动态）时停在做完的样子。
  */
 export function useCue(
@@ -623,7 +653,10 @@ export function useStill() {
 }
 
 /** 在视口里、页面在前台：只有这时才演 */
-export function useOnScreen(ref: RefObject<HTMLElement | null>, threshold = 0.3) {
+export function useOnScreen(
+  ref: RefObject<HTMLElement | null>,
+  threshold = 0.3,
+) {
   const [inView, setInView] = useState(false);
   const [hidden, setHidden] = useState(false);
   useEffect(() => {

@@ -1,32 +1,33 @@
 import type { Cue, Scene } from './cue';
 
-// 每一段演示怎么一拍一拍地演（specs/site-rebuild/tool-page.md 第 11 节）。光标带着人看：
+// 每一块屏幕怎么一拍一拍地演（specs/site-rebuild/tool-page.md 第 12 节）。光标带着人看：
 // 先停一会儿 → 光标从画框外进来 → 选中（I 形，选中色跟着拖） → 松手，动作条出现在选区末端 →
 // 光标走到动作上，停一下，按下 → 光标让开，结果就在原处发生 → 停久一点，留下一句「做完了」。
+// 「选中 → 动作条 → 结果在旁边」只在首屏完整演一次；往下每屏演新东西。
 // 名字对应画面里的 data-c，每一拍的样子写在 tool.css。
 
 /** 松手以后：动作条出来，光标走到第一个动作上，停一下再按 */
 async function pick(c: Cue, button: string) {
   c.cue('bar');
-  await c.wait(700);
+  await c.wait(600);
   c.arrow();
-  await c.to(button, { at: [0.66, 0.58], dur: 560, bend: 0.22 });
+  await c.to(button, { at: [0.66, 0.58], dur: 520, bend: 0.22 });
   c.cue('hover');
-  await c.wait(420);
+  await c.wait(380);
   await c.press('press');
-  await c.wait(300);
+  await c.wait(260);
 }
 
-/** 拖选一句乱掉的话：一截一截地铺上选中色 */
+/** 拖选几行：一行一行地铺上选中色 */
 async function sweep(c: Cue, name: string) {
   c.beam();
   await c.wait(240);
   for (const [index, part] of c.all(name).entries())
-    await c.drag(part, part, { dur: index ? 240 : 320 });
-  await c.wait(260);
+    await c.drag(part, part, { dur: index ? 300 : 420 });
+  await c.wait(240);
 }
 
-/** 清理：圆点、下划线、灰字先退掉，再把每一截从原处收进一句 */
+/** 清理：粗细、缩进先退掉，再把每一截从原处收进一句 */
 async function tidy(c: Cue, name: string, box?: string) {
   c.flag(name, 'tidy');
   await c.wait(220);
@@ -37,12 +38,42 @@ async function tidy(c: Cue, name: string, box?: string) {
 const streamed = (c: Cue, name: string) =>
   (c.el(name)?.textContent?.length ?? 0) * 32 + 500;
 
-/** 以前那一边做完的样子（访客亲手按「清理格式」时，左边直接摆好） */
-function finishBefore(c: Cue) {
-  c.all('app').forEach((app) => c.flag(app, 'sel'));
-  c.all('dot').forEach((dot) => c.flag(dot, 'sel'));
-  c.flag('before', 'tidy');
-  c.flag('before', 'clean');
+/** 以前（左边那台）：选中三行，到程序坞开表格，贴进去，到菜单栏找「分列」，再带回笔记；每到一站插一枚带序号的签，下面的步数跟着走（1–4） */
+async function was(c: Cue) {
+  await c.enter('line-0', { at: [0, 0.55] });
+  await sweep(c, 'line');
+  c.arrow();
+  await c.to('dock-表格', { at: [0.5, 0.35], dur: 1050, bend: -0.2 });
+  await c.press('sheet');
+  await c.wait(520);
+  await c.to('cell', { at: [0.3, 0.5], dur: 900, bend: 0.16 });
+  await c.press('paste');
+  await c.wait(520);
+  await c.to('menu', { at: [0.5, 0.55], dur: 900, bend: 0.2 });
+  await c.press('menu');
+  await c.wait(420);
+  await c.to('pick', { at: [0.32, 0.5], dur: 460, bend: 0.03 });
+  await c.press(() => {
+    c.uncue('menu');
+    c.cue('split');
+  });
+  await c.wait(700);
+  await c.to('note', { at: [0.3, 0.62], dur: 1100, bend: 0.22 });
+  await c.press('back');
+  await c.wait(1200);
+  await c.leave();
+}
+
+/** 现在（右边那台）：同一处选中，光标旁一步，只有一枚「一步」；做完就停在表上，等左边那台走完 */
+async function now(c: Cue) {
+  await c.enter('line-0', { at: [0, 0.55] });
+  await sweep(c, 'line');
+  await pick(c, 'after-btn');
+  c.uncue('bar');
+  c.cue('table', 'one');
+  await c.aside(1.8, 2.4);
+  await c.wait(600);
+  await c.leave();
 }
 
 export const scenes: Record<string, Scene> = {
@@ -67,279 +98,146 @@ export const scenes: Record<string, Scene> = {
     },
   },
 
-  /** 以前与现在：左边光标跑四个应用才收拾好；右边选中、点一下，就在原处收拢 */
+  /** 以前与现在：只比路程。两台同一刻开始，各走各的；两台都做完了才一起停、一起从头 */
   shift: {
-    settle: 1300,
-    rest: 3800,
-    async play(c) {
-      c.use('before');
-      const apps = c.all('app');
-      const dots = c.all('dot');
-      for (const [index, app] of apps.entries()) {
-        if (index) await c.to(app, { at: [0.5, 0.32], dur: 640 });
-        else await c.enter(app, { at: [0.5, 0.32] });
-        await c.wait(200);
-        await c.press(() => {
-          c.flag(app, 'sel');
-          c.flag(dots[index], 'sel');
-        });
-        await c.wait(320);
-      }
-      await c.to('before-paper', { at: [0.6, 0.6], dur: 900 });
-      await c.press();
-      await tidy(c, 'before', 'before-paper');
-      await c.leave();
-      await c.wait(700);
-
-      c.use('after');
-      await c.enter('after-0', { at: [0, 0.55] });
-      await sweep(c, 'after');
-      await pick(c, 'after-btn');
-      await c.aside();
-      await c.wait(120);
-      await tidy(c, 'after', 'after-paper');
-      c.cue('done');
-      await c.wait(700);
-      await c.leave();
-    },
-    acts: {
-      /** 访客按了「清理格式」：左边摆好，右边从乱的样子收拢 */
-      async clean(c) {
-        c.snap(() => {
-          finishBefore(c);
-          c.unflag(undefined, 'after');
-          c.all('after').forEach((part) => c.flag(part, 'sel'));
-          c.set('bar', 'hover');
-        });
-        await c.wait(60);
-        c.cue('press');
-        await tidy(c, 'after', 'after-paper');
-        c.cue('done');
-      },
-      /** 再按一下：退回乱的样子，可以再做一遍 */
-      async messy(c) {
-        c.snap(() => {
-          finishBefore(c);
-          c.all('after').forEach((part) => c.flag(part, 'sel'));
-          c.set('bar', 'hover');
-        });
-        await c.flip(c.all('after'), () => c.unflag(undefined, 'after'), {
-          box: 'after-paper',
-        });
-      },
-    },
-  },
-
-  /** 三层：光标旁选中日期记下 → 身旁框住海报出草稿 → 离开以后从菜单栏接续 */
-  relay: {
     settle: 1100,
-    rest: 3600,
+    rest: 4200,
     async play(c) {
-      c.cue('at-near');
-      c.use('near');
-      await c.enter('near-hl', { at: [0, 0.55] });
-      c.beam();
-      await c.wait(320);
-      await c.drag('near-hl', 'near-hl', { dur: 760 });
-      await c.wait(240);
-      await pick(c, 'near-btn');
-      c.uncue('bar');
-      await c.aside(1.6, 2.2);
-      c.cue('near-done');
-      await c.leave();
-      await c.wait(1300);
-
-      c.uncue('at-near');
-      c.cue('at-beside');
-      c.use('beside');
-      await c.enter('beside-frame', { at: [0, 0] });
-      await c.wait(260);
-      await c.drag('beside-frame', 'beside-frame', { box: true, dur: 900 });
-      await c.wait(380);
-      c.cue('draft');
-      await c.aside(-1.8, -0.6);
-      await c.wait(900);
-      await c.leave();
-      await c.wait(1100);
-
-      c.uncue('at-beside');
-      c.cue('at-later');
-      c.use('later');
-      await c.enter('later-icon', { at: [0.5, 0.6] });
-      c.cue('l-hover');
-      await c.wait(420);
-      await c.press('panel');
-      await c.wait(1300);
-      await c.to('later-back', { at: [0.3, 0.6], dur: 700 });
-      c.cue('back');
-      await c.wait(600);
-      await c.leave();
-      c.uncue('at-later');
+      await Promise.all([was(c.side('was')), now(c.side('now'))]);
     },
   },
 
-  /** 插件：拨开关 → 四处入口依次亮起 → 一条链走下来 → 再拨一下，入口收起，字幕还在 */
-  plug: {
-    settle: 1000,
-    rest: 3000,
+  // ---------- 眼前的小事：三件事，三层，各演各的 ----------
+
+  /** 光标旁：选中乱掉的一句，点「清理格式」，就在原处收拢 */
+  'c-near': {
+    settle: 900,
+    rest: 3400,
     async play(c) {
       c.use();
-      await c.enter('plug-toggle', { at: [0.62, 0.62] });
+      await c.enter('text-0', { at: [0, 0.55] });
+      await c.wait(240);
+      await sweep(c, 'text');
+      await pick(c, 'btn');
+      c.uncue('bar');
+      await c.aside(1.4, 2.6);
+      await tidy(c, 'text', 'paper');
+      await c.wait(700);
+      c.unflag('sel');
+      c.cue('done');
+      await c.leave();
+    },
+  },
+
+  /** 身旁：点一下报价.pdf，选「取出几页」，旁边的小卡里挑第 2–4 页，另存一份；原件不动 */
+  'c-beside': {
+    settle: 900,
+    rest: 3400,
+    async play(c) {
+      c.use();
+      await c.enter('pdf', { at: [0.5, 0.42] });
+      await c.wait(220);
+      await c.press(() => c.flag('pdf', 'sel'));
+      await c.wait(320);
+      await pick(c, 'btn');
+      c.uncue('bar');
+      c.cue('card');
+      await c.wait(800);
+      for (const [index, page] of c.all('pg').slice(1, 4).entries()) {
+        await c.to(page, {
+          at: [0.5, 0.42],
+          dur: index ? 420 : 900,
+          bend: index ? 0.04 : 0.16,
+        });
+        await c.press(() => c.flag(page, 'sel'));
+        await c.wait(140);
+      }
+      c.cue('range');
+      await c.wait(520);
+      await c.to('save', { at: [0.5, 0.55], dur: 640, bend: 0.1 });
+      c.cue('s-hover');
+      await c.wait(320);
+      await c.press('saved');
+      await c.aside(1.8, 2);
+      await c.wait(500);
+      c.cue('done');
+      await c.leave();
+    },
+  },
+
+  /**
+   * 离开以后：选中日期，点「整理成日程」，草稿出来，收进菜单栏的「接续」；去做别的（窗口收下去，时间走了二十几分钟），
+   * 回来从菜单栏打开接续，草稿等你确认，早上和午后做的也在
+   */
+  'c-later': {
+    settle: 900,
+    rest: 3600,
+    async play(c) {
+      c.use();
+      await c.enter('when', { at: [0, 0.55] });
+      c.beam();
+      await c.wait(320);
+      await c.drag('when', 'when', { dur: 820 });
+      await c.wait(240);
+      await pick(c, 'btn');
+      c.uncue('bar');
+      c.cue('draft');
+      await c.aside(-1.6, 2.4);
+      await c.wait(1500);
+      c.cue('stow');
+      await c.wait(900);
+      await c.leave();
+      c.cue('away');
+      await c.wait(1300);
+      c.cue('later');
+      await c.wait(700);
+      await c.enter('molis', { at: [0.5, 0.6], from: [0.62, 1.06] });
+      c.cue('m-hover');
+      await c.wait(320);
+      await c.press('panel');
+      await c.wait(1000);
+      await c.to('row', { at: [0.42, 0.5], dur: 620, bend: 0.06 });
+      c.cue('row');
+      await c.wait(1400);
+      await c.leave();
+    },
+  },
+
+  /** 插件：拨开关 → 四处同时多出「生成字幕」→ 在光标旁点一下，生成访谈.srt → 再拨一下，四处收起，字幕还在 */
+  plug: {
+    settle: 1000,
+    rest: 3200,
+    async play(c) {
+      c.use();
+      await c.enter('plug-toggle', { at: [0.6, 0.6] });
       c.cue('hover');
       await c.wait(380);
       await c.press('on');
-      await c.aside(-1.2, 2.4);
+      c.uncue('hover');
+      await c.aside(1.6, 3.4);
       for (const step of ['s1', 's2', 's3', 's4']) {
         c.cue(step);
-        await c.wait(420);
+        await c.wait(360);
       }
-      await c.wait(500);
-      for (const step of ['c1', 'c2', 'c3', 'c4', 'c5']) {
-        c.cue(step);
-        await c.wait(480);
-      }
+      await c.wait(900);
+      await c.to('gen', { at: [0.6, 0.6], dur: 1000, bend: 0.16 });
+      c.cue('g-hover');
+      await c.wait(360);
+      await c.press('made');
+      c.uncue('g-hover');
+      await c.aside(1.6, 2.2);
       await c.wait(1600);
-      await c.to('plug-toggle', { at: [0.62, 0.62], dur: 620 });
+      await c.to('plug-toggle', { at: [0.6, 0.6], dur: 1000, bend: -0.16 });
+      c.cue('hover');
       await c.wait(320);
-      await c.press(() => {
-        c.uncue('on', 's1', 's2', 's3', 's4');
-        c.cue('kept');
-      });
+      await c.press(() => c.uncue('on', 's1', 's2', 's3', 's4'));
       await c.wait(500);
       c.uncue('hover');
       await c.leave();
     },
     acts: {
-      on: (c) =>
-        c.set('on', 's1', 's2', 's3', 's4', 'c1', 'c2', 'c3', 'c4', 'c5'),
-      off: (c) => c.set('c1', 'c2', 'c3', 'c4', 'c5', 'kept'),
-    },
-  },
-
-  // ---------- 眼前的小事：六件各演各的 ----------
-
-  'm-clean': {
-    settle: 1100,
-    async play(c) {
-      c.use();
-      await c.enter('text-0', { at: [0, 0.55] });
-      await c.wait(260);
-      await sweep(c, 'text');
-      await pick(c, 'btn');
-      c.uncue('bar');
-      await c.aside();
-      await tidy(c, 'text', 'paper');
-      await c.wait(900);
-      c.unflag('sel');
-      c.cue('done');
-      await c.leave();
-    },
-  },
-
-  'm-pages': {
-    settle: 1100,
-    async play(c) {
-      c.use();
-      const pages = c.all('pg');
-      await c.enter(pages[1], { at: [0.3, 0.45] });
-      await c.wait(260);
-      await c.press(() => c.flag(pages[1], 'sel'));
-      for (const page of pages.slice(2, 4)) {
-        await c.to(page, { at: [0.55, 0.45], dur: 440, bend: 0.03 });
-        c.flag(page, 'sel');
-      }
-      await c.wait(300);
-      await pick(c, 'btn');
-      c.uncue('bar');
-      await c.aside(2.4, 1.4);
-      c.cue('copy');
-      await c.wait(1100);
-      c.cue('done');
-      await c.leave();
-    },
-  },
-
-  'm-table': {
-    settle: 1100,
-    async play(c) {
-      c.use();
-      await c.enter('line-0', { at: [0, 0.55] });
-      c.beam();
-      await c.wait(300);
-      for (const [index, line] of c.all('line').entries())
-        await c.drag(line, line, { dur: index ? 420 : 620 });
-      await c.wait(260);
-      await pick(c, 'btn');
-      c.uncue('bar');
-      await c.aside(2.2, 2.6);
-      c.cue('table');
-      await c.wait(1400);
-      await c.to('price', { at: [0.55, 0.6], dur: 720 });
-      c.cue('th');
-      await c.wait(420);
-      await c.press();
-      await c.flip(c.all('row'), () => c.flag('table', 'sort'));
-      await c.aside(1.4, 2);
-      c.cue('done');
-      await c.leave();
-    },
-  },
-
-  'm-caption': {
-    settle: 1100,
-    async play(c) {
-      c.use();
-      await c.enter('photo', { at: [0.62, 0.48] });
-      await c.wait(300);
-      await c.press(() => c.flag('photo', 'sel'));
-      await c.wait(360);
-      await pick(c, 'btn');
-      c.uncue('bar');
-      await c.aside(-2.2, 2.4);
-      c.cue('says');
-      await c.wait(streamed(c, 'says'));
-      c.unflag('sel');
-      c.cue('done');
-      await c.leave();
-    },
-  },
-
-  'm-poster': {
-    settle: 1100,
-    async play(c) {
-      c.use();
-      await c.enter('frame', { at: [0, 0] });
-      await c.wait(300);
-      await c.drag('frame', 'frame', { box: true, dur: 900 });
-      await c.wait(260);
-      await pick(c, 'btn');
-      c.uncue('bar');
-      await c.aside(-1.6, 2.4);
-      c.cue('draft');
-      await c.wait(1200);
-      c.cue('done');
-      await c.leave();
-    },
-  },
-
-  'm-todo': {
-    settle: 1100,
-    async play(c) {
-      c.use();
-      await c.enter('msg-0', { at: [0, 0.55] });
-      c.beam();
-      await c.wait(300);
-      await c.drag('msg-0', 'msg-0', { dur: 720 });
-      await c.drag('msg-1', 'msg-1', { dur: 520 });
-      await c.wait(260);
-      await pick(c, 'btn');
-      c.uncue('bar');
-      await c.aside(-2, 2.4);
-      c.cue('list');
-      await c.wait(1300);
-      c.unflag('sel');
-      c.cue('done');
-      await c.leave();
+      on: (c) => c.set('on', 's1', 's2', 's3', 's4', 'made'),
+      off: (c) => c.set('made'),
     },
   },
 };
