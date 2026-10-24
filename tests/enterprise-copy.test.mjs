@@ -52,6 +52,16 @@ void test('合作路线每站的事与产出都是第 5 章原句片段', () => 
     verbatim(text, '5.5 小标题');
 });
 
+void test('短片画面里的小词都是第 5 章原文里的词', () => {
+  const { line, path } = enterprise;
+  assert.deepEqual(Object.keys(line.props), Object.keys(path.stations));
+  const words = Object.values(line.props).flatMap((film) =>
+    Object.values(film).flat(),
+  );
+  assert.ok(words.length > 20, '小词不该是空的');
+  for (const word of words) verbatim(word, '短片小词');
+});
+
 void test('满幅那一屏：引子与三拍连起来是开场第三段原句', () => {
   const { vista, intro } = enterprise;
   assert.equal(vista.lead + vista.beats.flat().join(''), intro[2]);

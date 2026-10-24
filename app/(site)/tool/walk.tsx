@@ -2,7 +2,8 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Vars } from '../../_site/ui';
 import { useCue } from './cue';
-import { HoldContext, LoopToggle, useOnScreen, useStill } from './stage';
+import { useOnScreen, useStill } from '../../_site/cue';
+import { HoldContext, LoopToggle } from './stage';
 
 // 首屏以后的一长段（specs/site-rebuild/tool-page.md 第 13 节）：右边一块 Mac 屏幕钉住，左边的字一段一段滚过去。
 // 哪段字压过视口中线，右边就换成那一段的屏幕（只交叉淡入淡出，不位移）；换到它时从空白开始演，换走时停在原处。

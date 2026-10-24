@@ -3,29 +3,16 @@ import { Pause, Play } from 'lucide-react';
 import {
   createContext,
   useContext,
-  useEffect,
   useRef,
   useState,
   type ReactNode,
-  type RefObject,
 } from 'react';
 import { useCue } from './cue';
+import { useOnScreen, useStill } from '../../_site/cue';
 
 // Tool 页演示的外壳（屏幕在 mac.tsx，小零件在 parts.tsx，编排在 cue.ts 与 scripts.ts）。基础样式就是「做完了」的样子：
 // 没有 JS、减少动态时停在结果上；动起来时由编排接管（data-run），一拍一拍地演。
 // 每段演示是一块 Mac 屏幕（.tl-mac）；「示意」统一是屏幕下面一行小字。
-
-export function useStill() {
-  const [still, setStill] = useState(true);
-  useEffect(() => {
-    const media = matchMedia('(prefers-reduced-motion: reduce)');
-    const sync = () => setStill(media.matches);
-    sync();
-    media.addEventListener('change', sync);
-    return () => media.removeEventListener('change', sync);
-  }, []);
-  return still;
-}
 
 /** 访客亲手接过演示：hold 是停下来的那个样子（例如 'clean'、'off'），null 是照常循环 */
 type Hold = { hold: string | null; setHold: (value: string | null) => void };
@@ -34,29 +21,6 @@ export const HoldContext = createContext<Hold>({
   setHold: () => {},
 });
 export const useHold = () => useContext(HoldContext);
-
-/** 在视口里、页面在前台：钉住的那几块屏幕也用它 */
-export function useOnScreen(ref: RefObject<HTMLElement | null>) {
-  const [inView, setInView] = useState(false);
-  const [hidden, setHidden] = useState(false);
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      { threshold: 0.3 },
-    );
-    const sync = () => setHidden(document.hidden);
-    observer.observe(node);
-    sync();
-    document.addEventListener('visibilitychange', sync);
-    return () => {
-      observer.disconnect();
-      document.removeEventListener('visibilitychange', sync);
-    };
-  }, [ref]);
-  return inView && !hidden;
-}
 
 /** 右下角的暂停键 */
 export function LoopToggle({

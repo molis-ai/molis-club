@@ -17,14 +17,8 @@ const pages = {
     'content/site/home.ts',
     'content/site/studio.ts',
   ],
-  '/work': [
-    `${site}/work`,
-    'content/site/work.ts',
-    'app/_site/scenes/work.tsx',
-    'app/_site/scenes/work.css',
-    ...product,
-  ],
-  '/tool': [`${site}/tool`, 'content/site/tool.ts', ...product],
+  '/work': [`${site}/work`, 'content/site/work.ts', 'app/_site/cue.ts', ...product],
+  '/tool': [`${site}/tool`, 'content/site/tool.ts', 'app/_site/cue.ts', ...product],
   '/life': [
     `${site}/life`,
     'content/site/life.ts',

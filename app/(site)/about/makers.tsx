@@ -4,6 +4,7 @@ import { pieces } from '../../../content/site/exhibit';
 import { Label } from '../../_site/exhibit/exhibit';
 import { mediaOf, Phrases, type Vars } from '../../_site/ui';
 import { MakersPainting } from './makers-painting';
+import { MakersPin } from './makers-pin';
 
 // 《黑客与画家》一屏（负责人 2026-10-20 定版式；10-22 加开头一句过渡，四张手稿跟着底稿 1.3 那句）：
 // 上面一行：左边是负责人写的那句「我们希望带着《黑客与画家》里说的那种匠人精神去创造。」，右边一句收尾「没人细看的地方，也一样认真。」；
@@ -11,6 +12,7 @@ import { MakersPainting } from './makers-painting';
 // 下面四张「达·芬奇手稿」：产品设计、写代码、拍视频、写故事（负责人 2026-10-20 生成），像四张纸摊在桌上，各歪一点。
 // 看到时一张接一张落到桌上，先是淡淡的底稿，再一遍遍描深，最后才是定稿的颜色——正好是那句话说的「先起稿，再一遍遍修改」。
 // 停在一张上，那张摆正、抬起来一点。写故事那张右上角的杜松，和画里她身后的杜松是同一种植物。
+// 宽屏改成钉住一屏、跟着滚动讲三拍（负责人 2026-10-23，makers-pin.tsx）：开头那句和画 → 推近杜松和典故 → 收尾那句当标题，1.3 后半句和四张手稿。
 
 type Craft = {
   name: Parameters<typeof mediaOf>[0] & Parameters<typeof Label>[0]['piece'];
@@ -28,11 +30,10 @@ const crafts: Craft[] = [
 
 export function Makers() {
   const sentence = studio.standard.makers;
-  // 「像《黑客与画家》里那样，」之后的部分；冒号前后分两档颜色
-  const say = sentence.slice(sentence.indexOf('，') + 1);
-  const cut = say.indexOf('：') + 1;
+  // 只留冒号后面「先起稿，再一遍遍修改，直到经得起真实使用。」：前半句的写代码、做设计、讲故事，四张手稿的名字已经说了（负责人 2026-10-23）
+  const say = sentence.slice(sentence.indexOf('：') + 1);
   return (
-    <div className="mk">
+    <MakersPin>
       <div className="mk-head">
         <h2 className="mk-title" id="makers-title">
           <Phrases text={aboutNext.makers.lead} />
@@ -46,10 +47,7 @@ export function Makers() {
         <MakersPainting />
         <div className="mk-right">
           <p className="mk-say">
-            <Phrases text={say.slice(0, cut)} />
-            <span className="mk-say-tail">
-              <Phrases text={say.slice(cut)} />
-            </span>
+            <Phrases text={say} />
           </p>
           <ul className="mk-crafts" data-reveal>
             {crafts.map(({ name, tilt }, index) => {
@@ -94,6 +92,6 @@ export function Makers() {
           </p>
         </div>
       </div>
-    </div>
+    </MakersPin>
   );
 }

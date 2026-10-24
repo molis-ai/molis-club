@@ -2,7 +2,6 @@
    「关于」第四版（负责人 2026-10-22，next.tsx）：图退后，字和作品往前。整站的纸白，区块之间只有留白，不画线、不加编号。
    光（首屏）· 线（摊开、一扇窗、绘图桌）· 画（人的那一厅、《黑客与画家》、结尾）。
    人的那一厅（联创团队、来路）和结尾的墙是亚麻（DESIGN.md 的 wall-people），进出都是一段缓缓的渐变。
-   去文章、沿途的小卡（.ao-go）沿用 one.css 的写法，这里补一份同样的样式（上一版的 one.css 只在对照时载入）。
    ===================================================================== */
 
 .an {
@@ -250,6 +249,32 @@
   padding-block: clamp(24px, 4.6vh, 56px);
 }
 
+/* 钉住时才是那一屏（makers-pin.tsx）；不钉住时不占位，排法同原来一屏 */
+.mk-stage {
+  display: contents;
+}
+/* 指纹那一带的杏色小圈：只在钉住、推近之后亮起 */
+.mk-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 52px;
+  height: 52px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.55),
+    inset 0 0 0 1px rgb(255 255 255 / 0.4),
+    0 0 18px rgb(255 240 220 / 0.5);
+  translate: -50% -50%;
+  opacity: 0;
+  scale: 0.5;
+  pointer-events: none;
+  transition:
+    opacity 0.6s var(--ease),
+    scale 0.9s var(--ease);
+}
+
 /* 态度：左边底稿 1.3 那句，右边一句收尾，底边对齐 */
 .mk-head {
   /* 宽度跟着下面那一排走，不撑宽 */
@@ -351,15 +376,17 @@
 .mk-art-where {
   display: block;
 }
-.mk-story,
-.mk-found {
+.mk-story {
+  display: block;
   font: 400 13.5px / 1.85 var(--sans);
   letter-spacing: 0.03em;
   color: var(--ink-2);
   text-wrap: pretty;
 }
-/* 指纹那句：第一次推近时浮出来，之后一直留着 */
+/* 指纹那句：接在典故后面另起一行，第一次推近时浮出来，之后一直留着 */
 .mk-found {
+  display: block;
+  margin-top: 6px;
   color: var(--ink);
   opacity: 0;
   transition: opacity 0.9s var(--ease) 1.6s;
@@ -381,9 +408,6 @@ html:not(.js) .mk-found {
   letter-spacing: 0.04em;
   color: var(--ink);
   text-wrap: balance;
-}
-.mk-say-tail {
-  color: var(--ink-2);
 }
 .mk-crafts {
   display: grid;
@@ -460,6 +484,11 @@ html:not(.js) .mk-found {
   animation: mk-draft 2.8s cubic-bezier(0.4, 0, 0.2, 1) backwards;
   animation-delay: calc(var(--i) * 0.34s + 0.15s);
 }
+@keyframes mk-mark {
+  50% {
+    scale: 1.18;
+  }
+}
 @keyframes mk-drop {
   from {
     opacity: 0;
@@ -511,6 +540,170 @@ html:not(.js) .mk-found {
     grid-template-columns: var(--mk-pw) var(--mk-side);
     align-items: end;
     gap: 28px;
+  }
+}
+
+/* 宽屏、有 JS、不减少动态：钉住一屏，跟着滚动讲三拍（makers-pin.tsx 的 data-stage）。
+   0、1 两拍：左边是画，右边一栏换字（开头那句 → 典故），展签挂在右栏底下；
+   2 画退开，收尾那句当标题，1.3 后半句和四张手稿横排落下（这几样在钉住的那一屏里排成一列居中） */
+@media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+  .js .mk {
+    --mk-h: calc(100svh - var(--header));
+    --mk-pad: clamp(28px, 6vh, 64px);
+    --mk-pw: min((var(--mk-h) - 2 * var(--mk-pad)) * 0.9436, 46vw, 640px);
+    --mk-cg: clamp(48px, 6vw, 112px);
+    /* 画和右边一栏（最宽 30rem）作为一组，在版心里居中 */
+    --mk-x: max(0px, (100% - var(--mk-pw) - var(--mk-cg) - 30rem) / 2);
+    --mk-col: calc(var(--mk-x) + var(--mk-pw) + var(--mk-cg));
+    --mk-cw: minmax(0, 1fr);
+    display: block;
+    /* 块容器上的 align-content 也会把钉住的那一屏推到中间，这里还原 */
+    align-content: normal;
+    height: 300svh;
+    min-height: 0;
+    padding: 0;
+  }
+  .js .mk-stage {
+    position: sticky;
+    top: var(--header);
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: clamp(16px, 2.6vh, 28px);
+    height: var(--mk-h);
+  }
+  .js :is(.mk-head, .mk-body, .mk-art, .mk-art-text, .mk-right) {
+    display: contents;
+  }
+  /* 画：左边，竖着居中 */
+  .js .mk-paint {
+    position: absolute;
+    top: 50%;
+    left: var(--mk-x);
+    translate: 0 -50%;
+    transition:
+      opacity 0.9s var(--ease),
+      scale 1.1s var(--ease);
+    cursor: default;
+  }
+  .js .mk[data-stage='2'] .mk-paint {
+    opacity: 0;
+    scale: 0.94;
+    pointer-events: none;
+  }
+  .js .mk[data-stage='1'] .mk-mark {
+    opacity: 1;
+    scale: 1;
+    transition-delay: 3.2s;
+    animation: mk-mark 2.4s var(--ease) 4s 2;
+  }
+  /* 右边一栏：开头那句、典故叠在同一个位置，一拍只亮一层 */
+  .js :is(.mk-title, .mk-story) {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: var(--mk-col);
+    max-width: 30rem;
+    translate: 0 calc(-50% + 14px);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.8s var(--ease),
+      translate 0.9s var(--ease),
+      visibility 0s 0.9s;
+  }
+  .js .mk[data-stage='0'] .mk-title,
+  .js .mk[data-stage='1'] .mk-story {
+    translate: 0 -50%;
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.9s var(--ease) 0.25s,
+      translate 1s var(--ease) 0.25s,
+      visibility 0s;
+  }
+  .js .mk-title {
+    font: 300 clamp(26px, 2.3vw, 36px) / 1.6 var(--sans);
+    letter-spacing: 0.04em;
+  }
+  .js .mk-story {
+    display: block;
+    font-size: clamp(16px, 1.3vw, 19px);
+    line-height: 1.95;
+    color: var(--ink);
+  }
+  /* 指纹那句：推近停稳之后再浮出来 */
+  .js .mk-found {
+    display: block;
+    margin-top: 14px;
+    font-size: inherit;
+    line-height: inherit;
+    opacity: 0;
+    transition: opacity 0.8s var(--ease);
+  }
+  .js .mk[data-stage='1'] .mk-found {
+    opacity: 1;
+    transition-delay: 2.6s;
+  }
+  /* 展签：前两拍挂在右栏底下 */
+  .js .mk-art-name {
+    position: absolute;
+    bottom: var(--mk-pad);
+    left: var(--mk-col);
+    opacity: 0;
+    transition: opacity 0.8s var(--ease);
+  }
+  .js .mk:is([data-stage='0'], [data-stage='1']) .mk-art-name {
+    opacity: 1;
+  }
+  /* 第三拍：收尾那句、1.3 后半句、四张手稿、展签，一列居中 */
+  .js :is(.mk-line, .mk-say, .mk-crafts, .mk-crafts-label) {
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.6s var(--ease),
+      visibility 0s 0.6s;
+  }
+  .js .mk[data-stage='2'] :is(.mk-line, .mk-say, .mk-crafts, .mk-crafts-label) {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.9s var(--ease) 0.35s,
+      visibility 0s;
+  }
+  .js .mk[data-stage='2'] .mk-say {
+    transition-delay: 0.6s;
+  }
+  .js .mk-line {
+    padding: 0;
+    text-align: center;
+    white-space: normal;
+    font: 300 clamp(28px, 2.6vw, 40px) / 1.5 var(--sans);
+    letter-spacing: 0.05em;
+  }
+  .js .mk-say {
+    max-width: 34em;
+    margin-bottom: clamp(8px, 1.6vh, 16px);
+    text-align: center;
+    color: var(--ink-2);
+  }
+  .js .mk-crafts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(18px, 2vw, 32px);
+    width: min(100%, (var(--mk-h) - 300px) * 2.6);
+  }
+  .js .mk:not([data-stage='2']) .mk-crafts .mk-sheet {
+    opacity: 0;
+    animation: none;
+  }
+  .js .mk:not([data-stage='2']) .mk-crafts .mk-paper img {
+    animation: none;
+  }
+  .js .mk[data-stage='2'] .mk-crafts .mk-sheet {
+    animation-delay: calc(0.7s + var(--i) * 0.3s);
+  }
+  .js .mk[data-stage='2'] .mk-crafts .mk-paper img {
+    animation-delay: calc(0.85s + var(--i) * 0.3s);
   }
 }
 
@@ -707,6 +900,25 @@ html:not(.js) .mk-found {
 .sp-beat {
   font: 300 var(--t-h3) / 1.6 var(--sans);
   letter-spacing: 0.05em;
+}
+.sp-credit-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s var(--ease);
+}
+.sp-credit-link svg {
+  align-self: center;
+  flex: none;
+  transition: translate 0.3s var(--ease);
+}
+.sp-credit-link:hover {
+  color: var(--ink);
+}
+.sp-credit-link:hover svg {
+  translate: 3px 0;
 }
 .sp-products {
   display: flex;
@@ -1007,9 +1219,12 @@ html:not(.js) .mk-found {
     position: absolute;
     top: clamp(20px, 3.4vh, 32px);
     right: var(--gutter);
-    z-index: 2;
+    z-index: 3;
+    visibility: hidden;
     opacity: 0;
-    transition: opacity 0.8s var(--ease);
+    transition:
+      opacity 0.8s var(--ease),
+      visibility 0s 0.8s;
   }
   .js
     .sp:is(
@@ -1021,6 +1236,10 @@ html:not(.js) .mk-found {
     )
     .sp-credit {
     opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.8s var(--ease),
+      visibility 0s;
   }
 
   /* 54 件：位置都是钉住那一屏的百分比（--x 是宽的 1%，--y 是高的 1%） */
@@ -1613,29 +1832,50 @@ html:not(.js) .mk-found {
   letter-spacing: 0.03em;
   color: var(--mute);
 }
-.cr-tags {
+.cr-says {
+  /* 画里的人自己说的话：左下角几个小气泡，撑开后一条一条冒出来 */
+  position: absolute;
+  bottom: clamp(14px, 1.4vw, 20px);
+  left: clamp(14px, 1.4vw, 20px);
+  z-index: 1;
   display: grid;
-  gap: 3px;
-  margin: 4px 0 0;
+  justify-items: start;
+  gap: 6px;
+  max-width: calc((var(--row) - var(--cap)) * 0.72);
+  margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 13px;
-  line-height: 1.6;
+  pointer-events: none;
+}
+.cr-says li {
+  padding: 4px 12px;
+  border-radius: 14px 14px 14px 4px;
+  background: rgb(255 255 255 / 0.9);
+  box-shadow: 0 1px 2px rgb(40 30 20 / 0.08);
+  font-size: 12.5px;
+  line-height: 1.5;
   letter-spacing: 0.03em;
   color: var(--ink);
+  opacity: 0;
+  translate: 0 6px;
+  scale: 0.96;
+  transform-origin: 0 100%;
+  transition:
+    opacity 0.2s var(--ease),
+    translate 0.2s var(--ease),
+    scale 0.2s var(--ease);
 }
-.cr-tags li::before {
-  content: '「';
-  color: var(--accent-ink);
-}
-.cr-tags li::after {
-  content: '」';
-  color: var(--accent-ink);
+.cr-pc[data-on] .cr-says li {
+  opacity: 1;
+  translate: 0 0;
+  scale: 1;
+  transition-duration: 0.55s;
+  transition-delay: calc(0.5s + var(--at, 0) * 0.14s);
 }
 .cr-exp {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 6;
+  -webkit-line-clamp: 9;
   overflow: hidden;
   padding-top: 10px;
   border-top: 1px solid var(--hair);
@@ -1643,6 +1883,19 @@ html:not(.js) .mk-found {
   line-height: 1.85;
   letter-spacing: 0.03em;
   color: var(--ink-2);
+}
+.cr-writes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+}
+.cr-writes-label {
+  color: var(--mute);
 }
 .cr-name {
   grid-row: 2;
@@ -1676,8 +1929,15 @@ html:not(.js) .mk-found {
 }
 
 /* =====================================================================
-   ⑥ 来路：一屏。章名居中，下面三段字各配一张若隐若现的小插画，像一本书里的三幅题图；最后一排是沿途和两篇文章
+   ⑥ 来路：一屏。章名居中，下面三段字各配一张若隐若现的小插画，像一本书里的三幅题图。
+   进来时画像墨洇开一样从中间显出来（--og-ink 是遮罩的半径），一张接一张；画与画之间一道点线，最后一个杏色小点。
+   停在一幅画上，它再往外洇开一点
    ===================================================================== */
+@property --og-ink {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
 .an-origin {
   display: grid;
   justify-items: center;
@@ -1687,9 +1947,12 @@ html:not(.js) .mk-found {
   padding-block: clamp(56px, 9vh, 104px);
 }
 .og-three {
+  --og-gap: clamp(32px, 4.4vw, 80px);
+  --og-r: clamp(90px, 8.5vw, 130px);
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(32px, 4.4vw, 80px);
+  gap: var(--og-gap);
   width: 100%;
   margin-top: clamp(20px, 4vh, 44px);
 }
@@ -1700,7 +1963,89 @@ html:not(.js) .mk-found {
   gap: clamp(10px, 2vh, 18px);
 }
 .og-vignette {
-  width: clamp(180px, 17vw, 260px);
+  width: calc(var(--og-r) * 2);
+}
+.og-vignette img {
+  --og-ink: 1;
+  -webkit-mask-image: radial-gradient(
+    closest-side,
+    #000 calc(var(--og-ink) * 70%),
+    transparent calc(var(--og-ink) * 100%)
+  );
+  mask-image: radial-gradient(
+    closest-side,
+    #000 calc(var(--og-ink) * 70%),
+    transparent calc(var(--og-ink) * 100%)
+  );
+}
+.js .og-vignette img {
+  transition:
+    --og-ink 2.2s var(--ease) var(--delay, 0ms),
+    scale 2.2s var(--ease) var(--delay, 0ms);
+}
+.js .og-vignette:not(.is-in) img {
+  --og-ink: 0.12;
+  scale: 0.97;
+}
+.js .og-item:hover .og-vignette.is-in img {
+  --og-ink: 1.14;
+  scale: 1.02;
+  transition-duration: 1.2s;
+}
+.js .og-item .og-p {
+  transition-delay: calc(var(--delay, 0ms) + 0.5s);
+}
+/* 两段点线：从一幅画的右边，弯一下，到下一幅画的左边 */
+.og-road {
+  position: absolute;
+  top: calc(var(--og-r) - 26px);
+  width: calc(
+    (100% - 2 * var(--og-gap)) / 3 + var(--og-gap) - 2 * var(--og-r) - 28px
+  );
+  height: 30px;
+  pointer-events: none;
+}
+.og-road-1 {
+  left: calc((100% - 2 * var(--og-gap)) / 6 + var(--og-r) + 14px);
+}
+.og-road-2 {
+  left: calc(50% + var(--og-r) + 14px);
+}
+.og-road svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.og-road path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 0 7;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.85;
+}
+/* 最后一段的尽头：一个杏色小点 */
+.og-road-2::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.js .og-road {
+  clip-path: inset(-8px -8px -8px 0);
+  transition:
+    opacity 0.6s var(--ease) var(--delay, 0ms),
+    clip-path 1.4s var(--ease) var(--delay, 0ms);
+}
+.js .og-road:not(.is-in) {
+  clip-path: inset(-8px calc(100% + 8px) -8px 0);
+  transform: none;
 }
 .og-item .og-p {
   max-width: 22rem;
@@ -1718,207 +2063,306 @@ html:not(.js) .mk-found {
   color: var(--ink-2);
   text-wrap: pretty;
 }
-.og-links {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  width: min(100%, 960px);
-  margin: clamp(32px, 6vh, 64px) 0 0;
-  padding: 0;
-  list-style: none;
-}
 
 /* =====================================================================
-   ⑧ 结尾：一屏，放慢。两行邀请，「树下，总有空位」慢慢显影，一句话，四个横排的去处（卡片整张是链接，只有字和一个箭头），
-   最后一个杏色小点当句号
+   ⑧ 结尾「树下」（end.tsx）：回到首屏的光。纸白的墙上落着叶影，缓缓地晃，叶缝里漏下一块暖光；
+   打字机打出一句英文标题，光标停在一行空白里——那一行可以直接写；下面另外三张半透明的卡
    ===================================================================== */
 .an-end {
-  display: grid;
-  align-content: center;
-  min-height: calc(100svh - var(--header));
-  padding-block: clamp(28px, 6vh, 72px) clamp(24px, 4vh, 48px);
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(
     to bottom,
     var(--paper),
-    var(--wall-people) min(34svh, 300px),
-    var(--wall-people) calc(100% - 140px),
-    var(--paper)
+    #f6f1e8 min(30svh, 260px),
+    #f6f1e8
   );
 }
-.an-end-in {
+.te {
+  position: relative;
   display: grid;
-  justify-items: center;
-  width: min(100%, calc(1160px + 2 * var(--gutter)));
-  text-align: center;
+  align-items: center;
+  min-height: calc(100svh - var(--header));
 }
-/* 两行邀请，一行一行浮上来 */
-.an-end-title {
-  display: grid;
-  font: 300 clamp(22px, 2.2vw, 34px) / 1.7 var(--sans);
-  letter-spacing: 0.06em;
-  scroll-margin-top: calc(var(--header) + 32px);
+/* 叶影：两层枝条，远的那层更虚；只动 transform，像风从右上角吹过来 */
+.te-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
-.an-end-line {
+.te-far,
+.te-near {
+  position: absolute;
+  inset: -6% -4% 0 auto;
+  width: min(118%, 1500px);
+  transform-origin: 100% 0;
+  will-change: transform;
+}
+.te-light svg {
   display: block;
+  width: 100%;
+  height: 100%;
 }
-.an-end-line + .an-end-line {
-  color: var(--ink-2);
+.te-light path {
+  fill: rgb(74 62 44);
 }
-/* 「树下，总有空位」：宽一点的椭圆，四周淡进墙里；看到时慢慢显影 */
-.an-end-art {
-  width: min(100%, 680px, calc((100svh - var(--header)) * 0.64));
-  margin-top: clamp(0px, 1vh, 12px);
+.te-light .te-twig {
+  fill: none;
+  stroke: rgb(74 62 44);
+  stroke-width: 3;
+  stroke-linecap: round;
 }
-.an-end-art img {
-  -webkit-mask-image: radial-gradient(
-    ellipse closest-side,
-    #000 58%,
+.te-far {
+  opacity: 0.075;
+  filter: blur(9px);
+  animation: te-sway 13s ease-in-out infinite alternate;
+}
+.te-near {
+  opacity: 0.11;
+  filter: blur(3.5px);
+  animation: te-sway-near 8.5s ease-in-out -3s infinite alternate;
+}
+@keyframes te-sway {
+  from {
+    transform: rotate(-1.4deg) translate(0, 0);
+  }
+  to {
+    transform: rotate(1.2deg) translate(-14px, 6px);
+  }
+}
+@keyframes te-sway-near {
+  from {
+    transform: rotate(0.8deg) translate(4px, -2px);
+  }
+  to {
+    transform: rotate(-1.6deg) translate(-10px, 8px);
+  }
+}
+.te[data-still] :is(.te-far, .te-near, .te-fleck) {
+  animation-play-state: paused;
+}
+/* 叶缝里漏下的一块暖光，落在标题右上方，跟着风轻轻挪 */
+.te-fleck {
+  position: absolute;
+  top: calc(50% - 250px);
+  left: calc(50% + 40px);
+  width: 280px;
+  height: 210px;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(255 226 190 / 0.75),
+    rgb(255 226 190 / 0.3) 55%,
     transparent
   );
-  mask-image: radial-gradient(ellipse closest-side, #000 58%, transparent);
+  animation: te-fleck 8.5s ease-in-out -3s infinite alternate;
 }
-.js .an-end-art img {
-  transition:
-    opacity 2.6s var(--ease) 0.6s,
-    filter 2.6s var(--ease) 0.6s,
-    scale 3.2s var(--ease) 0.6s;
+@keyframes te-fleck {
+  to {
+    translate: -16px 10px;
+    scale: 1.06;
+  }
 }
-.js .an-end-art:not(.is-in) img {
-  opacity: 0;
-  filter: var(--grade) saturate(0.9) blur(6px);
-  scale: 1.04;
+
+.te-body {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: min(100%, calc(60rem + 2 * var(--gutter)));
+  padding-block: clamp(48px, 10vh, 120px);
+  text-align: center;
 }
-.an-doors-lead {
-  max-width: 46em;
-  margin: clamp(6px, 1.6vh, 16px) 0 clamp(18px, 3.4vh, 32px);
-  font: 400 13px / 1.9 var(--sans);
-  letter-spacing: 0.03em;
-  color: var(--ink-2);
+.te-body > .tw {
+  display: grid;
+}
+.te-title {
+  font: 300 clamp(24px, 3.2vw, 50px) / 1.55 var(--sans);
+  letter-spacing: 0.06em;
+  color: var(--ink);
   text-wrap: balance;
 }
-/* 四个去处横排 */
-.an-doors-list {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+.te-title[lang='en'] {
+  font: 300 clamp(34px, 4.4vw, 68px) / 1.3 var(--latin);
+  letter-spacing: 0.01em;
+}
+.js .tw[data-state='wait'] .tw-c {
+  opacity: 0;
+}
+/* 轮到你说：一行空白，一道淡淡的底线，光标停在开头闪；写下的话带去「聊一聊」 */
+.te-say {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  width: min(100%, 30rem);
+  margin-top: clamp(28px, 5vh, 52px);
+}
+.te-field {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+.te-field input {
+  all: unset;
+  box-sizing: border-box;
   width: 100%;
-  margin: 0;
+  padding: 6px 0 7px;
+  border-bottom: 1px solid rgb(27 26 24 / 0.16);
+  font: 400 clamp(16px, 1.3vw, 19px) / 1.6 var(--sans);
+  letter-spacing: 0.05em;
+  text-align: left;
+  color: var(--ink);
+  caret-color: var(--accent);
+  transition: border-color 0.4s var(--ease);
+}
+.te-field input::placeholder {
+  color: rgb(27 26 24 / 0.28);
+}
+.te-field input:focus {
+  border-bottom-color: var(--accent);
+}
+.te-field input:focus-visible {
+  outline: none;
+}
+/* 没聚焦、还没写字时，开头那道杏色光标自己闪（聚焦后换成真的光标） */
+.te-caret {
+  position: absolute;
+  top: 9px;
+  left: 0;
+  width: 2px;
+  height: 1.1em;
+  border-radius: 1px;
+  background: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+.te-say[data-on] .te-field input:placeholder-shown:not(:focus) {
+  text-indent: 10px;
+}
+.te-say[data-on] .te-field:has(input:placeholder-shown:not(:focus)) .te-caret {
+  animation: tw-blink 1.05s steps(1) infinite;
+  opacity: 1;
+}
+.te-go {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  text-decoration: none;
+}
+.te-go svg {
+  transition: translate 0.3s var(--ease);
+}
+.te-go:hover svg {
+  translate: 3px 0;
+}
+.js .te-say {
+  opacity: 0;
+  translate: 0 8px;
+  transition:
+    opacity 0.9s var(--ease),
+    translate 0.9s var(--ease);
+}
+.js .te-say[data-on] {
+  opacity: 1;
+  translate: 0 0;
+}
+/* 没有 JS：没有输入行，只留「聊一聊」 */
+html:not(.js) .te-field {
+  display: none;
+}
+html:not(.js) .te-say {
+  justify-content: center;
+}
+.te-others {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: min(100%, 54rem);
+  margin: clamp(40px, 8vh, 80px) 0 0;
   padding: 0;
   list-style: none;
   text-align: left;
 }
-/* 最后一个杏色小点：整页的句号 */
-.an-end-dot {
-  width: 7px;
-  height: 7px;
-  margin-top: clamp(24px, 5vh, 52px);
-  border-radius: 50%;
-  background: var(--accent);
-}
-.an-door {
+/* 半透明的卡：透出后面的叶影；整张是链接，右下一个圆形箭头 */
+.te-door {
   position: relative;
   display: grid;
   align-content: start;
-  gap: 8px;
+  gap: 6px;
   height: 100%;
-  min-height: 108px;
-  padding: 16px 20px 18px;
-  background: rgb(255 255 255 / 0.7);
+  min-height: 96px;
+  padding: 14px 18px 16px;
   border-radius: var(--r-card);
-  background: var(--white);
-  box-shadow: 0 0 0 1px var(--hair);
+  background: rgb(255 255 255 / 0.62);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.7);
   color: var(--ink);
+  text-decoration: none;
   transition:
     translate 0.5s var(--ease),
+    background 0.5s var(--ease),
     box-shadow 0.5s var(--ease);
 }
-.an-door:hover {
-  translate: 0 -4px;
+.te-door:hover {
+  translate: 0 -3px;
+  background: rgb(255 255 255 / 0.82);
   box-shadow:
-    0 0 0 1px var(--hair-2),
-    0 18px 34px -26px rgb(var(--shade) / 0.5);
+    0 0 0 1px rgb(255 255 255 / 0.9),
+    0 16px 30px -24px rgb(var(--shade) / 0.5);
 }
-.an-door:focus-visible {
+.te-door:focus-visible {
   outline: 1.5px solid var(--ink);
   outline-offset: 4px;
 }
-.an-door-head {
+.te-door-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  font: 400 16px / 1.4 var(--sans);
+  font: 400 14px / 1.4 var(--sans);
   letter-spacing: 0.08em;
 }
-.an-door-head i {
-  font: italic 300 14px / 1 var(--latin);
+.te-door-head i {
+  font: italic 300 12.5px / 1 var(--latin);
   letter-spacing: 0.01em;
   color: var(--mute);
 }
-.an-door-line {
-  padding-right: 34px;
-  font-size: 13px;
+.te-door-line {
+  padding-right: 32px;
+  font-size: 12px;
   line-height: 1.75;
   letter-spacing: 0.03em;
   color: var(--ink-2);
 }
-.an-door-go {
+.te-door-go {
   position: absolute;
-  right: 14px;
-  bottom: 14px;
+  right: 12px;
+  bottom: 12px;
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   box-shadow: inset 0 0 0 1px var(--hair-2);
   transition:
     background 0.4s var(--ease),
     color 0.4s var(--ease);
 }
-.an-door:hover .an-door-go {
+.te-door:hover .te-door-go {
   background: var(--ink);
   color: var(--paper);
 }
-
-/* 去文章、沿途：有标题和说明的小卡，只有圆形箭头是链接（同上一版 .ao-go）；挂在亚麻墙上用白底 */
-.an .ao-go {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 16px;
-  border-radius: var(--r-card);
-  background: rgb(255 255 255 / 0.72);
-  color: var(--ink);
-}
-.an .ao-go-body {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-}
-.an .ao-go-title {
-  font: 400 15px / 1.5 var(--sans);
-  letter-spacing: 0.04em;
-}
-.an .ao-go-line {
-  font-size: 12px;
-  line-height: 1.7;
-  letter-spacing: 0.03em;
-  color: var(--mute);
-}
-.an .ao-go-line .num {
-  color: var(--ink);
+.te-pause {
+  position: absolute;
+  right: var(--gutter);
+  bottom: clamp(18px, 3vh, 28px);
 }
 
 /* =====================================================================
    中等宽度与窄屏
    ===================================================================== */
-@media (max-width: 1100px) {
-  .an-doors-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 @media (max-width: 900px) {
   /* 窄屏：上下排。态度、画和典故、四格两列 */
   .mk {
@@ -1945,9 +2389,11 @@ html:not(.js) .mk-found {
   .an-origin {
     min-height: 0;
   }
-  .og-three,
-  .og-links {
+  .og-three {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .og-road {
+    display: none;
   }
   .og-three {
     gap: 40px;
@@ -2000,6 +2446,26 @@ html:not(.js) .mk-found {
   .cr-exp {
     -webkit-line-clamp: unset;
   }
+  /* 头像太小，气泡回到字下面，排成一行浅色便签 */
+  .cr-says {
+    position: static;
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: none;
+  }
+  .cr-says li,
+  .cr-pc[data-on] .cr-says li {
+    padding: 2px 10px;
+    background: rgb(255 255 255 / 0.7);
+    box-shadow: none;
+    font-size: 12px;
+    opacity: 1;
+    translate: none;
+    scale: none;
+    transition: none;
+  }
 }
 @media (max-width: 760px) {
   .an-hero {
@@ -2013,7 +2479,15 @@ html:not(.js) .mk-found {
   .sp-name {
     display: none;
   }
-  .an-doors-list {
+  .te-fleck {
+    top: calc(50% - 230px);
+    left: calc(50% - 60px);
+  }
+  .te-say {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .te-others {
     grid-template-columns: minmax(0, 1fr);
   }
   .dy-arts {
@@ -2061,7 +2535,10 @@ html:not(.js) .mk-found {
   .cr-face,
   .cr-face img,
   .cr-cv,
-  .an-door,
+  .cr-says li,
+  .og-vignette img,
+  .og-road,
+  .te-door,
   .dy-step,
   .dy-pane,
   .dy-sun,
@@ -2096,8 +2573,42 @@ html:not(.js) .mk-found {
     display: grid;
     height: auto;
   }
+  .cr-says {
+    position: static;
+  }
+  .cr-says li {
+    opacity: 1;
+  }
   .an-hall,
   .an-end {
     background: none;
+  }
+  .te-light,
+  .te-say,
+  .te-pause {
+    display: none;
+  }
+}
+
+/* 减少动态：叶影不晃；没有可停的，暂停键也收起 */
+@media (prefers-reduced-motion: reduce) {
+  .te-far,
+  .te-near,
+  .te-fleck {
+    animation: none;
+  }
+  .te-pause {
+    display: none;
+  }
+}
+
+/* 减少动态、打印：来路的画和点线停在画好的样子 */
+@media (prefers-reduced-motion: reduce), print {
+  .js .og-vignette:not(.is-in) img {
+    --og-ink: 1;
+    scale: none;
+  }
+  .js .og-road:not(.is-in) {
+    clip-path: none;
   }
 }

@@ -1,303 +1,182 @@
-import type { CSSProperties } from 'react';
+import { CircleSlash, HardDrive, KeyRound, ShieldCheck } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { pageMetadata } from '../../../lib/site';
-import {
-  products,
-  WORK_BUILD,
-  WORK_GITHUB,
-  WORK_RELEASES,
-} from '../../../content/site/products';
-import { studio } from '../../../content/site/studio';
-import {
-  personas,
-  workCompare,
-  workEnding,
-  workGo,
-  workIdeas,
-  workStatus,
-  workTour,
-  workWays,
-} from '../../../content/site/work';
-import { ProductHero } from '../../_site/product/product';
-import { ABOUT, contactHref, essayHref, productHref } from '../../_site/routes';
-import { Btn, More, pad, SectionHead, Window } from '../../_site/ui';
-import { WorkActs } from './acts';
-import { Copy } from './copy';
-import { Day } from './day';
-import { HeroDemo } from './hero';
-import { PersonaAsk, personaBoot, PersonaRoot, WorkNav } from './persona';
-import { Tour } from './tour';
-import { Ways } from './ways';
-import '../../_site/demo/demo.css';
+import { products, WORK_BUILD, WORK_GITHUB } from '../../../content/site/products';
+import { workEnd, workHero, workKeep, workTour, workWeekend } from '../../../content/site/work';
+import { contactHref, productHref } from '../../_site/routes';
+import { Btn, More, Phrases, Status, type Vars } from '../../_site/ui';
+import { HeroStage, Tour, Weekend } from './stages';
 import '../../_site/product/product.css';
 import './work.css';
 
 const work = products.work;
-/** v0.2.0 发布时的安装说明（那时还叫 GoalBoard） */
-const WORK_V020_INSTALL =
-  'https://github.com/molis-ai/molis-work/blob/v0.2.0/docs/installation.md';
 
 export const metadata = pageMetadata(
-  `${work.name} · ${work.headline}`,
-  work.what + work.opening[1],
+  `${work.name} · ${workHero.title}`,
+  workHero.what,
   productHref.work,
 );
 
-// Molis Work：工作室最核心的产品页（目标与完成要求见 specs/work-product-page/spec.md）。
-// 两种读者各看各的例子（写代码 / 写文档、管事情）；能用画面演的不写字。
-// 首屏 → 产品全景（窗口八段）→ 三件事 → 四幕（递、接、长、一起干）→ 想怎么干 → 对比 → 现状 → 那人做什么。
+// Molis Work（2026-10-24 重做，目标、取舍与验收见 specs/work-product-page/spec.md）。
+// 一句话：工具和 AI 围着你转，你还是你。整页只有一个例子：一个周末，把一个想法做上线。
+// 首屏（做完以后的周一早上）→ 全景（一扇窗，七处依次点亮）→ 一个周末（六个时刻，钉住的画廊）
+// → 留在你这儿 → 缘起与现在。画面照最新桌面端画；功能按做好的样子演，走到哪一步只在结尾写一次。
+// 两种光标：杏橙指针是「你」（只在你动手、你定的时候出现），插入光标加灰名牌是 AI（它在写）。
+
+function Head({
+  id,
+  kicker,
+  title,
+  size,
+  children,
+}: {
+  id: string;
+  kicker: string;
+  title: string;
+  /** screen：和画面同一屏的小一号标题（全景、一个周末） */
+  size?: 'screen';
+  children?: ReactNode;
+}) {
+  return (
+    <header className="wk-head" data-size={size} data-reveal>
+      <p className="m-kicker">{kicker}</p>
+      <h2 className="wk-head-title" id={id}>
+        <Phrases text={title} />
+      </h2>
+      {children}
+    </header>
+  );
+}
+
+const KEEP_ICON = { local: HardDrive, models: KeyRound, grants: ShieldCheck };
+
 export default function WorkPage() {
   return (
-    <PersonaRoot className="m-product m-work wp" id="top">
-      <script dangerouslySetInnerHTML={{ __html: personaBoot }} />
-      <ProductHero product={work} visual={<HeroDemo />} aside={<PersonaAsk />} />
-      <WorkNav />
+    <div className="m-product m-work wk">
+      <header className="wk-hero m-wrap m-top">
+        <div className="wk-hero-copy">
+          <p className="m-tagline m-rise">
+            <span>{workHero.form}</span>
+            <Status>{workHero.stage}</Status>
+          </p>
+          <h1 className="m-phero-name m-rise" lang="en">
+            {work.name}
+          </h1>
+          <p className="wk-hero-title m-rise" style={{ '--delay': '120ms' } as Vars}>
+            <Phrases text={workHero.title} />
+          </p>
+          <p className="wk-hero-slogan m-rise" lang="en" style={{ '--delay': '180ms' } as Vars}>
+            {workHero.slogan}
+          </p>
+          <p className="wk-hero-what m-rise" style={{ '--delay': '240ms' } as Vars}>
+            {workHero.what}
+          </p>
+          <p className="wk-hero-go m-rise" style={{ '--delay': '320ms' } as Vars}>
+            <Btn href={contactHref('work')}>{workHero.go}</Btn>
+          </p>
+        </div>
+        <HeroStage label={workHero.label} />
+      </header>
 
-      <section className="m-sig wp-tour" id="tour" aria-labelledby="tour-title">
-        <SectionHead
-          no={pad(1)}
-          kicker={workTour.kicker}
-          title={workTour.title}
-          id="tour-title"
-          size="h2"
-        />
-        <Tour />
+      <section className="wk-sec wk-tour-sec" aria-labelledby="wk-tour-title">
+        <div className="m-wrap">
+          <Tour head={<Head id="wk-tour-title" kicker={workTour.kicker} title={workTour.title} size="screen" />} />
+        </div>
       </section>
 
-      <section className="m-wrap wp-ideas" aria-label="三件事">
-        {workIdeas.map((idea, index) => (
-          <a
-            key={idea.id}
-            className="wp-idea"
-            href={`#${idea.id}`}
-            data-k={idea.id}
-            data-reveal
-            style={{ '--delay': `${index * 90}ms` } as CSSProperties}
-          >
-            <span className="wp-idea-art" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-              <i />
-            </span>
-            <span className="wp-idea-mark">{idea.mark}</span>
-            <span className="wp-idea-line">{idea.line}</span>
-          </a>
-        ))}
+      <section className="wk-gal-sec" aria-labelledby="wk-weekend-title">
+        <Weekend
+          head={<Head id="wk-weekend-title" kicker={workWeekend.kicker} title={workWeekend.title} size="screen" />}
+        />
       </section>
 
-      <WorkActs />
-
-      <section className="m-sig" id="ways" aria-labelledby="ways-title">
-        <SectionHead
-          no={pad(6)}
-          kicker={workWays.kicker}
-          title={workWays.title}
-          id="ways-title"
-          size="h2"
-        />
-        <Ways />
-      </section>
-
-      <section className="m-sig" id="compare" aria-labelledby="compare-title">
-        <SectionHead
-          no={pad(7)}
-          kicker={workCompare.kicker}
-          title={workCompare.title}
-          id="compare-title"
-          size="h2"
-        />
-        {personas.map((persona) => (
-          <div key={persona} className="wp-compare" data-p={persona} data-reveal>
-            <table>
-              <thead>
-                <tr>
-                  {workCompare.head.map((head) => (
-                    <th key={head} scope="col">
-                      {head}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {workCompare.rows[persona].map((row) => (
-                  <tr key={row.way}>
-                    <th scope="row">
-                      {row.way}
-                      <small>{row.note}</small>
-                    </th>
-                    {row.cells.map((cell, index) => (
-                      <td key={cell} data-h={workCompare.head[index + 1]}>
-                        {cell}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-                <tr className="wp-us">
-                  <th scope="row">{workCompare.us}</th>
-                  {workCompare.usCells[persona].map((cell, index) => (
-                    <td key={cell} data-h={workCompare.head[index + 1]}>
-                      {cell}
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-            <p className="wp-gap">{workCompare.gap[persona]}</p>
-          </div>
-        ))}
-      </section>
-
-      <section className="m-sig" id="now" aria-labelledby="now-title">
-        <SectionHead
-          no={pad(8)}
-          kicker={workStatus.kicker}
-          title={
-            <>
-              {personas.map((persona) => (
-                <span key={persona} data-p={persona}>
-                  {workStatus.title[persona]}
-                </span>
-              ))}
-            </>
-          }
-          id="now-title"
-          size="h2"
-        />
-        <div className="wp-now">
-          <div className="wp-now-col" data-reveal>
-            <p className="wp-now-label" data-tone="rel">
-              {workStatus.released.label}
-            </p>
-            <ul>
-              {workStatus.released.items.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-            <p className="wp-now-note">{workStatus.released.note}</p>
-            <div className="m-actions">
-              <More href={WORK_RELEASES} external>
-                发布记录
-              </More>
-            </div>
-          </div>
-          <div className="wp-now-col" data-reveal style={{ '--delay': '90ms' } as CSSProperties}>
-            <p className="wp-now-label">{workStatus.developing.label}</p>
-            <ul>
-              {workStatus.developing.items.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="wp-now-start" data-p="dev" data-reveal style={{ '--delay': '180ms' } as CSSProperties}>
-            <h3>{workStatus.start.title}</h3>
-            <ol>
-              {workStatus.start.steps.map((step) => (
-                <li key={step.title}>
-                  <b>{step.title}</b>
-                  {step.hint ? <span>{step.hint}</span> : null}
-                  {step.code ? (
-                    <div className="wp-code">
-                      <pre>{step.code}</pre>
-                      <Copy text={step.code} />
-                    </div>
+      <section className="wk-sec wk-keep-sec" aria-labelledby="wk-keep-title">
+        <div className="m-wrap wk-keep">
+          <Head id="wk-keep-title" kicker={workKeep.kicker} title={workKeep.title} />
+          <div className="wk-keep-rows">
+            {workKeep.rows.map((row, index) => {
+              const Icon = KEEP_ICON[row.id as keyof typeof KEEP_ICON];
+              return (
+                <div key={row.id} className="wk-keep-row" data-reveal style={{ '--delay': `${index * 120}ms` } as Vars}>
+                  <p className="wk-keep-ic" aria-hidden="true">
+                    <Icon />
+                  </p>
+                  <h3>{row.title}</h3>
+                  <p className="wk-keep-text">{row.text}</p>
+                  {row.id === 'local' ? (
+                    <p className="wk-keep-vis wk-keep-path" aria-hidden="true">
+                      <span>~/Molis Work/划线卡片</span>
+                      <small>本机 · SQLite</small>
+                    </p>
                   ) : null}
-                  {step.say ? (
-                    <div className="wp-code wp-say">
-                      <p>{step.say}</p>
-                      <Copy text={step.say} />
-                    </div>
+                  {row.id === 'models' ? (
+                    <p className="wk-keep-vis wk-keep-models">
+                      {workKeep.models.map((model) => (
+                        <span key={model} data-picked={model === workKeep.picked || undefined}>
+                          {model}
+                        </span>
+                      ))}
+                    </p>
                   ) : null}
-                </li>
-              ))}
-            </ol>
-            <p className="wp-now-note">{workStatus.start.note}</p>
-            <div className="m-actions">
-              <More href={WORK_V020_INSTALL} external>
-                完整安装说明
-              </More>
-            </div>
-          </div>
-          <div className="wp-now-start" data-p="doc" data-reveal style={{ '--delay': '180ms' } as CSSProperties}>
-            <h3>{workStatus.follow.title}</h3>
-            <p>{workStatus.follow.text}</p>
-            <div className="m-actions">
-              <Btn href={contactHref('work')}>{workGo.follow}</Btn>
-            </div>
-            <p className="wp-now-note">{workStatus.follow.friend}</p>
+                  {row.id === 'grants' ? (
+                    <dl className="wk-keep-vis wk-keep-grants">
+                      {workKeep.grants.map(([who, rule, kind]) => (
+                        <div key={who} data-kind={kind}>
+                          <dt>{who}</dt>
+                          <dd>
+                            {kind === 'no' ? <CircleSlash aria-hidden="true" /> : null}
+                            {rule}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                  ) : null}
+                </div>
+              );
+            })}
           </div>
         </div>
-        <ul className="wp-bounds" data-reveal>
-          {workStatus.bounds.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
       </section>
 
-      <section className="m-sig wp-end" id="ending" aria-labelledby="ending-title">
-        <SectionHead
-          no={pad(9)}
-          kicker={workEnding.kicker}
-          title={workEnding.title}
-          id="ending-title"
-          size="h2"
-        />
-        <Day />
-        <div className="wp-uses">
-          {workEnding.uses.map((use, index) => (
-            <article
-              key={use.title}
-              className="wp-use"
-              data-k={`u${index}`}
-              data-reveal
-              style={{ '--delay': `${index * 90}ms` } as CSSProperties}
-            >
-              <h3>{use.title}</h3>
-              {personas.map((persona) => (
-                <p key={persona} className="wp-use-eg" data-p={persona}>
-                  {use.eg[persona]}
-                </p>
+      <section className="wk-sec wk-end" aria-labelledby="wk-end-title">
+        <div className="m-wrap">
+          <div className="wk-end-why" data-reveal>
+            <h2 className="wk-end-origin" id="wk-end-title">
+              {workEnd.origin.map((line) => (
+                <span key={line}>{line}</span>
               ))}
-            </article>
-          ))}
-        </div>
-        <div className="wp-vision">
-          <Window
-            name="ex-shore-person"
-            alt="白色的沙滩上，一个人面朝大海站着。"
-            ratio="21 / 9"
-            sizes="(max-width: 900px) 100vw, 90vw"
-            caption="Time, given back"
-            className="wp-vision-window"
-          />
-          <div className="wp-vision-text" data-reveal>
-            <p className="m-kicker">{workEnding.why}</p>
-            <p className="wp-vision-big">{studio.vision}</p>
-            <div className="m-actions">
-              <More href={essayHref('human-scale')}>{workEnding.essay}</More>
-              <More href={ABOUT}>{workEnding.about}</More>
+            </h2>
+            <p className="wk-end-belief">{workEnd.belief}</p>
+            <p className="wk-end-text">{workEnd.beliefText}</p>
+          </div>
+          <div className="wk-end-now">
+            <div className="wk-now" data-reveal>
+              <p className="wk-now-k">
+                <Status>{workEnd.dev.label}</Status>
+              </p>
+              <p className="wk-now-text">{workEnd.dev.text}</p>
+              <p className="m-actions">
+                <Btn href={contactHref('work')}>{workEnd.dev.go}</Btn>
+                <More href={WORK_BUILD} external>
+                  {workEnd.dev.build}
+                </More>
+              </p>
             </div>
-            <p className="wp-sign">{studio.signature}</p>
+            <div className="wk-now" data-reveal style={{ '--delay': '120ms' } as Vars}>
+              <p className="wk-now-k">
+                <Status>{workEnd.released.label}</Status>
+              </p>
+              <p className="wk-now-text">{workEnd.released.text}</p>
+              <p className="m-actions">
+                <More href={WORK_GITHUB} external>
+                  {workEnd.released.go}
+                </More>
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="wp-close" data-reveal>
-          <p className="wp-close-line">{workEnding.closing}</p>
-          <div className="m-actions" data-p="dev">
-            <Btn href={WORK_GITHUB} external>
-              {workGo.github}
-            </Btn>
-            <More href={WORK_BUILD} external>
-              {workGo.build}
-            </More>
-            <More href={contactHref('work')}>{workGo.follow}</More>
-          </div>
-          <div className="m-actions" data-p="doc">
-            <Btn href={contactHref('work')}>{workGo.follow}</Btn>
-            <More href={WORK_GITHUB} external>
-              {workGo.github}
-            </More>
-          </div>
+          <p className="wk-end-foot">{workEnd.foot}</p>
         </div>
       </section>
-    </PersonaRoot>
+    </div>
   );
 }

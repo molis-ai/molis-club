@@ -327,6 +327,7 @@ function Diagnose() {
     end: 10.2,
   };
   const order: Who[] = ['you', 'we', 'both'];
+  const words = line.props.diagnose;
   const cut = reel('diagnose', cue.end);
 
   const camera = cut.track(
@@ -387,7 +388,7 @@ function Diagnose() {
     GLIDE,
   );
 
-  // 场景卡：发牌的顺序打散，第二张和第五张（左上那格的）是要圈的
+  // 场景卡：发牌的顺序打散，第二张和第五张（左上那格的）是要圈的；每张写一样工作
   const cards = [
     { x: 740, y: 140 },
     { x: 512, y: 166, chosen: true },
@@ -400,6 +401,7 @@ function Diagnose() {
     const from = { x: 840, y: 336 + index * 14 };
     return {
       ...card,
+      word: words.scenes[index],
       track: cut.track([
         [
           t,
@@ -451,10 +453,15 @@ function Diagnose() {
           cy="208"
           r="13"
         />
-        <path
-          className={`m-k-thin ${cut.track(fade(cue.write + 0.3, 0.5))}`}
-          d="M100 256 H270 M100 280 H218"
-        />
+        {/* 三步底下写「当前做法」，圈底下写「希望发生的变化」 */}
+        <g className={cut.track(fade(cue.write + 0.3, 0.5))}>
+          <text className="m-film-word" x="146" y="248" textAnchor="middle">
+            {words.now}
+          </text>
+          <text className="m-film-word" x="252" y="248" textAnchor="middle">
+            {words.wish}
+          </text>
+        </g>
       </g>
 
       {/* Molis 的四格：两条轴先画出来 */}
@@ -496,32 +503,31 @@ function Diagnose() {
         <g key={`${card.x}-${card.y}`} className={card.track}>
           <rect
             className="m-film-card"
-            x={card.x - 26}
-            y={card.y - 17}
-            width="52"
-            height="34"
+            x={card.x - 36}
+            y={card.y - 15}
+            width="72"
+            height="30"
             rx="6"
           />
           {card.chosen && (
             <rect
               className={`m-film-card-hot ${card.hot}`}
-              x={card.x - 26}
-              y={card.y - 17}
-              width="52"
-              height="34"
+              x={card.x - 36}
+              y={card.y - 15}
+              width="72"
+              height="30"
               rx="6"
             />
           )}
           <circle
             className={card.chosen ? 'm-film-card-dot' : 'm-film-dot'}
-            cx={card.x - 14}
+            cx={card.x - 25}
             cy={card.y}
-            r="4"
+            r="3.5"
           />
-          <path
-            className="m-film-card-line"
-            d={`M${card.x - 5} ${card.y} H${card.x + 16}`}
-          />
+          <text className="m-film-word" x={card.x - 17} y={card.y}>
+            {card.word}
+          </text>
         </g>
       ))}
 
@@ -611,6 +617,7 @@ function Build() {
     end: 12,
   };
   const order: Who[] = ['you', 'we', 'both'];
+  const words = line.props.build;
   const cut = reel('build', cue.end);
 
   const camera = cut.track(
@@ -684,14 +691,11 @@ function Build() {
     GLIDE,
   );
 
-  const lines = [194, 212, 230, 248, 266, 284, 302, 320];
-  const ends = [214, 204, 216, 190, 210, 176, 200, 160];
-
   const art = (
     <>
       <Shadow id={shadow} />
 
-      {/* 业务团队的两页资料，前一页上要紧的那一行被圈了一笔 */}
+      {/* 业务团队的两页资料：业务资料、术语、判断规则、例外情况，圈了一笔的是例外情况 */}
       <g className={`m-film-carry ${papers}`}>
         <g filter={`url(#${shadow})`}>
           <rect
@@ -715,18 +719,15 @@ function Build() {
               rx="8"
             />
           </g>
-          <rect
-            className="m-film-title"
-            x="96"
-            y="170"
-            width="64"
-            height="6"
-            rx="3"
-          />
-          <path
-            className="m-k-thin"
-            d={lines.map((y, i) => `M96 ${y} H${ends[i]}`).join(' ')}
-          />
+          <text className="m-film-word" data-strong="" x="96" y="176">
+            {words.paper}
+          </text>
+          {words.items.map((item, i) => (
+            <text key={item} className="m-film-word" x="96" y={204 + i * 22}>
+              {item}
+            </text>
+          ))}
+          <path className="m-k-thin" d="M96 284 H206 M96 302 H178" />
           <path
             className={`m-film-ink ${cut.track(draw(cue.mark, 0.6))}`}
             pathLength={1}
@@ -754,7 +755,7 @@ function Build() {
           <circle key={cx} className="m-k-light" cx={cx} cy="108" r="3.5" />
         ))}
       </g>
-      {/* 产品交互：一个输入框 */}
+      {/* 产品交互：一个输入框，里面是「直接说出需求」 */}
       <g className={`m-film-pop ${cut.track(pop(cue.parts))}`}>
         <rect
           className="m-film-field"
@@ -764,14 +765,9 @@ function Build() {
           height="44"
           rx="9"
         />
-        <rect
-          className="m-film-faint"
-          x="450"
-          y="167"
-          width="120"
-          height="6"
-          rx="3"
-        />
+        <text className="m-film-word" data-faint="" x="450" y="170">
+          {words.ask}
+        </text>
       </g>
       {/* 运行键 */}
       <g className={`m-film-pop ${cut.track(pop(cue.parts + 0.2))}`}>
@@ -809,7 +805,7 @@ function Build() {
         cy="290"
         r="14"
       />
-      {/* 工具能力：挂在两步下面的两件工具 */}
+      {/* 工具能力：挂在两步下面的两件工具，知识助手和业务系统 */}
       {[600, 720].map((cx, index) => (
         <g
           key={cx}
@@ -818,13 +814,21 @@ function Build() {
           <path className="m-k-cell" d={`M${cx} 306 V338`} />
           <rect
             className="m-film-chip"
-            x={cx - 20}
+            x={cx - 30}
             y="338"
-            width="40"
+            width="60"
             height="20"
             rx="10"
           />
-          <path className="m-film-card-line" d={`M${cx - 9} 348 H${cx + 9}`} />
+          <text
+            className="m-film-word"
+            data-small=""
+            x={cx}
+            y="348"
+            textAnchor="middle"
+          >
+            {words.tools[index]}
+          </text>
         </g>
       ))}
 
@@ -927,6 +931,7 @@ function Assess() {
     end: 11.2,
   };
   const order: Who[] = ['you', 'we', 'both'];
+  const words = line.props.assess;
   const cut = reel('assess', cue.end);
 
   const camera = cut.track(
@@ -1052,14 +1057,9 @@ function Assess() {
           height={160}
           rx={10}
         />
-        <rect
-          className="m-film-title"
-          x="170"
-          y="216"
-          width="70"
-          height="6"
-          rx="3"
-        />
+        <text className="m-film-word" data-strong="" x="170" y="220">
+          {words.sheet}
+        </text>
         <path
           className="m-k-thin"
           d="M170 242 H306 M170 262 H290 M170 282 H300"
@@ -1077,7 +1077,7 @@ function Assess() {
         ))}
       </g>
 
-      {/* Molis：从结果单逐条连到核对单，三行打勾 */}
+      {/* Molis：从结果单逐条连到核对单（结果质量、来源依据、完成情况），三行打勾 */}
       <path
         className={`m-film-trace ${cut.track(fade(cue.panel + 0.2, 0.5))}`}
         d="M332 242 C372 242 384 240 420 240 M332 262 C376 264 384 280 420 280 M332 282 C380 286 386 318 420 320"
@@ -1091,7 +1091,7 @@ function Assess() {
           height={160}
           rx={10}
         />
-        {rows.map((y) => (
+        {rows.map((y, i) => (
           <g key={y}>
             <rect
               className="m-film-box"
@@ -1101,7 +1101,9 @@ function Assess() {
               height="16"
               rx="4"
             />
-            <path className="m-k-thin" d={`M466 ${y} H580`} />
+            <text className="m-film-word" x="464" y={y}>
+              {words.checks[i]}
+            </text>
           </g>
         ))}
       </g>
@@ -1214,6 +1216,7 @@ function Train() {
     end: 11.2,
   };
   const order: Who[] = ['we', 'you', 'both'];
+  const words = line.props.train;
   const cut = reel('train', cue.end);
 
   const camera = cut.track(
@@ -1275,7 +1278,7 @@ function Train() {
     GLIDE,
   );
 
-  // 五张卡：规则、资料、配置、验证方法、维护说明；先叠成一叠跟着 Molis 进来，落下后摊进托盘
+  // 五张卡：业务规则、资料、配置、验证方法、维护说明，各写着原文的词；先叠成一叠跟着 Molis 进来，落下后摊进托盘
   const slots = [
     { x: 92, y: 178 },
     { x: 158, y: 178 },
@@ -1301,104 +1304,6 @@ function Train() {
       ),
     };
   });
-  const glyphs = [
-    // 规则：三行带点的条目
-    (x: number, y: number) => (
-      <>
-        {[15, 24, 33].map((d) => (
-          <circle
-            key={d}
-            className="m-film-mini-dot"
-            cx={x + 14}
-            cy={y + d}
-            r="2.4"
-          />
-        ))}
-        <path
-          className="m-film-mini"
-          d={`M${x + 21} ${y + 15} H${x + 46} M${x + 21} ${y + 24} H${x + 42} M${x + 21} ${y + 33} H${x + 44}`}
-        />
-      </>
-    ),
-    // 资料：一页折角的纸
-    (x: number, y: number) => (
-      <>
-        <path
-          className="m-film-mini-line"
-          d={`M${x + 20} ${y + 8} H${x + 35} L${x + 41} ${y + 14} V${y + 40} H${x + 20} Z M${x + 35} ${y + 8} V${y + 14} H${x + 41}`}
-        />
-        <path
-          className="m-film-mini"
-          d={`M${x + 24} ${y + 22} H${x + 36} M${x + 24} ${y + 28} H${x + 36} M${x + 24} ${y + 34} H${x + 32}`}
-        />
-      </>
-    ),
-    // 配置：两个开关
-    (x: number, y: number) => (
-      <>
-        <rect
-          className="m-film-switch-on"
-          x={x + 16}
-          y={y + 11}
-          width="26"
-          height="11"
-          rx="5.5"
-        />
-        <circle
-          className="m-film-card-dot"
-          cx={x + 36.5}
-          cy={y + 16.5}
-          r="3.6"
-        />
-        <rect
-          className="m-film-mini-line"
-          x={x + 16}
-          y={y + 27}
-          width="26"
-          height="11"
-          rx="5.5"
-        />
-        <circle className="m-film-dot" cx={x + 21.5} cy={y + 32.5} r="3.6" />
-      </>
-    ),
-    // 验证方法：两个打了勾的格子
-    (x: number, y: number) => (
-      <>
-        {[12, 27].map((d) => (
-          <g key={d}>
-            <rect
-              className="m-film-mini-line"
-              x={x + 12}
-              y={y + d}
-              width="10"
-              height="10"
-              rx="2.5"
-            />
-            <path
-              className="m-k-tick"
-              d={`M${x + 14.2} ${y + d + 5} l2.2 2.2 l4 -4.4`}
-            />
-            <path
-              className="m-film-mini"
-              d={`M${x + 28} ${y + d + 5} H${x + 48}`}
-            />
-          </g>
-        ))}
-      </>
-    ),
-    // 维护说明：一个齿轮和两行字
-    (x: number, y: number) => (
-      <>
-        <circle className="m-film-gear" cx={x + 20} cy={y + 24} r="8" />
-        <circle className="m-film-mini-line" cx={x + 20} cy={y + 24} r="4.5" />
-        <path
-          className="m-film-mini"
-          d={`M${x + 34} ${y + 19} H${x + 48} M${x + 34} ${y + 29} H${x + 44}`}
-        />
-      </>
-    ),
-  ];
-
   const art = (
     <>
       <Shadow id={shadow} />
@@ -1465,7 +1370,7 @@ function Train() {
           height={138}
           rx={10}
         />
-        {rows.map((y) => (
+        {rows.map((y, i) => (
           <g key={y}>
             <rect
               className="m-film-box"
@@ -1475,7 +1380,9 @@ function Train() {
               height="16"
               rx="4"
             />
-            <path className="m-k-thin" d={`M704 ${y} H800`} />
+            <text className="m-film-word" x="704" y={y}>
+              {words.checks[i]}
+            </text>
           </g>
         ))}
       </g>
@@ -1504,7 +1411,9 @@ function Train() {
         <Paper shadow={shadow} x={430} y={52} width={110} height={44} rx={10} />
         <path className="m-film-alert" d="M452 63 L463 83 H441 Z" />
         <path className="m-film-alert-mark" d="M452 69.5 V75.5 M452 79 V79.2" />
-        <path className="m-k-thin" d="M474 70 H524 M474 80 H508" />
+        <text className="m-film-word" x="472" y="75">
+          {words.alert}
+        </text>
       </g>
       <circle
         className={`m-film-ring m-film-pop ${cut.track(ping(cue.meet))}`}
@@ -1538,7 +1447,15 @@ function Train() {
               rx="7"
             />
           </g>
-          {glyphs[i](card.x, card.y)}
+          <text
+            className="m-film-word"
+            data-small=""
+            x={card.x + 30}
+            y={card.y + 24}
+            textAnchor="middle"
+          >
+            {words.cards[i]}
+          </text>
         </g>
       ))}
     </>
