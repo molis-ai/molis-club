@@ -61,6 +61,22 @@ for (const note of ['示意', 'AI 创作试样 · 非艺术家原作'])
 const old = await page('/community?hero=a&works=current');
 assert(old.includes('class="m-com-shows-head"'), 'no old gallery');
 assert(!old.includes('m-com-steps'), 'no old gallery steps');
+// 方法目录的卡露出真内容；带回来一个主行动，空墙只写同意展示那一句；结尾从纸面开窗
+assert(community.includes('class="m-com-cats"'), 'method cards');
+assert(
+  /class="m-btn"[^>]*href="\/contact\?topic=creator"|href="\/contact\?topic=creator"[^>]*class="m-btn"/.test(
+    community,
+  ),
+  'share is the primary action',
+);
+assert(
+  words(community).includes('作品墙还空着：这里只放作者明确同意展示的投稿。'),
+  'empty wall',
+);
+assert(
+  /class="m-com-end"[^>]*data-scene/.test(community),
+  'ending opens from the paper',
+);
 
 const methods = await page('/community/methods');
 for (const entry of knowledge)
