@@ -4,6 +4,7 @@ import media from '../../_site/media.json';
 import { aboutNext, painters } from '../../../content/site/about';
 import { useReducedMotion, useVisible } from '../../_site/motion';
 import { Phrases, type Vars } from '../../_site/ui';
+import { useMakersStage } from './makers-pin';
 import { FULL, LAYERS } from './painters-plan';
 
 // 《黑客与画家》左边：书里写到的那幅画，下面是典故。
@@ -11,6 +12,8 @@ import { FULL, LAYERS } from './painters-plan';
 // 再慢慢推近到她身后杜松与天空交界的地方（1991 年在那一带发现了指纹），看一会儿拉回整幅；
 // 推近时图注下面浮出指纹那句，之后一直留着。点画可以自己推近、拉回。
 // 没有 JS、减少动态：直接是原色整幅，不自己推近，指纹那句直接在。
+// 钉住时（makers-pin.tsx）：第一拍照旧看到就上色，不自己推近；第二拍跟着滚动推近，第三拍画退开；点画不再自己推近。
+// 典故和指纹那句（短版）是一段话，指纹那句晚一点浮出来。
 
 type Mode = 'waiting' | 'color' | 'near' | 'resting';
 
@@ -25,22 +28,23 @@ export function MakersPainting() {
   const visible = useVisible(box, 0.6);
   const [mode, setMode] = useState<Mode>('waiting');
   const [near, setNear] = useState(false);
+  const { pinned, stage } = useMakersStage();
 
   // 第一次看到整幅：上色，推近，看一会儿，拉回
   useEffect(() => {
-    if (mode !== 'waiting' || !visible || reduced) return;
+    if (pinned || mode !== 'waiting' || !visible || reduced) return;
     const timer = window.setTimeout(() => setMode('color'), WAIT);
     return () => window.clearTimeout(timer);
-  }, [mode, visible, reduced]);
+  }, [pinned, mode, visible, reduced]);
 
   useEffect(() => {
-    if (mode !== 'color') return;
+    if (pinned || mode !== 'color') return;
     const timer = window.setTimeout(() => {
       setNear(true);
       setMode('near');
     }, BLOOM);
     return () => window.clearTimeout(timer);
-  }, [mode]);
+  }, [pinned, mode]);
 
   useEffect(() => {
     if (mode !== 'near') return;
@@ -52,22 +56,29 @@ export function MakersPainting() {
   }, [mode]);
 
   const toggle = () => {
+    if (pinned) return;
     setNear(!near);
     setMode('resting');
   };
+  const shownMode: Mode = pinned && stage ? 'resting' : mode;
+  const shownNear = pinned ? stage === 1 : near;
 
   return (
     <figure
       className="mk-art"
-      data-mode={mode}
-      data-near={near || undefined}
-      data-found={mode === 'near' || mode === 'resting' || undefined}
+      data-mode={shownMode}
+      data-near={shownNear || undefined}
+      data-found={
+        pinned
+          ? stage >= 1 || undefined
+          : mode === 'near' || mode === 'resting' || undefined
+      }
     >
       <button
         ref={box}
         type="button"
         className="mk-paint"
-        aria-pressed={near}
+        aria-pressed={shownNear}
         aria-label={aboutNext.makers.near}
         onClick={toggle}
       >
@@ -98,6 +109,8 @@ export function MakersPainting() {
             );
           })}
         </span>
+        {/* 指纹那一带：钉住时推近后亮起一个杏色小圈 */}
+        <i className="mk-mark" aria-hidden="true" />
       </button>
       <figcaption className="mk-art-text">
         <span className="mk-art-name">
@@ -112,9 +125,9 @@ export function MakersPainting() {
         </span>
         <span className="mk-story">
           <Phrases text={aboutNext.makers.allusion} />
-        </span>
-        <span className="mk-found">
-          <Phrases text={painters.painting.found} />
+          <span className="mk-found">
+            <Phrases text={aboutNext.makers.found} />
+          </span>
         </span>
       </figcaption>
     </figure>
