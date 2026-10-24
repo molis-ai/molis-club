@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import {
+  useEffect,
   useRef,
   useState,
   useSyncExternalStore,
@@ -22,6 +23,7 @@ import {
   stageOf,
   type ProductId,
 } from '../../content/site/products';
+import { takeDraft } from './contact-draft';
 import { COMMUNITY, CONTACT, ENTERPRISE, HOME, productHref } from './routes';
 import './contact-form.css';
 
@@ -105,6 +107,15 @@ export function ContactForm({
   const [pickedIntent, setIntent] = useState<Intent | null>(null);
   const [pickedProduct, setProduct] = useState<ProductId | null>(null);
   const [typedIdea, setIdea] = useState<string | null>(null);
+  // 别的页面替访客先写好的一句话（「关于」结尾那一行）：水合之后读一次，填进留言框
+  useEffect(() => {
+    if (fixed) return;
+    const frame = requestAnimationFrame(() => {
+      const draft = takeDraft();
+      if (draft) setIdea(draft);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [fixed]);
   const intent = fixed ?? pickedIntent ?? preset?.intent ?? null;
   const product = pickedProduct ?? preset?.product ?? null;
   const option = intents.find((item) => item.id === intent);

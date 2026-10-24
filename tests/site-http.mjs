@@ -302,19 +302,18 @@ for (const [path, text] of [
     '达·芬奇《吉内薇拉·德·班琪》',
     // 典故：书里写到的就是这一幅（上面那句已有书名，这里只说「书里」）
     'Paul Graham 在书里写到这幅画',
-    '1991 年修复时，人们在杜松和天空交界的地方，发现了达·芬奇的指纹。',
-    '写代码、做设计、讲故事，都是同一种创造：先起稿，再一遍遍修改，直到经得起真实使用。',
+    // 指纹那句的短版、1.3 只留后半句（负责人 2026-10-23 缩成三拍）
+    '1991 年修复时，人们在那里发现了他的指纹。',
+    '先起稿，再一遍遍修改，直到经得起真实使用。',
     '产品设计',
     '写代码',
     '拍视频',
     '写故事',
-    // 结尾一屏：两行邀请，「树下，总有空位」，一句话，四个横排的去处
-    '我们做自己用着舒服的产品，',
-    '也想遇见和我们口味相投的你。',
-    '树下，总有空位',
+    // 结尾「树下」（负责人 2026-10-24）：打字机打出一句英文，一行空白（Your turn.）带去聊一聊，另外三张卡
+    'Same taste? Stay a while.',
+    '聊一聊',
     '我们的产品',
     '企业合作',
-    '聊一聊',
     '社区',
   ]) {
     const next = text.indexOf(line, at);
@@ -345,12 +344,25 @@ for (const [path, text] of [
     '/contact',
   ])
     assert(one.includes(`href="${href}"`), `about one: link ${href}`);
-  // 文章与沿途是有标题和说明的卡片：只留圆形箭头，读屏名写清去处（E3）
-  for (const label of ['读《人的尺度》', '看沿途'])
+  // 沿途：摊开右上角那行小字；两篇文章：挂在作者一骏的卡上（负责人 2026-10-23）
+  assert(
+    /href="\/along-the-way" class="sp-credit-link" aria-label="看沿途"/.test(
+      one,
+    ),
+    'about one: spread credit links to along-the-way',
+  );
+  const writes = one.match(/<p class="cr-writes">[\s\S]*?<\/p>/)?.[0] ?? '';
+  for (const href of ['/essays/human-scale', '/essays/idealism'])
     assert(
-      new RegExp(`class="m-go"[^>]*aria-label="${label}"`).test(one),
-      `about one: card arrow ${label}`,
+      writes.includes(`href="${href}"`),
+      `about one: yijun writes ${href}`,
     );
+  assert.equal(
+    count(one, /class="cr-writes"/g),
+    1,
+    'about one: essays only on yijun',
+  );
+  assert(!one.includes('og-links'), 'about one: origin cards removed');
   // Life、Story、World 先不开放（负责人 2026-10-18）：正文里不链，第一次说到的那段下面写「探索中，敬请期待」
   assert(
     !/class="m-inline" href="\/(life|story|world)"/.test(one),
@@ -427,8 +439,22 @@ for (const [path, text] of [
     'about one: every try along the way is spread out',
   );
   assert(count(one, /data-keep="(work|tool|story)"/g) > 0, 'about one: kept');
-  for (const name of ['boat', 'sun', 'house', 'seat'])
+  for (const name of ['boat', 'sun', 'house'])
     assert(one.includes(`/site/art-${name}-`), `about one: team art ${name}`);
+  // 结尾回到光里：叶影、英文标题（「树下，总有空位」不再出现）、输入行（没有 name，写的话不进地址栏）
+  assert(!text.includes('树下，总有空位'), 'about one: no tree-seat line');
+  assert(
+    /<h2 class="te-title" id="doors-title" lang="en">/.test(one),
+    'about one: end title is the english invitation',
+  );
+  assert(one.includes('class="te-light"'), 'about one: end leaves');
+  assert(
+    /<form class="te-say" action="\/contact"/.test(one) &&
+      !/<form class="te-say"[\s\S]*?<input[^>]*name=/.test(
+        one.match(/<form class="te-say"[\s\S]*?<\/form>/)?.[0] ?? '',
+      ),
+    'about one: end say line keeps words out of the url',
+  );
   assert(
     !one.includes('/site/film-s') && !one.includes('/site/lib-'),
     'about one: no film stills or library images',
