@@ -38,6 +38,47 @@ async function tidy(c: Cue, name: string, box?: string) {
 const streamed = (c: Cue, name: string) =>
   (c.el(name)?.textContent?.length ?? 0) * 32 + 500;
 
+/** 以前：选中三行，到程序坞开表格，贴进去，到菜单栏找「分列」，再带回笔记；每到一站插一枚带序号的签（1–4） */
+async function was(c: Cue) {
+  c.use();
+  c.cue('was');
+  await c.enter('line-0', { at: [0, 0.55] });
+  await sweep(c, 'line');
+  c.arrow();
+  await c.to('dock-表格', { at: [0.5, 0.35], dur: 1050, bend: -0.2 });
+  await c.press('sheet');
+  await c.wait(520);
+  await c.to('cell', { at: [0.3, 0.5], dur: 900, bend: 0.16 });
+  await c.press('paste');
+  await c.wait(520);
+  await c.to('menu', { at: [0.5, 0.55], dur: 900, bend: 0.2 });
+  await c.press('menu');
+  await c.wait(420);
+  await c.to('pick', { at: [0.32, 0.5], dur: 460, bend: 0.03 });
+  await c.press(() => {
+    c.uncue('menu');
+    c.cue('split');
+  });
+  await c.wait(700);
+  await c.to('note', { at: [0.5, 0.62], dur: 1100, bend: 0.22 });
+  await c.press('back');
+  await c.wait(1200);
+  await c.leave();
+}
+
+/** 现在：同一处选中，光标旁一步，只有一枚「一步」 */
+async function now(c: Cue) {
+  c.use();
+  await c.enter('line-0', { at: [0, 0.55] });
+  await sweep(c, 'line');
+  await pick(c, 'after-btn');
+  c.uncue('bar');
+  c.cue('table', 'one');
+  await c.aside(1.8, 2.4);
+  await c.wait(600);
+  await c.leave();
+}
+
 export const scenes: Record<string, Scene> = {
   /** 首屏：先停在译文上，再演一遍——拖选两行英文 → 点「翻译」→ 译文带着出处贴在旁边 */
   desk: {
@@ -61,50 +102,30 @@ export const scenes: Record<string, Scene> = {
   },
 
   /**
-   * 以前与现在：只比路程。以前——选中三行，到程序坞开表格，贴进去，到菜单栏找「分列」，再带回笔记，
-   * 每到一站插一枚带序号的签（1–4）；现在——同一处选中，光标旁一步，只有一枚「一步」
+   * 以前与现在：只比路程，两拍。宽屏上每拍占一屏、各自循环（滚到哪拍演哪拍，左边的「以前 / 现在」也能点）；
+   * 不钉住的时候连着演，点了哪拍就只演哪拍
    */
   shift: {
     settle: 1100,
     rest: 4400,
     async play(c) {
-      c.use();
-      c.cue('was');
-      await c.enter('line-0', { at: [0, 0.55] });
-      await sweep(c, 'line');
-      c.arrow();
-      await c.to('dock-表格', { at: [0.5, 0.35], dur: 1050, bend: -0.2 });
-      await c.press('sheet');
-      await c.wait(520);
-      await c.to('cell', { at: [0.3, 0.5], dur: 900, bend: 0.16 });
-      await c.press('paste');
-      await c.wait(520);
-      await c.to('menu', { at: [0.5, 0.55], dur: 900, bend: 0.2 });
-      await c.press('menu');
-      await c.wait(420);
-      await c.to('pick', { at: [0.32, 0.5], dur: 460, bend: 0.03 });
-      await c.press(() => {
-        c.uncue('menu');
-        c.cue('split');
-      });
-      await c.wait(700);
-      await c.to('note', { at: [0.5, 0.62], dur: 1100, bend: 0.22 });
-      await c.press('back');
-      await c.wait(1200);
-      await c.leave();
+      await was(c);
       await c.wait(600);
-
       c.unflag('sel');
       c.cue('now');
       await c.wait(1100);
-      await c.enter('line-0', { at: [0, 0.55] });
-      await sweep(c, 'line');
-      await pick(c, 'after-btn');
-      c.uncue('bar');
-      c.cue('table', 'one');
-      await c.aside(1.8, 2.4);
-      await c.wait(600);
-      await c.leave();
+      await now(c);
+    },
+  },
+  'shift-was': { settle: 1100, rest: 3200, play: was },
+  'shift-now': {
+    settle: 700,
+    rest: 3800,
+    async play(c) {
+      // 老路走过的痕迹留着：四枚签、背后那扇表格窗都淡着
+      c.cue('sheet', 'paste', 'split', 'back', 'now');
+      await c.wait(900);
+      await now(c);
     },
   },
 

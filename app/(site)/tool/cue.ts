@@ -517,6 +517,7 @@ export function useCue(
     };
   }, [ref, name]);
 
+  // 换了一段编排（name）也从头摆一遍
   useEffect(() => {
     const director = cue.current;
     if (!director) return;
@@ -525,12 +526,12 @@ export function useCue(
     else if (still) director.finish();
     else if (active) director.ready();
     else director.pause();
-  }, [hold, still, active, round]);
+  }, [name, hold, still, active, round]);
 
   useEffect(() => {
     const director = cue.current;
     if (!director) return;
     if (live && active && !hold && !still) director.play();
     else director.pause();
-  }, [live, active, hold, still, round]);
+  }, [name, live, active, hold, still, round]);
 }

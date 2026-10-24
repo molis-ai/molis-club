@@ -982,7 +982,8 @@
 
 /* =====================================================================
    以前与现在：同一块屏幕。老路——程序坞、表格、菜单栏、再回来；现在——原地一步。
-   两句原句在左边的字里，演到哪条路，哪一句亮着
+   两句原句在左边的字里，演到哪条路，哪一句亮着。「以前」「现在」能点（walk.tsx 的分拍）：
+   宽屏上两拍各占一屏，点了滚过去；窄屏上点了就只演那一拍
    ===================================================================== */
 .tl-route {
   display: grid;
@@ -1003,14 +1004,71 @@
   letter-spacing: 0.18em;
   color: var(--mute);
 }
-.tl-walk:has(.tl-shift[data-run]) .tl-route p {
+/* 连着演：跟着屏幕上演到的那条路 */
+.tl-walk:has(.tl-shift[data-run]) .tl-walk-text:not([data-phase]) .tl-route p,
+.tl-walk-text[data-phase] .tl-route p {
   opacity: 0.32;
 }
 .tl-walk:has(.tl-shift[data-run][data-cue~='was']:not([data-cue~='now']))
+  .tl-walk-text:not([data-phase])
   .tl-route
   [data-k='before'],
-.tl-walk:has(.tl-shift[data-run][data-cue~='now']) .tl-route [data-k='after'] {
+.tl-walk:has(.tl-shift[data-run][data-cue~='now'])
+  .tl-walk-text:not([data-phase])
+  .tl-route
+  [data-k='after'],
+.tl-walk-text[data-phase='was'] .tl-route [data-k='before'],
+.tl-walk-text[data-phase='now'] .tl-route [data-k='after'] {
   opacity: 1;
+}
+/* 分拍：当下这一拍那句亮着；淡着的那句，指上去亮一点，整句都能点 */
+.tl-walk-text[data-phase] .tl-route p:has([aria-pressed='false']):hover {
+  opacity: 0.62;
+}
+.tl-route p:has(.tl-phase) {
+  position: relative;
+}
+.tl-phase {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: fit-content;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--mute);
+  cursor: pointer;
+  transition: color 0.3s var(--ease);
+}
+.tl-phase::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px currentColor;
+  transition:
+    background-color 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
+}
+.tl-phase::after {
+  content: '';
+  position: absolute;
+  inset: -10px -14px;
+  border-radius: 12px;
+}
+.tl-phase[aria-pressed='true'] {
+  color: var(--ink);
+}
+.tl-phase[aria-pressed='true']::before {
+  background: var(--accent);
+  box-shadow: none;
+}
+.tl-phase:focus-visible::after {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
 }
 
 /* 笔记窗在右，表格窗在左后方 */
@@ -1288,7 +1346,7 @@ span[data-app] {
   font-size: var(--t-h2);
   line-height: 1.45;
 }
-.tl-walk-text > .tl-head + .tl-route {
+.tl-walk-text .tl-head + .tl-route {
   margin-top: clamp(24px, 4.4vh, 44px);
 }
 .tl-walk-fig {
@@ -1317,14 +1375,28 @@ span[data-app] {
     display: contents;
   }
   /* 每段字占一屏高，竖着居中；不是当下这段就淡下去 */
-  .js .tl-walk-text {
-    grid-row: var(--row);
-    grid-column: 1 / span 4;
+  .js .tl-walk-text,
+  .js .tl-walk-text[data-span] > .tl-walk-hold {
     display: grid;
     align-content: center;
     min-height: calc(100svh - var(--header));
     padding-block: clamp(32px, 6vh, 72px);
+  }
+  .js .tl-walk-text {
+    grid-row: var(--row) / span var(--span, 1);
+    grid-column: 1 / span 4;
     transition: opacity 0.6s var(--ease);
+  }
+  /* 分拍的一段占几屏高：字钉在顶栏下面不动，右边每滚一屏换一拍 */
+  .js .tl-walk-text[data-span] {
+    display: block;
+    align-content: normal;
+    min-height: calc((100svh - var(--header)) * var(--span));
+    padding-block: 0;
+  }
+  .js .tl-walk-text[data-span] > .tl-walk-hold {
+    position: sticky;
+    top: var(--header);
   }
   .js .tl-walk-text:not([data-on]) {
     opacity: 0.2;
