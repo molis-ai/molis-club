@@ -16,7 +16,7 @@ import { mediaOf } from '../../_site/ui';
 
 // Tool 页每一屏的主角：一块 Mac 屏幕。壁纸是莫奈的伦敦（早上、午后、傍晚，负责人 2026-10-24 选），
 // 上面一条毛玻璃菜单栏，窗口、程序坞、动作条和小卡按真实界面的比例画（tool.css 里 --u 是这块屏幕上的 10 个点）。
-// 屏幕的外框由外层给（.tl-mac）：演示外壳和画廊的墙板都是一块屏幕。不带 'use client'，两边都能用。
+// 屏幕的外框由外层给（.tl-mac）：首屏的演示外壳和往下钉住的那几块都是一块屏幕。不带 'use client'，两边都能用。
 
 const walls = {
   morning: 'wall-morning',
@@ -183,24 +183,22 @@ export function FileIcon({
   );
 }
 
-/** 画面里的一枚标签：标出这一站、这一处（以前与现在的四站，插件的四处） */
+/** 画面里的一枚标签：标出这一站、这一处（以前与现在的四站带序号，插件的四处是小圆点） */
 export function Pin({
   c,
   k,
+  n,
   children,
 }: {
   c?: string;
   k?: string | number;
+  /** 老路上的第几站：圆点换成序号 */
+  n?: number;
   children: ReactNode;
 }) {
   return (
-    <span className="tl-pin" data-c={c} data-k={k}>
+    <span className="tl-pin" data-c={c} data-k={k} data-n={n}>
       {children}
     </span>
   );
-}
-
-/** 光标走过的路（cue.ts 的 draw）：一张盖在屏幕上的透明画布 */
-export function Trail({ name }: { name: string }) {
-  return <svg className="tl-trail" data-trail={name} aria-hidden="true" />;
 }

@@ -1,5 +1,5 @@
-/* Molis Tool 页（specs/site-rebuild/tool-page.md 第 12 节）：六屏，每屏一块 Mac 屏幕当主角。
-   整页一张纸色底，只有「分寸」一屏是深色石板。屏幕里是莫奈的伦敦（早上、午后、傍晚），
+/* Molis Tool 页（specs/site-rebuild/tool-page.md 第 13 节）：首屏一块 Mac 屏幕；往下一长段右边钉住一块屏幕、左边的字随滚动过去，
+   最后一屏深色石板，不配图。整页一张纸色底。屏幕里是莫奈的伦敦（早上、午后、傍晚），钉住的屏幕跟着字从早上走到傍晚；
    菜单栏、窗口、毛玻璃动作条按真实界面的比例画：--u 是这块屏幕宽度的 1/86（860 宽时 10px），屏幕里的尺寸都按它算。
    演示由光标带着看（cue.ts 编排、scripts.ts 剧本）：基础样式就是「做完了」的样子，没有 JS、减少动态时停在结果上；
    [data-run] 表示编排接管，[data-cue~='…'] 是已经演到的几拍，data-sel / data-tidy / data-clean 是零件自己的记号。 */
@@ -89,10 +89,6 @@
   letter-spacing: 0.04em;
   font-feature-settings: 'palt' 1;
   text-wrap: balance;
-}
-.tl-head[data-size='h2'] .tl-head-title {
-  font-size: var(--t-h2);
-  line-height: 1.45;
 }
 /* 标题里最要紧的几个字：标题浮上来以后，像被选中一样从左往右铺上选中色 */
 .tl-mark {
@@ -482,25 +478,21 @@
   border-radius: 50%;
   background: var(--accent);
 }
-
-/* 光标走过的路（cue.ts 的 draw）：和光标同一条弧线，跟着光标一笔画出来 */
-.tl-trail {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  transition: opacity 0.6s var(--ease);
+/* 有先后的几站：小点换成一枚带序号的圆，按顺序读，不画线 */
+.tl-pin[data-n] {
+  padding-left: calc(var(--u) * 0.4);
 }
-.tl-trail path {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: calc(var(--u) * 0.24);
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  opacity: 0.85;
+.tl-pin[data-n]::before {
+  content: attr(data-n);
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 1.6);
+  height: calc(var(--u) * 1.6);
+  font-size: calc(var(--u) * 0.95);
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
 }
 
 /* =====================================================================
@@ -520,7 +512,6 @@
     .tl-messy,
     .tl-done,
     .tl-pin,
-    .tl-trail,
     .tl-new,
     .tl-made,
     .tl-swap,
@@ -543,7 +534,6 @@
     .tl-messy,
     .tl-done,
     .tl-pin,
-    .tl-trail,
     .tl-new,
     .tl-made,
     .tl-swap,
@@ -601,12 +591,12 @@
     translate 0.45s var(--ease);
 }
 [data-run]:not([data-cue~='bar']) .tl-bar,
-:is(.tl-shift, .tl-gal-art) .tl-bar {
+:is(.tl-shift, .tl-case) .tl-bar {
   opacity: 0;
   translate: 0 -0.35em;
   pointer-events: none;
 }
-:is(.tl-shift, .tl-gal-art)[data-cue~='bar'] .tl-bar {
+:is(.tl-shift, .tl-case)[data-cue~='bar'] .tl-bar {
   opacity: 1;
   translate: none;
 }
@@ -705,7 +695,7 @@
   box-decoration-break: clone;
 }
 [data-run] .tl-hl:not([data-sel]),
-:is(.tl-shift, .tl-gal-art) .tl-hl:not([data-sel]) {
+:is(.tl-shift, .tl-case) .tl-hl:not([data-sel]) {
   background-size: 0% 100%;
 }
 
@@ -991,27 +981,13 @@
 }
 
 /* =====================================================================
-   以前与现在：同一块屏幕，右边两句原句。老路——程序坞、表格、菜单栏、再回来；现在——原地一步
+   以前与现在：同一块屏幕。老路——程序坞、表格、菜单栏、再回来；现在——原地一步。
+   两句原句在左边的字里，演到哪条路，哪一句亮着
    ===================================================================== */
-.tl-shift {
-  grid-template-columns:
-    minmax(0, calc((100svh - var(--header) - 250px) * 1.6))
-    minmax(220px, 1fr);
-  column-gap: var(--col-gap);
-}
-.tl-shift > .tl-loop-stage {
-  grid-area: 1 / 1;
-}
-.tl-shift > .tl-foot {
-  grid-area: 2 / 1;
-}
 .tl-route {
-  grid-area: 1 / 2;
-  align-self: end;
   display: grid;
-  gap: clamp(20px, 3.4vh, 36px);
-  max-width: 22em;
-  padding-bottom: 4px;
+  gap: clamp(18px, 3vh, 30px);
+  max-width: 26em;
 }
 .tl-route p {
   font-size: 15.5px;
@@ -1027,13 +1003,13 @@
   letter-spacing: 0.18em;
   color: var(--mute);
 }
-.tl-shift[data-run] .tl-route p {
+.tl-walk:has(.tl-shift[data-run]) .tl-route p {
   opacity: 0.32;
 }
-.tl-shift[data-run][data-cue~='was']:not([data-cue~='now'])
+.tl-walk:has(.tl-shift[data-run][data-cue~='was']:not([data-cue~='now']))
   .tl-route
   [data-k='before'],
-.tl-shift[data-run][data-cue~='now'] .tl-route [data-k='after'] {
+.tl-walk:has(.tl-shift[data-run][data-cue~='now']) .tl-route [data-k='after'] {
   opacity: 1;
 }
 
@@ -1292,178 +1268,153 @@ span[data-app] {
 .tl-shift[data-run][data-cue~='now'] .tl-pin:not([data-k='now']) {
   opacity: 0.45;
 }
-/* 到了「现在」，老路退到笔记窗后面，只留一道淡痕 */
-.tl-shift[data-cue~='now'] [data-trail='before'] {
-  z-index: 1;
-  opacity: 0.3;
-}
 
 /* =====================================================================
-   眼前的小事：左边三件事（哪一层、什么时候、怎么处理），右边一块屏幕演当下这一件
+   一长段（walk.tsx）：右边钉住一块屏幕，左边的字一段段滚过去，哪段压过中线就换成哪段的屏幕。
+   基础样式（窄屏、矮屏、没有 JS）是一段字下面跟着它自己的屏幕
    ===================================================================== */
-.tl-gal-grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  align-items: center;
+.tl-walk-sec {
+  padding-block: clamp(56px, 9vh, 112px);
 }
-.tl-gal-text {
-  grid-column: 1 / span 5;
+.tl-walk-step {
   display: grid;
-  gap: clamp(20px, 3.6vh, 40px);
+  gap: clamp(24px, 4vh, 40px);
+  padding-block: clamp(32px, 6vh, 64px);
 }
-.tl-gal-text .tl-head {
+.tl-walk-text .tl-head {
   margin-bottom: 0;
 }
-.tl-gal-list {
+.tl-walk-text .tl-head-title {
+  font-size: var(--t-h2);
+  line-height: 1.45;
+}
+.tl-walk-text > .tl-head + .tl-route {
+  margin-top: clamp(24px, 4.4vh, 44px);
+}
+.tl-walk-fig {
   display: grid;
-  gap: 4px;
-  margin-left: -16px;
+  gap: 12px;
+  margin: 0;
 }
-/* 「正在打磨」那件的出处（原句）：换到那一件时，小字跟在三件事下面 */
-.js .tl-gal-wip:not([data-on]) {
-  display: none;
+/* 「正在打磨」那件的出处（原句）：跟在那块屏幕的示意后面另起一行 */
+.tl-note-more {
+  display: block;
+  max-width: 40em;
+  white-space: normal;
 }
-.tl-gal-wip {
-  max-width: 26em;
-  margin-top: 10px;
-  font-size: var(--t-small);
-  line-height: 1.7;
-  color: var(--mute);
+
+@media screen and (min-width: 901px) and (min-height: 600px) {
+  .js .tl-walk-sec {
+    padding-block: 0;
+  }
+  .js .tl-walk {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: repeat(var(--rows), auto);
+    column-gap: var(--col-gap);
+  }
+  .js .tl-walk-step {
+    display: contents;
+  }
+  /* 每段字占一屏高，竖着居中；不是当下这段就淡下去 */
+  .js .tl-walk-text {
+    grid-row: var(--row);
+    grid-column: 1 / span 4;
+    display: grid;
+    align-content: center;
+    min-height: calc(100svh - var(--header));
+    padding-block: clamp(32px, 6vh, 72px);
+    transition: opacity 0.6s var(--ease);
+  }
+  .js .tl-walk-text:not([data-on]) {
+    opacity: 0.2;
+  }
+  /* 几块屏幕叠在同一处，钉在顶栏下面；只亮当下这一块（交叉淡入淡出，不位移） */
+  .js .tl-walk-fig {
+    grid-column: 5 / -1;
+    grid-row: 1 / -1;
+    align-self: start;
+    position: sticky;
+    top: var(--header);
+    grid-template-columns: min(
+      100%,
+      calc((100svh - var(--header) - 120px) * 1.6)
+    );
+    /* 屏幕永远在正中，下面的小字有几行都不推动它，换屏时不跳 */
+    grid-template-rows: 1fr auto 1fr;
+    justify-content: end;
+    height: calc(100svh - var(--header));
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.5s var(--ease),
+      visibility 0s linear 0.5s;
+  }
+  .js .tl-walk-fig > .tl-mac {
+    grid-row: 2;
+  }
+  .js .tl-walk-fig > .tl-foot {
+    grid-row: 3;
+    align-self: start;
+  }
+  .js .tl-walk-fig[data-on] {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.6s var(--ease) 0.1s,
+      visibility 0s;
+  }
 }
-.tl-gal-tab {
+
+/* 眼前的小事的一件：哪一层 · 什么时候（· 正在打磨），一件事，一句怎么处理。三件同一个规格 */
+.tl-case-text {
   display: grid;
-  gap: 2px;
-  padding: 10px 16px 11px;
-  border: 0;
-  border-radius: 14px;
-  background: none;
-  text-align: left;
-  color: var(--mute);
-  cursor: pointer;
-  transition:
-    color 0.35s var(--ease),
-    background-color 0.35s var(--ease);
+  justify-items: start;
+  gap: 14px;
 }
-.tl-gal-tab:hover {
-  background: rgb(27 26 24 / 0.035);
-  color: var(--ink-2);
-}
-.tl-gal-tab:focus-visible {
-  outline-offset: 0;
-}
-.tl-gal-tab[aria-selected='true'] {
-  background: rgb(255 255 255 / 0.75);
-  box-shadow: 0 0 0 1px rgb(27 26 24 / 0.05);
-  color: var(--ink);
-}
-.tl-gal-layer {
+.tl-case-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 4px 0;
   font-size: 12.5px;
   font-weight: 500;
   line-height: 1.7;
   letter-spacing: 0.16em;
+  color: var(--mute);
 }
-.tl-gal-layer::before {
+.tl-case-meta > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--tone-ink);
+}
+.tl-case-meta > span:first-child::before {
   content: '';
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: currentColor;
-  opacity: 0.4;
-  transition:
-    background-color 0.35s var(--ease),
-    opacity 0.35s var(--ease);
-}
-.tl-gal-tab[aria-selected='true'] .tl-gal-layer::before {
   background: var(--tone);
-  opacity: 1;
 }
-.tl-gal-tag {
-  padding: 0 7px;
-  border-radius: var(--r-label);
-  background: rgb(27 26 24 / 0.06);
-  font-size: 11.5px;
-  font-style: normal;
-  font-weight: 400;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
+.tl-case-meta > span + span::before {
+  content: '·';
+  margin-inline: 10px;
+  color: var(--mute);
 }
-.tl-gal-name {
-  font-size: 16.5px;
-  line-height: 1.6;
+.tl-case-meta [data-tag] {
+  letter-spacing: 0.08em;
+}
+.tl-case-title {
+  font: 300 var(--t-h2) / 1.45 var(--sans);
+  letter-spacing: 0.04em;
+  font-feature-settings: 'palt' 1;
+  text-wrap: balance;
+}
+.tl-case-result {
+  max-width: 26em;
+  font: 300 var(--t-lead) / 1.9 var(--sans);
   letter-spacing: 0.03em;
-}
-.tl-gal-result {
-  display: grid;
-  grid-template-rows: 0fr;
-  font-size: 14px;
-  line-height: 1.7;
   color: var(--ink-2);
-  opacity: 0;
-  transition:
-    grid-template-rows 0.45s var(--ease),
-    opacity 0.35s var(--ease);
-}
-/* 没选中的那件，结果那一行收起来（不只是透明） */
-.tl-gal-result > span {
-  min-height: 0;
-  overflow: hidden;
-}
-.tl-gal-tab[aria-selected='true'] .tl-gal-result {
-  grid-template-rows: 1fr;
-  opacity: 1;
-  transition:
-    grid-template-rows 0.45s var(--ease),
-    opacity 0.45s var(--ease) 0.15s;
-}
-
-.tl-gal-show {
-  grid-column: 6 / -1;
-  justify-self: end;
-  display: grid;
-  gap: 12px;
-  width: min(100%, calc((100svh - var(--header) - 190px) * 1.6));
-}
-/* 三件叠在同一块屏幕上，当下这一件浮现，别的淡出（只交叉淡入淡出，不位移） */
-.tl-gal-art {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 0.5s var(--ease),
-    visibility 0s linear 0.5s;
-}
-.tl-gal-art[data-on] {
-  opacity: 1;
-  visibility: visible;
-  transition:
-    opacity 0.6s var(--ease) 0.1s,
-    visibility 0s;
-}
-
-/* 宽屏一屏放得下：整段钉住，滚过的距离一件一件地换（原生滚动，倒回去也行） */
-@media (min-width: 901px) and (min-height: 600px) {
-  .js .tl-gal-sec {
-    display: block;
-    min-height: 0;
-    padding-block: 0;
-  }
-  .js .tl-gal {
-    height: calc(100svh + (var(--count) - 1) * 45svh);
-  }
-  .js .tl-gal-pin {
-    position: sticky;
-    top: 0;
-    display: grid;
-    align-content: center;
-    min-height: 100svh;
-    padding-block: calc(var(--header) + clamp(12px, 3vh, 48px))
-      clamp(28px, 5vh, 72px);
-  }
 }
 
 /* ---------- 光标旁（早上）：笔记里一段格式乱掉的通知 ---------- */
@@ -1569,7 +1520,7 @@ span[data-app] {
   background: var(--accent);
   color: #fff;
 }
-.tl-gal-art[data-run] .tl-icon[data-c='pdf']:not([data-sel]) > small {
+.tl-case[data-run] .tl-icon[data-c='pdf']:not([data-sel]) > small {
   background: none;
   color: inherit;
 }
@@ -1582,7 +1533,7 @@ span[data-app] {
   top: calc(var(--u) * 0.4);
   left: 0;
 }
-.tl-gal-art[data-run]:not([data-cue~='saved']) .tl-icon[data-c='copy'] {
+.tl-case[data-run]:not([data-cue~='saved']) .tl-icon[data-c='copy'] {
   opacity: 0;
 }
 /* 文件图标在窗口里拿不到 clip 外的投影，改成细边 */
@@ -1599,7 +1550,7 @@ span[data-app] {
     opacity 0.5s var(--ease),
     translate 0.6s var(--ease);
 }
-.tl-gal-art[data-run]:not([data-cue~='card']) .tl-c2-card {
+.tl-case[data-run]:not([data-cue~='card']) .tl-c2-card {
   opacity: 0;
   translate: calc(var(--u) * -1.5) 0;
 }
@@ -1646,7 +1597,7 @@ span[data-app] {
 .tl-pg[data-pick] .tl-pg-paper {
   box-shadow: 0 0 0 calc(var(--u) * 0.22) var(--accent);
 }
-.tl-gal-art[data-run] .tl-pg:not([data-sel]) .tl-pg-paper {
+.tl-case[data-run] .tl-pg:not([data-sel]) .tl-pg-paper {
   box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.18);
 }
 .tl-card-foot {
@@ -1659,7 +1610,7 @@ span[data-app] {
   color: #6f6a61;
   transition: opacity 0.35s var(--ease);
 }
-.tl-gal-art[data-run]:not([data-cue~='range']) .tl-pages-range {
+.tl-case[data-run]:not([data-cue~='range']) .tl-pages-range {
   opacity: 0;
 }
 .tl-card-go {
@@ -1683,7 +1634,7 @@ span[data-app] {
   background: #1d1b18;
   color: #fff;
 }
-.tl-gal-art[data-cue~='s-hover'] [data-c='save'] {
+.tl-case[data-cue~='s-hover'] [data-c='save'] {
   background: #44403a;
 }
 .tl-c2-card > .tl-done {
@@ -1752,12 +1703,12 @@ span[data-app] {
   display: inline;
 }
 /* 去做别的：邮件窗收下去，时间走了二十几分钟 */
-.tl-gal-art .tl-c3-win {
+.tl-case .tl-c3-win {
   opacity: 0;
   translate: 0 calc(var(--u) * 3);
   scale: 0.97;
 }
-.tl-gal-art[data-run]:not([data-cue~='away']) .tl-c3-win {
+.tl-case[data-run]:not([data-cue~='away']) .tl-c3-win {
   opacity: 1;
   translate: none;
   scale: none;
@@ -1765,14 +1716,10 @@ span[data-app] {
 .tl-menubar-clock [data-t='now'] {
   display: none;
 }
-.tl-gal-art[data-run]:not([data-cue~='later'])
-  .tl-menubar-clock
-  [data-t='now'] {
+.tl-case[data-run]:not([data-cue~='later']) .tl-menubar-clock [data-t='now'] {
   display: inline;
 }
-.tl-gal-art[data-run]:not([data-cue~='later'])
-  .tl-menubar-clock
-  [data-t='later'] {
+.tl-case[data-run]:not([data-cue~='later']) .tl-menubar-clock [data-t='later'] {
   display: none;
 }
 
@@ -1787,17 +1734,17 @@ span[data-app] {
     translate 0.8s cubic-bezier(0.5, 0, 0.2, 1),
     scale 0.8s cubic-bezier(0.5, 0, 0.2, 1);
 }
-.tl-gal-art .tl-c3-draft {
+.tl-case .tl-c3-draft {
   opacity: 0;
   translate: calc(var(--u) * 14) calc(var(--u) * -14);
   scale: 0.12;
 }
-.tl-gal-art[data-run][data-cue~='draft']:not([data-cue~='stow']) .tl-c3-draft {
+.tl-case[data-run][data-cue~='draft']:not([data-cue~='stow']) .tl-c3-draft {
   opacity: 1;
   translate: none;
   scale: none;
 }
-.tl-gal-art[data-run]:not([data-cue~='draft']) .tl-c3-draft {
+.tl-case[data-run]:not([data-cue~='draft']) .tl-c3-draft {
   translate: 0 calc(var(--u) * 0.8);
   scale: none;
 }
@@ -1837,14 +1784,14 @@ span[data-app] {
   background: var(--accent);
   transition: opacity 0.3s var(--ease) 0.6s;
 }
-.tl-gal-art[data-run]:not([data-cue~='stow']) .tl-menubar-icon::after {
+.tl-case[data-run]:not([data-cue~='stow']) .tl-menubar-icon::after {
   opacity: 0;
   transition-delay: 0s;
 }
 .tl-s-later .tl-menubar-icon {
   background: rgb(27 26 24 / 0.13);
 }
-.tl-gal-art[data-run]:not([data-cue~='m-hover']):not([data-cue~='panel'])
+.tl-case[data-run]:not([data-cue~='m-hover']):not([data-cue~='panel'])
   .tl-menubar-icon {
   background: transparent;
 }
@@ -1873,7 +1820,7 @@ span[data-app] {
     opacity 0.3s var(--ease),
     scale 0.4s var(--ease);
 }
-.tl-gal-art[data-run]:not([data-cue~='panel']) .tl-panel {
+.tl-case[data-run]:not([data-cue~='panel']) .tl-panel {
   opacity: 0;
   scale: 0.96;
 }
@@ -1899,7 +1846,7 @@ span[data-app] {
     background-color 0.3s var(--ease),
     opacity 0.35s var(--ease) calc(120ms + var(--n, 0) * 70ms);
 }
-.tl-gal-art[data-run]:not([data-cue~='panel']) .tl-panel-row {
+.tl-case[data-run]:not([data-cue~='panel']) .tl-panel-row {
   opacity: 0;
   transition-delay: 0s;
 }
@@ -1936,7 +1883,7 @@ span[data-app] {
 .tl-panel-row[data-c='row'] {
   background: rgb(27 26 24 / 0.06);
 }
-.tl-gal-art[data-run]:not([data-cue~='row']) .tl-panel-row[data-c='row'] {
+.tl-case[data-run]:not([data-cue~='row']) .tl-panel-row[data-c='row'] {
   background: transparent;
 }
 .tl-panel-go {
@@ -1963,23 +1910,8 @@ span[data-app] {
 }
 
 /* =====================================================================
-   插件就是能力：左边一块屏幕，右边标题和三条要点
+   插件就是能力：开关一开，同一个能力出现在四处
    ===================================================================== */
-.tl-plug-grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  align-items: center;
-}
-.tl-plug-grid > .tl-head {
-  grid-area: 1 / 9 / auto / -1;
-  margin-bottom: 0;
-}
-.tl-plug-grid > .tl-plug {
-  grid-area: 1 / 1 / auto / span 8;
-  width: min(100%, calc((100svh - var(--header) - 150px) * 1.6));
-}
-
 /* 设置里的插件列表：一行一个，右边开关 */
 .tl-set-win {
   top: 9%;
@@ -2319,36 +2251,29 @@ span[data-app] {
 }
 
 /* =====================================================================
-   分寸：深色一屏。左边字，右边一张出血到边的照片
+   收尾：深色石板一屏，不配图。上面分寸（它会 / 它不是），下面一句适合谁、一个按钮、和 Work 的关系
    ===================================================================== */
-.tl-measure {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-content: stretch;
-  padding: 0;
+.tl-close-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: clamp(40px, 8vh, 96px);
+  align-items: start;
 }
-.tl-measure-photo {
-  position: relative;
-  grid-area: 1 / 2;
-  min-height: 100%;
-  margin: 0;
+.tl-close-grid > .tl-head {
+  grid-column: 1 / span 5;
+  margin-bottom: 0;
 }
-.tl-measure-photo img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.tl-measure-text {
-  grid-area: 1 / 1;
-  align-self: center;
-  padding: calc(var(--header) + clamp(24px, 6vh, 80px)) clamp(32px, 5vw, 88px)
-    clamp(48px, 9vh, 120px) max(var(--gutter), (100% - var(--wrap)) / 2);
+.tl-close .tl-head-title {
+  font-size: var(--t-h2);
+  line-height: 1.45;
 }
 .tl-promise {
+  grid-column: 7 / -1;
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: clamp(28px, 4vw, 64px);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(28px, 3.4vw, 56px);
+  padding-top: 8px;
 }
 .tl-is,
 .tl-not {
@@ -2364,7 +2289,7 @@ span[data-app] {
 }
 .tl-is dl {
   display: grid;
-  gap: 20px;
+  gap: 18px;
 }
 .tl-is dt {
   font: 300 var(--t-h3) / 1.4 var(--sans);
@@ -2392,82 +2317,46 @@ span[data-app] {
   padding-top: 0;
   border-top: 0;
 }
-
-/* =====================================================================
-   收尾：一句标题、开发中、一个按钮；右边「已经有的 / 还没有的」两列
-   ===================================================================== */
-.tl-end-grid {
+/* 下面一道细线隔开：左边一句适合谁，右边按钮和一句和 Work 的关系 */
+.tl-close-end {
+  grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 48px;
-  align-items: start;
+  grid-template-columns: subgrid;
+  align-items: end;
+  row-gap: 28px;
+  padding-top: clamp(28px, 5vh, 56px);
+  border-top: 1px solid var(--hair);
 }
-.tl-end-main {
+.tl-close-fit {
   grid-column: 1 / span 6;
+  max-width: 19em;
+  font: 300 var(--t-h3) / 1.65 var(--sans);
+  letter-spacing: 0.04em;
+  text-wrap: balance;
+}
+.tl-close-go {
+  grid-column: 7 / -1;
   display: grid;
   justify-items: start;
-  gap: 16px;
+  gap: 20px;
 }
-.tl-end-main .tl-head {
-  margin-bottom: 4px;
-}
-.tl-end-stage {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 16px;
-  color: var(--ink-2);
-}
-.tl-end-go {
-  margin-top: 14px;
-}
-.tl-end-lists {
-  grid-column: 8 / -1;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--col-gap);
-  padding-top: 10px;
-}
-.tl-end-lists h3 {
-  margin-bottom: 10px;
-  font-size: 12.5px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  color: var(--mute);
-}
-.tl-end-lists li {
-  padding: 11px 0;
-  border-top: 1px solid var(--hair);
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--ink);
-}
-.tl-end-lists [data-not] li {
-  color: var(--mute);
-}
-.tl-end-more {
-  display: grid;
-  gap: 8px;
-  margin-top: clamp(48px, 9vh, 112px);
+.tl-close-go p {
+  max-width: 30em;
   font-size: 14px;
   line-height: 1.8;
   color: var(--ink-2);
 }
-.tl-end-more .m-more {
-  margin-left: 10px;
+.tl-close-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
-.tl-fold summary {
-  width: fit-content;
-  font-size: 13px;
-  color: var(--mute);
-  cursor: pointer;
+.tl-close-go .m-btn {
+  background: var(--ink);
+  color: #2a3140 !important;
 }
-.tl-fold p {
-  max-width: 34em;
-  margin-top: 8px;
-  font-size: 14px;
-  color: var(--ink-2);
+.tl-close-go .m-link:hover {
+  background: rgb(244 241 234 / 0.08);
 }
 
 /* 示意那一行 */
@@ -2617,56 +2506,26 @@ span[data-app] {
   .tl-desk {
     grid-column: 1 / -1;
   }
-  .tl-desk,
-  .tl-gal-show,
-  .tl-plug-grid > .tl-plug {
+  .tl-desk {
     justify-self: stretch;
     width: 100%;
   }
-  .tl-shift {
+  .tl-close-grid {
     grid-template-columns: minmax(0, 1fr);
   }
-  .tl-shift > .tl-route {
-    grid-area: 3 / 1;
-    max-width: none;
-    margin-top: 20px;
-  }
-  .tl-gal-grid,
-  .tl-plug-grid {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 32px;
-  }
-  .tl-gal-text,
-  .tl-gal-show {
+  .tl-close-grid > .tl-head,
+  .tl-promise,
+  .tl-close-end,
+  .tl-close-fit,
+  .tl-close-go {
     grid-column: 1;
   }
-  .tl-plug-grid > .tl-head {
-    grid-area: 1 / 1;
-  }
-  .tl-plug-grid > .tl-plug {
-    grid-area: 2 / 1;
-  }
-  .tl-measure {
+  .tl-close-end {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .tl-measure-photo {
-    grid-area: 1 / 1;
-    aspect-ratio: 4 / 3;
-    min-height: 0;
-  }
-  .tl-measure-text {
-    grid-area: 2 / 1;
-    padding: clamp(48px, 8vh, 72px) var(--gutter) clamp(64px, 10vh, 96px);
   }
   .tl-promise {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .tl-end-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .tl-end-main,
-  .tl-end-lists {
-    grid-column: 1;
+    padding-top: 0;
   }
 
   /* 屏幕竖一点：--u 是宽的 1/50，字和真机上差不多大；窗口叠着放，铺满宽 */
@@ -2674,7 +2533,7 @@ span[data-app] {
     --u: calc(100cqi / 50);
     aspect-ratio: 10 / 13;
   }
-  .tl-plug .tl-mac {
+  .tl-mac.tl-plug {
     aspect-ratio: 10 / 15;
   }
 
@@ -2764,7 +2623,7 @@ span[data-app] {
     left: 8%;
     width: 84%;
   }
-  .tl-gal-art .tl-c3-draft {
+  .tl-case .tl-c3-draft {
     translate: calc(var(--u) * -4) calc(var(--u) * -28);
   }
   .tl-panel {
@@ -2820,10 +2679,8 @@ span[data-app] {
     animation: none;
   }
   .tl-mark,
-  .tl-gal-tab,
-  .tl-gal-tab *,
-  .tl-gal-art,
-  .tl-gal-art[data-on],
+  .tl-walk-text,
+  .tl-walk-fig,
   .tl-mac *,
   .tl-route p {
     transition: none !important;
@@ -2835,9 +2692,6 @@ span[data-app] {
   .tl-hint,
   .tl-loop-toggle,
   .tl-hand {
-    display: none;
-  }
-  .tl-gal-art:not([data-on]) {
     display: none;
   }
 }

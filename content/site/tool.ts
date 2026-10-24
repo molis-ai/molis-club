@@ -1,5 +1,5 @@
-// Molis Tool 页（specs/site-rebuild/tool-page.md 第 12 节）：六屏，每屏一块 Mac 屏幕当主角。
-// 首屏翻译 → 以前与现在（只比路程）→ 眼前的小事（三件事对三层）→ 插件 → 分寸 → 收尾。
+// Molis Tool 页（specs/site-rebuild/tool-page.md 第 13 节）：首屏翻译 → 右边钉住一块 Mac 屏幕、左边的字随滚动过去
+// （以前与现在 → 眼前的小事三件事对三层 → 插件，屏幕从早上走到傍晚）→ 分寸和收尾合成深色的一屏。
 // 标了「原句」的取自 docs/studio-intro.md 4.2；插件、承诺与「它不是」出自 Folio 版与 molis-tool 设计纲领（待负责人确认）；
 // 屏幕里的网页、笔记、报价、邮件、文件都是示例数据，界面都是示意。
 
@@ -57,18 +57,21 @@ export const desk = {
   pick: '选中上面这句',
 };
 
-/** 以前与现在：同一块屏幕，先看老路（Dock、另一个应用、菜单栏、再回来），再看一步。只比路程，不演细节 */
+/**
+ * 以前与现在：同一块屏幕，先看老路（Dock、另一个应用、菜单栏、再回来），再看一步。只比路程，不演细节。
+ * 钉住的屏幕从这里开始过一天：周五早上整理报价，接着是眼前的三件小事，傍晚装一个插件
+ */
 export const shift = {
   title: '能力来到光标旁，而不是人去找应用。',
   /** 标题里被荧光笔划过的几个字（只是强调，不改原句） */
   mark: '光标旁',
-  wall: 'noon' as Wall,
-  clock: '周三 15:20',
+  wall: 'morning' as Wall,
+  clock: '周五 08:56',
   notes: {
     app: '笔记',
     menus: ['文件', '编辑', '格式', '显示', '窗口'],
     title: '三家报价',
-    meta: '10月22日 周三 15:18',
+    meta: '10月24日 周五 08:52',
     lines: ['甲：2.40 元 × 5000', '乙：2.15 元 × 5000', '丙：2.60 元 × 3000'],
   },
   sheet: {
@@ -121,9 +124,11 @@ export const cases = {
   note: '界面示意 · 示例数据',
   near: {
     layer: '光标旁',
+    /** 一天里的什么时候（屏幕的壁纸） */
+    time: '早上',
     /** 原句的一截 */
     moment: readText,
-    result: '一步做完，结果留在原处',
+    result: '一步做完，结果留在原处。',
     tone: 'butter' as Tone,
     wall: 'morning' as Wall,
     clock: '周五 09:12',
@@ -131,7 +136,7 @@ export const cases = {
     menus: ['文件', '编辑', '格式', '显示', '窗口'],
     list: [
       ['周会', '09:10'],
-      ['三家报价', '周三'],
+      ['三家报价', '08:52'],
       ['读书摘记', '周一'],
     ],
     title: '周会',
@@ -149,9 +154,10 @@ export const cases = {
   },
   beside: {
     layer: '身旁',
+    time: '午后',
     /** 原句的一截 */
     moment: getPdf,
-    result: '在旁边挑页，另存一份，原件不动',
+    result: '在旁边挑页，另存一份，原件不动。',
     tone: 'sky' as Tone,
     wall: 'noon' as Wall,
     clock: '周五 14:30',
@@ -187,6 +193,7 @@ export const cases = {
   },
   later: {
     layer: '离开以后',
+    time: '傍晚',
     /** 原句的一截 */
     moment: seeEvent,
     /** 原句 */
@@ -252,8 +259,8 @@ export const plugins = {
     '生成的结果也是材料，可以直接交给下一个能力。',
     '停用以后，入口一起收起；做好的结果还在。',
   ],
-  wall: 'morning' as Wall,
-  clock: '周一 09:30',
+  wall: 'dusk' as Wall,
+  clock: '周五 19:20',
   app: 'Molis Tool',
   menus: ['文件', '编辑', '窗口'],
   name: '生成字幕',
@@ -305,9 +312,6 @@ export const measure = {
       '替你点按钮、代你发送的 Agent。',
     ],
   },
-  photo: {
-    alt: '白墙高处一扇玻璃天窗，阳光把窗格的影子斜斜印在墙上。',
-  },
 };
 
 export const selectTry = {
@@ -340,7 +344,7 @@ export const selectTry = {
   },
 };
 
-/** 当前进展：摘自 4.2「当前进展」原句 */
+/** 当前进展：摘自 4.2「当前进展」原句。页面上只用最后一句（收尾那屏）；「已有 / 还没有」负责人 2026-10-24 拿掉了 */
 export const toolProgress = {
   have: [
     'Molis Tool 已有 Mac 开发版本，以及文字、文件、PDF、表格等本机处理能力。',
@@ -349,23 +353,9 @@ export const toolProgress = {
     '跨应用交互、真实 AI 和系统服务仍在整合与验证，尚未公开提供安装包。',
     '它按独立产品推进，也计划成为 Molis Work 的基础能力，具体接入范围与时间尚未确定。',
   ],
-  /** 「已有 / 还没有」两列：上面两句原句拆成的词 */
-  blocks: {
-    have: ['Mac 开发版本', '文字、文件、PDF、表格等本机处理能力'],
-    notYet: ['跨应用交互', '真实 AI', '系统服务', '公开安装包'],
-  },
-  /** 附录 A 原句 */
-  siblings:
-    'DropAgent 和牛来都已有独立桌面应用，材料处理、Agent 动态与提醒的部分场景，也在 Molis Tool 中继续完善。',
 };
 
 export const toolGo = {
   follow: '关注 Molis Tool 的进展',
   work: '看看 Molis Work',
-  community: '去社区试试 DropAgent 和牛来',
-  /** 新写 */
-  now: 'Molis Tool 现在还不能下载。',
-  have: '已经有的',
-  notYet: '还没有的',
-  original: '展开看原文',
 };

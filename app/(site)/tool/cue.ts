@@ -74,7 +74,6 @@ export class Cue {
   private flags: [HTMLElement, string][] = [];
   private spots = new Map<HTMLElement, Point>();
   private hand: HTMLElement | null = null;
-  private pen: SVGSVGElement | null = null;
 
   constructor(
     readonly stage: HTMLElement,
@@ -90,7 +89,6 @@ export class Cue {
     delete this.stage.dataset.cue;
     this.unflag();
     this.hide();
-    this.wipe();
   }
 
   /** 准备好从头演：首屏停在结果上，往下的段落摆回空白 */
@@ -212,13 +210,6 @@ export class Cue {
     delete this.stage.dataset.snap;
   }
 
-  /** 接下来光标走过的路画成一道线（tool.css 的 .tl-trail）；不给名字就停笔 */
-  draw(name?: string) {
-    this.pen = name
-      ? this.stage.querySelector<SVGSVGElement>(`[data-trail='${name}']`)
-      : null;
-  }
-
   /** 接下来用哪只光标（一个舞台里几块屏幕，各有各的） */
   use(name?: string) {
     this.hand = this.stage.querySelector<HTMLElement>(
@@ -252,7 +243,6 @@ export class Cue {
       easing: HAND,
       fill: 'forwards',
     });
-    if (this.pen) this.stroke(from, to, bend, duration);
     this.spots.set(hand, to);
     await flight.done;
     hand.style.transform = `translate(${to.x}px, ${to.y}px)`;
@@ -405,31 +395,6 @@ export class Cue {
     this.stage.dataset.cue = '';
     this.unflag();
     this.hide();
-    this.wipe();
-  }
-
-  /** 一段路：和光标同一条弧线，跟着光标一起画出来 */
-  private stroke(from: Point, to: Point, bend: number, duration: number) {
-    const mid = control(from, to, bend);
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute(
-      'd',
-      `M${from.x.toFixed(1)} ${from.y.toFixed(1)}Q${mid.x.toFixed(1)} ${mid.y.toFixed(1)} ${to.x.toFixed(1)} ${to.y.toFixed(1)}`,
-    );
-    path.setAttribute('pathLength', '1');
-    this.pen!.appendChild(path);
-    this.animate(path, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], {
-      duration,
-      easing: HAND,
-    });
-  }
-
-  /** 擦掉走过的路 */
-  private wipe() {
-    this.pen = null;
-    this.stage
-      .querySelectorAll('[data-trail]')
-      .forEach((trail) => trail.replaceChildren());
   }
 
   private hide() {
@@ -518,7 +483,7 @@ export class Cue {
 
 /**
  * 把一个舞台交给编排：live 时播（进入视口、页面在前台、没按暂停），否则停在原处；
- * active 为假时只停不重摆（画廊里换走的那一件，淡出时保持原样），再轮到它时从空白开始；
+ * active 为假时只停不重摆（钉住的屏幕换走的那一块，淡出时保持原样），再轮到它时从空白开始；
  * hold 是访客亲手按出来的样子；still（减少动态）时停在做完的样子。
  */
 export function useCue(

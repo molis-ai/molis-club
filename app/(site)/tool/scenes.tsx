@@ -18,14 +18,12 @@ import type { ReactNode } from 'react';
 import { cases, plugins, shift, type Tone } from '../../../content/site/tool';
 import { mediaOf, type Vars } from '../../_site/ui';
 import { PlugSwitch } from './controls';
-import { Gallery } from './gallery';
-import { Dock, FileIcon, Menus, Pin, Screen, Trail, Win } from './mac';
+import { Dock, FileIcon, Menus, Pin, Screen, Win } from './mac';
 import { Mine } from './mine';
 import { Cursor, Hl, Ico } from './parts';
-import { Loop } from './stage';
 
-// Tool 页首屏之后的几块屏幕。这里只摆好「做完了」的样子和光标；怎么一拍一拍演出来写在 scripts.ts，
-// 每一拍的样子写在 tool.css。data-c 是脚本找零件用的名字。
+// Tool 页首屏之后的五块屏幕（钉在右边，walk.tsx 按滚动换）。这里只摆好「做完了」的样子和光标；
+// 怎么一拍一拍演出来写在 scripts.ts，每一拍的样子写在 tool.css。data-c 是脚本找零件用的名字。
 
 /** 选区末端的动作条：几个动作，第一个是光标要去按的（c） */
 function Chips({
@@ -71,156 +69,135 @@ function Done({ text }: { text: string }) {
 // ---------------------------------------------------------------------
 
 /**
- * 以前与现在：同一块屏幕，先看老路——光标从笔记跑到程序坞开表格、把字搬过去、到菜单栏找「分列」、再带回来，
- * 走过的路画成一道线；再看现在——原地选中，光标旁一步。屏幕下面两句原句，演到哪句亮哪句
+ * 以前与现在（早上）：同一块屏幕，先看老路——光标从笔记跑到程序坞开表格、把字搬过去、到菜单栏找「分列」、再带回来，
+ * 每到一站插一枚带序号的签；再看现在——原地选中，光标旁一步。左边两句原句，演到哪句亮哪句（tool.css 的 :has）
  */
-export function Shift() {
-  const { notes, sheet, before, after } = shift;
+export function ShiftScreen() {
+  const { notes, sheet, after } = shift;
   const last = notes.lines.length - 1;
   return (
-    <Loop
-      className="tl-shift"
-      label={shift.label}
-      note={shift.note}
-      cue="shift"
-      under={
-        <div className="tl-route">
-          <p data-k="before">
-            <b>{before.label}</b>
-            {before.text}
-          </p>
-          <p data-k="after">
-            <b>{after.label}</b>
-            {after.text}
-          </p>
-        </div>
+    <Screen
+      className="tl-s-shift"
+      wall={shift.wall}
+      sizes="(max-width: 900px) 100vw, 62vw"
+      app={
+        <>
+          <span data-app="notes">{notes.app}</span>
+          <span data-app="sheet">{sheet.app}</span>
+        </>
       }
-    >
-      <Screen
-        className="tl-s-shift"
-        wall={shift.wall}
-        sizes="(max-width: 900px) 100vw, 80vw"
-        app={
-          <>
-            <span data-app="notes">{notes.app}</span>
-            <span data-app="sheet">{sheet.app}</span>
-          </>
-        }
-        menus={
-          <>
-            <span className="tl-menus" data-app="notes">
-              <Menus items={notes.menus} />
-            </span>
-            <span className="tl-menus" data-app="sheet">
-              {sheet.menus.map((menu) =>
-                menu === sheet.menu ? (
-                  <span key={menu} className="tl-menu-at" data-c="menu">
-                    {menu}
-                    <span className="tl-dropdown">
-                      {sheet.items.map((item, index) => (
-                        <span
-                          key={item}
-                          data-c={index === sheet.pick ? 'pick' : undefined}
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </span>
-                  </span>
-                ) : (
-                  <span key={menu}>{menu}</span>
-                ),
-              )}
-            </span>
-          </>
-        }
-        clock={shift.clock}
-      >
-        <Win className="tl-sheet-win" title={sheet.title}>
-          <span className="tl-grid" data-c="grid">
-            <span data-corner="" />
-            {['A', 'B', 'C', 'D'].map((col) => (
-              <span key={col} data-col="">
-                {col}
-              </span>
-            ))}
-            {Array.from({ length: 6 }, (_, index) => {
-              const row = shift.rows[index];
-              return [
-                <span key={`n${index}`} data-num="">
-                  {index + 1}
-                </span>,
-                ...Array.from({ length: 4 }, (_, col) => (
-                  <span
-                    key={`${index}-${col}`}
-                    className="tl-cell"
-                    data-c={index === 0 && col === 0 ? 'cell' : undefined}
-                  >
-                    {row && col === 0 ? (
-                      <span className="tl-raw">{notes.lines[index]}</span>
-                    ) : null}
-                    {row && col < 3 ? (
-                      <span className="tl-split">{row[col]}</span>
-                    ) : null}
-                  </span>
-                )),
-              ];
-            })}
+      menus={
+        <>
+          <span className="tl-menus" data-app="notes">
+            <Menus items={notes.menus} />
           </span>
-        </Win>
-        <Dock apps={shift.dock} />
-        {shift.stops.map((stop, index) => (
-          <Pin key={stop} k={index}>
-            {stop}
-          </Pin>
-        ))}
-        <Pin k="now">{after.stop}</Pin>
-        <Trail name="before" />
-        <Trail name="after" />
-
-        <Win className="tl-notes-win" title={notes.title}>
-          <span className="tl-note" data-c="note">
-            <b className="tl-note-title">{notes.title}</b>
-            <small className="tl-note-meta">{notes.meta}</small>
-            <span className="tl-swap">
-              <span className="tl-note-lines">
-                {notes.lines.map((line, index) => (
-                  <span key={line} className="tl-note-line">
-                    <Hl c={`line-${index}`}>{line}</Hl>
-                    {index === last ? (
-                      <Chips
-                        c="after-btn"
-                        actions={after.actions}
-                        icons={[Table2, Copy]}
-                      />
-                    ) : null}
-                  </span>
-                ))}
-              </span>
-              <span className="tl-table">
-                <span className="tl-tr" data-head="">
-                  {shift.head.map((cell) => (
-                    <span key={cell}>{cell}</span>
-                  ))}
-                </span>
-                {shift.rows.map((row, index) => (
-                  <span
-                    key={row[0]}
-                    className="tl-tr"
-                    style={{ '--n': index } as Vars}
-                  >
-                    {row.map((cell, cellIndex) => (
-                      <span key={cellIndex}>{cell}</span>
+          <span className="tl-menus" data-app="sheet">
+            {sheet.menus.map((menu) =>
+              menu === sheet.menu ? (
+                <span key={menu} className="tl-menu-at" data-c="menu">
+                  {menu}
+                  <span className="tl-dropdown">
+                    {sheet.items.map((item, index) => (
+                      <span
+                        key={item}
+                        data-c={index === sheet.pick ? 'pick' : undefined}
+                      >
+                        {item}
+                      </span>
                     ))}
                   </span>
+                </span>
+              ) : (
+                <span key={menu}>{menu}</span>
+              ),
+            )}
+          </span>
+        </>
+      }
+      clock={shift.clock}
+    >
+      <Win className="tl-sheet-win" title={sheet.title}>
+        <span className="tl-grid" data-c="grid">
+          <span data-corner="" />
+          {['A', 'B', 'C', 'D'].map((col) => (
+            <span key={col} data-col="">
+              {col}
+            </span>
+          ))}
+          {Array.from({ length: 6 }, (_, index) => {
+            const row = shift.rows[index];
+            return [
+              <span key={`n${index}`} data-num="">
+                {index + 1}
+              </span>,
+              ...Array.from({ length: 4 }, (_, col) => (
+                <span
+                  key={`${index}-${col}`}
+                  className="tl-cell"
+                  data-c={index === 0 && col === 0 ? 'cell' : undefined}
+                >
+                  {row && col === 0 ? (
+                    <span className="tl-raw">{notes.lines[index]}</span>
+                  ) : null}
+                  {row && col < 3 ? (
+                    <span className="tl-split">{row[col]}</span>
+                  ) : null}
+                </span>
+              )),
+            ];
+          })}
+        </span>
+      </Win>
+      <Dock apps={shift.dock} />
+      {shift.stops.map((stop, index) => (
+        <Pin key={stop} k={index} n={index + 1}>
+          {stop}
+        </Pin>
+      ))}
+      <Pin k="now">{after.stop}</Pin>
+
+      <Win className="tl-notes-win" title={notes.title}>
+        <span className="tl-note" data-c="note">
+          <b className="tl-note-title">{notes.title}</b>
+          <small className="tl-note-meta">{notes.meta}</small>
+          <span className="tl-swap">
+            <span className="tl-note-lines">
+              {notes.lines.map((line, index) => (
+                <span key={line} className="tl-note-line">
+                  <Hl c={`line-${index}`}>{line}</Hl>
+                  {index === last ? (
+                    <Chips
+                      c="after-btn"
+                      actions={after.actions}
+                      icons={[Table2, Copy]}
+                    />
+                  ) : null}
+                </span>
+              ))}
+            </span>
+            <span className="tl-table">
+              <span className="tl-tr" data-head="">
+                {shift.head.map((cell) => (
+                  <span key={cell}>{cell}</span>
                 ))}
               </span>
+              {shift.rows.map((row, index) => (
+                <span
+                  key={row[0]}
+                  className="tl-tr"
+                  style={{ '--n': index } as Vars}
+                >
+                  {row.map((cell, cellIndex) => (
+                    <span key={cellIndex}>{cell}</span>
+                  ))}
+                </span>
+              ))}
             </span>
           </span>
-        </Win>
-        <Cursor />
-      </Screen>
-    </Loop>
+        </span>
+      </Win>
+      <Cursor />
+    </Screen>
   );
 }
 
@@ -255,7 +232,7 @@ function Messy({
 }
 
 /** 光标旁（早上）：笔记里一段从群里转来的通知，格式乱了；选中，点「清理格式」，就在原处收拢 */
-function Near() {
+export function Near() {
   const near = cases.near;
   return (
     <Screen
@@ -303,7 +280,7 @@ function Near() {
 }
 
 /** 身旁（午后）：下载文件夹里一份报价.pdf；选中，点「取出几页」，旁边展开一张小卡挑页，另存一份，原件不动 */
-function Beside() {
+export function Beside() {
   const beside = cases.beside;
   const cover = String(mediaOf('tool-light').srcset[0][0]);
   return (
@@ -384,7 +361,7 @@ function Beside() {
  * 离开以后（傍晚）：一封活动邮件；选中日期，点「整理成日程」，草稿收进「接续」；去做别的，
  * 过一会儿从菜单栏打开接续，草稿等你确认——早上清理的那句、午后另存的那份也都在
  */
-function Later() {
+export function Later() {
   const later = cases.later;
   return (
     <Screen
@@ -478,155 +455,129 @@ function Later() {
   );
 }
 
-/** 眼前的小事：三件事挂在同一块屏幕上，滚到哪件演哪件（gallery.tsx）；编排在 scripts.ts 的 c-* */
-export function Cases({ head }: { head: ReactNode }) {
-  const { near, beside, later } = cases;
-  return (
-    <Gallery
-      label={cases.title}
-      head={head}
-      note={cases.note}
-      wip={cases.wip}
-      pieces={[
-        { ...near, cue: 'c-near', art: <Near /> },
-        { ...beside, cue: 'c-beside', art: <Beside /> },
-        { ...later, tag: cases.wipTag, cue: 'c-later', art: <Later /> },
-      ]}
-    />
-  );
-}
-
 // ---------------------------------------------------------------------
 // 插件就是能力
 // ---------------------------------------------------------------------
 
 /**
- * 插件就是能力：设置里拨开「生成字幕」→ 光标旁、右键、拖放、命令条四处同时出现 → 点一下，生成访谈.srt →
+ * 插件就是能力（傍晚）：设置里拨开「生成字幕」→ 光标旁、右键、拖放、命令条四处同时出现 → 点一下，生成访谈.srt →
  * 再拨一下，四处一起收起，字幕还在。开关访客可以亲手拨
  */
-export function Plugins() {
+export function PlugScreen() {
   const name = plugins.name;
   const cover = String(mediaOf('tool-light').srcset[0][0]);
   const kinds = ['audio', 'video', 'image'] as const;
   return (
-    <Loop
-      className="tl-plug"
-      label={plugins.label}
-      note={plugins.note}
-      cue="plug"
-      interactive
+    <Screen
+      className="tl-s-plug"
+      wall={plugins.wall}
+      app={plugins.app}
+      menus={<Menus items={plugins.menus} />}
+      clock={plugins.clock}
+      sizes="(max-width: 900px) 100vw, 62vw"
     >
-      <Screen
-        className="tl-s-plug"
-        wall={plugins.wall}
-        app={plugins.app}
-        menus={<Menus items={plugins.menus} />}
-        clock={plugins.clock}
-        sizes="(max-width: 900px) 100vw, 64vw"
-      >
-        <Win className="tl-set-win" title={plugins.settings}>
-          <span className="tl-set-list">
-            {plugins.list.map((item, index) => (
-              <span key={item.name} className="tl-set-row">
-                <Ico
-                  icon={[Subtitles, Languages, Eraser][index]}
-                  tone={item.tone}
-                />
-                <span id={index === 0 ? 'tl-plug-name' : undefined}>
-                  <b>{item.name}</b>
-                  <small>{item.spec}</small>
-                </span>
+      <Win className="tl-set-win" title={plugins.settings}>
+        <span className="tl-set-list">
+          {plugins.list.map((item, index) => (
+            <span key={item.name} className="tl-set-row">
+              <Ico
+                icon={[Subtitles, Languages, Eraser][index]}
+                tone={item.tone}
+              />
+              <span id={index === 0 ? 'tl-plug-name' : undefined}>
+                <b>{item.name}</b>
+                <small>{item.spec}</small>
+              </span>
+              {index === 0 ? (
+                <PlugSwitch c="plug-toggle" labelledBy="tl-plug-name" />
+              ) : (
+                <i className="tl-switch" aria-hidden="true" />
+              )}
+            </span>
+          ))}
+        </span>
+      </Win>
+
+      <div aria-hidden="true">
+        <span className="tl-cmd">
+          <span className="tl-cmd-field">
+            <Search />
+            {plugins.query}
+          </span>
+          <span className="tl-cmd-hit tl-new" data-s="4">
+            <Ico icon={Subtitles} tone={plugins.tone} />
+            {name}
+            <small>{plugins.where}</small>
+          </span>
+        </span>
+
+        <Win className="tl-fin-win" title={plugins.folder}>
+          <span className="tl-rows">
+            {plugins.files.map((file, index) => (
+              <span
+                key={file}
+                className="tl-file-row"
+                data-sel={index === 0 || undefined}
+              >
+                <FileIcon kind={kinds[index]} thumb={cover} />
+                <span>{file}</span>
                 {index === 0 ? (
-                  <PlugSwitch c="plug-toggle" labelledBy="tl-plug-name" />
-                ) : (
-                  <i className="tl-switch" aria-hidden="true" />
-                )}
+                  <span className="tl-anchor">
+                    <span className="tl-bar">
+                      <span
+                        className="tl-bar-btn tl-new"
+                        data-first=""
+                        data-s="1"
+                        data-c="gen"
+                      >
+                        <Ico icon={Subtitles} tone={plugins.tone} />
+                        {name}
+                      </span>
+                      {plugins.near.map((other) => (
+                        <span key={other} className="tl-bar-btn">
+                          <Ico icon={Repeat} tone="sage" />
+                          {other}
+                        </span>
+                      ))}
+                    </span>
+                  </span>
+                ) : null}
+                {index === 1 ? (
+                  <span className="tl-context">
+                    {plugins.menu.map((item) => (
+                      <span key={item}>{item}</span>
+                    ))}
+                    <span className="tl-new" data-s="2">
+                      <Subtitles />
+                      {name}
+                    </span>
+                  </span>
+                ) : null}
               </span>
             ))}
+            <span className="tl-file-row tl-made">
+              <FileIcon kind="doc" />
+              <span>{plugins.made}</span>
+            </span>
           </span>
         </Win>
 
-        <div aria-hidden="true">
-          <span className="tl-cmd">
-            <span className="tl-cmd-field">
-              <Search />
-              {plugins.query}
-            </span>
-            <span className="tl-cmd-hit tl-new" data-s="4">
-              <Ico icon={Subtitles} tone={plugins.tone} />
-              {name}
-              <small>{plugins.where}</small>
-            </span>
-          </span>
+        <span className="tl-drop">
+          <FileIcon kind="audio" />
+          <span>{plugins.drop}</span>
+          <b className="tl-new" data-s="3">
+            <Subtitles />
+            {name}
+          </b>
+        </span>
 
-          <Win className="tl-fin-win" title={plugins.folder}>
-            <span className="tl-rows">
-              {plugins.files.map((file, index) => (
-                <span
-                  key={file}
-                  className="tl-file-row"
-                  data-sel={index === 0 || undefined}
-                >
-                  <FileIcon kind={kinds[index]} thumb={cover} />
-                  <span>{file}</span>
-                  {index === 0 ? (
-                    <span className="tl-anchor">
-                      <span className="tl-bar">
-                        <span
-                          className="tl-bar-btn tl-new"
-                          data-first=""
-                          data-s="1"
-                          data-c="gen"
-                        >
-                          <Ico icon={Subtitles} tone={plugins.tone} />
-                          {name}
-                        </span>
-                        {plugins.near.map((other) => (
-                          <span key={other} className="tl-bar-btn">
-                            <Ico icon={Repeat} tone="sage" />
-                            {other}
-                          </span>
-                        ))}
-                      </span>
-                    </span>
-                  ) : null}
-                  {index === 1 ? (
-                    <span className="tl-context">
-                      {plugins.menu.map((item) => (
-                        <span key={item}>{item}</span>
-                      ))}
-                      <span className="tl-new" data-s="2">
-                        <Subtitles />
-                        {name}
-                      </span>
-                    </span>
-                  ) : null}
-                </span>
-              ))}
-              <span className="tl-file-row tl-made">
-                <FileIcon kind="doc" />
-                <span>{plugins.made}</span>
-              </span>
-            </span>
-          </Win>
-
-          <span className="tl-drop">
-            <FileIcon kind="audio" />
-            <span>{plugins.drop}</span>
-            <b className="tl-new" data-s="3">
-              <Subtitles />
-              {name}
-            </b>
-          </span>
-
-          {plugins.surfaces.map((surface, index) => (
-            <Pin key={surface} k={index + 1}>
-              {surface}
-            </Pin>
-          ))}
-        </div>
-        <Cursor />
-      </Screen>
-    </Loop>
+        {plugins.surfaces.map((surface, index) => (
+          <Pin key={surface} k={index + 1}>
+            {surface}
+          </Pin>
+        ))}
+      </div>
+      <Cursor />
+    </Screen>
   );
 }

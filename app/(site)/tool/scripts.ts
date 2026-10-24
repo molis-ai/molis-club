@@ -62,7 +62,7 @@ export const scenes: Record<string, Scene> = {
 
   /**
    * 以前与现在：只比路程。以前——选中三行，到程序坞开表格，贴进去，到菜单栏找「分列」，再带回笔记，
-   * 走过的路画成一道长线，四站各插一枚签；现在——同一处选中，光标旁一步，路只有一小截
+   * 每到一站插一枚带序号的签（1–4）；现在——同一处选中，光标旁一步，只有一枚「一步」
    */
   shift: {
     settle: 1100,
@@ -73,7 +73,6 @@ export const scenes: Record<string, Scene> = {
       await c.enter('line-0', { at: [0, 0.55] });
       await sweep(c, 'line');
       c.arrow();
-      c.draw('before');
       await c.to('dock-表格', { at: [0.5, 0.35], dur: 1050, bend: -0.2 });
       await c.press('sheet');
       await c.wait(520);
@@ -91,7 +90,6 @@ export const scenes: Record<string, Scene> = {
       await c.wait(700);
       await c.to('note', { at: [0.5, 0.62], dur: 1100, bend: 0.22 });
       await c.press('back');
-      c.draw();
       await c.wait(1200);
       await c.leave();
       await c.wait(600);
@@ -101,11 +99,9 @@ export const scenes: Record<string, Scene> = {
       await c.wait(1100);
       await c.enter('line-0', { at: [0, 0.55] });
       await sweep(c, 'line');
-      c.draw('after');
       await pick(c, 'after-btn');
       c.uncue('bar');
       c.cue('table', 'one');
-      c.draw();
       await c.aside(1.8, 2.4);
       await c.wait(600);
       await c.leave();

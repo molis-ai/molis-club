@@ -29,10 +29,13 @@ export function useStill() {
 
 /** 访客亲手接过演示：hold 是停下来的那个样子（例如 'clean'、'off'），null 是照常循环 */
 type Hold = { hold: string | null; setHold: (value: string | null) => void };
-const HoldContext = createContext<Hold>({ hold: null, setHold: () => {} });
+export const HoldContext = createContext<Hold>({
+  hold: null,
+  setHold: () => {},
+});
 export const useHold = () => useContext(HoldContext);
 
-/** 在视口里、页面在前台：画廊的六件也用它 */
+/** 在视口里、页面在前台：钉住的那几块屏幕也用它 */
 export function useOnScreen(ref: RefObject<HTMLElement | null>) {
   const [inView, setInView] = useState(false);
   const [hidden, setHidden] = useState(false);
