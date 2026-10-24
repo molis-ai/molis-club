@@ -3,18 +3,10 @@ import { ArrowRight } from 'lucide-react';
 import { story, studio } from '../../../content/site/studio';
 import { team, teamUi } from '../../../content/site/team';
 import { alongGroups } from '../../../content/site/along';
-import { essays, splitTitle } from '../../../content/site/essays';
 import { nav } from '../../../content/site/nav';
 import { products } from '../../../content/site/products';
 import { aboutNext } from '../../../content/site/about';
-import {
-  ALONG,
-  COMMUNITY,
-  ENTERPRISE,
-  PRODUCTS,
-  contactHref,
-  essayHref,
-} from '../../_site/routes';
+import { ALONG, COMMUNITY, ENTERPRISE, PRODUCTS } from '../../_site/routes';
 import { mediaOf, Note, Phrases, type Vars } from '../../_site/ui';
 import { exUi, pieces } from '../../../content/site/exhibit';
 import { Crew } from './crew';
@@ -23,7 +15,6 @@ import { LifeArt, StoryArt, ToolArt, WorkArt } from './day-art';
 import { HeroLight } from './hero-light';
 import { Makers } from './makers';
 import {
-  Go,
   HUMAN_SCALE,
   Linked,
   Para,
@@ -32,6 +23,7 @@ import {
   soonFirst,
 } from './prose';
 import { Spread } from './spread';
+import { TreeEnd } from './end';
 import { Typewriter } from './typewriter';
 import { DrawingTable, IslandSketch } from './world';
 import './about-next.css';
@@ -40,12 +32,15 @@ import './about-next.css';
 // 整页只有三样东西——光（首屏一张照片）、线（沿途的墨线小图、产品线描、World 的铅笔）、画（团队画册、达·芬奇）：
 //   ① 首屏：白房子，叶影缓缓地动，正中「Molis AI」，右下两行画外音（hero-light.tsx、typewriter.tsx）；
 //   ② 当想法更容易变成现实：摊开——沿途 54 件真实的尝试随原句一步步变化，最后只留下并进产品的几件（spread.tsx）；
+//      右上角那行小字去沿途（负责人 2026-10-23）；
 //   ③④ 从怎样工作，走向怎样生活 → 从这些探索，看向更远的构想：同一扇窗（day.tsx）——字往下读，窗里换成各产品的线描，
 //      「一天才逐渐完整」时四件并排，接着窗变成 World 的格纸，岛跟着 2.4 的三段字一层层画出来（world.tsx）；
-//   ⑤ 联创团队：一进来就是这群人，一排肖像（crew.tsx）——从这里墙变成亚麻，是人的那一厅；
-//   ⑥ 来路：一屏，三段字各配一张若隐若现的团队画册小插画，去沿途和两篇文章；
+//   ⑤ 联创团队：一进来就是这群人，一排肖像（crew.tsx）——从这里墙变成亚麻，是人的那一厅；两篇文章挂在作者一骏的卡上；
+//   ⑥ 来路：一屏，三段字各配一张若隐若现的团队画册小插画（下面的三张卡负责人 2026-10-23 拿掉）；
+//      进来时三幅画像墨在纸上洇开一样从中间一张张显出来，画与画之间一道点线连起来，最后停在「脑洞共居所」旁边一个杏色小点；
 //   ⑦ 《黑客与画家》：一句过渡，油画与四张手稿（makers.tsx），墙回到纸白；
-//   ⑧ 结尾一屏，放慢：1.2 末句两行浮上来，「树下，总有空位」慢慢显影，四个横排的去处，一个杏色小点收尾。
+//   ⑧ 结尾「树下」（负责人 2026-10-24）：回到首屏的光——叶影落在纸白的墙上，打字机打出「Same taste? Stay a while.」，
+//      光标停在一行空白里（Your turn.），访客可以直接写一句带去「聊一聊」；下面是另外三张半透明的卡（end.tsx）。
 // 「我们相信什么」一屏负责人 2026-10-22 删去；原句仍在 content/site/studio.ts。
 // 正文都是底稿原句（studio.ts、team.ts），每句只出现一次；新写的界面文字在 content/site/about.ts 的 aboutNext。
 // 锚点照旧：#change、#products、#further、#people（旧地址 /team）、#yijun 等八个人、#origin、#makers。
@@ -61,7 +56,7 @@ function Vignette({
   sizes,
   className = '',
 }: {
-  name: 'art-boat' | 'art-sun' | 'art-house' | 'art-seat';
+  name: 'art-boat' | 'art-sun' | 'art-house';
   sizes: string;
   className?: string;
 }) {
@@ -174,12 +169,10 @@ export function AboutNext() {
   ];
 
   // 1.2 末句按逗号分成两行，一字不动
-  const invite = studio.ware.view.split(/(?<=，)/);
   const doors = aboutNext.doors;
-  const doorList = [
+  const others = [
     { ...doors.products, href: PRODUCTS },
     { ...doors.enterprise, href: ENTERPRISE },
-    { ...doors.chat, href: contactHref() },
     { ...doors.community, href: COMMUNITY },
   ];
 
@@ -237,7 +230,16 @@ export function AboutNext() {
           big={big}
           ask={ask}
           beat={change[3]}
-          credit={aboutNext.spread.credit(tries)}
+          credit={
+            <Link
+              className="sp-credit-link"
+              href={ALONG}
+              aria-label={`看${nav.aboutItems.along}`}
+            >
+              {aboutNext.spread.credit(tries)}
+              <ArrowRight size={13} strokeWidth={1.6} aria-hidden />
+            </Link>
+          }
         />
       </section>
 
@@ -283,7 +285,7 @@ export function AboutNext() {
           <p className="cr-fine">{teamUi.tagNote}</p>
         </section>
 
-        {/* ⑥ 来路：一屏。三段字各配一张若隐若现的小插画，下面是沿途和两篇文章 */}
+        {/* ⑥ 来路：一屏。三段字各配一张若隐若现的小插画 */}
         <section className="an-origin m-wrap" aria-labelledby="origin">
           <h2 className="og-title" id="origin" data-reveal>
             <Phrases text={story.origin.title} />
@@ -305,30 +307,21 @@ export function AboutNext() {
                 </p>
               </div>
             ))}
+            {/* 来路：画与画之间两段点线，一段接一段画出来 */}
+            {[0, 1].map((index) => (
+              <div
+                key={index}
+                className={`og-road og-road-${index + 1}`}
+                data-reveal
+                aria-hidden="true"
+                style={{ '--delay': `${700 + index * 500}ms` } as Vars}
+              >
+                <svg viewBox="0 0 100 40" preserveAspectRatio="none">
+                  <path d="M2 30Q50 2 98 30" />
+                </svg>
+              </div>
+            ))}
           </div>
-          <ul className="og-links" data-reveal>
-            <li>
-              <Go href={ALONG} label={`看${nav.aboutItems.along}`}>
-                <span className="ao-go-title">{nav.aboutItems.along}</span>
-                <span className="ao-go-line">
-                  <span className="num">{tries}</span>{' '}
-                  {teamUi.groups(alongGroups.length)}
-                </span>
-              </Go>
-            </li>
-            {/* 两篇文章：和沿途一起，是这段来路的读物 */}
-            {essays.map((essay) => {
-              const { main, sub } = splitTitle(essay.title);
-              return (
-                <li key={essay.slug}>
-                  <Go href={essayHref(essay.slug)} label={`读《${main}》`}>
-                    <span className="ao-go-title">《{main}》</span>
-                    {sub ? <span className="ao-go-line">{sub}</span> : null}
-                  </Go>
-                </li>
-              );
-            })}
-          </ul>
         </section>
       </div>
 
@@ -341,58 +334,9 @@ export function AboutNext() {
         <Makers />
       </section>
 
-      {/* ⑧ 结尾：一屏，放慢。两行邀请一行一行浮上来，「树下，总有空位」慢慢显影、四周淡进墙里，
-          下面一句话和四个横排的去处，最后一个杏色小点当句号 */}
+      {/* ⑧ 结尾「树下」：回到光里，最后轮到访客说（end.tsx） */}
       <section className="an-end" aria-labelledby="doors-title">
-        <div className="m-wrap an-end-in">
-          <h2 className="an-end-title" id="doors-title">
-            {invite.map((line, index) => (
-              <span
-                key={line}
-                className="an-end-line"
-                data-reveal
-                style={{ '--delay': `${index * 700}ms` } as Vars}
-              >
-                {line}
-              </span>
-            ))}
-          </h2>
-          <Vignette
-            name="art-seat"
-            sizes="(max-width: 900px) 100vw, 760px"
-            className="an-end-art"
-          />
-          <p className="an-doors-lead" data-reveal>
-            <Phrases text={studio.standard.together} />
-          </p>
-          <ul className="an-doors-list">
-            {doorList.map((door, index) => (
-              <li
-                key={door.label}
-                data-reveal
-                style={{ '--delay': `${index * 90}ms` } as Vars}
-              >
-                <Link
-                  className="an-door"
-                  href={door.href}
-                  aria-label={door.label}
-                >
-                  <span className="an-door-head">
-                    {door.label}
-                    <i lang="en">{door.en}</i>
-                  </span>
-                  <span className="an-door-line">
-                    <Phrases text={door.line} />
-                  </span>
-                  <span className="an-door-go" aria-hidden="true">
-                    <ArrowRight size={16} />
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <span className="an-end-dot" aria-hidden="true" data-reveal />
-        </div>
+        <TreeEnd line={aboutNext.end.title} others={others} />
       </section>
     </div>
   );
