@@ -146,8 +146,8 @@ export function Header() {
     >
       <Link href="/" className="m-logo" aria-label={nav.home}>
         <img
-          src="/site/molis-logo-64.png"
-          srcSet="/site/molis-logo-64.png 2x, /site/molis-logo-96.png 3x"
+          src="/site/molis-logo-clear-64.png"
+          srcSet="/site/molis-logo-clear-64.png 2x, /site/molis-logo-clear-96.png 3x"
           width="30"
           height="30"
           alt=""

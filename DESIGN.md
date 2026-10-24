@@ -150,7 +150,7 @@ motion:
 - 视频：`scripts/encode-video.swift`（系统 AVFoundation）重编码为 H.264、去音轨、快速起播并取封面帧。现用参数：Story 云 1280 宽 1400kbps 截 10 秒；关于页画室 960 宽 1000kbps；关于页海岸线 1280 宽 1400kbps 截 10 秒。本机命令行工具的 module map 重复时，编译加 `-vfsoverlay` 把多余的那份映射成空文件即可。
 - 社区三张团队插画（`art-window`、`art-book`、`art-greenhouse`）原图在 `public/images/team-art/`，挂法同「关于」；首页原末屏的画室影像（`home-painting`）现在挂在社区结尾。
 - 社区里艺术家 Skill 的三张 AI 创作试样也出压缩版（`artist-*`）；`public/images/artists/` 的原图留给评审页与「看原图」链接。
-- Logo 原图 1254px、800 多 KB；顶栏、页尾与 favicon 用按原图等比缩小的 `public/site/molis-logo-64.png` / `-96.png`，图形与颜色不改。
+- Logo 原图 1254px、800 多 KB；顶栏用抠掉米色底的透明版 `public/site/molis-logo-clear-64.png` / `-96.png`（压在满幅照片上不露方块），favicon 与工具页示意里用按原图等比缩小的 `public/site/molis-logo-64.png` / `-96.png`；两版都由 `npm run media` 出，图形、留白与颜色不改。
 - 原生 `img` 声明宽高，首屏以外 `lazy`；不依赖 Next 图片优化服务。根布局只预加载 Jost，评审页用的 Geist、Newsreader 与只在首页用的 Fraunces 不预加载。
 
 ## 可访问性与打印
