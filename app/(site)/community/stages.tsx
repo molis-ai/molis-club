@@ -480,7 +480,7 @@ export function DropWindow({
           {appendixTools.drop[2]}
         </span>
       }
-      chips={<DropSteps hold={hold} onHold={onHold} plain />}
+      chips={<DropSteps hold={hold} onHold={onHold} />}
     >
       {(now) => <DropScene now={now} />}
     </DemoWindow>

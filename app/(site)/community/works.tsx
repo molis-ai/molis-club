@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, FileText, Pause, Play } from 'lucide-react';
 import { artistSkills } from '../../../content/artists';
 import {
@@ -9,8 +9,6 @@ import {
   type TechniqueEntry,
 } from '../../../content/knowledge';
 import {
-  appendixTools,
-  community,
   demos,
   DROPAGENT_RELEASE,
   DROPAGENT_REPO,
@@ -21,78 +19,15 @@ import {
 import { at, Canvas, Cursor } from '../../_site/demo/demo';
 import { useReducedMotion, useVisible } from '../../_site/motion';
 import { artistHref, methodHref } from '../../_site/routes';
-import { artistImage, More, Note, pad } from '../../_site/ui';
+import { More } from '../../_site/ui';
 import { CopyAction, SkillDownload } from './copy';
-import { MethodDemo } from './method-demo';
 
-// 作品画廊里后四件：每件分成「窗」（左边钉住的那一格：作品本身、示意演示）和「字」（右边：想解决什么、怎么做、带走）。
-// 窗和字共用同一份选择（选了哪种观看、哪个效果、停在哪一步），由画廊管着传进来。
-// 这里是改版前那版（gallery-current.tsx）的窗和字；两版共用的画面（牛、置物架）、带走的按钮和演示的节拍也在这里，
-// 新版的窗在 stages.tsx。
-// 想解决什么、怎么做都是第 6 章与附录 A.1 的原句；没有 JS 时停在第一项、演示停在完整的结果上；
-// 减少动态时演示不播，停在设计好的那一拍。
+// 作品画廊里后四件的零件：带走的按钮、示意演示的节拍和画面（牛、置物架）。窗在 stages.tsx，画廊在 gallery.tsx。
+// 原句都来自第 6 章与附录 A.1；没有 JS 时演示停在完整的结果上，减少动态时不播，停在设计好的那一拍。
 
 // ---------- Artist Skill：AI 试样 / 方法三步 / 下载 ----------
 
 export const samples = artistSkills.filter((skill) => skill.image);
-
-export function ArtistStage({
-  index,
-  onPick,
-}: {
-  index: number;
-  onPick: (index: number) => void;
-}) {
-  const skill = samples[index];
-  const t = works.artist;
-  return (
-    <>
-      <div className="m-com-frame m-com-sample">
-        <img
-          key={skill.slug}
-          {...artistImage(skill.slug, skill, '(max-width: 900px) 92vw, 52vw')}
-          alt={skill.imageAlt}
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
-      <div className="m-com-under">
-        <fieldset className="m-com-pick m-com-js">
-          <legend className="sr-only">{t.pick}</legend>
-          {samples.map((item, i) => (
-            <button
-              key={item.slug}
-              type="button"
-              aria-pressed={i === index}
-              onClick={() => onPick(i)}
-            >
-              {item.name.split(' · ')[0]}
-            </button>
-          ))}
-        </fieldset>
-        <Note>{t.sampleNote}</Note>
-      </div>
-    </>
-  );
-}
-
-export function ArtistText({ index }: { index: number }) {
-  const skill = samples[index];
-  return (
-    <>
-      <p className="m-com-work-lead">{community.methods.artist[0]}</p>
-      <ol className="m-com-steps" aria-label={skill.name}>
-        {skill.method.map((step) => (
-          <li key={step.title}>
-            <b>{step.title}</b>
-            <span>{step.body}</span>
-          </li>
-        ))}
-      </ol>
-      <ArtistTake index={index} />
-    </>
-  );
-}
 
 /** 带走：下载这个 Skill，看完整方法 */
 export function ArtistTake({ index }: { index: number }) {
@@ -119,55 +54,6 @@ export const techniques = knowledge.filter(
 export const technique = (slug: string) =>
   techniques.find((item) => item.slug === slug) ?? techniques[0];
 
-export function WebStage({
-  slug,
-  onPick,
-}: {
-  slug: string;
-  onPick: (slug: string) => void;
-}) {
-  const entry = technique(slug);
-  return (
-    <>
-      <div className="m-com-frame m-com-web">
-        <MethodDemo key={entry.slug} entry={entry} tour />
-      </div>
-      <div className="m-com-under">
-        <fieldset className="m-com-pick m-com-js">
-          <legend className="sr-only">{works.web.pick}</legend>
-          {techniques.map((item) => (
-            <button
-              key={item.slug}
-              type="button"
-              aria-pressed={item.slug === entry.slug}
-              onClick={() => onPick(item.slug)}
-            >
-              {item.name}
-            </button>
-          ))}
-        </fieldset>
-      </div>
-    </>
-  );
-}
-
-export function WebText({ slug }: { slug: string }) {
-  const entry = technique(slug);
-  return (
-    <>
-      <p className="m-com-work-lead">{community.methods.web}</p>
-      <div className="m-com-work-how">
-        <p className="m-com-work-term">
-          <b>{entry.name}</b>
-          <i lang="en">{entry.english}</i>
-        </p>
-        <p>{entry.description}</p>
-      </div>
-      <WebTake slug={slug} />
-    </>
-  );
-}
-
 /** 带走：复制这个效果的 Prompt，看完整方法 */
 export function WebTake({ slug }: { slug: string }) {
   const entry = technique(slug);
@@ -188,19 +74,6 @@ export function WebTake({ slug }: { slug: string }) {
 
 // ---------- niul.ai 与 DropAgent：示意演示 / 原句 / 项目入口 ----------
 
-export function NiulText() {
-  return (
-    <>
-      <p className="m-com-work-lead">{appendixTools.niul[0]}</p>
-      <div className="m-com-work-how">
-        <p>{appendixTools.niul[1]}</p>
-        <p>{appendixTools.niul[2]}</p>
-      </div>
-      <NiulTake />
-    </>
-  );
-}
-
 /** 项目入口：GitHub 仓库 */
 export function NiulTake() {
   return (
@@ -209,20 +82,6 @@ export function NiulTake() {
         {works.niul.repo}
       </More>
     </div>
-  );
-}
-
-export function DropText() {
-  return (
-    <>
-      <p className="m-com-work-lead">{appendixTools.drop[0]}</p>
-      <div className="m-com-work-how">
-        <p>{appendixTools.drop[1]}</p>
-        <p>{appendixTools.drop[2]}</p>
-      </div>
-      <DropTake />
-      <p className="m-com-fine">{appendixTools.both}</p>
-    </>
   );
 }
 
@@ -250,15 +109,13 @@ export function DropTake() {
   );
 }
 
-/** DropAgent 的三步：指着哪一步，演示就停在那一步（新版不带编号：plain） */
+/** DropAgent 的三步：指着哪一步，演示就停在那一步 */
 export function DropSteps({
   hold,
   onHold,
-  plain = false,
 }: {
   hold: number | null;
   onHold: (step: number | null) => void;
-  plain?: boolean;
 }) {
   // 鼠标在三步之间挪动时不让演示在缝隙里跳回自动播放
   const leave = useRef(0);
@@ -283,7 +140,6 @@ export function DropSteps({
             onMouseLeave={release}
             onBlur={release}
           >
-            {plain ? null : <span className="num">{pad(i + 1)}</span>}
             {step}
           </button>
         </li>
@@ -294,10 +150,7 @@ export function DropSteps({
 
 // ---------- 示意演示的节拍：轮到它、在视口里、页面没藏起来、没暂停时才播 ----------
 
-/**
- * 几拍循环：rest 是停下来时的那一拍（没有 JS、减少动态时都停在这里）；外面指着哪一步（hold）就停在那一步。
- * 两版画廊的演示外壳共用。
- */
+/** 几拍循环：rest 是停下来时的那一拍（没有 JS、减少动态时都停在这里）；外面指着哪一步（hold）就停在那一步。 */
 export function useBeat<T extends HTMLElement>({
   steps,
   rest,
@@ -359,63 +212,6 @@ export function PauseButton({
   );
 }
 
-/**
- * 几拍循环的示意演示（改版前的画廊）。画面按当前拍画出来；窗下是「示意」和暂停键，before 放在它们前面。
- */
-function DemoShell({
-  steps,
-  rest,
-  ms,
-  label,
-  className,
-  on,
-  hold = null,
-  before,
-  children,
-}: {
-  steps: number;
-  rest: number;
-  ms: number;
-  label: string;
-  className: string;
-  /** 画廊里轮到这一件 */
-  on: boolean;
-  /** 外面指着哪一步：停在那一步，不播 */
-  hold?: number | null;
-  before?: ReactNode;
-  children: (step: number) => ReactNode;
-}) {
-  const { ref, step, running, reduced, paused, setPaused } = useBeat<HTMLElement>(
-    { steps, rest, ms, on, hold },
-  );
-  return (
-    <>
-      <figure
-        ref={ref}
-        className={`m-com-frame m-com-demo ${className}`}
-        data-running={running || undefined}
-        aria-label={label}
-      >
-        <div className="m-com-demo-view" aria-hidden="true">
-          {children(step)}
-        </div>
-      </figure>
-      <div className="m-com-under">
-        {before}
-        <span className="m-com-demo-tools">
-          <Note>{demos.note}</Note>
-          {reduced ? null : (
-            <PauseButton
-              paused={paused}
-              onToggle={() => setPaused((value) => !value)}
-            />
-          )}
-        </span>
-      </div>
-    </>
-  );
-}
-
 // ---------- niul.ai：桌边的四头牛，忙碌、等你、闲置、离线 ----------
 
 type CowState = keyof typeof demos.niul.states;
@@ -461,7 +257,7 @@ function Cow() {
   );
 }
 
-/** 桌边四头牛在这一拍的样子（两版画廊共用） */
+/** 桌边四头牛在这一拍的样子 */
 export function NiulScene({ step }: { step: number }) {
   const t = demos.niul;
   return (
@@ -494,50 +290,9 @@ export function NiulScene({ step }: { step: number }) {
   );
 }
 
-export function NiulStage({ on }: { on: boolean }) {
-  return (
-    <DemoShell
-      steps={timeline.length}
-      rest={1}
-      ms={2600}
-      on={on}
-      label={demos.niul.label}
-      className="m-com-niul"
-    >
-      {(step) => <NiulScene step={step} />}
-    </DemoShell>
-  );
-}
-
 // ---------- DropAgent：放下材料 → 在副本上处理 → 取走新结果 ----------
 
-export function DropStage({
-  on,
-  hold,
-  onHold,
-}: {
-  on: boolean;
-  hold: number | null;
-  onHold: (step: number | null) => void;
-}) {
-  const t = demos.drop;
-  return (
-    <DemoShell
-      steps={3}
-      rest={2}
-      ms={2800}
-      on={on}
-      hold={hold}
-      label={t.label}
-      className="m-com-drop"
-      before={<DropSteps hold={hold} onHold={onHold} />}
-    >
-      {(now) => <DropScene now={now} />}
-    </DemoShell>
-  );
-}
-
-/** 置物架在这一拍的样子（两版画廊共用） */
+/** 置物架在这一拍的样子 */
 export function DropScene({ now }: { now: number }) {
   const t = demos.drop;
   return (
