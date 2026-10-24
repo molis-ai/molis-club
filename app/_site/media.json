@@ -171,131 +171,71 @@
       ]
     ]
   },
-  "enterprise-vista-a": {
+  "enterprise-vista": {
     "width": 2400,
     "height": 1600,
     "avg": "#ac9988",
-    "src": "/site/enterprise-vista-a-2400.webp",
+    "src": "/site/enterprise-vista-2400.webp",
     "srcset": [
       [
-        "/site/enterprise-vista-a-1280.webp",
+        "/site/enterprise-vista-1280.webp",
         1280
       ],
       [
-        "/site/enterprise-vista-a-1920.webp",
+        "/site/enterprise-vista-1920.webp",
         1920
       ],
       [
-        "/site/enterprise-vista-a-2400.webp",
+        "/site/enterprise-vista-2400.webp",
         2400
       ]
     ]
   },
-  "enterprise-vista-b": {
-    "width": 2400,
-    "height": 1600,
-    "avg": "#b7a189",
-    "src": "/site/enterprise-vista-b-2400.webp",
-    "srcset": [
-      [
-        "/site/enterprise-vista-b-1280.webp",
-        1280
-      ],
-      [
-        "/site/enterprise-vista-b-1920.webp",
-        1920
-      ],
-      [
-        "/site/enterprise-vista-b-2400.webp",
-        2400
-      ]
-    ]
-  },
-  "enterprise-vista-c": {
-    "width": 2400,
-    "height": 1600,
-    "avg": "#907a66",
-    "src": "/site/enterprise-vista-c-2400.webp",
-    "srcset": [
-      [
-        "/site/enterprise-vista-c-1280.webp",
-        1280
-      ],
-      [
-        "/site/enterprise-vista-c-1920.webp",
-        1920
-      ],
-      [
-        "/site/enterprise-vista-c-2400.webp",
-        2400
-      ]
-    ]
-  },
-  "enterprise-vista-d": {
-    "width": 2400,
-    "height": 1351,
-    "avg": "#796756",
-    "src": "/site/enterprise-vista-d-2400.webp",
-    "srcset": [
-      [
-        "/site/enterprise-vista-d-1280.webp",
-        1280
-      ],
-      [
-        "/site/enterprise-vista-d-1920.webp",
-        1920
-      ],
-      [
-        "/site/enterprise-vista-d-2400.webp",
-        2400
-      ]
-    ]
-  },
-  "community-table": {
+  "art-window": {
     "width": 1672,
     "height": 941,
-    "avg": "#81766a",
-    "src": "/site/community-table-1672.webp",
+    "avg": "#d6b080",
+    "src": "/site/art-window-1672.webp",
     "srcset": [
       [
-        "/site/community-table-1280.webp",
-        1280
+        "/site/art-window-960.webp",
+        960
       ],
       [
-        "/site/community-table-1672.webp",
+        "/site/art-window-1672.webp",
         1672
       ]
     ]
   },
-  "community-colors": {
-    "width": 1672,
-    "height": 941,
-    "avg": "#898272",
-    "src": "/site/community-colors-1672.webp",
-    "srcset": [
-      [
-        "/site/community-colors-1280.webp",
-        1280
-      ],
-      [
-        "/site/community-colors-1672.webp",
-        1672
-      ]
-    ]
-  },
-  "community-blocks": {
+  "art-book": {
     "width": 1536,
     "height": 1024,
-    "avg": "#e8e2db",
-    "src": "/site/community-blocks-1536.webp",
+    "avg": "#d3ab7a",
+    "src": "/site/art-book-1280.webp",
     "srcset": [
       [
-        "/site/community-blocks-800.webp",
-        800
+        "/site/art-book-720.webp",
+        720
       ],
       [
-        "/site/community-blocks-1536.webp",
-        1536
+        "/site/art-book-1280.webp",
+        1280
+      ]
+    ]
+  },
+  "art-greenhouse": {
+    "width": 1536,
+    "height": 1024,
+    "avg": "#d6b073",
+    "src": "/site/art-greenhouse-1280.webp",
+    "srcset": [
+      [
+        "/site/art-greenhouse-720.webp",
+        720
+      ],
+      [
+        "/site/art-greenhouse-1280.webp",
+        1280
       ]
     ]
   },

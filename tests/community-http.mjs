@@ -28,12 +28,28 @@ assert.match(community, /Artist Skill/);
 assert.match(community, /niul\.ai/);
 assert.match(community, /DropAgent/);
 assert.match(community, /AI 创作试样/);
-assert(community.includes('href="/community/methods"'));
-// 晾衣绳上的「分享给我们」预选分享主题；按作品的 share-* 入口在访客动过手之后才出现
+// 一朵好奇可以存成 SVG；艺术家 Skill 可以下载
+assert(community.includes('download="一朵好奇-Molis-AI.svg"'), 'flower SVG');
+assert(community.includes('href="/downloads/artists/'), 'artist skill zip');
+// 方法目录：搜索交给目录页，三个去处各带一个分类
+assert(community.includes('action="/community/methods"'), 'methods search');
+for (const type of ['artists', 'web', 'sources'])
+  assert(
+    community.includes(`href="/community/methods?type=${type}"`),
+    `methods door ${type}`,
+  );
+// 「再带点什么回来」：分享作品、说说试得怎么样预选联系主题；按作品的 share-* 入口在访客动过手之后才出现
 assert(
   /href="\/contact\?topic=(creator|share-[a-z]+)"/.test(community),
   'share entry preselects the contact topic',
 );
+assert(community.includes('href="/contact?topic=feedback"'), 'feedback');
+// 白房子（负责人 2026-10-22，D2）：三张团队插画，结尾是首页挪来的那段画室；拖动提示之类的引导字不再回来
+for (const art of ['art-window', 'art-book', 'art-greenhouse'])
+  assert(community.includes(`/site/${art}-`), `illustration ${art}`);
+assert(community.includes('/site/home-painting-poster'), 'painting ending');
+for (const text of ['拖一拖', '左右拖'])
+  assert(!words(community).includes(text), `no「${text}」`);
 
 const methods = await page('/community/methods');
 for (const entry of knowledge)

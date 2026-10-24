@@ -4,34 +4,77 @@
    → 为什么我们可以（why.tsx）。不加框线、连接线与编号，用底色、留白和一点影子分组；颜色、字号只读 site.css 的令牌。
    ===================================================================== */
 
-/* 你们卡在哪（lean）：选一张，下面只回问题原句 */
+/* 你们卡在哪（lean）：一整屏，标题、纸条、回应上下居中，下一屏的图不探进来 */
+.m-ent[data-study='line'] .m-ent-where {
+  display: grid;
+  align-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: calc(var(--header) + clamp(24px, 4vh, 48px))
+    clamp(32px, 6vh, 72px);
+}
+/* 回应：一句「你们希望……」，下面一行说清选了有什么用；几条叠在同一格，高度按最长的留好 */
 .m-ent-replies[data-lean] {
-  margin-top: clamp(12px, 2.4vh, 28px);
+  margin-top: clamp(20px, 3.4vh, 36px);
   padding-top: 0;
   border-top: 0;
 }
 .m-ent-reply[data-lean] {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  justify-items: start;
+  gap: 10px;
 }
-.m-ent-reply[data-lean] .m-ent-reply-title {
-  color: var(--ink);
-  font: 400 var(--t-keys) / 1.6 var(--sans);
+.m-ent-reply[data-lean] .m-ent-reply-wish {
+  max-width: 42em;
+  font: 400 var(--t-keys) / 1.65 var(--sans);
   letter-spacing: 0.03em;
+  text-wrap: pretty;
+}
+.m-ent-reply-carry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 20px;
+  color: var(--mute);
+  font-size: var(--t-small);
+  letter-spacing: 0.04em;
+}
+.m-ent-reply-carried {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--accent-ink);
+}
+.m-ent-reply-carried::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  translate: 0 -1px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+/* 没有 JS 时选择带不进表单，这一行不说 */
+html:not(.js) .m-ent-reply-carry {
+  display: none;
 }
 
 /* =====================================================================
    满幅的一张图：从纸里像一扇窗开到满屏（--p），钉住后原句一拍一拍浮上来（--pin）
-   有 JS 时整段 300 屏高，贴住顶边时 --p ≈ 0.25；窗在 --p 0.05 → 0.25 之间开满
+   有 JS 时整段 220 屏高（2026-10-22 从 300 收短：一句话不值三屏），贴住顶边时 --p ≈ 0.31；
+   窗在 --p 0.05 → 0.27 之间开满，上沿碰到顶栏前已经开满
    ===================================================================== */
 .m-ent-vista {
-  --open: clamp(0, (var(--p, 1) - 0.05) / 0.2, 1);
+  --open: clamp(0, (var(--p, 1) - 0.05) / 0.22, 1);
   --open-s: calc(var(--open) * var(--open) * (3 - 2 * var(--open)));
   --pull: clamp(0, var(--pin, 1), 1);
   position: relative;
 }
 .js .m-ent-vista {
-  height: 300vh;
-  height: 300svh;
+  height: 220vh;
+  height: 220svh;
 }
 .m-ent-vista-stick {
   position: sticky;
@@ -48,8 +91,10 @@
   z-index: -1;
   overflow: hidden;
   background: var(--avg);
+  /* 窗没开时上下各收 --win-y、左右各收 --win-x；手机上收得少，纸和图之间不空一大段 */
   clip-path: inset(
-    calc((1 - var(--open-s)) * 16%) calc((1 - var(--open-s)) * 12%) round
+    calc((1 - var(--open-s)) * var(--win-y, 16%))
+      calc((1 - var(--open-s)) * var(--win-x, 12%)) round
       calc((1 - var(--open-s)) * 28px)
   );
 }
@@ -71,8 +116,8 @@
   background:
     linear-gradient(
       to top,
-      rgb(24 17 10 / 0.62),
-      rgb(24 17 10 / 0.18) 38%,
+      rgb(24 17 10 / 0.66),
+      rgb(24 17 10 / 0.24) 38%,
       rgb(24 17 10 / 0) 58%
     ),
     linear-gradient(
@@ -81,7 +126,7 @@
       rgb(24 17 10 / 0.08) 42%,
       rgb(24 17 10 / 0) 64%
     );
-  opacity: calc(0.3 + 0.7 * clamp(0, var(--pull) / 0.12, 1));
+  opacity: calc(0.3 + 0.7 * clamp(0, var(--pull) / 0.08, 1));
   pointer-events: none;
 }
 .m-ent-vista-body {
@@ -104,22 +149,18 @@
   text-wrap: wrap;
   font-feature-settings: 'palt' 1;
 }
-/* 每一拍：--t 开始浮上来，从虚到实对上焦；--next 是下一拍，那时退半步、略虚；最后一截三拍一起亮着 */
+/* 每一拍：--t 开始浮上来，从虚到实对上焦；浮上来以后就一直清楚地亮着。
+   前一拍不再退成半透明（2026-10-22：半透明的字压在桌腿和凳子上，过渡中途发糊），新的一拍靠浮上来的动作引人看 */
 .m-ent-vista-line > span {
-  --next: 9;
-  --in: clamp(0, (var(--pull) - var(--t)) / 0.08, 1);
-  --back: calc(
-    clamp(0, (var(--pull) - var(--next)) / 0.08, 1) *
-      (1 - clamp(0, (var(--pull) - 0.84) / 0.06, 1))
-  );
-  opacity: calc(var(--in) * (1 - 0.5 * var(--back)));
+  --in: clamp(0, (var(--pull) - var(--t)) / 0.06, 1);
+  opacity: var(--in);
   translate: 0 calc((1 - var(--in)) * 0.5em);
-  filter: blur(calc((1 - var(--in)) * 8px + var(--back) * 1.5px));
+  filter: blur(calc((1 - var(--in)) * 4px));
 }
 /* 三拍往右一级级错开；要紧的词最亮，其余的字退一档 */
 .m-ent-vista-beat {
   padding-left: calc(var(--step) * 1.5em);
-  color: rgb(255 255 255 / 0.66);
+  color: rgb(255 255 255 / 0.72);
 }
 .m-ent-vista-key {
   white-space: nowrap;
@@ -144,9 +185,10 @@
 .m-ent-flow {
   position: relative;
 }
+/* 每本书一屏的滚动：短片跟着滚动演完，再停一小截（shelf.tsx） */
 .m-ent-flow[data-live] {
-  height: calc(100vh + var(--legs) * 55vh);
-  height: calc(100svh + var(--legs) * 55svh);
+  height: calc(100vh + var(--legs) * 100vh);
+  height: calc(100svh + var(--legs) * 100svh);
 }
 .m-ent-flow-stick {
   display: grid;
@@ -290,7 +332,7 @@
 .m-film-art .m-film-orbit {
   transform-box: view-box;
 }
-/* 停在第一帧：外层有 data-hold 时（stages.tsx 等它进屏、等那本书打开） */
+/* 停住：外层有 data-hold 时（shelf.tsx 不钉住时等它进屏；钉住时由滚动定在哪一帧） */
 .m-film[data-hold] * {
   animation-play-state: paused !important;
 }
@@ -484,22 +526,29 @@
   stroke-width: 1.5;
   opacity: 0;
 }
-/* 画面里的字：按画面宽度定字号，镜头推近时跟着放大 */
+/* 画面里的字：按画面宽度定字号，镜头推近时跟着放大（负责人 2026-10-22 放大约三分之一：宽屏评论约 16px、名牌约 13px）；
+   下限压低，1024 宽钉住时画面约 645px，字和画的比例不变，评论不互相压住 */
 .m-film-axis,
 .m-film-say,
 .m-film-hand {
   position: absolute;
   white-space: nowrap;
 }
-/* 长的那几句按词组折成两行 */
+/* 长的那几句按词组折成两行；位置窄的（data-fold）一个词组一行 */
 .m-film-say {
   width: max-content;
   max-width: 26em;
   white-space: normal;
 }
+.m-film-say[data-fold] {
+  width: min-content;
+}
+.m-film-say[data-fold] .m-phrase {
+  white-space: nowrap;
+}
 .m-film-axis {
   color: var(--mute);
-  font: 400 clamp(9px, 1.05cqw, 11px) / 1 var(--sans);
+  font: 400 clamp(9.5px, 1.3cqw, 13px) / 1 var(--sans);
   letter-spacing: 0.12em;
 }
 .m-film-axis-end {
@@ -516,7 +565,7 @@
   box-shadow:
     0 0 0 1px rgb(var(--shade) / 0.07),
     0 8px 20px -12px rgb(var(--shade) / 0.45);
-  font-size: clamp(10.5px, 1.3cqw, 12.5px);
+  font-size: clamp(11px, 1.66cqw, 16.5px);
 }
 .m-film-step {
   display: inline-grid;
@@ -539,6 +588,7 @@
     0 0 0 3px var(--accent);
 }
 .m-film-who {
+  white-space: nowrap;
   color: var(--mute);
   font: 500 0.88em / 1 var(--sans);
   letter-spacing: 0.12em;
@@ -560,7 +610,7 @@
   display: flex;
   align-items: flex-start;
   pointer-events: none;
-  font-size: clamp(9.5px, 1.1cqw, 11.5px);
+  font-size: clamp(10px, 1.38cqw, 14px);
 }
 .m-film-arrow {
   width: 1.45em;
@@ -728,8 +778,11 @@
   letter-spacing: 0.28em;
   writing-mode: vertical-rl;
 }
+/* 竖排里的英文也立着，一个字母一格，和中文同一个方向读；字母比汉字窄，字距收紧一点（2026-10-22） */
 .m-ent-leg-latin {
-  letter-spacing: 0.04em;
+  margin-block: 0.3em;
+  letter-spacing: -0.2em;
+  text-orientation: upright;
 }
 .m-ent-flow[data-live] .m-ent-leg-spine::after {
   content: '';
@@ -819,7 +872,8 @@
 /* =====================================================================
    为什么我们可以（why.tsx）：一张覆盖图，像一根绳——四个位置四列，九股经历一股一行，
    名字打头，一根线从能顶上的第一个位置拉到最后一个；线跨过列与列之间的缝时那一截是杏色。
-   经历排成一道台阶，左下那一角放收尾。不加框，不钉住，进屏画一遍就停；颜色、字号、圆角只读 site.css 的令牌
+   经历排成一道台阶，左下那一角放收尾。不加框；宽屏钉住分两拍（先只有四个位置和问句，再画经历），
+   窄屏、减少动态时不钉住，进屏画一遍就停；颜色、字号、圆角只读 site.css 的令牌
    ===================================================================== */
 .m-why {
   display: grid;
@@ -836,6 +890,10 @@
     padding-block: calc(var(--header) + clamp(12px, 3vh, 40px))
       clamp(12px, 3vh, 40px);
   }
+}
+/* 不钉住时这一层不占位，标题和覆盖图直接排在 .m-why 里 */
+.m-why-stick {
+  display: contents;
 }
 /* 四列：位置在第一行，经历从第二行起一股一行；--head 是名字那一行的高度 */
 .m-why-board {
@@ -1083,6 +1141,69 @@
   }
 }
 
+/* 宽屏钉住、分两拍（why.tsx 在 ≥1000 宽、≥600 高、不减少动态时加 data-live，按滚动换 data-beat）。
+   整节两屏高，里面一屏贴住；原来「合在一屏里」的排法挪到贴住的这一层上。
+   第一拍：四个位置往下落到板子中间（--drop，why.tsx 量的），问句放大到正好撑满一列（--grow），5.5 小标题先藏着；
+   第二拍：位置回到列头、问句缩回原来的字号，小标题浮上来，经历照「进屏才画」那一套从左往右画 */
+.m-why[data-live] {
+  display: block;
+  /* 块容器上的 align-content 也会把唯一的子元素居中，钉住时要从顶上开始 */
+  align-content: normal;
+  height: 200vh;
+  height: 200svh;
+  min-height: 0;
+  padding-block: 0;
+}
+.m-why[data-live] .m-why-stick {
+  position: sticky;
+  top: 0;
+  display: grid;
+  align-content: center;
+  gap: clamp(20px, 4.8vh, 60px);
+  height: 100vh;
+  height: 100svh;
+  padding-block: calc(var(--header) + clamp(12px, 3vh, 40px))
+    clamp(12px, 3vh, 40px);
+}
+.m-why[data-live] .m-why-board .m-why-seat {
+  opacity: 1;
+  animation: none;
+  translate: 0 0;
+  transition: translate 0.9s var(--ease);
+}
+.m-why[data-live] .m-why-seat-ask {
+  justify-self: start;
+  width: max-content;
+  max-width: 100%;
+  transform-origin: 0 50%;
+  transition: scale 0.9s var(--ease);
+}
+.m-why[data-live] .m-why-seat-title {
+  transition: opacity 0.5s var(--ease) 0.45s;
+}
+.m-why[data-live][data-beat='1'] .m-why-seat {
+  translate: 0 var(--drop, 0px);
+}
+.m-why[data-live][data-beat='1'] .m-why-seat-ask {
+  scale: var(--grow, 1.4);
+}
+.m-why[data-live][data-beat='1'] .m-why-seat-title {
+  opacity: 0;
+  transition-delay: 0s;
+  transition-duration: 0.2s;
+}
+/* 往回滚到第一拍：经历和左下那一角淡下去，不是一下子没了 */
+.m-why[data-live] .m-why-board[data-wait]
+  :is(.m-why-strand-title, .m-why-strand-detail, .m-why-knots > i, .m-why-end) {
+  transition: opacity 0.25s var(--ease);
+}
+.m-why[data-live] .m-why-board[data-draw] .m-why-strand {
+  --t0: calc(560ms + var(--row) * 110ms);
+}
+.m-why[data-live] .m-why-board[data-draw] .m-why-end {
+  animation-delay: calc(560ms + var(--rows) * 110ms + 200ms);
+}
+
 /* =====================================================================
    聊聊企业合作（主线的最后一屏）：合在一屏里，字小一档（负责人 2026-10-20）。
    标题和前两屏的标题同一档、不压墨线；宽屏整节一屏高，配图按屏幕高度缩，表单收紧。
@@ -1189,9 +1310,10 @@
   .m-film-say {
     display: none;
   }
+  /* 名牌随画面宽度：手机上和原来一样小，不挤出画框；平板上到 10px */
   .m-film-hand,
   .m-film-axis {
-    font-size: 8.5px;
+    font-size: clamp(8.5px, 2.8cqw, 10px);
   }
   .m-film-lines {
     display: grid;
@@ -1273,6 +1395,17 @@
   .m-why-end {
     margin-top: 40px;
     padding-right: 0;
+  }
+}
+@media (max-width: 700px) {
+  /* 手机上「卡在哪」不撑满一屏：内容本来就矮，撑满后上下各空一大块，和下面那张图之间空出约三分之一屏（2026-10-22） */
+  .m-ent[data-study='line'] .m-ent-where {
+    min-height: 0;
+    padding-block: var(--section-top) clamp(16px, 3vh, 28px);
+  }
+  .m-ent-vista-media {
+    --win-y: 5%;
+    --win-x: 5%;
   }
 }
 @media (max-width: 640px) {

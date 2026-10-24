@@ -20,7 +20,6 @@ export const homeProducts: Record<
 export const homeClosing = {
   /** 第 1.4 节：「……让产品有自己的性格，让口味相近的人认出彼此。」按语气分两行，不改字 */
   lead: ['让口味相近的人', '认出彼此。'],
-  caption: 'A painter at the easel, afternoon light',
   paths: [
     {
       id: 'enterprise',
@@ -47,6 +46,4 @@ export const homeClosing = {
       link: '认识我们',
     },
   ],
-  pause: '暂停背景画面',
-  play: '继续背景画面',
 } as const;

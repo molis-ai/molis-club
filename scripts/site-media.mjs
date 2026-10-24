@@ -84,40 +84,36 @@ const images = [
     widths: [800, 1536],
     quality: 78,
   },
-  // 企业合作第三屏（负责人 2026-10-19：换图、满幅、沉浸地过渡）：Molis 官方图库（molis-ai/molis-image-library）的四张候选，
-  // 原图是 3072–3344 宽的 PNG（6–7 MB），这里放缩到 2400 宽的 JPEG（public/images/library/）。
-  // 默认是「人-03 长桌尽头还有山」；其余三张在 /enterprise?plate=b|c|d 对照，选定后删掉另外三张
-  ...[
-    { key: 'enterprise-vista-a', file: 'human-03' },
-    { key: 'enterprise-vista-b', file: 'community-02' },
-    { key: 'enterprise-vista-c', file: 'community-06' },
-    { key: 'enterprise-vista-d', file: 'human-01' },
-  ].map(({ key, file }) => ({
-    key,
-    src: `public/images/library/${file}.jpg`,
+  // 企业合作第三屏（负责人 2026-10-19：换图、满幅、沉浸地过渡）：Molis 官方图库（molis-ai/molis-image-library）
+  // 「人-03 长桌尽头还有山」（负责人 2026-10-22 从四张候选里定下，另外三张已删）。
+  // 原图是图库里 6–7 MB 的 PNG，这里放缩到 2400 宽的 JPEG（public/images/library/）
+  {
+    key: 'enterprise-vista',
+    src: 'public/images/library/human-03.jpg',
     widths: [1280, 1920, 2400],
     quality: 76,
-  })),
+  },
   // 其余各页
-  // 社区（负责人 2026-10-15 定的方向）：结尾沙上那道线改成画出来的，不再用照片；「带点什么走」满幅是比稿 D1 那张围桌的人
-  // （桌上有小牛摆件和带触角的小玩偶）；「再带点什么回来」满幅是品牌图库社区 A 雾感版（树下挂着各自的颜色）；
-  // 方法目录配比稿 E1 的铅笔插画（两只手沿虚线摆小房子）。原来孩子写生那张不再用
+  // 社区（负责人 2026-10-22 选定）：改回白房子，三张都从团队插画图库 molis-ai/molis-library 的
+  // image-library/team/illustrations 取，按 manifest.json 核过 SHA-256，原图 PNG 存成 q90 的 JPEG 放在 public/images/team-art/；
+  // 挂法同「关于」：四周淡进墙里。首屏 W01-01「开窗，开始创造」（sha256 8294347d…66c8）；
+  // 方法目录 W04-01「翻开，另一片天地」（5dc3e9ed…c196）；「再带点什么回来」W02-01「把想法种出来」（81e14af8…876d）
   {
-    key: 'community-table',
-    src: 'public/images/atelier/makers-studio.jpg',
-    widths: [1280, 1672],
-    quality: 74,
+    key: 'art-window',
+    src: 'public/images/team-art/open-window-studio.jpg',
+    widths: [960, 1672],
+    quality: 80,
   },
   {
-    key: 'community-colors',
-    src: 'public/r8-materials-mist-v1/images/community-a.png',
-    widths: [1280, 1672],
-    quality: 76,
+    key: 'art-book',
+    src: 'public/images/team-art/world-inside-a-book.jpg',
+    widths: [720, 1280],
+    quality: 80,
   },
   {
-    key: 'community-blocks',
-    src: 'public/images/line-engineering.jpg',
-    widths: [800, 1536],
+    key: 'art-greenhouse',
+    src: 'public/images/team-art/greenhouse-of-ideas.jpg',
+    widths: [720, 1280],
     quality: 80,
   },
   // 「关于」首屏（负责人 2026-10-19 从 Molis 官方图库 molis-ai/molis-image-library 选的「光-03 · 天光落下的地方」）：
@@ -409,6 +405,7 @@ const videos = [
     rate: 1,
     posterTime: 0,
   },
+  // 名字沿用 home-painting，画面现在挂在社区结尾（负责人 2026-10-22，D2）
   { key: 'home-painting', rate: 0.8 },
   { key: 'story-sky', rate: 0.35 },
   { key: 'about-painting', rate: 0.8 },

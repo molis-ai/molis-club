@@ -1,229 +1,330 @@
-/* =====================================================================
-   社区 /community：带着好奇来 → 带点什么走 → 再带点什么回来（负责人 2026-10-15 定的方向）。
-   同一间白房子，窗开着、里面有人在玩：比其它页更活泼，借比稿 E1 的画风——粗墨线、硬投影、
-   票根、印章、会荡的签子、举牌的小家伙；顶栏、页尾、字体、纸色不变。
-   类名前缀 m-com-；只读 site.css 的令牌。共用的「带走」动作与网页动效演示在 methods/methods.css。
-   ===================================================================== */
+/* 社区（负责人 2026-10-22 改回白房子，D2）：近白的纸、1px 细线、白卡片、大量留白，一屏一个重点。
+   和「关于」第四版、企业合作同一套：团队插画不装框、四周淡进墙里；去处是整张白卡、只留一颗圆形箭头；
+   作品画廊左边一扇窗钉住、右边的字顺着原生滚动走。不用粗墨线、硬阴影、斜贴的标签。
+   方法子页另有 methods/methods.css，这里只管 /community 这一页。 */
 
 .m-com {
-  --line: 2px solid var(--ink);
-  --pop: 5px 5px 0 var(--ink);
-  --pop-big: 8px 8px 0 var(--ink);
-  --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --cream: #f4f1e7;
-}
-
-/* 小标签：一个粗一点的词 · 一个细一点的词 */
-.m-com-label {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  font-size: var(--t-label);
-  letter-spacing: 0.16em;
-  color: var(--mute);
-}
-.m-com-label b {
-  font-weight: 500;
-  color: var(--ink);
-}
-.m-com-label span::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 10px;
-  border-radius: 50%;
-  background: var(--accent);
-  vertical-align: 2px;
+  background: var(--paper);
 }
 .m-com-h2 {
-  margin-top: 16px;
-  font: 300 clamp(30px, 3.3vw, 48px) / 1.3 var(--sans);
-  letter-spacing: 0.03em;
-}
-.m-com-h2 > span {
-  display: block;
-}
-.m-com-head-lead {
-  margin-top: 14px;
-  max-width: 36em;
-  color: var(--mute);
+  font: 300 var(--t-h2) / 1.35 var(--sans);
+  letter-spacing: 0.04em;
+  text-wrap: balance;
 }
 .m-com-fine {
-  font-size: var(--t-small);
-  line-height: 1.75;
+  max-width: 40em;
+  font: 400 12.5px / 1.85 var(--sans);
+  letter-spacing: 0.03em;
   color: var(--mute);
 }
-.m-com-stamp {
-  display: inline-flex;
-  align-items: center;
-  min-height: 26px;
-  padding: 0 12px;
-  border: var(--line);
-  border-radius: var(--r-pill);
-  background: var(--accent);
-  font: 500 12px / 1 var(--sans);
-  letter-spacing: 0.06em;
-  color: var(--ink);
-  white-space: nowrap;
-  rotate: -4deg;
-}
 
 /* =====================================================================
-   页边竖排的三幕
+   团队插画：不装框，四周淡进墙里（同「关于」的挂法）；看到时慢慢显影
    ===================================================================== */
-.m-com-acts {
-  position: fixed;
-  right: 9px;
-  top: 50%;
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 10px 2px;
-  border: 1.5px solid var(--ink);
-  border-radius: var(--r-pill);
-  background: var(--paper);
-  translate: 0 -50%;
+.m-com-art {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  margin: 0;
 }
-.m-com-acts a {
-  writing-mode: vertical-rl;
-  padding: 5px 0;
+.m-com-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  mix-blend-mode: multiply;
+  filter: var(--grade) saturate(0.9);
+  -webkit-mask-image: radial-gradient(
+    ellipse closest-side,
+    #000 62%,
+    transparent
+  );
+  mask-image: radial-gradient(ellipse closest-side, #000 62%, transparent);
+}
+.js .m-com-art[data-open] img {
+  transition:
+    opacity 2.2s var(--ease) 0.2s,
+    filter 2.2s var(--ease) 0.2s,
+    scale 2.8s var(--ease) 0.2s;
+}
+.js .m-com-art[data-open]:not(.is-in) img {
+  opacity: 0;
+  filter: var(--grade) saturate(0.9) blur(6px);
+  scale: 1.04;
+}
+.m-com-art-name {
   font-size: 11px;
-  letter-spacing: 0.28em;
-  color: #a9a59c;
-  transition: color 0.4s var(--ease);
-}
-.m-com-acts a + a::before {
-  content: '';
-  display: block;
-  width: 5px;
-  height: 5px;
-  margin: 0 auto 12px;
-  border-radius: 50%;
-  background: var(--faint);
-}
-.m-com-acts a[data-lit] {
-  color: var(--ink);
-}
-.m-com-acts a[aria-current]::after {
-  content: '';
-  display: block;
-  width: 7px;
-  height: 7px;
-  margin: 8px auto 0;
-  border-radius: 50%;
-  background: var(--accent);
-}
-.m-com-acts a:hover {
-  color: var(--ink);
-}
-.m-com-acts a:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 2px;
+  letter-spacing: 0.06em;
+  color: var(--mute);
 }
 
 /* =====================================================================
-   ① 首屏：纸上那朵花就是玩具
+   ① 首屏：两句标题在左，「开窗，开始创造」在右
    ===================================================================== */
 .m-com-hero {
-  --paper-size: clamp(340px, calc(100svh - 380px), 540px);
-  position: relative;
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  align-items: center;
+  grid-template-columns: minmax(0, 11fr) minmax(0, 13fr);
+  grid-template-rows: auto auto;
+  align-content: center;
+  column-gap: clamp(32px, 4vw, 72px);
+  row-gap: 18px;
+  min-height: 100vh;
   min-height: 100svh;
-  padding-bottom: 72px;
-  padding-top: calc(var(--header) + 40px);
+  padding-bottom: clamp(32px, 6vh, 72px);
 }
-.m-com-hero-text {
-  grid-column: 1 / span 6;
-  align-self: center;
-  padding-top: 40px;
-}
+/* 两句各占一行：字号跟着栏宽走，不在句中折行 */
 .m-com-title {
-  margin-top: 22px;
-  font: 300 var(--t-h1) / 1.34 var(--sans);
+  grid-column: 1;
+  align-self: end;
+  font: 300 clamp(30px, 3.8vw, 60px) / 1.32 var(--sans);
   letter-spacing: 0.02em;
+  font-feature-settings: 'palt' 1;
 }
 .m-com-title span {
   display: block;
   white-space: nowrap;
 }
 .m-com-sub {
-  margin-top: 26px;
-  font-size: var(--t-lead);
+  grid-column: 1;
+  align-self: start;
+  font: 300 var(--t-lead) / 1.9 var(--sans);
   letter-spacing: 0.04em;
-  color: var(--mute);
+  color: var(--ink-2);
 }
-.m-com-toy {
-  grid-column: 7 / -1;
-  justify-self: center;
-  position: relative;
-  width: var(--paper-size);
-  margin-top: 120px;
-  scroll-margin-top: calc(var(--header) + 150px);
-}
-/* 小家伙在纸后面：纸沿挡住它的下半身 */
-.m-com-peek {
-  position: absolute;
-  z-index: 1;
-  left: 6%;
-  bottom: calc(100% - 39px);
-  width: 176px;
-  animation: m-com-bob 3.6s ease-in-out infinite;
-}
-.m-com-peek .m-mascot {
-  width: 100%;
-}
-@keyframes m-com-bob {
-  50% {
-    translate: 0 -4px;
-  }
-}
-.m-com-scribble {
-  position: absolute;
-  z-index: 3;
-  left: calc(6% + 196px);
-  bottom: calc(100% - 33px);
-  width: 86px;
-  overflow: visible;
-  pointer-events: none;
-}
-.m-com-scribble path {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-  animation: m-com-draw 1.2s cubic-bezier(0.6, 0, 0.3, 1) 0.9s backwards;
-}
-.m-com-scribble path + path {
-  animation-delay: 1.9s;
-  animation-duration: 0.4s;
-}
-@keyframes m-com-draw {
-  from {
-    stroke-dashoffset: 1;
-  }
+.m-com-hero-art {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  width: min(
+    100%,
+    calc((100svh - var(--header) - clamp(48px, 9vh, 112px) - 96px) * 1.777)
+  );
+  justify-self: end;
 }
 
-.m-com-paper {
-  position: relative;
-  z-index: 2;
-  aspect-ratio: 1;
-  margin: 0;
-  border: var(--line);
-  border-radius: 10px;
-  background: var(--white);
-  box-shadow: var(--pop-big);
-  rotate: -2deg;
+/* =====================================================================
+   ② 作品画廊：头一屏是题目与第一件；之后每件一屏，左边的窗钉住
+   ===================================================================== */
+.m-com-works {
+  /* 窗的宽：一屏放得下整扇窗和窗下那一行 */
+  --frame-w: min(100%, calc((100svh - var(--header) - 132px) * 16 / 11));
+  padding-block: clamp(56px, 12vh, 128px) clamp(40px, 8vh, 96px);
 }
+.m-com-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 5vh, 48px);
+}
+.m-com-gallery-head {
+  order: 0;
+  display: grid;
+  gap: 10px;
+  max-width: 34em;
+}
+.m-com-gallery-lead {
+  font: 300 var(--t-lead) / 1.85 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+/* 窄屏、没有 JS、打印：每件的窗挂在自己的字上方 */
+.m-com-still {
+  order: calc(var(--row) * 2 - 3);
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+.m-com-work {
+  order: calc(var(--row) * 2 - 2);
+  padding-bottom: clamp(24px, 6vh, 64px);
+}
+.m-com-work-in {
+  display: grid;
+  gap: clamp(16px, 2.6vh, 26px);
+  max-width: 32em;
+}
+.m-com-work-head {
+  display: grid;
+  gap: 6px;
+}
+.m-com-work-name {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font: 300 var(--t-h3) / 1.35 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-com-work-name [lang='en'] {
+  letter-spacing: 0.01em;
+}
+.m-com-work-name small {
+  font-size: var(--t-small);
+  letter-spacing: 0.08em;
+  color: var(--mute);
+}
+.m-com-work-lead {
+  font: 300 var(--t-lead) / 1.85 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.m-com-work-how {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.95;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+.m-com-work-term {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.m-com-work-term b {
+  font-weight: 500;
+  color: var(--ink);
+}
+.m-com-work-term i {
+  font: italic 300 14px / 1 var(--latin);
+  letter-spacing: 0.01em;
+  color: var(--mute);
+}
+
+/* 做法：一行一道细线，编号是细斜体 */
+.m-com-steps {
+  counter-reset: m-com-step;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.m-com-steps li {
+  counter-increment: m-com-step;
+  position: relative;
+  display: grid;
+  gap: 2px;
+  padding: 11px 8px 11px 34px;
+  border-top: 1px solid var(--hair);
+  border-radius: 2px;
+  transition: background-color 0.4s var(--ease);
+}
+.m-com-steps li:last-child {
+  border-bottom: 1px solid var(--hair);
+}
+.m-com-steps li::before {
+  content: '0' counter(m-com-step);
+  position: absolute;
+  left: 2px;
+  top: 13px;
+  font: italic 300 13px / 1.4 var(--latin);
+  color: var(--accent-ink);
+  font-variant-numeric: tabular-nums;
+}
+.m-com-steps b {
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+.m-com-steps span {
+  font-size: 13px;
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+/* 一朵好奇的三步：指着哪一步，窗里停在那一步；点一下就用它 */
+.m-com-steps li:has(> button) {
+  padding: 0;
+}
+.m-com-steps li:has(> button)::before {
+  pointer-events: none;
+}
+.m-com-steps button {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 11px 8px 11px 34px;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.4s var(--ease);
+}
+.m-com-steps button:hover {
+  background: var(--accent-wash);
+}
+.m-com-steps button:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+}
+.m-com-take {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+.m-com-take.m-actions {
+  display: flex;
+}
+/* 复制后的那句话挂在按钮下面，旁边的按钮不跟着往下沉；没复制上时，要手动复制的字另起一整行 */
+.m-com-take .m-actions,
+.m-com-take.m-actions {
+  align-items: start;
+}
+.m-com-take .m-com-copy:has(.m-com-manual) {
+  flex-basis: 100%;
+}
+.m-com-take .m-com-fine {
+  margin: 0;
+}
+
+/* ---------- 窗：同一种比例、同一种演示区底；窗下一行放选择、说明和暂停 ---------- */
+.m-com-frame {
+  position: relative;
+  width: var(--frame-w);
+  margin: 0;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  border-radius: var(--r-panel);
+  background: var(--paper-2);
+  container-type: inline-size;
+}
+.m-com-frame-cap {
+  position: absolute;
+  left: 18px;
+  bottom: 14px;
+  pointer-events: none;
+}
+.m-com-under {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  width: var(--frame-w);
+  min-height: 34px;
+}
+.m-com-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+}
+.m-com-pick button {
+  cursor: pointer;
+}
+.m-com-pick button:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+}
+.m-com-pick .num {
+  font: italic 300 12.5px / 1 var(--latin);
+  color: var(--mute);
+}
+
+/* ---------- 一朵好奇：花本身就是控件 ---------- */
 .m-com-canvas {
   position: absolute;
   inset: 0;
@@ -231,11 +332,10 @@
   width: 100%;
   padding: 0;
   border: 0;
-  border-radius: 8px;
+  border-radius: inherit;
   background: none;
   color: inherit;
   font: inherit;
-  text-align: inherit;
   cursor: grab;
   touch-action: pan-y;
   user-select: none;
@@ -245,8 +345,8 @@
   cursor: grabbing;
 }
 .m-com-canvas:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: -10px;
+  outline: 1.5px solid var(--ink);
+  outline-offset: -8px;
 }
 .m-com-flower {
   display: block;
@@ -255,15 +355,19 @@
 }
 .m-com-canvas .m-com-flower {
   position: absolute;
-  inset: 4%;
-  width: 92%;
-  height: 92%;
+  inset: 6%;
+  width: 88%;
+  height: 88%;
 }
 .m-com-petal {
   transition: transform 0.18s linear;
 }
-.js .m-com-paper[data-intro] .m-com-petal {
-  animation: m-com-petal 1.4s var(--ease) calc(260ms + var(--i) * 36ms)
+/* 第一次看到时一片片转到位（进入视口加 is-in；动过手就去掉 data-intro） */
+.js .m-com-flower-frame[data-intro]:not(.is-in) .m-com-petal {
+  opacity: 0;
+}
+.js .m-com-flower-frame[data-intro].is-in .m-com-petal {
+  animation: m-com-petal 1.4s var(--ease) calc(160ms + var(--i) * 36ms)
     backwards;
 }
 @keyframes m-com-petal {
@@ -272,41 +376,7 @@
     transform: rotate(0deg);
   }
 }
-/* 纸右上角的一张小便签：现在的数 */
-.m-com-hint {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  padding: 7px 11px;
-  border: 1.5px solid var(--ink);
-  border-radius: 8px;
-  background: var(--white);
-  font-size: 11.5px;
-  line-height: 1.65;
-  color: var(--ink-2);
-  pointer-events: none;
-  rotate: 2deg;
-}
-.m-com-hint b {
-  font-weight: 500;
-  color: var(--ink);
-}
-.m-com-hint [data-pointer='coarse'] {
-  display: none;
-}
-@media (pointer: coarse) {
-  .m-com-hint [data-pointer='fine'] {
-    display: none;
-  }
-  .m-com-hint [data-pointer='coarse'] {
-    display: inline;
-  }
-}
-/* 纸左下角四个颜料点 */
 .m-com-paints {
-  position: absolute;
-  left: 20px;
-  bottom: 20px;
   display: flex;
   gap: 10px;
   margin: 0;
@@ -314,808 +384,81 @@
   border: 0;
 }
 .m-com-paints button {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   padding: 0;
-  border: var(--line);
+  border: 0;
   border-radius: 50%;
   background: var(--c);
+  box-shadow: inset 0 0 0 1px rgb(27 26 24 / 0.14);
   cursor: pointer;
-  transition:
-    scale 0.3s var(--bounce),
-    box-shadow 0.3s var(--bounce);
-}
-.m-com-paints button:hover {
-  scale: 1.15;
+  transition: box-shadow 0.3s var(--ease);
 }
 .m-com-paints button[aria-pressed='true'] {
   box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--ink);
-  scale: 1.1;
+    0 0 0 3px var(--paper),
+    0 0 0 4px var(--ink-2);
 }
 .m-com-paints button:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 1.5px solid var(--ink);
   outline-offset: 5px;
 }
-.m-com-hero-ticket {
-  position: absolute;
-  z-index: 3;
-  right: -46px;
-  bottom: -30px;
-  rotate: 5deg;
-}
-.m-com-hero-ticket .m-com-status {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 10px);
-  width: 260px;
-  text-align: right;
-  rotate: -5deg;
-}
-.m-com-paper-foot {
-  margin-top: 26px;
-  padding-right: 220px;
-}
-.m-com-paper-cap {
-  position: absolute;
-  left: 20px;
-  top: 16px;
-  display: flex;
-  gap: 10px;
-  pointer-events: none;
-}
-.m-com-paper-cap .num {
-  font-style: normal;
-  color: var(--ink);
-}
-.m-com-paper-acts {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 8px 12px;
-}
-.m-com-paper-acts .m-com-copy {
-  justify-items: start;
-}
-
-/* =====================================================================
-   票根（比稿 E1）：左边写带走什么，右边是杏橙的存根，中间一道虚线
-   ===================================================================== */
-.m-com-ticket-wrap {
-  display: grid;
-  justify-items: start;
-  gap: 10px;
-}
-.m-com-ticket {
-  position: relative;
-  display: inline-grid;
-  grid-template-columns: minmax(0, 1fr) 64px;
-  min-width: 236px;
-  min-height: 70px;
-  padding: 0;
-  border: var(--line);
-  border-radius: 12px;
-  background: var(--white);
-  box-shadow: var(--pop);
-  color: var(--ink);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    translate 0.35s var(--bounce),
-    rotate 0.35s var(--bounce),
-    box-shadow 0.35s var(--bounce);
-}
-.m-com-ticket::before,
-.m-com-ticket::after {
-  content: '';
-  position: absolute;
-  right: 54px;
-  width: 20px;
-  height: 20px;
-  border: var(--line);
-  border-radius: 50%;
-  background: var(--paper);
-}
-.m-com-ticket::before {
-  top: -11px;
-  clip-path: inset(50% -2px -2px -2px);
-}
-.m-com-ticket::after {
-  bottom: -11px;
-  clip-path: inset(-2px -2px 50% -2px);
-}
-.m-com-ticket:hover {
-  translate: -2px -3px;
-  rotate: -1deg;
-  box-shadow: var(--pop-big);
-}
-.m-com-ticket:active {
-  translate: 2px 2px;
-  box-shadow: 1px 1px 0 var(--ink);
-}
-.m-com-ticket:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
-}
-.m-com-ticket-main {
-  display: grid;
-  align-content: center;
-  gap: 2px;
-  padding: 12px 18px;
-}
-.m-com-ticket-main b {
-  font-weight: 500;
-  font-size: 16px;
-  letter-spacing: 0.04em;
-}
-.m-com-ticket-main small {
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  color: var(--mute);
-}
-.m-com-ticket-stub {
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: 3px;
-  border-left: 2px dashed var(--ink);
-  border-radius: 0 10px 10px 0;
-  background: var(--accent);
-}
-.m-com-ticket-stub i {
-  font: italic 400 11px / 1 var(--latin);
-  letter-spacing: 0.02em;
-}
-/* 撕下来：存根飞出去，再长回来 */
-.m-com-ticket[data-torn] .m-com-ticket-stub {
-  animation: m-com-tear 1.3s var(--ease) both;
-}
-@keyframes m-com-tear {
-  0% {
-    transform: none;
-  }
-  18% {
-    transform: translate(4px, -2px) rotate(6deg);
-  }
-  55% {
-    transform: translate(34px, 90px) rotate(38deg);
-    opacity: 0;
-  }
-  56% {
-    transform: none;
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-.m-com-take-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-}
-
-/* =====================================================================
-   ②⑤ 满幅照片屏：从一扇窄窗开到满幅，一句话写在贴上去的纸签上
-   ===================================================================== */
-.m-com-photo {
-  --p: 1;
-  --o: clamp(0, (var(--p) - 0.06) * 3.4, 1);
-  position: relative;
-  height: 100svh;
-  min-height: 560px;
-  overflow: hidden;
-  scroll-margin-top: 0;
-}
-.m-com-photo-frame {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background: var(--avg);
-  clip-path: inset(
-    calc((1 - var(--o)) * 18%) calc((1 - var(--o)) * 26%)
-      round calc((1 - var(--o)) * 28px)
-  );
-}
-.m-com-photo-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: var(--focus, 50% 50%);
-  /* 雾感：和品牌图库的调色拉到一起 */
-  filter: var(--grade) saturate(0.86) contrast(0.92) brightness(1.04);
-  scale: calc(1.12 - var(--o) * 0.12);
-}
-.m-com-photo-label {
-  position: absolute;
-  left: var(--gutter);
-  bottom: clamp(36px, 8vh, 88px);
-  max-width: min(660px, calc(100% - var(--gutter) * 2));
-  padding: 24px 32px 26px;
-  border: var(--line);
-  border-radius: 16px;
-  background: var(--paper);
-  box-shadow: var(--pop-big);
-  rotate: -1.5deg;
-}
-.js .m .m-com-photo-label[data-reveal] {
-  transition:
-    opacity 0.6s var(--ease) 0.15s,
-    transform 0.8s var(--bounce) 0.15s;
-}
-.js .m .m-com-photo-label[data-reveal]:not(.is-in) {
-  transform: translateY(40px) rotate(4deg);
-}
-.m-com-photo-line {
-  font: 400 clamp(28px, 3.4vw, 50px) / 1.3 var(--sans);
-  letter-spacing: 0.03em;
-}
-.m-com-photo-lead {
-  margin-top: 10px;
-  color: var(--ink-2);
-}
-.m-com-photo-cap {
-  position: absolute;
-  right: calc(var(--gutter) + 40px);
-  bottom: 22px;
-  display: flex;
-  gap: 10px;
-  padding: 4px 12px;
-  border: 1.5px solid var(--ink);
-  border-radius: var(--r-pill);
-  background: var(--paper);
-  font-size: 12px;
-  color: var(--mute);
-}
-.m-com-photo-cap [lang='en'] {
-  font: italic 300 13px / 1.5 var(--latin);
-  color: var(--ink);
-}
-
-/* =====================================================================
-   ③ 工作台：左边四件作品，右边一张摊开的纸
-   ===================================================================== */
-.m-com-bench,
-.m-com-cabinet,
-.m-com-wall {
-  padding-top: clamp(72px, 11vh, 128px);
-  padding-bottom: clamp(56px, 8vh, 96px);
-}
-.m-com-bench-grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  align-items: start;
-  margin-top: clamp(24px, 4.5vh, 44px);
-}
-.m-com-bench-list {
-  grid-column: 1 / span 4;
-  display: grid;
-  gap: 12px;
-  position: sticky;
-  top: calc(var(--header) + 32px);
-}
-.m-com-bench-item {
-  display: grid;
-  grid-template-columns: 56px minmax(0, 1fr);
-  gap: 16px;
-  align-items: start;
-  width: 100%;
-  padding: 16px 18px;
-  border: 2px solid transparent;
-  border-radius: 16px;
-  background: transparent;
-  color: var(--ink);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    background-color 0.3s var(--ease),
-    border-color 0.3s var(--ease),
-    box-shadow 0.35s var(--bounce),
-    translate 0.35s var(--bounce);
-}
-.m-com-bench-item:hover {
-  background: var(--paper-2);
-}
-.m-com-bench-item[aria-selected='true'] {
-  border-color: var(--ink);
-  background: var(--white);
-  box-shadow: var(--pop);
-  translate: -2px -2px;
-}
-.m-com-bench-item:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-.m-com-bench-thumb {
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  overflow: hidden;
-  border: var(--line);
-  border-radius: 14px;
-  background: var(--cream);
-  transition: rotate 0.4s var(--bounce);
-}
-.m-com-bench-item:hover .m-com-bench-thumb,
-.m-com-bench-item[aria-selected='true'] .m-com-bench-thumb {
-  rotate: -6deg;
-}
-.m-com-bench-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: var(--grade);
-}
-.m-com-bench-thumb svg {
-  width: 36px;
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.m-com-bench-item[data-work='web'] .m-com-bench-thumb rect {
-  fill: var(--accent);
-  stroke: none;
-}
-.m-com-bench-item[data-work='web'] .m-com-bench-thumb rect:nth-child(2) {
-  fill: var(--ink);
-}
-.m-com-bench-text {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
-}
-.m-com-bench-name {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font: 400 21px / 1.25 var(--sans);
-  letter-spacing: 0.01em;
-}
-.m-com-bench-name small,
-.m-com-stage-head small {
-  font-size: var(--t-small);
-  color: var(--mute);
-}
-.m-com-bench-tag {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
+.m-com-readout {
+  font: 400 12.5px / 1.4 var(--sans);
   letter-spacing: 0.06em;
   color: var(--mute);
 }
-.m-com-bench-tag i {
-  font-style: normal;
-  color: var(--ink-2);
-}
-.m-com-bench-tag i::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  vertical-align: 1px;
-}
-.m-com-bench-lead {
-  margin-top: 2px;
-  font-size: var(--t-small);
-  line-height: 1.7;
-  color: var(--ink-2);
-}
-.m-com-bench-stage {
-  grid-column: 5 / -1;
-}
-.m-com-stage {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  grid-template-areas:
-    'head head'
-    'play how'
-    'play take';
-  gap: 18px 34px;
-  padding: 22px 30px 28px;
-  border: var(--line);
-  border-radius: 20px;
-  background: var(--white);
-  box-shadow: var(--pop-big);
-  animation: m-com-deal 0.55s var(--bounce) both;
-}
-.m-com-stage[hidden] {
-  display: none;
-}
-html:not(.js) .m-com-stage[hidden] {
-  display: grid;
-}
-html:not(.js) .m-com-stage + .m-com-stage {
-  margin-top: 40px;
-}
-@keyframes m-com-deal {
-  from {
-    opacity: 0;
-    transform: translate(18px, 6px) rotate(1.2deg);
-  }
-}
-.m-com-stage-head {
-  grid-area: head;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px 20px;
-  padding-bottom: 14px;
-  border-bottom: 2px dashed var(--hair-2);
-}
-.m-com-stage-head h3 {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  font: 400 clamp(24px, 2.2vw, 32px) / 1.2 var(--sans);
-}
-.m-com-layer {
-  display: grid;
-  align-content: start;
-  gap: 12px;
-  min-width: 0;
-}
-.m-com-layer[data-layer='play'] {
-  grid-area: play;
-}
-.m-com-layer[data-layer='how'] {
-  grid-area: how;
-}
-.m-com-layer[data-layer='take'] {
-  grid-area: take;
-  align-self: end;
-}
-.m-com-layer-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font: 500 var(--t-label) / 1 var(--sans);
-  letter-spacing: 0.16em;
-  color: var(--mute);
-}
-.m-com-layer-label::before {
-  content: '';
-  width: 14px;
-  height: 2px;
-  background: var(--ink);
-}
-.m-com-layer-body {
-  display: grid;
-  gap: 14px;
-  min-width: 0;
-}
-
-/* 选一个，三层一起换 */
-.m-com-pick {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-.m-com-stage .m-com-pick button {
-  min-height: 32px;
-  border: 1.5px solid var(--ink);
-  box-shadow: none;
-  background: var(--white);
+.m-com-readout b {
+  font-weight: 500;
   color: var(--ink);
-  transition:
-    background-color 0.25s var(--ease),
-    translate 0.3s var(--bounce),
-    box-shadow 0.3s var(--bounce);
 }
-.m-com-stage .m-com-pick button:hover {
-  translate: 0 -2px;
-  box-shadow: 2px 2px 0 var(--ink);
-}
-.m-com-stage .m-com-pick button[aria-pressed='true'] {
-  background: var(--accent);
-  box-shadow: 2px 2px 0 var(--ink);
+.m-com-readout span {
+  margin-left: 14px;
 }
 
-/* Artist Skill：AI 试样装在一个粗框里，不裁 */
-.m-com-sample {
-  display: grid;
-  gap: 12px;
-  margin: 0;
-}
-.m-com-sample-view {
-  position: relative;
-  aspect-ratio: 16 / 11;
-  overflow: hidden;
-  border: var(--line);
-  border-radius: 14px;
-  background: var(--cream);
-}
-.m-com-sample-view img {
+/* ---------- Artist Skill：AI 试样，完整挂在窗里 ---------- */
+.m-com-sample img {
   position: absolute;
-  inset: 5%;
-  width: 90%;
-  height: 90%;
-  object-fit: contain;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   filter: var(--grade);
-  animation: m-com-fade 0.7s var(--ease) both;
+  animation: m-com-fade 0.7s var(--ease);
 }
 @keyframes m-com-fade {
   from {
     opacity: 0;
-    scale: 0.96;
   }
 }
-.m-com-sample figcaption {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 12px;
+
+/* ---------- 网页动效：方法目录里的现场演示，铺满这扇窗 ---------- */
+.m-com-web .m-mth-demo {
+  position: absolute;
+  inset: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0;
 }
-/* 几个网页动效：方法页那六个演示搬进工作台——和 niul.ai、DropAgent 同一个粗墨线画框、同一个比例，
-   里面的卡片、折叠、旁注也换成墨线 + 硬投影；英文名右边已经有，演示下面不再重复 */
-.m-com-stage .m-mth-demo-stage {
-  aspect-ratio: 16 / 11;
+.m-com-web .m-mth-demo-stage {
   min-height: 0;
-  border: var(--line);
-  border-radius: 14px;
-  background: var(--cream);
+  border-radius: 0;
+  background: transparent;
 }
-.m-com-stage .m-mth-demo-bar {
-  justify-content: flex-end;
-}
-.m-com-stage .m-mth-demo-bar > .m-caption {
-  display: none;
-}
-.m-com-stage .m-mth-demo-bar button {
-  border: 1.5px solid var(--ink);
-  background: var(--white);
-  box-shadow: none;
-  transition:
-    translate 0.3s var(--bounce),
-    box-shadow 0.3s var(--bounce);
-}
-.m-com-stage .m-mth-demo-bar button:hover:not(:disabled) {
-  translate: 0 -2px;
-  box-shadow: 2px 2px 0 var(--ink);
-}
-.m-com-stage .m-mth-stagger > span,
-.m-com-stage .m-mth-underline a {
-  font-weight: 400;
-}
-.m-com-stage .m-mth-stagger em {
-  box-shadow: inset 0 -0.3em 0 var(--accent-wash);
-}
-.m-com-stage .m-mth-underline a::after {
-  height: 3px;
-  border-radius: 2px;
-}
-.m-com-stage .m-mth-accordion {
-  display: grid;
-  gap: 10px;
-}
-.m-com-stage .m-mth-accordion details {
-  padding: 0 16px;
-  border: 1.5px solid var(--ink);
-  border-radius: 12px;
-  background: var(--white);
-  transition: box-shadow 0.3s var(--bounce);
-}
-.m-com-stage .m-mth-accordion details[open] {
-  box-shadow: 3px 3px 0 var(--ink);
-}
-.m-com-stage .m-mth-accordion summary {
-  padding: 12px 0;
-}
-.m-com-stage .m-mth-accordion summary svg {
-  color: var(--ink);
-}
-.m-com-stage .m-mth-accordion details p {
-  padding-bottom: 14px;
-}
-.m-com-stage .m-mth-snap {
-  grid-auto-columns: 62%;
-  padding: 18px;
-  scroll-padding-inline: 18px;
-}
-.m-com-stage .m-mth-snap > div {
-  min-height: 0;
-  border: 1.5px solid var(--ink);
-  border-radius: 12px;
-  box-shadow: 3px 3px 0 var(--ink);
-}
-.m-com-stage .m-mth-snap strong {
-  font-weight: 400;
-}
-/* 粘性定位：铺满画框在框里滚；章节名是一张杏色小签，停在上面；底边淡出，看得出下面还有 */
-.m-com-stage .m-mth-sticky {
+.m-com-web .m-mth-sticky {
   position: absolute;
   inset: 0;
   height: auto;
-  padding: 0 18px;
 }
-/* 底边的淡出用一层盖上去的渐变（滚动容器上加 mask 会让被推走的标签露到框外） */
-.m-com-stage .m-mth-demo-sticky .m-mth-demo-stage::after {
-  content: '';
-  position: absolute;
-  inset: auto 0 0;
-  height: 40px;
-  background: linear-gradient(to bottom, transparent, var(--cream));
-  pointer-events: none;
-}
-.m-com-stage .m-mth-sticky section {
-  grid-template-columns: 4.6em minmax(0, 1fr);
-  gap: 12px;
-}
-.m-com-stage .m-mth-sticky section + section {
-  border-top: 2px dashed var(--hair-2);
-}
-.m-com-stage .m-mth-sticky strong {
-  top: 12px;
-  justify-self: start;
-  margin-top: 12px;
-  padding: 1px 10px 2px;
-  border: 1.5px solid var(--ink);
-  border-radius: 8px;
-  background: var(--accent);
-  box-shadow: 2px 2px 0 var(--ink);
-  font-size: 17px;
-}
-.m-com-stage .m-mth-sticky p {
-  padding: 14px 0 24px;
-}
-/* 最后一段下面留出空白，「创造」才滚得到顶上，看得见上一章的标签被推走、新标签接上 */
-.m-com-stage .m-mth-sticky section:last-child p:last-child {
-  padding-bottom: 136px;
-}
-.m-com-stage .m-mth-grid {
-  gap: 14px;
-}
-.m-com-stage .m-mth-grid > div {
-  border: 1.5px solid var(--ink);
-  border-radius: 12px;
-  box-shadow: 3px 3px 0 var(--ink);
-}
-.m-com-stage .m-mth-grid strong {
-  font-size: var(--t-keys);
-}
-.m-com-stage .m-mth-grid aside {
-  border-left: 3px solid var(--accent);
+.m-com-web .m-mth-demo-bar {
+  padding: 0 14px 12px 18px;
 }
 
-.m-com-how-lead {
-  display: grid;
-  gap: 2px;
-  line-height: 1.7;
-}
-.m-com-how-lead b {
-  font-weight: 500;
-  font-size: 17px;
-}
-.m-com-how-lead i {
-  font: italic 300 var(--t-ui) / 1.4 var(--latin);
-  color: var(--mute);
-}
-.m-com-how-text {
-  font-size: var(--t-small);
-  line-height: 1.8;
-  color: var(--ink-2);
-}
-.m-com-how-key {
-  display: inline-block;
-  margin-right: 8px;
-  padding: 0 8px;
-  border-radius: var(--r-pill);
-  background: var(--accent-wash);
-  color: var(--accent-ink);
-  font-size: 11.5px;
-}
-.m-com-why-big {
-  font: 400 clamp(18px, 1.5vw, 21px) / 1.6 var(--sans);
-  letter-spacing: 0.02em;
-}
-.m-com-steps {
-  display: grid;
-  gap: 8px;
-}
-.m-com-steps li {
-  display: grid;
-  grid-template-columns: 2em minmax(0, 1fr);
-  gap: 0 6px;
-  padding: 8px 12px;
-  border: 1.5px solid var(--hair-2);
-  border-radius: 12px;
-  transition:
-    border-color 0.25s var(--ease),
-    background-color 0.25s var(--ease),
-    translate 0.3s var(--bounce);
-}
-.m-com-steps li:hover {
-  border-color: var(--ink);
-  background: var(--cream);
-  translate: 3px 0;
-}
-.m-com-steps .m-no {
-  grid-row: span 2;
-  padding-top: 3px;
-  font-size: var(--t-small);
-}
-.m-com-steps b {
-  font-weight: 500;
-  font-size: var(--t-ui);
-}
-.m-com-steps p {
-  font-size: 12.5px;
-  line-height: 1.7;
-  color: var(--ink-2);
-}
-.m-com-drop-steps {
-  display: grid;
-  gap: 8px;
-}
-.m-com-drop-steps button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  min-height: 40px;
-  padding: 0 14px;
-  border: 1.5px solid var(--hair-2);
-  border-radius: 12px;
-  background: transparent;
-  color: var(--ink);
-  font: inherit;
-  font-size: var(--t-ui);
-  text-align: left;
-  cursor: pointer;
-  transition:
-    border-color 0.25s var(--ease),
-    background-color 0.25s var(--ease),
-    translate 0.3s var(--bounce);
-}
-.m-com-drop-steps button:hover,
-.m-com-drop-steps button[aria-pressed='true'] {
-  border-color: var(--ink);
-  background: var(--cream);
-  translate: 3px 0;
-}
-.m-com-drop-steps button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* ---------- 示意演示的外壳 ---------- */
-.m-com-demo {
-  display: grid;
-  gap: 12px;
-  margin: 0;
-}
+/* ---------- 示意演示：画面按拍画出来 ---------- */
 .m-com-demo-view {
-  position: relative;
-  aspect-ratio: 16 / 11;
-  overflow: hidden;
-  border: var(--line);
-  border-radius: 14px;
-  background: var(--cream);
-  container-type: inline-size;
-  font-size: clamp(10px, 2.4cqw, 14px);
+  position: absolute;
+  inset: 0;
+  font-size: clamp(10px, 2.1cqw, 14px);
   line-height: 1.5;
-}
-.m-com-demo-foot {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 16px;
 }
 .m-com-demo-tools {
   display: inline-flex;
@@ -1124,14 +467,16 @@ html:not(.js) .m-com-stage + .m-com-stage {
   margin-left: auto;
 }
 
-/* niul.ai：桌边四头牛 */
+/* niul.ai：桌边四头牛，细线画的 */
 .m-com-cows {
   position: absolute;
   inset: 0;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-content: center;
-  padding: 0 5%;
+  margin: 0;
+  padding: 0 6%;
+  list-style: none;
 }
 .m-com-cows li {
   display: grid;
@@ -1149,7 +494,7 @@ html:not(.js) .m-com-stage + .m-com-stage {
   translate: 0 0.4em;
   transition:
     opacity 0.5s var(--ease),
-    translate 0.7s var(--bounce);
+    translate 0.7s var(--ease);
 }
 .m-com-cows li[data-state='waiting'] .m-com-bubble,
 .m-com-cows li[data-state='busy'] .m-com-busy,
@@ -1161,18 +506,18 @@ html:not(.js) .m-com-stage + .m-com-stage {
   display: inline-flex;
   align-items: center;
   gap: 0.45em;
-  padding: 0.3em 0.8em;
-  border: 1.5px solid var(--ink);
+  padding: 0.3em 0.85em;
   border-radius: var(--r-pill);
-  background: var(--accent);
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--accent-ink);
   white-space: nowrap;
-  box-shadow: 2px 2px 0 var(--ink);
 }
 .m-com-bubble i {
-  width: 0.5em;
-  height: 0.5em;
+  width: 0.45em;
+  height: 0.45em;
   border-radius: 50%;
-  background: var(--ink);
+  background: var(--accent);
 }
 .m-com-busy {
   display: inline-flex;
@@ -1180,10 +525,10 @@ html:not(.js) .m-com-stage + .m-com-stage {
   padding-bottom: 0.4em;
 }
 .m-com-busy i {
-  width: 0.42em;
-  height: 0.42em;
+  width: 0.38em;
+  height: 0.38em;
   border-radius: 50%;
-  background: var(--ink-2);
+  background: var(--mute);
 }
 .m-com-demo[data-running] .m-com-busy i {
   animation: m-com-blink 1.2s ease-in-out infinite;
@@ -1213,17 +558,14 @@ html:not(.js) .m-com-stage + .m-com-stage {
   justify-items: center;
   width: 100%;
   padding-bottom: 0.3em;
-  border-bottom: 2px solid var(--ink);
+  border-bottom: 1px solid var(--hair-2);
 }
 .m-com-cow {
-  width: min(82%, 116px);
-  color: var(--ink);
+  width: min(78%, 108px);
+  color: var(--ink-2);
   transition:
     color 0.5s var(--ease),
     opacity 0.5s var(--ease);
-}
-.m-com-cow g {
-  stroke-width: 2;
 }
 .m-com-cow-muzzle {
   fill: var(--white);
@@ -1243,17 +585,17 @@ html:not(.js) .m-com-stage + .m-com-stage {
 }
 .m-com-cows li[data-state='offline'] .m-com-cow {
   color: var(--mute);
-  opacity: 0.6;
+  opacity: 0.55;
 }
 .m-com-cows li[data-state='offline'] .m-com-cow g {
   stroke-dasharray: 2 3;
 }
 .m-com-demo[data-running] .m-com-cows li[data-state='waiting'] .m-com-cow {
-  animation: m-com-hop 0.7s var(--bounce);
+  animation: m-com-hop 0.8s var(--ease);
 }
 @keyframes m-com-hop {
   40% {
-    transform: translateY(-10%);
+    transform: translateY(-8%);
   }
 }
 .m-com-cow-name {
@@ -1273,7 +615,7 @@ html:not(.js) .m-com-stage + .m-com-stage {
 
 /* DropAgent：菜单栏里的置物架 */
 .m-com-drop-sc {
-  background: var(--cream);
+  background: transparent;
 }
 .m-com-bar {
   position: absolute;
@@ -1283,8 +625,8 @@ html:not(.js) .m-com-stage + .m-com-stage {
   gap: 1em;
   height: 2.6em;
   padding: 0 1.2em;
-  background: var(--white);
-  border-bottom: 2px solid var(--ink);
+  background: rgb(255 255 255 / 0.7);
+  box-shadow: 0 1px 0 var(--hair);
   color: var(--ink-2);
 }
 .m-com-bar-dots {
@@ -1294,7 +636,7 @@ html:not(.js) .m-com-stage + .m-com-stage {
 }
 .m-com-bar-dots i {
   width: 2.6em;
-  height: 0.45em;
+  height: 0.4em;
   border-radius: 0.25em;
   background: var(--faint);
 }
@@ -1307,29 +649,31 @@ html:not(.js) .m-com-stage + .m-com-stage {
   width: 2.2em;
   height: 1.7em;
   border-radius: 0.45em;
-  transition: background-color 0.4s var(--ease);
+  transition:
+    background-color 0.4s var(--ease),
+    color 0.4s var(--ease);
 }
 .m-com-tray[data-on] {
-  background: var(--accent);
-  color: var(--ink);
+  background: var(--accent-wash);
+  color: var(--accent-ink);
 }
 .m-com-tray svg {
   width: 1.3em;
 }
 .m-com-desk-file {
   position: absolute;
-  left: 7%;
+  left: 8%;
   top: 46%;
   display: grid;
   justify-items: center;
   gap: 0.5em;
   width: 10em;
+  color: var(--ink-2);
 }
 .m-com-desk-file > svg {
-  width: 3.2em;
-  height: 3.2em;
-  stroke-width: 1.4;
-  color: var(--ink);
+  width: 3em;
+  height: 3em;
+  stroke-width: 1.2;
 }
 .m-com-ghost.m-v {
   position: absolute;
@@ -1339,7 +683,7 @@ html:not(.js) .m-com-stage + .m-com-stage {
   place-items: center;
   width: 2.6em;
   height: 3em;
-  border: 1.5px dashed var(--ink);
+  border: 1px dashed var(--hair-2);
   border-radius: 0.5em;
   color: var(--mute);
   translate: calc((1 - var(--shown)) * -6em) calc((1 - var(--shown)) * 6em);
@@ -1355,10 +699,11 @@ html:not(.js) .m-com-stage + .m-com-stage {
   width: min(62%, 26em);
   display: grid;
   padding: 0.5em;
-  border: 2px solid var(--ink);
   border-radius: 0.9em;
   background: var(--white);
-  box-shadow: 4px 4px 0 var(--ink);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 22px 40px -28px rgb(var(--shade) / 0.4);
   transform-origin: top right;
 }
 .m-com-shelf-row {
@@ -1395,1077 +740,440 @@ html:not(.js) .m-com-stage + .m-com-stage {
   width: 100%;
 }
 
-/* =====================================================================
-   粗墨线的画框：框先在，画面从一道缝开到完整
-   ===================================================================== */
-.m-com-frame {
-  display: grid;
-  gap: 12px;
-  margin: 0;
-}
-.m-com-frame-img {
-  position: relative;
-  aspect-ratio: var(--ratio);
-  overflow: hidden;
-  border: var(--line);
-  border-radius: 16px;
-  background: var(--avg);
-  box-shadow: var(--pop-big);
-}
-.m-com-frame-img img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: var(--focus, 50% 50%);
-  filter: var(--grade);
-}
-.js .m .m-com-frame[data-reveal] {
-  transition: none;
-}
-.js .m .m-com-frame[data-reveal]:not(.is-in) {
-  opacity: 1;
-  transform: none;
-}
-.js .m-com-frame-img img {
-  clip-path: inset(0 0 0 0);
-  scale: 1;
-  transition:
-    clip-path 1.5s var(--ease) 0.15s,
-    scale 2.2s var(--ease) 0.15s;
-}
-.js .m-com-frame:not(.is-in) .m-com-frame-img img {
-  clip-path: inset(0 47% 0 47%);
-  scale: 1.08;
-}
-.m-com-frame figcaption {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
+/* ---------- 宽屏、有 JS：左边一扇窗钉住，右边每件一屏 ---------- */
+@media (min-width: 901px) {
+  .js .m-com-works {
+    padding-block: clamp(24px, 6vh, 72px) 0;
+  }
+  .js .m-com-frame,
+  .js .m-com-under {
+    margin-inline: auto;
+  }
+  .js .m-com-gallery {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: clamp(40px, 5vw, 96px);
+    row-gap: 0;
+  }
+  .js .m-com-gallery-head {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+    padding-top: clamp(24px, 8vh, 96px);
+    padding-bottom: clamp(28px, 5vh, 48px);
+  }
+  .js .m-com-work {
+    grid-column: 2;
+    grid-row: var(--row);
+    display: grid;
+    align-content: center;
+    min-height: calc(100svh - var(--header));
+    padding-block: clamp(24px, 5vh, 56px);
+  }
+  /* 第一件和题目同一屏：字从题目下面接着往下排 */
+  .js .m-com-work[data-work='flower'] {
+    align-content: start;
+    min-height: calc(100svh - var(--header) - clamp(160px, 30vh, 300px));
+    padding-top: 0;
+  }
+  .js .m-com-still {
+    grid-column: 1;
+    grid-row: 1 / span 6;
+    position: sticky;
+    top: var(--header);
+    align-self: start;
+    height: calc(100svh - var(--header));
+    align-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.5s var(--ease),
+      visibility 0s linear 0.5s;
+  }
+  .js .m-com-still[data-on] {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.7s var(--ease) 0.08s,
+      visibility 0s;
+  }
+  .js .m-com-work:not([data-on]) .m-com-work-in {
+    opacity: 0.32;
+  }
+  .js .m-com-work-in {
+    transition: opacity 0.6s var(--ease);
+  }
 }
 
 /* =====================================================================
-   ④ 方法目录：铅笔插画 + 搜索 + 三个抽屉
+   ③ ④ 两间屋子：一张插画 + 一组去处，左右互换
    ===================================================================== */
-.m-com-cabinet {
+.m-com-room {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
+  column-gap: clamp(40px, 6vw, 112px);
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-block: calc(var(--header) + clamp(16px, 4vh, 48px))
+    clamp(32px, 6vh, 72px);
 }
-.m-com-cabinet-window {
-  grid-column: 1 / span 6;
-  rotate: -1.5deg;
+.m-com-room-art {
+  width: min(100%, calc((100svh - var(--header) - 120px) * 1.5));
+  justify-self: center;
 }
-.m-com-cabinet-body {
-  grid-column: 8 / -1;
+.m-com-room-body {
   display: grid;
-  gap: 22px;
+  align-content: center;
+  gap: clamp(16px, 2.8vh, 28px);
+  max-width: 34em;
 }
-.m-com-cabinet-body .m-com-h2 {
-  margin-top: -4px;
+.m-com-back .m-com-room-body {
+  justify-self: end;
 }
+.m-com-room-lead {
+  font: 300 var(--t-lead) / 1.85 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+
+/* 搜索：一条白色胶囊 */
 .m-com-search {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 58px;
-  padding: 6px 6px 6px 20px;
-  border: var(--line);
+  padding: 5px 5px 5px 18px;
   border-radius: var(--r-pill);
   background: var(--white);
-  box-shadow: var(--pop);
-  transition:
-    box-shadow 0.3s var(--bounce),
-    translate 0.3s var(--bounce);
+  box-shadow: 0 0 0 1px var(--hair);
+  color: var(--mute);
+  transition: box-shadow 0.3s var(--ease);
 }
 .m-com-search:focus-within {
-  translate: -2px -2px;
-  box-shadow: var(--pop-big);
+  box-shadow: 0 0 0 1px var(--ink-2);
 }
 .m-com-search svg {
   flex: none;
-  color: var(--ink);
 }
 .m-com-search input {
   flex: 1;
   min-width: 0;
-  height: 44px;
+  height: 40px;
+  padding: 0;
   border: 0;
   background: transparent;
-  color: var(--ink);
-  font: 400 16px / 1 var(--sans);
+  font: 400 15px / 1 var(--sans);
   letter-spacing: 0.03em;
+  color: var(--ink);
   outline: none;
 }
 .m-com-search input::placeholder {
   color: var(--mute);
 }
-.m-com-search button {
-  height: 44px;
-  padding: 0 20px;
-  border: 0;
-  border-radius: var(--r-pill);
-  background: var(--ink);
-  color: var(--paper);
-  font: 500 var(--t-ui) / 1 var(--sans);
-  letter-spacing: 0.06em;
-  cursor: pointer;
+.m-com-search .m-btn {
+  flex: none;
 }
-.m-com-search button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-.m-com-drawers {
+
+/* 去处：整张白卡是链接，只留一颗圆形箭头 */
+.m-com-doors {
   display: grid;
-  gap: 12px;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.m-com-drawer {
+.m-com-door {
   display: grid;
-  overflow: hidden;
-  border: var(--line);
-  border-radius: 14px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 4px;
+  padding: 15px 16px 15px 22px;
+  border-radius: var(--r-card);
   background: var(--white);
-  box-shadow: 4px 4px 0 var(--ink);
-  transition:
-    translate 0.4s var(--bounce),
-    box-shadow 0.4s var(--bounce);
-}
-.m-com-drawer-face {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px 14px 12px 20px;
-}
-.m-com-drawer-face b {
-  font-weight: 400;
-  font-size: 18px;
-  letter-spacing: 0.03em;
-}
-.m-com-drawer-n {
-  display: grid;
-  place-items: center;
-  min-width: 44px;
-  height: 44px;
-  padding: 0 8px;
-  border: var(--line);
-  border-radius: var(--r-pill);
-  background: var(--accent);
-  font: 400 20px / 1 var(--latin);
-  transition: rotate 0.4s var(--bounce);
-}
-.m-com-drawer-in {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 8px;
-  max-height: 0;
-  padding: 0 20px;
-  border-top: 0 dashed var(--hair-2);
-  opacity: 0;
-  transition:
-    max-height 0.45s var(--ease),
-    padding 0.45s var(--ease),
-    opacity 0.35s var(--ease);
-}
-.m-com-drawer-in span {
-  padding: 2px 10px;
-  border: 1.5px solid var(--hair-2);
-  border-radius: var(--r-pill);
-  font-size: 12.5px;
-  color: var(--ink-2);
-  white-space: nowrap;
-}
-.m-com-drawer-in em {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: auto;
-  font-style: normal;
-  font-size: 12.5px;
+  box-shadow: 0 0 0 1px var(--hair);
   color: var(--ink);
+  transition:
+    translate 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
 }
-.m-com-drawer:hover,
-.m-com-drawer:focus-visible {
-  translate: 10px -2px;
-  box-shadow: 6px 6px 0 var(--ink);
+.m-com-door:hover {
+  translate: 0 -3px;
+  box-shadow:
+    0 0 0 1px var(--hair-2),
+    0 18px 34px -26px rgb(var(--shade) / 0.5);
 }
-.m-com-drawer:hover .m-com-drawer-n,
-.m-com-drawer:focus-visible .m-com-drawer-n {
-  rotate: -10deg;
-}
-.m-com-drawer:hover .m-com-drawer-in,
-.m-com-drawer:focus-visible .m-com-drawer-in {
-  max-height: 120px;
-  padding: 12px 20px 14px;
-  border-top-width: 2px;
-  opacity: 1;
-}
-.m-com-drawer:focus-visible {
-  outline: 2px solid var(--accent);
+.m-com-door:focus-visible {
+  outline: 1.5px solid var(--ink);
   outline-offset: 4px;
 }
-
-/* =====================================================================
-   ⑥ 晾衣绳
-   ===================================================================== */
-.m-com-line-scroll {
-  margin-top: clamp(28px, 5vh, 48px);
-  margin-inline: calc(var(--gutter) * -1);
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: thin;
+.m-com-door-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font: 400 16px / 1.4 var(--sans);
+  letter-spacing: 0.06em;
 }
-.m-com-line {
-  position: relative;
-  min-width: 1080px;
-  height: 500px;
+.m-com-door-head b {
+  font-weight: 400;
 }
-.m-com-rope {
-  position: absolute;
-  inset: 0 0 auto;
-  width: 100%;
-  height: 160px;
-  overflow: visible;
+.m-com-door-head .num {
+  font: 300 14px / 1 var(--latin);
+  color: var(--mute);
 }
-.m-com-rope path {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2;
-  vector-effect: non-scaling-stroke;
-}
-.m-com-line-items {
-  position: absolute;
-  inset: 0;
-}
-.m-com-hang {
-  position: absolute;
-  translate: -50% 0;
-}
-.m-com-pin {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  top: -13px;
-  width: 13px;
-  height: 32px;
-  margin-left: -6.5px;
-  overflow: visible;
-}
-.m-com-pin rect {
-  fill: var(--white);
-  stroke: var(--ink);
-  stroke-width: 1.8;
-}
-.m-com-pin path {
-  stroke: var(--ink);
-  stroke-width: 1.5;
-}
-.m-com-string {
-  position: absolute;
-  left: 50%;
-  top: 8px;
-  width: 2px;
-  height: calc(var(--drop) + 10px);
-  margin-left: -1px;
-  background: var(--ink);
-}
-@keyframes m-com-swing {
-  0% {
-    rotate: var(--tilt);
-  }
-  25% {
-    rotate: calc(var(--tilt) + 7deg);
-  }
-  55% {
-    rotate: calc(var(--tilt) - 4deg);
-  }
-  80% {
-    rotate: calc(var(--tilt) + 2deg);
-  }
-  100% {
-    rotate: var(--tilt);
-  }
-}
-
-/* 访客自己那朵 */
-.m-com-mine {
-  width: 236px;
-}
-.m-com-mine-pins .m-com-pin:first-child {
-  left: 30px;
-  top: -10px;
-}
-.m-com-mine-pins .m-com-pin:last-child {
-  left: auto;
-  right: 18px;
-  top: -16px;
-}
-.m-com-mine-card {
-  margin-top: 4px;
-  padding: 12px;
-  border: var(--line);
-  border-radius: 8px;
-  background: var(--white);
-  box-shadow: 6px 6px 0 var(--ink);
-  rotate: var(--tilt);
-  transform-origin: 50% 0;
-}
-.m-com-mine:hover .m-com-mine-card {
-  animation: m-com-swing 1s var(--ease);
-}
-.m-com-mine-cap {
-  display: grid;
-  justify-items: center;
-  gap: 8px;
-  margin-top: 24px;
-  text-align: center;
-  font-size: var(--t-ui);
-}
-
-/* 三张签 */
-.m-com-tag {
-  width: 214px;
-}
-.m-com-tag-card {
-  position: relative;
-  margin-top: var(--drop);
-  padding: 34px 18px 18px;
-  border: var(--line);
-  border-radius: 14px;
-  background: var(--cream);
-  box-shadow: var(--pop);
-  rotate: var(--tilt);
-  transform-origin: 50% -36px;
-  transition:
-    background-color 0.3s var(--ease),
-    box-shadow 0.35s var(--bounce);
-}
-.m-com-tag-card::before {
-  content: '';
-  position: absolute;
-  left: 18px;
-  right: 18px;
-  top: -2px;
-  height: 5px;
-  border-radius: 0 0 4px 4px;
-  background: var(--accent);
-  scale: 0 1;
-  transition: scale 0.4s var(--ease);
-}
-.m-com-tag:hover .m-com-tag-card,
-.m-com-tag:focus-within .m-com-tag-card {
-  background: var(--white);
-  box-shadow: var(--pop-big);
-  animation: m-com-swing 1s var(--ease);
-}
-.m-com-tag:hover .m-com-tag-card::before,
-.m-com-tag:focus-within .m-com-tag-card::before {
-  scale: 1 1;
-}
-.m-com-tag-hole {
-  position: absolute;
-  left: 50%;
-  top: 11px;
-  width: 11px;
-  height: 11px;
-  margin-left: -5.5px;
-  border: var(--line);
-  border-radius: 50%;
-  background: var(--paper);
-}
-.m-com-tag-card b {
-  display: block;
-  font-weight: 500;
-  font-size: 16px;
-  letter-spacing: 0.03em;
-}
-.m-com-tag-card p {
-  margin-top: 6px;
+.m-com-door-text {
+  grid-column: 1;
   font-size: 13px;
   line-height: 1.7;
+  letter-spacing: 0.03em;
   color: var(--ink-2);
 }
-.m-com-tag-link {
-  margin-top: 12px;
+.m-com-door-go {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  transition:
+    background-color 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+.m-com-door:hover .m-com-door-go {
+  background: var(--ink);
+  color: var(--paper);
 }
 
-/* 作者同意展示的投稿 */
-.m-com-work-card {
-  width: 210px;
+/* 作品墙：作者同意展示的投稿 */
+.m-com-showcase {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.m-com-work-card a {
-  position: relative;
+.m-com-showcase a {
   display: grid;
   gap: 4px;
-  margin-top: var(--drop);
-  padding: 20px 18px;
-  border: var(--line);
-  border-radius: 10px;
+  padding: 14px 18px;
+  border-radius: var(--r-card);
   background: var(--white);
-  box-shadow: var(--pop);
-  rotate: var(--tilt);
-  transform-origin: 50% -20px;
+  box-shadow: 0 0 0 1px var(--hair);
+  font-size: 13px;
+  color: var(--ink-2);
 }
-.m-com-work-card a:hover {
-  animation: m-com-swing 1s var(--ease);
-}
-.m-com-work-card b {
+.m-com-showcase b {
   font-weight: 500;
-}
-.m-com-work-card span,
-.m-com-work-card p {
-  font-size: 12.5px;
-  color: var(--mute);
-}
-.m-com-work-card svg {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-}
-
-/* 空夹子 */
-.m-com-empty {
-  width: 70px;
-}
-.m-com-empty-ghost {
-  display: block;
-  width: 62px;
-  height: 86px;
-  margin: 22px auto 0;
-  border: 2px dashed rgb(27 26 24 / 0.32);
-  border-radius: 10px;
-  rotate: -3deg;
-}
-.m-com-empty + .m-com-empty .m-com-empty-ghost {
-  height: 72px;
-  rotate: 4deg;
-}
-.m-com-line-sign {
-  position: absolute;
-  right: max(6%, 72px);
-  top: 236px;
-  display: grid;
-  justify-items: end;
-  gap: 4px;
-  width: 240px;
-}
-.m-com-line-sign .m-mascot {
-  width: 176px;
-  margin-right: 20px;
-}
-.m-com-line-sign p {
-  font-size: 12.5px;
-  line-height: 1.7;
-  color: var(--mute);
-  text-align: right;
+  font-size: 14px;
+  color: var(--ink);
 }
 
 /* =====================================================================
-   ⑦ 结尾：画出来的沙上那道线
-   一块沙色的地（细颗粒 + 顶边一道浪线），小家伙拖着小棍沿线走，身后的线跟着画出来；
-   走过三个停靠点各冒出一样东西，那句话一段段写在线下。位置都由 end.tsx 里的坐标给出
-   （--x/--y 宽屏，--tx/--ty 窄屏）。
+   ⑤ 结尾：首页挪来的那段画室，字压在左下
    ===================================================================== */
 .m-com-end {
-  --sand: #efe7d5;
+  --end-tint: 36 24 14;
   position: relative;
-  margin-top: clamp(48px, 9vh, 104px);
-  padding: clamp(64px, 9vh, 96px) 0 clamp(32px, 5vh, 52px);
+  isolation: isolate;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
   overflow: hidden;
-  background-color: var(--sand);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.26 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background: var(--end-ground, #625441);
+  color: #fff;
 }
-.m-com-end-tide {
+.m-com-end-media {
   position: absolute;
-  top: -1px;
-  left: 0;
-  width: 100%;
-  height: clamp(22px, 3vw, 40px);
-  overflow: visible;
+  inset: 0;
+  z-index: -1;
 }
-.m-com-end-tide path:first-child {
-  fill: var(--paper);
-}
-.m-com-end-foam {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2;
-  vector-effect: non-scaling-stroke;
-}
-.m-com-end-box {
-  position: relative;
-  aspect-ratio: 1200 / 420;
-}
-.m-com-end-line {
+.m-com-end-media video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  overflow: visible;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.m-com-end-line[data-layout='tall'] {
-  display: none;
-}
-.m-com-end-ghost {
-  stroke: var(--ink);
-  stroke-opacity: 0.24;
-  stroke-width: 2;
-  stroke-dasharray: 2 11;
-}
-.m-com-end-groove {
-  stroke: #dccdaf;
-  stroke-width: 15;
-  stroke-dasharray: 1;
-}
-.m-com-end-ink {
-  stroke: var(--ink);
-  stroke-width: 3.2;
-  stroke-dasharray: 1;
-}
-.m-com-end-shell,
-.m-com-end-thing,
-.m-com-closing > span,
-.m-com-walker {
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
-}
-.m-com-end-shell {
-  width: clamp(36px, 3.6vw, 50px);
-  translate: -28% -64%;
-  rotate: 14deg;
-}
-.m-com-end-shell svg {
-  display: block;
-  width: 100%;
-  fill: #fffaf1;
-  stroke: var(--ink);
-  stroke-width: 2.2;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-.m-com-end-shell path:nth-child(2) {
-  fill: none;
-  stroke-width: 1.6;
-}
-
-/* 三个停靠点上的东西：立在线上方，小家伙走过时弹出来 */
-.m-com-end-thing {
-  z-index: 2;
-  translate: -50% calc(-100% - 20px);
-  transform-origin: 50% 100%;
-  transition:
-    opacity 0.3s var(--ease),
-    scale 0.55s var(--bounce),
-    rotate 0.4s var(--bounce),
-    background-color 0.25s var(--ease),
-    box-shadow 0.3s var(--bounce);
-}
-.m-com-end-box[data-ready] .m-com-end-thing:not([data-on]) {
-  opacity: 0;
-  scale: 0.3;
-}
-.m-com-end-card {
-  display: grid;
-  place-items: center;
-  width: clamp(76px, 7.2vw, 100px);
-  aspect-ratio: 1;
-  border: var(--line);
-  border-radius: 12px;
-  background: var(--white);
-  box-shadow: 4px 4px 0 var(--ink);
-  rotate: -7deg;
-}
-.m-com-end-card svg {
-  width: 78%;
-  height: 78%;
-}
-.m-com-end-ticket {
-  display: flex;
-  width: clamp(108px, 10.4vw, 142px);
-  height: clamp(52px, 4.8vw, 64px);
-  rotate: 7deg;
-  filter: drop-shadow(4px 4px 0 var(--ink));
-}
-.m-com-end-ticket-main {
-  flex: 1;
-  display: grid;
-  align-content: center;
-  gap: 7px;
-  padding: 0 14px;
-  border: var(--line);
-  border-right: 0;
-  border-radius: 10px 0 0 10px;
-  background: var(--white);
-}
-.m-com-end-ticket-main i {
-  display: block;
-  width: 72%;
-  height: 3px;
-  border-radius: 2px;
-  background: var(--ink);
-}
-.m-com-end-ticket-main i + i {
-  width: 46%;
-  opacity: 0.3;
-}
-.m-com-end-ticket-main i:last-child {
-  width: 60%;
-}
-.m-com-end-ticket-stub {
-  display: grid;
-  place-items: center;
-  width: 36%;
-  border: var(--line);
-  border-left: 2px dashed var(--ink);
-  border-radius: 0 10px 10px 0;
-  background: var(--accent);
-}
-.m-com-end-frame {
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 2px;
-  width: clamp(90px, 8.6vw, 118px);
-  aspect-ratio: 1;
-  border: 2px dashed var(--ink);
-  border-radius: 12px;
-  background: rgb(255 255 255 / 0.45);
-  color: var(--ink);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-decoration: none;
-  rotate: 4deg;
-}
-.m-com-end-frame svg {
-  transition:
-    rotate 0.45s var(--bounce),
-    color 0.25s var(--ease);
-}
-.m-com-end-frame:is(:hover, :focus-visible) {
-  border-style: solid;
-  background: var(--white);
-  box-shadow: 4px 4px 0 var(--ink);
-  rotate: -3deg;
-}
-.m-com-end-frame:is(:hover, :focus-visible) svg {
-  rotate: 90deg;
-  color: var(--accent-ink);
-}
-.m-com-end-frame:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
-}
-
-/* 那句话：三段各写在一个停靠点的线下面；小家伙还没走到时只是浅浅的一层 */
-.m-com-closing {
-  margin: 0;
-  font: 400 clamp(22px, 2.3vw, 34px) / 1.2 var(--sans);
-  letter-spacing: 0.04em;
-}
-.m-com-closing > span {
-  translate: -50% 28px;
-  white-space: nowrap;
-  transition:
-    opacity 0.6s var(--ease),
-    translate 0.7s var(--bounce);
-}
-.m-com-end-box[data-ready] .m-com-closing > span:not([data-on]) {
-  opacity: 0.16;
-  translate: -50% 40px;
-}
-
-/* 走路的小家伙：脚踩在线上；往左走时转身；走动时左右晃、两只脚轮流抬 */
-.m-com-walker {
-  z-index: 3;
-  width: clamp(92px, 9.4vw, 136px);
-  translate: -45% -96%;
+  object-fit: cover;
+  object-position: 58% 50%;
   pointer-events: none;
+  filter: sepia(0.14) saturate(1.04) contrast(0.96) brightness(1.02);
 }
-.m-com-walker .m-mascot {
-  display: block;
-  width: 100%;
-  transform-origin: 45% 96%;
-  transition: scale 0.25s var(--ease);
+/* 中间那扇窗最亮：左边和底下各压一层午后画室的暖棕，顶上一点点给顶栏。
+   逐帧量过（2026-10-22，1440×900）：标题背后最亮的 5% 也有 5:1，进展那行 11:1 */
+.m-com-end-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      rgb(var(--end-tint) / 0.42),
+      rgb(var(--end-tint) / 0) 22%,
+      rgb(var(--end-tint) / 0.12) 48%,
+      rgb(var(--end-tint) / 0.72)
+    ),
+    linear-gradient(
+      90deg,
+      rgb(var(--end-tint) / 0.62),
+      rgb(var(--end-tint) / 0.26) 50%,
+      rgb(var(--end-tint) / 0) 76%
+    );
 }
-.m-com-walker[data-dir='left'] .m-mascot {
-  scale: -1 1;
+.m-com-end-body {
+  align-self: end;
+  display: grid;
+  justify-items: start;
+  gap: clamp(20px, 3.6vh, 36px);
+  padding-top: calc(var(--header) + 48px);
+  padding-bottom: clamp(56px, 12vh, 128px);
 }
-.m-com-walker[data-walking] .m-mascot {
-  animation: m-com-waddle 0.34s ease-in-out infinite alternate;
-}
-@keyframes m-com-waddle {
-  from {
-    rotate: -4deg;
-  }
-  to {
-    rotate: 4deg;
-    translate: 0 -3px;
-  }
-}
-.m-com-walker .m-mascot-feet ellipse {
-  transform-box: fill-box;
-  transform-origin: center;
-}
-.m-com-walker[data-walking] .m-mascot-feet ellipse {
-  animation: m-com-step 0.34s ease-in-out infinite alternate;
-}
-.m-com-walker[data-walking] .m-mascot-feet ellipse + ellipse {
-  animation-direction: alternate-reverse;
-}
-@keyframes m-com-step {
-  to {
-    translate: 0 -6px;
-  }
-}
-.m-com-progress {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 14px;
-  margin-top: 14px;
-  font-size: var(--t-small);
-  color: var(--ink-2);
-}
-.m-com-progress b {
-  font-weight: 500;
-  color: var(--ink);
-}
-
-/* =====================================================================
-   小家伙（比稿 E1 原版）
-   ===================================================================== */
-.m-mascot {
-  display: block;
-  overflow: visible;
-}
-.m-mascot-body {
-  fill: var(--white);
-  stroke: var(--ink);
-  stroke-width: 4;
-  stroke-linejoin: round;
-}
-.m-mascot-line,
-.m-mascot-arms path {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.m-mascot-feet ellipse {
-  fill: var(--ink);
-}
-.m-mascot-bulb {
-  fill: var(--accent);
-  stroke: var(--ink);
-  stroke-width: 3;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: m-mascot-bulb 2.8s ease-in-out infinite;
-  transition: filter 0.3s var(--ease);
-}
-@keyframes m-mascot-bulb {
-  50% {
-    fill: #ffc391;
-    transform: scale(1.18);
-  }
-}
-.m-mascot[data-lit] .m-mascot-bulb {
-  animation: m-mascot-flash 0.7s var(--bounce);
-  filter: drop-shadow(0 0 6px #ffb27c);
-}
-@keyframes m-mascot-flash {
-  40% {
-    fill: #ffd2a8;
-    transform: scale(1.6);
-  }
-}
-.m-mascot-eyes {
-  fill: var(--ink);
-  transform: translate(calc(var(--ex, 0) * 1px), calc(var(--ey, 0) * 1px));
-  transition: transform 0.25s ease-out;
-}
-.m-mascot-eyes ellipse {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: m-mascot-blink 5.2s infinite;
-}
-@keyframes m-mascot-blink {
-  0%,
-  92%,
-  100% {
-    transform: scaleY(1);
-  }
-  95% {
-    transform: scaleY(0.12);
-  }
-}
-.m-mascot-blush {
-  fill: var(--accent);
-  opacity: 0.55;
-}
-.m-mascot-sign rect {
-  fill: var(--white);
-  stroke: var(--ink);
-  stroke-width: 3.5;
-}
-.m-mascot-sign text {
-  font: 500 19px / 1 var(--sans);
+.m-com-end-title {
+  font: 300 clamp(34px, 4.6vw, 72px) / 1.32 var(--sans);
   letter-spacing: 0.04em;
-  fill: var(--ink);
-  text-anchor: middle;
+  text-shadow: 0 1px 30px rgb(0 0 0 / 0.3);
+  font-feature-settings: 'palt' 1;
+}
+.m-com-end-title span {
+  display: block;
+}
+.m-com-end-progress {
+  max-width: 36em;
+  font: 400 13px / 1.85 var(--sans);
+  letter-spacing: 0.04em;
+  color: rgb(255 255 255 / 0.84);
+  text-shadow: 0 1px 14px rgb(0 0 0 / 0.35);
+}
+.m-com-end-progress b {
+  margin-right: 12px;
+  font-weight: 500;
+  color: #fff;
+}
+.m-com-end-toggle {
+  all: unset;
+  position: absolute;
+  right: var(--gutter);
+  bottom: clamp(24px, 5vh, 48px);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.5);
+  cursor: pointer;
+}
+.m-com-end-toggle:hover {
+  background: rgb(255 255 255 / 0.14);
+}
+.m-com-end-toggle:focus-visible {
+  outline: 1.5px solid #fff;
+  outline-offset: 3px;
 }
 
 /* =====================================================================
    窄屏
    ===================================================================== */
-@media (max-width: 1279px) {
-  .m-com-acts {
-    display: none;
-  }
-}
-@media (max-width: 1100px) {
-  .m-com-bench-list {
-    grid-column: 1 / span 5;
-  }
-  .m-com-bench-stage {
-    grid-column: 6 / -1;
-  }
-  .m-com-stage {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      'head'
-      'play'
-      'how'
-      'take';
-  }
-  .m-com-cabinet-window {
-    grid-column: 1 / span 6;
-  }
-  .m-com-cabinet-body {
-    grid-column: 7 / -1;
-  }
-}
 @media (max-width: 900px) {
   .m-com-hero {
-    --paper-size: min(440px, calc(100vw - var(--gutter) * 2 - 24px));
-    align-items: start;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    align-content: start;
+    row-gap: 14px;
     min-height: 0;
-    padding-top: calc(var(--header) + 28px);
-    padding-bottom: 90px;
   }
-  .m-com-hero-text,
-  .m-com-toy {
-    grid-column: 1 / -1;
+  .m-com-title,
+  .m-com-sub,
+  .m-com-hero-art {
+    grid-column: 1;
+    grid-row: auto;
   }
-  .m-com-hero-text {
-    padding-top: 0;
+  .m-com-title {
+    font-size: clamp(26px, 7.4vw, 44px);
   }
   .m-com-title span {
     white-space: normal;
   }
-  .m-com-toy {
-    margin-top: 150px;
+  .m-com-hero-art {
+    width: 100%;
+    margin-top: 12px;
   }
-  .m-com-peek {
-    width: 150px;
-    bottom: calc(100% - 56px);
+  .m-com-room {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 20px;
+    min-height: 0;
+    padding-block: clamp(48px, 10vh, 96px);
   }
-  .m-com-scribble {
-    left: calc(6% + 142px);
-    width: 70px;
+  .m-com-room-art {
+    width: 100%;
   }
-  .m-com-hero-ticket {
-    right: -10px;
-    bottom: -40px;
+  .m-com-back .m-com-room-body {
+    justify-self: start;
   }
-  .m-com-hero-ticket .m-com-ticket {
-    min-width: 200px;
+  .m-com-back .m-com-room-art {
+    order: -1;
   }
-  .m-com-paper-foot {
-    padding-right: 0;
-    margin-top: 58px;
+  .m-com-cows li {
+    grid-template-rows: 2.8em auto auto auto;
   }
-  .m-com-hint {
-    top: 12px;
-    right: 12px;
-  }
-  .m-com-photo {
-    height: 82svh;
-    min-height: 480px;
-  }
-  .m-com-photo-label {
-    left: 16px;
-    right: 16px;
-    bottom: 64px;
-    padding: 18px 20px 20px;
-  }
-  .m-com-photo-cap {
-    right: 16px;
-    bottom: 18px;
-  }
-  .m-com-bench-list {
-    grid-column: 1 / -1;
-    position: static;
-    display: flex;
-    gap: 10px;
-    margin-inline: calc(var(--gutter) * -1);
-    padding: 4px var(--gutter) 14px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-  }
-  .m-com-bench-item {
-    flex: 0 0 min(74vw, 280px);
-    scroll-snap-align: start;
-  }
-  .m-com-bench-lead {
-    display: none;
-  }
-  .m-com-bench-stage {
-    grid-column: 1 / -1;
-    margin-top: 14px;
-  }
-  .m-com-stage {
-    padding: 20px 18px 24px;
-    box-shadow: var(--pop);
-  }
-  .m-com-cabinet-window,
-  .m-com-cabinet-body {
-    grid-column: 1 / -1;
-  }
-  .m-com-cabinet-body {
-    margin-top: 48px;
-  }
-  /* 结尾：来回折的三行，小家伙一行行走下来 */
-  .m-com-end-box,
-  .m-com-progress {
-    max-width: 420px;
-    margin-inline: auto;
-  }
-  .m-com-end-box {
-    aspect-ratio: 360 / 620;
-  }
-  .m-com-end-line[data-layout='wide'] {
-    display: none;
-  }
-  .m-com-end-line[data-layout='tall'] {
-    display: block;
-  }
-  .m-com-end-shell,
-  .m-com-end-thing,
-  .m-com-closing > span,
-  .m-com-walker {
-    left: var(--tx);
-    top: var(--ty);
-  }
-  .m-com-closing {
-    font-size: 22px;
-  }
-  .m-com-walker {
-    width: 84px;
-  }
-  .m-com-end-card {
-    width: 70px;
-  }
-  .m-com-end-ticket {
-    width: 100px;
-    height: 48px;
-  }
-  .m-com-end-frame {
-    width: 82px;
+  .m-com-readout span {
+    margin-left: 10px;
   }
 }
-@media (max-width: 560px) {
-  /* 窄屏：动效演示框按比例会太矮，改成定高（不用最小高度，否则比例会把框撑宽） */
-  .m-com-stage .m-mth-demo-stage {
-    aspect-ratio: auto;
-    height: 280px;
-  }
-  .m-com-stage .m-mth-grid > div {
-    padding: 16px;
-  }
-  .m-com-stage .m-mth-grid strong {
-    font-size: 15px;
-  }
-  /* 窄屏：纸角的数字交给提示条，票根缩一点，别压住第四个颜料点 */
-  .js .m-com-paper-cap .num {
-    display: none;
-  }
-  .m-com-hero-ticket {
-    right: -16px;
-    scale: 0.88;
-    transform-origin: 100% 100%;
-  }
-  .m-com-bench .m-com-h2 {
-    font-size: 6.6vw;
-  }
-  .m-com-bench-item {
-    align-items: center;
-    padding: 12px 14px;
-    grid-template-columns: 48px minmax(0, 1fr);
-    gap: 12px;
-  }
-  .m-com-bench-thumb {
-    width: 48px;
-    height: 48px;
-  }
-  .m-com-bench-tag {
-    flex-wrap: nowrap;
-    white-space: nowrap;
-  }
+@media (max-width: 520px) {
   .m-com-search {
-    min-height: 52px;
+    padding-left: 14px;
   }
-  .m-com-search button {
-    padding: 0 14px;
+  .m-com-search .m-btn {
+    padding-inline: 14px;
+  }
+  .m-com-door {
+    padding-left: 18px;
   }
 }
 
-/* ---------- 减少动态：花直接是完整的，演示停在设计好的那一帧，不荡、不撕、不弹 ---------- */
+/* =====================================================================
+   减少动态、打印
+   ===================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  .js .m-com-paper[data-intro] .m-com-petal,
-  .m-com-peek,
-  .m-com-scribble path,
-  .m-com-stage,
-  .m-com-sample-view img,
-  .m-com-ticket-stub,
-  .m-com-tag-card,
-  .m-com-mine-card,
-  .m-com-work-card a,
-  .m-com-end-thing,
-  .m-com-closing > span,
-  .m-com-walker .m-mascot,
-  .m-mascot *,
-  .m-com-demo *,
-  .m-com-demo *::before,
-  .m-com-demo *::after {
+  .js .m-com-flower-frame[data-intro] .m-com-petal {
+    opacity: 1 !important;
     animation: none !important;
+  }
+  .m-com-petal,
+  .m-com-still,
+  .m-com-work-in,
+  .m-com-door,
+  .m-com-sample img {
     transition: none !important;
+    animation: none !important;
   }
-  .m-com-photo {
-    --o: 1;
-  }
-  .js .m-com-frame:not(.is-in) .m-com-frame-img img {
-    clip-path: none;
+  .js .m-com-art[data-open] img {
+    opacity: 1;
+    filter: var(--grade) saturate(0.9);
     scale: 1;
+    transition: none;
   }
 }
-
-/* ---------- 打印：控件不印，花和字都留下 ---------- */
 @media print {
-  .m-com-acts,
+  .m-com-hero,
+  .m-com-room,
+  .m-com-end {
+    min-height: 0;
+  }
+  .m-com-end {
+    background: none;
+    color: var(--ink);
+  }
+  .m-com-end-media,
+  .m-com-end-toggle,
   .m-com-paints,
-  .m-com-hint,
   .m-com-pick,
-  .m-com-demo-tools .m-pause,
-  .m-com-peek,
-  .m-com-scribble {
-    display: none !important;
+  .m-com-demo-tools .m-pause {
+    display: none;
+  }
+  .m-com-end-title,
+  .m-com-end-progress {
+    color: var(--ink);
+    text-shadow: none;
   }
 }

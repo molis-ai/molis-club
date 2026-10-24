@@ -338,8 +338,7 @@
     rgb(var(--film-tint) / 0.1);
 }
 /* 压在影像上的字：白字，杏橙换成亮一档 */
-.m-film-content,
-.m-close[data-tone='dark'] .m-close-body {
+.m-film-content {
   --ink: #fff;
   --ink-2: rgb(255 255 255 / 0.9);
   --mute: rgb(255 255 255 / 0.76);

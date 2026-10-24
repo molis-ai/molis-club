@@ -109,10 +109,11 @@ for (const name of ['Life', 'Story', 'World'])
     !home.includes(`aria-label="了解 Molis ${name}"`),
     `home stage no go ${name}`,
   );
-// 结尾：过渡句与企业合作、社区、关于我们三个去处
+// 结尾：过渡句与企业合作、社区、关于我们三个去处；画室影像挪去了社区结尾（负责人 2026-10-22，D2）
 assert.match(home, /让口味相近的人/);
 for (const path of ['/enterprise', '/community', '/about'])
   assert(home.includes(`href="${path}"`), `home closing links ${path}`);
+assert(!home.includes('home-painting'), 'painting moved to community');
 assert.match(home, /技术，回到人的尺度。/);
 assert(!home.includes('安装 Molis Work 开源版'), 'no install promise on home');
 assert.match(home, new RegExp(`rel="canonical" href="${canonicalOrigin}/?"`));

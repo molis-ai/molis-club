@@ -9,7 +9,7 @@ import {
   type KeyboardEvent,
   type PointerEvent,
 } from 'react';
-import { ArrowDownToLine, RotateCcw } from 'lucide-react';
+import { ArrowDownToLine } from 'lucide-react';
 import { communityUi, works } from '../../../content/site/community';
 import { CopyAction, ShareAfter } from './copy';
 import {
@@ -21,25 +21,29 @@ import {
   flowerTitle,
   type Flower,
 } from './flower-art';
-import { Mascot } from './mascot';
 
-// 「一朵好奇」：首屏那张纸上的花就是控件——在花上拖（左右改重复、上下改展开），方向键也行；
-// 点一下（或回车）换一档展开；触屏上左右滑改重复。纸边四个颜料点换线色；纸角那张票根就是下载（没有 JS 也能下默认那朵）。
-// 「看它怎么长出来」把花拆回一个椭圆，再一片片重复、展开。小家伙从纸后面探头，你一动它的灯亮一下、牌子换一句。
-// 晾衣绳和结尾读同一朵花：访客调过的样子会一路跟着走（只在访客自己的浏览器里）。
+// 「一朵好奇」（作品画廊的第一件）：窗里那朵花就是控件——在花上拖（左右改重复、上下改展开），方向键也行；
+// 点一下（或回车）换一档展开；触屏上左右滑改重复。窗下四个颜料点换线色，旁边是现在的数。
+// 右边的三步做法指到哪一步，窗里就停在那一步的样子，移开回到访客自己调的那朵（因果对得上，不另加说明）。
+// 第一次看到时花一片片转到位；下载的 SVG、复制的提示词在右边，没有 JS 时下载的是默认那朵。
 
 const t = works.flower;
-const ui = communityUi.hero;
 
-type State = Flower & { touched: boolean };
+type State = Flower & { touched: boolean; preview: Flower | null };
 
-let state: State = { ...FLOWER_DEFAULT, touched: false };
+let state: State = { ...FLOWER_DEFAULT, touched: false, preview: null };
 const server: State = state;
 const listeners = new Set<() => void>();
 
-function update(next: Partial<Flower>) {
-  state = { ...state, ...next, touched: true };
+function emit(next: State) {
+  state = next;
   listeners.forEach((listener) => listener());
+}
+function update(next: Partial<Flower>) {
+  emit({ ...state, ...next, touched: true, preview: null });
+}
+function preview(next: Flower | null) {
+  emit({ ...state, preview: next });
 }
 function subscribe(listener: () => void) {
   listeners.add(listener);
@@ -47,8 +51,7 @@ function subscribe(listener: () => void) {
     listeners.delete(listener);
   };
 }
-/** 访客现在这朵花（晾衣绳、结尾的小家伙也读它） */
-export function useFlower() {
+function useFlowerState() {
   return useSyncExternalStore(
     subscribe,
     () => state,
@@ -59,90 +62,20 @@ export function useFlower() {
 const clamp = (n: number, lo: number, hi: number) =>
   Math.min(hi, Math.max(lo, Math.round(n)));
 const BLOOM_STEPS = [20, 44, 62, 82, 100];
+const own = ({ count, bloom, color }: Flower): Flower => ({
+  count,
+  bloom,
+  color,
+});
 
-/** 「看它怎么长出来」：一个椭圆 → 一片片重复到现在的次数 → 展开到现在的程度，约 2.4 秒 */
-function useGrow(target: Flower) {
-  const [shown, setShown] = useState<Flower | null>(null);
-  const raf = useRef(0);
-  const play = () => {
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    cancelAnimationFrame(raf.current);
-    const start = performance.now();
-    const tick = (now: number) => {
-      const s = (now - start) / 1000;
-      if (s < 0.5) setShown({ ...target, count: 1, bloom: 20 });
-      else if (s < 1.6)
-        setShown({
-          ...target,
-          count: Math.max(1, Math.round(((s - 0.5) / 1.1) * target.count)),
-          bloom: 20,
-        });
-      else if (s < 2.4)
-        setShown({
-          ...target,
-          bloom: Math.round(20 + ((s - 1.6) / 0.8) * (target.bloom - 20)),
-        });
-      else {
-        setShown(null);
-        return;
-      }
-      raf.current = requestAnimationFrame(tick);
-    };
-    raf.current = requestAnimationFrame(tick);
-  };
-  useEffect(() => () => cancelAnimationFrame(raf.current), []);
-  return { shown, play, growing: shown !== null };
-}
-
-/** 纸角的票根：下载这朵花的 SVG；点了票根沿虚线撕下 */
-function FlowerTicket({
-  flower,
-  onTake,
-}: {
-  flower: Flower;
-  onTake: () => void;
-}) {
-  const svg = flowerSvg(flower);
-  const [last, setLast] = useState('');
-  const [torn, setTorn] = useState(0);
-  return (
-    <div className="m-com-hero-ticket">
-      <a
-        className="m-com-ticket"
-        data-torn={torn || undefined}
-        key={torn}
-        href={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`}
-        download={t.filename}
-        onClick={() => {
-          setLast(svg);
-          setTorn((n) => n + 1);
-          onTake();
-        }}
-      >
-        <span className="m-com-ticket-main">
-          <b>{ui.ticket}</b>
-          <small>{ui.ticketMeta}</small>
-        </span>
-        <span className="m-com-ticket-stub" aria-hidden="true">
-          <ArrowDownToLine size={18} />
-          <i lang="en">No.01</i>
-        </span>
-      </a>
-      <output className="m-com-status">
-        {last === svg ? (
-          <ShareAfter text={t.downloaded} topic="share-flower" />
-        ) : null}
-      </output>
-    </div>
-  );
-}
-
-export function FlowerToy() {
-  const flower = useFlower();
+/** 窗里的花：在花上拖、按方向键、点一下；窗下是颜料点和现在的数 */
+export function FlowerStage() {
+  const now = useFlowerState();
+  const flower = own(now);
+  const shown = now.preview ?? flower;
   const id = useId();
+  // 第一次看到时一片片转到位（data-open 进入视口加 is-in）；动过手就不再播
   const [intro, setIntro] = useState(true);
-  const [mood, setMood] = useState<'idle' | 'play' | 'took'>('idle');
-  const [lit, setLit] = useState(0);
   const drag = useRef<{
     x: number;
     y: number;
@@ -152,20 +85,9 @@ export function FlowerToy() {
     touch: boolean;
   } | null>(null);
   const dragged = useRef(false);
-  const grow = useGrow(flower);
-  const shown = grow.shown ?? flower;
-
-  // 小家伙的灯：你一动就亮一下
-  useEffect(() => {
-    if (!lit) return;
-    const timer = window.setTimeout(() => setLit(0), 700);
-    return () => window.clearTimeout(timer);
-  }, [lit]);
 
   const set = (next: Partial<Flower>) => {
     setIntro(false);
-    setMood((now) => (now === 'idle' ? 'play' : now));
-    setLit((n) => n + 1);
     update(next);
   };
 
@@ -210,11 +132,13 @@ export function FlowerToy() {
   };
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     const step = event.shiftKey ? 5 : 1;
+    // 按住方向键连发时读最新的那朵，不读这一帧渲染时的
+    const { count, bloom } = state;
     const moves: Record<string, Partial<Flower>> = {
-      ArrowRight: { count: clamp(flower.count + step, ...COUNT_RANGE) },
-      ArrowLeft: { count: clamp(flower.count - step, ...COUNT_RANGE) },
-      ArrowUp: { bloom: clamp(flower.bloom + step * 2, 0, 100) },
-      ArrowDown: { bloom: clamp(flower.bloom - step * 2, 0, 100) },
+      ArrowRight: { count: clamp(count + step, ...COUNT_RANGE) },
+      ArrowLeft: { count: clamp(count - step, ...COUNT_RANGE) },
+      ArrowUp: { bloom: clamp(bloom + step * 2, 0, 100) },
+      ArrowDown: { bloom: clamp(bloom - step * 2, 0, 100) },
     };
     const next = moves[event.key];
     if (!next) return;
@@ -222,23 +146,13 @@ export function FlowerToy() {
     set(next);
   };
 
-  const sign =
-    mood === 'took' ? '带走啦' : mood === 'play' ? '好看！' : ui.sign;
-
   return (
-    <div className="m-com-toy" id="flower">
-      <div className="m-com-peek" aria-hidden="true">
-        <Mascot pose="peek" sign={sign} lit={lit > 0} />
-      </div>
-      <svg
-        className="m-com-scribble"
-        viewBox="0 0 120 200"
-        aria-hidden="true"
+    <>
+      <div
+        className="m-com-frame m-com-flower-frame"
+        data-open
+        data-intro={intro || undefined}
       >
-        <path pathLength={1} d="M6 10 C50 4 92 30 96 80 C99 120 84 150 70 182" />
-        <path pathLength={1} d="M58 171 L70 184 L83 173" />
-      </svg>
-      <figure className="m-com-paper" data-intro={intro || undefined}>
         <button
           type="button"
           className="m-com-canvas"
@@ -252,26 +166,15 @@ export function FlowerToy() {
           onClick={onClick}
         >
           <FlowerArt flower={shown} live className="m-com-flower" />
-          <span className="m-com-paper-cap m-caption" lang="en" aria-hidden="true">
-            {t.caption}
-            <span className="num">{`${shown.count} × ${shown.bloom}%`}</span>
-          </span>
-          <span className="m-com-hint m-com-js" aria-hidden="true">
-            <span data-pointer="fine">
-              {ui.hintX} <b className="num">{flower.count}</b> 次
-              <br />
-              {ui.hintY} <b className="num">{flower.bloom}%</b>
-            </span>
-            <span data-pointer="coarse">
-              左右滑 · 重复 <b className="num">{flower.count}</b> 次
-              <br />
-              点一下 · 展开 <b className="num">{flower.bloom}%</b>
-            </span>
-          </span>
         </button>
+        <span className="m-com-frame-cap m-caption" lang="en" aria-hidden="true">
+          {t.caption}
+        </span>
         <p className="sr-only" id={`${id}-keys`}>
-          {ui.keys}
+          {communityUi.keys}
         </p>
+      </div>
+      <div className="m-com-under">
         <fieldset className="m-com-paints m-com-js">
           <legend className="sr-only">{t.controls.color}</legend>
           {flowerColors.map((color, index) => (
@@ -286,36 +189,90 @@ export function FlowerToy() {
             />
           ))}
         </fieldset>
-        <FlowerTicket flower={flower} onTake={() => setMood('took')} />
-      </figure>
-      <div className="m-com-paper-foot">
-        <div className="m-com-paper-acts m-com-js">
-          <button
-            type="button"
-            className="m-link m-com-act"
-            onClick={grow.play}
-            onMouseEnter={grow.growing ? undefined : grow.play}
-            aria-describedby={`${id}-grow`}
-          >
-            {ui.grow}
-            <RotateCcw size={13} aria-hidden="true" />
-          </button>
-          <span className="sr-only" id={`${id}-grow`}>
-            {ui.growing}
+        <p className="m-com-readout" aria-hidden="true">
+          {t.controls.count} <b className="num">{shown.count}</b>{' '}
+          {t.controls.times}
+          <span>
+            {t.controls.bloom} <b className="num">{shown.bloom}%</b>
           </span>
-          <CopyAction
-            id="flower-prompt"
-            text={t.prompt}
-            label={t.copy}
-            topic="share-flower"
-          />
-        </div>
+        </p>
       </div>
-      <p className="m-com-nojs m-com-status">{t.nojs}</p>
       <output className="sr-only" aria-live="polite">
-        {flower.touched
+        {now.touched
           ? `${flower.count} 次，展开 ${flower.bloom}%，${flowerColors[flower.color].name}`
           : ''}
+      </output>
+    </>
+  );
+}
+
+/** 三步做法：指到哪一步，窗里那朵就停在那一步；点一下就用这一步的样子 */
+export function FlowerSteps() {
+  const now = useFlowerState();
+  const leave = useRef(0);
+  const show = (step: (typeof t.steps)[number]) => {
+    window.clearTimeout(leave.current);
+    preview({ ...own(now), count: step.count, bloom: step.bloom });
+  };
+  const use = (step: (typeof t.steps)[number]) => {
+    window.clearTimeout(leave.current);
+    update({ count: step.count, bloom: step.bloom });
+  };
+  // 鼠标在几步之间挪动时不在缝隙里跳回去
+  const hide = () => {
+    window.clearTimeout(leave.current);
+    leave.current = window.setTimeout(() => preview(null), 140);
+  };
+  useEffect(() => () => window.clearTimeout(leave.current), []);
+  return (
+    <ol className="m-com-steps">
+      {t.steps.map((step) => (
+        <li key={step.title}>
+          <button
+            type="button"
+            onMouseEnter={() => show(step)}
+            onMouseLeave={hide}
+            onFocus={() => show(step)}
+            onBlur={hide}
+            onClick={() => use(step)}
+          >
+            <b>{step.title}</b>
+            <span>{step.text}</span>
+          </button>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/** 带走：下载这朵花的 SVG（没有 JS 也能下默认那朵），复制做它的提示词 */
+export function FlowerTake() {
+  const flower = own(useFlowerState());
+  const svg = flowerSvg(flower);
+  const [last, setLast] = useState('');
+  return (
+    <div className="m-com-take">
+      <div className="m-actions">
+        <a
+          className="m-btn"
+          href={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`}
+          download={t.filename}
+          onClick={() => setLast(svg)}
+        >
+          <ArrowDownToLine size={15} aria-hidden="true" />
+          {t.download}
+        </a>
+        <CopyAction
+          id="flower-prompt"
+          text={t.prompt}
+          label={t.copy}
+          topic="share-flower"
+        />
+      </div>
+      <output className="m-com-status">
+        {last === svg ? (
+          <ShareAfter text={t.downloaded} topic="share-flower" />
+        ) : null}
       </output>
     </div>
   );

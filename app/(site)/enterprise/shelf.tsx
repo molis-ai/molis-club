@@ -12,9 +12,12 @@ import { play } from './keeps';
 // 书架：「我们怎样开展合作」的展开式长卷（从 stages.tsx 拆出来；「为什么我们可以」用过一版，后来改成覆盖图）。
 // 四本书并排，同一种纸色的圆角书立在一道细线上，高矮略有参差；书脊从上到下是编号、短名、竖排的全名，底下一颗小圆点。
 // 往下滚，整屏钉住，一本一本地打开：书脊留在左边，右边翻出一页白纸，纸顶垂下一根杏色书签带，
-// 纸上一张插图（一段短片）和一行图注（编号、短名、全名、示意）。点合着的书脊，滚到它那一拍；鼠标停在插图上，片子重演。
+// 纸上一张插图（一段短片）和一行图注（编号、短名、全名、示意）。点合着的书脊，滚到它那本演完的地方。
 // 宽屏（≥1000 宽、≥600 高）有 JS 时才钉住；手机、矮屏、没有 JS 时几本书从上到下排开。
-// 短片的动画：先停在第一帧（没有 JS 时看到的是演完的样子）；钉住时打开哪一本演哪一本，不钉住时各自进屏各演一遍。
+// 短片（没有 JS、减少动态时停在演完的样子）：
+//   钉住时跟着滚动走（负责人 2026-10-22：按时间演，正常滑过去只看得到开头）——每本书占一段滚动，
+//   前一小截等书翻开，中间按滚动演完，最后一小截停在演完的样子；往回滚就倒回去。滚动进度和全站一样跟随缓动。
+//   不钉住时各自进屏按时间演一遍，鼠标停在插图上重演。
 
 export type ShelfBook = {
   id: string;
@@ -27,6 +30,37 @@ export type ShelfBook = {
 
 /** 书脊和图注上的编号：01–04 */
 const number = (index: number) => String(index + 1).padStart(2, '0');
+
+/** 一本书那段滚动里：到 OPEN 之前等书翻开（第一本已经开着，不等），到 DONE 演完，之后停在演完的样子 */
+const OPEN = 0.12;
+const DONE = 0.8;
+/** 点书脊时滚到那一段的这个位置：刚演完 */
+const LAND = 0.88;
+/** 跟随缓动，和 app/_site/motion.ts 同一个数 */
+const FOLLOW = 0.18;
+
+/** 第 index 本书的短片演到几成：beat 是钉住进度乘以书的本数 */
+function reach(beat: number, index: number) {
+  const open = index === 0 ? 0 : OPEN;
+  return Math.min(1, Math.max(0, (beat - index - open) / (DONE - open)));
+}
+
+/** 一段短片里的样式动画（films.tsx 每条轨道一段，全片同一个长度） */
+const partsOf = (film: Element) =>
+  (film.getAnimations?.({ subtree: true }) ?? []).filter(
+    (animation): animation is CSSAnimation =>
+      animation instanceof CSSAnimation,
+  );
+
+/** 去掉再加上 data-play：动画从头生成，交回样式控制（data-hold 时停在第一帧） */
+function rewind(films: Element[]) {
+  for (const film of films) film.removeAttribute('data-play');
+  void films[0]?.getBoundingClientRect();
+  for (const film of films) {
+    film.setAttribute('data-play', '');
+    film.setAttribute('data-hold', '');
+  }
+}
 
 export function Shelf({
   id,
@@ -50,94 +84,111 @@ export function Shelf({
   const [active, setActive] = useState(0);
   const BOOKS = books.length;
 
-  // 宽屏才钉住；钉住时按滚动走到哪一拍
+  // 宽屏才钉住：滚到哪一本打开哪一本，短片跟着滚动演；不钉住时短片各自进屏按时间演
   useEffect(() => {
     const root = ref.current;
     if (!root) return;
     const wide = matchMedia('(min-width: 1000px) and (min-height: 600px)');
+    const still = matchMedia('(prefers-reduced-motion: reduce)');
+    const films = Array.from(root.querySelectorAll('.m-film'));
+    /** 钉住时每段短片的动画、片长（毫秒）和上次定在哪一毫秒；不钉住时为空 */
+    let reels: { parts: CSSAnimation[]; length: number; at: number }[] = [];
+    let watch: IntersectionObserver | undefined;
+    let target = 0;
+    let current = -1;
     let frame = 0;
-    const read = () => {
+    let last = 0;
+
+    const step = (now: number) => {
       frame = 0;
-      if (!wide.matches) return;
       const rect = root.getBoundingClientRect();
       const span = rect.height - window.innerHeight;
-      const pin = span > 0 ? Math.min(1, Math.max(0, -rect.top / span)) : 0;
-      setActive(Math.min(BOOKS - 1, Math.floor(pin * BOOKS)));
+      target = span > 0 ? Math.min(1, Math.max(0, -rect.top / span)) : 0;
+      const dt = last ? Math.min(64, now - last) : 16.7;
+      last = now;
+      const k = still.matches ? 1 : 1 - Math.pow(1 - FOLLOW, dt / 16.7);
+      current =
+        current < 0 || Math.abs(target - current) < 0.0004
+          ? target
+          : current + (target - current) * k;
+      const beat = current * BOOKS;
+      setActive(Math.min(BOOKS - 1, Math.floor(beat)));
+      reels.forEach((reel, index) => {
+        const at = Math.round(reach(beat, index) * reel.length);
+        if (at === reel.at) return;
+        reel.at = at;
+        for (const part of reel.parts) part.currentTime = at;
+      });
+      if (current !== target) frame = requestAnimationFrame(step);
+      else last = 0;
     };
     const request = () => {
-      if (!frame) frame = requestAnimationFrame(read);
+      if (!frame) frame = requestAnimationFrame(step);
     };
-    const sync = () => {
-      setLive(wide.matches);
+
+    // 宽窄或减少动态变了，重新安排短片：钉住时由滚动定格，不钉住时等进屏再演
+    const arrange = () => {
+      const pinned = wide.matches;
+      setLive(pinned);
+      watch?.disconnect();
+      watch = undefined;
+      reels = [];
+      if (still.matches) {
+        for (const film of films) film.removeAttribute('data-play');
+      } else {
+        rewind(films);
+        if (pinned && 'getAnimations' in Element.prototype) {
+          reels = films.map((film) => {
+            const parts = partsOf(film);
+            for (const part of parts) part.pause();
+            const timing = parts[0]?.effect?.getComputedTiming();
+            return { parts, length: Number(timing?.duration) || 0, at: -1 };
+          });
+        } else {
+          const seen = new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                if (!entry.isIntersecting) continue;
+                seen.unobserve(entry.target);
+                entry.target.removeAttribute('data-hold');
+              }
+            },
+            { threshold: 0.5 },
+          );
+          for (const film of films) seen.observe(film);
+          watch = seen;
+        }
+      }
       request();
     };
-    sync();
-    wide.addEventListener('change', sync);
+
+    arrange();
+    // 钉住后整节变高，量一次
+    const resized = new ResizeObserver(request);
+    resized.observe(root);
+    wide.addEventListener('change', arrange);
+    still.addEventListener('change', arrange);
     window.addEventListener('scroll', request, { passive: true });
     window.addEventListener('resize', request);
     return () => {
       if (frame) cancelAnimationFrame(frame);
-      wide.removeEventListener('change', sync);
+      watch?.disconnect();
+      resized.disconnect();
+      wide.removeEventListener('change', arrange);
+      still.removeEventListener('change', arrange);
       window.removeEventListener('scroll', request);
       window.removeEventListener('resize', request);
     };
   }, [BOOKS]);
 
-  // 动画：先停在第一帧；钉住时只放打开的那一本，不钉住时各自进屏各演一遍
-  useEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const scenes = Array.from(root.querySelectorAll('.m-film'));
-    for (const scene of scenes) {
-      scene.setAttribute('data-play', '');
-      scene.setAttribute('data-hold', '');
-    }
-    const seen = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const leg = entry.target.closest('.m-ent-leg');
-          if (
-            root.hasAttribute('data-live') &&
-            !leg?.hasAttribute('data-active')
-          )
-            continue;
-          seen.unobserve(entry.target);
-          entry.target.removeAttribute('data-hold');
-        }
-      },
-      { threshold: 0.5 },
-    );
-    for (const scene of scenes) seen.observe(scene);
-    return () => seen.disconnect();
-  }, []);
-
-  // 打开一本：那一本的动画从头演（刚钉住时那一本交给上面的进屏观察）
-  const first = useRef(true);
-  useEffect(() => {
-    if (!live) return;
-    if (first.current) {
-      first.current = false;
-      return;
-    }
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const scene = ref.current?.querySelector(
-      `.m-ent-leg[data-index="${active}"] .m-film`,
-    );
-    if (!scene) return;
-    if (scene.hasAttribute('data-hold')) scene.removeAttribute('data-hold');
-    else play(scene);
-  }, [active, live]);
-
-  /** 点一本合着的书：滚到它那一拍的正中 */
+  /** 点一本合着的书：滚到它刚演完的地方 */
   const go = useCallback(
     (index: number) => {
       const root = ref.current;
       if (!root) return;
       const rect = root.getBoundingClientRect();
       const span = rect.height - window.innerHeight;
-      const top = window.scrollY + rect.top + ((index + 0.5) / BOOKS) * span;
+      const top = window.scrollY + rect.top + ((index + LAND) / BOOKS) * span;
       const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
       window.scrollTo({ top, behavior: still ? 'auto' : 'smooth' });
     },
@@ -188,7 +239,7 @@ export function Shelf({
                   <span className="m-ent-leg-no">{number(index)}</span>
                   <span className="m-ent-leg-spine-word">{book.word}</span>
                   <span className="m-ent-leg-spine-name">
-                    {/* 竖排里的英文横躺着排，字距收回来，不散成一个个字母 */}
+                    {/* 竖排里的英文单独包一层：立着排，字距另算（line.css） */}
                     {book.name.split(/([A-Za-z]+)/).map((part, i) =>
                       i % 2 ? (
                         <span key={i} className="m-ent-leg-latin">
@@ -206,7 +257,8 @@ export function Shelf({
                   <div
                     className="m-ent-leg-stage"
                     onPointerEnter={(event) => {
-                      if (event.pointerType !== 'mouse') return;
+                      // 钉住时片子跟着滚动走，往回滚就是重演
+                      if (live || event.pointerType !== 'mouse') return;
                       if (
                         matchMedia('(prefers-reduced-motion: reduce)').matches
                       )
