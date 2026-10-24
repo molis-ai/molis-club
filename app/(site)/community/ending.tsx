@@ -6,6 +6,8 @@ import media from '../../_site/media.json';
 import { useReducedMotion, useVisible } from '../../_site/motion';
 
 // 社区结尾（负责人 2026-10-22 从首页末屏挪过来）：一整屏是美术馆午后那段画室——午后的光里，有人对着画架画静物。
+// 入场沿用首页原来的「从纸面开窗」（2026-10-24）：画面从上一屏的纸面里像一扇窗打开，读 --p（data-scene），不劫持滚动；
+// 没有 JS、减少动态时直接是开满的画面。
 // 那句话「带着好奇来，带点什么走，再带点什么回来。」按逗号一段一段浮上来，底下一行当前进展（第 6 章原句的第一句）。
 // 画面中间那扇窗最亮，字压在左下，底下和左边各加一层暗色，换到哪一帧字都看得清。
 // 视频静音、不进读屏；靠近视口才载入，离开视口或页面隐藏时暂停；减少动态时停在封面帧；右下角可以暂停。
@@ -45,6 +47,7 @@ export function Ending() {
     <section
       ref={section}
       className="m-com-end"
+      data-scene
       data-tone="film"
       aria-labelledby="end-title"
       style={{ '--end-ground': clip.avg } as CSSProperties}

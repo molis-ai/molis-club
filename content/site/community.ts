@@ -102,7 +102,7 @@ export const appendixTools = {
 
 /**
  * 新写：页面上的标签、按钮与说明（负责人 2026-10-22 改回白房子：首屏两句标题 + 一张团队插画；
- * 五件作品一个画廊；方法目录；带回来的三个去处；结尾那段画室）。不写引导与过渡（DESIGN.md 常驻约束）。
+ * 五件作品一个画廊；方法目录；带回来的一个主行动和两条次要去处；结尾那段画室）。不写引导与过渡（DESIGN.md 常驻约束）。
  */
 export const communityUi = {
   kicker: '社区',
@@ -131,25 +131,13 @@ export const communityUi = {
     go: '搜索',
   },
   back: {
-    /** 三个去处（压缩自第 6.3 节） */
-    paths: [
-      {
-        title: '分享作品',
-        text: '附上链接，讲讲原本想做什么、改了哪里。',
-        topic: 'creator',
-      },
-      {
-        title: '说说试得怎么样',
-        text: '哪里顺手、哪里卡住，都可以告诉我们。',
-        topic: 'feedback',
-      },
-      {
-        title: '在 GitHub 一起改',
-        text: '补充研究资料，改进 Artist Skill 的方法。',
-        href: ARTIST_SKILL_REPO,
-      },
+    /** 一个主行动；另外两条是次要的去处（压缩自第 6.3 节） */
+    share: { title: '分享作品', topic: 'creator' },
+    also: [
+      { title: '说说试得怎么样', topic: 'feedback' },
+      { title: '在 GitHub 一起改', href: ARTIST_SKILL_REPO },
     ],
-    /** 还没有作者同意展示的投稿时 */
+    /** 还没有作者同意展示的投稿时：一面空墙，只写这一句 */
     empty: '作品墙还空着：这里只放作者明确同意展示的投稿。',
   },
   end: {
