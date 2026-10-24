@@ -2449,23 +2449,31 @@ html:not(.js) .m-ent-slip:has(input:checked)::before {
   }
 }
 @media (max-width: 700px) {
-  /* 手机上纸条排成一行，左右滑；每张够宽，小图不缩 */
+  /* 手机上五张纸条竖着叠成五行，一眼看全（2026-10-24：原来一行左右滑，一屏只露一张半）；
+     小图收起，每张只留编号和那句话，选定的照样摆正、顶边一道杏橙 */
   .m-ent-slips {
-    display: flex;
-    gap: 12px;
-    margin-inline: calc(-1 * var(--gutter));
-    padding: 16px var(--gutter) 24px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: var(--gutter);
-    scrollbar-width: none;
-  }
-  .m-ent-slips::-webkit-scrollbar {
-    display: none;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
   }
   .m-ent-slip {
-    flex: 0 0 min(240px, 72vw);
-    scroll-snap-align: start;
+    grid-template-rows: none;
+    padding: 15px 18px;
+    rotate: calc(var(--tilt) / 2);
+  }
+  .m-ent-slip .m-sym {
+    display: none;
+  }
+  .m-ent-slip-text {
+    grid-template-columns: 2em minmax(0, 1fr);
+    align-items: baseline;
+    gap: 6px;
+    padding-inline: 0;
+  }
+  .m-ent-slip-name {
+    font-size: 17px;
+  }
+  .m-ent-slip[data-on] {
+    --lift: 0px;
   }
   .m-ent-title span + span {
     padding-left: 0;
