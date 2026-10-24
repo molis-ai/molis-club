@@ -55,6 +55,26 @@
       ]
     ]
   },
+  "home-close": {
+    "width": 2400,
+    "height": 1602,
+    "avg": "#a4937a",
+    "src": "/site/home-close-2400.webp",
+    "srcset": [
+      [
+        "/site/home-close-1280.webp",
+        1280
+      ],
+      [
+        "/site/home-close-1920.webp",
+        1920
+      ],
+      [
+        "/site/home-close-2400.webp",
+        2400
+      ]
+    ]
+  },
   "work-studio": {
     "width": 1672,
     "height": 941,
