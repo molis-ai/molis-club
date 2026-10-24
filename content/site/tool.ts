@@ -1,36 +1,55 @@
-// Molis Tool 页（specs/site-rebuild/tool-page.md 第 9 节）。骨架取自 Folio 版 Tool 页：
-// 首屏光标演示 → 以前与现在 → 由近到远的三层 → 眼前的小事 → 插件 → 分寸 → 收尾。
-// 标题、加粗句与说明里标了「原句」的取自 docs/studio-intro.md 4.2；三层、对照、插件、承诺与「它不是」出自 Folio 版与 molis-tool 设计纲领（待负责人确认）；
-// 演示里的网页、活动、报价、对话都是示例数据，界面都是示意。
+// Molis Tool 页（specs/site-rebuild/tool-page.md 第 13 节）：首屏翻译 → 右边钉住一块 Mac 屏幕、左边的字随滚动过去
+// （以前与现在 → 眼前的小事三件事对三层 → 插件，屏幕从早上走到傍晚）→ 分寸和收尾合成深色的一屏。
+// 标了「原句」的取自 docs/studio-intro.md 4.2；插件、承诺与「它不是」出自 Folio 版与 molis-tool 设计纲领（待负责人确认）；
+// 屏幕里的网页、笔记、报价、邮件、文件都是示例数据，界面都是示意。
 
 import { products } from './products';
 
 const tool = products.tool;
 const [small, chain, later] = tool.sections;
+/** 4.2 开头那句原句，按分号拆成三件事（拼回去一字不差） */
+const [readText, getPdf, seeEvent] = tool.opening[0]
+  .replace(/。$/, '')
+  .split('；');
 
 /** 一个动作的颜色：同一个动作在整页（演示和真的动作条）里永远是同一种颜色 */
 export type Tone = 'apricot' | 'sky' | 'sage' | 'butter' | 'rose' | 'lilac';
 
-/** 首屏：在网页上选中一句英文 → 光标旁三个动作 → 点翻译 → 带出处的译文（Folio 版首屏，新写，示例） */
+/** Mac 桌面的壁纸：莫奈的伦敦，早上、午后、傍晚三张（负责人 2026-10-24 选） */
+export type Wall = 'morning' | 'noon' | 'dusk';
+
+type Chip = { label: string; tone: Tone };
+
+/** 首屏：傍晚读一篇英文网页，划出一句 → 光标旁三个动作 → 点翻译 → 带出处的译文出现在旁边（新写，示例） */
 export const desk = {
+  wall: 'dusk' as Wall,
+  app: '浏览器',
+  menus: ['文件', '编辑', '显示', '历史记录', '书签'],
+  clock: '周四 18:20',
   url: 'notes.example.com/switching-cost',
   heading: 'Why switching tasks is tiring',
   intro: 'Researchers have a name for it.',
   /** 选中的一句，按画面里的行排好 */
   select: ['Attention residue: part of your mind', 'stays on the last task'],
   rest: [' even after', 'you move on.'],
+  more: 'It fades with time, but every switch adds a little more. A day of small detours leaves less room for the work in front of you.',
+  /** 网页下半截：一个小标题和一段，让窗口像一页真的文章 */
+  after: {
+    heading: 'What helps',
+    text: 'Finish small things where they start. Keep the rest within reach, so picking it up later costs less.',
+  },
   actions: [
     { label: '翻译', tone: 'sky' },
     { label: '解释', tone: 'sage' },
     { label: '记下', tone: 'rose' },
-  ] as { label: string; tone: Tone }[],
+  ] as Chip[],
   result: {
     label: '翻译',
     tag: 'AI',
     text: '注意力残留：一部分心思还停在上一件事上，哪怕你已经换到下一件。',
-    source: 'notes.example.com/switching-cost · 第 2 段',
+    source: 'notes.example.com · 第 2 段',
   },
-  note: '界面示意',
+  note: '界面示意 · 示例网页',
   label:
     '界面示意：在网页上选中一句英文，选区末端出现翻译、解释、记下三个动作；点翻译，带着来源的译文出现在旁边。',
   /** 首屏左下：整页都能选中（键盘、触屏用按钮代选） */
@@ -38,206 +57,249 @@ export const desk = {
   pick: '选中上面这句',
 };
 
-/** 以前与现在：同一句乱了格式的话，老路绕四站，Molis Tool 一步 */
+/**
+ * 以前与现在：两台一样的 Mac、同一张笔记，同一刻开始。左边走老路（Dock、另一个应用、菜单栏、再回来），
+ * 右边原地一步；下面各记走了几步。只比路程，不演细节。
+ * 钉住的屏幕从这里开始过一天：周五早上整理报价，接着是眼前的三件小事，傍晚装一个插件
+ */
 export const shift = {
-  kicker: '软件不必再是一个要去的地方',
   title: '能力来到光标旁，而不是人去找应用。',
   /** 标题里被荧光笔划过的几个字（只是强调，不改原句） */
   mark: '光标旁',
-  /** 格式乱掉的一句：片段之间多出来的空格，清理时收拢 */
-  messy: ['会议改到', '周四', '下午三点，', '地点：', '二楼小会议室'],
+  wall: 'morning' as Wall,
+  clock: '周五 08:56',
+  notes: {
+    app: '笔记',
+    menus: ['文件', '编辑', '格式', '显示', '窗口'],
+    title: '三家报价',
+    meta: '10月24日 周五 08:52',
+    lines: ['甲：2.40 元 × 5000', '乙：2.15 元 × 5000', '丙：2.60 元 × 3000'],
+  },
+  sheet: {
+    app: '表格',
+    menus: ['文件', '编辑', '插入', '数据'],
+    title: '未命名表格',
+    /** 菜单栏里要找的那个功能 */
+    menu: '数据',
+    items: ['排序…', '筛选', '分列…', '删除重复项'],
+    pick: 2,
+  },
+  head: ['供应商', '单价（元）', '数量'],
+  rows: [
+    ['甲', '2.40', '5000'],
+    ['乙', '2.15', '5000'],
+    ['丙', '2.60', '3000'],
+  ],
+  dock: ['文件', '浏览器', '邮件', '笔记', '表格', '照片'],
+  /** 老路上的四站：和下面那句原句是同一件事 */
+  stops: ['打开应用', '搬运材料', '找功能', '带回来'],
+  /** 两台下面记步数：老路一站一步，现在一步 */
+  unit: '步',
   before: {
     label: '以前',
-    steps: ['打开应用', '搬运材料', '找功能', '带回来'],
     /** 原句 */
     text: tool.opening[1],
   },
   after: {
-    label: '用 Molis Tool',
-    action: '清理格式',
-    done: '一步，结果留在原处',
+    label: '现在',
+    actions: [
+      { label: '整理成表格', tone: 'sage' },
+      { label: '复制纯文本', tone: 'rose' },
+    ] as Chip[],
+    stop: '一步',
     /** 原句 */
     text: tool.opening[2],
   },
-  note: '界面示意',
+  note: '界面示意 · 示例报价',
   label:
-    '示意：同一句格式乱掉的话。以前要打开应用、搬运材料、找功能、再带回来；用 Molis Tool，选中它，光标旁点「清理格式」，结果留在原处。',
+    '示意：两台一样的 Mac，同一张笔记，同时开始。左边是以前，光标从笔记跑到程序坞打开表格，把文字搬过去，到菜单栏里找「分列」，再把结果带回笔记，一共四步；右边是现在，在笔记里选中三行，光标旁点「整理成表格」，表格就在原处，一步，做完时左边还在路上。',
 };
 
-/** 由近到远的三层：同一场秋日市集，在三层里接着处理（Folio 版「三层接力」，示例活动） */
-export const layers = {
-  kicker: '由近到远的三层',
-  title: '离你越近，打扰越少。',
-  mark: '打扰越少',
+/** 眼前的小事：4.2 开头那句里的三件事，正好落在由近到远的三层（光标旁、身旁、离开以后），也是一天里的早上、午后、傍晚 */
+export const cases = {
+  /** 原句 */
+  title: small.title,
+  mark: '就在手边处理',
+  lead: '一步能做完的，留在光标旁；要你看一眼的，在身旁展开；要等的，收进「接续」，回来再接着做。',
+  /** 原句：「正在打磨」从这里来 */
+  wip: chain.paragraphs[1],
+  wipTag: '正在打磨',
+  note: '界面示意 · 示例数据',
   near: {
-    name: '光标旁',
-    text: '选区末端出现 1 到 3 个动作。',
-    eyebrow: '正在读一则活动通知',
-    before: '周日 ',
-    mark: '10 月 26 日下午两点',
-    after: '，',
-    line: '秋日市集在滨江公园东门草坪开市。',
-    chips: [
-      { label: '整理成日程', tone: 'apricot' },
+    layer: '光标旁',
+    /** 一天里的什么时候（屏幕的壁纸） */
+    time: '早上',
+    /** 原句的一截 */
+    moment: readText,
+    result: '一步做完，结果留在原处。',
+    tone: 'butter' as Tone,
+    wall: 'morning' as Wall,
+    clock: '周五 09:12',
+    app: '笔记',
+    menus: ['文件', '编辑', '格式', '显示', '窗口'],
+    list: [
+      ['周会', '09:10'],
+      ['三家报价', '08:52'],
+      ['读书摘记', '周一'],
+    ],
+    title: '周会',
+    meta: '10月24日 周五 09:10',
+    before: '从群里转来的通知：',
+    /** 格式乱掉的一句：片段之间多出来的空格，清理时收拢 */
+    messy: ['会议改到', '周四', '下午三点，', '地点：', '二楼小会议室'],
+    after: '记得带上季度的数字。',
+    actions: [
+      { label: '清理格式', tone: 'butter' },
       { label: '翻译', tone: 'sky' },
-    ] as { label: string; tone: Tone }[],
-    result: '已记下 · 10/26 周日 14:00',
-    undo: '撤回',
+      { label: '复制纯文本', tone: 'rose' },
+    ] as Chip[],
+    done: '已清理 · 本机',
   },
   beside: {
-    name: '身旁',
-    text: '需要核对时，在旁边展开一张小卡。',
-    eyebrow: '框住一张海报',
-    poster: { day: '26', month: 'OCT', title: ['秋日', '市集'] },
+    layer: '身旁',
+    time: '午后',
+    /** 原句的一截 */
+    moment: getPdf,
+    result: '在旁边挑页，另存一份，原件不动。',
+    tone: 'sky' as Tone,
+    wall: 'noon' as Wall,
+    clock: '周五 14:30',
+    app: '文件',
+    menus: ['文件', '编辑', '显示', '前往', '窗口'],
+    folder: '下载',
+    files: [
+      { name: '报价.pdf', kind: 'pdf' },
+      { name: '访谈.m4a', kind: 'audio' },
+      { name: '封面.png', kind: 'image' },
+      { name: '合同.docx', kind: 'doc' },
+    ] as { name: string; kind: 'pdf' | 'audio' | 'image' | 'doc' }[],
+    actions: [
+      { label: '取出几页', tone: 'sky' },
+      { label: '压缩', tone: 'sage' },
+    ] as Chip[],
+    card: '取出几页',
+    /** 报价.pdf 的六页：每页的小标题和几行字（缩略图里的样子） */
+    pages: [
+      ['报价单', '致：滨江社区', '2026 年 10 月'],
+      ['一、印刷', '单价 2.40 元', '数量 5000 份'],
+      ['二、装订', '骑马钉', '单价 0.35 元'],
+      ['三、运输', '市内送货', '两个工作日'],
+      ['付款方式', '预付 30%', '验收后结清'],
+      ['附：纸样', '120 克哑粉', '封面 250 克'],
+    ],
+    picked: [1, 2, 3],
+    range: '第 2–4 页 · 3 页',
+    save: '另存一份',
+    cancel: '取消',
+    copy: '报价（第 2–4 页）.pdf',
+    done: '已另存 · 原件不动',
+  },
+  later: {
+    layer: '离开以后',
+    time: '傍晚',
+    /** 原句的一截 */
+    moment: seeEvent,
+    /** 原句 */
+    result: later.title,
+    tone: 'apricot' as Tone,
+    wall: 'dusk' as Wall,
+    clock: '周五 18:40',
+    clockLater: '周五 19:05',
+    app: '邮件',
+    menus: ['文件', '编辑', '显示', '邮箱', '信息'],
+    from: '滨江社区',
+    subject: '秋日市集，这周日开市',
+    to: '收件人：我',
+    hello: '大家好：',
+    select: '10 月 26 日（周日）下午两点',
+    rest: '，秋日市集在滨江公园东门草坪开市。',
+    tail: '带上自己的杯子；有手作、旧书和一支乐队。',
+    actions: [
+      { label: '整理成日程', tone: 'apricot' },
+      { label: '翻译', tone: 'sky' },
+    ] as Chip[],
     card: '日程草稿',
     fields: [
       ['标题', '秋日市集'],
-      ['时间', '周日 14:00—17:00'],
-      ['地点', '滨江公园东门'],
+      ['时间', '10/26 周日 14:00'],
+      ['地点', '滨江公园东门草坪'],
     ],
-    source: '来自海报的这一块',
-    actions: ['确认', '改一下'],
-  },
-  later: {
-    name: '离开以后',
-    /** 原句 */
-    text: later.title,
-    eyebrow: '过了一会儿，在别处',
-    clock: '16:30',
+    stowed: '收进接续',
     panel: '接续',
     rows: [
-      { name: '秋日市集 · 日程草稿', meta: '等你确认 · 来自海报' },
-      { name: '已记下 · 10/26 14:00', meta: '来自活动通知' },
-    ],
+      {
+        name: '秋日市集 · 日程草稿',
+        meta: '等你确认 · 来自邮件',
+        tone: 'apricot',
+      },
+      {
+        name: '会议改到周四下午三点…',
+        meta: '09:12 · 已清理 · 来自笔记',
+        tone: 'butter',
+      },
+      {
+        name: '报价（第 2–4 页）.pdf',
+        meta: '14:30 · 副本 · 原件不动',
+        tone: 'sky',
+      },
+    ] as { name: string; meta: string; tone: Tone }[],
+    confirm: '确认',
+    edit: '改一下',
     back: '回到你离开的地方',
     /** 访客在这一页用过动作条的话，排在最上面（只在当前标签页的内存里） */
     mine: '刚才',
     mineFrom: '来自这一页',
   },
-  note: '界面示意 · 示例活动',
-  label:
-    '示意：同一场秋日市集在三层里接着处理。光标旁，选中日期，点「整理成日程」，当场记下；身旁，框住海报，旁边展开一张日程草稿，逐项核对；离开以后，从菜单栏的「接续」找回草稿，回到离开的地方。',
 };
 
-/** 眼前的小事：六件，每件一张小样品（4.2 里写到的能力与正在打磨的场景）。
- * action 是光标旁那个动作的名字，done 是做完以后画面上留下的一句（示意，新写） */
-export const moments = {
-  kicker: '一天里的几个时刻',
-  /** 原句 */
-  title: small.title,
-  mark: '就在手边处理',
-  lead: tool.opening[0],
-  /** 原句：「正在打磨」三个字从这里来 */
-  wip: chain.paragraphs[1],
-  tags: { local: '本机', ai: 'AI', wip: '正在打磨' },
-  clean: {
-    title: '清理格式',
-    kind: 'local',
-    tone: 'butter',
-    messy: ['报名截止', '周五', '晚上八点，', '名额 30 人'],
-    action: '清理格式',
-    done: '已清理 · 本机',
-  },
-  pages: {
-    title: '取出 PDF 里的几页',
-    kind: 'local',
-    tone: 'sky',
-    file: '报价.pdf',
-    copy: '第 2–4 页',
-    action: '取出这几页',
-    done: '已取出 3 页 · 原件保留',
-  },
-  table: {
-    title: '整理成表格，再比较',
-    kind: 'local',
-    tone: 'sage',
-    text: ['甲：2.40 元 × 5000', '乙：2.15 元 × 5000', '丙：2.60 元 × 3000'],
-    head: ['', '单价', '数量'],
-    rows: [
-      ['甲', '2.40', '5000'],
-      ['乙', '2.15', '5000'],
-      ['丙', '2.60', '3000'],
-    ],
-    action: '整理成表格',
-    done: '已整理 · 按单价排序',
-  },
-  caption: {
-    title: '给图片写一句说明',
-    kind: 'ai',
-    tone: 'rose',
-    text: '白墙上，一道午后的天光。',
-    action: '写一句说明',
-    done: '已写好 · AI',
-  },
-  poster: {
-    title: '海报变日程草稿',
-    kind: 'wip',
-    tone: 'apricot',
-    flyer: { day: 'SAT', title: ['工作坊', '开放日'] },
-    card: '日程草稿',
-    fields: [
-      ['时间', '周六 15:00'],
-      ['地点', '老厂房 2 号馆'],
-    ],
-    action: '整理成日程',
-    done: '草稿等你确认',
-  },
-  todo: {
-    title: '讨论整理成待办',
-    kind: 'wip',
-    tone: 'lilac',
-    chat: ['发布页周五前改好，我来补文案。', '好，周五上线。'],
-    items: ['周五前改好发布页', '补文案'],
-    card: '待办',
-    action: '整理成待办',
-    done: '2 条待办 · 等你确认',
-  },
-  note: '界面示意 · 示例数据',
-} as const;
-
-/** 插件就是能力：登记一次，光标旁、右键、拖放、命令条同时出现（Folio 版，出自 molis-tool 插件协议，待负责人确认） */
+/** 插件就是能力：开关一开，光标旁、右键、拖放、命令条同时出现（Folio 版，出自 molis-tool 插件协议，待负责人确认） */
 export const plugins = {
-  kicker: '插件就是能力',
   title: '登记一次，处处可用。',
   mark: '处处可用',
-  facts: [
-    {
-      title: '插件写下能做什么，不画界面',
-      text: '接受什么、产出什么、在本机还是联网跑。参数面板和结果样式由 Molis Tool 统一生成。',
-    },
-    {
-      title: '登记一次，各处都在',
-      text: '光标旁、右键、拖放和命令条同时出现；停用时一处生效，处处消失。',
-    },
-    {
-      title: '结果也是对象',
-      text: '生成的字幕可以直接交给翻译，两个插件不需要知道彼此；停用之后，做好的结果还在。',
-    },
+  lead: '插件只写下能做什么：接受什么、产出什么、在本机还是联网跑。入口和界面，由 Molis Tool 统一生成。',
+  points: [
+    '一处开关，光标旁、右键、拖放和命令条同时生效。',
+    '生成的结果也是材料，可以直接交给下一个能力。',
+    '停用以后，入口一起收起；做好的结果还在。',
   ],
+  wall: 'dusk' as Wall,
+  clock: '周五 19:20',
+  app: 'Molis Tool',
+  menus: ['文件', '编辑', '窗口'],
   name: '生成字幕',
-  kind: '插件',
-  spec: [
-    ['接受', '音频、视频'],
-    ['产出', '带时间的文字'],
-    ['运行', '本机 · 不用 AI'],
+  tone: 'lilac' as Tone,
+  settings: '插件',
+  list: [
+    {
+      name: '生成字幕',
+      spec: '音频、视频 → 带时间的文字 · 本机',
+      tone: 'lilac',
+    },
+    { name: '翻译', spec: '文字 → 文字 · AI', tone: 'sky' },
+    { name: '清理格式', spec: '文字 → 文字 · 本机', tone: 'butter' },
+  ] as { name: string; spec: string; tone: Tone }[],
+  folder: '下载',
+  /** 文件夹列表的表头和每个文件的大小（示例数据） */
+  columns: ['名称', '大小'],
+  files: [
+    ['访谈.m4a', '18.4 MB'],
+    ['封面.png', '2.1 MB'],
+    ['发布会.mov', '312 MB'],
   ],
-  surfaces: {
-    near: { label: '光标旁', others: ['翻译'] },
-    menu: { label: '右键', others: ['打开方式', '共享'] },
-    drop: { label: '拖放', hint: '拖到这里' },
-    bar: { label: '命令条', query: '字幕', where: '本机' },
-  },
-  chain: ['访谈.m4a', '字幕.srt', '字幕 · 英文.srt'],
-  next: '翻译',
-  kept: '停用后，入口一起收起；做好的字幕还在。',
+  made: ['访谈.srt', '12 KB'],
+  surfaces: ['光标旁', '右键', '拖放', '命令条'],
+  near: ['转换格式'],
+  menu: ['打开', '打开方式'],
+  drop: '拖到这里',
+  query: '字幕',
+  where: '本机',
   note: '界面示意 · 协议里的例子',
   label:
-    '示意：「生成字幕」插件只声明接受音频视频、产出带时间的文字。启用后，它同时出现在光标旁、右键、拖放和命令条；生成的字幕可以直接交给已有的翻译；停用后各处入口一起收起，做好的字幕保留。',
+    '示意：「生成字幕」插件只声明接受音频视频、产出带时间的文字。打开开关，它同时出现在光标旁、右键菜单、拖放和命令条；点一下生成访谈.srt；关上开关，各处入口一起收起，做好的字幕还在。',
 };
 
 /** 分寸：工具出现多久，由你当下的需要决定 */
 export const measure = {
-  kicker: '分寸',
   /** 原句 */
   title: later.paragraphs[1],
   mark: '你当下的需要',
@@ -246,7 +308,6 @@ export const measure = {
     items: [
       ['默认安静', '没有信号就不出现。'],
       ['只提议，不代劳', '决定在你手里。'],
-      ['结果带着出处', '回得到原文。'],
       /** 后一句是原句 */
       ['没有 AI 也能用', small.paragraphs[1]],
     ],
@@ -256,14 +317,9 @@ export const measure = {
     /** 出自 molis-tool 设计纲领「它不是什么」，待负责人确认 */
     items: [
       '猜你想干什么、主动打断你的助手。',
-      '又一个聊天窗口。',
       '常驻录屏、记住一切的后台。',
       '替你点按钮、代你发送的 Agent。',
     ],
-  },
-  photo: {
-    alt: '白墙高处一扇玻璃天窗，阳光把窗格的影子斜斜印在墙上。',
-    caption: 'Light through a skylight',
   },
 };
 
@@ -297,7 +353,7 @@ export const selectTry = {
   },
 };
 
-/** 当前进展：摘自 4.2「当前进展」原句 */
+/** 当前进展：摘自 4.2「当前进展」原句。页面上只用最后一句（收尾那屏）；「已有 / 还没有」负责人 2026-10-24 拿掉了 */
 export const toolProgress = {
   have: [
     'Molis Tool 已有 Mac 开发版本，以及文字、文件、PDF、表格等本机处理能力。',
@@ -306,26 +362,9 @@ export const toolProgress = {
     '跨应用交互、真实 AI 和系统服务仍在整合与验证，尚未公开提供安装包。',
     '它按独立产品推进，也计划成为 Molis Work 的基础能力，具体接入范围与时间尚未确定。',
   ],
-  /** 「已有 / 还没有」块：上面两句原句拆成的词 */
-  blocks: {
-    have: ['Mac 开发版本', '文字、文件、PDF、表格等本机处理能力'],
-    notYet: ['跨应用交互', '真实 AI', '系统服务', '公开安装包'],
-  },
-  /** 附录 A 原句 */
-  siblings:
-    'DropAgent 和牛来都已有独立桌面应用，材料处理、Agent 动态与提醒的部分场景，也在 Molis Tool 中继续完善。',
 };
 
 export const toolGo = {
   follow: '关注 Molis Tool 的进展',
   work: '看看 Molis Work',
-  community: '先在社区试试 DropAgent 和牛来',
-  /** 新写 */
-  now: 'Molis Tool 现在还不能下载。',
-  have: '已经有的',
-  notYet: '还没有的',
-  original: '展开看原文',
-  relation: '和 Molis Work',
-  relationTag: '计划中 · 范围与时间未定',
-  tryNow: '现在怎么体验',
 };
