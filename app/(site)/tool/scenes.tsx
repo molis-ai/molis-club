@@ -519,7 +519,7 @@ export function Later() {
 export function PlugScreen() {
   const name = plugins.name;
   const cover = String(mediaOf('tool-light').srcset[0][0]);
-  const kinds = ['audio', 'video', 'image'] as const;
+  const kinds = ['audio', 'image', 'video'] as const;
   return (
     <Screen
       className="tl-s-plug"
@@ -566,7 +566,12 @@ export function PlugScreen() {
 
         <Win className="tl-fin-win" title={plugins.folder}>
           <span className="tl-rows">
-            {plugins.files.map((file, index) => (
+            <span className="tl-rows-head">
+              {plugins.columns.map((column) => (
+                <span key={column}>{column}</span>
+              ))}
+            </span>
+            {plugins.files.map(([file, size], index) => (
               <span
                 key={file}
                 className="tl-file-row"
@@ -595,7 +600,8 @@ export function PlugScreen() {
                     </span>
                   </span>
                 ) : null}
-                {index === 1 ? (
+                <small>{size}</small>
+                {index === 2 ? (
                   <span className="tl-context">
                     {plugins.menu.map((item) => (
                       <span key={item}>{item}</span>
@@ -610,7 +616,8 @@ export function PlugScreen() {
             ))}
             <span className="tl-file-row tl-made">
               <FileIcon kind="doc" />
-              <span>{plugins.made}</span>
+              <span>{plugins.made[0]}</span>
+              <small>{plugins.made[1]}</small>
             </span>
           </span>
         </Win>
