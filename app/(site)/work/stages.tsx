@@ -9,10 +9,11 @@ import {
   useState,
   type KeyboardEvent,
   type ReactNode,
+  type RefObject,
 } from 'react';
 import { workTour, workWeekend } from '../../../content/site/work';
-import { useCue, useOnScreen, useStill } from '../../_site/cue';
-import { Note, type Vars } from '../../_site/ui';
+import { Cue, useCue, useOnScreen, useStill } from '../../_site/cue';
+import { Note, Phrases, type Vars } from '../../_site/ui';
 import {
   DoneArt,
   HeroArt,
@@ -23,10 +24,10 @@ import {
   ToolArt,
   TourArt,
 } from './scenes';
-import { heroScene, momentScenes, tourScenes } from './scripts';
+import { heroScene, momentBeats, momentScenes, tourScenes, type Beat } from './scripts';
 
 // Work 页会动的三块：首屏（一个早上，循环）、全景（七段，按时间一段段走，也能点着跳）、
-// 一个周末（画廊：宽屏钉住，滚到哪个时刻换到哪个；窄屏点着换）。都只在视口里、页面在前台、没按暂停时演；
+// 一个周末（画廊：宽屏钉住，滚到哪个时刻换到哪个，每个时刻里再按滚动一拍一拍走；窄屏点着换，按时间演）。都只在视口里、页面在前台、没按暂停时演；
 // 减少动态时停在做完的样子；没有 JS 时首屏和周末停在做完的样子，全景停在第一段。
 
 const NOTE = '界面示意 · 示例数据';
@@ -177,7 +178,7 @@ export function Tour({ head }: { head: ReactNode }) {
             {chapter.title}
           </h3>
           <p className="wk-tour-line" key={`l-${active}`}>
-            {chapter.text}
+            <Phrases text={chapter.text} />
           </p>
         </div>
       </div>
@@ -255,6 +256,79 @@ const ARTS = {
   done: DoneArt,
 };
 
+/** 按滚动分拍的时刻：往下滚到第几拍，就先摆成上一拍、再演这一拍；刚换过来或往回滚，直接摆成那一拍的样子 */
+function useBeats(
+  ref: RefObject<HTMLElement | null>,
+  beats: Beat[] | undefined,
+  { beat, live, still, active }: { beat: number; live: boolean; still: boolean; active: boolean },
+) {
+  const cue = useRef<Cue | null>(null);
+  const shown = useRef(-1);
+  // 上一拍演完了，停在它该停的样子（光标也还在原处）：往下一拍时直接接着演，不重摆
+  const settled = useRef(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || !beats) return;
+    const director = new Cue(node, { play: async () => {} });
+    cue.current = director;
+    shown.current = -1;
+    settled.current = false;
+    return () => {
+      director.finish();
+      cue.current = null;
+    };
+  }, [ref, beats]);
+
+  useEffect(() => {
+    const director = cue.current;
+    if (!director || !beats) return;
+    director.quiet = still;
+    if (still || !active) {
+      if (still) director.finish();
+      else director.pause();
+      shown.current = -1;
+      settled.current = false;
+      return;
+    }
+    const from = shown.current;
+    if (beat === from) return;
+    shown.current = beat;
+    const next = settled.current && beat === from + 1;
+    settled.current = false;
+    const pose = (c: Cue, upto: number) => {
+      c.unflag();
+      c.stage.querySelectorAll<HTMLElement>('[data-hand]').forEach((hand) => {
+        delete hand.dataset.on;
+        delete hand.dataset.shape;
+      });
+      beats.slice(0, upto + 1).forEach((step) => step.mark?.(c));
+    };
+    const play = beats[beat]?.play;
+    // 往下滚、没按暂停：演这一拍；往回滚、暂停着：直接摆上（CSS 过渡自己倒回去）。
+    // 刚换到这个时刻时不带过渡地摆，淡入的时候已经是这一拍的样子
+    if (play && live && from >= 0 && beat > from)
+      director.act(async (c) => {
+        if (!next) pose(c, beat - 1);
+        await play(c);
+        settled.current = true;
+      });
+    else
+      director.act((c) => {
+        if (from < 0) c.snap(() => pose(c, beat));
+        else pose(c, beat);
+        settled.current = true;
+      });
+  }, [beats, beat, live, still, active]);
+
+  useEffect(() => {
+    const director = cue.current;
+    if (!director || shown.current < 0) return;
+    if (live && active && !still) director.play();
+    else director.pause();
+  }, [beats, live, active, still, beat]);
+}
+
 function Moment({
   id,
   label,
@@ -262,6 +336,8 @@ function Moment({
   live,
   still,
   round,
+  beat,
+  pinned,
 }: {
   id: keyof typeof ARTS;
   label: string;
@@ -269,9 +345,13 @@ function Moment({
   live: boolean;
   still: boolean;
   round: number;
+  beat: number;
+  pinned: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  useCue(ref, momentScenes[id], { live, still, active, round });
+  const beats = pinned ? momentBeats[id] : undefined;
+  useCue(ref, beats ? undefined : momentScenes[id], { live, still, active, round });
+  useBeats(ref, beats, { beat, live, still, active });
   const Art = ARTS[id];
   return (
     <div className="wk-moment" data-on={active || undefined}>
@@ -285,21 +365,30 @@ function Moment({
 
 const PIN = '(min-width: 901px) and (min-height: 620px)';
 
+// 钉住时每一拍占多长的滚动（单位 svh），大约四分之一屏；一个时刻几拍就几段
+const BEAT_SPAN = 26;
+const SPANS = workWeekend.moments.map((moment) => momentBeats[moment.id].length * BEAT_SPAN);
+const STARTS = SPANS.map((_, index) => SPANS.slice(0, index).reduce((sum, span) => sum + span, 0));
+const TOTAL = SPANS.reduce((sum, span) => sum + span, 0);
+
 export function Weekend({ head }: { head: ReactNode }) {
   const { moments } = workWeekend;
   const root = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
+  const list = useRef<HTMLDivElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const still = useStill();
   const shown = useOnScreen(stage);
   const [paused, setPaused] = useState(false);
   const [active, setActive] = useState(0);
+  const [beat, setBeat] = useState(0);
+  const [pinned, setPinned] = useState(false);
   const [round, setRound] = useState(0);
   const lock = useRef<number | null>(null);
   const unlock = useRef(0);
   const count = moments.length;
 
-  // 宽屏钉住：滚过的距离一个时刻一个时刻地换（原生滚动，倒回去也行）
+  // 宽屏钉住：滚过的距离一个时刻一个时刻地换，分拍的时刻里再一拍一拍地走（原生滚动，倒回去也行）
   useEffect(() => {
     const node = root.current;
     if (!node) return;
@@ -307,17 +396,19 @@ export function Weekend({ head }: { head: ReactNode }) {
     let frame = 0;
     const read = () => {
       frame = 0;
+      setPinned(media.matches);
       if (!media.matches) return;
       const rect = node.getBoundingClientRect();
       const span = rect.height - window.innerHeight;
       if (span <= 0) return;
-      const progress = Math.min(0.9999, Math.max(0, -rect.top / span));
-      const at = Math.floor(progress * count);
+      const at = Math.min(0.9999, Math.max(0, -rect.top / span)) * TOTAL;
+      const index = STARTS.findLastIndex((start) => start <= at);
       if (lock.current !== null) {
-        if (at !== lock.current) return;
+        if (index !== lock.current) return;
         lock.current = null;
       }
-      setActive(at);
+      setActive(index);
+      setBeat(Math.min(momentBeats[moments[index].id].length - 1, Math.floor((at - STARTS[index]) / BEAT_SPAN)));
     };
     const request = () => {
       if (!frame) frame = requestAnimationFrame(read);
@@ -333,12 +424,29 @@ export function Weekend({ head }: { head: ReactNode }) {
       window.removeEventListener('resize', request);
       window.clearTimeout(unlock.current);
     };
-  }, [count]);
+  }, [moments]);
+
+  // 左栏总高不随时刻变：当下这一行的说明比最长的那段短多少，列表底下就补多少，换时刻时左栏不上下跳
+  useLayoutEffect(() => {
+    const node = list.current;
+    if (!node) return;
+    const fit = () => {
+      const lines = Array.from(node.querySelectorAll<HTMLElement>('.wk-gal-more')).map(
+        (more) => more.scrollHeight - parseFloat(getComputedStyle(more).paddingTop),
+      );
+      node.style.setProperty('--rest', `${Math.max(...lines) - (lines[active] ?? 0)}px`);
+    };
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [active]);
 
   const go = (index: number) => {
     const node = root.current;
     if (index === active) setRound((value) => value + 1);
     setActive(index);
+    setBeat(0);
     if (!node) return;
     if (!matchMedia(PIN).matches) {
       stage.current?.scrollIntoView({ block: 'nearest', behavior: still ? 'auto' : 'smooth' });
@@ -352,8 +460,9 @@ export function Weekend({ head }: { head: ReactNode }) {
     unlock.current = window.setTimeout(() => {
       lock.current = null;
     }, 1200);
+    // 落在这个时刻的第 0 拍，从头往下滚
     window.scrollTo({
-      top: window.scrollY + rect.top + (span * (index + 0.5)) / count,
+      top: window.scrollY + rect.top + (span * (STARTS[index] + BEAT_SPAN / 2)) / TOTAL,
       behavior: still ? 'auto' : 'smooth',
     });
   };
@@ -368,12 +477,12 @@ export function Weekend({ head }: { head: ReactNode }) {
   };
 
   return (
-    <div ref={root} className="wk-gal" style={{ '--count': count } as Vars}>
+    <div ref={root} className="wk-gal" style={{ '--span': TOTAL } as Vars}>
       <div className="wk-gal-pin">
         <div className="m-wrap wk-gal-grid">
           <div className="wk-gal-text">
             {head}
-            <div className="wk-gal-list" role="tablist" aria-label={workWeekend.label}>
+            <div ref={list} className="wk-gal-list" role="tablist" aria-label={workWeekend.label}>
               {moments.map((moment, index) => (
                 <Fragment key={moment.id}>
                   {index === 0 || moments[index - 1].day !== moment.day ? (
@@ -400,8 +509,12 @@ export function Weekend({ head }: { head: ReactNode }) {
                       <span className="sr-only">{moment.day} </span>
                       {moment.time}
                     </span>
-                    <span className="wk-gal-name">{moment.title}</span>
-                    <span className="wk-gal-more">{moment.text}</span>
+                    <span className="wk-gal-name">
+                      <Phrases text={moment.title} />
+                    </span>
+                    <span className="wk-gal-more">
+                      <Phrases text={moment.text} />
+                    </span>
                   </button>
                 </Fragment>
               ))}
@@ -424,6 +537,8 @@ export function Weekend({ head }: { head: ReactNode }) {
                   live={shown && !paused}
                   still={still}
                   round={index === active ? round : 0}
+                  beat={index === active ? beat : 0}
+                  pinned={pinned}
                 />
               ))}
             </div>

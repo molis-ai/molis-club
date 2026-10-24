@@ -33,7 +33,7 @@ function Head({
   id: string;
   kicker: string;
   title: string;
-  /** screen：和画面同一屏的小一号标题（全景、一个周末） */
+  /** screen：和画面同一屏的标题，眉题挨紧一点（全景、一个周末） */
   size?: 'screen';
   children?: ReactNode;
 }) {
@@ -69,7 +69,7 @@ export default function WorkPage() {
             {workHero.slogan}
           </p>
           <p className="wk-hero-what m-rise" style={{ '--delay': '240ms' } as Vars}>
-            {workHero.what}
+            <Phrases text={workHero.what} />
           </p>
           <p className="wk-hero-go m-rise" style={{ '--delay': '320ms' } as Vars}>
             <Btn href={contactHref('work')}>{workHero.go}</Btn>
@@ -102,7 +102,9 @@ export default function WorkPage() {
                     <Icon />
                   </p>
                   <h3>{row.title}</h3>
-                  <p className="wk-keep-text">{row.text}</p>
+                  <p className="wk-keep-text">
+                    <Phrases text={row.text} />
+                  </p>
                   {row.id === 'local' ? (
                     <p className="wk-keep-vis wk-keep-path" aria-hidden="true">
                       <span>~/Molis Work/划线卡片</span>
@@ -147,14 +149,18 @@ export default function WorkPage() {
               ))}
             </h2>
             <p className="wk-end-belief">{workEnd.belief}</p>
-            <p className="wk-end-text">{workEnd.beliefText}</p>
+            <p className="wk-end-text">
+              <Phrases text={workEnd.beliefText} />
+            </p>
           </div>
           <div className="wk-end-now">
             <div className="wk-now" data-reveal>
               <p className="wk-now-k">
                 <Status>{workEnd.dev.label}</Status>
               </p>
-              <p className="wk-now-text">{workEnd.dev.text}</p>
+              <p className="wk-now-text">
+                <Phrases text={workEnd.dev.text} />
+              </p>
               <p className="m-actions">
                 <Btn href={contactHref('work')}>{workEnd.dev.go}</Btn>
                 <More href={WORK_BUILD} external>
@@ -166,7 +172,9 @@ export default function WorkPage() {
               <p className="wk-now-k">
                 <Status>{workEnd.released.label}</Status>
               </p>
-              <p className="wk-now-text">{workEnd.released.text}</p>
+              <p className="wk-now-text">
+                <Phrases text={workEnd.released.text} />
+              </p>
               <p className="m-actions">
                 <More href={WORK_GITHUB} external>
                   {workEnd.released.go}

@@ -103,6 +103,14 @@ export class Cue {
     this.loop().catch(() => this.finish());
   }
 
+  /** 只演这一段，演完停在那里，不循环（滚动分拍：滚到哪一拍演哪一拍）；暂停、继续照常 */
+  act(part: (c: Cue) => Promise<void> | void) {
+    this.cancel();
+    this.stage.dataset.run = '';
+    this.live = true;
+    Promise.resolve(part(this)).catch(() => {});
+  }
+
   pause() {
     if (!this.live || this.frozen) return;
     this.frozen = true;
@@ -582,6 +590,7 @@ export function useCue(
     director.onEnd = end.current ? () => end.current?.() : null;
   });
 
+  // 剧本中途换了（宽窄切换时，分拍和按时演互相交接）也要重新摆好、开演，所以下面两段都跟着 scene
   useEffect(() => {
     const director = cue.current;
     if (!director) return;
@@ -590,14 +599,14 @@ export function useCue(
     else if (still) director.finish();
     else if (active) director.ready();
     else director.pause();
-  }, [hold, still, active, round]);
+  }, [scene, hold, still, active, round]);
 
   useEffect(() => {
     const director = cue.current;
     if (!director) return;
     if (live && active && !hold && !still) director.play();
     else director.pause();
-  }, [live, active, hold, still, round]);
+  }, [scene, live, active, hold, still, round]);
 }
 
 /** 减少动态：演示停在做完的样子（没有 JS 时也是这个样子，所以先当作 true） */

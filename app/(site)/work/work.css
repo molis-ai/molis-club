@@ -45,8 +45,7 @@
 }
 .wk-hero-what {
   max-width: 26em;
-  font-weight: 500;
-  line-height: 1.85;
+  font: 400 var(--t-lead) / 1.85 var(--sans);
   color: var(--ink-2);
 }
 .wk-hero-go {
@@ -101,18 +100,14 @@
   margin-bottom: clamp(32px, 6vh, 64px);
 }
 .wk-head-title {
-  font: 300 var(--t-h1) / 1.25 var(--sans);
+  font: 300 var(--t-h2) / 1.42 var(--sans);
   letter-spacing: 0.03em;
   font-feature-settings: 'palt' 1;
   text-wrap: balance;
 }
-/* 和画面同一屏的标题小一号：主角是下面那扇窗 */
+/* 和画面同一屏的标题：眉题和标题挨紧一点，把高度留给下面那扇窗 */
 .wk-head[data-size='screen'] {
   gap: 10px;
-}
-.wk-head[data-size='screen'] .wk-head-title {
-  font-size: clamp(24px, 2.2vw, 32px);
-  line-height: 1.4;
 }
 
 /* =====================================================================
@@ -157,7 +152,7 @@
   --a-red-soft: #fbecec;
   --a-cyan: #3d6f78;
   --a-hover: rgb(41 42 44 / 0.06);
-  --a-veil: rgb(238 239 239 / 0.7);
+  --a-veil: rgb(238 239 239 / 0.4);
   --a-shadow: 40 30 20;
   color: var(--a-ink);
 }
@@ -211,7 +206,7 @@
   --a-red-soft: #3a2024;
   --a-cyan: #86c0c7;
   --a-hover: rgb(240 239 237 / 0.08);
-  --a-veil: rgb(28 29 32 / 0.66);
+  --a-veil: rgb(28 29 32 / 0.4);
 }
 
 /* 标签：一个插件一组，组带插件的色相；当前那张是白的，带一根小下划线和关闭 */
@@ -1239,11 +1234,12 @@
 .wk-tour-frame[data-focus='float']:not([data-run]) .wk-hl {
   background-size: 100% 100%;
 }
+/* 选中后递过来的浮条：和回执一样浮在灰幕上面，聚光框只框那句话 */
 .wk-ctx {
   position: absolute;
   left: -0.4em;
   top: calc(100% + 0.5em);
-  z-index: 3;
+  z-index: 11;
   display: inline-flex;
   align-items: center;
   gap: 0.15em;
@@ -1271,8 +1267,10 @@
 .wk-ctx-more {
   color: var(--a-faint) !important;
 }
+/* 记成待办的回执：浮在灰幕上面 */
 .wk-toast {
   position: absolute;
+  z-index: 11;
   left: 50%;
   bottom: 1.4em;
   display: inline-flex;
@@ -1589,14 +1587,15 @@
 /* 七段的字和窗口左沿对齐 */
 .wk-tour-tabs {
   position: relative;
+  --pad: 10px;
   display: flex;
   flex-wrap: wrap;
   gap: 0 2px;
-  margin-left: -10px;
+  margin-left: calc(-1 * var(--pad));
 }
 .wk-tour-tab {
   position: relative;
-  padding: 6px 10px 10px;
+  padding: 6px var(--pad) 10px;
   border: 0;
   border-radius: 10px;
   background: none;
@@ -1611,8 +1610,8 @@
 .wk-tour-tab::after {
   content: '';
   position: absolute;
-  left: 10px;
-  right: 10px;
+  left: var(--pad);
+  right: var(--pad);
   bottom: 4px;
   height: 1.5px;
   border-radius: 1px;
@@ -1634,11 +1633,11 @@ html:not(.js) .wk-tour-tab[aria-selected='true']::after {
   position: absolute;
   left: 0;
   top: 0;
-  width: max(0px, calc(var(--iw, 0px) - 20px));
+  width: max(0px, calc(var(--iw, 0px) - 2 * var(--pad)));
   height: 1.5px;
   border-radius: 1px;
   background: var(--ink);
-  transform: translate(calc(var(--ix, 0px) + 10px), calc(var(--iy, 0px) - 5.5px));
+  transform: translate(calc(var(--ix, 0px) + var(--pad)), calc(var(--iy, 0px) - 5.5px));
   transition:
     transform 0.85s var(--ease),
     width 0.85s var(--ease);
@@ -1696,8 +1695,10 @@ html:not(.js) .wk-tour-tab[aria-selected='true']::after {
   column-gap: var(--col-gap);
   align-items: center;
 }
+/* 和窗口顶端对齐：当下那一行展开时，标题和上面几行不动 */
 .wk-gal-text {
   grid-column: 1 / span 4;
+  align-self: start;
   display: grid;
   gap: clamp(22px, 4.2vh, 44px);
 }
@@ -1874,7 +1875,7 @@ html:not(.js) .wk-tour-tab[aria-selected='true']::after {
     padding-block: 0;
   }
   .js .wk-gal {
-    height: calc(100svh + (var(--count) - 1) * 62svh);
+    height: calc(100svh + var(--span) * 1svh);
   }
   .js .wk-gal-pin {
     position: sticky;
@@ -1883,6 +1884,11 @@ html:not(.js) .wk-tour-tab[aria-selected='true']::after {
     align-content: center;
     min-height: 100svh;
     padding-block: calc(var(--header) + clamp(12px, 3vh, 48px)) clamp(24px, 5vh, 72px);
+  }
+  /* 钉住时整块居中：列表底下补上当下这行比最长那段少的高度，换时刻时左栏不上下跳 */
+  .js .wk-gal-list {
+    padding-bottom: var(--rest, 0px);
+    transition: padding-bottom 0.5s var(--ease);
   }
   .js .wk-gal-stage {
     max-height: calc(100svh - var(--header) - 150px);
@@ -3228,6 +3234,15 @@ html:not(.js) .wk-tour-tab[aria-selected='true']::after {
 /* =====================================================================
    留在你这儿
    ===================================================================== */
+/* 宽屏一屏一件事：三栏在顶栏以下的整屏里上下居中 */
+@media (min-width: 901px) and (min-height: 620px) {
+  .wk-keep-sec {
+    display: grid;
+    align-content: center;
+    min-height: 100svh;
+    padding-block: calc(var(--header) + 32px) 32px;
+  }
+}
 .wk-keep-rows {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3352,7 +3367,7 @@ html:not(.js) .wk-tour-tab[aria-selected='true']::after {
   gap: 18px;
 }
 .wk-end-origin {
-  font: 300 clamp(28px, 3.3vw, 50px) / 1.45 var(--sans);
+  font: 300 var(--t-h2) / 1.45 var(--sans);
   letter-spacing: 0.04em;
   font-feature-settings: 'palt' 1;
 }
@@ -3463,10 +3478,18 @@ html:not(.js) .wk-tour-tab[aria-selected='true']::after {
   }
 }
 
+/* 手机上七段排一行：每段两边的留白收窄 */
+@media (max-width: 520px) {
+  .wk-tour-tabs {
+    --pad: 5px;
+  }
+}
+
 /* 减少动态：演示停在做完的样子（编排不接管），过渡都关掉 */
 @media (prefers-reduced-motion: reduce) {
   .wk-scene *,
   .wk-moment,
+  .wk-gal-list,
   .wk-gal-tab,
   .wk-gal-tab::before,
   .wk-gal-tab::after,
