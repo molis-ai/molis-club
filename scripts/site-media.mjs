@@ -36,6 +36,14 @@ const images = [
     widths: [960, 1672],
     quality: 76,
   },
+  // 首页末屏：薄雾里的阿拉维山，草坡山脊上远远站着一个人（Unsplash · Marsumilae，负责人 2026-10-24 挑）
+  {
+    key: 'home-close',
+    src: 'public/images/r8/picks/unsplash-photo-1786897162869-b0ccd067affd-2400.jpg',
+    widths: [1280, 1920, 2400],
+    // 逆光的天几乎是一整片渐变，74 档会压出成块的竖条；90 档 2400 宽也只有一百来 KB
+    quality: 90,
+  },
   // 产品页的窗
   {
     key: 'work-studio',

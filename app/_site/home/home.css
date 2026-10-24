@@ -316,7 +316,6 @@ button.m-prow {
   }
 }
 
-
 /* =====================================================================
    结尾：纸面三卡，过渡句居中，企业合作 / 社区 / 关于我们三张白卡横排
    （画室影像 2026-10-22 挪去社区结尾；负责人 10-23 定了纸面三卡）
@@ -331,16 +330,42 @@ button.m-prow {
   --hair: rgb(35 32 28 / 0.12);
   --shade: 46 34 22;
   position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 100vh;
+  min-height: 100svh;
   background: var(--paper);
   color: var(--ink);
 }
+/* 照片铺满上部：天的上沿化进纸里（天的上部本来就近白），下沿是山脊下的暗草坡，齐边落到纸上。
+   人在横向约 34%、纵向约 51%：cover 的取景让天留够两行字，人和他脚下一截草坡留在画里。 */
+.m-close-sky {
+  position: relative;
+  overflow: hidden;
+  /* 载入前：上面是纸，往下渐到这张图的平均色 */
+  background: linear-gradient(var(--paper) 30%, var(--avg));
+}
+.m-close-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 50% 22%;
+  filter: var(--grade);
+  mask-image: linear-gradient(transparent, #000 clamp(96px, 18%, 200px));
+}
+.m-close-head {
+  position: relative;
+  padding-top: calc(var(--header) + clamp(20px, 6vh, 64px));
+  padding-bottom: 24vh;
+  text-align: center;
+}
 .m-close-in {
   display: grid;
-  align-content: center;
-  min-height: 100vh;
-  min-height: 100svh;
-  padding-block: calc(var(--header) + clamp(24px, 6vh, 72px))
-    clamp(56px, 11vh, 120px);
+  justify-items: center;
+  padding-block: clamp(24px, 4vh, 40px) clamp(40px, 7vh, 72px);
 }
 .m-close-lead {
   margin: 0;
@@ -351,12 +376,6 @@ button.m-prow {
 }
 .m-close-lead span {
   display: block;
-}
-.m-close-body {
-  display: grid;
-  justify-items: center;
-  gap: clamp(36px, 8vh, 80px);
-  text-align: center;
 }
 .m-close-doors {
   display: grid;
@@ -445,9 +464,23 @@ button.m-prow {
 }
 
 @media (max-width: 900px) {
-  .m-close-in {
+  .m-close {
+    grid-template-rows: auto auto;
     min-height: 0;
-    padding-block: clamp(72px, 12vh, 112px) 88px;
+  }
+  /* 竖屏按高裁：取左边一段，人在画面约四成宽的地方 */
+  .m-close-sky {
+    height: clamp(440px, 128vw, 620px);
+  }
+  .m-close-photo {
+    object-position: 29% 50%;
+  }
+  .m-close-head {
+    padding-top: clamp(72px, 20vw, 112px);
+    padding-bottom: 0;
+  }
+  .m-close-in {
+    padding-block: 16px 88px;
   }
   .m-close-doors {
     grid-template-columns: minmax(0, 1fr);

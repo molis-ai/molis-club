@@ -14,7 +14,7 @@ export const metadata = pageMetadata(
 
 // 首页四屏（第八轮的画面与结构，负责人 2026-10-15 重新配过）：
 // 首屏（天空，Molis AI）→ What we make（海边，We build {Warm}ware）→ 产品（纸页升起，左列表右舞台）
-// → 结尾（纸面三卡，过渡句与企业合作 / 社区 / 关于我们；画室影像 2026-10-22 挪去社区结尾）→ 页尾。
+// → 结尾（远山照片上一句过渡句，下面纸面三卡：企业合作 / 社区 / 关于我们；画室影像 2026-10-22 挪去社区结尾）→ 页尾。
 export default async function Home({
   searchParams,
 }: {
