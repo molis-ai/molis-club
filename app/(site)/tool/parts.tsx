@@ -48,11 +48,11 @@ export function Ico({ icon: Icon, tone }: { icon: LucideIcon; tone: Tone }) {
 
 /**
  * 示意光标：平时是白箭头描墨边，选字时换成 I 形。由编排脚本移动、按下；
- * 放在会裁边的那块画面里，从画框外进来时自然被裁掉。一块画面有几只时用 name 区分
+ * 放在会裁边的那块画面里，从画框外进来时自然被裁掉。并排几台时每台一只（cue.ts 按 data-side 找）
  */
-export function Cursor({ name = '' }: { name?: string }) {
+export function Cursor() {
   return (
-    <span className="tl-hand" data-hand={name} aria-hidden="true">
+    <span className="tl-hand" data-hand="" aria-hidden="true">
       <span className="tl-hand-in">
         <svg className="tl-hand-arrow" viewBox="0 0 16 20">
           <path

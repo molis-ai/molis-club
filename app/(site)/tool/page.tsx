@@ -15,7 +15,7 @@ import { Btn, More, type Vars } from '../../_site/ui';
 import { Desk, TryHint } from './hero';
 import { Beside, Later, Near, PlugScreen, ShiftScreen } from './scenes';
 import { SelectionBar } from './selection';
-import { Phase, Walk } from './walk';
+import { Walk } from './walk';
 import '../../_site/product/product.css';
 import './tool.css';
 
@@ -132,17 +132,16 @@ export default function ToolPage() {
                     />
                     <div className="tl-route">
                       <p data-k="before">
-                        <Phase name="was">{shift.before.label}</Phase>
+                        <b>{shift.before.label}</b>
                         {shift.before.text}
                       </p>
                       <p data-k="after">
-                        <Phase name="now">{shift.after.label}</Phase>
+                        <b>{shift.after.label}</b>
                         {shift.after.text}
                       </p>
                     </div>
                   </>
                 ),
-                phases: ['was', 'now'],
                 scene: {
                   cue: 'shift',
                   kind: 'tl-shift',

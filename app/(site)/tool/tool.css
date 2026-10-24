@@ -195,7 +195,8 @@
 /* =====================================================================
    一块 Mac 屏幕（mac.tsx）：圆角的屏幕、壁纸、毛玻璃菜单栏、窗口、程序坞
    ===================================================================== */
-.tl-mac {
+.tl-mac,
+.tl-twin-mac {
   --u: calc(100cqi / 86);
   position: relative;
   container-type: inline-size;
@@ -517,7 +518,7 @@
     .tl-swap,
     .tl-sheet-win,
     .tl-dropdown,
-    .tl-route p,
+    .tl-count,
     .tl-c3-win,
     .tl-icon[data-c='copy'],
     .tl-menubar-app,
@@ -539,6 +540,7 @@
     .tl-swap,
     .tl-sheet-win,
     .tl-dropdown,
+    .tl-count,
     .tl-c3-win,
     .tl-icon[data-c='copy'],
     .tl-menubar-app,
@@ -981,9 +983,10 @@
 }
 
 /* =====================================================================
-   以前与现在：同一块屏幕。老路——程序坞、表格、菜单栏、再回来；现在——原地一步。
-   两句原句在左边的字里，演到哪条路，哪一句亮着。「以前」「现在」能点（walk.tsx 的分拍）：
-   宽屏上两拍各占一屏，点了滚过去；窄屏上点了就只演那一拍
+   以前与现在：两台一样的 Mac，同一张笔记，同一刻开演（舞台里并排两台，窄屏上下叠）。
+   左边老路——程序坞、表格、菜单栏、再回来；右边原地一步；两台下面各记走了几步。
+   拍子（data-cue）是两台共用的一份，名字分开取（老路 sheet paste menu split back，现在 bar hover press table one），
+   两台都有的零件（笔记、表、步数）按 data-side 分开
    ===================================================================== */
 .tl-route {
   display: grid;
@@ -994,7 +997,6 @@
   font-size: 15.5px;
   line-height: 1.85;
   color: var(--ink-2);
-  transition: opacity 0.5s var(--ease);
 }
 .tl-route b {
   display: block;
@@ -1004,89 +1006,106 @@
   letter-spacing: 0.18em;
   color: var(--mute);
 }
-/* 连着演：跟着屏幕上演到的那条路 */
-.tl-walk:has(.tl-shift[data-run]) .tl-walk-text:not([data-phase]) .tl-route p,
-.tl-walk-text[data-phase] .tl-route p {
-  opacity: 0.32;
+
+/* 舞台不再是一块屏幕：并排两台，各有一个外框（同 .tl-mac），下面一行步数 */
+.tl-mac.tl-shift {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 1.8vw, 28px);
+  aspect-ratio: auto;
+  overflow: visible;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 }
-.tl-walk:has(.tl-shift[data-run][data-cue~='was']:not([data-cue~='now']))
-  .tl-walk-text:not([data-phase])
-  .tl-route
-  [data-k='before'],
-.tl-walk:has(.tl-shift[data-run][data-cue~='now'])
-  .tl-walk-text:not([data-phase])
-  .tl-route
-  [data-k='after'],
-.tl-walk-text[data-phase='was'] .tl-route [data-k='before'],
-.tl-walk-text[data-phase='now'] .tl-route [data-k='after'] {
-  opacity: 1;
+.tl-twin {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
 }
-/* 分拍：当下这一拍那句亮着；淡着的那句，指上去亮一点，整句都能点 */
-.tl-walk-text[data-phase] .tl-route p:has([aria-pressed='false']):hover {
-  opacity: 0.62;
+/* 一台小 Mac：--u 是宽的 1/50（和窄屏上的一块屏幕一样），里面按它摆，两台一个摆法 */
+.tl-twin-mac {
+  --u: calc(100cqi / 50);
+  aspect-ratio: 1;
 }
-.tl-route p:has(.tl-phase) {
-  position: relative;
-}
-.tl-phase {
-  all: unset;
-  box-sizing: border-box;
+
+/* 一台下面：以前 / 现在，走了几步。几个数叠在一处，跟着拍子换（只淡入淡出） */
+.tl-tally {
   display: flex;
-  align-items: center;
-  gap: 9px;
-  width: fit-content;
-  margin-bottom: 6px;
+  align-items: baseline;
+  gap: 14px;
+  padding-inline: 2px;
+  line-height: 1.5;
+}
+.tl-tally b {
   font-size: 12.5px;
   font-weight: 500;
   letter-spacing: 0.18em;
   color: var(--mute);
-  cursor: pointer;
-  transition: color 0.3s var(--ease);
 }
-.tl-phase::before {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px currentColor;
-  transition:
-    background-color 0.3s var(--ease),
-    box-shadow 0.3s var(--ease);
-}
-.tl-phase::after {
-  content: '';
-  position: absolute;
-  inset: -10px -14px;
-  border-radius: 12px;
-}
-.tl-phase[aria-pressed='true'] {
+.tl-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25em;
+  font-size: 15px;
   color: var(--ink);
 }
-.tl-phase[aria-pressed='true']::before {
-  background: var(--accent);
-  box-shadow: none;
+.tl-digits {
+  display: inline-grid;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
 }
-.tl-phase:focus-visible::after {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 2px;
+.tl-digits > i {
+  grid-area: 1 / 1;
+  font-style: normal;
+  text-align: center;
+  transition: opacity 0.35s var(--ease);
+}
+/* 做完了的样子是最后一个数（4 步、1 步）；编排时从 0 开始，老路每到一站加一，现在一步 */
+.tl-digits > i:not(:last-child),
+.tl-shift[data-run] .tl-digits > i {
+  opacity: 0;
+}
+.tl-shift[data-run]:not([data-cue~='sheet']) [data-side='was'] [data-n='0'],
+.tl-shift[data-run][data-cue~='sheet']:not([data-cue~='paste'])
+  [data-side='was']
+  [data-n='1'],
+.tl-shift[data-run][data-cue~='paste']:not(
+    [data-cue~='menu'],
+    [data-cue~='split']
+  )
+  [data-side='was']
+  [data-n='2'],
+.tl-shift[data-run]:is([data-cue~='menu'], [data-cue~='split']):not(
+    [data-cue~='back']
+  )
+  [data-side='was']
+  [data-n='3'],
+.tl-shift[data-run][data-cue~='back'] [data-side='was'] [data-n='4'],
+.tl-shift[data-run]:not([data-cue~='one']) [data-side='now'] [data-n='0'],
+.tl-shift[data-run][data-cue~='one'] [data-side='now'] [data-n='1'] {
+  opacity: 1;
 }
 
-/* 笔记窗在右，表格窗在左后方 */
+/* 两台一个摆法：笔记在左上；老路那台开表格时，表格窗从右边压上来；程序坞在底下 */
 .tl-notes-win {
-  top: 9%;
-  left: 47%;
-  width: 48%;
-  height: 64%;
+  top: calc(var(--u) * 4.4);
+  left: calc(var(--u) * 2);
+  width: calc(var(--u) * 38);
+  height: calc(var(--u) * 25.4);
   z-index: 2;
 }
 .tl-sheet-win {
-  top: 13%;
-  left: 4%;
-  width: 40%;
-  height: 50%;
+  top: calc(var(--u) * 13);
+  left: calc(var(--u) * 20);
+  width: calc(var(--u) * 28);
+  height: calc(var(--u) * 21);
   transition:
     opacity 0.5s var(--ease),
     translate 0.6s var(--ease);
+}
+.tl-s-shift .tl-note {
+  padding: calc(var(--u) * 1.8) calc(var(--u) * 2.4);
 }
 .tl-note-lines,
 .tl-table {
@@ -1122,7 +1141,7 @@
 .tl-tr > span {
   padding-left: calc(var(--u) * 0.6);
 }
-/* 基础样式：表格已经在笔记里；编排时先是三行字，带回来（老路）或一步（现在）以后换成表 */
+/* 基础样式：表格已经在笔记里；编排时先是三行字，老路那台带回来、现在那台一步以后换成表 */
 .tl-shift .tl-note-lines {
   opacity: 0;
 }
@@ -1132,12 +1151,12 @@
 .tl-shift[data-run] .tl-table {
   opacity: 0;
 }
-.tl-shift[data-run][data-cue~='back']:not([data-cue~='now']) .tl-table,
-.tl-shift[data-run][data-cue~='table'] .tl-table {
+.tl-shift[data-run][data-cue~='back'] [data-side='was'] .tl-table,
+.tl-shift[data-run][data-cue~='table'] [data-side='now'] .tl-table {
   opacity: 1;
 }
-.tl-shift[data-run][data-cue~='back']:not([data-cue~='now']) .tl-note-lines,
-.tl-shift[data-run][data-cue~='table'] .tl-note-lines {
+.tl-shift[data-run][data-cue~='back'] [data-side='was'] .tl-note-lines,
+.tl-shift[data-run][data-cue~='table'] [data-side='now'] .tl-note-lines {
   opacity: 0;
 }
 
@@ -1146,7 +1165,7 @@
   display: grid;
   flex: 1;
   grid-template-columns: calc(var(--u) * 2.6) repeat(4, minmax(0, 1fr));
-  grid-template-rows: calc(var(--u) * 2.1) repeat(6, minmax(0, 1fr));
+  grid-template-rows: calc(var(--u) * 2.1) repeat(5, minmax(0, 1fr));
   font-size: calc(var(--u) * 1.15);
 }
 .tl-grid > span {
@@ -1188,10 +1207,7 @@
 .tl-shift[data-cue~='paste']:not([data-cue~='split']) [data-c='cell'] {
   box-shadow: inset 0 0 0 calc(var(--u) * 0.18) var(--accent);
 }
-/* 基础样式：老路是背后一扇淡掉的窗；编排时开表格才出来，回到「现在」再淡下去 */
-.tl-shift .tl-sheet-win {
-  opacity: 0.42;
-}
+/* 基础样式：表格窗开着，在笔记后面；编排时开表格才出来，开着的时候在前，点回笔记以后退到后面 */
 .tl-shift[data-run] .tl-sheet-win {
   opacity: 0;
   translate: 0 calc(var(--u) * 1);
@@ -1200,15 +1216,11 @@
   opacity: 1;
   translate: none;
 }
-.tl-shift[data-run][data-cue~='now'] .tl-sheet-win {
-  opacity: 0.42;
-}
-/* 光标点回笔记时，笔记窗浮到前面；开着表格时表格在前 */
 .tl-shift[data-cue~='sheet']:not([data-cue~='back']) .tl-sheet-win {
   z-index: 3;
 }
 
-/* 菜单栏跟着当前的应用换：开表格以后是表格的菜单，点回笔记再换回来 */
+/* 菜单栏跟着当前的应用换：开表格以后是表格的菜单，点回笔记再换回来（只有老路那台有表格） */
 .tl-s-shift [data-app='sheet'] {
   display: none;
 }
@@ -1265,9 +1277,9 @@ span[data-app] {
     color 0s linear 0.8s;
 }
 
-/* 程序坞：开着的应用下面一个小点 */
+/* 程序坞：开着的应用下面一个小点（表格只在老路那台开过） */
 .tl-s-shift .tl-dock-app[data-c='dock-笔记']::after,
-.tl-s-shift .tl-dock-app[data-c='dock-表格']::after {
+[data-side='was'] .tl-dock-app[data-c='dock-表格']::after {
   opacity: 1;
 }
 .tl-shift[data-run]:not([data-cue~='sheet'])
@@ -1275,32 +1287,28 @@ span[data-app] {
   opacity: 0;
 }
 
-/* 四站和「一步」：老路上每到一站插一枚签；回到「现在」，老路的签淡下去 */
+/* 四站和「一步」：老路上每到一站插一枚签；「带回来」和「一步」插在两台的同一处——表换上来的地方 */
 .tl-s-shift .tl-pin[data-k='0'] {
   bottom: calc(var(--u) * 7.4);
-  left: calc(var(--u) * 50.8);
+  left: calc(var(--u) * 32.8);
   translate: -50% 0;
 }
 .tl-s-shift .tl-pin[data-k='1'] {
-  top: calc(var(--u) * 22.6);
-  left: calc(var(--u) * 7);
+  top: calc(var(--u) * 18.6);
+  left: calc(var(--u) * 35);
 }
 .tl-s-shift .tl-pin[data-k='2'] {
   top: calc(var(--u) * 4.2);
-  left: calc(var(--u) * 31.6);
+  left: calc(var(--u) * 32);
 }
-.tl-s-shift .tl-pin[data-k='3'] {
-  top: calc(var(--u) * 37.6);
-  left: calc(var(--u) * 43);
+.tl-s-shift .tl-pin[data-k='3'],
+.tl-s-shift .tl-pin[data-k='now'] {
+  top: calc(var(--u) * 9.4);
+  left: calc(var(--u) * 22);
 }
 .tl-s-shift .tl-pin[data-k='now'] {
-  top: calc(var(--u) * 30.6);
-  left: calc(var(--u) * 43.6);
   background: #1d1b18;
   color: #fff;
-}
-.tl-s-shift .tl-pin:not([data-k='now']) {
-  opacity: 0.5;
 }
 .tl-shift[data-run] .tl-pin {
   opacity: 0;
@@ -1323,9 +1331,6 @@ span[data-app] {
 .tl-shift[data-run][data-cue~='sheet'] .tl-pin[data-k='0'] {
   translate: -50% 0;
 }
-.tl-shift[data-run][data-cue~='now'] .tl-pin:not([data-k='now']) {
-  opacity: 0.45;
-}
 
 /* =====================================================================
    一长段（walk.tsx）：右边钉住一块屏幕，左边的字一段段滚过去，哪段压过中线就换成哪段的屏幕。
@@ -1346,7 +1351,7 @@ span[data-app] {
   font-size: var(--t-h2);
   line-height: 1.45;
 }
-.tl-walk-text .tl-head + .tl-route {
+.tl-walk-text > .tl-head + .tl-route {
   margin-top: clamp(24px, 4.4vh, 44px);
 }
 .tl-walk-fig {
@@ -1375,28 +1380,14 @@ span[data-app] {
     display: contents;
   }
   /* 每段字占一屏高，竖着居中；不是当下这段就淡下去 */
-  .js .tl-walk-text,
-  .js .tl-walk-text[data-span] > .tl-walk-hold {
+  .js .tl-walk-text {
+    grid-row: var(--row);
+    grid-column: 1 / span 4;
     display: grid;
     align-content: center;
     min-height: calc(100svh - var(--header));
     padding-block: clamp(32px, 6vh, 72px);
-  }
-  .js .tl-walk-text {
-    grid-row: var(--row) / span var(--span, 1);
-    grid-column: 1 / span 4;
     transition: opacity 0.6s var(--ease);
-  }
-  /* 分拍的一段占几屏高：字钉在顶栏下面不动，右边每滚一屏换一拍 */
-  .js .tl-walk-text[data-span] {
-    display: block;
-    align-content: normal;
-    min-height: calc((100svh - var(--header)) * var(--span));
-    padding-block: 0;
-  }
-  .js .tl-walk-text[data-span] > .tl-walk-hold {
-    position: sticky;
-    top: var(--header);
   }
   .js .tl-walk-text:not([data-on]) {
     opacity: 0.2;
@@ -2626,38 +2617,14 @@ span[data-app] {
     width: 84%;
   }
 
-  /* 以前与现在：笔记在上，表格从下面压上来 */
-  .tl-notes-win {
-    top: 7%;
-    left: 4%;
-    width: 92%;
-    height: 44%;
+  /* 以前与现在：两台上下叠，矮一点，再收窄到两台连同步数正好一屏，好一起看（太小的屏不再收，宁可滚一点） */
+  .tl-mac.tl-shift {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100%, max(280px, calc((100svh - var(--header) - 138px) / 1.8)));
+    margin-inline: auto;
   }
-  .tl-sheet-win {
-    top: 40%;
-    left: 4%;
-    width: 72%;
-    height: 38%;
-  }
-  .tl-s-shift .tl-pin[data-k='0'] {
-    bottom: calc(var(--u) * 7.4);
-    left: calc(var(--u) * 32);
-  }
-  .tl-s-shift .tl-pin[data-k='1'] {
-    top: calc(var(--u) * 42.5);
-    left: calc(var(--u) * 6);
-  }
-  .tl-s-shift .tl-pin[data-k='2'] {
-    top: calc(var(--u) * 4.2);
-    left: calc(var(--u) * 33);
-  }
-  .tl-s-shift .tl-pin[data-k='3'] {
-    top: calc(var(--u) * 34.4);
-    left: calc(var(--u) * 39);
-  }
-  .tl-s-shift .tl-pin[data-k='now'] {
-    top: calc(var(--u) * 30.2);
-    left: calc(var(--u) * 7.2);
+  .tl-twin-mac {
+    aspect-ratio: 10 / 9;
   }
 
   /* 眼前的小事：窗口铺满，小卡贴在下半截 */
@@ -2753,8 +2720,7 @@ span[data-app] {
   .tl-mark,
   .tl-walk-text,
   .tl-walk-fig,
-  .tl-mac *,
-  .tl-route p {
+  .tl-mac * {
     transition: none !important;
   }
 }

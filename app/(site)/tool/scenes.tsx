@@ -68,136 +68,189 @@ function Done({ text }: { text: string }) {
 // 以前与现在
 // ---------------------------------------------------------------------
 
-/**
- * 以前与现在（早上）：同一块屏幕，先看老路——光标从笔记跑到程序坞开表格、把字搬过去、到菜单栏找「分列」、再带回来，
- * 每到一站插一枚带序号的签；再看现在——原地选中，光标旁一步。左边两句原句，演到哪句亮哪句（tool.css 的 :has）
- */
-export function ShiftScreen() {
-  const { notes, sheet, after } = shift;
+/** 两台里同一张笔记：三行报价，表格在后面等着换上来；现在那台的最后一行末尾挂着动作条 */
+function QuoteNote({ chips = false }: { chips?: boolean }) {
+  const { notes, after } = shift;
   const last = notes.lines.length - 1;
   return (
-    <Screen
-      className="tl-s-shift"
-      wall={shift.wall}
-      sizes="(max-width: 900px) 100vw, 62vw"
-      app={
-        <>
-          <span data-app="notes">{notes.app}</span>
-          <span data-app="sheet">{sheet.app}</span>
-        </>
-      }
-      menus={
-        <>
-          <span className="tl-menus" data-app="notes">
-            <Menus items={notes.menus} />
+    <Win className="tl-notes-win" title={notes.title}>
+      <span className="tl-note" data-c="note">
+        <b className="tl-note-title">{notes.title}</b>
+        <small className="tl-note-meta">{notes.meta}</small>
+        <span className="tl-swap">
+          <span className="tl-note-lines">
+            {notes.lines.map((line, index) => (
+              <span key={line} className="tl-note-line">
+                <Hl c={`line-${index}`}>{line}</Hl>
+                {chips && index === last ? (
+                  <Chips
+                    c="after-btn"
+                    actions={after.actions}
+                    icons={[Table2, Copy]}
+                  />
+                ) : null}
+              </span>
+            ))}
           </span>
-          <span className="tl-menus" data-app="sheet">
-            {sheet.menus.map((menu) =>
-              menu === sheet.menu ? (
-                <span key={menu} className="tl-menu-at" data-c="menu">
-                  {menu}
-                  <span className="tl-dropdown">
-                    {sheet.items.map((item, index) => (
-                      <span
-                        key={item}
-                        data-c={index === sheet.pick ? 'pick' : undefined}
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </span>
-                </span>
-              ) : (
-                <span key={menu}>{menu}</span>
-              ),
-            )}
-          </span>
-        </>
-      }
-      clock={shift.clock}
-    >
-      <Win className="tl-sheet-win" title={sheet.title}>
-        <span className="tl-grid" data-c="grid">
-          <span data-corner="" />
-          {['A', 'B', 'C', 'D'].map((col) => (
-            <span key={col} data-col="">
-              {col}
-            </span>
-          ))}
-          {Array.from({ length: 6 }, (_, index) => {
-            const row = shift.rows[index];
-            return [
-              <span key={`n${index}`} data-num="">
-                {index + 1}
-              </span>,
-              ...Array.from({ length: 4 }, (_, col) => (
-                <span
-                  key={`${index}-${col}`}
-                  className="tl-cell"
-                  data-c={index === 0 && col === 0 ? 'cell' : undefined}
-                >
-                  {row && col === 0 ? (
-                    <span className="tl-raw">{notes.lines[index]}</span>
-                  ) : null}
-                  {row && col < 3 ? (
-                    <span className="tl-split">{row[col]}</span>
-                  ) : null}
-                </span>
-              )),
-            ];
-          })}
-        </span>
-      </Win>
-      <Dock apps={shift.dock} />
-      {shift.stops.map((stop, index) => (
-        <Pin key={stop} k={index} n={index + 1}>
-          {stop}
-        </Pin>
-      ))}
-      <Pin k="now">{after.stop}</Pin>
-
-      <Win className="tl-notes-win" title={notes.title}>
-        <span className="tl-note" data-c="note">
-          <b className="tl-note-title">{notes.title}</b>
-          <small className="tl-note-meta">{notes.meta}</small>
-          <span className="tl-swap">
-            <span className="tl-note-lines">
-              {notes.lines.map((line, index) => (
-                <span key={line} className="tl-note-line">
-                  <Hl c={`line-${index}`}>{line}</Hl>
-                  {index === last ? (
-                    <Chips
-                      c="after-btn"
-                      actions={after.actions}
-                      icons={[Table2, Copy]}
-                    />
-                  ) : null}
-                </span>
+          <span className="tl-table">
+            <span className="tl-tr" data-head="">
+              {shift.head.map((cell) => (
+                <span key={cell}>{cell}</span>
               ))}
             </span>
-            <span className="tl-table">
-              <span className="tl-tr" data-head="">
-                {shift.head.map((cell) => (
-                  <span key={cell}>{cell}</span>
+            {shift.rows.map((row, index) => (
+              <span
+                key={row[0]}
+                className="tl-tr"
+                style={{ '--n': index } as Vars}
+              >
+                {row.map((cell, cellIndex) => (
+                  <span key={cellIndex}>{cell}</span>
                 ))}
               </span>
-              {shift.rows.map((row, index) => (
-                <span
-                  key={row[0]}
-                  className="tl-tr"
-                  style={{ '--n': index } as Vars}
-                >
-                  {row.map((cell, cellIndex) => (
-                    <span key={cellIndex}>{cell}</span>
-                  ))}
-                </span>
-              ))}
-            </span>
+            ))}
           </span>
         </span>
-      </Win>
-      <Cursor />
-    </Screen>
+      </span>
+    </Win>
+  );
+}
+
+/** 一台下面的一行：以前 / 现在，走了几步。0 到 steps 叠在一处，tool.css 跟着拍子亮其中一个；做完了的样子亮最后一个 */
+function Tally({ label, steps }: { label: string; steps: number }) {
+  return (
+    <p className="tl-tally">
+      <b>{label}</b>
+      <span className="tl-count">
+        <span className="tl-digits">
+          {Array.from({ length: steps + 1 }, (_, n) => (
+            <i key={n} data-n={n}>
+              {n}
+            </i>
+          ))}
+        </span>
+        {shift.unit}
+      </span>
+    </p>
+  );
+}
+
+/**
+ * 以前与现在（早上）：两台一样的 Mac，同一张笔记，同一刻开演（各有一只光标，scripts.ts 两条线一起走）。
+ * 左边老路——光标跑到程序坞开表格、把字搬过去、到菜单栏找「分列」、再带回来，每到一站插一枚带序号的签；
+ * 右边原地选中，光标旁一步，做完就停在表上等左边。两台下面各记走了几步
+ */
+export function ShiftScreen() {
+  const { notes, sheet, before, after } = shift;
+  const sizes = '(max-width: 900px) 100vw, 31vw';
+  return (
+    <>
+      <div className="tl-twin" data-side="was">
+        <div className="tl-twin-mac">
+          <Screen
+            className="tl-s-shift"
+            wall={shift.wall}
+            sizes={sizes}
+            app={
+              <>
+                <span data-app="notes">{notes.app}</span>
+                <span data-app="sheet">{sheet.app}</span>
+              </>
+            }
+            menus={
+              <>
+                <span className="tl-menus" data-app="notes">
+                  <Menus items={notes.menus} />
+                </span>
+                <span className="tl-menus" data-app="sheet">
+                  {sheet.menus.map((menu) =>
+                    menu === sheet.menu ? (
+                      <span key={menu} className="tl-menu-at" data-c="menu">
+                        {menu}
+                        <span className="tl-dropdown">
+                          {sheet.items.map((item, index) => (
+                            <span
+                              key={item}
+                              data-c={index === sheet.pick ? 'pick' : undefined}
+                            >
+                              {item}
+                            </span>
+                          ))}
+                        </span>
+                      </span>
+                    ) : (
+                      <span key={menu}>{menu}</span>
+                    ),
+                  )}
+                </span>
+              </>
+            }
+            clock={shift.clock}
+          >
+            <Win className="tl-sheet-win" title={sheet.title}>
+              <span className="tl-grid" data-c="grid">
+                <span data-corner="" />
+                {['A', 'B', 'C', 'D'].map((col) => (
+                  <span key={col} data-col="">
+                    {col}
+                  </span>
+                ))}
+                {Array.from({ length: 5 }, (_, index) => {
+                  const row = shift.rows[index];
+                  return [
+                    <span key={`n${index}`} data-num="">
+                      {index + 1}
+                    </span>,
+                    ...Array.from({ length: 4 }, (_, col) => (
+                      <span
+                        key={`${index}-${col}`}
+                        className="tl-cell"
+                        data-c={index === 0 && col === 0 ? 'cell' : undefined}
+                      >
+                        {row && col === 0 ? (
+                          <span className="tl-raw">{notes.lines[index]}</span>
+                        ) : null}
+                        {row && col < 3 ? (
+                          <span className="tl-split">{row[col]}</span>
+                        ) : null}
+                      </span>
+                    )),
+                  ];
+                })}
+              </span>
+            </Win>
+            <Dock apps={shift.dock} />
+            {shift.stops.map((stop, index) => (
+              <Pin key={stop} k={index} n={index + 1}>
+                {stop}
+              </Pin>
+            ))}
+            <QuoteNote />
+            <Cursor />
+          </Screen>
+        </div>
+        <Tally label={before.label} steps={shift.stops.length} />
+      </div>
+
+      <div className="tl-twin" data-side="now">
+        <div className="tl-twin-mac">
+          <Screen
+            className="tl-s-shift"
+            wall={shift.wall}
+            sizes={sizes}
+            app={notes.app}
+            menus={<Menus items={notes.menus} />}
+            clock={shift.clock}
+          >
+            <Dock apps={shift.dock} />
+            <Pin k="now">{after.stop}</Pin>
+            <QuoteNote chips />
+            <Cursor />
+          </Screen>
+        </div>
+        <Tally label={after.label} steps={1} />
+      </div>
+    </>
   );
 }
 

@@ -8,6 +8,7 @@ import { scenes } from './scripts';
 // 被选中、被框住、被收拢的那几样各自带 data-sel / data-tidy / data-clean。
 // 没有 data-run 时就是「做完了」的样子：没有 JS、减少动态时停在那里。
 // 光标的弧线、按下由这里用 Web Animations 画；时钟能停（离开视口、切到后台、按了暂停），回来接着走。
+// 一个舞台里并排几台（data-side，以前与现在）时，每台各有一只光标、各走一条线（side），拍子和时钟是同一份。
 
 type Point = { x: number; y: number };
 type Target = string | Element | Point;
@@ -74,6 +75,8 @@ export class Cue {
   private flags: [HTMLElement, string][] = [];
   private spots = new Map<HTMLElement, Point>();
   private hand: HTMLElement | null = null;
+  /** 当下在哪一台上演：找零件只在这里面找；没有就是整个舞台 */
+  private scope: HTMLElement | null = null;
 
   constructor(
     readonly stage: HTMLElement,
@@ -157,13 +160,17 @@ export class Cue {
   }
 
   el(name: string) {
-    return this.stage.querySelector<HTMLElement>(`[data-c='${name}']`);
+    return (this.scope ?? this.stage).querySelector<HTMLElement>(
+      `[data-c='${name}']`,
+    );
   }
 
   /** 同一拍里的几样：b-0、b-1……按顺序 */
   all(prefix: string) {
     return Array.from(
-      this.stage.querySelectorAll<HTMLElement>(`[data-c^='${prefix}-']`),
+      (this.scope ?? this.stage).querySelectorAll<HTMLElement>(
+        `[data-c^='${prefix}-']`,
+      ),
     ).filter((node) => /^\d+$/.test(node.dataset.c!.slice(prefix.length + 1)));
   }
 
@@ -210,11 +217,31 @@ export class Cue {
     delete this.stage.dataset.snap;
   }
 
-  /** 接下来用哪只光标（一个舞台里几块屏幕，各有各的） */
-  use(name?: string) {
-    this.hand = this.stage.querySelector<HTMLElement>(
-      name ? `[data-hand='${name}']` : '[data-hand]',
+  /** 接下来在哪一台上演：用那一台的光标，零件也只在那一台里找；不给名字就是整个舞台和它的光标 */
+  use(side?: string) {
+    this.scope = side
+      ? this.stage.querySelector<HTMLElement>(`[data-side='${side}']`)
+      : null;
+    this.hand = (this.scope ?? this.stage).querySelector<HTMLElement>(
+      '[data-hand]',
     );
+  }
+
+  /**
+   * 并排的那几台同时演：每台一条线，各拿一份。这一份每做一步之前先换到自己那一台（use），
+   * 所以两条线交替着走也不会拿错光标；拍子（data-cue）、时钟、暂停还是同一份，一起停、一起从头
+   */
+  side(name: string): Cue {
+    return new Proxy(this, {
+      get: (cue, key) => {
+        const value: unknown = Reflect.get(cue, key);
+        if (typeof value !== 'function') return value;
+        return (...args: unknown[]) => {
+          cue.use(name);
+          return value.apply(cue, args);
+        };
+      },
+    });
   }
 
   /** 光标从画框外进来，落到目标上 */
@@ -517,7 +544,6 @@ export function useCue(
     };
   }, [ref, name]);
 
-  // 换了一段编排（name）也从头摆一遍
   useEffect(() => {
     const director = cue.current;
     if (!director) return;
@@ -526,12 +552,12 @@ export function useCue(
     else if (still) director.finish();
     else if (active) director.ready();
     else director.pause();
-  }, [name, hold, still, active, round]);
+  }, [hold, still, active, round]);
 
   useEffect(() => {
     const director = cue.current;
     if (!director) return;
     if (live && active && !hold && !still) director.play();
     else director.pause();
-  }, [name, live, active, hold, still, round]);
+  }, [live, active, hold, still, round]);
 }

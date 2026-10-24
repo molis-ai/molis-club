@@ -38,10 +38,8 @@ async function tidy(c: Cue, name: string, box?: string) {
 const streamed = (c: Cue, name: string) =>
   (c.el(name)?.textContent?.length ?? 0) * 32 + 500;
 
-/** 以前：选中三行，到程序坞开表格，贴进去，到菜单栏找「分列」，再带回笔记；每到一站插一枚带序号的签（1–4） */
+/** 以前（左边那台）：选中三行，到程序坞开表格，贴进去，到菜单栏找「分列」，再带回笔记；每到一站插一枚带序号的签，下面的步数跟着走（1–4） */
 async function was(c: Cue) {
-  c.use();
-  c.cue('was');
   await c.enter('line-0', { at: [0, 0.55] });
   await sweep(c, 'line');
   c.arrow();
@@ -60,15 +58,14 @@ async function was(c: Cue) {
     c.cue('split');
   });
   await c.wait(700);
-  await c.to('note', { at: [0.5, 0.62], dur: 1100, bend: 0.22 });
+  await c.to('note', { at: [0.3, 0.62], dur: 1100, bend: 0.22 });
   await c.press('back');
   await c.wait(1200);
   await c.leave();
 }
 
-/** 现在：同一处选中，光标旁一步，只有一枚「一步」 */
+/** 现在（右边那台）：同一处选中，光标旁一步，只有一枚「一步」；做完就停在表上，等左边那台走完 */
 async function now(c: Cue) {
-  c.use();
   await c.enter('line-0', { at: [0, 0.55] });
   await sweep(c, 'line');
   await pick(c, 'after-btn');
@@ -101,31 +98,12 @@ export const scenes: Record<string, Scene> = {
     },
   },
 
-  /**
-   * 以前与现在：只比路程，两拍。宽屏上每拍占一屏、各自循环（滚到哪拍演哪拍，左边的「以前 / 现在」也能点）；
-   * 不钉住的时候连着演，点了哪拍就只演哪拍
-   */
+  /** 以前与现在：只比路程。两台同一刻开始，各走各的；两台都做完了才一起停、一起从头 */
   shift: {
     settle: 1100,
-    rest: 4400,
+    rest: 4200,
     async play(c) {
-      await was(c);
-      await c.wait(600);
-      c.unflag('sel');
-      c.cue('now');
-      await c.wait(1100);
-      await now(c);
-    },
-  },
-  'shift-was': { settle: 1100, rest: 3200, play: was },
-  'shift-now': {
-    settle: 700,
-    rest: 3800,
-    async play(c) {
-      // 老路走过的痕迹留着：四枚签、背后那扇表格窗都淡着
-      c.cue('sheet', 'paste', 'split', 'back', 'now');
-      await c.wait(900);
-      await now(c);
+      await Promise.all([was(c.side('was')), now(c.side('now'))]);
     },
   },
 
