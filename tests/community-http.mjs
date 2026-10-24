@@ -50,6 +50,17 @@ for (const art of ['art-window', 'art-book', 'art-greenhouse'])
 assert(community.includes('/site/home-painting-poster'), 'painting ending');
 for (const text of ['拖一拖', '左右拖'])
   assert(!words(community).includes(text), `no「${text}」`);
+// 首屏两版、作品区新旧两版样张（负责人 2026-10-24，D2）：默认 a 与新画廊，?hero=b、?works=current 对照
+assert(community.includes('data-hero="a"'), 'hero a by default');
+assert(community.includes('class="m-com-shows-head"'), 'gallery opening');
+assert(community.includes('class="m-com-rail'), 'five-name rail');
+assert(!community.includes('m-com-steps'), 'no numbered how-to list');
+for (const note of ['示意', 'AI 创作试样 · 非艺术家原作'])
+  assert(words(community).includes(note), `disclosure ${note}`);
+const variants = await page('/community?hero=b&works=current');
+assert(variants.includes('data-hero="b"'), 'hero b');
+assert(!variants.includes('m-com-shows-head'), 'old gallery');
+assert(variants.includes('m-com-steps'), 'old gallery keeps its steps');
 
 const methods = await page('/community/methods');
 for (const entry of knowledge)

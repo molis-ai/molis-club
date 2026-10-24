@@ -26,7 +26,9 @@ import { CopyAction, SkillDownload } from './copy';
 import { MethodDemo } from './method-demo';
 
 // 作品画廊里后四件：每件分成「窗」（左边钉住的那一格：作品本身、示意演示）和「字」（右边：想解决什么、怎么做、带走）。
-// 窗和字共用同一份选择（选了哪种观看、哪个效果、停在哪一步），由 gallery.tsx 管着传进来。
+// 窗和字共用同一份选择（选了哪种观看、哪个效果、停在哪一步），由画廊管着传进来。
+// 这里是改版前那版（gallery-current.tsx）的窗和字；两版共用的画面（牛、置物架）、带走的按钮和演示的节拍也在这里，
+// 新版的窗在 stages.tsx。
 // 想解决什么、怎么做都是第 6 章与附录 A.1 的原句；没有 JS 时停在第一项、演示停在完整的结果上；
 // 减少动态时演示不播，停在设计好的那一拍。
 
@@ -76,7 +78,6 @@ export function ArtistStage({
 
 export function ArtistText({ index }: { index: number }) {
   const skill = samples[index];
-  const t = works.artist;
   return (
     <>
       <p className="m-com-work-lead">{community.methods.artist[0]}</p>
@@ -88,16 +89,25 @@ export function ArtistText({ index }: { index: number }) {
           </li>
         ))}
       </ol>
-      <div className="m-com-take m-actions">
-        <SkillDownload
-          slug={skill.slug}
-          kb={skillZipKb[skill.slug]}
-          label={t.download}
-          solid
-        />
-        <More href={artistHref(skill.slug)}>{t.detail}</More>
-      </div>
+      <ArtistTake index={index} />
     </>
+  );
+}
+
+/** 带走：下载这个 Skill，看完整方法 */
+export function ArtistTake({ index }: { index: number }) {
+  const skill = samples[index];
+  const t = works.artist;
+  return (
+    <div className="m-com-take m-actions">
+      <SkillDownload
+        slug={skill.slug}
+        kb={skillZipKb[skill.slug]}
+        label={t.download}
+        solid
+      />
+      <More href={artistHref(skill.slug)}>{t.detail}</More>
+    </div>
   );
 }
 
@@ -106,7 +116,7 @@ export function ArtistText({ index }: { index: number }) {
 export const techniques = knowledge.filter(
   (entry): entry is TechniqueEntry => !isResourceEntry(entry),
 );
-const technique = (slug: string) =>
+export const technique = (slug: string) =>
   techniques.find((item) => item.slug === slug) ?? techniques[0];
 
 export function WebStage({
@@ -143,7 +153,6 @@ export function WebStage({
 
 export function WebText({ slug }: { slug: string }) {
   const entry = technique(slug);
-  const t = works.web;
   return (
     <>
       <p className="m-com-work-lead">{community.methods.web}</p>
@@ -154,17 +163,26 @@ export function WebText({ slug }: { slug: string }) {
         </p>
         <p>{entry.description}</p>
       </div>
-      <div className="m-com-take m-actions">
-        <CopyAction
-          id="web-prompt"
-          text={knowledgePrompt(entry)}
-          label={t.copy}
-          topic="share-method"
-          solid
-        />
-        <More href={methodHref(entry.slug)}>{t.detail}</More>
-      </div>
+      <WebTake slug={slug} />
     </>
+  );
+}
+
+/** 带走：复制这个效果的 Prompt，看完整方法 */
+export function WebTake({ slug }: { slug: string }) {
+  const entry = technique(slug);
+  const t = works.web;
+  return (
+    <div className="m-com-take m-actions">
+      <CopyAction
+        id="web-prompt"
+        text={knowledgePrompt(entry)}
+        label={t.copy}
+        topic="share-method"
+        solid
+      />
+      <More href={methodHref(entry.slug)}>{t.detail}</More>
+    </div>
   );
 }
 
@@ -178,17 +196,23 @@ export function NiulText() {
         <p>{appendixTools.niul[1]}</p>
         <p>{appendixTools.niul[2]}</p>
       </div>
-      <div className="m-com-take m-actions">
-        <More href={NIUL_REPO} external>
-          {works.niul.repo}
-        </More>
-      </div>
+      <NiulTake />
     </>
   );
 }
 
+/** 项目入口：GitHub 仓库 */
+export function NiulTake() {
+  return (
+    <div className="m-com-take m-actions">
+      <More href={NIUL_REPO} external>
+        {works.niul.repo}
+      </More>
+    </div>
+  );
+}
+
 export function DropText() {
-  const t = works.drop;
   return (
     <>
       <p className="m-com-work-lead">{appendixTools.drop[0]}</p>
@@ -196,35 +220,45 @@ export function DropText() {
         <p>{appendixTools.drop[1]}</p>
         <p>{appendixTools.drop[2]}</p>
       </div>
-      <div className="m-com-take">
-        <div className="m-actions">
-          <a
-            className="m-btn"
-            href={DROPAGENT_RELEASE}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {t.download}
-            <ArrowUpRight size={15} aria-hidden="true" />
-          </a>
-          <More href={DROPAGENT_REPO} external>
-            {t.repo}
-          </More>
-        </div>
-        <p className="m-com-fine">{t.system}</p>
-      </div>
+      <DropTake />
       <p className="m-com-fine">{appendixTools.both}</p>
     </>
   );
 }
 
-/** DropAgent 的三步：指着哪一步，演示就停在那一步 */
+/** 带走：下载安装包、GitHub 仓库，系统要求紧挨着下载 */
+export function DropTake() {
+  const t = works.drop;
+  return (
+    <div className="m-com-take">
+      <div className="m-actions">
+        <a
+          className="m-btn"
+          href={DROPAGENT_RELEASE}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {t.download}
+          <ArrowUpRight size={15} aria-hidden="true" />
+        </a>
+        <More href={DROPAGENT_REPO} external>
+          {t.repo}
+        </More>
+      </div>
+      <p className="m-com-fine">{t.system}</p>
+    </div>
+  );
+}
+
+/** DropAgent 的三步：指着哪一步，演示就停在那一步（新版不带编号：plain） */
 export function DropSteps({
   hold,
   onHold,
+  plain = false,
 }: {
   hold: number | null;
   onHold: (step: number | null) => void;
+  plain?: boolean;
 }) {
   // 鼠标在三步之间挪动时不让演示在缝隙里跳回自动播放
   const leave = useRef(0);
@@ -249,7 +283,7 @@ export function DropSteps({
             onMouseLeave={release}
             onBlur={release}
           >
-            <span className="num">{pad(i + 1)}</span>
+            {plain ? null : <span className="num">{pad(i + 1)}</span>}
             {step}
           </button>
         </li>
@@ -258,11 +292,75 @@ export function DropSteps({
   );
 }
 
-// ---------- 示意演示的外壳：轮到它、在视口里、页面没藏起来、没暂停时才播 ----------
+// ---------- 示意演示的节拍：轮到它、在视口里、页面没藏起来、没暂停时才播 ----------
 
 /**
- * 几拍循环的示意演示。rest 是停下来时的那一拍（没有 JS、减少动态时都停在这里），
- * 画面按当前拍画出来；窗下是「示意」和暂停键，before 放在它们前面。
+ * 几拍循环：rest 是停下来时的那一拍（没有 JS、减少动态时都停在这里）；外面指着哪一步（hold）就停在那一步。
+ * 两版画廊的演示外壳共用。
+ */
+export function useBeat<T extends HTMLElement>({
+  steps,
+  rest,
+  ms,
+  on,
+  hold = null,
+}: {
+  steps: number;
+  rest: number;
+  ms: number;
+  on: boolean;
+  hold?: number | null;
+}) {
+  const ref = useRef<T>(null);
+  const visible = useVisible(ref, 0.3);
+  const reduced = useReducedMotion();
+  const [paused, setPaused] = useState(false);
+  const [beat, setBeat] = useState(rest);
+  const running = on && visible && !reduced && !paused && hold === null;
+  useEffect(() => {
+    if (!running) return;
+    const id = window.setInterval(
+      () => setBeat((value) => (value + 1) % steps),
+      ms,
+    );
+    return () => window.clearInterval(id);
+  }, [running, steps, ms]);
+  // 减少动态：不播，停在设计好的那一拍
+  const step = hold ?? (reduced ? rest : beat);
+  return { ref, step, running, reduced, paused, setPaused };
+}
+
+/** 暂停 / 继续：减少动态时不出现 */
+export function PauseButton({
+  paused,
+  onToggle,
+  pause = demos.pause,
+  play = demos.play,
+}: {
+  paused: boolean;
+  onToggle: () => void;
+  pause?: string;
+  play?: string;
+}) {
+  return (
+    <button
+      type="button"
+      className="m-pause"
+      aria-pressed={paused}
+      aria-label={paused ? play : pause}
+      onClick={onToggle}
+    >
+      {paused ? (
+        <Play size={10} fill="currentColor" aria-hidden="true" />
+      ) : (
+        <Pause size={10} fill="currentColor" aria-hidden="true" />
+      )}
+    </button>
+  );
+}
+
+/**
+ * 几拍循环的示意演示（改版前的画廊）。画面按当前拍画出来；窗下是「示意」和暂停键，before 放在它们前面。
  */
 function DemoShell({
   steps,
@@ -287,22 +385,9 @@ function DemoShell({
   before?: ReactNode;
   children: (step: number) => ReactNode;
 }) {
-  const ref = useRef<HTMLElement>(null);
-  const visible = useVisible(ref, 0.3);
-  const reduced = useReducedMotion();
-  const [paused, setPaused] = useState(false);
-  const [beat, setBeat] = useState(rest);
-  const running = on && visible && !reduced && !paused && hold === null;
-  useEffect(() => {
-    if (!running) return;
-    const id = window.setInterval(
-      () => setBeat((value) => (value + 1) % steps),
-      ms,
-    );
-    return () => window.clearInterval(id);
-  }, [running, steps, ms]);
-  // 减少动态：不播，停在设计好的那一拍
-  const step = hold ?? (reduced ? rest : beat);
+  const { ref, step, running, reduced, paused, setPaused } = useBeat<HTMLElement>(
+    { steps, rest, ms, on, hold },
+  );
   return (
     <>
       <figure
@@ -320,19 +405,10 @@ function DemoShell({
         <span className="m-com-demo-tools">
           <Note>{demos.note}</Note>
           {reduced ? null : (
-            <button
-              type="button"
-              className="m-pause"
-              aria-pressed={paused}
-              aria-label={paused ? demos.play : demos.pause}
-              onClick={() => setPaused((value) => !value)}
-            >
-              {paused ? (
-                <Play size={10} fill="currentColor" aria-hidden="true" />
-              ) : (
-                <Pause size={10} fill="currentColor" aria-hidden="true" />
-              )}
-            </button>
+            <PauseButton
+              paused={paused}
+              onToggle={() => setPaused((value) => !value)}
+            />
           )}
         </span>
       </div>
@@ -345,7 +421,7 @@ function DemoShell({
 type CowState = keyof typeof demos.niul.states;
 
 /** 三拍：都在忙 → 一个做完了在等你 → 你回应了它，另一个又做完了。停在第二拍（四种状态都在） */
-const timeline: CowState[][] = [
+export const timeline: CowState[][] = [
   ['busy', 'busy', 'idle', 'offline'],
   ['waiting', 'busy', 'idle', 'offline'],
   ['busy', 'waiting', 'idle', 'offline'],
@@ -385,45 +461,50 @@ function Cow() {
   );
 }
 
-export function NiulStage({ on }: { on: boolean }) {
+/** 桌边四头牛在这一拍的样子（两版画廊共用） */
+export function NiulScene({ step }: { step: number }) {
   const t = demos.niul;
+  return (
+    <ul className="m-com-cows">
+      {t.agents.map((name, i) => {
+        const state = timeline[step][i];
+        return (
+          <li key={name} data-state={state}>
+            <span className="m-com-bubble">
+              <i />
+              {t.bubble}
+            </span>
+            <span className="m-com-busy">
+              <i />
+              <i />
+              <i />
+            </span>
+            <span className="m-com-zz" lang="en">
+              z<small>z</small>
+            </span>
+            <span className="m-com-seat">
+              <Cow />
+            </span>
+            <span className="m-com-cow-name">{name}</span>
+            <span className="m-com-cow-state">{t.states[state]}</span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+export function NiulStage({ on }: { on: boolean }) {
   return (
     <DemoShell
       steps={timeline.length}
       rest={1}
       ms={2600}
       on={on}
-      label={t.label}
+      label={demos.niul.label}
       className="m-com-niul"
     >
-      {(step) => (
-        <ul className="m-com-cows">
-          {t.agents.map((name, i) => {
-            const state = timeline[step][i];
-            return (
-              <li key={name} data-state={state}>
-                <span className="m-com-bubble">
-                  <i />
-                  {t.bubble}
-                </span>
-                <span className="m-com-busy">
-                  <i />
-                  <i />
-                  <i />
-                </span>
-                <span className="m-com-zz" lang="en">
-                  z<small>z</small>
-                </span>
-                <span className="m-com-seat">
-                  <Cow />
-                </span>
-                <span className="m-com-cow-name">{name}</span>
-                <span className="m-com-cow-state">{t.states[state]}</span>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      {(step) => <NiulScene step={step} />}
     </DemoShell>
   );
 }
@@ -451,81 +532,87 @@ export function DropStage({
       className="m-com-drop"
       before={<DropSteps hold={hold} onHold={onHold} />}
     >
-      {(now) => (
-        <Canvas step={now} className="m-com-drop-sc" press={[0]}>
-          <div className="m-com-bar">
-            <span className="m-com-bar-dots">
-              <i />
-              <i />
-              <i />
-            </span>
-            <span className="m-com-tray" data-on={now > 0 || undefined}>
-              <svg viewBox="0 0 20 16">
-                <path
-                  d="M2 9.5h4.5l1.5 2.5h4l1.5-2.5H18M2 9.5 4.5 3h11L18 9.5V14H2z"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-            <span className="num">{t.clock}</span>
-          </div>
-          {/* 原件一直在桌面上，不被改动；第一拍拖一个影子到菜单栏的置物架 */}
-          <div className="m-com-desk-file">
-            <FileText aria-hidden="true" />
-            <span>{t.file}</span>
-            <span className="m-chip m-v" data-tone="line" style={at(1)}>
-              {t.original}
-            </span>
-            <Cursor show={at(0, 1)} x="64%" y="34%" />
-          </div>
-          <div className="m-com-ghost m-v" style={at(0, 1, 500)}>
-            <FileText aria-hidden="true" />
-          </div>
-          <div className="m-com-shelf m-v" data-pop style={at(1)}>
-            <div className="m-com-shelf-row">
-              <FileText aria-hidden="true" />
-              <span className="m-com-shelf-name">
-                {t.file}
-                <span className="m-chip" data-tone="line">
-                  {t.copy}
-                </span>
-              </span>
-              <span className="m-com-shelf-work">
-                <span className="m-stack m-mini">
-                  <span className="m-v" data-fade style={at(1, 2)}>
-                    {t.working}
-                  </span>
-                  <span className="m-v" data-fade style={at(2)}>
-                    {t.done}
-                  </span>
-                </span>
-                <span className="m-bar" style={at(1)} />
-              </span>
-            </div>
-            <div className="m-com-shelf-row m-v" style={at(2, undefined, 150)}>
-              <span className="m-tick" style={at(2)}>
-                <svg viewBox="0 0 12 12">
-                  <path
-                    d="m2.5 6.2 2.3 2.3 4.7-5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                  />
-                </svg>
-              </span>
-              <span className="m-com-shelf-name">
-                {t.result} · {t.file.replace('.pdf', '')}
-              </span>
-              <span className="m-chip" data-tone="ink">
-                {t.take}
-              </span>
-            </div>
-          </div>
-        </Canvas>
-      )}
+      {(now) => <DropScene now={now} />}
     </DemoShell>
+  );
+}
+
+/** 置物架在这一拍的样子（两版画廊共用） */
+export function DropScene({ now }: { now: number }) {
+  const t = demos.drop;
+  return (
+    <Canvas step={now} className="m-com-drop-sc" press={[0]}>
+      <div className="m-com-bar">
+        <span className="m-com-bar-dots">
+          <i />
+          <i />
+          <i />
+        </span>
+        <span className="m-com-tray" data-on={now > 0 || undefined}>
+          <svg viewBox="0 0 20 16">
+            <path
+              d="M2 9.5h4.5l1.5 2.5h4l1.5-2.5H18M2 9.5 4.5 3h11L18 9.5V14H2z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.3"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+        <span className="num">{t.clock}</span>
+      </div>
+      {/* 原件一直在桌面上，不被改动；第一拍拖一个影子到菜单栏的置物架 */}
+      <div className="m-com-desk-file">
+        <FileText aria-hidden="true" />
+        <span>{t.file}</span>
+        <span className="m-chip m-v" data-tone="line" style={at(1)}>
+          {t.original}
+        </span>
+        <Cursor show={at(0, 1)} x="64%" y="34%" />
+      </div>
+      <div className="m-com-ghost m-v" style={at(0, 1, 500)}>
+        <FileText aria-hidden="true" />
+      </div>
+      <div className="m-com-shelf m-v" data-pop style={at(1)}>
+        <div className="m-com-shelf-row">
+          <FileText aria-hidden="true" />
+          <span className="m-com-shelf-name">
+            {t.file}
+            <span className="m-chip" data-tone="line">
+              {t.copy}
+            </span>
+          </span>
+          <span className="m-com-shelf-work">
+            <span className="m-stack m-mini">
+              <span className="m-v" data-fade style={at(1, 2)}>
+                {t.working}
+              </span>
+              <span className="m-v" data-fade style={at(2)}>
+                {t.done}
+              </span>
+            </span>
+            <span className="m-bar" style={at(1)} />
+          </span>
+        </div>
+        <div className="m-com-shelf-row m-v" style={at(2, undefined, 150)}>
+          <span className="m-tick" style={at(2)}>
+            <svg viewBox="0 0 12 12">
+              <path
+                d="m2.5 6.2 2.3 2.3 4.7-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+              />
+            </svg>
+          </span>
+          <span className="m-com-shelf-name">
+            {t.result} · {t.file.replace('.pdf', '')}
+          </span>
+          <span className="m-chip" data-tone="ink">
+            {t.take}
+          </span>
+        </div>
+      </div>
+    </Canvas>
   );
 }

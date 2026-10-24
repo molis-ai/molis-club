@@ -22,7 +22,7 @@ import {
   type Flower,
 } from './flower-art';
 
-// 「一朵好奇」（作品画廊的第一件）：窗里那朵花就是控件——在花上拖（左右改重复、上下改展开），方向键也行；
+// 「一朵好奇」（作品画廊的第一件）：窗里那朵花就是控件（FlowerCanvas，两版画廊共用；新版的窗在 stages.tsx）——在花上拖（左右改重复、上下改展开），方向键也行；
 // 点一下（或回车）换一档展开；触屏上左右滑改重复。窗下四个颜料点换线色，旁边是现在的数。
 // 右边的三步做法指到哪一步，窗里就停在那一步的样子，移开回到访客自己调的那朵（因果对得上，不另加说明）。
 // 第一次看到时花一片片转到位；下载的 SVG、复制的提示词在右边，没有 JS 时下载的是默认那朵。
@@ -39,11 +39,15 @@ function emit(next: State) {
   state = next;
   listeners.forEach((listener) => listener());
 }
-function update(next: Partial<Flower>) {
+export function update(next: Partial<Flower>) {
   emit({ ...state, ...next, touched: true, preview: null });
 }
-function preview(next: Flower | null) {
+export function preview(next: Flower | null) {
   emit({ ...state, preview: next });
+}
+/** 画廊自己摆的样子（自己长一遍时每一拍）：不算访客动过手，不播报 */
+export function seed(next: Partial<Flower>) {
+  emit({ ...state, ...next, preview: null });
 }
 function subscribe(listener: () => void) {
   listeners.add(listener);
@@ -51,7 +55,7 @@ function subscribe(listener: () => void) {
     listeners.delete(listener);
   };
 }
-function useFlowerState() {
+export function useFlowerState() {
   return useSyncExternalStore(
     subscribe,
     () => state,
@@ -62,20 +66,28 @@ function useFlowerState() {
 const clamp = (n: number, lo: number, hi: number) =>
   Math.min(hi, Math.max(lo, Math.round(n)));
 const BLOOM_STEPS = [20, 44, 62, 82, 100];
-const own = ({ count, bloom, color }: Flower): Flower => ({
+export const own = ({ count, bloom, color }: Flower): Flower => ({
   count,
   bloom,
   color,
 });
 
-/** 窗里的花：在花上拖、按方向键、点一下；窗下是颜料点和现在的数 */
-export function FlowerStage() {
+/**
+ * 花本身就是控件：在花上拖（左右改重复、上下改展开）、按方向键、点一下换一档展开。两版画廊共用；
+ * onTouch 在访客动手时先告诉外面（停掉开场），grow 换了就重新挂上每一片（让它们一片片转到位）。
+ */
+export function FlowerCanvas({
+  describedBy,
+  onTouch,
+  grow,
+}: {
+  describedBy: string;
+  onTouch: () => void;
+  grow?: string;
+}) {
   const now = useFlowerState();
   const flower = own(now);
   const shown = now.preview ?? flower;
-  const id = useId();
-  // 第一次看到时一片片转到位（data-open 进入视口加 is-in）；动过手就不再播
-  const [intro, setIntro] = useState(true);
   const drag = useRef<{
     x: number;
     y: number;
@@ -87,7 +99,7 @@ export function FlowerStage() {
   const dragged = useRef(false);
 
   const set = (next: Partial<Flower>) => {
-    setIntro(false);
+    onTouch();
     update(next);
   };
 
@@ -147,26 +159,47 @@ export function FlowerStage() {
   };
 
   return (
+    <button
+      type="button"
+      className="m-com-canvas"
+      aria-label={flowerTitle(flower)}
+      aria-describedby={describedBy}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={() => (drag.current = null)}
+      onKeyDown={onKeyDown}
+      onClick={onClick}
+    >
+      <FlowerArt key={grow} flower={shown} live className="m-com-flower" />
+    </button>
+  );
+}
+
+/** 窗里的花（改版前的画廊）：窗下是颜料点和现在的数 */
+export function FlowerStage() {
+  const now = useFlowerState();
+  const flower = own(now);
+  const shown = now.preview ?? flower;
+  const id = useId();
+  // 第一次看到时一片片转到位（data-open 进入视口加 is-in）；动过手就不再播
+  const [intro, setIntro] = useState(true);
+  const set = (next: Partial<Flower>) => {
+    setIntro(false);
+    update(next);
+  };
+
+  return (
     <>
       <div
         className="m-com-frame m-com-flower-frame"
         data-open
         data-intro={intro || undefined}
       >
-        <button
-          type="button"
-          className="m-com-canvas"
-          aria-label={flowerTitle(flower)}
-          aria-describedby={`${id}-keys`}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={() => (drag.current = null)}
-          onKeyDown={onKeyDown}
-          onClick={onClick}
-        >
-          <FlowerArt flower={shown} live className="m-com-flower" />
-        </button>
+        <FlowerCanvas
+          describedBy={`${id}-keys`}
+          onTouch={() => setIntro(false)}
+        />
         <span className="m-com-frame-cap m-caption" lang="en" aria-hidden="true">
           {t.caption}
         </span>
