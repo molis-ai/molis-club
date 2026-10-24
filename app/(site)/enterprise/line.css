@@ -179,19 +179,26 @@ html:not(.js) .m-ent-reply-carry {
    墙上有树影，字后面只铺一层很淡的纸色，托住字。竖着的手机只看得到中间的人和长桌，照旧白字压在左下的暗上；
    比 4:3 还方的屏墙太窄，也照旧。
    字号跟着墙宽走：图是 3:2，窗框左沿在图宽的 31.9%；屏比 3:2 方时图按高铺满、往左裁掉 62%，墙宽 = 62vw − 45.15vh。
-   最长的一行（第三拍的动作，连缩进约 13 个字宽）离窗框留 24px */
+   最长的一行（第三拍的动作，连缩进约 13 个字宽）离窗框留 24px。
+   字从画面中部起写（负责人 2026-10-24）：第一行落在半屏高处；矮屏放不下时整块往上让，底下至少留 32px */
 @media (min-width: 900px) and (min-aspect-ratio: 4/3) {
+  .m-ent-vista-stick {
+    grid-template-rows:
+      minmax(calc(var(--header) + 24px), 50%)
+      auto
+      minmax(32px, 1fr);
+  }
   .m-ent-vista-media::after {
     background: radial-gradient(
-      ellipse 40% 56% at 13% 36%,
+      ellipse 40% 56% at 13% 66%,
       rgb(250 248 244 / 0.5),
       rgb(250 248 244 / 0) 72%
     );
   }
   .m-ent-vista-body {
+    grid-row: 2;
     align-self: start;
-    padding-top: calc(var(--header) + clamp(36px, 10vh, 112px));
-    padding-bottom: 0;
+    padding-block: 0;
     color: var(--ink);
   }
   .m-ent-vista-line {
