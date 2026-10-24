@@ -58,24 +58,30 @@
 }
 
 /* =====================================================================
-   ① 首屏：两句标题在左，「开窗，开始创造」在右
+   ① 首屏「大幅插画」（负责人 2026-10-24 定 b）：插画通栏铺满上面大半屏，下沿淡进纸里；
+   标题放大，压住淡出的那一截，第二行往右错开半步。不用椭圆的软边
    ===================================================================== */
 .m-com-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 11fr) minmax(0, 13fr);
-  grid-template-rows: auto auto;
-  align-content: center;
-  column-gap: clamp(32px, 4vw, 72px);
-  row-gap: 18px;
+  --hero-t: clamp(36px, 6vw, 100px);
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   min-height: 100svh;
-  padding-bottom: clamp(32px, 6vh, 72px);
 }
-/* 两句各占一行：字号跟着栏宽走，不在句中折行 */
+.m-com-hero-media {
+  position: relative;
+  flex: none;
+  margin: 0;
+}
+.m-com-hero-body {
+  display: grid;
+  justify-items: start;
+  gap: clamp(12px, 2.2vh, 22px);
+}
 .m-com-title {
-  grid-column: 1;
-  align-self: end;
-  font: 300 clamp(30px, 3.8vw, 60px) / 1.32 var(--sans);
+  font: 300 var(--hero-t) / 1.24 var(--sans);
   letter-spacing: 0.02em;
   font-feature-settings: 'palt' 1;
 }
@@ -84,179 +90,63 @@
   white-space: nowrap;
 }
 .m-com-sub {
-  grid-column: 1;
-  align-self: start;
   font: 300 var(--t-lead) / 1.9 var(--sans);
   letter-spacing: 0.04em;
   color: var(--ink-2);
 }
-.m-com-hero-art {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
-  width: min(
-    100%,
-    calc((100svh - var(--header) - clamp(48px, 9vh, 112px) - 96px) * 1.777)
+.m-com-hero-cap {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 8px;
+}
+/* 上面大半屏是插画 */
+.m-com-hero-plate {
+  height: 74vh;
+  height: 74svh;
+}
+.m-com-hero-plate img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 38%;
+  mix-blend-mode: multiply;
+  filter: var(--grade) saturate(0.94);
+  /* 上沿让出顶栏（墨字落在纸上），下沿淡进纸里 */
+  --fade: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(0 0 0 / 0.4) calc(var(--header) * 0.6),
+    #000 calc(var(--header) * 1.8),
+    #000 64%,
+    transparent
   );
-  justify-self: end;
+  -webkit-mask-image: var(--fade);
+  mask-image: var(--fade);
+}
+.js .m-com-hero-media[data-open] img {
+  transition:
+    opacity 1.8s var(--ease),
+    filter 1.8s var(--ease),
+    scale 2.4s var(--ease);
+}
+.js .m-com-hero-media[data-open]:not(.is-in) img {
+  opacity: 0;
+  filter: var(--grade) saturate(0.94) blur(6px);
+  scale: 1.03;
+}
+.m-com-hero .m-com-hero-body {
+  margin-top: calc(var(--hero-t) * -1.3);
+  padding-bottom: clamp(32px, 6vh, 64px);
+}
+.m-com-hero .m-com-title span + span,
+.m-com-hero .m-com-sub {
+  padding-left: calc(var(--hero-t) * 1.6);
 }
 
 /* =====================================================================
-   ② 作品画廊：头一屏是题目与第一件；之后每件一屏，左边的窗钉住
+   ② 作品画廊的零件：带走的按钮、选择、花、演示画面（窗与版式在后面「作品画廊」一节）
    ===================================================================== */
-.m-com-works {
-  /* 窗的宽：一屏放得下整扇窗和窗下那一行 */
-  --frame-w: min(100%, calc((100svh - var(--header) - 132px) * 16 / 11));
-  padding-block: clamp(56px, 12vh, 128px) clamp(40px, 8vh, 96px);
-}
-.m-com-gallery {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(28px, 5vh, 48px);
-}
-.m-com-gallery-head {
-  order: 0;
-  display: grid;
-  gap: 10px;
-  max-width: 34em;
-}
-.m-com-gallery-lead {
-  font: 300 var(--t-lead) / 1.85 var(--sans);
-  letter-spacing: 0.03em;
-  color: var(--ink-2);
-}
-/* 窄屏、没有 JS、打印：每件的窗挂在自己的字上方 */
-.m-com-still {
-  order: calc(var(--row) * 2 - 3);
-  display: grid;
-  gap: 12px;
-  margin: 0;
-}
-.m-com-work {
-  order: calc(var(--row) * 2 - 2);
-  padding-bottom: clamp(24px, 6vh, 64px);
-}
-.m-com-work-in {
-  display: grid;
-  gap: clamp(16px, 2.6vh, 26px);
-  max-width: 32em;
-}
-.m-com-work-head {
-  display: grid;
-  gap: 6px;
-}
-.m-com-work-name {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  font: 300 var(--t-h3) / 1.35 var(--sans);
-  letter-spacing: 0.04em;
-}
-.m-com-work-name [lang='en'] {
-  letter-spacing: 0.01em;
-}
-.m-com-work-name small {
-  font-size: var(--t-small);
-  letter-spacing: 0.08em;
-  color: var(--mute);
-}
-.m-com-work-lead {
-  font: 300 var(--t-lead) / 1.85 var(--sans);
-  letter-spacing: 0.03em;
-  color: var(--ink);
-  text-wrap: pretty;
-}
-.m-com-work-how {
-  display: grid;
-  gap: 8px;
-  font-size: 14px;
-  line-height: 1.95;
-  letter-spacing: 0.02em;
-  color: var(--ink-2);
-}
-.m-com-work-term {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-.m-com-work-term b {
-  font-weight: 500;
-  color: var(--ink);
-}
-.m-com-work-term i {
-  font: italic 300 14px / 1 var(--latin);
-  letter-spacing: 0.01em;
-  color: var(--mute);
-}
-
-/* 做法：一行一道细线，编号是细斜体 */
-.m-com-steps {
-  counter-reset: m-com-step;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.m-com-steps li {
-  counter-increment: m-com-step;
-  position: relative;
-  display: grid;
-  gap: 2px;
-  padding: 11px 8px 11px 34px;
-  border-top: 1px solid var(--hair);
-  border-radius: 2px;
-  transition: background-color 0.4s var(--ease);
-}
-.m-com-steps li:last-child {
-  border-bottom: 1px solid var(--hair);
-}
-.m-com-steps li::before {
-  content: '0' counter(m-com-step);
-  position: absolute;
-  left: 2px;
-  top: 13px;
-  font: italic 300 13px / 1.4 var(--latin);
-  color: var(--accent-ink);
-  font-variant-numeric: tabular-nums;
-}
-.m-com-steps b {
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.04em;
-}
-.m-com-steps span {
-  font-size: 13px;
-  line-height: 1.75;
-  letter-spacing: 0.02em;
-  color: var(--ink-2);
-}
-/* 一朵好奇的三步：指着哪一步，窗里停在那一步；点一下就用它 */
-.m-com-steps li:has(> button) {
-  padding: 0;
-}
-.m-com-steps li:has(> button)::before {
-  pointer-events: none;
-}
-.m-com-steps button {
-  display: grid;
-  gap: 2px;
-  width: 100%;
-  padding: 11px 8px 11px 34px;
-  border: 0;
-  border-radius: 2px;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.4s var(--ease);
-}
-.m-com-steps button:hover {
-  background: var(--accent-wash);
-}
-.m-com-steps button:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 2px;
-}
 .m-com-take {
   display: grid;
   justify-items: start;
@@ -277,32 +167,6 @@
   margin: 0;
 }
 
-/* ---------- 窗：同一种比例、同一种演示区底；窗下一行放选择、说明和暂停 ---------- */
-.m-com-frame {
-  position: relative;
-  width: var(--frame-w);
-  margin: 0;
-  aspect-ratio: 16 / 11;
-  overflow: hidden;
-  border-radius: var(--r-panel);
-  background: var(--paper-2);
-  container-type: inline-size;
-}
-.m-com-frame-cap {
-  position: absolute;
-  left: 18px;
-  bottom: 14px;
-  pointer-events: none;
-}
-.m-com-under {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px 16px;
-  width: var(--frame-w);
-  min-height: 34px;
-}
 .m-com-pick {
   display: flex;
   flex-wrap: wrap;
@@ -362,46 +226,11 @@
 .m-com-petal {
   transition: transform 0.18s linear;
 }
-/* 第一次看到时一片片转到位（进入视口加 is-in；动过手就去掉 data-intro） */
-.js .m-com-flower-frame[data-intro]:not(.is-in) .m-com-petal {
-  opacity: 0;
-}
-.js .m-com-flower-frame[data-intro].is-in .m-com-petal {
-  animation: m-com-petal 1.4s var(--ease) calc(160ms + var(--i) * 36ms)
-    backwards;
-}
 @keyframes m-com-petal {
   from {
     opacity: 0;
     transform: rotate(0deg);
   }
-}
-.m-com-paints {
-  display: flex;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-.m-com-paints button {
-  width: 18px;
-  height: 18px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: var(--c);
-  box-shadow: inset 0 0 0 1px rgb(27 26 24 / 0.14);
-  cursor: pointer;
-  transition: box-shadow 0.3s var(--ease);
-}
-.m-com-paints button[aria-pressed='true'] {
-  box-shadow:
-    0 0 0 3px var(--paper),
-    0 0 0 4px var(--ink-2);
-}
-.m-com-paints button:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 5px;
 }
 .m-com-readout {
   font: 400 12.5px / 1.4 var(--sans);
@@ -459,12 +288,6 @@
   inset: 0;
   font-size: clamp(10px, 2.1cqw, 14px);
   line-height: 1.5;
-}
-.m-com-demo-tools {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
 }
 
 /* niul.ai：桌边四头牛，细线画的 */
@@ -740,29 +563,319 @@
   width: 100%;
 }
 
-/* ---------- 宽屏、有 JS：左边一扇窗钉住，右边每件一屏 ---------- */
+/* =====================================================================
+   ② 作品画廊（2026-10-24，gallery.tsx / stages.tsx）：题目单独一屏开场；
+   左边一扇大窗钉住（约六成宽、接近一屏高），窗上一行五个名字；右边每件一屏
+   ===================================================================== */
+.m-com-shows {
+  padding-bottom: clamp(40px, 8vh, 96px);
+}
+.m-com-shows-head {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: clamp(14px, 2.6vh, 24px);
+  min-height: calc(100vh - var(--header));
+  min-height: calc(100svh - var(--header));
+  padding-block: clamp(48px, 10vh, 120px);
+  text-align: center;
+}
+.m-com-shows-title {
+  font: 300 clamp(30px, 3.8vw, 58px) / 1.35 var(--sans);
+  letter-spacing: 0.05em;
+  font-feature-settings: 'palt' 1;
+}
+/* 只在「可以」后面折行：窄屏不会折成「亲手 / 试的」 */
+.m-com-shows-title span {
+  display: inline-block;
+}
+.m-com-shows-lead {
+  font: 300 var(--t-lead) / 1.9 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  text-wrap: balance;
+}
+
+/* 窄屏、没有 JS、打印：每件的窗挂在自己的字上方 */
+.m-com-shows-body {
+  display: flex;
+  flex-direction: column;
+}
+.m-com-rail {
+  display: none;
+}
+.m-com-show-win {
+  order: calc(var(--row) * 2 - 1);
+  display: grid;
+  gap: 12px;
+  margin: clamp(64px, 14vh, 128px) 0 0;
+}
+.m-com-show-win[data-index='0'] {
+  margin-top: 0;
+}
+.m-com-show {
+  order: calc(var(--row) * 2);
+  padding-top: clamp(20px, 3.4vh, 32px);
+}
+.m-com-show-in {
+  display: grid;
+  justify-items: start;
+  gap: clamp(14px, 2.4vh, 24px);
+  max-width: 30em;
+}
+.m-com-show-head {
+  display: grid;
+  gap: 8px;
+}
+/* 三档字号：屏标题（开场）> 作品名 > 正文 */
+.m-com-show-name {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font: 300 clamp(26px, 2.5vw, 38px) / 1.25 var(--sans);
+  letter-spacing: 0.04em;
+}
+.m-com-show-name:focus {
+  outline: none;
+}
+.m-com-show-name [lang='en'] {
+  letter-spacing: 0.01em;
+}
+.m-com-show-name small {
+  font-size: var(--t-small);
+  letter-spacing: 0.08em;
+  color: var(--mute);
+}
+.m-com-show-lead {
+  font: 400 clamp(15px, 1.12vw, 16.5px) / 1.95 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+/* ---------- 一扇窗：作品本身 + 窗里一条说明；窗下一行，左边选择，右边标注与暂停 ---------- */
+.m-com-win {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--r-panel);
+  background: var(--paper-2);
+  container-type: inline-size;
+}
+.m-com-win-view {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  aspect-ratio: 4 / 3;
+}
+.m-com-win-cap {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  padding: 14px clamp(16px, 3.2cqw, 28px) 16px;
+  background: rgb(255 255 255 / 0.55);
+  font-size: 13.5px;
+  line-height: 1.75;
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+.m-com-win-term {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+}
+.m-com-win-term b {
+  font-weight: 500;
+  color: var(--ink);
+}
+.m-com-win-term i {
+  font: italic 300 14px / 1 var(--latin);
+  letter-spacing: 0.01em;
+  color: var(--mute);
+}
+.m-com-win-text {
+  text-wrap: pretty;
+}
+.m-com-win-text.m-caption {
+  color: var(--mute);
+}
+/* 一朵好奇的三步：长到哪一步亮哪一步；指着哪一步，窗里停在那一步，点一下就用它 */
+.m-com-win-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 20px;
+}
+.m-com-win-steps button {
+  all: unset;
+  position: relative;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.7;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+  cursor: pointer;
+  transition: color 0.4s var(--ease);
+}
+.m-com-win-steps button:hover,
+.m-com-win-steps button[data-on] {
+  color: var(--ink);
+}
+.m-com-win-steps button[data-on]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: var(--accent);
+}
+.m-com-win-steps button:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.m-com-win-under {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  min-height: 34px;
+}
+.m-com-win-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.m-com-win-meta .m-com-readout span {
+  margin-left: 12px;
+}
+.m-com-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: inset 0 0 0 1px rgb(27 26 24 / 0.14);
+}
+
+/* 花：有 JS 时先藏着，轮到它时一条线 → 一片片转到位 → 慢慢摊开 */
+.js .m-com-win-flower[data-phase='wait'] .m-com-petal {
+  opacity: 0;
+}
+.js .m-com-win-flower:is([data-phase='0'], [data-phase='1']) .m-com-petal {
+  animation: m-com-petal 1.4s var(--ease) calc(120ms + var(--i) * 40ms)
+    backwards;
+}
+.m-com-win-flower[data-phase='2'] .m-com-petal {
+  transition: transform 1.6s var(--ease);
+}
+/* 示意演示放大一档 */
+.m-com-win .m-com-demo-view {
+  font-size: clamp(10px, 2.1cqw, 16px);
+}
+
+/* ---------- 宽屏、有 JS：左边一扇大窗钉住，右边每件一屏 ---------- */
 @media (min-width: 901px) {
-  .js .m-com-works {
-    padding-block: clamp(24px, 6vh, 72px) 0;
-  }
-  .js .m-com-frame,
-  .js .m-com-under {
-    margin-inline: auto;
-  }
-  .js .m-com-gallery {
+  .js .m-com-shows-body {
+    --gap: clamp(40px, 5vw, 96px);
+    --rail-h: 30px;
+    --under-h: 34px;
     display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    column-gap: clamp(40px, 5vw, 96px);
-    row-gap: 0;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    column-gap: var(--gap);
+    container-type: inline-size;
   }
-  .js .m-com-gallery-head {
-    grid-column: 2;
-    grid-row: 1;
-    align-self: end;
-    padding-top: clamp(24px, 8vh, 96px);
-    padding-bottom: clamp(28px, 5vh, 48px);
+  /* 窗的高：一屏放得下名字、窗和窗下一行，也不高过窗宽的 0.86；整组在一屏里上下居中 */
+  .js .m-com-rail,
+  .js .m-com-show-win {
+    --col: calc((100cqw - var(--gap)) * 0.6);
+    --frame-h: min(
+      calc(100svh - var(--header) - var(--rail-h) - var(--under-h) - 96px),
+      calc(var(--col) * 0.86)
+    );
+    --lift: max(
+      16px,
+      calc(
+        (
+            100svh - var(--header) - var(--rail-h) - var(--frame-h) -
+              var(--under-h) - 28px
+          ) / 2
+      )
+    );
   }
-  .js .m-com-work {
+  .js .m-com-rail {
+    grid-column: 1;
+    grid-row: 1 / span 5;
+    position: sticky;
+    top: calc(var(--header) + var(--lift));
+    z-index: 2;
+    align-self: start;
+    display: flex;
+    align-items: center;
+    gap: 4px 24px;
+    height: var(--rail-h);
+    /* 和钉住的窗一起落位：开场那一屏的底边不露出这一行 */
+    margin: var(--lift) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .m-com-rail button {
+    all: unset;
+    font-size: 13px;
+    line-height: 1.6;
+    letter-spacing: 0.06em;
+    color: var(--mute);
+    cursor: pointer;
+    transition: color 0.4s var(--ease);
+  }
+  .m-com-rail button[lang='en'] {
+    letter-spacing: 0.02em;
+  }
+  .m-com-rail button:hover,
+  .m-com-rail button[aria-current] {
+    color: var(--ink);
+  }
+  .m-com-rail button[aria-current] {
+    font-weight: 500;
+  }
+  .m-com-rail button:focus-visible {
+    outline: 1.5px solid var(--ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .js .m-com-show-win {
+    grid-column: 1;
+    grid-row: 1 / span 5;
+    position: sticky;
+    top: var(--header);
+    align-self: start;
+    grid-template-rows: var(--frame-h) var(--under-h);
+    align-content: start;
+    gap: 14px;
+    height: calc(100svh - var(--header));
+    margin: 0;
+    padding-top: calc(var(--lift) + var(--rail-h) + 14px);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.5s var(--ease),
+      visibility 0s linear 0.5s;
+  }
+  .js .m-com-show-win[data-on] {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.7s var(--ease) 0.08s,
+      visibility 0s;
+  }
+  .js .m-com-win-view {
+    aspect-ratio: auto;
+  }
+  .js .m-com-show {
     grid-column: 2;
     grid-row: var(--row);
     display: grid;
@@ -770,38 +883,11 @@
     min-height: calc(100svh - var(--header));
     padding-block: clamp(24px, 5vh, 56px);
   }
-  /* 第一件和题目同一屏：字从题目下面接着往下排 */
-  .js .m-com-work[data-work='flower'] {
-    align-content: start;
-    min-height: calc(100svh - var(--header) - clamp(160px, 30vh, 300px));
-    padding-top: 0;
-  }
-  .js .m-com-still {
-    grid-column: 1;
-    grid-row: 1 / span 6;
-    position: sticky;
-    top: var(--header);
-    align-self: start;
-    height: calc(100svh - var(--header));
-    align-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 0.5s var(--ease),
-      visibility 0s linear 0.5s;
-  }
-  .js .m-com-still[data-on] {
-    opacity: 1;
-    visibility: visible;
-    transition:
-      opacity 0.7s var(--ease) 0.08s,
-      visibility 0s;
-  }
-  .js .m-com-work:not([data-on]) .m-com-work-in {
-    opacity: 0.32;
-  }
-  .js .m-com-work-in {
+  .js .m-com-show-in {
     transition: opacity 0.6s var(--ease);
+  }
+  .js .m-com-show:not([data-on]) .m-com-show-in {
+    opacity: 0.28;
   }
 }
 
@@ -1074,28 +1160,34 @@
    窄屏
    ===================================================================== */
 @media (max-width: 900px) {
+  /* 插画占上面一多半，字不错开（一行放得下） */
   .m-com-hero {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto;
-    align-content: start;
-    row-gap: 14px;
+    --hero-t: clamp(30px, 8.6vw, 44px);
     min-height: 0;
   }
-  .m-com-title,
-  .m-com-sub,
-  .m-com-hero-art {
-    grid-column: 1;
-    grid-row: auto;
+  .m-com-hero-plate {
+    height: 58svh;
   }
-  .m-com-title {
-    font-size: clamp(26px, 7.4vw, 44px);
+  .m-com-hero-plate img {
+    object-position: 40% 40%;
   }
-  .m-com-title span {
-    white-space: normal;
+  .m-com-hero .m-com-hero-cap {
+    display: none;
   }
-  .m-com-hero-art {
-    width: 100%;
-    margin-top: 12px;
+  .m-com-hero .m-com-hero-body {
+    margin-top: calc(var(--hero-t) * -1.1);
+  }
+  .m-com-hero .m-com-title span + span,
+  .m-com-hero .m-com-sub {
+    padding-left: 0;
+  }
+  .m-com-shows-head {
+    min-height: 0;
+    padding-block: clamp(72px, 14vh, 120px) clamp(48px, 9vh, 80px);
+  }
+  /* 窗窄时置物架的弹窗放宽，「副本」不被截掉 */
+  .m-com-win .m-com-shelf {
+    width: 86%;
   }
   .m-com-room {
     grid-template-columns: minmax(0, 1fr);
@@ -1135,13 +1227,13 @@
    减少动态、打印
    ===================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  .js .m-com-flower-frame[data-intro] .m-com-petal {
+  .js .m-com-win-flower[data-phase] .m-com-petal {
     opacity: 1 !important;
     animation: none !important;
   }
   .m-com-petal,
-  .m-com-still,
-  .m-com-work-in,
+  .m-com-show-win,
+  .m-com-show-in,
   .m-com-door,
   .m-com-sample img {
     transition: none !important;
@@ -1153,9 +1245,16 @@
     scale: 1;
     transition: none;
   }
+  .js .m-com-hero-media[data-open] img {
+    opacity: 1;
+    filter: var(--grade) saturate(0.94);
+    scale: 1;
+    transition: none;
+  }
 }
 @media print {
   .m-com-hero,
+  .m-com-shows-head,
   .m-com-room,
   .m-com-end {
     min-height: 0;
@@ -1164,11 +1263,11 @@
     background: none;
     color: var(--ink);
   }
+  .m-com-rail,
+  .m-com-win-meta .m-pause,
   .m-com-end-media,
   .m-com-end-toggle,
-  .m-com-paints,
-  .m-com-pick,
-  .m-com-demo-tools .m-pause {
+  .m-com-pick {
     display: none;
   }
   .m-com-end-title,

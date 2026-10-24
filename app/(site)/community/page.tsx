@@ -14,6 +14,7 @@ import { COMMUNITY, contactHref, METHODS } from '../../_site/routes';
 import { mediaOf, Phrases, type Vars } from '../../_site/ui';
 import { Ending } from './ending';
 import { WorksGallery } from './gallery';
+import { Hero } from './hero';
 import '../../_site/demo/demo.css';
 import './methods/methods.css';
 import './community.css';
@@ -25,12 +26,13 @@ export const metadata = pageMetadata(
 );
 
 // 社区（负责人 2026-10-22 改回白房子，D2）：近白的纸、细线、白卡片、大量留白，一屏一个重点。
-// ① 首屏：两句标题，一张团队插画「开窗，开始创造」（W01-01）。
-// ② 五件作品一个画廊：一朵好奇、Artist Skill、网页动效、niul.ai、DropAgent；窗在左边钉住，字跟着滚动换（gallery.tsx）。
+// ① 首屏：两句标题，一张团队插画「开窗，开始创造」（W01-01），2026-10-24 定「大幅插画」（hero.tsx）。
+// ② 五件作品一个画廊：一朵好奇、Artist Skill、网页动效、niul.ai、DropAgent；窗在左边钉住，字跟着滚动换。
+//    2026-10-24 定新版（gallery.tsx）：题目单独一屏开场，窗放大到六成宽，右边只留名称、展签、一句原句和按钮。
 // ③ 方法目录：「翻开，另一片天地」（W04-01）+ 搜索 + 三个整张是链接的去处，数量只写数字。
 // ④ 再带点什么回来：「把想法种出来」（W02-01）+ 三个去处；作品墙还空着时只写一句。
 // ⑤ 结尾：首页挪来的那段画室，那句话和一行当前进展（ending.tsx）。
-// 三张插画的挂法同「关于」：不装框，四周淡进墙里。字只用第 6 章与附录 A.1 的原句，新写的只有标签和按钮。
+// 方法、带回来两张插画的挂法同「关于」：不装框，四周淡进墙里。字只用第 6 章与附录 A.1 的原句，新写的只有标签和按钮。
 
 const ui = communityUi;
 
@@ -39,12 +41,10 @@ function Vignette({
   name,
   sizes,
   className,
-  eager = false,
 }: {
   name: keyof typeof communityUi.art;
   sizes: string;
   className: string;
-  eager?: boolean;
 }) {
   const image = mediaOf(name);
   const art = ui.art[name];
@@ -57,8 +57,7 @@ function Vignette({
         width={image.width}
         height={image.height}
         alt={art.alt}
-        loading={eager ? 'eager' : 'lazy'}
-        fetchPriority={eager ? 'high' : undefined}
+        loading="lazy"
         decoding="async"
       />
       <figcaption className="m-com-art-name">
@@ -127,28 +126,13 @@ function Door({
 }
 
 export default function CommunityPage() {
-  const [titleA, titleB] = community.title[0].split(/(?<=，)/);
   return (
     <div className="m-com">
       {/* ① 首屏：两句标题，一张团队插画 */}
-      <header className="m-com-hero m-wrap m-top">
-        <h1 className="m-com-title m-rise">
-          <span>{titleA}</span>
-          <span>{titleB}</span>
-        </h1>
-        <p className="m-com-sub m-rise" style={{ '--delay': '140ms' } as Vars}>
-          {community.title[1]}
-        </p>
-        <Vignette
-          name="art-window"
-          sizes="(max-width: 900px) 100vw, 64vw"
-          className="m-com-hero-art"
-          eager
-        />
-      </header>
+      <Hero />
 
       {/* ② 五件作品，一个画廊 */}
-      <section className="m-com-works m-wrap" aria-labelledby="works-title">
+      <section className="m-com-shows m-wrap" aria-labelledby="works-title">
         <WorksGallery />
       </section>
 

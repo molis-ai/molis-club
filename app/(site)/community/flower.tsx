@@ -1,31 +1,26 @@
 'use client';
 import {
-  useEffect,
-  useId,
   useRef,
   useState,
   useSyncExternalStore,
-  type CSSProperties,
   type KeyboardEvent,
   type PointerEvent,
 } from 'react';
 import { ArrowDownToLine } from 'lucide-react';
-import { communityUi, works } from '../../../content/site/community';
+import { works } from '../../../content/site/community';
 import { CopyAction, ShareAfter } from './copy';
 import {
   COUNT_RANGE,
   FLOWER_DEFAULT,
   FlowerArt,
-  flowerColors,
   flowerSvg,
   flowerTitle,
   type Flower,
 } from './flower-art';
 
-// 「一朵好奇」（作品画廊的第一件）：窗里那朵花就是控件——在花上拖（左右改重复、上下改展开），方向键也行；
-// 点一下（或回车）换一档展开；触屏上左右滑改重复。窗下四个颜料点换线色，旁边是现在的数。
-// 右边的三步做法指到哪一步，窗里就停在那一步的样子，移开回到访客自己调的那朵（因果对得上，不另加说明）。
-// 第一次看到时花一片片转到位；下载的 SVG、复制的提示词在右边，没有 JS 时下载的是默认那朵。
+// 「一朵好奇」（作品画廊的第一件）：窗里那朵花就是控件（FlowerCanvas；窗在 stages.tsx）——在花上拖（左右改重复、上下改展开），方向键也行；
+// 点一下（或回车）换一档展开；触屏上左右滑改重复。三步做法在窗里，指到哪一步就停在那一步的样子，移开回到访客自己调的那朵。
+// 下载的 SVG、复制的提示词在右边，没有 JS 时下载的是默认那朵。
 
 const t = works.flower;
 
@@ -39,11 +34,15 @@ function emit(next: State) {
   state = next;
   listeners.forEach((listener) => listener());
 }
-function update(next: Partial<Flower>) {
+export function update(next: Partial<Flower>) {
   emit({ ...state, ...next, touched: true, preview: null });
 }
-function preview(next: Flower | null) {
+export function preview(next: Flower | null) {
   emit({ ...state, preview: next });
+}
+/** 画廊自己摆的样子（自己长一遍时每一拍）：不算访客动过手，不播报 */
+export function seed(next: Partial<Flower>) {
+  emit({ ...state, ...next, preview: null });
 }
 function subscribe(listener: () => void) {
   listeners.add(listener);
@@ -51,7 +50,7 @@ function subscribe(listener: () => void) {
     listeners.delete(listener);
   };
 }
-function useFlowerState() {
+export function useFlowerState() {
   return useSyncExternalStore(
     subscribe,
     () => state,
@@ -62,20 +61,28 @@ function useFlowerState() {
 const clamp = (n: number, lo: number, hi: number) =>
   Math.min(hi, Math.max(lo, Math.round(n)));
 const BLOOM_STEPS = [20, 44, 62, 82, 100];
-const own = ({ count, bloom, color }: Flower): Flower => ({
+export const own = ({ count, bloom, color }: Flower): Flower => ({
   count,
   bloom,
   color,
 });
 
-/** 窗里的花：在花上拖、按方向键、点一下；窗下是颜料点和现在的数 */
-export function FlowerStage() {
+/**
+ * 花本身就是控件：在花上拖（左右改重复、上下改展开）、按方向键、点一下换一档展开。两版画廊共用；
+ * onTouch 在访客动手时先告诉外面（停掉开场），grow 换了就重新挂上每一片（让它们一片片转到位）。
+ */
+export function FlowerCanvas({
+  describedBy,
+  onTouch,
+  grow,
+}: {
+  describedBy: string;
+  onTouch: () => void;
+  grow?: string;
+}) {
   const now = useFlowerState();
   const flower = own(now);
   const shown = now.preview ?? flower;
-  const id = useId();
-  // 第一次看到时一片片转到位（data-open 进入视口加 is-in）；动过手就不再播
-  const [intro, setIntro] = useState(true);
   const drag = useRef<{
     x: number;
     y: number;
@@ -87,7 +94,7 @@ export function FlowerStage() {
   const dragged = useRef(false);
 
   const set = (next: Partial<Flower>) => {
-    setIntro(false);
+    onTouch();
     update(next);
   };
 
@@ -147,101 +154,20 @@ export function FlowerStage() {
   };
 
   return (
-    <>
-      <div
-        className="m-com-frame m-com-flower-frame"
-        data-open
-        data-intro={intro || undefined}
-      >
-        <button
-          type="button"
-          className="m-com-canvas"
-          aria-label={flowerTitle(flower)}
-          aria-describedby={`${id}-keys`}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={() => (drag.current = null)}
-          onKeyDown={onKeyDown}
-          onClick={onClick}
-        >
-          <FlowerArt flower={shown} live className="m-com-flower" />
-        </button>
-        <span className="m-com-frame-cap m-caption" lang="en" aria-hidden="true">
-          {t.caption}
-        </span>
-        <p className="sr-only" id={`${id}-keys`}>
-          {communityUi.keys}
-        </p>
-      </div>
-      <div className="m-com-under">
-        <fieldset className="m-com-paints m-com-js">
-          <legend className="sr-only">{t.controls.color}</legend>
-          {flowerColors.map((color, index) => (
-            <button
-              key={color.name}
-              type="button"
-              aria-pressed={flower.color === index}
-              aria-label={color.name}
-              title={color.name}
-              style={{ '--c': color.value } as CSSProperties}
-              onClick={() => set({ color: index })}
-            />
-          ))}
-        </fieldset>
-        <p className="m-com-readout" aria-hidden="true">
-          {t.controls.count} <b className="num">{shown.count}</b>{' '}
-          {t.controls.times}
-          <span>
-            {t.controls.bloom} <b className="num">{shown.bloom}%</b>
-          </span>
-        </p>
-      </div>
-      <output className="sr-only" aria-live="polite">
-        {now.touched
-          ? `${flower.count} 次，展开 ${flower.bloom}%，${flowerColors[flower.color].name}`
-          : ''}
-      </output>
-    </>
-  );
-}
-
-/** 三步做法：指到哪一步，窗里那朵就停在那一步；点一下就用这一步的样子 */
-export function FlowerSteps() {
-  const now = useFlowerState();
-  const leave = useRef(0);
-  const show = (step: (typeof t.steps)[number]) => {
-    window.clearTimeout(leave.current);
-    preview({ ...own(now), count: step.count, bloom: step.bloom });
-  };
-  const use = (step: (typeof t.steps)[number]) => {
-    window.clearTimeout(leave.current);
-    update({ count: step.count, bloom: step.bloom });
-  };
-  // 鼠标在几步之间挪动时不在缝隙里跳回去
-  const hide = () => {
-    window.clearTimeout(leave.current);
-    leave.current = window.setTimeout(() => preview(null), 140);
-  };
-  useEffect(() => () => window.clearTimeout(leave.current), []);
-  return (
-    <ol className="m-com-steps">
-      {t.steps.map((step) => (
-        <li key={step.title}>
-          <button
-            type="button"
-            onMouseEnter={() => show(step)}
-            onMouseLeave={hide}
-            onFocus={() => show(step)}
-            onBlur={hide}
-            onClick={() => use(step)}
-          >
-            <b>{step.title}</b>
-            <span>{step.text}</span>
-          </button>
-        </li>
-      ))}
-    </ol>
+    <button
+      type="button"
+      className="m-com-canvas"
+      aria-label={flowerTitle(flower)}
+      aria-describedby={describedBy}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={() => (drag.current = null)}
+      onKeyDown={onKeyDown}
+      onClick={onClick}
+    >
+      <FlowerArt key={grow} flower={shown} live className="m-com-flower" />
+    </button>
   );
 }
 

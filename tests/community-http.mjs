@@ -50,6 +50,17 @@ for (const art of ['art-window', 'art-book', 'art-greenhouse'])
 assert(community.includes('/site/home-painting-poster'), 'painting ending');
 for (const text of ['拖一拖', '左右拖'])
   assert(!words(community).includes(text), `no「${text}」`);
+// 首屏大幅插画、作品区新画廊定稿（负责人 2026-10-24，D2）：样张参数和旧画廊都已删掉
+assert(community.includes('class="m-com-hero"'), 'hero');
+assert(!community.includes('data-hero'), 'no hero samples');
+assert(community.includes('class="m-com-shows-head"'), 'gallery opening');
+assert(community.includes('class="m-com-rail'), 'five-name rail');
+assert(!community.includes('m-com-steps'), 'no numbered how-to list');
+for (const note of ['示意', 'AI 创作试样 · 非艺术家原作'])
+  assert(words(community).includes(note), `disclosure ${note}`);
+const old = await page('/community?hero=a&works=current');
+assert(old.includes('class="m-com-shows-head"'), 'no old gallery');
+assert(!old.includes('m-com-steps'), 'no old gallery steps');
 
 const methods = await page('/community/methods');
 for (const entry of knowledge)
