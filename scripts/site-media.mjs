@@ -493,6 +493,65 @@ for (const size of [64, 96]) {
     .toFile(path.join(out, `molis-logo-${size}.png`));
 }
 
+// 透明底 Logo（顶栏用，压在满幅照片上不再露出米色方块）：原图是米色底上的深蓝与杏橙两色图形。
+// 底色取四条边的中位数，两种颜色取各自色簇的平均；每个像素投到「底色→深蓝」「底色→杏橙」两条线上，
+// 投影比例就是不透明度，再按这个比例把底色从像素里减掉，边缘的抗锯齿原样保留。
+// 深蓝与杏橙交界、离两条线都远的像素不透明、保持原色。图形、留白与颜色都不改，只把底色抠掉。
+{
+  const { data, info } = await sharp(path.join(root, 'public/images/molis-logo.png'))
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const { width: w, height: h } = info;
+  const px = (i) => [data[i * 3], data[i * 3 + 1], data[i * 3 + 2]];
+  const edge = [];
+  for (let x = 0; x < w; x++) edge.push(px(x), px((h - 1) * w + x));
+  for (let y = 0; y < h; y++) edge.push(px(y * w), px(y * w + w - 1));
+  const paper = [0, 1, 2].map((c) => edge.map((p) => p[c]).sort((a, b) => a - b)[edge.length >> 1]);
+  const mean = (test) => {
+    const sum = [0, 0, 0, 0];
+    for (let i = 0; i < w * h; i++) {
+      const p = px(i);
+      if (!test(p)) continue;
+      for (let c = 0; c < 3; c++) sum[c] += p[c];
+      sum[3]++;
+    }
+    return sum.slice(0, 3).map((v) => v / sum[3]);
+  };
+  const inks = [
+    mean(([r, g, b]) => r < 60 && b > g && b < 120), // 深蓝
+    mean(([r, g, b]) => r > 200 && g > 110 && g < 175 && b < 130), // 杏橙
+  ].map((ink) => {
+    const d = ink.map((v, c) => v - paper[c]);
+    return { ink, d, dd: d[0] ** 2 + d[1] ** 2 + d[2] ** 2 };
+  });
+  const rgba = Buffer.alloc(w * h * 4);
+  for (let i = 0; i < w * h; i++) {
+    const p = px(i);
+    let near;
+    for (const { ink, d, dd } of inks) {
+      const t = ((p[0] - paper[0]) * d[0] + (p[1] - paper[1]) * d[1] + (p[2] - paper[2]) * d[2]) / dd;
+      const k = Math.min(1, Math.max(0, t));
+      const off = Math.hypot(...p.map((v, c) => v - (paper[c] + k * d[c])));
+      if (!near || off < near.off) near = { t, k, off, ink };
+    }
+    // 两色交界（离两条线都远）或已是实色：不透明、原色；贴近底色：全透明；其余是抗锯齿边，按比例减去底色
+    const solid = (near.off > 24 && near.k > 0.3) || near.t >= 0.97;
+    const a = solid ? 1 : near.t <= 0.04 ? 0 : near.t;
+    const rgb = a === 1 ? p : a === 0 ? near.ink : p.map((v, c) => (v - (1 - a) * paper[c]) / a);
+    for (let c = 0; c < 3; c++) rgba[i * 4 + c] = Math.round(Math.min(255, Math.max(0, rgb[c])));
+    rgba[i * 4 + 3] = Math.round(a * 255);
+  }
+  const clear = sharp(rgba, { raw: { width: w, height: h, channels: 4 } });
+  for (const size of [64, 96]) {
+    await clear
+      .clone()
+      .resize(size, size)
+      .png({ compressionLevel: 9 })
+      .toFile(path.join(out, `molis-logo-clear-${size}.png`));
+  }
+}
+
 await writeFile(
   path.join(root, 'app/_site/media.json'),
   `${JSON.stringify(manifest, null, 2)}\n`,
