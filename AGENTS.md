@@ -13,3 +13,5 @@
 - 开发流程：main 是唯一主线。每件事从 main 拉一个短分支，在 .claude/worktrees/ 下的独立副本里做，验收后合回 main，再删掉分支和副本；main 所在的文件夹只用来看最新版、合并、推送，不在里面开发。推送、删除分支或副本、关闭 PR 之前先问负责人。.claude/launch.json 是各自本机的预览配置，不进 Git。
 
 - 图片经过本地压缩（scripts/site-media.mjs 输出 public/site/ 的 WebP 与 app/_site/media.json；视频用 scripts/encode-video.swift），使用声明尺寸的原生 img 和按需 lazy；部署不依赖 Next 图片优化服务，因此仅关闭 nextjs/no-img-element 规则。
+
+- Avoid unnecessary secondary labels and descriptions. Let the layout do the explaining
