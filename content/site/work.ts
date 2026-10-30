@@ -186,20 +186,26 @@ export const workKeep = {
   ] as [string, string, 'yes' | 'ask' | 'no'][],
 };
 
+/**
+ * 缘起与现在（2026-10-30 定的「等你决定」）：上面是缘起、信念和它的解释；下面一扇窗，首屏同一面墙前一个人坐着读书，
+ * 墙上浮着一张照 Molis Work「决定请求」画的卡——三个选项就是三个去处，走到哪一步写在各自的选项里，
+ * 页面最后一件事交给读者自己定。
+ */
 export const workEnd = {
-  origin: ['一开始，我们只是想做一个', '让自己团队用得更顺的工具。'],
+  origin: '一开始，我们只是想做一个让自己团队用得更顺的工具。',
+  photoAlt: '午后的屋子里，一个人坐在窗边的扶手椅上读书，叶影落在墙上。',
   belief: '判断归人，执行可以托付。',
   beliefText: '想要什么、为什么做、什么结果值得接受，这些重要判断留在人手里。',
-  released: {
-    label: '已发布 · v0.2.0',
-    text: '目标、完成要求和你的验收，几家 AI 记在同一份上。那时叫 GoalBoard，只有源码。',
-    go: '看源码',
-  },
-  dev: {
-    label: '开发中',
-    text: '这一页里的新版工作台，正在一件件做出来。想先试，可以按仓库说明从源码构建。',
-    go: '报名首批试用',
-    build: '从源码构建',
+  ask: {
+    from: '决定请求 · 来自 Molis 团队',
+    wait: '等你',
+    question: '要不要一起试新版？',
+    why: '这一页里的新版工作台，正在一件件做出来。',
+    options: [
+      { id: 'join', title: '报名首批试用', state: '开发中', text: '留个联系方式，排进首批' },
+      { id: 'build', title: '从源码构建', state: '开发中', text: '想现在就试，按仓库说明装上' },
+      { id: 'source', title: '看源码', state: '已发布 · v0.2.0', text: '那时叫 GoalBoard，只有源码' },
+    ] as { id: 'join' | 'build' | 'source'; title: string; state: string; text: string }[],
   },
   foot: 'macOS · 许可以仓库 LICENSE 为准',
 };

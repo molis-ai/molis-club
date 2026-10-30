@@ -107,6 +107,22 @@
       ]
     ]
   },
+  "work-close": {
+    "width": 1440,
+    "height": 960,
+    "avg": "#887b6d",
+    "src": "/site/work-close-1440.webp",
+    "srcset": [
+      [
+        "/site/work-close-960.webp",
+        960
+      ],
+      [
+        "/site/work-close-1440.webp",
+        1440
+      ]
+    ]
+  },
   "tool-light": {
     "width": 1672,
     "height": 941,

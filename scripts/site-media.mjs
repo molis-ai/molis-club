@@ -59,6 +59,13 @@ const images = [
     widths: [960, 1440],
     quality: 80,
   },
+  // Work 结尾：同一面墙、同一种光，一个人坐在扶手椅上读书（首屏是空着的书桌，结尾是坐下来的人）
+  {
+    key: 'work-close',
+    src: 'public/images/atelier/reading-room.jpg',
+    widths: [960, 1440],
+    quality: 80,
+  },
   {
     key: 'tool-light',
     src: 'public/r8-candidates-v2/images/tool-v2-a.png',
