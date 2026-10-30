@@ -206,3 +206,22 @@ export const workEnd = {
 
 /** 页面上用到的 docs/studio-intro.md 原句（tests/site-copy.test.mjs 逐句核对） */
 export const workQuoted = [workKeep.rows[0].text, workEnd.belief, workEnd.beliefText];
+
+/**
+ * 首屏舞台上、窗口外面的两样（2026-10-30 样稿 B）：菜单栏里的「等你」胶囊，和你自己的终端里的 Codex——
+ * 它经 MCP 读同一份目标，修好 #12 交回 Molis Work，窗口里那条「Codex 修好了 #12」就是它交回来的。都是示意。
+ */
+export const workHeroStage = {
+  wait: '划线卡片 · 2 件等你',
+  term: {
+    title: 'Codex',
+    lines: [
+      { dim: 'Molis Work · 经 MCP', text: '读目标「划线卡片 v1.1」' },
+      { text: '› 修 #12：长划线在手机上被截断' },
+      { dim: '改了 2 个文件', text: '测试 3 / 3 通过' },
+      { text: '交回 Molis Work，等你验收', ok: true },
+    ] as { text: string; dim?: string; ok?: boolean }[],
+  },
+  label:
+    '窗口外面：菜单栏里写着划线卡片有 2 件等你；你自己的终端里，Codex 经 MCP 读了同一份目标，修好 #12 后交回 Molis Work 等你验收。',
+};

@@ -12,27 +12,39 @@
   --sel: rgb(234 146 96 / 0.3);
 }
 
-/* ---------- 首屏 ---------- */
-.wk-hero {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  align-items: center;
-  min-height: calc(100svh - var(--header));
+/* ---------- 首屏（2026-10-30 样稿 B）：上面是字，左边名字与开场、右边「是什么」与报名；
+   下面一整块舞台：一面有叶影的墙（work-stage），窗口落在上面，窗外是菜单栏的「等你」和你的终端 ---------- */
+.wk-hero.m-top {
+  padding-top: calc(var(--header) + clamp(20px, 4.5vh, 56px));
   padding-bottom: clamp(40px, 7vh, 96px);
 }
 .wk-hero-copy {
-  grid-column: 1 / span 5;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 24px;
+  align-items: end;
+}
+.wk-hero-lead {
+  grid-column: 1 / span 7;
   display: grid;
   justify-items: start;
-  gap: clamp(12px, 2.1vh, 22px);
+  gap: clamp(10px, 1.9vh, 20px);
+}
+.wk-hero-side {
+  grid-column: 8 / -1;
+  display: grid;
+  justify-items: start;
+  gap: clamp(16px, 2.6vh, 28px);
+  padding-bottom: 4px;
 }
 .wk-hero-copy .m-phero-name {
-  margin-top: clamp(4px, 1.4vh, 16px);
+  margin-top: clamp(2px, 1vh, 12px);
+  font-size: clamp(44px, 5.8vw, 88px);
 }
 .wk-hero-title {
   max-width: 12.5em;
-  font: 300 var(--t-h2) / 1.42 var(--sans);
+  font: 400 var(--t-h2) / 1.42 var(--sans);
   letter-spacing: 0.05em;
   font-feature-settings: 'palt' 1;
   text-wrap: balance;
@@ -52,10 +64,97 @@
   margin-top: clamp(4px, 1.2vh, 14px);
 }
 .wk-hero-fig {
-  grid-column: 6 / -1;
   display: grid;
   gap: 12px;
-  margin: 0;
+  margin: clamp(28px, 5vh, 56px) 0 0;
+}
+
+/* 舞台：2 : 1，窗口宽 --w%（窗外两样用同一个尺寸单位），落定以后带一道暖色的落地影子 */
+.wk-stage {
+  --w: 66;
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--avg);
+}
+.wk-stage-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 62%;
+  filter: var(--grade);
+  animation: wk-dawn 1.6s var(--ease) both;
+}
+.wk-stage > .wk-frame {
+  position: absolute;
+  z-index: 1;
+  top: 9%;
+  left: 29%;
+  width: calc(var(--w) * 1%);
+  animation: wk-settle 1.4s var(--ease) 0.45s both;
+}
+.wk-stage .wk-win {
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.06),
+    0 2.4em 4.6em -2.2em rgb(var(--shade) / 0.6);
+}
+@keyframes wk-dawn {
+  from {
+    opacity: 0;
+  }
+}
+/* 落定：从高一点、小一点的地方落下来，影子跟着收紧 */
+@keyframes wk-settle {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.982);
+  }
+}
+
+/* 窗外：菜单栏的胶囊在左上，终端压住窗口的左边 */
+.wk-stage > .wk-aside {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  font-size: calc(var(--w) * 1cqi / 64);
+  pointer-events: none;
+  animation: m-rise 1.1s var(--ease) 1.25s both;
+}
+.wk-aside .wk-capsule {
+  top: 17%;
+  right: auto;
+  left: 4%;
+  gap: 0.5em;
+  padding: 0.5em 1.05em 0.5em 0.85em;
+  border-radius: 2em;
+  font-size: 0.98em;
+}
+.wk-aside .wk-term {
+  top: 38%;
+  left: 4%;
+  width: 31%;
+  font-size: 1.4em;
+}
+.wk-aside .wk-term-l {
+  white-space: nowrap;
+}
+.wk-aside :is(.wk-capsule, .wk-term-l) {
+  transition:
+    opacity 0.55s var(--ease),
+    transform 0.75s var(--ease);
+}
+/* 跟着窗口里的事件走（编排接管时才藏，平时就是做完的样子）：
+   检查台那条出来，终端开始修 #12；助理那条出来，测试过了；Codex 那条出来，终端交回；等你的计数亮起，胶囊才出现 */
+.wk-stage:has(> .wk-frame[data-run]):not(:has([data-c='h-0'][data-on])) .wk-term-l[data-l='1'],
+.wk-stage:has(> .wk-frame[data-run]):not(:has([data-c='h-1'][data-on])) .wk-term-l[data-l='2'],
+.wk-stage:has(> .wk-frame[data-run]):not(:has([data-c='h-2'][data-on])) .wk-term-l[data-l='3'],
+.wk-stage:has(> .wk-frame[data-run]):not(:has([data-c='h-wait'][data-on])) .wk-capsule {
+  opacity: 0;
+  transform: translateY(0.45em);
 }
 
 /* 画框下面：诚实标注 + 暂停键 */
@@ -3419,13 +3518,34 @@ html:not(.js) .wk-tour-tab[aria-selected='true']::after {
    窄屏
    ===================================================================== */
 @media (max-width: 900px) {
-  .wk-hero {
-    min-height: 0;
-    row-gap: 36px;
-  }
-  .wk-hero-copy,
-  .wk-hero-fig {
+  .wk-hero-lead,
+  .wk-hero-side {
     grid-column: 1 / -1;
+  }
+  /* 窄屏：舞台竖一点，窗口几乎占满宽，胶囊在窗口上面，终端压住窗口的左下角 */
+  .wk-stage {
+    --w: 90;
+    aspect-ratio: 4 / 3.5;
+    border-radius: 14px;
+  }
+  .wk-stage > .wk-frame {
+    top: 21%;
+    left: 5%;
+  }
+  .wk-stage > .wk-aside {
+    font-size: max(7px, calc(var(--w) * 1cqi / 64));
+  }
+  .wk-aside .wk-capsule {
+    top: 6.5%;
+    left: 5%;
+    font-size: 1.15em;
+  }
+  .wk-aside .wk-term {
+    top: auto;
+    bottom: 5%;
+    left: 3%;
+    width: 56%;
+    font-size: 1.3em;
   }
   .wk-tour-sec {
     min-height: 0;
@@ -3483,10 +3603,17 @@ html:not(.js) .wk-tour-tab[aria-selected='true']::after {
   .wk-tour-tabs {
     --pad: 5px;
   }
+  /* 手机上终端的字小到读不出来，舞台只留窗口和胶囊 */
+  .wk-aside .wk-term {
+    display: none;
+  }
 }
 
-/* 减少动态：演示停在做完的样子（编排不接管），过渡都关掉 */
+/* 减少动态：演示停在做完的样子（编排不接管），过渡都关掉；舞台不再落定，直接摆好 */
 @media (prefers-reduced-motion: reduce) {
+  .wk-stage-img,
+  .wk-stage > .wk-frame,
+  .wk-stage > .wk-aside,
   .wk-scene *,
   .wk-moment,
   .wk-gal-list,

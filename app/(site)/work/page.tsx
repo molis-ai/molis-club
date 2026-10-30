@@ -19,7 +19,7 @@ export const metadata = pageMetadata(
 
 // Molis Work（2026-10-24 重做，目标、取舍与验收见 specs/work-product-page/spec.md）。
 // 一句话：工具和 AI 围着你转，你还是你。整页只有一个例子：一个周末，把一个想法做上线。
-// 首屏（做完以后的周一早上）→ 全景（一扇窗，七处依次点亮）→ 一个周末（六个时刻，钉住的画廊）
+// 首屏（做完以后的周一早上：上面是字，下面一整块舞台，窗口落在一面有叶影的墙前）→ 全景（一扇窗，七处依次点亮）→ 一个周末（六个时刻，钉住的画廊）
 // → 留在你这儿 → 缘起与现在。画面照最新桌面端画；功能按做好的样子演，走到哪一步只在结尾写一次。
 // 两种光标：杏橙指针是「你」（只在你动手、你定的时候出现），插入光标加灰名牌是 AI（它在写）。
 
@@ -55,25 +55,29 @@ export default function WorkPage() {
     <div className="m-product m-work wk">
       <header className="wk-hero m-wrap m-top">
         <div className="wk-hero-copy">
-          <p className="m-tagline m-rise">
-            <span>{workHero.form}</span>
-            <Status>{workHero.stage}</Status>
-          </p>
-          <h1 className="m-phero-name m-rise" lang="en">
-            {work.name}
-          </h1>
-          <p className="wk-hero-title m-rise" style={{ '--delay': '120ms' } as Vars}>
-            <Phrases text={workHero.title} />
-          </p>
-          <p className="wk-hero-slogan m-rise" lang="en" style={{ '--delay': '180ms' } as Vars}>
-            {workHero.slogan}
-          </p>
-          <p className="wk-hero-what m-rise" style={{ '--delay': '240ms' } as Vars}>
-            <Phrases text={workHero.what} />
-          </p>
-          <p className="wk-hero-go m-rise" style={{ '--delay': '320ms' } as Vars}>
-            <Btn href={contactHref('work')}>{workHero.go}</Btn>
-          </p>
+          <div className="wk-hero-lead">
+            <p className="m-tagline m-rise">
+              <span>{workHero.form}</span>
+              <Status>{workHero.stage}</Status>
+            </p>
+            <h1 className="m-phero-name m-rise" lang="en">
+              {work.name}
+            </h1>
+            <p className="wk-hero-title m-rise" style={{ '--delay': '120ms' } as Vars}>
+              <Phrases text={workHero.title} />
+            </p>
+            <p className="wk-hero-slogan m-rise" lang="en" style={{ '--delay': '180ms' } as Vars}>
+              {workHero.slogan}
+            </p>
+          </div>
+          <div className="wk-hero-side">
+            <p className="wk-hero-what m-rise" style={{ '--delay': '240ms' } as Vars}>
+              <Phrases text={workHero.what} />
+            </p>
+            <p className="wk-hero-go m-rise" style={{ '--delay': '320ms' } as Vars}>
+              <Btn href={contactHref('work')}>{workHero.go}</Btn>
+            </p>
+          </div>
         </div>
         <HeroStage label={workHero.label} />
       </header>
