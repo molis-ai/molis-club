@@ -1,0 +1,95 @@
+<div class="frame">
+    <div class="scene" id="scene" aria-hidden="true">
+      <div class="win">
+        <div class="top">
+          <span class="nav"><i data-i="arrow-left"></i><i data-i="arrow-right"></i></span>
+          <span class="tabs">
+            <span class="tab" data-hue="brown" id="tab-feed"><i data-i="rss"></i><span class="tl">Feed</span><i data-i="x" class="x"></i></span>
+            <span class="tab" data-hue="blue" id="tab-goal"><i data-i="target"></i><span class="tl">修好微信里的支付</span><i data-i="x" class="x"></i></span>
+          </span>
+          <span class="top-end"><i data-i="plus"></i><i data-i="layout-grid"></i></span>
+        </div>
+
+        <div class="body">
+          <div class="card" id="card">
+            <!-- 1 Feed -->
+            <section class="view" id="v-feed">
+              <div class="vh">
+                <h3>Feed</h3>
+                <span class="sub">用户反馈 · 3 个来源</span>
+                <span class="watch" id="watch"><span class="av sq ai"><i data-i="sparkles"></i></span>助理按你定的规则在看</span>
+              </div>
+              <ul class="feed" id="feed"></ul>
+              <div class="judge" id="judge">
+                <p class="h"><i data-i="circle-alert"></i><span class="swap" id="judge-h"><span data-a>要紧：微信里付不了款 · 23 位用户</span><span data-b>处理完了：微信里付不了款 · 23 位用户</span></span></p>
+                <p class="rule">你定的规则<b>涉及付款</b><b>影响超过 10 人</b><i data-i="arrow-right"></i>开话题，@ 负责人</p>
+                <p class="sent" id="sent"><i data-i="messages-square"></i><span class="swap" id="sent-t"><span data-a>已在「# 支付失败」叫上你</span><span data-b>结论在「# 支付失败」 · 已回信三家门店</span></span></p>
+              </div>
+            </section>
+
+            <!-- 2 目标 -->
+            <section class="view" id="v-goal" data-off>
+              <p class="crumb blue"><i data-i="target"></i>Goals · 小店收银</p>
+              <h3 class="g-title">修好微信里的支付</h3>
+              <div class="g-meta">
+                <span class="swap" id="g-state">
+                  <span data-a class="state"><svg class="ring" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2"/><path class="arc" d="M8 1.8a6.2 6.2 0 0 1 6.2 6.2"/></svg>进行中</span>
+                  <span data-b class="state" data-done><svg class="ring" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2"/><path class="tick" d="M5.2 8.2l1.9 1.9 3.8-4"/></svg>已完成</span>
+                </span>
+                <span>来自<span class="topic"># 支付失败</span></span>
+                <span class="g-ref">参考<span class="mem-ref" id="mem-ref"><i data-i="history"></i>项目记忆 <span id="mem-n">2</span> 条</span></span>
+              </div>
+              <p class="gp">完成要求 <b id="g-count">0/3</b><span class="bars" id="bars"><i></i><i></i><i></i></span></p>
+              <ul class="reqs">
+                <li class="req" id="r1"><span class="ck"><i data-i="check"></i></span><span class="w"><b>微信里能付款</b><span class="ev"><span class="swap" id="e1"><span data-a>还没有依据</span><span data-b><span class="typed" id="t1"></span><i class="caret" id="c1" data-n="Codex"></i></span></span></span></span><span class="who" id="who1"><span class="swap" id="w1"><span data-a><span class="duo"><span class="av me">你</span></span>你</span><span data-b><span class="duo"><span class="av me">你</span><span class="av sq codex"><i data-i="terminal"></i></span></span>你 · Codex</span></span></span></li>
+                <li class="req" id="r2"><span class="ck"><i data-i="check"></i></span><span class="w"><b>23 位用户的订单补上</b><span class="ev"><span class="swap" id="e2"><span data-a>还没有依据</span><span data-b><span class="typed" id="t2"></span><i class="caret" id="c2" data-k="cc" data-n="Claude Code"></i></span></span></span><span class="dec" id="d2"><span><em><i class="pd" data-k="me"></i>你定的：已重新下单的 2 笔改退款</em></span></span></span><span class="who" id="who2"><span class="swap" id="w2"><span data-a><span class="duo"><span class="av zhe">哲</span></span>阿哲</span><span data-b><span class="duo"><span class="av zhe">哲</span><span class="av sq cc"><i data-i="terminal"></i></span></span>阿哲 · Claude Code</span></span></span></li>
+                <li class="req" id="r3"><span class="ck"><i data-i="check"></i></span><span class="w"><b>真机上付一笔</b><span class="ev"><span class="swap" id="e3"><span data-a>等阿哲验收</span><span data-b><span class="vmini"><i data-i="smartphone"></i>阿哲验收通过 · 真机录屏 0:42</span></span></span></span></span><span class="who"><span class="duo"><span class="av zhe">哲</span></span>阿哲验收</span></li>
+              </ul>
+              <ul class="log" id="log"></ul>
+            </section>
+          </div>
+
+          <div class="rail" id="rail">
+            <div class="rail-in">
+              <div class="r-head">
+                <div class="t">
+                  <p class="r-title">小店收银</p>
+                  <p class="r-sub">项目讨论 · 4 位成员</p>
+                </div>
+                <span class="r-tools"><i data-i="search"></i><i data-i="minus"></i></span>
+              </div>
+              <div class="r-tags">
+                <span class="tg">主群</span>
+                <span class="tg"># 周五发布<i class="u"></i></span>
+                <span class="tg"># 新版首页</span>
+                <span class="tg" id="tg-new" data-wait data-on># 支付失败<i data-i="check"></i></span>
+              </div>
+              <p class="r-status"><span class="swap" id="r-state"><span data-a>讨论中 · 助理 09:12 发起</span><span data-b>已有结论 · 你确认 15:12</span></span></p>
+              <div class="conv" id="conv"></div>
+              <div class="r-input">
+                <p class="to">发到 # 支付失败</p>
+                <div class="row"><span class="ph" id="r-ph">发送消息…</span><span class="send"><i data-i="send"></i></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bar">
+          <div class="dock">
+            <span class="dock-cur"><span data-v="feed"><i data-i="rss"></i>Feed<i data-i="chevron-up" class="up"></i></span><span data-v="goal"><i data-i="target"></i>Goals<i data-i="chevron-up" class="up"></i></span></span>
+            <i class="dock-sep"></i>
+            <span class="dock-ic"><i data-i="house"></i></span>
+            <span class="dock-ic" id="dk-goal"><i data-i="target"></i></span>
+            <span class="dock-ic" id="dk-feed"><i data-i="rss"></i></span>
+            <span class="dock-ic"><i data-i="inbox"></i></span>
+          </div>
+          <div class="input" id="ask"><span class="ph">问助理，或按 ⌘K 搜索</span><span class="send"><i data-i="send"></i></span></div>
+          <span class="bar-end">
+            <span class="talk" id="talk"><i data-i="messages-square"></i><b class="badge" id="badge">1</b></span>
+            <span class="self">你</span>
+          </span>
+        </div>
+      </div>
+      <div class="hand" id="hand"><div class="hand-in"><svg viewBox="0 0 18 24"><path d="M1.5 1.5v17l4.5-4 3 7 2.6-1.1-3-6.9h6.4z"/></svg><span class="hand-name">你</span></div></div>
+    </div>
+  </div>

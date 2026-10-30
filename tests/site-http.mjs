@@ -121,11 +121,13 @@ assert.match(home, new RegExp(`rel="canonical" href="${canonicalOrigin}/?"`));
 // 产品页：阶段、诚实标注；没有伪装可用的下载入口
 const work = await html('/work');
 assert.match(work, /界面示意/);
-// Work（2026-10-24 重做）：一句开场、全景、一个周末的六个时刻；功能按做好的样子演，
+// Work（2026-10-24 重做）：一句开场、全景、用起来（两种人各两条闭环，能切换角色）、为什么是 Molis；功能按做好的样子演，
 // 走到哪一步只在结尾写一次，状态只分「已发布」「开发中」；Issue 插件是内部工具，不上官网
-assert.match(work, /工具和 AI 围着你转/);
+assert.match(work, /不止于 AI 对话/);
 assert.match(work, /一张工作台/);
-assert.match(work, /周五晚上的一个想法/);
+assert.match(work, /从开头接到做完/);
+assert.match(work, /做内容、运营/);
+assert.match(work, /工作只有一份/);
 assert.match(work, /已发布 · v0\.2\.0/);
 assert.match(work, /开发中/);
 assert(!work.includes('Issue'), 'work: no internal Issue plugin');

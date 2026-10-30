@@ -1,0 +1,258 @@
+/* ---------- 3 · 插件创作台：左边边搭边说，右边画布上看着它长出来 ---------- */
+.studio { display: flex; flex-direction: column; padding: 1.05em 1.35em 1.15em; }
+.st-top { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; height: 2.1em; }
+.st-name { display: flex; align-items: center; gap: 0.6em; min-width: 0; font-size: 0.7em; }
+.st-name .appic { width: 2.1em; height: 2.1em; }
+.st-name b { font-size: 1.12em; font-weight: 500; }
+.st-name .crumb { font-size: 0.86em; }
+.st-name .crumb .i { color: #3c6fc6; }
+.tag { padding: 0.12em 0.55em; border-radius: 0.4em; background: var(--a-soft-2); font-size: 0.86em; color: var(--a-mute); transition: background-color 0.3s var(--ease), color 0.3s var(--ease); }
+.tag[data-s='ok'] { background: var(--fn-soft); color: var(--fn); }
+.seg { justify-self: center; position: relative; display: inline-flex; padding: 0.22em; border-radius: 0.72em; background: var(--a-soft-2); font-size: 0.64em; }
+.seg > span { position: relative; z-index: 1; padding: 0.38em 1.15em; border-radius: 0.55em; color: var(--a-mute); transition: color 0.3s var(--ease); }
+.seg > span[data-on] { color: var(--a-ink); }
+.seg > i { position: absolute; top: 0.22em; bottom: 0.22em; left: 0.22em; width: calc(50% - 0.22em); border-radius: 0.55em; background: var(--a-paper); box-shadow: 0 1px 2px rgb(0 0 0 / 0.08), 0 0 0 1px var(--a-line); transition: transform 0.4s var(--split); }
+.seg[data-k='try'] > i { transform: translateX(100%); }
+.st-act { justify-self: end; position: relative; font-size: 0.64em; }
+.st-act .btn[data-dis] { opacity: 0.32; }
+.st-act .btn .done { display: none; }
+.st-act .btn[data-done] { background: var(--fn-soft); box-shadow: none; color: var(--fn); }
+.st-act .btn[data-done] .do { display: none; }
+.st-act .btn[data-done] .done { display: inline-flex; align-items: center; gap: 0.35em; }
+
+.st-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 12.6em minmax(0, 1fr); gap: 1em; margin-top: 0.85em; }
+.st-log { display: flex; flex-direction: column; min-height: 0; font-size: 0.6em; }
+.need { flex: none; padding: 0.8em 0.9em 0.85em; border-radius: 0.85em; background: var(--a-soft); }
+.need-k { display: flex; align-items: center; gap: 0.5em; color: var(--ai); }
+.need-k .av { width: 1.6em; height: 1.6em; font-size: 0.9em; }
+.need-t { margin-top: 0.45em !important; line-height: 1.65; color: var(--a-ink); }
+.need-c { display: flex; flex-wrap: wrap; gap: 0.3em; margin-top: 0.6em; }
+.need-c span { display: inline-flex; align-items: center; gap: 0.35em; padding: 0.18em 0.55em; border-radius: 0.45em; background: var(--a-paper); box-shadow: inset 0 0 0 1px var(--a-line); font-size: 0.94em; color: var(--a-ink-2); }
+.need-c .i { width: 0.85em; height: 0.85em; color: var(--fn); }
+.log {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0.3em 0 0.2em;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 2.4em);
+  mask-image: linear-gradient(to bottom, transparent, #000 2.4em);
+}
+.lg { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 0fr; flex: none; transition: grid-template-rows 0.4s var(--ease); }
+.lg[data-in] { grid-template-rows: 1fr; }
+.lg > div { min-height: 0; overflow: hidden; display: flex; align-items: flex-start; gap: 0.55em; padding: 0.32em 0; line-height: 1.5; color: var(--a-ink-2); opacity: 0; transform: translateY(0.4em); transition: opacity 0.3s 0.08s var(--ease), transform 0.4s var(--ease); }
+.lg[data-in] > div { opacity: 1; transform: none; }
+.rl { flex: none; display: grid; place-items: center; width: 1.6em; height: 1.6em; margin-top: -0.05em; border-radius: 30%; color: #fff; }
+.rl .i { width: 0.85em; height: 0.85em; }
+.rl.ui { background: var(--ui); }
+.rl.fn { background: var(--fn); }
+.lg b { font-weight: 500; color: var(--a-ink); }
+.lg em { font-style: normal; color: var(--a-mute); }
+.lg.you > div { justify-content: flex-end; padding: 0.5em 0; }
+.lg.you .bub { max-width: 92%; padding: 0.5em 0.85em; border-radius: 0.95em 0.95em 0.3em 0.95em; background: #f2efea; color: var(--a-ink); }
+.lg.note > div { color: var(--ui); }
+.lg.okl > div { color: var(--fn); }
+.lg .i { flex: none; width: 1.05em; height: 1.05em; margin-top: 0.22em; }
+.st-in {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  height: 2.8em;
+  margin-top: 0.4em;
+  padding: 0 0.4em 0 0.9em;
+  border-radius: 0.9em;
+  background: var(--a-paper);
+  box-shadow: 0 0 0 1px var(--a-line-2), 0 0.35em 0.9em -0.55em rgb(0 0 0 / 0.16);
+}
+.st-in .ph { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; color: var(--a-faint); }
+.st-in .ph[data-typing] { color: var(--a-ink); }
+
+/* 画布：点阵底，白板上是插件本身，右边一列是它能接的能力 */
+.canvas {
+  position: relative;
+  min-height: 0;
+  padding: 2.1em 6.9em 1em 1.15em;
+  border-radius: 0.9em;
+  background:
+    radial-gradient(circle, #dedad3 0.07em, transparent 0.08em) 0 0 / 1.05em 1.05em,
+    #f5f4f1;
+}
+.cv-top { position: absolute; top: 0.62em; left: 1.15em; right: 1.15em; display: flex; align-items: center; justify-content: space-between; font-size: 0.56em; color: var(--a-mute); }
+.cv-top > span { display: inline-flex; align-items: center; gap: 0.45em; }
+.cv-top > .cv-mode { display: inline-grid; }
+.cv-mode > span { grid-area: 1 / 1; justify-self: start; display: inline-flex; align-items: center; gap: 0.45em; transition: opacity 0.3s var(--ease); }
+.cv-mode > [data-b] { opacity: 0; color: var(--fn); }
+.cv-mode[data-on] > [data-a] { opacity: 0; }
+.cv-mode[data-on] > [data-b] { opacity: 1; }
+.cv-prog { display: inline-flex; align-items: center; gap: 0.5em; }
+.cv-prog b { font-weight: 500; color: var(--a-ink); }
+.cv-dots { display: inline-flex; gap: 0.28em; }
+.cv-dots i { width: 0.55em; height: 0.55em; border-radius: 50%; background: var(--a-line-2); transition: background-color 0.3s var(--ease), transform 0.3s var(--ease); }
+.cv-dots i[data-on] { background: var(--fn); }
+.cv-dots i[data-new] { animation: pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1); }
+.board {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  padding: 1em 1.15em;
+  border-radius: 0.75em;
+  background: var(--a-paper);
+  box-shadow: 0 0 0 1px var(--a-line), 0 0.7em 1.8em -1.1em rgb(40 30 20 / 0.3);
+}
+.sockets { position: absolute; top: 0; right: 1em; bottom: 0; width: 5.6em; transition: opacity 0.4s var(--ease); }
+.scene[data-mode='try'] .sockets { opacity: 0; }
+.sk {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  height: 2.35em;
+  margin-top: -1.175em;
+  padding: 0 0.65em;
+  border-radius: 0.65em;
+  background: var(--a-paper);
+  box-shadow: 0 0 0 1px var(--a-line-2);
+  font-size: 0.55em;
+  white-space: nowrap;
+  color: var(--a-mute);
+  transition: box-shadow 0.35s var(--ease), color 0.35s var(--ease), top 0.12s linear;
+}
+.sk .i { color: var(--a-faint); transition: color 0.35s var(--ease); }
+.sk .ck { margin-left: auto; width: 0.9em; height: 0.9em; stroke-width: 2.6; opacity: 0; color: var(--fn); transition: opacity 0.3s var(--ease); }
+.sk[data-on] { box-shadow: 0 0 0 1.5px var(--fn), 0 0.25em 0.6em -0.3em rgb(35 134 90 / 0.4); color: var(--a-ink); }
+.sk[data-on] .i { color: var(--fn); }
+.sk[data-on] .ck { opacity: 1; }
+.sk.hit { animation: pulse-fn 0.9s var(--ease); }
+@keyframes pulse-fn { 0% { box-shadow: 0 0 0 1.5px var(--fn), 0 0 0 0 rgb(35 134 90 / 0.35); } 100% { box-shadow: 0 0 0 1.5px var(--fn), 0 0 0 0.9em rgb(35 134 90 / 0); } }
+
+/* 线：功能接上能力的那一下，画在整个画面上 */
+.wires { position: absolute; inset: 0; z-index: 24; width: 100%; height: 100%; overflow: visible; pointer-events: none; opacity: 0; transition: opacity 0.4s var(--ease); }
+.scene[data-v='studio']:not([data-mode='try']) .wires { opacity: 1; }
+.wires path { fill: none; stroke: var(--fn); stroke-width: 1.4; stroke-linecap: round; opacity: 0.75; }
+.wires circle { fill: var(--a-paper); stroke: var(--fn); stroke-width: 1.4; }
+
+/* 搭的时候：先是助理那张草图的虚线框，放进来才变实 */
+.part { position: relative; }
+.part > .gh {
+  position: absolute;
+  inset: -0.3em;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  border: 1px dashed #cfcac1;
+  border-radius: 0.7em;
+  background: rgb(250 249 247 / 0.9);
+  color: var(--a-faint);
+  transition: opacity 0.4s var(--ease), border-color 0.3s var(--ease), background-color 0.3s var(--ease), color 0.3s var(--ease);
+}
+.part[data-st='placing'] > .gh {
+  border-color: var(--ui);
+  color: var(--ui);
+  background: linear-gradient(100deg, var(--ui-soft) 30%, #f6f9ff 50%, var(--ui-soft) 70%) 0 0 / 220% 100%;
+  animation: shimmer 1.1s linear infinite;
+}
+.part[data-st='placed'] > .gh { opacity: 0; }
+.part > :not(.gh) { transition: opacity 0.45s var(--ease), filter 0.5s var(--ease), transform 0.5s var(--ease); }
+.board .part:not([data-st='placed']) > :not(.gh) { opacity: 0; filter: blur(0.3em); transform: translateY(0.3em); }
+.wired { animation: glow-fn 0.9s var(--ease); }
+@keyframes glow-fn { 0% { box-shadow: 0 0 0 0 rgb(35 134 90 / 0.5); } 100% { box-shadow: 0 0 0 0.8em rgb(35 134 90 / 0); } }
+
+/* 选中框：蓝线，四角小方块 */
+.sel { position: absolute; z-index: 26; top: 0; left: 0; border: 1px solid var(--ui); border-radius: 0.45em; opacity: 0; pointer-events: none; transition: opacity 0.3s var(--ease); }
+.sel[data-on] { opacity: 1; }
+.sel > i { position: absolute; width: 0.42em; height: 0.42em; background: var(--a-paper); border: 1px solid var(--ui); }
+.sel > i:nth-child(1) { left: -0.24em; top: -0.24em; }
+.sel > i:nth-child(2) { right: -0.24em; top: -0.24em; }
+.sel > i:nth-child(3) { left: -0.24em; bottom: -0.24em; }
+.sel > i:nth-child(4) { right: -0.24em; bottom: -0.24em; }
+
+/* 安装：先看它要用到什么 */
+.inst-pop {
+  position: absolute;
+  top: calc(100% + 0.6em);
+  right: 0;
+  z-index: 30;
+  width: 21em;
+  padding: 1em 1.1em 1.1em;
+  border-radius: 0.95em;
+  background: var(--a-paper);
+  box-shadow: 0 0 0 1px var(--a-line-2), 0 1.2em 2.6em -1.2em rgb(40 30 20 / 0.42);
+  opacity: 0;
+  transform: translateY(-0.4em) scale(0.98);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease), transform 0.4s var(--ease);
+}
+.inst-pop[data-on] { opacity: 1; transform: none; }
+.inst-pop h4 { margin: 0; font-size: 1.08em; font-weight: 500; }
+.inst-pop ul { list-style: none; display: grid; gap: 0.55em; margin: 0.8em 0 0; padding: 0.75em 0 0; border-top: 1px solid var(--a-line); }
+.inst-pop li { display: grid; grid-template-columns: 1.8em minmax(0, 1fr); gap: 0.6em; align-items: center; }
+.inst-pop li > span:first-child { display: grid; place-items: center; width: 1.8em; height: 1.8em; border-radius: 0.5em; background: var(--a-soft); color: var(--a-ink-2); }
+.inst-pop li small { display: block; color: var(--a-mute); }
+.inst-pop .btn { width: 100%; margin-top: 0.95em; }
+
+/* AI 的指针：方名牌，带一颗星，蓝的放界面，绿的接功能 */
+.bot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 36;
+  width: 1em;
+  height: 1.3em;
+  font-size: max(13px, calc(100cqi / 56 * 1.1));
+  opacity: 0;
+  pointer-events: none;
+  transition-property: transform, opacity;
+  transition-duration: 0.65s, 0.3s;
+  transition-timing-function: cubic-bezier(0.45, 0, 0.2, 1), var(--ease);
+}
+.bot[data-on] { opacity: 1; }
+.bot[data-k='ui'] { --c: var(--ui); }
+.bot[data-k='fn'] { --c: var(--fn); }
+.bot > svg { position: absolute; top: -0.08em; left: -0.08em; width: 0.92em; height: 1.22em; overflow: visible; fill: var(--c); stroke: #fff; stroke-width: 1.3; stroke-linejoin: round; filter: drop-shadow(0 0.08em 0.12em rgb(var(--shade) / 0.3)); }
+.bot-tag {
+  position: absolute;
+  top: 1em;
+  left: 0.72em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.28em 0.55em 0.3em 0.45em;
+  border-radius: 0.38em;
+  background: var(--c);
+  box-shadow: 0 0.2em 0.5em -0.2em rgb(0 0 0 / 0.35);
+  font-size: 0.56em;
+  line-height: 1;
+  white-space: nowrap;
+  color: #fff;
+}
+.bot-tag .i { width: 0.95em; height: 0.95em; fill: currentColor; stroke: none; }
+.bot-tag em { font-style: normal; padding-left: 0.45em; border-left: 1px solid rgb(255 255 255 / 0.35); opacity: 0.92; }
+.bot-tag em:empty { display: none; }
+/* 接功能的那只停在零件右沿，名牌往左挂，不挡右边那一列 */
+.bot[data-k='fn'] .bot-tag { left: auto; right: 0.2em; top: 1.05em; }
+
+/* 窄屏：画布在上，边搭边说在下 */
+@media (max-width: 900px) {
+  .studio { padding: 0.9em 0.9em 1em; }
+  .st-name .crumb, .st-name .tag, .cv-top > .cv-mode { display: none; }
+  .st-name { gap: 0.45em; }
+  .st-name b { white-space: nowrap; }
+  .cv-top { justify-content: flex-end; }
+  .cv-prog { white-space: nowrap; }
+  .st-act { font-size: 0.6em; }
+  .seg { font-size: 0.6em; }
+  .st-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 0.6em; margin-top: 0.6em; }
+  .board { height: auto; padding: 0.8em; }
+  .st-log { order: 2; font-size: 0.6em; }
+  .need { display: none; }
+  .canvas { padding: 2em 0.8em 0.8em; }
+  .sockets, .wires { display: none; }
+  .inst-pop { width: 17em; }
+}
