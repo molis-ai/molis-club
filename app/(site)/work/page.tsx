@@ -8,7 +8,7 @@ import { contactHref, productHref } from '../../_site/routes';
 import { Btn, Phrases, Status, Window, type Vars } from '../../_site/ui';
 import { Cases } from './cases';
 import { Why } from './why';
-import { HeroStage, Tour } from './stages';
+import { HeroStage, Opening, Tour } from './stages';
 import '../../_site/product/product.css';
 import './work.css';
 
@@ -22,7 +22,8 @@ export const metadata = pageMetadata(
 
 // Molis Work（2026-10-24 重做，目标、取舍与验收见 specs/work-product-page/spec.md）。
 // 一句话：工作，不止于 AI 对话。
-// 首屏（周一早上的项目首页：上面是字，下面一整块舞台，窗口落在一面有叶影的墙前）→ 全景（一扇窗，镜头依次推近六处）
+// 首屏（周一早上的项目首页：上面是字，下面一整块舞台，窗口落在一面有叶影的墙前）
+// → 全景（往下滚，首屏那扇窗推近成全景的大窗；之后镜头依次推近六处）
 // → 用起来（写代码、做内容运营两种人，各走「和团队一起」「长出自己的工具」两条闭环，切换角色只换手上的活）
 // → 为什么是 Molis（深色一屏：四条差异和一张连着的图）
 // → 缘起与现在（信念在上；下面一扇窗，墙上浮着一张「决定请求」，三个去处就是三个选项，最后一件事交给读者定）。
@@ -124,14 +125,12 @@ export default function WorkPage() {
             </p>
           </div>
         </div>
-        <HeroStage label={workHero.label} />
       </header>
 
-      <section className="wk-sec wk-tour-sec" aria-labelledby="wk-tour-title">
-        <div className="m-wrap">
-          <Tour head={<Head id="wk-tour-title" kicker={workTour.kicker} title={workTour.title} size="screen" />} />
-        </div>
-      </section>
+      <Opening
+        hero={<HeroStage label={workHero.label} />}
+        tour={<Tour head={<Head id="wk-tour-title" kicker={workTour.kicker} title={workTour.title} size="screen" />} />}
+      />
 
       <section className="wk-cs-sec" aria-labelledby="wk-cases-title">
         <Cases head={<Head id="wk-cases-title" kicker={workCases.kicker} title={workCases.title} size="screen" />} />

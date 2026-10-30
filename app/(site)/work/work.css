@@ -16,7 +16,7 @@
    下面一整块舞台：一面有叶影的墙（work-stage），窗口落在上面，窗外是菜单栏的「等你」和你的终端 ---------- */
 .wk-hero.m-top {
   padding-top: calc(var(--header) + clamp(20px, 4.5vh, 56px));
-  padding-bottom: clamp(40px, 7vh, 96px);
+  padding-bottom: 0;
 }
 .wk-hero-copy {
   display: grid;
@@ -76,6 +76,11 @@
   position: relative;
   container-type: inline-size;
   aspect-ratio: 2 / 1;
+}
+/* 照片自己裁圆角：窗口推近全景时要能走出舞台的边 */
+.wk-stage-photo {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   border-radius: var(--r-card);
   background: var(--avg);
@@ -90,13 +95,15 @@
   filter: var(--grade);
   animation: wk-dawn 1.6s var(--ease) both;
 }
-.wk-stage > .wk-frame {
+.wk-stage-win {
   position: absolute;
   z-index: 1;
   top: 9%;
   left: 29%;
   width: calc(var(--w) * 1%);
-  animation: wk-settle 1.4s var(--ease) 0.45s both;
+}
+.wk-stage-win > .wk-frame {
+  animation: wk-settle 1.4s var(--ease) 0.45s backwards;
 }
 .wk-stage .wk-win {
   box-shadow:
@@ -123,7 +130,7 @@
   z-index: 2;
   font-size: calc(var(--w) * 1cqi / 64);
   pointer-events: none;
-  animation: m-rise 1.1s var(--ease) 1.25s both;
+  animation: m-rise 1.1s var(--ease) 1.25s backwards;
 }
 .wk-aside .wk-capsule {
   top: 17%;
@@ -150,12 +157,126 @@
 }
 /* 跟着窗口里的事件走（编排接管时才藏，平时就是做完的样子）：
    检查台那条出来，终端开始修 #12；助理那条出来，测试过了；Codex 那条出来，终端交回；等你的计数亮起，胶囊才出现 */
-.wk-stage:has(> .wk-frame[data-run]):not(:has([data-c='h-0'][data-on])) .wk-term-l[data-l='1'],
-.wk-stage:has(> .wk-frame[data-run]):not(:has([data-c='h-1'][data-on])) .wk-term-l[data-l='2'],
-.wk-stage:has(> .wk-frame[data-run]):not(:has([data-c='h-2'][data-on])) .wk-term-l[data-l='3'],
-.wk-stage:has(> .wk-frame[data-run]):not(:has([data-c='h-wait'][data-on])) .wk-capsule {
+.wk-stage:has(.wk-frame[data-run]):not(:has([data-c='h-0'][data-on])) .wk-term-l[data-l='1'],
+.wk-stage:has(.wk-frame[data-run]):not(:has([data-c='h-1'][data-on])) .wk-term-l[data-l='2'],
+.wk-stage:has(.wk-frame[data-run]):not(:has([data-c='h-2'][data-on])) .wk-term-l[data-l='3'],
+.wk-stage:has(.wk-frame[data-run]):not(:has([data-c='h-wait'][data-on])) .wk-capsule {
   opacity: 0;
   transform: translateY(0.45em);
+}
+/* ---------- 首屏推近成全景（stages.tsx 的 Opening） ----------
+   平常（窄屏、矮屏、减少动态、没有 JS）：舞台在上、全景在下，照常排。
+   宽屏（≥901 宽、≥700 高，stages.tsx 写上 data-push）：舞台和全景叠在同一个钉住的一屏里，多出一屏的滚动用来推近。--pin 由 useSiteMotion 写入（跟随缓动），
+   --t 是推近走到哪（--pin 0.06–0.72），--e 是它的 S 形曲线；--dx、--dy、--s 由 stages.tsx 量出：两扇窗中心的平移和宽的比，
+   全景在这里排得紧一些（见下面 .wk-tour），窗口一般比首屏那扇大，就一路放大到底、停在那么大；
+   只有全景的窗比首屏那扇还小时（很矮的宽屏），--b 让路上先多推近一截再落定。
+   两扇窗每一刻都摆在同一处（都以中心缩放）：位置从首屏走到全景，大小在路上多推近一截，
+   推得最近时一下换窗，像标签从「项目首页」换到「发布说明」，再落定成全景的大窗。
+   照片往里推、淡回纸色，窗外两样和示意先退；全景的标题、段落条和图注最后浮上来。
+   全景的窗换上和首屏同一道暖色落地影子，两扇窗是同一种东西。 */
+.wk-open-hero {
+  padding-bottom: clamp(40px, 7vh, 96px);
+}
+@media (min-width: 901px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+  .js .wk-open[data-push] {
+    --t: clamp(0, (var(--pin, 0) - 0.06) / 0.66, 1);
+    --e: calc(var(--t) * var(--t) * (3 - 2 * var(--t)));
+    --size: calc(1 + (var(--s, 1) - 1) * var(--e) + var(--b, 0) * sin(var(--e) * 3.14159));
+    --swap: clamp(0, (var(--e) - 0.46) / 0.1, 1);
+    --rise: clamp(0, (var(--e) - 0.74) / 0.26, 1);
+    position: relative;
+    height: calc(200svh - var(--header));
+  }
+  .js .wk-open[data-push] .wk-open-pin {
+    position: sticky;
+    top: var(--header);
+    height: calc(100svh - var(--header));
+  }
+  .js .wk-open[data-push] .wk-open-hero {
+    position: absolute;
+    inset: 0 0 auto;
+    padding-bottom: 0;
+  }
+  .js .wk-open[data-push] .wk-open-tour {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+    padding-block: 12px 16px;
+  }
+  /* 推到了就停在这么大：上一行左边标题、右边这一段的说明（图注，固定三行高、贴底，换段时窗口不跳），
+     中间一扇大窗，下一行段落条和开关；眉题不要了，标题已经说清。窗口按一屏放得下的最大尺寸算（扣掉约 156px） */
+  .js .wk-open[data-push] .wk-tour {
+    --tw: min(100%, 1240px, max(560px, calc((100svh - var(--header) - 156px) * 1.6)));
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: 'head cap' 'frame frame' 'under under';
+    align-items: end;
+    column-gap: 32px;
+    width: var(--tw);
+    margin: 0 auto;
+  }
+  .js .wk-open[data-push] .wk-tour > .wk-head {
+    grid-area: head;
+    width: auto;
+    margin: 0 0 10px;
+  }
+  .js .wk-open[data-push] .wk-tour > .wk-head .m-kicker {
+    display: none;
+  }
+  .js .wk-open[data-push] .wk-tour > .wk-head .wk-head-title {
+    font-size: clamp(24px, 2.2vw, 34px);
+    white-space: nowrap;
+  }
+  .js .wk-open[data-push] .wk-tour-cap {
+    grid-area: cap;
+    justify-self: end;
+    display: flex;
+    align-items: flex-end;
+    width: auto;
+    max-width: 36em;
+    height: calc(3 * 1.6em);
+    min-height: 0;
+    margin: 0 0 10px;
+    font-size: var(--t-ui);
+    line-height: 1.6;
+  }
+  .js .wk-open[data-push] .wk-tour-frame {
+    grid-area: frame;
+  }
+  .js .wk-open[data-push] .wk-tour-under {
+    grid-area: under;
+    width: auto;
+    margin: 10px 0 0;
+  }
+  .js .wk-open[data-push] .wk-stage-photo {
+    transform-origin: 62% 52%;
+    transform: scale(calc(1 + 0.3 * var(--e)));
+    opacity: calc(1 - 1.6 * var(--e));
+  }
+  .js .wk-open[data-push] :is(.wk-aside, .wk-foot) {
+    opacity: calc(1 - 3.5 * var(--e));
+  }
+  .js .wk-open[data-push] .wk-stage-win {
+    transform: translate(calc(var(--dx, 0) * var(--e) * 1px), calc(var(--dy, 0) * var(--e) * 1px)) scale(var(--size));
+    opacity: calc(1 - var(--swap));
+  }
+  .js .wk-open[data-push] .wk-tour-frame {
+    box-shadow:
+      0 0 0 1px rgb(27 26 24 / 0.06),
+      0 34px 66px -30px rgb(var(--shade) / 0.6);
+    transform: translate(calc(var(--dx, 0) * (var(--e) - 1) * 1px), calc(var(--dy, 0) * (var(--e) - 1) * 1px))
+      scale(calc(var(--size) / var(--s, 1)));
+    opacity: var(--swap);
+  }
+  .js .wk-open[data-push] .wk-open-tour :is(.wk-tour > .wk-head, .wk-tour-under, .wk-tour-cap) {
+    opacity: var(--rise);
+    translate: 0 calc((1 - var(--rise)) * 14px);
+    transition: none;
+  }
+  .js .wk-open[data-push]:not([data-arrived]) .wk-open-tour,
+  .js .wk-open[data-push][data-arrived] .wk-open-hero {
+    pointer-events: none;
+  }
 }
 
 /* 画框下面：诚实标注 + 暂停键 */
@@ -3597,6 +3718,89 @@ html:not(.js) .wk-tour-tab[aria-selected='true']::after {
 }
 
 /* =====================================================================
+   全景窗里的界面，向首屏那扇看齐（负责人 10-30：二屏的 app 看起来比首屏差，滑下来有割裂感）。
+   首屏那扇好看在：一个重心（大标题）、内容收在中间一栏、几乎只有墨色、细线分行、行距舒展。
+   所以这里：标签不铺底色，只留图标的色相；文档收成居中的一栏、标题放大；文档里的标签换成描边；
+   表格去掉表头底色和外框，只剩细线分行；右栏页签排一行、文件方标统一成灰、行距放松。
+   只改样子，内容和编排的接线（data-c、data-spot）不动。
+   ===================================================================== */
+.wk-tour-scene .wk-tab:not([data-tab-on]) {
+  background: transparent;
+  color: var(--a-ink-2);
+}
+.wk-tour-scene .wk-tab[data-tab-on] {
+  color: var(--a-ink);
+}
+.wk-tour-scene .wk-tab svg {
+  color: var(--hue);
+}
+.wk-tour-scene .wk-doc {
+  padding: 2.6em max(3.4em, calc(50% - 19em)) 2em;
+}
+.wk-tour-scene .wk-doc .wk-h {
+  margin-top: 0.15em !important;
+  font-size: 1.75em;
+}
+.wk-tour-scene .wk-doc-chips {
+  margin-top: 0.9em !important;
+}
+.wk-tour-scene .wk-chip,
+.wk-tour-scene .wk-chip[data-hue] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--a-line);
+  color: var(--a-ink-2);
+}
+.wk-tour-scene .wk-chip[data-hue] svg {
+  color: var(--hue);
+}
+.wk-tour-scene .wk-doc-p {
+  margin-top: 1.2em !important;
+  font-size: 0.8em;
+  line-height: 1.9;
+}
+.wk-tour-scene .wk-doc-h2 {
+  margin-top: 1.8em !important;
+  font-size: 0.9em;
+}
+.wk-tour-scene .wk-tb {
+  margin-top: 0.7em;
+  border-radius: 0;
+  box-shadow: none;
+}
+.wk-tour-scene .wk-tb-row {
+  padding: 0.8em 0.6em;
+}
+.wk-tour-scene .wk-tb-head {
+  padding-block: 0.35em;
+  background: none;
+}
+.wk-tour-scene .wk-tb-row:last-child {
+  border-bottom: 1px solid var(--a-line);
+}
+.wk-tour-scene .wk-doc-ul {
+  font-size: 0.78em;
+}
+.wk-tour-scene .wk-rail-tabs {
+  flex-wrap: nowrap;
+  gap: 0.1em;
+  padding: 0.85em 0.6em 0.45em;
+}
+.wk-tour-scene .wk-rail-tabs span {
+  flex: none;
+  gap: 0.3em;
+  padding: 0.35em 0.45em;
+}
+.wk-tour-scene .wk-file,
+.wk-tour-scene .wk-file[data-kind] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--a-mute);
+  opacity: 0.6;
+}
+.wk-tour-scene .wk-rail-it {
+  padding-block: 0.55em;
+}
+
+/* =====================================================================
    窄屏
    ===================================================================== */
 @media (max-width: 900px) {
@@ -3608,9 +3812,11 @@ html:not(.js) .wk-tour-tab[aria-selected='true']::after {
   .wk-stage {
     --w: 90;
     aspect-ratio: 4 / 3.5;
+  }
+  .wk-stage-photo {
     border-radius: 14px;
   }
-  .wk-stage > .wk-frame {
+  .wk-stage-win {
     top: 21%;
     left: 5%;
   }
@@ -3721,7 +3927,7 @@ html:not(.js) .wk-tour-tab[aria-selected='true']::after {
   .wk-invite-hand,
   .wk-invite-opt,
   .wk-stage-img,
-  .wk-stage > .wk-frame,
+  .wk-stage-win > .wk-frame,
   .wk-stage > .wk-aside,
   .wk-scene *,
   .wk-cs-roles button,

@@ -1,7 +1,10 @@
 'use client';
 import { Moon, Pause, Play, Sun } from 'lucide-react';
 import {
+  createContext,
   useCallback,
+  useContext,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -17,6 +20,7 @@ import { heroScene, tourScenes } from './scripts';
 
 // Work 页会动的两块：首屏（一个早上，循环；窗口落在一块舞台上，窗外是菜单栏的「等你」和你的终端）、
 // 全景（六段，镜头一段段推过去，也能点着跳）；用起来的四个 case 在 cases.tsx。
+// 两块合在一个钉住的一屏里（Opening）：往下滚，首屏那扇窗推近成全景的大窗，推到了全景才开始演。
 // 都只在视口里、页面在前台、没按暂停时演；减少动态时停在做完的样子；没有 JS 时首屏停在做完的样子，全景停在第一段。
 
 const NOTE = '界面示意 · 示例数据';
@@ -36,6 +40,118 @@ function Toggle({ stopped, onToggle }: { stopped: boolean; onToggle: () => void 
         <Pause size={12} fill="currentColor" aria-hidden="true" />
       )}
     </button>
+  );
+}
+
+/* ---------- 首屏推近成全景（Opening） ----------
+   宽屏、不减少动态、有 JS 时，舞台和全景叠在同一个钉住的一屏里（work.css 的 .wk-open）。
+   往下滚的进度是 useSiteMotion 写的 --pin；这里只量两扇窗各自的中心和宽，算出首屏那扇窗挪到全景那扇窗要平移多少、放大几倍
+   （--dx、--dy、--s），样式按进度把两扇窗摆到同一处：路上先推近一点，最近的时候换成「发布说明」，再落定成全景的大窗。
+   钉住时全景排得紧（标题和说明一行、段落条一行），窗口一般比首屏那扇大：一路放大到底，停在那么大接着演。
+   全景的窗比首屏那扇还小时（很矮的宽屏），路上先多推近一截（--b）再落定，不显得是缩小。推到了（arrived）全景才开始演、首屏停下。
+   其余情况不钉住（data-push 不写），两块照常上下排，arrived 一直是 true。 */
+
+const PINNED = '(min-width: 901px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)';
+/** 推近在 --pin 的 0.06–0.72 之间走完（work.css 的 --t），过了 0.74 算推到了 */
+const ARRIVE = 0.74;
+/** 全景的窗比首屏那扇小时，路上至少推到首屏那扇的这么大 */
+const NEAREST = 1.08;
+
+const OpeningState = createContext({ pinned: false, arrived: true });
+
+/** 一个元素在钉住那一层里的位置和大小（offset 不算 transform，推到一半量也准） */
+function boxIn(node: HTMLElement, layer: HTMLElement) {
+  let x = 0;
+  let y = 0;
+  let at: HTMLElement | null = node;
+  while (at && at !== layer) {
+    x += at.offsetLeft;
+    y += at.offsetTop;
+    at = at.offsetParent as HTMLElement | null;
+  }
+  const w = node.offsetWidth;
+  const h = node.offsetHeight;
+  return { x, y, w, h, cx: x + w / 2, cy: y + h / 2 };
+}
+
+export function Opening({ hero, tour }: { hero: ReactNode; tour: ReactNode }) {
+  const ref = useRef<HTMLElement>(null);
+  const [state, setState] = useState({ pinned: false, arrived: true });
+
+  useEffect(() => {
+    const root = ref.current;
+    const layer = root?.querySelector<HTMLElement>('.wk-open-pin');
+    const from = root?.querySelector<HTMLElement>('.wk-stage-win');
+    const to = root?.querySelector<HTMLElement>('.wk-tour-frame');
+    if (!root || !layer || !from || !to) return;
+    const query = matchMedia(PINNED);
+    let frame = 0;
+    let push = false;
+
+    const measure = () => {
+      const a = boxIn(from, layer);
+      const b = boxIn(to, layer);
+      const ratio = b.w / (a.w || 1);
+      push = query.matches;
+      root.toggleAttribute('data-push', push);
+      if (!push) return;
+      root.style.setProperty('--dx', `${b.cx - a.cx}`);
+      root.style.setProperty('--dy', `${b.cy - a.cy}`);
+      root.style.setProperty('--s', `${ratio}`);
+      // 中段（--e = 0.5）的大小 = 两头的平均 + --b；全景的窗更大时不绕，一路放大
+      root.style.setProperty('--b', `${ratio >= 1 ? 0 : Math.max(0, NEAREST - (1 + ratio) / 2)}`);
+    };
+    const update = () => {
+      frame = 0;
+      const pinned = push;
+      let arrived = true;
+      if (pinned) {
+        const rect = root.getBoundingClientRect();
+        const span = rect.height - window.innerHeight;
+        arrived = span > 0 && -rect.top / span >= ARRIVE;
+      }
+      setState((now) => (now.pinned === pinned && now.arrived === arrived ? now : { pinned, arrived }));
+    };
+    const request = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    const change = () => {
+      measure();
+      request();
+    };
+
+    change();
+    // 两扇窗的位置会跟着别的东西变（全景标题换行、字体载入），所以连它们所在的整块一起看
+    const observer = new ResizeObserver(change);
+    for (const node of [layer, to, to.parentElement, from.parentElement]) if (node) observer.observe(node);
+    void document.fonts?.ready.then(change);
+    query.addEventListener('change', change);
+    window.addEventListener('scroll', request, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      query.removeEventListener('change', change);
+      window.removeEventListener('scroll', request);
+    };
+  }, []);
+
+  return (
+    <OpeningState.Provider value={state}>
+      <section
+        ref={ref}
+        className="wk-open"
+        data-scene
+        data-arrived={state.arrived || undefined}
+        aria-labelledby="wk-tour-title"
+      >
+        <div className="wk-open-pin">
+          <div className="wk-open-hero m-wrap">{hero}</div>
+          <div className="wk-open-tour wk-tour-sec">
+            <div className="m-wrap">{tour}</div>
+          </div>
+        </div>
+      </section>
+    </OpeningState.Provider>
   );
 }
 
@@ -78,24 +194,29 @@ export function HeroStage({ label }: { label: string }) {
   const still = useStill();
   const shown = useOnScreen(ref);
   const [paused, setPaused] = useState(false);
-  useCue(ref, heroScene, { live: shown && !paused, still });
+  const { pinned, arrived } = useContext(OpeningState);
+  useCue(ref, heroScene, { live: shown && !paused && !(pinned && arrived), still });
   return (
     <figure className="wk-hero-fig m-rise" style={{ '--delay': '260ms' } as Vars}>
       <div className="wk-stage" style={{ '--avg': STAGE.avg } as Vars}>
-        <img
-          className="wk-stage-img"
-          src={STAGE.src}
-          srcSet={STAGE.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
-          sizes="(max-width: 900px) 100vw, min(92vw, 1328px)"
-          width={STAGE.width}
-          height={STAGE.height}
-          alt=""
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
-        <div ref={ref} className="wk-frame" aria-hidden="true">
-          <HeroArt />
+        <div className="wk-stage-photo">
+          <img
+            className="wk-stage-img"
+            src={STAGE.src}
+            srcSet={STAGE.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
+            sizes="(max-width: 900px) 100vw, min(92vw, 1328px)"
+            width={STAGE.width}
+            height={STAGE.height}
+            alt=""
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        </div>
+        <div className="wk-stage-win">
+          <div ref={ref} className="wk-frame" aria-hidden="true">
+            <HeroArt />
+          </div>
         </div>
         <HeroAside />
       </div>
@@ -137,10 +258,12 @@ export function Tour({ head }: { head: ReactNode }) {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const chapter = chapters[active];
+  // 首屏那扇窗还没推过来时不演：推到了才从第一段开始
+  const { arrived } = useContext(OpeningState);
 
   const next = useCallback(() => setActive((index) => (index + 1) % chapters.length), [chapters.length]);
   useCue(ref, tourScenes[chapter.id], {
-    live: shown && !paused,
+    live: shown && !paused && arrived,
     still,
     round,
     onEnd: still ? undefined : next,
