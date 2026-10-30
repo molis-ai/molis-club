@@ -1,6 +1,6 @@
 // Molis Work 页（2026-10-24 重做，目标与取舍见 specs/work-product-page/spec.md）。
-// 开场取自 Molis Work 产品运营文档《产品介绍》第 1 节：负责人 10-19 定的口号，和「工具和 AI 围着你转，你还是你。」。
-// 整页只有一个例子：一个周末，把一个想法做上线（「划线卡片」）；首屏是做完以后的周一早上。
+// 开场三句是负责人 10-30 改定的：「工作，不止于 AI 对话。」、英文口号和一句「是什么」，讲的是对话之后工作接得上。
+// 首屏是周一早上的项目首页；例子按两种人各走两条闭环（和团队一起、长出自己的工具），切换角色只换手上的活。
 // 画面照 Molis Work 最新桌面端画（2026-10-24 main），只删不加；画面里的名字、数字、时间都是示意。
 // 功能一律按做好的样子画，走到哪一步只在结尾写一次（已发布 / 开发中两种）。
 // workQuoted 是 docs/studio-intro.md 的原句（测试逐句核对），其余是新写的界面文字。
@@ -8,182 +8,191 @@
 export const workHero = {
   form: '工作台',
   stage: '开发中',
-  title: '工具和 AI 围着你转，你还是你。',
-  slogan: 'Work, People, AI, Tool, get connected better than ever.',
-  what: 'Molis Work 是装在你电脑上的 AI 工作台：工具按你的做法长出来，AI 照你的规矩做事，要紧的决定留给你。',
+  title: '工作，不止于 AI 对话。',
+  slogan: 'Work, people, AI and tools — better connected than ever.',
+  what: 'Molis Work 是装在你电脑上的 AI 工作台，让对话里的决定、资料和成果，接得上下一步工作。',
   go: '报名首批试用',
   label:
     '界面示意：周一早上的项目首页。周末上线的「划线卡片」夜里收到 41 条反馈，助理、Codex 和你做的发布前检查台各做了一件事，等你的只有两件。',
 };
 
-export type TourChapterId =
-  | 'win'
-  | 'dock'
-  | 'rail'
-  | 'float'
-  | 'ask'
-  | 'agents'
-  | 'wait';
+export type TourChapterId = 'project' | 'plugins' | 'ask' | 'agents' | 'talk' | 'wait';
 
 export const workTour = {
   kicker: '全景',
   title: '一个项目，一张工作台。',
-  label: '产品全景：Molis Work 的窗口，七处依次点亮。',
+  label: '产品全景：Molis Work 的窗口，镜头依次推近六处。',
   chapters: [
     {
-      id: 'win',
-      name: '一个窗口',
-      title: '一个窗口，一个项目。',
-      text: '中间是手上在做的；标签像浏览器，几件事同时开着。',
+      id: 'project',
+      name: '项目',
+      title: '东西都在这个项目里。',
+      text: '目标、文档、资料和反馈放在一起；隔几天回来，从做到的地方接着往下。',
     },
     {
-      id: 'dock',
+      id: 'plugins',
       name: '插件',
       title: '插件按需装，缺的自己做。',
-      text: '目标、文档、待办、信息流……常用的钉在底栏。',
-    },
-    {
-      id: 'rail',
-      name: '右栏',
-      title: '参考放在右边。',
-      text: 'Shelf、灵光、资料、浏览器、电脑、讨论，和左边并排着用。',
-    },
-    {
-      id: 'float',
-      name: '浮条',
-      title: '选中什么，动作就递过来。',
-      text: '记成待办、交给助理、拆成目标步骤，结果回到原处。',
+      text: '目标、文档、待办、信息流……常用的钉在底栏；你做的检查台也在这里。',
     },
     {
       id: 'ask',
       name: '助理',
-      title: '底下这一条是助理。',
-      text: '它认得这个项目的资料和插件；按 ⌘K 是搜索。',
+      title: '助理认得这个项目。',
+      text: '选中一句交给它，它读过这里的资料再动手；要改什么，先给你过目。',
     },
     {
       id: 'agents',
       name: '外部 AI',
       title: '你用的 AI，都接进来。',
-      text: 'Claude Code、Codex、OpenCode……读写的是同一份目标。',
+      text: 'Claude Code、Codex 这些 AI，读写的是同一份目标；你定过的事，它们也知道。',
+    },
+    {
+      id: 'talk',
+      name: '讨论',
+      title: '人和 AI，在同一个讨论里。',
+      text: '请来帮忙的朋友也能进来；他们说的问题，助理当场对上文档，交给谁做也说得清。',
     },
     {
       id: 'wait',
       name: '等你',
-      title: '谁在等你，一眼看到。',
-      text: '要你决定、要你验收的，收在输入框旁边和菜单栏里。',
+      title: '要你拍板的，一眼看到。',
+      text: '要你决定、要你验收的收在一处；AI 说做完了，你验过才算。',
     },
   ] as { id: TourChapterId; name: string; title: string; text: string }[],
   theme: { label: '窗口配色', light: '浅色', dark: '深色' },
 };
 
-export type MomentId = 'idea' | 'rules' | 'relay' | 'nod' | 'tool' | 'done';
+export type RoleId = 'code' | 'content';
+export type LoopId = 'team' | 'grow';
+export type CaseId = 'fix' | 'users' | 'hot' | 'topics';
 
-export const workWeekend = {
-  kicker: '一个周末',
-  title: '周五晚上的一个想法，周日上线。',
-  label: '一个周末里的六个时刻',
-  moments: [
-    {
-      id: 'idea',
-      day: '周五',
-      time: '22:10',
-      title: '想法丢进来，就是一个项目。',
-      text: '帖子截图、两年的读书划线、几页旧笔记，读完就有目标、要求和待办。',
-      label:
-        '界面示意：帖子截图、划线导出和旧笔记拖进新项目，助理读完写出项目建议，采用以后有了目标、要求和待办。',
-    },
-    {
-      id: 'rules',
-      day: '周六',
-      time: '10:00',
-      title: '你的规矩写一次，每个 AI 都照着做。',
-      text: 'CLAUDE.md 和 Skills 从 Claude Code 带进来，原配置不会被修改。',
-      label:
-        '界面示意：从本机导入角色，勾选两份 Skill；三条规矩分别落进助理、Codex、Claude Code 的活里。',
-    },
-    {
-      id: 'relay',
-      day: '周六',
-      time: '15:20',
-      title: '额度用完了，换谁接着做都行。',
-      text: 'Codex、OpenCode、Pi Agent、Grok Build，或者用你自己的 Key 在 Coding 里接着写。做到哪、你定过什么，都读得到。',
-      label:
-        '界面示意：Claude Code 额度用完，在目标页选择接着做的一方，用自己的 DeepSeek Key 在 Coding 里继续；它读到了做到哪和上午定下的事。',
-    },
-    {
-      id: 'nod',
-      day: '周六',
-      time: '23:40',
-      title: '说好的事，改了要你点头。',
-      text: 'Codex 想把「导出到 Anki」挪到下一版。它只能提，定的是你。',
-      label:
-        '界面示意：Codex 在目标页发来决定请求，选项里写着各自的影响；可以亲手选同意或不同意。',
-    },
-    {
-      id: 'tool',
-      day: '周日',
-      time: '11:00',
-      title: '缺个工具，说一句就有。',
-      text: '做出来的检查台，你在界面里用，Claude Code 提交前也会用。',
-      label:
-        '界面示意：在底栏说一句「做个发布前检查台」，方案、写代码、过检查、试跑，底栏多出一个图标；Claude Code 提交前用的是同一个检查台。',
-    },
-    {
-      id: 'done',
-      day: '周日',
-      time: '17:30',
-      title: 'AI 说做完了，Work 说还差你。',
-      text: '手机上的登录，要你亲手点一遍。没验过，就不算完。',
-      label:
-        '界面示意：Claude Code 报告全部做完并请求收尾，收尾没有生效，手机上的登录等你验收；可以亲手点「验收通过」。',
-    },
-  ] as {
-    id: MomentId;
-    day: string;
-    time: string;
-    title: string;
-    text: string;
-    label: string;
-  }[],
+export type WorkCase = {
+  id: CaseId;
+  title: string;
+  /** 五步：左边一根时间线，当下这一步展开说明 */
+  steps: { t: string; s: string }[];
+  /** 读屏用：这一段画面演了什么 */
+  label: string;
 };
 
-export const workKeep = {
-  kicker: '留在你这儿',
-  title: '你的工作，留在你这儿。',
-  rows: [
+/** 两种人，同一类用法：切换角色只换手上的活，两条闭环（和团队一起、长出自己的工具）一一对得上 */
+export const workCases = {
+  kicker: '用起来',
+  title: '一件事，从开头接到做完。',
+  roleLabel: '你主要做什么',
+  roles: [
+    { id: 'code', name: '写代码' },
+    { id: 'content', name: '做内容、运营' },
+  ] as { id: RoleId; name: string }[],
+  loopLabel: '两条闭环',
+  loops: [
+    { id: 'team', name: '和团队一起' },
+    { id: 'grow', name: '长出自己的工具' },
+  ] as { id: LoopId; name: string }[],
+  replay: '从头看',
+  cases: {
+    code: {
+      team: {
+        id: 'fix',
+        title: '从一句抱怨，到修好。',
+        steps: [
+          { t: '差评进来，助理先看到', s: '评论、邮件、GitHub 都进 Feed。三条说的是同一件事：微信里付不了款。助理按你定的规则，开个话题叫上你。' },
+          { t: '它记得上次怎么修的', s: '7 月出过一回，项目记忆里有复盘，也记着补单脚本是阿哲写的。助理把事拆成三件，各有人接。' },
+          { t: '两个人，各带自己的 AI', s: '你的 Codex 修付款，阿哲的 Claude Code 补订单。有两笔它拿不准，来问你，你点一下就定了。' },
+          { t: '真机上付一笔，才算修好', s: '阿哲在手机上验过，目标才完成。学到的一条，你看过，记进项目记忆。' },
+          { t: '回信给门店', s: '助理记得这事找王店长，回信写好等你看。发出后，Feed 里那几条都标好了。' },
+        ],
+        label:
+          '界面示意：Feed 里三条用户反馈说的是同一件事，微信里付不了款；助理按你定的规则开话题叫上你，从项目记忆里翻出 7 月的复盘和阿哲写的补单脚本，提议建一个目标，三件事各有人接。你的 Codex 修付款，阿哲的 Claude Code 补订单，拿不准的两笔你点了退款；阿哲在真机上付了一笔，目标完成，学到的一条记进项目记忆；助理照记忆里的联系人起草回信，你发出，Feed 里那几条标上已修好、已回复。',
+      },
+      grow: {
+        id: 'users',
+        title: '从一句闲聊，到一个插件。',
+        steps: [
+          { t: '群里说起一个愿望', s: '阿哲让 AI 假装成新用户，试出 6 个问题。你说：要是每次发版前都能这样试就好了。' },
+          { t: '助理接住，带着方案来', s: '没人叫它。它读了阿哲的文档，查了现成的能力，画好一版插件，只问三件事。' },
+          { t: '看着它搭出来', s: '界面一块块放上去，功能一根根接上。你中途说想看屏幕，它当场加上。' },
+          { t: '三个人同时去试', s: '一句话生成三个人，各用各的设备和语言。AI 替他们去用，问题写进 Pages。' },
+          { t: '交给 AI 修，再试一遍', s: '你的 Codex 和阿哲的 Claude Code 各修一条。照原路再试，三个人都顺利。' },
+        ],
+        label:
+          '界面示意：阿哲说他让 AI 假装成一位新用户把产品用了一遍，试出 6 个问题；你说要是每次发版前都能这样试就好了。助理没被叫到，自己接住，带着一版「模拟用户」插件来，只问三件事。在插件创作台，界面一块块放进画布，功能一根根接上；你中途说想看到每个人的屏幕，它当场加上。装好后一句话生成三个人，AI 替他们同时去用，问题写进 Pages；你的 Codex 和阿哲的 Claude Code 各修一条，照原路再试，三个人都顺利。',
+      },
+    },
+    content: {
+      team: {
+        id: 'hot',
+        title: '从一条热点，到发出去。',
+        steps: [
+          { t: '热点进来，助理先看到', s: '官方博客、X、小红书都在说 Claude Duet。助理按你定的规则，判断值得写，开个话题叫上你和小林。' },
+          { t: '它记得我们怎么写的', s: '项目记忆里有账号定位、上回追热点的复盘，也记着小红书一直是小林在做。助理把事拆成三件，各有人接。' },
+          { t: '两个人，各带自己的 AI', s: '你的 Claude 写底稿，小林的 ChatGPT 做小红书。标题有一处它拿不准，来问你，你点一下就定了。' },
+          { t: '你点过头，才算能发', s: '两个平台的稿子你都看过，才发出去。学到的一条，你确认后记进项目记忆。' },
+          { t: '第二天看结果', s: '收藏和评论回来了。读者问得最多的一句回到 Feed，标成新角度。' },
+        ],
+        label:
+          '界面示意：Feed 里官方博客、X 和小红书三条说的是同一件事，Claude 出了会自己干活的助理 Duet；助理按你定的规则判断值得写，写清为什么现在写和反证，开话题叫上你和小林。它从项目记忆里翻出账号定位、上回追热点的复盘，记得小红书一直是小林在做，提议建一个今晚 9 点发出的目标。你的 Claude 写底稿，标题拿不准时来问你，你选写清美国先排队试；小林的 ChatGPT 照底稿做小红书 6 页图文。两个平台的稿子你都点过头才发，学到的一条记进项目记忆；第二天读者问得最多的一句回到 Feed，标成新角度。',
+      },
+      grow: {
+        id: 'topics',
+        title: '从一句闲聊，到一个插件。',
+        steps: [
+          { t: '群里说起一个愿望', s: '小林花一上午翻了 30 个 AI 账号，挑出 3 个能写的。你说：要是每天早上它自己挑好就好了。' },
+          { t: '助理接住，带着方案来', s: '没人叫它。它读了小林的笔记，查了现成的能力，画好一版插件，只问三件事。' },
+          { t: '看着它搭出来', s: '界面一块块放上去，功能一根根接上。你中途说写过的别再推，它当场接上项目记忆。' },
+          { t: '第二天早上，今天 3 个', s: '每个题写清给谁看、为什么现在写、依据在哪；审过一遍，写过的只在有新角度时才推。' },
+          { t: '不对就说，改了再出', s: '你发现一条依据是转述，跟助理说一句，它改了规则重出。采用的题直接进创作台。' },
+        ],
+        label:
+          '界面示意：小林说她花一上午翻了关注的 30 个 AI 账号，挑出 3 个能写的；你说要是每天早上它自己挑好就好了。助理没被叫到，自己接住，带着一版「每日选题」插件来，只问三件事。在插件创作台，界面一块块放进画布，功能一根根接上；你中途说写过的别再推，它当场接上项目记忆。第二天早上它出了 3 个题，每个写清给谁看、为什么现在写、依据在哪；你发现一条依据是转述，跟助理说一句，它改了规则重出，那题挪进补研；你采用第一题，直接进创作台起底稿。',
+      },
+    },
+  } as Record<RoleId, Record<LoopId, WorkCase>>,
+};
+
+export type WhyId = 'carry' | 'check' | 'grow' | 'own';
+
+/**
+ * 为什么是 Molis：讲完产品和用法以后，说清差异。取材于产品运营《产品介绍》第 3 节（人在围着工具转的时刻）、
+ * 第 1 节的差异说明，和 10-29 的用户调研（要赢的是用户已有的整套办法：少重讲、少核对、少搬运，判断留给人；
+ * 聊天照样可以是入口）。不点名别家；「通常」写人迁就工具的时刻，不写别家不好。
+ */
+export const workWhy = {
+  kicker: '为什么是 Molis',
+  title: 'AI 很多，工作只有一份。',
+  lead: '你用的 AI 照旧用，Molis 让它们接着同一份工作做。',
+  /** 四条：要点、一句话、点亮时多一行；「通常会怎样」不写成字，在右边的画面里演（先是通常的样子，再是在 Molis 的样子） */
+  points: [
     {
-      id: 'local',
-      title: '存在你的电脑上',
-      text: '工作数据保存在本机，使用 AI 时会调用你配置的模型服务。',
+      id: 'carry',
+      key: '接得上',
+      claim: '换个 AI，不用从头讲。',
+      here: '目标、要求和你定过的事存在一处，换谁接着做，读的都是同一份。',
     },
     {
-      id: 'models',
-      title: '模型你来挑，Key 是你的',
-      text: '填上自己的 API Key 就能用，费用直接付给模型商。',
+      id: 'check',
+      key: '对得上',
+      claim: 'AI 说做完了，不算。',
+      here: '每条要求记着依据；要你验收的，你验过才算。',
     },
     {
-      id: 'grants',
-      title: 'AI 能动什么，你说了算',
-      text: '每个 AI 一项一项授权；写文件、跑命令、推送，先问你。',
+      id: 'grow',
+      key: '长出来',
+      claim: '缺的工具，说一句就有。',
+      here: '插件创作台照你的描述做出来，你的 AI 也调得到。',
     },
-  ],
-  models: [
-    'Anthropic',
-    'OpenAI',
-    'DeepSeek',
-    '通义千问',
-    'Kimi',
-    'GLM',
-    'MiniMax',
-    'OpenRouter',
-    '本机模型',
-  ],
-  picked: 'DeepSeek',
-  grants: [
-    ['Claude Code · 读写目标', '允许', 'yes'],
-    ['Claude Code · 推送代码', '每次问我', 'ask'],
-    ['助理 · 网银与密码管理器', '碰不了', 'no'],
-  ] as [string, string, 'yes' | 'ask' | 'no'][],
+    {
+      id: 'own',
+      key: '是你的',
+      claim: '数据在你电脑上，模型你来挑。',
+      here: '工作数据保存在本机，使用 AI 时会调用你配置的模型服务。',
+    },
+  ] as { id: WhyId; key: string; claim: string; here: string }[],
+  /** 收尾两句：前一句浅，后一句亮 */
+  coda: ['问一句就走的事，聊天就够了。', '要接着做下去的，交给 Molis。'],
+  label:
+    '界面示意：一份工作记录在中间，左边是 Claude Code、Codex、OpenCode，右边是你、助理和同事。接得上：Claude Code 额度用完，Codex 接着做，读到了你定过的事；对得上：Codex 报做完了，收尾没生效，等你验收；长出来：你做的发布前检查台长出来，Claude Code 也调它；是你的：记录在你的电脑上，换模型，记录不动。',
 };
 
 /**
@@ -211,7 +220,7 @@ export const workEnd = {
 };
 
 /** 页面上用到的 docs/studio-intro.md 原句（tests/site-copy.test.mjs 逐句核对） */
-export const workQuoted = [workKeep.rows[0].text, workEnd.belief, workEnd.beliefText];
+export const workQuoted = [workWhy.points[3].here, workEnd.belief, workEnd.beliefText];
 
 /**
  * 首屏舞台上、窗口外面的两样（2026-10-30 样稿 B）：菜单栏里的「等你」胶囊，和你自己的终端里的 Codex——

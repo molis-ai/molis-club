@@ -125,7 +125,6 @@ export function Win({
   input,
   rail,
   children,
-  overlay,
   theme,
   className = '',
   style,
@@ -135,8 +134,6 @@ export function Win({
   input?: ReactNode;
   rail?: ReactNode;
   children: ReactNode;
-  /** 盖在整扇窗上的一层（全景的聚光） */
-  overlay?: ReactNode;
   theme?: 'light' | 'dark';
   className?: string;
   style?: CSSProperties;
@@ -188,7 +185,6 @@ export function Win({
           <span className="wk-me">M</span>
         </span>
       </div>
-      {overlay}
     </div>
   );
 }
@@ -212,31 +208,6 @@ export function State({ tone, children, c, step }: { tone: Tone; children: React
     <span className="wk-state" data-tone={tone} data-c={c} data-step={step || undefined}>
       <Ring tone={tone} />
       {children}
-    </span>
-  );
-}
-
-/**
- * 会变的状态签：演的时候先是 was，编排给它 data-on 以后换成 now；做完的样子就是 now。
- * 例如「需要你决定」→「正在推进」、「正在推进」→「已完成」。
- */
-export function Shift({
-  c,
-  was,
-  now,
-}: {
-  c: string;
-  was: [Tone, string];
-  now: [Tone, string];
-}) {
-  return (
-    <span className="wk-shift" data-c={c}>
-      <span data-was="">
-        <State tone={was[0]}>{was[1]}</State>
-      </span>
-      <span data-now="">
-        <State tone={now[0]}>{now[1]}</State>
-      </span>
     </span>
   );
 }

@@ -1,12 +1,14 @@
-import { ArrowRight, ArrowUpRight, CircleSlash, HardDrive, KeyRound, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { pageMetadata } from '../../../lib/site';
 import { products, WORK_BUILD, WORK_GITHUB } from '../../../content/site/products';
-import { workEnd, workHero, workKeep, workTour, workWeekend } from '../../../content/site/work';
+import { workCases, workEnd, workHero, workTour } from '../../../content/site/work';
 import { contactHref, productHref } from '../../_site/routes';
 import { Btn, Phrases, Status, Window, type Vars } from '../../_site/ui';
-import { HeroStage, Tour, Weekend } from './stages';
+import { Cases } from './cases';
+import { Why } from './why';
+import { HeroStage, Tour } from './stages';
 import '../../_site/product/product.css';
 import './work.css';
 
@@ -19,10 +21,13 @@ export const metadata = pageMetadata(
 );
 
 // Molis Work（2026-10-24 重做，目标、取舍与验收见 specs/work-product-page/spec.md）。
-// 一句话：工具和 AI 围着你转，你还是你。整页只有一个例子：一个周末，把一个想法做上线。
-// 首屏（做完以后的周一早上：上面是字，下面一整块舞台，窗口落在一面有叶影的墙前）→ 全景（一扇窗，七处依次点亮）→ 一个周末（六个时刻，钉住的画廊）
-// → 留在你这儿 → 缘起与现在（信念在上；下面一扇窗，墙上浮着一张「决定请求」，三个去处就是三个选项，最后一件事交给读者定）。画面照最新桌面端画；功能按做好的样子演，走到哪一步只在结尾写一次。
-// 两种光标：杏橙指针是「你」（只在你动手、你定的时候出现），插入光标加灰名牌是 AI（它在写）。
+// 一句话：工作，不止于 AI 对话。
+// 首屏（周一早上的项目首页：上面是字，下面一整块舞台，窗口落在一面有叶影的墙前）→ 全景（一扇窗，镜头依次推近六处）
+// → 用起来（写代码、做内容运营两种人，各走「和团队一起」「长出自己的工具」两条闭环，切换角色只换手上的活）
+// → 为什么是 Molis（深色一屏：四条差异和一张连着的图）
+// → 缘起与现在（信念在上；下面一扇窗，墙上浮着一张「决定请求」，三个去处就是三个选项，最后一件事交给读者定）。
+// 画面照最新桌面端画；功能按做好的样子演，走到哪一步只在结尾写一次。
+// 两种光标：杏橙指针是「你」（只在你动手、你定的时候出现），AI 的是插入光标或方名牌。
 
 function Head({
   id,
@@ -34,7 +39,7 @@ function Head({
   id: string;
   kicker: string;
   title: string;
-  /** screen：和画面同一屏的标题，眉题挨紧一点（全景、一个周末） */
+  /** screen：和画面同一屏的标题，眉题挨紧一点（全景、用起来） */
   size?: 'screen';
   children?: ReactNode;
 }) {
@@ -48,8 +53,6 @@ function Head({
     </header>
   );
 }
-
-const KEEP_ICON = { local: HardDrive, models: KeyRound, grants: ShieldCheck };
 
 const ASK_HREF = { join: contactHref('work'), build: WORK_BUILD, source: WORK_GITHUB };
 
@@ -130,60 +133,12 @@ export default function WorkPage() {
         </div>
       </section>
 
-      <section className="wk-gal-sec" aria-labelledby="wk-weekend-title">
-        <Weekend
-          head={<Head id="wk-weekend-title" kicker={workWeekend.kicker} title={workWeekend.title} size="screen" />}
-        />
+      <section className="wk-cs-sec" aria-labelledby="wk-cases-title">
+        <Cases head={<Head id="wk-cases-title" kicker={workCases.kicker} title={workCases.title} size="screen" />} />
       </section>
 
-      <section className="wk-sec wk-keep-sec" aria-labelledby="wk-keep-title">
-        <div className="m-wrap wk-keep">
-          <Head id="wk-keep-title" kicker={workKeep.kicker} title={workKeep.title} />
-          <div className="wk-keep-rows">
-            {workKeep.rows.map((row, index) => {
-              const Icon = KEEP_ICON[row.id as keyof typeof KEEP_ICON];
-              return (
-                <div key={row.id} className="wk-keep-row" data-reveal style={{ '--delay': `${index * 120}ms` } as Vars}>
-                  <p className="wk-keep-ic" aria-hidden="true">
-                    <Icon />
-                  </p>
-                  <h3>{row.title}</h3>
-                  <p className="wk-keep-text">
-                    <Phrases text={row.text} />
-                  </p>
-                  {row.id === 'local' ? (
-                    <p className="wk-keep-vis wk-keep-path" aria-hidden="true">
-                      <span>~/Molis Work/划线卡片</span>
-                      <small>本机 · SQLite</small>
-                    </p>
-                  ) : null}
-                  {row.id === 'models' ? (
-                    <p className="wk-keep-vis wk-keep-models">
-                      {workKeep.models.map((model) => (
-                        <span key={model} data-picked={model === workKeep.picked || undefined}>
-                          {model}
-                        </span>
-                      ))}
-                    </p>
-                  ) : null}
-                  {row.id === 'grants' ? (
-                    <dl className="wk-keep-vis wk-keep-grants">
-                      {workKeep.grants.map(([who, rule, kind]) => (
-                        <div key={who} data-kind={kind}>
-                          <dt>{who}</dt>
-                          <dd>
-                            {kind === 'no' ? <CircleSlash aria-hidden="true" /> : null}
-                            {rule}
-                          </dd>
-                        </div>
-                      ))}
-                    </dl>
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+      <section className="wk-why-sec" aria-labelledby="wk-why-title">
+        <Why />
       </section>
 
       <section className="wk-sec wk-end" aria-labelledby="wk-end-title">
