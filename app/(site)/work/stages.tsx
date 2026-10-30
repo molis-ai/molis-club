@@ -11,9 +11,10 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
-import { workTour, workWeekend } from '../../../content/site/work';
+import { workHeroStage, workTour, workWeekend } from '../../../content/site/work';
 import { Cue, useCue, useOnScreen, useStill } from '../../_site/cue';
-import { Note, Phrases, type Vars } from '../../_site/ui';
+import { mediaOf, Note, Phrases, type Vars } from '../../_site/ui';
+import { Ring } from './app';
 import {
   DoneArt,
   HeroArt,
@@ -26,7 +27,7 @@ import {
 } from './scenes';
 import { heroScene, momentBeats, momentScenes, tourScenes, type Beat } from './scripts';
 
-// Work 页会动的三块：首屏（一个早上，循环）、全景（七段，按时间一段段走，也能点着跳）、
+// Work 页会动的三块：首屏（一个早上，循环；窗口落在一块舞台上，窗外是菜单栏的「等你」和你的终端）、全景（七段，按时间一段段走，也能点着跳）、
 // 一个周末（画廊：宽屏钉住，滚到哪个时刻换到哪个，每个时刻里再按滚动一拍一拍走；窄屏点着换，按时间演）。都只在视口里、页面在前台、没按暂停时演；
 // 减少动态时停在做完的样子；没有 JS 时首屏和周末停在做完的样子，全景停在第一段。
 
@@ -52,6 +53,38 @@ function Toggle({ stopped, onToggle }: { stopped: boolean; onToggle: () => void 
 
 /* ---------- 首屏 ---------- */
 
+const STAGE = mediaOf('work-stage');
+
+/**
+ * 窗口外面的两样：菜单栏里的「等你」胶囊，和你自己终端里的 Codex（它交回来的，就是窗口里那条「修好了 #12」）。
+ * 和窗口同一个尺寸单位（work.css 的 --w）；跟着首屏的编排走，但不进编排：样式看窗口里哪几条事件已经出现。
+ */
+function HeroAside() {
+  const { wait, term } = workHeroStage;
+  return (
+    <div className="wk-scene wk-aside" aria-hidden="true">
+      <p className="wk-capsule">
+        <Ring tone="attention" />
+        {wait}
+      </p>
+      <div className="wk-term">
+        <p className="wk-term-h">
+          <i />
+          <i />
+          <i />
+          {term.title}
+        </p>
+        {term.lines.map((line, index) => (
+          <p key={index} className={line.ok ? 'wk-term-l wk-ok' : 'wk-term-l'} data-l={index}>
+            {line.dim ? <span className="wk-dim">{line.dim} </span> : null}
+            {line.ok ? `✓ ${line.text}` : line.text}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function HeroStage({ label }: { label: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const still = useStill();
@@ -60,11 +93,29 @@ export function HeroStage({ label }: { label: string }) {
   useCue(ref, heroScene, { live: shown && !paused, still });
   return (
     <figure className="wk-hero-fig m-rise" style={{ '--delay': '260ms' } as Vars}>
-      <div ref={ref} className="wk-frame" aria-hidden="true">
-        <HeroArt />
+      <div className="wk-stage" style={{ '--avg': STAGE.avg } as Vars}>
+        <img
+          className="wk-stage-img"
+          src={STAGE.src}
+          srcSet={STAGE.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
+          sizes="(max-width: 900px) 100vw, min(92vw, 1328px)"
+          width={STAGE.width}
+          height={STAGE.height}
+          alt=""
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+        />
+        <div ref={ref} className="wk-frame" aria-hidden="true">
+          <HeroArt />
+        </div>
+        <HeroAside />
       </div>
       <figcaption className="wk-foot">
-        <span className="sr-only">{label}</span>
+        <span className="sr-only">
+          {label}
+          {workHeroStage.label}
+        </span>
         <Note>{NOTE}</Note>
         {still ? null : <Toggle stopped={paused} onToggle={() => setPaused((value) => !value)} />}
       </figcaption>

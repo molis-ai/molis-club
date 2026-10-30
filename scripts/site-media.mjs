@@ -51,6 +51,21 @@ const images = [
     widths: [800, 1672],
     quality: 76,
   },
+  // Work 首屏的舞台：木桌、亚麻窗帘、一盆绿植，叶影落在墙上（负责人 2026-10-30 从样稿里挑的）。
+  // 原图只有 1440 宽，舞台再宽也只出到 1440
+  {
+    key: 'work-stage',
+    src: 'public/images/atelier/studio-desk.jpg',
+    widths: [960, 1440],
+    quality: 80,
+  },
+  // Work 结尾：同一面墙、同一种光，一个人坐在扶手椅上读书（首屏是空着的书桌，结尾是坐下来的人）
+  {
+    key: 'work-close',
+    src: 'public/images/atelier/reading-room.jpg',
+    widths: [960, 1440],
+    quality: 80,
+  },
   {
     key: 'tool-light',
     src: 'public/r8-candidates-v2/images/tool-v2-a.png',
