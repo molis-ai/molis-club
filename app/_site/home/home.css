@@ -150,10 +150,12 @@
 
 /* =====================================================================
    产品：纸页从画面下面升上来；左列表、右主画面（第八轮美术馆午后那一版）
+   2026-10-31：标题小一档、上下留白收紧，宽屏时这一屏正好一屏（上沿让出顶栏）
    ===================================================================== */
 .m-products {
   position: relative;
-  padding: clamp(64px, 9vh, 112px) var(--gutter) clamp(80px, 12vh, 140px);
+  padding: calc(var(--header) + clamp(16px, 3vh, 32px)) var(--gutter)
+    clamp(28px, 4vh, 56px);
 }
 .m-products-head {
   max-width: var(--wrap);
@@ -169,7 +171,7 @@
   align-items: baseline;
   gap: 16px;
   margin: 0;
-  font: 300 var(--t-display) / 0.95 var(--sans);
+  font: 300 clamp(44px, 5vw, 80px) / 0.95 var(--sans);
   letter-spacing: -0.02em;
 }
 .m-products-head h2 small {
@@ -416,16 +418,8 @@ button.m-prow {
   outline-offset: 4px;
 }
 .m-close-door-head {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
   font: 400 16px / 1.4 var(--sans);
   letter-spacing: 0.08em;
-}
-.m-close-door-head i {
-  font: italic 300 14px / 1 var(--latin);
-  letter-spacing: 0.01em;
-  color: var(--mute);
 }
 .m-close-door-title {
   padding-right: 44px;

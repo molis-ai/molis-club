@@ -11,7 +11,7 @@ import { mediaOf } from '../ui';
 // 鼠标停上去卡片浮起一点，箭头填黑。三个排法里负责人 10-23 定了这一种（纸面三卡）。
 // 2026-10-24 负责人给这一屏配了一张照片（静图，不做动画）：薄雾里的远山，草坡山脊上远远站着一个人——
 // 远处有人也为同一片天停了下来。照片铺满上部，天的上沿化进纸里，那句话写在空着的天上；
-// 三张卡落在照片下面的纸上。
+// 三张卡落在照片下面的纸上。2026-10-31 卡上去掉英文副标签，只留中文名。
 
 const href = { enterprise: ENTERPRISE, community: COMMUNITY, about: ABOUT };
 
@@ -66,10 +66,7 @@ export function Closing() {
                 href={href[path.id]}
                 aria-label={path.label}
               >
-                <span className="m-close-door-head">
-                  {path.label}
-                  <i lang="en">{path.en}</i>
-                </span>
+                <span className="m-close-door-head">{path.label}</span>
                 <span className="m-close-door-title">
                   {path.title.map((line) => (
                     <span key={line}>{line}</span>

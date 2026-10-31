@@ -26,7 +26,6 @@ export const homeClosing = {
     {
       id: 'enterprise',
       label: '企业合作',
-      en: 'Enterprise',
       /** 第 5 章开头句 */
       title: ['把 AI 用进业务，', '把能力留在团队。'],
       link: '了解企业合作',
@@ -34,7 +33,6 @@ export const homeClosing = {
     {
       id: 'community',
       label: '社区',
-      en: 'Community',
       /** 第 6 章开头句的前半 */
       title: ['试试有意思的作品，', '看看它们怎么做出来。'],
       link: '去社区看看',
@@ -42,7 +40,6 @@ export const homeClosing = {
     {
       id: 'about',
       label: '关于我们',
-      en: 'About',
       /** 第 7 章标题 */
       title: ['一群同类，', '一起创造。'],
       link: '认识我们',

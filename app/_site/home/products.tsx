@@ -19,6 +19,7 @@ import './stages.css';
 // 第 3 章的一句话 → 分段演示（一轮不超过 10 秒，小标题是第 4 章的原句）→
 // 第 3 章的「当前阶段」与去处。2026-10-17 按首页验收反馈移除列表下方重复的开放说明；
 // 「这些产品怎样联系」按负责人的意见不放首页，留给各产品页。
+// 2026-10-31 去掉画面上方的产品名眉题和阶段签：左边选中那一行、画面下方都已写着，不说第三遍。
 // 交互：鼠标停一下才换；键盘聚焦到哪行选哪行；触屏第一次点是选中，再点进产品页。
 // 先不开放的产品（Life、Story、World）：这一行是按钮，只用来选中；右边不给去处，阶段写「探索中，敬请期待」。
 
@@ -136,16 +137,6 @@ export function Products() {
                   style={{ '--row': index + 1 } as CSSProperties}
                 >
                   <div className="m-panel-copy">
-                    <p className="m-panel-kicker">
-                      <span lang="en">{product.name}</span>
-                      <span
-                        className="ix-stage"
-                        data-stage={product.soon ? 'soon' : product.id}
-                      >
-                        <i />
-                        {product.stage}
-                      </span>
-                    </p>
                     <h3 className="m-panel-line">{product.what}</h3>
                   </div>
                   <figure
@@ -199,7 +190,7 @@ export function Products() {
                         </dd>
                       </div>
                     </dl>
-                    {/* 画面上方已经写着是哪件产品：去产品页只留一颗圆形箭头；开源代码没有上下文，留两个词 */}
+                    {/* 左边选中的那一行写着是哪件产品：去产品页只留一颗圆形箭头；开源代码没有上下文，留两个词 */}
                     <span className="ix-go">
                       {product.extra ? (
                         <a
