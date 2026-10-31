@@ -227,7 +227,6 @@ export const workQuoted = [workWhy.points[3].here, workEnd.belief, workEnd.belie
  * 它经 MCP 读同一份目标，修好 #12 交回 Molis Work，窗口里那条「Codex 修好了 #12」就是它交回来的。都是示意。
  */
 export const workHeroStage = {
-  wait: '划线卡片 · 2 件等你',
   term: {
     title: 'Codex',
     lines: [
@@ -238,5 +237,5 @@ export const workHeroStage = {
     ] as { text: string; dim?: string; ok?: boolean }[],
   },
   label:
-    '窗口外面：菜单栏里写着划线卡片有 2 件等你；你自己的终端里，Codex 经 MCP 读了同一份目标，修好 #12 后交回 Molis Work 等你验收。',
+    '窗口左边是你自己的终端：Codex 经 MCP 读了同一份目标，修好 #12 后交回 Molis Work 等你验收。',
 };

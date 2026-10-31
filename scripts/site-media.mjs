@@ -51,13 +51,15 @@ const images = [
     widths: [800, 1672],
     quality: 76,
   },
-  // Work 首屏的舞台：木桌、亚麻窗帘、一盆绿植，叶影落在墙上（负责人 2026-10-30 从样稿里挑的）。
-  // 原图只有 1440 宽，舞台再宽也只出到 1440
+  // Work 首屏的台面：芬兰湖面的晨雾（Unsplash · Sami Matias Breilin，免费授权，负责人 2026-10-31 挑的 14 号）。
+  // 台面几乎满屏宽，出到 2880；雾是整片渐变，和首页末屏一样用 90 档。
+  // 原图是竖幅，台面是横的：只取 3 : 2 的一截（竖向 32% 处，林线和雾在里面），上下看不到的不存
   {
     key: 'work-stage',
-    src: 'public/images/atelier/studio-desk.jpg',
-    widths: [960, 1440],
-    quality: 80,
+    src: 'public/images/r8/picks/unsplash-photo-1581713872605-b9dfbc84eaa4-4000.jpg',
+    crop: { ratio: 3 / 2, y: 0.32 },
+    widths: [1440, 2160, 2880],
+    quality: 90,
   },
   // Work 结尾：同一面墙、同一种光，一个人坐在扶手椅上读书（首屏是空着的书桌，结尾是坐下来的人）
   {
@@ -463,9 +465,19 @@ await mkdir(out, { recursive: true });
 const manifest = {};
 for (const image of images) {
   const input = path.join(root, image.src);
-  const meta = await sharp(input).metadata();
+  const full = await sharp(input).metadata();
+  // crop：只取原图里宽高比为 ratio 的一截，y 是这一截的竖向位置（0 顶、1 底）；
+  // 页面上 object-position 的百分比在裁过的图里照用，取景不变
+  const box = image.crop && {
+    left: 0,
+    top: Math.round((full.height - Math.round(full.width / image.crop.ratio)) * image.crop.y),
+    width: full.width,
+    height: Math.round(full.width / image.crop.ratio),
+  };
+  const open = () => (box ? sharp(input).extract(box) : sharp(input));
+  const meta = box ?? full;
   // 平均色：缩到 1×1 再读那一个像素
-  const { data } = await sharp(input)
+  const { data } = await open()
     .resize(1, 1, { fit: 'fill' })
     .removeAlpha()
     .raw()
@@ -475,7 +487,7 @@ for (const image of images) {
   for (const width of image.widths) {
     const w = Math.min(width, meta.width);
     const file = `${image.key}-${w}.webp`;
-    await sharp(input)
+    await open()
       .resize({ width: w, withoutEnlargement: true })
       .webp({ quality: image.quality, effort: 6, smartSubsample: true })
       .toFile(path.join(out, file));

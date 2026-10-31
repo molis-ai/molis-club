@@ -1,5 +1,5 @@
 'use client';
-import { Moon, Pause, Play, Sun } from 'lucide-react';
+import { Pause, Play } from 'lucide-react';
 import {
   createContext,
   useCallback,
@@ -14,13 +14,12 @@ import {
 import { workHeroStage, workTour, type TourChapterId } from '../../../content/site/work';
 import { useCue, useOnScreen, useStill } from '../../_site/cue';
 import { mediaOf, Note, Phrases, type Vars } from '../../_site/ui';
-import { Ring } from './app';
 import { HeroArt, TourArt } from './scenes';
 import { heroScene, tourScenes } from './scripts';
 
-// Work 页会动的两块：首屏（一个早上，循环；窗口落在一块舞台上，窗外是菜单栏的「等你」和你的终端）、
+// Work 页会动的两块：首屏（一个早上，循环；窗口放在一块照片台面上，终端压在窗口左边）、
 // 全景（六段，镜头一段段推过去，也能点着跳）；用起来的四个 case 在 cases.tsx。
-// 两块合在一个钉住的一屏里（Opening）：往下滚，首屏那扇窗推近成全景的大窗，推到了全景才开始演。
+// 两块合在一个钉住的一屏里（Opening）：往下滚，首屏的字退开，那扇窗推近成全景的大窗，照片台面淡成浅灰台面，推到了全景才开始演。
 // 都只在视口里、页面在前台、没按暂停时演；减少动态时停在做完的样子；没有 JS 时首屏停在做完的样子，全景停在第一段。
 
 const NOTE = '界面示意 · 示例数据';
@@ -44,10 +43,10 @@ function Toggle({ stopped, onToggle }: { stopped: boolean; onToggle: () => void 
 }
 
 /* ---------- 首屏推近成全景（Opening） ----------
-   宽屏、不减少动态、有 JS 时，舞台和全景叠在同一个钉住的一屏里（work.css 的 .wk-open）。
-   往下滚的进度是 useSiteMotion 写的 --pin；这里只量两扇窗各自的中心和宽，算出首屏那扇窗挪到全景那扇窗要平移多少、放大几倍
-   （--dx、--dy、--s），样式按进度把两扇窗摆到同一处：路上先推近一点，最近的时候换成「发布说明」，再落定成全景的大窗。
-   钉住时全景排得紧（标题和说明一行、段落条一行），窗口一般比首屏那扇大：一路放大到底，停在那么大接着演。
+   宽屏、不减少动态、有 JS 时，首屏（字和照片台面）和全景（标题、六段和浅灰台面）叠在同一个钉住的一屏里（work.css 的 .wk-open）。
+   往下滚的进度是 useSiteMotion 写的 --pin；这里量两扇窗各自的中心和宽，算出首屏那扇窗挪到全景那扇窗要平移多少、放大几倍
+   （--dx、--dy、--s），再量两块台面的位置和大小（--ax… 到 --bx…），样式按进度把窗和台面一起挪过去：
+   路上先推近一点，最近的时候换成「发布说明」，再落定成全景的大窗；照片淡掉，台面落成浅灰的那块。
    全景的窗比首屏那扇还小时（很矮的宽屏），路上先多推近一截（--b）再落定，不显得是缩小。推到了（arrived）全景才开始演、首屏停下。
    其余情况不钉住（data-push 不写），两块照常上下排，arrived 一直是 true。 */
 
@@ -75,7 +74,7 @@ function boxIn(node: HTMLElement, layer: HTMLElement) {
 }
 
 export function Opening({ hero, tour }: { hero: ReactNode; tour: ReactNode }) {
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const [state, setState] = useState({ pinned: false, arrived: true });
 
   useEffect(() => {
@@ -83,23 +82,32 @@ export function Opening({ hero, tour }: { hero: ReactNode; tour: ReactNode }) {
     const layer = root?.querySelector<HTMLElement>('.wk-open-pin');
     const from = root?.querySelector<HTMLElement>('.wk-stage-win');
     const to = root?.querySelector<HTMLElement>('.wk-tour-frame');
-    if (!root || !layer || !from || !to) return;
+    const plates = [root?.querySelector<HTMLElement>('.wk-stage'), root?.querySelector<HTMLElement>('.wk-tour-plate')];
+    if (!root || !layer || !from || !to || !plates[0] || !plates[1]) return;
     const query = matchMedia(PINNED);
     let frame = 0;
     let push = false;
 
     const measure = () => {
-      const a = boxIn(from, layer);
-      const b = boxIn(to, layer);
-      const ratio = b.w / (a.w || 1);
       push = query.matches;
       root.toggleAttribute('data-push', push);
       if (!push) return;
+      const a = boxIn(from, layer);
+      const b = boxIn(to, layer);
+      const ratio = b.w / (a.w || 1);
       root.style.setProperty('--dx', `${b.cx - a.cx}`);
       root.style.setProperty('--dy', `${b.cy - a.cy}`);
       root.style.setProperty('--s', `${ratio}`);
       // 中段（--e = 0.5）的大小 = 两头的平均 + --b；全景的窗更大时不绕，一路放大
       root.style.setProperty('--b', `${ratio >= 1 ? 0 : Math.max(0, NEAREST - (1 + ratio) / 2)}`);
+      plates.forEach((plate, index) => {
+        const box = boxIn(plate!, layer);
+        const name = index ? 'b' : 'a';
+        root.style.setProperty(`--${name}x`, `${box.x}`);
+        root.style.setProperty(`--${name}y`, `${box.y}`);
+        root.style.setProperty(`--${name}w`, `${box.w}`);
+        root.style.setProperty(`--${name}h`, `${box.h}`);
+      });
     };
     const update = () => {
       frame = 0;
@@ -121,9 +129,9 @@ export function Opening({ hero, tour }: { hero: ReactNode; tour: ReactNode }) {
     };
 
     change();
-    // 两扇窗的位置会跟着别的东西变（全景标题换行、字体载入），所以连它们所在的整块一起看
+    // 两扇窗、两块台面的位置会跟着别的东西变（标题换行、字体载入），所以连它们所在的整块一起看
     const observer = new ResizeObserver(change);
-    for (const node of [layer, to, to.parentElement, from.parentElement]) if (node) observer.observe(node);
+    for (const node of [layer, to, to.parentElement, from.parentElement, ...plates]) if (node) observer.observe(node);
     void document.fonts?.ready.then(change);
     query.addEventListener('change', change);
     window.addEventListener('scroll', request, { passive: true });
@@ -137,20 +145,15 @@ export function Opening({ hero, tour }: { hero: ReactNode; tour: ReactNode }) {
 
   return (
     <OpeningState.Provider value={state}>
-      <section
-        ref={ref}
-        className="wk-open"
-        data-scene
-        data-arrived={state.arrived || undefined}
-        aria-labelledby="wk-tour-title"
-      >
+      <div ref={ref} className="wk-open" data-scene data-arrived={state.arrived || undefined}>
         <div className="wk-open-pin">
+          <i className="wk-open-plate" aria-hidden="true" />
           <div className="wk-open-hero m-wrap">{hero}</div>
-          <div className="wk-open-tour wk-tour-sec">
+          <section className="wk-open-tour wk-tour-sec" aria-label={workTour.kicker}>
             <div className="m-wrap">{tour}</div>
-          </div>
+          </section>
         </div>
-      </section>
+      </div>
     </OpeningState.Provider>
   );
 }
@@ -160,31 +163,25 @@ export function Opening({ hero, tour }: { hero: ReactNode; tour: ReactNode }) {
 const STAGE = mediaOf('work-stage');
 
 /**
- * 窗口外面的两样：菜单栏里的「等你」胶囊，和你自己终端里的 Codex（它交回来的，就是窗口里那条「修好了 #12」）。
- * 和窗口同一个尺寸单位（work.css 的 --w）；跟着首屏的编排走，但不进编排：样式看窗口里哪几条事件已经出现。
+ * 你自己终端里的 Codex（它交回来的，就是窗口里那条「修好了 #12」），压在窗口左边。
+ * 和窗口同一个尺寸单位（窗宽的 1/64）；跟着首屏的编排走，但不进编排：样式看窗口里哪几条事件已经出现。
  */
-function HeroAside() {
-  const { wait, term } = workHeroStage;
+function HeroTerm() {
+  const { term } = workHeroStage;
   return (
-    <div className="wk-scene wk-aside" aria-hidden="true">
-      <p className="wk-capsule">
-        <Ring tone="attention" />
-        {wait}
+    <div className="wk-scene wk-aside wk-term" aria-hidden="true">
+      <p className="wk-term-h">
+        <i />
+        <i />
+        <i />
+        {term.title}
       </p>
-      <div className="wk-term">
-        <p className="wk-term-h">
-          <i />
-          <i />
-          <i />
-          {term.title}
+      {term.lines.map((line, index) => (
+        <p key={index} className={line.ok ? 'wk-term-l wk-ok' : 'wk-term-l'} data-l={index}>
+          {line.dim ? <span className="wk-dim">{line.dim} </span> : null}
+          {line.ok ? `✓ ${line.text}` : line.text}
         </p>
-        {term.lines.map((line, index) => (
-          <p key={index} className={line.ok ? 'wk-term-l wk-ok' : 'wk-term-l'} data-l={index}>
-            {line.dim ? <span className="wk-dim">{line.dim} </span> : null}
-            {line.ok ? `✓ ${line.text}` : line.text}
-          </p>
-        ))}
-      </div>
+      ))}
     </div>
   );
 }
@@ -197,37 +194,37 @@ export function HeroStage({ label }: { label: string }) {
   const { pinned, arrived } = useContext(OpeningState);
   useCue(ref, heroScene, { live: shown && !paused && !(pinned && arrived), still });
   return (
-    <figure className="wk-hero-fig m-rise" style={{ '--delay': '260ms' } as Vars}>
-      <div className="wk-stage" style={{ '--avg': STAGE.avg } as Vars}>
-        <div className="wk-stage-photo">
-          <img
-            className="wk-stage-img"
-            src={STAGE.src}
-            srcSet={STAGE.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
-            sizes="(max-width: 900px) 100vw, min(92vw, 1328px)"
-            width={STAGE.width}
-            height={STAGE.height}
-            alt=""
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-          />
-        </div>
+    <figure className="wk-stage wk-plate m-rise" style={{ '--avg': STAGE.avg, '--delay': '260ms' } as Vars}>
+      <div className="wk-stage-photo">
+        <img
+          className="wk-stage-img"
+          src={STAGE.src}
+          srcSet={STAGE.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
+          sizes="(max-width: 900px) 100vw, min(100vw - 40px, 1480px)"
+          width={STAGE.width}
+          height={STAGE.height}
+          alt=""
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+        />
+      </div>
+      <div className="wk-stage-set">
         <div className="wk-stage-win">
           <div ref={ref} className="wk-frame" aria-hidden="true">
             <HeroArt />
           </div>
+          <HeroTerm />
         </div>
-        <HeroAside />
+        <figcaption className="wk-foot">
+          <span className="sr-only">
+            {label}
+            {workHeroStage.label}
+          </span>
+          <Note>{NOTE}</Note>
+          {still ? null : <Toggle stopped={paused} onToggle={() => setPaused((value) => !value)} />}
+        </figcaption>
       </div>
-      <figcaption className="wk-foot">
-        <span className="sr-only">
-          {label}
-          {workHeroStage.label}
-        </span>
-        <Note>{NOTE}</Note>
-        {still ? null : <Toggle stopped={paused} onToggle={() => setPaused((value) => !value)} />}
-      </figcaption>
     </figure>
   );
 }
@@ -249,7 +246,6 @@ const clamp = (value: number, low: number, high: number) => Math.min(high, Math.
 export function Tour({ head }: { head: ReactNode }) {
   const { chapters } = workTour;
   const ref = useRef<HTMLDivElement>(null);
-  const row = useRef<HTMLDivElement>(null);
   const still = useStill();
   const shown = useOnScreen(ref, 0.45);
   const [paused, setPaused] = useState(false);
@@ -306,22 +302,6 @@ export function Tour({ head }: { head: ReactNode }) {
     return () => observer.disconnect();
   }, [aim]);
 
-  // 段落下面那道墨线：和镜头同一个节奏滑到这一段
-  useLayoutEffect(() => {
-    const list = row.current;
-    const tab = tabs.current[active];
-    if (!list || !tab) return;
-    const set = () => {
-      list.style.setProperty('--ix', `${tab.offsetLeft}px`);
-      list.style.setProperty('--iy', `${tab.offsetTop + tab.offsetHeight}px`);
-      list.style.setProperty('--iw', `${tab.offsetWidth}px`);
-    };
-    set();
-    const observer = new ResizeObserver(set);
-    observer.observe(list);
-    return () => observer.disconnect();
-  }, [active]);
-
   const go = (index: number) => {
     if (index === active) setRound((value) => value + 1);
     setActive(index);
@@ -339,21 +319,8 @@ export function Tour({ head }: { head: ReactNode }) {
   return (
     <div className="wk-tour">
       {head}
-      <div
-        ref={ref}
-        className="wk-frame wk-tour-frame"
-        data-focus={chapter.id}
-        role="tabpanel"
-        id="wk-tour-stage"
-        aria-labelledby={`wk-tour-tab-${active}`}
-      >
-        <div aria-hidden="true">
-          <TourArt theme={theme} />
-        </div>
-        <p className="sr-only">{workTour.label}</p>
-      </div>
-      <div className="wk-tour-under">
-        <div ref={row} className="wk-tour-tabs" role="tablist" aria-label={workTour.kicker}>
+      <div className="wk-tour-side">
+        <div className="wk-tour-tabs" role="tablist" aria-labelledby="wk-tour-title">
           {chapters.map((item, index) => (
             <button
               key={item.id}
@@ -373,37 +340,43 @@ export function Tour({ head }: { head: ReactNode }) {
               {item.name}
             </button>
           ))}
-          <i className="wk-tour-ind" aria-hidden="true" />
         </div>
-        <div className="wk-tour-tools">
-          <Note>{NOTE}</Note>
-          <fieldset className="wk-theme">
-            <legend className="sr-only">{workTour.theme.label}</legend>
-            {(['light', 'dark'] as const).map((value) => {
-              const Icon = value === 'light' ? Sun : Moon;
-              return (
-                <button
-                  key={value}
-                  type="button"
-                  aria-pressed={theme === value}
-                  aria-label={workTour.theme[value]}
-                  title={workTour.theme[value]}
-                  onClick={() => setTheme(value)}
-                >
-                  <Icon aria-hidden="true" />
+        <div className="wk-tour-cap" aria-live="polite">
+          <p key={active}>
+            <span className="wk-tour-cap-t">{chapter.title}</span>
+            <Phrases text={chapter.text} />
+          </p>
+        </div>
+      </div>
+      <figure className="wk-tour-plate wk-plate">
+        <div className="wk-tour-set">
+          <div
+            ref={ref}
+            className="wk-frame wk-tour-frame"
+            data-focus={chapter.id}
+            role="tabpanel"
+            id="wk-tour-stage"
+            aria-labelledby={`wk-tour-tab-${active}`}
+          >
+            <div aria-hidden="true">
+              <TourArt theme={theme} />
+            </div>
+            <p className="sr-only">{workTour.label}</p>
+          </div>
+          <figcaption className="wk-foot">
+            <Note>{NOTE}</Note>
+            <fieldset className="wk-theme">
+              <legend className="sr-only">{workTour.theme.label}</legend>
+              {(['light', 'dark'] as const).map((value) => (
+                <button key={value} type="button" aria-pressed={theme === value} onClick={() => setTheme(value)}>
+                  {workTour.theme[value]}
                 </button>
-              );
-            })}
-          </fieldset>
-          {still ? null : <Toggle stopped={paused} onToggle={() => setPaused((value) => !value)} />}
+              ))}
+            </fieldset>
+            {still ? null : <Toggle stopped={paused} onToggle={() => setPaused((value) => !value)} />}
+          </figcaption>
         </div>
-      </div>
-      <div className="wk-tour-cap" aria-live="polite">
-        <p key={active}>
-          <span className="wk-tour-cap-t">{chapter.title}</span>
-          <Phrases text={chapter.text} />
-        </p>
-      </div>
+      </figure>
     </div>
   );
 }

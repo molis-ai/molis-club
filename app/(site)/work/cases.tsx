@@ -6,7 +6,7 @@ import { useOnScreen, useStill } from '../../_site/cue';
 import { Note, Phrases } from '../../_site/ui';
 import { createRuntime, fill, type CaseSpec } from './cases/runtime';
 
-// 用起来：两种人，各走两条闭环。左边是角色、闭环和五步，右边一扇窗按时间演。
+// 用起来：两种人，各走两条闭环。左边是角色、闭环和五步（纯文字），右边一块浅灰台面，上面一扇窗按时间演。
 // 画面挂在 shadow root 里（四个 case 的样式和 id 与站点互不影响），只在视口里、页面在前台、没按暂停时演；
 // 点某一步从那一步演起；减少动态时直接停在做完的样子。四个 case 各自按需加载。
 
@@ -170,7 +170,7 @@ export function Cases({ head }: { head: ReactNode }) {
           ))}
         </ol>
       </div>
-      <figure className="wk-cs-show" id="wk-cs-stage" role="tabpanel" aria-labelledby={`wk-cs-tab-${loop}`}>
+      <figure className="wk-cs-show wk-plate" id="wk-cs-stage" role="tabpanel" aria-labelledby={`wk-cs-tab-${loop}`}>
         <div ref={frame} className="wk-cs-frame" data-case={current.id} aria-hidden="true" />
         <figcaption className="wk-foot">
           <span className="sr-only">{current.label}</span>

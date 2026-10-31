@@ -8,14 +8,14 @@ import {
   Target,
   type LucideIcon,
 } from 'lucide-react';
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { workWhy, type WhyId } from '../../../content/site/work';
 import { useOnScreen, useStill } from '../../_site/cue';
 import { Note, Phrases } from '../../_site/ui';
 import { Ring } from './app';
 
-// 为什么是 Molis：页面上托着一块深色的展台。左边四条轮流点亮（鼠标停上去就停在那条），
-// 右边每条演一个十秒内的小故事：先是通常会怎样，再是在 Molis 里怎样——
+// 为什么是 Molis：左边四条轮流点亮（纯文字，鼠标停上去就停在那条），
+// 右边一块浅灰台面，每条演一个十秒内的小故事：先是通常会怎样，再是在 Molis 里怎样——
 // 接得上：Claude Code 额度用完熄掉，Codex 接上，读到了你定过的事；对得上：Codex 报做完了，收尾没生效，等你验收；
 // 长出来：你做的检查台从一个虚线框长出来，Claude Code 也调它；是你的：一圈「你的电脑」，换模型，记录不动。
 // 每一拍都写成「终态 + 从哪来的动画」（work.css），减少动态时直接是终态；换到哪条，那条的动画重新开始。
@@ -201,7 +201,7 @@ function Stage() {
   );
 }
 
-export function Why() {
+export function Why({ head }: { head: ReactNode }) {
   const [on, setOn] = useState<WhyId>('carry');
   const [held, setHeld] = useState(false);
   const still = useStill();
@@ -224,59 +224,50 @@ export function Why() {
   };
 
   return (
-    <div className="wk-why-panel">
-      <div
-        ref={ref}
-        className="m-wrap wk-why"
-        data-on={on}
-        data-still={still || undefined}
-        data-run={(!still && !held && shown) || undefined}
-      >
-        <div className="wk-why-text">
-          <p className="m-kicker">{workWhy.kicker}</p>
-          <h2 className="wk-why-title" id="wk-why-title">
-            <Phrases text={workWhy.title} />
-          </h2>
-          <p className="wk-why-lead">
-            <Phrases text={workWhy.lead} />
-          </p>
-          <ol className="wk-why-list">
-            {workWhy.points.map((point) => (
-              <li key={point.id} data-active={point.id === on || undefined}>
-                <button
-                  type="button"
-                  className="wk-why-pt"
-                  aria-pressed={point.id === on}
-                  onClick={() => pick(point.id)}
-                  onMouseEnter={() => pick(point.id)}
-                  onMouseLeave={() => setHeld(false)}
-                  onFocus={() => pick(point.id)}
-                  onBlur={() => setHeld(false)}
-                >
-                  <span className="wk-why-k">{point.key}</span>
-                  <span className="wk-why-claim">{point.claim}</span>
-                </button>
-                <div className="wk-why-more">
-                  <p>
-                    <Phrases text={point.here} />
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <p className="wk-why-coda">
-            <span>{workWhy.coda[0]}</span>
-            <span>{workWhy.coda[1]}</span>
-          </p>
-        </div>
-        <figure className="wk-why-fig">
-          <Stage />
-          <figcaption>
-            <span className="sr-only">{workWhy.label}</span>
-            <Note>界面示意 · 示例数据</Note>
-          </figcaption>
-        </figure>
+    <div
+      ref={ref}
+      className="m-wrap wk-why"
+      data-on={on}
+      data-still={still || undefined}
+      data-run={(!still && !held && shown) || undefined}
+    >
+      <div className="wk-why-text">
+        {head}
+        <ol className="wk-why-list">
+          {workWhy.points.map((point) => (
+            <li key={point.id} data-active={point.id === on || undefined}>
+              <button
+                type="button"
+                className="wk-why-pt"
+                aria-pressed={point.id === on}
+                onClick={() => pick(point.id)}
+                onMouseEnter={() => pick(point.id)}
+                onMouseLeave={() => setHeld(false)}
+                onFocus={() => pick(point.id)}
+                onBlur={() => setHeld(false)}
+              >
+                {point.claim}
+              </button>
+              <div className="wk-why-more">
+                <p>
+                  <Phrases text={point.here} />
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p className="wk-why-coda">
+          <span>{workWhy.coda[0]}</span>
+          <span>{workWhy.coda[1]}</span>
+        </p>
       </div>
+      <figure className="wk-why-fig wk-plate">
+        <Stage />
+        <figcaption className="wk-foot">
+          <span className="sr-only">{workWhy.label}</span>
+          <Note>界面示意 · 示例数据</Note>
+        </figcaption>
+      </figure>
     </div>
   );
 }
