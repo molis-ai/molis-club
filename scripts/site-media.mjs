@@ -36,13 +36,15 @@ const images = [
     widths: [960, 1672],
     quality: 76,
   },
-  // 首页末屏：薄雾里的阿拉维山，草坡山脊上远远站着一个人（Unsplash · Marsumilae，负责人 2026-10-24 挑）
+  // 首页末屏：雾里的海面，一个人站在桨板上远远地划（Unsplash · Maxim Boldyrev，unsplash.com/photos/cDLLSVxTpmg，
+  // 负责人 2026-10-31 挑；替换 10-24 那张阿拉维山）。竖幅，满版时横着取下半段
   {
     key: 'home-close',
-    src: 'public/images/r8/picks/unsplash-photo-1786897162869-b0ccd067affd-2400.jpg',
+    src: 'public/images/r8/picks/unsplash-photo-1632399464750-420b12f8227e-2400.jpg',
     widths: [1280, 1920, 2400],
-    // 逆光的天几乎是一整片渐变，74 档会压出成块的竖条；90 档 2400 宽也只有一百来 KB
-    quality: 90,
+    // 照片带粗颗粒，原样压 1920 宽要 1.5MB；先轻轻抹匀（0.7）再压 74 档，1920 宽两百来 KB，看不出差别
+    quality: 74,
+    soften: 0.7,
   },
   // 产品页的窗
   {
@@ -475,8 +477,9 @@ for (const image of images) {
   for (const width of image.widths) {
     const w = Math.min(width, meta.width);
     const file = `${image.key}-${w}.webp`;
-    await sharp(input)
-      .resize({ width: w, withoutEnlargement: true })
+    const resized = sharp(input).resize({ width: w, withoutEnlargement: true });
+    // soften：先把胶片颗粒抹匀一点再压，颗粒太粗的照片才用
+    await (image.soften ? resized.blur(image.soften) : resized)
       .webp({ quality: image.quality, effort: 6, smartSubsample: true })
       .toFile(path.join(out, file));
     const { size } = await stat(path.join(out, file));

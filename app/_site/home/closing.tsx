@@ -6,12 +6,11 @@ import { ABOUT, COMMUNITY, ENTERPRISE } from '../routes';
 import { mediaOf } from '../ui';
 
 // 首页结尾（负责人 2026-10-22 / 10-23，D2 / B5）：画室那段影像挪去了社区结尾，这里回到纸面。
-// 接着产品列表那张暖白纸，一屏：过渡句「让口味相近的人认出彼此。」居中，下面三张白卡横排——
-// 企业合作、社区、关于我们（同「关于」结尾的去处）。整张卡都是链接，只留一颗圆形箭头；
-// 鼠标停上去卡片浮起一点，箭头填黑。三个排法里负责人 10-23 定了这一种（纸面三卡）。
-// 2026-10-24 负责人给这一屏配了一张照片（静图，不做动画）：薄雾里的远山，草坡山脊上远远站着一个人——
-// 远处有人也为同一片天停了下来。照片铺满上部，天的上沿化进纸里，那句话写在空着的天上；
-// 三张卡落在照片下面的纸上。2026-10-31 卡上去掉英文副标签，只留中文名。
+// 过渡句「让口味相近的人认出彼此。」，下面三张卡横排——企业合作、社区、关于我们（同「关于」结尾的去处）。
+// 整张卡都是链接，只留一颗圆形箭头；鼠标停上去卡片浮起一点、透得少一些，箭头填黑。
+// 2026-10-31 负责人改成满版、换了照片：雾里的海面，一个人站在桨板上远远地划（静图）。
+// 水面碎光压不住字，地平线放低到画面约八成处，那句话和三张卡都写在上面的雾里，人和水留在下面；
+// 卡是半透明的纸，透得出后面的雾，上沿亮一点像迎着光。手机上照片只留那句话，三张卡落到照片下面的纸上。
 
 const href = { enterprise: ENTERPRISE, community: COMMUNITY, about: ABOUT };
 
@@ -23,16 +22,14 @@ export function Closing() {
       className="m-close"
       data-tone="paper"
       aria-labelledby="m-close-title"
+      style={{ '--avg': photo.avg } as CSSProperties}
     >
-      <div
-        className="m-close-sky"
-        style={{ '--avg': photo.avg } as CSSProperties}
-      >
+      <div className="m-close-sky">
         <img
           className="m-close-photo"
           src={photo.src}
           srcSet={photo.srcset.map(([src, w]) => `${src} ${w}w`).join(', ')}
-          sizes="(max-width: 900px) 190vw, 100vw"
+          sizes="(max-width: 900px) 135vw, 100vw"
           width={photo.width}
           height={photo.height}
           alt={close.photoAlt}

@@ -319,8 +319,8 @@ button.m-prow {
 }
 
 /* =====================================================================
-   结尾：纸面三卡，过渡句居中，企业合作 / 社区 / 关于我们三张白卡横排
-   （画室影像 2026-10-22 挪去社区结尾；负责人 10-23 定了纸面三卡）
+   结尾：满版的雾海（负责人 2026-10-31 定），过渡句和三张半透明的卡写在上面的雾里，
+   人和水留在下面。卡是企业合作 / 社区 / 关于我们（画室影像 2026-10-22 挪去社区结尾）
    ===================================================================== */
 .m-close {
   /* 接着产品列表那张暖白纸（stages.css），和页尾之间才换纸 */
@@ -333,19 +333,18 @@ button.m-prow {
   --shade: 46 34 22;
   position: relative;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto 1fr;
   min-height: 100vh;
   min-height: 100svh;
-  background: var(--paper);
-  color: var(--ink);
-}
-/* 照片铺满上部：天的上沿化进纸里（天的上部本来就近白），下沿是山脊下的暗草坡，齐边落到纸上。
-   人在横向约 34%、纵向约 51%：cover 的取景让天留够两行字，人和他脚下一截草坡留在画里。 */
-.m-close-sky {
-  position: relative;
   overflow: hidden;
   /* 载入前：上面是纸，往下渐到这张图的平均色 */
   background: linear-gradient(var(--paper) 30%, var(--avg));
+  color: var(--ink);
+}
+/* 宽屏：照片铺满整屏，雾的上沿化进上一屏的纸里。人在竖幅约 63% 高处，
+   横着取下半段，地平线落在画面约八成处 */
+.m-close-sky {
+  display: contents;
 }
 .m-close-photo {
   position: absolute;
@@ -354,20 +353,21 @@ button.m-prow {
   height: 100%;
   max-width: none;
   object-fit: cover;
-  object-position: 50% 22%;
+  object-position: 50% 48%;
   filter: var(--grade);
   mask-image: linear-gradient(transparent, #000 clamp(96px, 18%, 200px));
 }
 .m-close-head {
   position: relative;
   padding-top: calc(var(--header) + clamp(20px, 6vh, 64px));
-  padding-bottom: 24vh;
   text-align: center;
 }
 .m-close-in {
+  position: relative;
   display: grid;
+  align-self: start;
   justify-items: center;
-  padding-block: clamp(24px, 4vh, 40px) clamp(40px, 7vh, 72px);
+  padding-block: clamp(32px, 5vh, 56px) 0;
 }
 .m-close-lead {
   margin: 0;
@@ -383,47 +383,58 @@ button.m-prow {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
-  width: min(100%, 1080px);
+  width: min(100%, 1040px);
   margin: 0;
   padding: 0;
   list-style: none;
   text-align: left;
 }
+/* 半透明的纸：透得出后面的雾，不磨砂；光从上面来，纸面上浅下透、上沿一道亮边；只有一层暖色的影子 */
 .m-close-door {
   position: relative;
   display: grid;
   align-content: start;
-  gap: 14px;
+  gap: 12px;
   height: 100%;
-  min-height: clamp(148px, 20vh, 188px);
-  padding: 20px 22px;
+  min-height: clamp(136px, 17vh, 164px);
+  padding: 22px 24px;
+  border: 1px solid;
+  border-color: rgb(255 255 255 / 0.8) rgb(255 255 255 / 0.45)
+    rgb(255 255 255 / 0.3);
   border-radius: var(--r-card);
-  background: var(--white);
-  box-shadow: 0 0 0 1px var(--hair);
+  background: linear-gradient(rgb(255 253 249 / 0.5), rgb(251 250 247 / 0.26))
+    rgb(251 250 247 / 0);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.55),
+    0 24px 44px -36px rgb(var(--shade) / 0.5);
   color: var(--ink);
   text-decoration: none;
   transition:
     translate 0.5s var(--ease),
-    box-shadow 0.5s var(--ease),
-    background-color 0.4s var(--ease);
+    background-color 0.5s var(--ease),
+    border-color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
 }
 .m-close-door:hover {
-  translate: 0 -4px;
+  translate: 0 -3px;
+  border-color: rgb(255 255 255 / 0.95) rgb(255 255 255 / 0.7)
+    rgb(255 255 255 / 0.5);
+  background-color: rgb(251 250 247 / 0.4);
   box-shadow:
-    0 0 0 1px var(--hair-2),
-    0 18px 34px -26px rgb(var(--shade) / 0.5);
+    inset 0 1px 0 rgb(255 255 255 / 0.8),
+    0 28px 48px -32px rgb(var(--shade) / 0.55);
 }
 .m-close-door:focus-visible {
   outline: 1.5px solid var(--ink);
   outline-offset: 4px;
 }
 .m-close-door-head {
-  font: 400 16px / 1.4 var(--sans);
+  font: 400 17px / 1.4 var(--sans);
   letter-spacing: 0.08em;
 }
 .m-close-door-title {
   padding-right: 44px;
-  font: 300 15px / 1.8 var(--sans);
+  font: 400 14.5px / 1.8 var(--sans);
   letter-spacing: 0.04em;
   color: var(--ink-2);
   font-feature-settings: 'palt' 1;
@@ -457,24 +468,28 @@ button.m-prow {
   translate: 2px 0;
 }
 
+/* 手机：照片只留那句话，按高裁、人在正中；三张卡竖排落到照片下面的纸上 */
 @media (max-width: 900px) {
   .m-close {
     grid-template-rows: auto auto;
     min-height: 0;
+    background: var(--paper);
   }
-  /* 竖屏按高裁：取左边一段，人在画面约四成宽的地方 */
   .m-close-sky {
-    height: clamp(440px, 128vw, 620px);
+    position: relative;
+    display: block;
+    height: max(520px, 76svh);
+    overflow: hidden;
+    background: linear-gradient(var(--paper) 30%, var(--avg));
   }
   .m-close-photo {
-    object-position: 29% 50%;
+    object-position: 50% 50%;
   }
   .m-close-head {
-    padding-top: clamp(72px, 20vw, 112px);
-    padding-bottom: 0;
+    padding-top: calc(var(--header) + clamp(28px, 9vw, 48px));
   }
   .m-close-in {
-    padding-block: 16px 88px;
+    padding-block: 16px 56px;
   }
   .m-close-doors {
     grid-template-columns: minmax(0, 1fr);
@@ -482,6 +497,9 @@ button.m-prow {
   }
   .m-close-door {
     min-height: 0;
+    border-color: var(--hair);
+    background: rgb(255 255 255 / 0.55);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8);
   }
 }
 
@@ -495,6 +513,7 @@ button.m-prow {
     translate: none;
   }
 }
+
 @media print {
   .m-film {
     display: none;

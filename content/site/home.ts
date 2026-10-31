@@ -20,8 +20,8 @@ export const homeProducts: Record<
 export const homeClosing = {
   /** 第 1.4 节：「……让产品有自己的性格，让口味相近的人认出彼此。」按语气分两行，不改字 */
   lead: ['让口味相近的人', '认出彼此。'],
-  /** 末屏的照片（Unsplash · Marsumilae，法国阿拉维山，负责人 2026-10-24 挑）；替代文字是新写的界面文字 */
-  photoAlt: '薄雾里一层层淡去的远山，近处草坡的山脊上，远远站着一个人。',
+  /** 末屏的照片（Unsplash · Maxim Boldyrev，负责人 2026-10-31 挑）；替代文字是新写的界面文字 */
+  photoAlt: '雾里的海面上，一个人站在桨板上，远远地划着。',
   paths: [
     {
       id: 'enterprise',
