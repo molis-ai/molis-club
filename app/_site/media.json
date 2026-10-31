@@ -1356,13 +1356,13 @@
     ]
   },
   "home-sky": {
-    "width": 1280,
-    "height": 720,
-    "avg": "#a3abb3",
-    "src": "/site/home-sky-smooth.mp4",
+    "width": 2560,
+    "height": 1440,
+    "avg": "#8da2ab",
+    "src": "/site/home-sky.mp4",
     "poster": "/site/home-sky-poster.webp",
     "rate": 1,
-    "posterTime": 2.0833333333333335,
+    "posterTime": 0,
     "srcset": []
   },
   "home-seaside": {

@@ -433,11 +433,11 @@ const images = [
 
 /** 视频：src 是重新编码后的文件；rate 是播放速度（延时素材放慢到让人静下来的速度） */
 const videos = [
-  // 首页首屏的天空：只留前 7.6 秒（再往后积云底部转暗、乌云压上来），比 Story 页再放慢一档；
-  // 第四屏的画室：美术馆午后那段原样 1280 宽。这两段用系统自带的 avconvert 直接截取
-  // （PresetPassthrough，不重新编码），封面帧沿用 story-sky / about-painting 的同一帧。
-  // 同一段天空按原慢速节奏插帧，生成方法见 prepare-home-sky.mjs；封面仍用原帧。
-  { key: 'home-sky', file: 'home-sky-smooth', rate: 1, posterTime: 0.5 / 0.24 },
+  // 首页首屏的天空：Pexels 6772133（Miguel Á. Padriñán，Pexels License），4K 原片整段 15 秒，
+  // encode-video.swift 出 2560 宽 4000kbps，封面取第 0 秒，原速播放。
+  // 第四屏的画室：美术馆午后那段原样 1280 宽，用系统自带的 avconvert 直接截取
+  // （PresetPassthrough，不重新编码），封面帧沿用 about-painting 的同一帧。
+  { key: 'home-sky', rate: 1, posterTime: 0 },
   // 第一条试片先以 0.55 倍节奏补到 30 fps，浏览器正常速度播放；循环位移仍待处理。
   { key: 'home-seaside', file: 'home-seaside-calm', rate: 1, posterTime: 0 },
   // B 独立使用 2x 重采样版本；封面沿用原尺寸，视频元数据以导出尺寸为准。
