@@ -251,7 +251,7 @@ export function Tour({ head }: { head: ReactNode }) {
   const [paused, setPaused] = useState(false);
   const [active, setActive] = useState(0);
   const [round, setRound] = useState(0);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const chapter = chapters[active];
   // 首屏那扇窗还没推过来时不演：推到了才从第一段开始

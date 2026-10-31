@@ -2,14 +2,18 @@
    Molis Work 页（2026-10-24）。页面本身守官网的规矩：纸色、Jost 与苹方、一条缓动、一屏一件事；
    画面里的 Molis Work 照最新桌面端的 Soft Workbench：珍珠灰桌面、白色工作面、石墨主按钮、铜色进行中，
    状态色、插件标签的色相都取自 Molis Work 的 palette.ts（2026-10-24 main）。
-   画面里只有「你」是杏橙色（官网的 accent）；AI 在写时亮一个插入光标和灰名牌。
+   画面里只有「你」是冰蓝的名牌；AI 在写时亮一个插入光标和灰名牌。
    尺寸：画框是一个容器，窗口宽 64u（--u = 画框宽 / 64），里面全用 em，放大缩小都清楚。
    ===================================================================== */
 
 .wk {
   --ai: #6f6b63;
   --wall: #f1efea;
-  --sel: rgb(234 146 96 / 0.3);
+  /* 「你」的颜色：冰蓝，深浅两种底上都看得清；不用杏橙，免得和 AI 产品的品牌色混在一起 */
+  --you: #8fb6f7;
+  --you-ink: #0e1d36;
+  --you-edge: rgb(14 29 54 / 0.45);
+  --sel: rgb(143 182 247 / 0.32);
 }
 
 /* ---------- A 台面（2026-10-31，specs/work-product-page/redesign.md）----------
@@ -956,7 +960,8 @@
   transition: none;
 }
 
-/* 你：杏橙色的指针，带一个「你」；由编排移动（transform）和按下（.wk-hand-in 缩一下） */
+/* 你：一枚冰蓝的名牌，左上角削尖就是指针的尖；由编排移动（transform）和按下（.wk-hand-in 缩一下）。
+   选字时名牌退到右下，尖上换成一根冰蓝的 I 形 */
 .wk-hand {
   position: absolute;
   top: 0;
@@ -977,34 +982,24 @@
   inset: 0;
   transform-origin: 0 0;
 }
-.wk-hand svg {
-  position: absolute;
-  top: -0.08em;
-  left: -0.08em;
-  width: 1em;
-  height: 1.33em;
-  overflow: visible;
-  fill: var(--accent);
-  stroke: #fff;
-  stroke-width: 1.3;
-  stroke-linejoin: round;
-  filter: drop-shadow(0 0.08em 0.12em rgb(var(--shade) / 0.3));
-  transition: opacity 0.12s linear;
-}
 .wk-hand-name {
   position: absolute;
-  top: 1.02em;
-  left: 0.78em;
-  padding: 0.22em 0.5em 0.24em;
-  border-radius: 0.3em;
-  background: var(--accent);
-  font-size: 0.6em;
+  top: 0;
+  left: 0;
+  padding: 0.36em 0.62em 0.38em 0.6em;
+  border-radius: 0.08em 0.7em 0.7em 0.7em;
+  background: var(--you);
+  box-shadow:
+    0 0 0 1px var(--you-edge),
+    0 0.25em 0.6em -0.15em rgb(0 0 0 / 0.4);
+  font-size: 0.66em;
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   white-space: nowrap;
-  color: #fff;
+  color: var(--you-ink);
+  transition: transform 0.18s var(--ease);
 }
-/* 选字时：一根杏橙的 I 形 */
 .wk-hand-in::before {
   content: '';
   position: absolute;
@@ -1013,13 +1008,13 @@
   width: 0.12em;
   height: 1.24em;
   border-radius: 0.06em;
-  background: var(--accent);
-  box-shadow: 0 0 0 0.06em #fff;
+  background: var(--you);
+  box-shadow: 0 0 0 1px var(--you-edge);
   opacity: 0;
   transition: opacity 0.12s linear;
 }
-.wk-hand[data-shape='beam'] svg {
-  opacity: 0;
+.wk-hand[data-shape='beam'] .wk-hand-name {
+  transform: translate(0.35em, 0.95em);
 }
 .wk-hand[data-shape='beam'] .wk-hand-in::before {
   opacity: 1;
@@ -1027,8 +1022,10 @@
 
 /* 要你定的那一下：访客的鼠标变成「你」，画面里的「你」先隐去，能按的那几样亮一圈 */
 [data-ask],
-[data-ask] * {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='30'%3E%3Cpath d='M2 2v17l4.5-4 3 7 2.6-1.1-3-6.9H15z' fill='%23ea9260' stroke='white' stroke-width='1.3'/%3E%3Crect x='17' y='15' width='22' height='15' rx='4' fill='%23ea9260'/%3E%3Ctext x='28' y='26' font-size='10.5' fill='white' text-anchor='middle' font-family='PingFang SC,sans-serif'%3E你%3C/text%3E%3C/svg%3E")
+[data-ask] *,
+.wk-ask-opt,
+.wk-ask-opt * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='26'%3E%3Cpath d='M2 2h22a7 7 0 0 1 7 7v7a7 7 0 0 1-7 7H9a7 7 0 0 1-7-7z' fill='%238fb6f7' stroke='%230e1d36' stroke-opacity='.45'/%3E%3Ctext x='16.5' y='17.5' font-size='12' font-weight='600' fill='%230e1d36' text-anchor='middle' font-family='PingFang SC,sans-serif'%3E你%3C/text%3E%3C/svg%3E")
       2 2,
     pointer;
 }
@@ -1141,16 +1138,17 @@
   font-size: 0.82em;
   font-weight: 500;
 }
-/* 终端：你自己的终端窗口（不属于 Molis Work），深色 */
+/* 终端：你自己的终端窗口（不属于 Molis Work）。比深色的 Molis Work 再深一档，一圈浅色细边和一道重影，看得出是压在上面的另一扇窗 */
 .wk-term {
   position: absolute;
   z-index: 14;
   overflow: hidden;
   border-radius: 0.8em;
-  background: #18181b;
+  background: #0f0f11;
   box-shadow:
-    0 0 0 1px rgb(0 0 0 / 0.35),
-    0 1.6em 3em -1.4em rgb(0 0 0 / 0.45);
+    0 0 0 1px rgb(255 255 255 / 0.16),
+    0 0 0 2px rgb(0 0 0 / 0.5),
+    0 1.8em 3.4em -1.2em rgb(0 0 0 / 0.7);
   font-family: ui-monospace, 'SF Mono', Menlo, var(--sans);
   color: #e9e9ec;
 }
@@ -1160,7 +1158,8 @@
   gap: 0.35em;
   height: 2.1em;
   padding: 0 0.8em;
-  border-bottom: 1px solid #2c2c31;
+  border-bottom: 1px solid #26262b;
+  background: #18181b;
   font-family: var(--sans);
   font-size: 0.62em;
   color: #9a9aa3;
@@ -1764,7 +1763,8 @@
   background: linear-gradient(150deg, #48474a, #1d1d1f);
 }
 .wk-av[data-who='me'] {
-  background: var(--accent);
+  background: var(--you);
+  color: var(--you-ink);
 }
 .wk-scene[data-theme='dark'] .wk-av[data-who='codex'] {
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18);
@@ -2216,96 +2216,193 @@
 }
 .wk-cs-pick {
   display: grid;
-  gap: 18px;
+  gap: 14px;
 }
+/* 你主要做什么：一对分段按钮，选中的那半是白的 */
 .wk-cs-roles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 1.3em;
+  display: inline-flex;
+  justify-self: start;
   min-width: 0;
   margin: 0;
   border: 0;
-  padding: 0;
+  padding: 3px;
+  border-radius: 12px;
+  background: rgb(27 26 24 / 0.06);
 }
+.wk-cs-roles button {
+  padding: 8px 18px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  font: 400 15px / 1.4 var(--sans);
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    background-color 0.3s var(--ease),
+    box-shadow 0.3s var(--ease),
+    color 0.3s var(--ease);
+}
+.wk-cs-roles button:hover {
+  color: var(--ink);
+}
+.wk-cs-roles button[aria-pressed='true'] {
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 1px 3px rgb(var(--shade) / 0.12);
+  color: var(--ink);
+}
+/* 两条闭环：两张卡，上面是哪一条，下面是这个角色在这条上做的事；选中的那张是白的 */
 .wk-cs-loops {
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
-.wk-cs-roles button,
-.wk-cs-loop,
-.wk-cs-step {
+.wk-cs-loop {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 12px 14px 13px;
   border: 0;
-  border-radius: 4px;
+  border-radius: 12px;
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.35s var(--ease),
+    box-shadow 0.35s var(--ease);
+}
+.wk-cs-loop:hover {
+  background: rgb(255 255 255 / 0.6);
+}
+.wk-cs-loop[aria-selected='true'] {
+  background: var(--white);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 10px 22px -14px rgb(var(--shade) / 0.45);
+}
+.wk-cs-loop-k {
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.wk-cs-loop-t {
+  font-size: 15.5px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+.wk-cs-loop[aria-selected='true'] .wk-cs-loop-t {
+  font-weight: 500;
+  color: var(--ink);
+}
+/* 五步：一根竖线串起五个编号；走过的实心，当下这一步描一圈、字加粗，下面展开说明 */
+.wk-cs-steps {
+  --dot: 22px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: wk-step;
+}
+.wk-cs-steps li {
+  position: relative;
+  counter-increment: wk-step;
+}
+.wk-cs-steps li::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--dot) / 2 - 0.5px);
+  top: calc(var(--dot) + 9px);
+  bottom: -7px;
+  width: 1px;
+  background: var(--hair-2);
+  transition: background-color 0.6s var(--ease);
+}
+.wk-cs-steps li:last-child::after {
+  display: none;
+}
+.wk-cs-steps li:has(> [data-done])::after {
+  background: var(--ink);
+}
+.wk-cs-step {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 0fr;
+  width: 100%;
+  padding: 7px 0 7px calc(var(--dot) + 14px);
+  border: 0;
+  border-radius: 10px;
   background: none;
   font: 400 16px / 1.5 var(--sans);
   letter-spacing: 0.02em;
   text-align: left;
-  color: var(--mute);
+  color: var(--ink-2);
   cursor: pointer;
-  transition: color 0.35s var(--ease);
+  transition:
+    color 0.35s var(--ease),
+    grid-template-rows 0.5s var(--ease);
 }
-.wk-cs-roles button {
-  padding: 2px 0;
+.wk-cs-step::before {
+  content: counter(wk-step);
+  position: absolute;
+  top: 7px;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
+  font: 500 11.5px / 1 var(--sans);
+  color: var(--mute);
+  transition:
+    background-color 0.4s var(--ease),
+    box-shadow 0.4s var(--ease),
+    color 0.4s var(--ease);
 }
-.wk-cs-roles button:hover,
-.wk-cs-roles button[aria-pressed='true'],
-.wk-cs-loop:hover,
-.wk-cs-loop[aria-selected='true'],
-.wk-cs-step:hover,
+.wk-cs-step[data-done]::before {
+  background: var(--ink);
+  box-shadow: none;
+  color: var(--paper);
+}
 .wk-cs-step[aria-current='step'] {
+  grid-template-rows: auto 1fr;
+  color: var(--ink);
+}
+.wk-cs-step[aria-current='step']::before {
+  background: var(--white);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+  color: var(--ink);
+}
+.wk-cs-step:hover {
   color: var(--ink);
 }
 :is(.wk-cs-roles button, .wk-cs-loop, .wk-cs-step):focus-visible {
   outline: 1.5px solid var(--ink);
   outline-offset: 3px;
 }
-/* 闭环：左边是哪一条，右边是这个角色在这条上做的事 */
-.wk-cs-loop {
-  display: grid;
-  grid-template-columns: 7.5em minmax(0, 1fr);
-  align-items: baseline;
-  padding: 0;
-}
-.wk-cs-loop-k {
-  font-size: 13px;
-  letter-spacing: 0.04em;
-}
-.wk-cs-loop-t {
-  font-size: 17px;
-}
-/* 五步：当下这一步墨色，下面展开一行说明 */
-.wk-cs-steps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.wk-cs-step {
-  display: grid;
-  grid-template-rows: auto 0fr;
-  width: 100%;
-  padding: 6px 0;
-  transition:
-    color 0.35s var(--ease),
-    grid-template-rows 0.5s var(--ease);
-}
-.wk-cs-step[aria-current='step'] {
-  grid-template-rows: auto 1fr;
-}
 .wk-cs-name {
-  font-size: 17px;
+  line-height: var(--dot);
+}
+.wk-cs-step[aria-current='step'] .wk-cs-name {
+  font-weight: 500;
 }
 .wk-cs-more {
   overflow: hidden;
   min-height: 0;
   max-width: 24em;
-  font-size: 15px;
-  line-height: 1.8;
+  font-size: 14.5px;
+  line-height: 1.75;
   color: var(--ink-2);
   opacity: 0;
   transition: opacity 0.4s var(--ease);
 }
 .wk-cs-step[aria-current='step'] .wk-cs-more {
-  padding-top: 3px;
+  padding-top: 4px;
   opacity: 1;
   transition: opacity 0.6s var(--ease) 0.15s;
 }
@@ -2315,7 +2412,7 @@
   gap: 14px;
   place-content: normal;
   margin-left: 0;
-  padding: 7% 9% 5%;
+  padding: 5% 6% 4%;
 }
 .wk-cs-frame {
   aspect-ratio: 56 / 35.5;
@@ -2347,19 +2444,12 @@
 }
 
 /* =====================================================================
-   为什么是 Molis：左边 4 栏字，四条轮流点亮（纯文字，点亮的墨色并展开一行）；右边 8 栏一块浅灰台面，每条演一个小故事。
-   每一拍写成「终态 + 从哪来的动画」：
-   出现的用 wk-why-in（fill both，延迟里还没出现）；稍后才变的用 *-wait（step-end backwards，延迟里保持变之前的样子）。
-   减少动态时动画全关，直接是终态。换到哪条，那条的动画名从无到有，所以每次都从头演。
+   为什么是 Molis（10-31 重做）：核心是「接得上」——同一份工作被几个场景依次接手，上下文都在一处。
+   左边 4 栏字：标题和导语，「接得上」放大做主角，另外三条是辅助，收尾两句。
+   右边 8 栏一块浅灰台面：上面一条时间线，周一到周五四个场景（深色小卡）；四根线汇到下面同一份记录（深色的 Molis Work 窗），
+   记录里每一条挂着留下它的人或 AI：方的是 AI，圆的是人，和上面场景里的一样。
    ===================================================================== */
 .wk-why-sec {
-  --w-ink: var(--ink);
-  --w-ink-2: var(--ink-2);
-  --w-mute: var(--mute);
-  --w-wire: rgb(27 26 24 / 0.16);
-  --w-hi: rgb(222 124 72 / 0.95);
-  --w-lift: 0 0.4em 0.9em -0.3em rgb(var(--shade) / 0.4);
-  --w-card: 0 0 0 1px rgb(27 26 24 / 0.07), 0 0.8em 1.6em -0.8em rgb(var(--shade) / 0.35);
   display: grid;
   align-content: center;
   min-height: max(640px, 100svh);
@@ -2374,57 +2464,49 @@
 .wk-why-text {
   grid-column: 1 / span 4;
   display: grid;
-  gap: clamp(24px, 4vh, 40px);
+  gap: clamp(20px, 3.4vh, 34px);
 }
 .wk-why-text .wk-head {
   margin-bottom: 0;
 }
-.wk-why-list {
+.wk-why-main {
   display: grid;
-  gap: 4px;
+  gap: 8px;
+}
+.wk-why-claim {
   margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.wk-why-pt {
-  all: unset;
-  box-sizing: border-box;
-  display: block;
-  width: 100%;
-  padding: 6px 0;
-  border-radius: 4px;
-  font: 400 17px / 1.5 var(--sans);
-  letter-spacing: 0.02em;
-  color: var(--mute);
-  cursor: pointer;
-  transition: color 0.35s var(--ease);
-}
-.wk-why-pt:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 3px;
-}
-.wk-why li[data-active] .wk-why-pt,
-.wk-why-pt:hover {
+  font: 400 var(--t-sub) / 1.45 var(--sans);
+  letter-spacing: 0.01em;
   color: var(--ink);
 }
-.wk-why-more {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.6s var(--ease);
-}
-.wk-why-more > p {
-  overflow: hidden;
+.wk-why-here {
   max-width: 24em;
   margin: 0;
-  font-size: 15px;
-  line-height: 1.8;
+  font-size: 15.5px;
+  line-height: 1.85;
   color: var(--ink-2);
 }
-.wk-why li[data-active] .wk-why-more {
-  grid-template-rows: 1fr;
+.wk-why-also {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 20px 0 0;
+  border-top: 1px solid var(--hair);
+  list-style: none;
 }
-.wk-why li[data-active] .wk-why-more > p {
-  padding-bottom: 8px;
+.wk-why-also li > b {
+  display: block;
+  font-size: 15.5px;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.wk-why-also li > span {
+  display: block;
+  max-width: 25em;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--ink-2);
 }
 /* 收尾两句：前一句灰，后一句墨色，和标题同一种两色 */
 .wk-why-coda {
@@ -2439,23 +2521,24 @@
   color: var(--mute);
 }
 
-/* ---------- 右边：浅灰台面伸到离屏幕边一指宽，图放在中间，标注在图下沿左对齐 ---------- */
+/* ---------- 右边：浅灰台面伸到离屏幕边一指宽；画布 800 宽，10 个单位一个 em ---------- */
 .wk-why-fig {
   grid-column: 5 / -1;
   gap: 14px;
   place-content: normal;
   margin-left: 0;
-  padding: 6% 11% 5%;
+  padding: 5% 6% 4%;
   container-type: inline-size;
 }
-/* 画布 800 × 560，10 个单位一个 em */
 .wk-why-stage {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 800 / 560;
+  display: grid;
   font-size: calc(100cqi / 80);
-  line-height: 1.4;
+  line-height: 1.45;
   letter-spacing: 0.01em;
+}
+.wk-why-stage .wk-scene {
+  font-size: 1em;
+  line-height: 1.45;
 }
 .wk-why-stage .lucide {
   width: 1em;
@@ -2464,700 +2547,250 @@
   stroke-width: 1.8;
 }
 
-/* 连线：平时是一道淡线；亮起来是杏色的虚线往记录那头流 */
-.wk-why-lines {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-.wk-why-lines path {
-  fill: none;
-  stroke: var(--w-wire);
-  stroke-width: 1.2;
-  vector-effect: non-scaling-stroke;
-}
-.wk-why-lines :is([data-l='tool'], [data-l='use'], [data-l='mac']) {
-  opacity: 0;
-}
-@keyframes wk-why-flow {
-  to {
-    stroke-dashoffset: -16;
-  }
-}
-@keyframes wk-why-unlit {
-  from,
-  to {
-    stroke: var(--w-wire);
-    stroke-dasharray: none;
-  }
-}
-@keyframes wk-why-lit-wait {
-  from,
-  to {
-    stroke: var(--w-hi);
-    stroke-dasharray: 3 5;
-  }
-}
-
-/* 人和 AI：App 图标式的方块，名字在下面 */
-.wk-why-tile {
-  position: absolute;
-  z-index: 2;
+/* 时间线：一道细线串起四天，最后一天（现在）是实心的点 */
+.wk-why-scenes {
+  position: relative;
   display: grid;
-  justify-items: center;
-  gap: 0.75em;
-  transform: translate(-50%, -2.8em);
-  transition:
-    opacity 0.5s var(--ease),
-    filter 0.5s var(--ease);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.wk-why-tile i {
-  display: grid;
-  place-items: center;
-  width: 2.67em;
-  height: 2.67em;
-  border-radius: 0.74em;
-  font-size: 2.1em;
-  font-style: normal;
-  font-weight: 400;
-  color: #fff;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.26),
-    var(--w-lift);
-  transition: box-shadow 0.5s var(--ease);
-}
-.wk-why-tile i .lucide {
-  width: 0.95em;
-  height: 0.95em;
-}
-.wk-why-tile b {
-  font-size: 1.12em;
-  font-weight: 400;
-  white-space: nowrap;
-  color: var(--w-mute);
-  transition: color 0.5s var(--ease);
-}
-.wk-why-tile[data-t='cc'] i {
-  background: linear-gradient(155deg, #a594dc, #5d4d90);
-}
-.wk-why-tile[data-t='cx'] i {
-  background: linear-gradient(155deg, #4d4c50, #131315);
-  box-shadow:
-    inset 0 0 0 1px rgb(255 255 255 / 0.16),
-    inset 0 1px 0 rgb(255 255 255 / 0.2),
-    var(--w-lift);
-}
-.wk-why-tile[data-t='oc'] i {
-  background: linear-gradient(155deg, #78aab2, #2d5a62);
-}
-.wk-why-tile[data-t='me'] i {
-  border-radius: 50%;
-  background: linear-gradient(155deg, #f4ae84, #d9773f);
-}
-.wk-why-tile[data-t='as'] i {
-  background: linear-gradient(155deg, #cf9d7f, #8a543d);
-}
-.wk-why-tile[data-t='ni'] i {
-  border-radius: 50%;
-  background: linear-gradient(155deg, #d9aeb9, #a26f7e);
-}
-@keyframes wk-why-glow {
-  from,
-  to {
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.26),
-      0 0 0 0.12em rgb(234 146 96 / 0.75),
-      0 0 1.4em 0.1em rgb(234 146 96 / 0.35);
-  }
-}
-@keyframes wk-why-plain {
-  from,
-  to {
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.26),
-      var(--w-lift);
-  }
-}
-@keyframes wk-why-awake {
-  from,
-  to {
-    opacity: 1;
-    filter: none;
-  }
-}
-
-/* 气泡、小签、说明：平时不在 */
-.wk-why-say,
-.wk-why-tag,
-.wk-why-cap,
-.wk-why-grow,
-.wk-why-mac,
-.wk-why-models {
+.wk-why-scenes::before {
+  content: '';
   position: absolute;
-  z-index: 4;
-  opacity: 0;
-  visibility: hidden;
+  top: 0.91em;
+  left: 0.4em;
+  right: calc(25% - 1.5em - 0.4em);
+  height: 1px;
+  background: rgb(27 26 24 / 0.22);
 }
-@keyframes wk-why-in {
-  from {
-    opacity: 0;
-    translate: 0 0.5em;
-  }
-}
-.wk-why-say {
-  display: grid;
-  gap: 0.15em;
-  padding: 0.6em 0.95em 0.65em;
-  border-radius: 0.9em 0.9em 0.9em 0.25em;
-  background: var(--white);
-  box-shadow: var(--w-card);
-  font-size: 1.08em;
-  white-space: nowrap;
-  color: var(--w-mute);
-  transform: translate(-50%, -100%);
-}
-.wk-why-say b {
+.wk-why-scene {
   display: flex;
-  align-items: center;
-  gap: 0.3em;
-  font-weight: 500;
-  color: var(--w-ink);
+  flex-direction: column;
+  gap: 1em;
 }
-.wk-why-say[data-k='done'] b {
-  color: #42775d;
-}
-.wk-why-say[data-k='you'] {
-  border-radius: 0.9em 0.9em 0.25em 0.9em;
-}
-.wk-why-say[data-k='you'] b {
-  color: var(--accent-ink);
-}
-.wk-why-tag {
-  padding: 0.2em 0.65em;
-  border-radius: 1em;
-  background: rgb(176 105 12 / 0.1);
-  font-size: 0.98em;
-  white-space: nowrap;
-  color: #8a5c18;
-  transform: translate(-50%, -50%);
-}
-.wk-why-cap {
-  font-size: 1em;
-  font-style: italic;
-  white-space: nowrap;
-  color: var(--w-mute);
-  transform: translate(-50%, -50%);
-}
-.wk-why-grow {
+.wk-why-day {
+  position: relative;
+  align-self: flex-start;
   display: flex;
   align-items: center;
   gap: 0.55em;
-  padding: 0.45em 1em 0.45em 0.45em;
-  border-radius: 1em;
-  outline: 1px dashed transparent;
-  outline-offset: 0;
-  background: var(--white);
-  box-shadow: var(--w-card);
-  font-size: 1.15em;
-  white-space: nowrap;
-  color: #1b1a18;
-  transform: translate(-50%, -50%);
+  height: 1.4em;
+  padding-right: 0.5em;
+  background: var(--paper-2);
+  font-size: 1.3em;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
 }
-.wk-why-grow i {
-  display: grid;
+.wk-why-day::before {
+  content: '';
+  width: 0.62em;
+  height: 0.62em;
+  border-radius: 50%;
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1.5px var(--ink-2);
+}
+.wk-why-scene:last-child .wk-why-day::before {
+  background: var(--ink);
+  box-shadow: none;
+}
+
+/* 场景卡：深色，谁、（出了什么事）、做了什么 */
+.wk-why-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+  padding: 1.3em 1.4em 1.5em;
+  border-radius: 1em;
+  background: var(--a-paper);
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.35),
+    0 1.2em 2.4em -1.4em rgb(0 0 0 / 0.5);
+}
+.wk-why-stage .wk-why-card {
+  font-size: 1.3em;
+}
+.wk-why-by {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.wk-why-by b {
+  overflow: hidden;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.wk-why-tag {
+  align-self: start;
+  padding: 0.25em 0.6em;
+  border-radius: 0.4em;
+  background: var(--a-amber-soft);
+  font-size: 0.85em;
+  color: var(--a-amber);
+}
+.wk-why-did {
+  line-height: 1.6;
+  color: var(--a-ink-2);
+}
+
+/* 谁：方的是 AI，圆的是人；接手的用一个小箭头连起来 */
+.wk-why-who {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: none;
+}
+.wk-why-who-one {
+  display: inline-flex;
+  align-items: center;
+}
+.wk-why-who-one .lucide {
+  width: 0.9em;
+  height: 0.9em;
+  margin: 0 0.1em;
+  color: var(--a-faint);
+}
+.wk-why-by .wk-why-who-one .lucide {
+  display: none;
+}
+.wk-why-by .wk-why-who {
+  gap: 0.25em;
+}
+.wk-why-m {
+  display: inline-grid;
   place-items: center;
   width: 2em;
   height: 2em;
-  border-radius: 0.55em;
-  background: #1b1a18;
-  color: #f2efe9;
+  border-radius: 0.5em;
+  background: #3b3c40;
+  font-size: 0.8em;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--a-ink);
 }
-.wk-why-grow small {
-  font-size: 0.82em;
-  color: #6c6e72;
+.wk-why-m[data-w='me'],
+.wk-why-m[data-w='ni'] {
+  border-radius: 50%;
 }
-@keyframes wk-why-sprout {
-  0% {
-    opacity: 0;
-    scale: 0.9;
-    background: transparent;
-    box-shadow: none;
-    color: transparent;
-    outline-color: rgb(27 26 24 / 0.35);
-  }
-  25%,
-  50% {
-    opacity: 1;
-    scale: 0.9;
-    background: transparent;
-    box-shadow: none;
-    color: transparent;
-    outline-color: rgb(27 26 24 / 0.35);
-  }
+.wk-why-m[data-w='me'] {
+  background: var(--you);
+  color: var(--you-ink);
 }
-@keyframes wk-why-sprout-in {
-  0%,
-  50% {
-    opacity: 0;
-  }
-}
-.wk-why-mac {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  font-size: 1em;
-  color: var(--accent-ink);
-  transform: translateY(-140%);
-}
-.wk-why-models {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  transform: translate(-50%, -50%);
-}
-.wk-why-key {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3em;
-  margin-right: 0.3em;
-  font-size: 1em;
-  white-space: nowrap;
-  color: var(--accent-ink);
-}
-.wk-why-models [data-m] {
-  padding: 0.38em 0.85em;
-  border-radius: 0.6em;
-  background: var(--white);
-  box-shadow: inset 0 0 0 1px rgb(27 26 24 / 0.1);
-  font-size: 1.02em;
-  white-space: nowrap;
-  color: var(--w-mute);
-}
-.wk-why-models [data-m='DeepSeek'] {
-  box-shadow: inset 0 0 0 1px var(--accent);
-  color: var(--w-ink);
-}
-@keyframes wk-why-pick {
-  8%,
-  92% {
-    box-shadow: inset 0 0 0 1px var(--accent);
-    color: var(--w-ink);
-  }
-}
-@keyframes wk-why-unpick {
-  from,
-  to {
-    box-shadow: inset 0 0 0 1px rgb(27 26 24 / 0.1);
-    color: var(--w-mute);
-  }
+.wk-why-m[data-w='ni'] {
+  background: var(--a-green);
+  color: #11241a;
 }
 
-/* 记录：白的一张，后面叠着两张旧版 */
-.wk-why-stack {
-  position: absolute;
-  z-index: 3;
-  left: 32.75%;
-  top: 23.57%;
-  width: 34.5%;
-  height: 53.57%;
+/* 四根线汇到记录上沿的正中 */
+.wk-why-stage .wk-why-wires {
+  display: block;
+  width: 100%;
+  height: 6.4em;
+  overflow: visible;
 }
-.wk-why-stack > i {
-  position: absolute;
-  inset: 0;
-  border-radius: 1.2em;
-  background: rgb(255 255 255 / 0.55);
-  box-shadow: inset 0 0 0 1px rgb(27 26 24 / 0.07);
+.wk-why-wires path {
+  fill: none;
+  stroke: rgb(27 26 24 / 0.3);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
 }
-.wk-why-stack > i:nth-child(1) {
-  transform: translate(1.8em, -1.8em) scale(0.96);
-  opacity: 0.55;
-}
-.wk-why-stack > i:nth-child(2) {
-  transform: translate(0.9em, -0.9em) scale(0.98);
-}
-.wk-why-card {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.5em;
-  padding: 1.2em 1.4em;
-  border-radius: 1.2em;
-  background: var(--white);
-  font-size: 1.26em;
-  color: #1b1a18;
+
+/* 记录：同一份，深色的 Molis Work 窗 */
+.wk-why-rec {
+  position: relative;
+  margin: 0 4em;
+  border-radius: 1.05em;
+  background: var(--a-paper);
   box-shadow:
-    0 0 0 1px rgb(27 26 24 / 0.07),
-    0 2.4em 4.8em -2em rgb(var(--shade) / 0.5);
+    0 0 0 1px rgb(0 0 0 / 0.4),
+    0 1.6em 3.4em -2em rgb(0 0 0 / 0.55);
 }
-.wk-why-card p {
-  margin: 0;
+.wk-why-rec::before {
+  content: '';
+  position: absolute;
+  top: -0.35em;
+  left: calc(50% - 0.35em);
+  width: 0.7em;
+  height: 0.7em;
+  border-radius: 50%;
+  background: var(--ink-2);
 }
-.wk-why-c-k {
+.wk-why-rec-top {
   display: flex;
   align-items: center;
-  gap: 0.45em;
-  font-size: 0.8em;
-  color: #6c6e72;
+  gap: 1em;
+  padding: 1.6em 2.4em 1.2em;
 }
-.wk-why-c-k .lucide {
-  color: #3c6fc6;
+.wk-why-rec-top .lucide {
+  width: 2.2em;
+  height: 2.2em;
+  padding: 0.5em;
+  border-radius: 0.6em;
+  background: var(--a-soft);
+  box-shadow: inset 0 0 0 1px var(--a-line);
+  color: var(--a-ink-2);
 }
-.wk-why-c-k span {
-  margin-left: auto;
-  color: #9a9ca0;
-}
-.wk-why-c-t {
-  font-size: 1.36em;
+.wk-why-rec-top p {
+  display: grid;
+  font-size: 1.9em;
   font-weight: 500;
   line-height: 1.3;
 }
-.wk-why-c-rule,
-.wk-why-c-f {
+.wk-why-rec-top small {
+  font-size: 0.6em;
+  font-weight: 400;
+  color: var(--a-mute);
+}
+.wk-why-rows {
+  padding: 0 2.4em 0.4em;
+  font-size: 1.35em;
+}
+.wk-why-row {
+  display: grid;
+  grid-template-columns: 5.4em minmax(0, 1fr) auto 4.6em;
+  align-items: center;
+  column-gap: 1.2em;
+  padding: 0.78em 0;
+  border-top: 1px solid var(--a-line);
+}
+.wk-why-row[data-more] {
+  border-image: linear-gradient(90deg, transparent 6.6em, var(--a-line) 6.6em) 1;
+}
+.wk-why-l {
+  font-size: 0.9em;
+  color: var(--a-mute);
+}
+.wk-why-v {
   display: flex;
   align-items: center;
   gap: 0.55em;
-  margin: 0 -0.55em !important;
-  padding: 0.4em 0.55em;
-  border-radius: 0.5em;
-  font-size: 0.86em;
-  color: #3e3c38;
+  min-width: 0;
+  color: var(--a-ink);
 }
-.wk-why-c-rule i {
-  flex: none;
-  width: 0.42em;
-  height: 0.42em;
-  border-radius: 50%;
-  background: var(--accent);
+.wk-why-v .lucide {
+  color: var(--a-ink-2);
 }
-.wk-why-c-bar {
+.wk-why-st {
+  font-size: 0.9em;
+}
+.wk-why-rec-f {
   display: flex;
   align-items: center;
-  gap: 0.5em;
-  font-size: 0.8em;
-  color: #6c6e72;
-}
-.wk-why-c-bar b {
-  font-weight: 500;
-  color: #1b1a18;
-}
-.wk-why-c-meter {
-  display: inline-flex;
-  gap: 0.2em;
-}
-.wk-why-c-meter i {
-  width: 1.4em;
-  height: 0.28em;
-  border-radius: 0.2em;
-  background: #42775d;
-}
-.wk-why-c-meter i:last-child {
-  background: #e3e2de;
-}
-.wk-why-c-stop {
-  margin-left: auto;
-  padding: 0.12em 0.55em;
-  border-radius: 0.5em;
-  background: #f7f0e3;
-  color: #8a5c18;
-  opacity: 0;
-}
-.wk-why-c-reqs {
-  display: grid;
-  border-top: 1px solid #ecebe7;
-}
-.wk-why-c-reqs p {
-  display: grid;
-  grid-template-columns: 1.1em minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.55em;
-  margin: 0 -0.55em !important;
-  padding: 0.5em 0.55em;
-  border-bottom: 1px solid #ecebe7;
-  border-radius: 0.4em;
-  font-size: 0.88em;
-  white-space: nowrap;
-}
-.wk-why-c-reqs span {
-  font-size: 0.92em;
-  color: #6c6e72;
-}
-.wk-why-c-reqs .wk-ring[data-tone='done'] {
-  color: #42775d;
-}
-.wk-why-c-reqs .wk-ring[data-tone='progress'] {
-  color: #93604b;
-}
-.wk-why-c-reqs .wk-ring[data-tone='attention'] {
-  color: #8a5c18;
-}
-.wk-why-c-wait span {
-  color: #8a5c18;
-}
-.wk-why-c-who {
-  display: inline-grid;
-  justify-items: end;
-}
-.wk-why-c-who > span {
-  grid-area: 1 / 1;
-  font-size: 1em !important;
-}
-.wk-why-c-who > span:last-child {
-  opacity: 0;
-}
-.wk-why-c-reqs .wk-why-c-tool {
-  max-height: 0;
-  padding-block: 0;
-  overflow: hidden;
-  border-bottom-width: 0;
-  opacity: 0;
-}
-.wk-why-c-tool .lucide {
-  color: #5c5d60;
-}
-.wk-why-c-f {
-  font-size: 0.76em;
-  color: #9a9ca0;
+  gap: 0.6em;
+  padding: 1.1em 3.24em 1.3em;
+  border-top: 1px solid var(--a-line);
+  font-size: 1.1em;
+  color: var(--a-mute);
 }
 
-/* ---------- 接得上：Claude Code 额度用完熄掉，Codex 接上，读到了你定过的事 ---------- */
-.wk-why[data-on='carry'] .wk-why-tile[data-t='cc'] {
-  opacity: 0.4;
-  filter: grayscale(0.8);
-  animation: wk-why-awake 1.6s step-end backwards;
-}
-.wk-why[data-on='carry'] .wk-why-tile[data-t='cc'] i {
-  animation: wk-why-glow 1.6s step-end backwards;
-}
-.wk-why[data-on='carry'] [data-l='cc'] {
-  animation: wk-why-lit-wait 1.6s step-end backwards, wk-why-flow 1s linear infinite;
-}
-.wk-why[data-on='carry'] .wk-why-tile[data-t='cx'] i {
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.26),
-    0 0 0 0.12em rgb(234 146 96 / 0.75),
-    0 0 1.4em 0.1em rgb(234 146 96 / 0.35);
-  animation: wk-why-plain 2.2s step-end backwards;
-}
-.wk-why[data-on='carry'] .wk-why-tile[data-t='cx'] b,
-.wk-why[data-on='check'] .wk-why-tile[data-t='cx'] b {
-  color: var(--w-ink);
-}
-.wk-why[data-on='carry'] [data-l='cx'] {
-  stroke: var(--w-hi);
-  stroke-dasharray: 3 5;
-  animation: wk-why-unlit 2.2s step-end backwards, wk-why-flow 1s linear infinite;
-}
-.wk-why[data-on='carry'] :is(.wk-why-tag, .wk-why-say)[data-s='carry'] {
-  opacity: 1;
-  visibility: visible;
-}
-.wk-why[data-on='carry'] .wk-why-tag[data-s='carry'] {
-  animation: wk-why-in 0.5s var(--ease) 1.6s both;
-}
-.wk-why[data-on='carry'] .wk-why-say[data-s='carry'] {
-  animation: wk-why-in 0.6s var(--ease) 2.5s both;
-}
-.wk-why[data-on='carry'] .wk-why-c-who > span:first-child {
-  opacity: 0;
-  animation: wk-why-shown 3s step-end backwards;
-}
-.wk-why[data-on='carry'] .wk-why-c-who > span:last-child {
-  opacity: 1;
-  color: #1b1a18;
-  animation: wk-why-in 0.4s var(--ease) 3.1s both;
-}
-.wk-why[data-on='carry'] .wk-why-c-rule {
-  background: rgb(234 146 96 / 0.14);
-  animation: wk-why-bare 3.3s step-end backwards;
-}
-@keyframes wk-why-shown {
-  from,
-  to {
-    opacity: 1;
-  }
-}
-@keyframes wk-why-bare {
-  from,
-  to {
-    background: transparent;
-  }
-}
-
-/* ---------- 对得上：Codex 报做完了，收尾没生效，轮到你验收 ---------- */
-.wk-why[data-on='check'] .wk-why-tile[data-t='cx'] i {
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.26),
-    0 0 0 0.12em rgb(234 146 96 / 0.75),
-    0 0 1.4em 0.1em rgb(234 146 96 / 0.35);
-}
-.wk-why[data-on='check'] [data-l='cx'] {
-  stroke: var(--w-hi);
-  stroke-dasharray: 3 5;
-  animation: wk-why-flow 1s linear infinite;
-}
-.wk-why[data-on='check'] .wk-why-say[data-s='check'] {
-  opacity: 1;
-  visibility: visible;
-}
-.wk-why[data-on='check'] .wk-why-say[data-k='done'] {
-  animation: wk-why-in 0.6s var(--ease) 0.3s both;
-}
-.wk-why[data-on='check'] .wk-why-say[data-k='you'] {
-  animation: wk-why-in 0.6s var(--ease) 2.7s both;
-}
-.wk-why[data-on='check'] .wk-why-c-stop {
-  opacity: 1;
-  animation: wk-why-in 0.5s var(--ease) 1.5s both;
-}
-.wk-why[data-on='check'] .wk-why-c-bar b {
-  color: #8a5c18;
-  animation: wk-why-ink 1.5s step-end backwards;
-}
-@keyframes wk-why-ink {
-  from,
-  to {
-    color: #1b1a18;
-  }
-}
-.wk-why[data-on='check'] .wk-why-c-wait {
-  background: rgb(234 146 96 / 0.12);
-  animation: wk-why-bare 2.2s step-end backwards;
-}
-.wk-why[data-on='check'] .wk-why-c-wait span {
-  animation: wk-why-blink 1.6s var(--ease) 2.2s infinite;
-}
-@keyframes wk-why-blink {
-  50% {
-    opacity: 0.4;
-  }
-}
-.wk-why[data-on='check'] .wk-why-tile[data-t='me'] i {
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.26),
-    0 0 0 0.12em rgb(234 146 96 / 0.75),
-    0 0 1.4em 0.1em rgb(234 146 96 / 0.35);
-  animation: wk-why-plain 2.5s step-end backwards;
-}
-.wk-why[data-on='check'] .wk-why-tile[data-t='me'] b {
-  color: var(--w-ink);
-}
-.wk-why[data-on='check'] [data-l='me'] {
-  stroke: var(--w-hi);
-  stroke-dasharray: 3 5;
-  animation: wk-why-unlit 2.5s step-end backwards, wk-why-flow 1s linear infinite reverse;
-}
-
-/* ---------- 长出来：虚线框长成你做的检查台，连上记录，Claude Code 也调它 ---------- */
-.wk-why[data-on='grow'] :is(.wk-why-grow, .wk-why-cap) {
-  opacity: 1;
-  visibility: visible;
-}
-.wk-why[data-on='grow'] .wk-why-grow {
-  animation: wk-why-sprout 1.8s var(--ease) 0.2s both;
-}
-.wk-why[data-on='grow'] .wk-why-grow > * {
-  animation: wk-why-sprout-in 2s var(--ease) both;
-}
-.wk-why[data-on='grow'] .wk-why-cap {
-  animation: wk-why-in 0.6s var(--ease) 2.7s both;
-}
-.wk-why[data-on='grow'] [data-l='tool'] {
-  opacity: 1;
-  stroke: var(--w-hi);
-  stroke-dasharray: 3 5;
-  animation: wk-why-fade 0.5s var(--ease) 1.5s both, wk-why-flow 1s linear infinite;
-}
-.wk-why[data-on='grow'] [data-l='use'] {
-  opacity: 1;
-  stroke: var(--w-hi);
-  stroke-dasharray: 3 5;
-  animation: wk-why-fade 0.6s var(--ease) 2.4s both, wk-why-flow 1s linear infinite reverse;
-}
-@keyframes wk-why-fade {
-  from {
-    opacity: 0;
-  }
-}
-.wk-why[data-on='grow'] .wk-why-tile[data-t='cc'] i {
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.26),
-    0 0 0 0.12em rgb(234 146 96 / 0.75),
-    0 0 1.4em 0.1em rgb(234 146 96 / 0.35);
-  animation: wk-why-plain 2.4s step-end backwards;
-}
-.wk-why[data-on='grow'] .wk-why-tile[data-t='cc'] b {
-  color: var(--w-ink);
-}
-.wk-why[data-on='grow'] .wk-why-c-reqs .wk-why-c-tool {
-  max-height: 3em;
-  padding-block: 0.5em;
-  border-bottom-width: 1px;
-  background: rgb(234 146 96 / 0.12);
-  opacity: 1;
-  animation: wk-why-row 0.7s var(--ease) 1.7s both;
-}
-@keyframes wk-why-row {
-  from {
-    max-height: 0;
-    padding-block: 0;
-    border-bottom-width: 0;
-    opacity: 0;
-  }
-}
-
-/* ---------- 是你的：一圈你的电脑，换模型，记录不动 ---------- */
-.wk-why[data-on='own'] [data-l='mac'] {
-  opacity: 0.75;
-  stroke: var(--accent);
-  stroke-dasharray: 100;
-  animation: wk-why-draw 1.5s var(--ease) 0.2s both;
-}
-@keyframes wk-why-draw {
-  from {
-    stroke-dashoffset: 100;
-  }
-}
-.wk-why[data-on='own'] :is(.wk-why-mac, .wk-why-models) {
-  opacity: 1;
-  visibility: visible;
-}
-.wk-why[data-on='own'] .wk-why-mac {
-  animation: wk-why-in 0.5s var(--ease) 1.2s both;
-}
-.wk-why[data-on='own'] .wk-why-models {
-  animation: wk-why-in 0.6s var(--ease) 1.6s both;
-}
-.wk-why[data-on='own'] .wk-why-models [data-m='Anthropic'] {
-  animation: wk-why-pick 1.5s linear 2.2s both;
-}
-.wk-why[data-on='own'] .wk-why-models [data-m='通义千问'] {
-  animation: wk-why-pick 1.5s linear 3.7s both;
-}
-.wk-why[data-on='own'] .wk-why-models [data-m='DeepSeek'] {
-  animation: wk-why-unpick 5.2s step-end backwards;
-}
-.wk-why[data-on='own'] .wk-why-c-f {
-  background: rgb(234 146 96 / 0.12);
-  color: #a4552f;
-  animation: wk-why-plainf 1.4s step-end backwards;
-}
-@keyframes wk-why-plainf {
-  from,
-  to {
-    background: transparent;
-    color: #9a9ca0;
-  }
-}
-.wk-why[data-on='own'] .wk-why-tile:not([data-t='me']) {
-  opacity: 0.55;
-}
-
-/* ---------- 窄屏：不画连线和气泡，方块排一行，记录在下面 ---------- */
+/* ---------- 窄屏：四个场景排成两行两张，不画连线，记录在下面 ---------- */
 @media (max-width: 900px) {
   .wk-why-sec {
     min-height: 0;
@@ -3173,84 +2806,66 @@
   }
   .wk-why-fig {
     margin-left: calc(var(--inset) - var(--gutter));
-    padding: 8% 6% 5%;
+    padding: 7% 5% 5%;
   }
   .wk-why-stage {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 14px 18px;
-    aspect-ratio: auto;
-    font-size: 8px;
+    gap: 2.4em;
+    font-size: 9px;
   }
-  .wk-why-lines,
-  .wk-why-say,
-  .wk-why-tag,
-  .wk-why-cap,
-  .wk-why-grow,
-  .wk-why-mac,
-  .wk-why-models,
-  .wk-why-stack > i {
+  .wk-why-scenes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6em 1.2em;
+  }
+  .wk-why-scenes::before,
+  .wk-why-stage .wk-why-wires,
+  .wk-why-rec::before {
     display: none;
   }
-  .wk-why-tile {
-    position: static;
-    flex: 0 0 28%;
-    order: 2;
-    transform: none;
+  .wk-why-rec {
+    margin: 0;
   }
-  .wk-why-tile:is([data-t='cc'], [data-t='cx'], [data-t='oc']) {
-    order: 0;
+  .wk-why-rec-top,
+  .wk-why-rows {
+    padding-inline: 1.6em;
   }
-  .wk-why-tile b {
-    font-size: 1.4em;
+  .wk-why-rec-f {
+    padding-inline: 2.16em;
   }
-  .wk-why-stack {
-    position: relative;
-    inset: auto;
-    order: 1;
-    width: 100%;
-    height: auto;
-    margin: 4px 0;
-    font-size: 11px;
+  .wk-why-row {
+    grid-template-columns: 4.6em minmax(0, 1fr) auto;
+    row-gap: 0.2em;
   }
-  .wk-why-card {
-    position: relative;
+  .wk-why-row .wk-why-st {
+    grid-row: 2;
+    grid-column: 2;
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wk-why *,
-  .wk-why *::after {
-    transition: none !important;
-    animation: none !important;
+  .wk-why-row .wk-why-who {
+    grid-row: 1 / span 2;
+    grid-column: 3;
+  }
+  .wk-why-row[data-more] {
+    border-image: linear-gradient(90deg, transparent 5.8em, var(--a-line) 5.8em) 1;
   }
 }
 
 /* =====================================================================
-   缘起与现在：和首屏一样上字下台面。上面是缘起、信念（屏标题那一档，两色）和它的解释；
-   下面一块照片台面，正中一张照 Molis Work「决定请求」画的卡：三个选项就是三个去处，走到哪一步写在各自的选项里。
-   卡浮上来以后，「你」的指针移到主选项上，主选项亮起。
+   缘起与现在（10-31 重做）：前四屏都是「字 + 台面 + 窗」，这一屏不再放台面和照片，收成居中的一封信和一个决定。
+   上面是缘起、信念（屏标题那一档，两色）和它的解释；下面就是 Molis 团队发来的决定请求：一个问题，三个去处，
+   走到哪一步写在各自的选项里。「你」的名牌移到主选项的箭头旁停下；访客的鼠标移上来，自己就成了「你」。
    ===================================================================== */
 .wk-end-in {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: clamp(24px, 4vh, 44px);
-  height: max(640px, 100svh);
-  padding-block: calc(var(--header) + clamp(24px, 4vh, 44px)) var(--inset);
+  align-content: center;
+  justify-items: center;
+  gap: clamp(40px, 7vh, 72px);
+  min-height: max(640px, 100svh);
+  padding-block: calc(var(--header) + clamp(24px, 4vh, 44px)) clamp(40px, 8vh, 80px);
 }
 .wk-end-head {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 14px;
-  align-items: end;
-}
-.wk-end-lead {
-  grid-column: 1 / span 7;
-  display: grid;
-  justify-items: start;
-  gap: 10px;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
 }
 .wk-end-origin {
   font-size: var(--t-lead);
@@ -3259,140 +2874,123 @@
   color: var(--mute);
 }
 .wk-end-belief {
-  font: 400 var(--t-head) / 1.32 var(--sans);
+  margin-top: 4px;
+  font: 400 var(--t-head) / 1.3 var(--sans);
   letter-spacing: 0.01em;
   font-feature-settings: 'palt' 1;
+  text-wrap: balance;
 }
 .wk-end-belief .m-phrase:not(:last-child) {
   color: var(--mute);
 }
 .wk-end-text {
-  grid-column: 8 / -1;
-  max-width: 22em;
-  padding-bottom: 6px;
   font-size: var(--t-lead);
   line-height: 1.85;
   color: var(--ink-2);
 }
 
-/* 台面：照片铺满，卡端端正正放在中间 */
-.wk-close {
-  grid-template-columns: minmax(0, 1fr);
-  place-content: normal;
-  align-content: center;
-  justify-items: center;
-  min-height: 460px;
-  padding: clamp(24px, 4vh, 48px) 0;
+/* 决定请求：不画成窗，用页面自己的字排；每个选项一整行，细线分开 */
+.wk-ask {
+  position: relative;
+  width: min(100%, 680px);
 }
-.wk-close-photo {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  border-radius: inherit;
-  background: var(--avg);
-}
-.wk-close-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 58% 30%;
-  filter: var(--grade);
-}
-
-/* 决定请求：白卡，和窗口同一道暖色落地影子 */
-.wk-invite {
-  width: min(480px, 90%);
-  padding: 20px 20px 16px;
-  border-radius: 16px;
-  background: var(--white);
-  box-shadow: var(--win-shadow);
-}
-.wk-invite-k {
+.wk-ask-k {
   display: flex;
   align-items: center;
   gap: 8px;
-  font: 500 var(--t-label) / 1.3 var(--sans);
+  font-size: 13.5px;
   letter-spacing: 0.06em;
-  color: var(--accent-ink);
-}
-.wk-invite-k svg {
-  flex: none;
-  width: 14px;
-  height: 14px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-}
-.wk-invite-k small {
-  margin-left: auto;
-  font: inherit;
-  font-weight: 400;
-  letter-spacing: 0.04em;
   color: var(--mute);
 }
-.wk-invite-q {
-  margin-top: 14px;
-  font: 400 var(--t-h3) / 1.4 var(--sans);
+.wk-ask-k .wk-ring {
+  width: 15px;
+  height: 15px;
+  color: #a46a1c;
+}
+.wk-ask-k small {
+  margin-left: auto;
+  font: inherit;
+  color: #8a5c18;
+}
+.wk-ask-q {
+  margin-top: 12px;
+  font: 400 var(--t-sub) / 1.4 var(--sans);
   letter-spacing: 0.02em;
   font-feature-settings: 'palt' 1;
 }
-.wk-invite-why {
+.wk-ask-why {
   margin-top: 4px;
-  font-size: var(--t-ui);
-  line-height: 1.75;
+  font-size: 15px;
+  line-height: 1.8;
   color: var(--ink-2);
 }
-.wk-invite-opts {
-  display: grid;
-  gap: 8px;
-  margin: 16px 0 0;
+.wk-ask-opts {
+  margin: 24px 0 0;
   padding: 0;
+  border-top: 1px solid var(--hair-2);
   list-style: none;
 }
-/* 一个选项：整行是链接，左边标题和「状态 · 一句话」，右边一颗圆形箭头 */
-.wk-invite-opt {
+.wk-ask-opts li {
+  border-bottom: 1px solid var(--hair-2);
+}
+.wk-ask-opt {
   position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: 14px;
   align-items: center;
-  padding: 12px 12px 12px 16px;
-  border-radius: 12px;
-  background: var(--paper-2);
+  column-gap: 20px;
+  padding: 18px 4px;
   color: var(--ink);
   text-decoration: none;
-  transition:
-    background-color 0.35s var(--ease),
-    box-shadow 0.35s var(--ease);
 }
-.wk-invite-t {
-  font: 500 var(--t-body) / 1.5 var(--sans);
+.wk-ask-opt::before {
+  content: '';
+  position: absolute;
+  inset: 4px -16px;
+  z-index: -1;
+  border-radius: 14px;
+  background: rgb(27 26 24 / 0.045);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+.wk-ask-opt:hover::before {
+  opacity: 1;
+}
+.wk-ask-opt:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+.wk-ask-t {
+  font: 400 19px / 1.45 var(--sans);
   letter-spacing: 0.02em;
 }
-.wk-invite-d {
-  grid-column: 1;
+.wk-ask-opt[data-main] .wk-ask-t {
+  font-weight: 500;
+}
+.wk-ask-d {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 2px 10px;
-  font-size: 12.5px;
+  margin-top: 3px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--mute);
 }
-.wk-invite-d .m-status {
-  font-size: 12px;
+.wk-ask-d .m-status {
+  font-size: 13px;
   letter-spacing: 0.04em;
 }
-.wk-invite-go {
+.wk-ask-go {
   grid-column: 2;
   grid-row: 1 / span 2;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: var(--white);
   box-shadow: inset 0 0 0 1px var(--hair-2);
   color: var(--ink);
   font-style: normal;
@@ -3401,88 +2999,62 @@
     color 0.35s var(--ease),
     box-shadow 0.35s var(--ease);
 }
-.wk-invite-opt:hover {
-  background: #ede9e1;
-}
-.wk-invite-opt:hover .wk-invite-go {
+.wk-ask-opt:hover .wk-ask-go,
+.wk-ask-opt[data-main] .wk-ask-go {
   background: var(--ink);
   box-shadow: none;
   color: var(--paper);
 }
-.wk-invite-opt:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 3px;
-}
-/* 主选项：杏色淡底一圈细线，箭头是墨色实心 */
-.wk-invite-opt[data-main] {
-  background: rgb(234 146 96 / 0.13);
-  box-shadow: inset 0 0 0 1px rgb(234 146 96 / 0.45);
-}
-.wk-invite-opt[data-main]:hover {
-  background: rgb(234 146 96 / 0.2);
-}
-.wk-invite-opt[data-main] .wk-invite-go {
-  background: var(--ink);
-  box-shadow: none;
-  color: var(--paper);
-}
-.wk-invite-foot {
-  margin-top: 12px;
-  font-size: 12px;
+.wk-ask-foot {
+  margin-top: 14px;
+  font-size: 12.5px;
   letter-spacing: 0.04em;
   color: var(--mute);
 }
-
-/* 「你」：杏橙色的指针带一个「你」字，停在主选项的箭头旁边（和画面里的「你」同一个样子） */
-.wk-invite-hand {
+/* 「你」：和画面里同一枚冰蓝名牌，左上角的尖点在主选项的箭头上 */
+.wk-ask-hand {
   position: absolute;
-  right: 22px;
-  bottom: -14px;
-  width: 20px;
+  right: -14px;
+  top: calc(50% + 6px);
+  padding: 6px 10px 6px 10px;
+  border-radius: 1px 11px 11px 11px;
+  background: var(--you);
+  box-shadow:
+    0 0 0 1px var(--you-edge),
+    0 4px 10px -3px rgb(var(--shade) / 0.45);
+  font: 600 13px / 1 var(--sans);
+  letter-spacing: 0.04em;
+  color: var(--you-ink);
   pointer-events: none;
+  transition: opacity 0.2s var(--ease);
 }
-.wk-invite-hand svg {
-  display: block;
-  width: 100%;
-  fill: var(--accent);
-  stroke: #fff;
-  stroke-width: 1.4;
-  filter: drop-shadow(0 2px 3px rgb(var(--shade) / 0.35));
-}
-.wk-invite-hand span {
-  position: absolute;
-  top: 22px;
-  left: 14px;
-  padding: 2px 7px;
-  border-radius: 0 6px 6px 6px;
-  background: var(--accent);
-  font: 500 var(--t-label) / 1.3 var(--sans);
-  color: #fff;
-  white-space: nowrap;
-}
-/* 窗开完、卡浮上来以后，「你」从右下移过来，到了主选项才亮；没有 JS、减少动态时直接是停好的样子 */
-.js .wk-invite:not(.is-in) .wk-invite-hand {
+.wk-ask:hover .wk-ask-hand {
   opacity: 0;
 }
-.js .wk-invite.is-in .wk-invite-hand {
-  animation: wk-invite-hand 1.2s var(--ease) 1.9s both;
+/* 信浮上来以后，「你」从右下移过来，停在主选项上，箭头这时才变实；没有 JS、减少动态时直接是停好的样子 */
+.js .wk-ask:not(.is-in) .wk-ask-hand {
+  opacity: 0;
 }
-.js .wk-invite.is-in .wk-invite-opt[data-main] {
-  animation: wk-invite-pick 0.6s var(--ease) 2.85s both;
+.js .wk-ask.is-in .wk-ask-hand {
+  animation: wk-ask-hand 1.1s var(--ease) 1.6s both;
 }
-@keyframes wk-invite-hand {
+.js .wk-ask.is-in .wk-ask-opt[data-main] .wk-ask-go {
+  animation: wk-ask-pick 0.5s var(--ease) 2.5s both;
+}
+@keyframes wk-ask-hand {
   from {
     opacity: 0;
-    transform: translate(54px, 40px);
+    transform: translate(64px, 48px);
   }
   30% {
     opacity: 1;
   }
 }
-@keyframes wk-invite-pick {
+@keyframes wk-ask-pick {
   from {
-    background-color: var(--paper-2);
-    box-shadow: inset 0 0 0 1px transparent;
+    background-color: transparent;
+    box-shadow: inset 0 0 0 1px var(--hair-2);
+    color: var(--ink);
   }
 }
 
@@ -3647,18 +3219,11 @@
     aspect-ratio: 23 / 47;
   }
   .wk-end-in {
-    height: auto;
-    grid-template-rows: auto auto;
+    min-height: 0;
+    padding-block: var(--section-top) var(--section-bottom);
   }
-  .wk-end-lead,
-  .wk-end-text {
-    grid-column: 1 / -1;
-  }
-  .wk-end-text {
-    padding-bottom: 0;
-  }
-  .wk-close {
-    padding: 18% 0 12%;
+  .wk-ask-hand {
+    right: -6px;
   }
   .wk-hand {
     font-size: max(13px, calc(100cqi / 64 * 1.5));
@@ -3674,8 +3239,9 @@
 
 /* 减少动态：演示停在做完的样子（编排不接管），过渡都关掉；舞台不再落定，直接摆好 */
 @media (prefers-reduced-motion: reduce) {
-  .wk-invite-hand,
-  .wk-invite-opt,
+  .wk-ask-hand,
+  .wk-ask-go,
+  .wk-ask-opt::before,
   .wk-stage-img,
   .wk-stage-win > .wk-frame,
   .wk-stage .wk-term,
@@ -3683,6 +3249,8 @@
   .wk-cs-roles button,
   .wk-cs-loop,
   .wk-cs-step,
+  .wk-cs-step::before,
+  .wk-cs-steps li::after,
   .wk-cs-more,
   .wk-cam,
   .wk-tour-cap p {

@@ -226,14 +226,11 @@ export function Writes({ c, children }: { c: string; children: ReactNode }) {
   );
 }
 
-/** 你：杏橙色的指针，带一个「你」字；由编排移动（cue.ts 的 data-hand） */
+/** 你：一枚冰蓝的「你」字名牌，左上角削尖就是指针的尖；由编排移动（cue.ts 的 data-hand） */
 export function Hand({ name }: { name?: string }) {
   return (
     <div className="wk-hand" data-hand={name ?? ''} aria-hidden="true">
       <div className="wk-hand-in">
-        <svg viewBox="0 0 18 24">
-          <path d="M1.5 1.5v17l4.5-4 3 7 2.6-1.1-3-6.9h6.4z" />
-        </svg>
         <span className="wk-hand-name">你</span>
       </div>
     </div>

@@ -130,7 +130,7 @@ export function HeroArt() {
     ['周三', '28'],
   ];
   return (
-    <div className="wk-scene wk-hero-scene">
+    <div className="wk-scene wk-hero-scene" data-theme="dark">
       <Win
         tabs={[{ icon: House, title: '项目首页', on: true }]}
         dock={dockOf('项目首页', House, 0, [{ icon: ClipboardCheck }])}

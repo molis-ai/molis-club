@@ -1,261 +1,160 @@
-'use client';
-import {
-  Check,
-  ClipboardCheck,
-  HardDrive,
-  KeyRound,
-  Sparkles,
-  Target,
-  type LucideIcon,
-} from 'lucide-react';
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { workWhy, type WhyId } from '../../../content/site/work';
-import { useOnScreen, useStill } from '../../_site/cue';
+import { ChevronRight, ClipboardCheck, HardDrive, Target } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { workWhy } from '../../../content/site/work';
 import { Note, Phrases } from '../../_site/ui';
 import { Ring } from './app';
 
-// 为什么是 Molis：左边四条轮流点亮（纯文字，鼠标停上去就停在那条），
-// 右边一块浅灰台面，每条演一个十秒内的小故事：先是通常会怎样，再是在 Molis 里怎样——
-// 接得上：Claude Code 额度用完熄掉，Codex 接上，读到了你定过的事；对得上：Codex 报做完了，收尾没生效，等你验收；
-// 长出来：你做的检查台从一个虚线框长出来，Claude Code 也调它；是你的：一圈「你的电脑」，换模型，记录不动。
-// 每一拍都写成「终态 + 从哪来的动画」（work.css），减少动态时直接是终态；换到哪条，那条的动画重新开始。
+// 为什么是 Molis（2026-10-31 重做，负责人：核心要体现场景接续，上下文都在一处）。
+// 左边：标题和导语；「接得上」放大做主角，另外三条是辅助；收尾两句。
+// 右边一块浅灰台面：上面一条时间线，同一份工作被四个场景依次接手——周一你和 Claude Code 定下要求，
+// 周二 Claude Code 额度用完、Codex 接着做，周三同事阿宁接着测，周五你回来。四个场景都连向下面同一份记录（深色的 Molis Work 窗），
+// 记录里每一条挂着留下它的人或 AI：方的是 AI，圆的是人，和上面场景里的一样。另外三条差异在记录里各有一处：等你验收、你做的检查台、本机。
 
-const HOLD = 6400;
-const IDS = workWhy.points.map((point) => point.id);
+type Who = 'me' | 'cc' | 'cx' | 'ni';
 
-type Tile = {
-  id: string;
-  name: string;
-  mark?: string;
-  icon?: LucideIcon;
-  x: number;
-  y: number;
-};
+const MARK: Record<Who, string> = { me: '你', cc: 'CC', cx: 'Cx', ni: '宁' };
 
-/** 画布 800 × 560：左边外部 AI，右边你、助理、同事；坐标是方块中心（和连线的 SVG 同一套） */
-const TILES: Tile[] = [
-  { id: 'cc', name: 'Claude Code', mark: 'C', x: 96, y: 150 },
-  { id: 'cx', name: 'Codex', mark: 'C', x: 96, y: 280 },
-  { id: 'oc', name: 'OpenCode', mark: 'O', x: 96, y: 410 },
-  { id: 'me', name: '你', mark: '你', x: 704, y: 150 },
-  { id: 'as', name: '助理', icon: Sparkles, x: 704, y: 280 },
-  { id: 'ni', name: '阿宁', mark: '宁', x: 704, y: 410 },
+function Who({ who }: { who: Who[] }) {
+  return (
+    <span className="wk-why-who">
+      {who.map((id, index) => (
+        <span key={id} className="wk-why-who-one">
+          {index > 0 ? <ChevronRight /> : null}
+          <i className="wk-why-m" data-w={id}>
+            {MARK[id]}
+          </i>
+        </span>
+      ))}
+    </span>
+  );
+}
+
+const SCENES: { day: string; who: Who[]; name: string; tag?: string; did: string }[] = [
+  { day: '周一', who: ['me', 'cc'], name: 'Claude Code', did: '定下：划线只存本地，不上云' },
+  { day: '周二', who: ['cx'], name: 'Codex', tag: 'Claude Code 额度用完', did: '接着做导出，读到了周一定的事' },
+  { day: '周三', who: ['ni'], name: '阿宁', did: '接着测，记下：长划线被截断' },
+  { day: '周五', who: ['me'], name: '你', did: '回来一看，做到哪、还差什么都在' },
 ];
 
-const LINES: Record<string, string> = {
-  cc: 'M124 150 C196 150 196 205 262 205',
-  cx: 'M124 280 L262 280',
-  oc: 'M124 410 C196 410 196 355 262 355',
-  me: 'M676 150 C604 150 604 205 538 205',
-  as: 'M676 280 L538 280',
-  ni: 'M676 410 C604 410 604 355 538 355',
-};
-
-const MODELS = ['Anthropic', '通义千问', 'DeepSeek', 'Kimi'];
-
-const at = (x: number, y: number) =>
-  ({ left: `${x / 8}%`, top: `${y / 5.6}%` }) as CSSProperties;
+/** 连线：从四张卡底边的中点汇到记录上沿的正中（画布 800 宽，四栏、栏距 20） */
+const WIRES = [92.5, 297.5, 502.5, 707.5];
 
 function Stage() {
   return (
     <div className="wk-why-stage" aria-hidden="true">
-      <svg className="wk-why-lines" viewBox="0 0 800 560">
-        {Object.entries(LINES).map(([id, d]) => (
-          <path key={id} data-l={id} d={d} />
+      <ol className="wk-why-scenes">
+        {SCENES.map(({ day, who, name, tag, did }) => (
+          <li key={day} className="wk-why-scene">
+            <span className="wk-why-day">{day}</span>
+            <div className="wk-scene wk-why-card" data-theme="dark">
+              <p className="wk-why-by">
+                <Who who={who} />
+                <b>{name}</b>
+              </p>
+              {tag ? <p className="wk-why-tag">{tag}</p> : null}
+              <p className="wk-why-did">{did}</p>
+            </div>
+          </li>
         ))}
-        {/* 长出来：检查台连到记录，Claude Code 也连过去调它 */}
-        <path data-l="tool" d="M400 92 L400 132" />
-        <path data-l="use" d="M118 128 C160 66 270 58 366 62" />
-        {/* 是你的：一台电脑框住记录 */}
-        <path
-          data-l="mac"
-          pathLength={100}
-          d="M256 112 H544 Q562 112 562 130 V436 Q562 454 544 454 H256 Q238 454 238 436 V130 Q238 112 256 112 Z M208 472 H592"
-        />
+      </ol>
+
+      <svg className="wk-why-wires" viewBox="0 0 800 64" preserveAspectRatio="none">
+        {WIRES.map((x) => (
+          <path key={x} d={`M${x} 0 C${x} 38 400 26 400 64`} />
+        ))}
       </svg>
 
-      {TILES.map(({ id, name, mark, icon: Icon, x, y }) => (
-        <span key={id} className="wk-why-tile" data-t={id} style={at(x, y)}>
-          <i>{Icon ? <Icon /> : mark}</i>
-          <b>{name}</b>
-        </span>
-      ))}
-
-      {/* 接得上：Claude Code 停下，Codex 接着做 */}
-      <span className="wk-why-tag" data-s="carry" style={at(96, 214)}>
-        额度用完
-      </span>
-      <span className="wk-why-say" data-s="carry" style={at(192, 236)}>
-        <b>Codex 接着做</b>
-        读到了你周六定的事
-      </span>
-
-      {/* 对得上：Codex 报做完了，轮到你 */}
-      <span
-        className="wk-why-say"
-        data-s="check"
-        data-k="done"
-        style={at(192, 236)}
-      >
-        <b>
-          <Check />
-          做完了
-        </b>
-        测试 16/16 通过
-      </span>
-      <span
-        className="wk-why-say"
-        data-s="check"
-        data-k="you"
-        style={at(608, 108)}
-      >
-        <b>轮到你验收</b>
-        手机上看一眼
-      </span>
-
-      {/* 长出来：一个虚线框长成你做的检查台 */}
-      <span className="wk-why-grow" data-s="grow" style={at(400, 62)}>
-        <i>
-          <ClipboardCheck />
-        </i>
-        发布前检查台
-        <small>你做的</small>
-      </span>
-      <span className="wk-why-cap" data-s="grow" style={at(214, 50)}>
-        Claude Code 也调得到
-      </span>
-
-      {/* 是你的：你的电脑，换模型，记录不动 */}
-      <span className="wk-why-mac" data-s="own" style={at(254, 112)}>
-        <HardDrive />
-        你的电脑
-      </span>
-      <div className="wk-why-models" data-s="own" style={at(400, 512)}>
-        <span className="wk-why-key">
-          <KeyRound />
-          Key 是你的
-        </span>
-        {MODELS.map((model) => (
-          <span key={model} data-m={model}>
-            {model}
-          </span>
-        ))}
-      </div>
-
-      {/* 记录：后面叠着两张旧版 */}
-      <div className="wk-why-stack">
-        <i />
-        <i />
-        <div className="wk-why-card">
-          <p className="wk-why-c-k">
-            <Target />
-            Goals · 划线卡片
-            <span>第 3 版</span>
-          </p>
-          <p className="wk-why-c-t">v1.1：导出到 Anki</p>
-          <p className="wk-why-c-rule">
-            <i />
-            你周六定过：划线只存本地，不上云
-          </p>
-          <p className="wk-why-c-bar">
-            完成要求 <b>2/3</b>
-            <span className="wk-why-c-meter">
-              <i />
-              <i />
-              <i />
-            </span>
-            <span className="wk-why-c-stop">收尾未生效</span>
-          </p>
-          <div className="wk-why-c-reqs">
-            <p>
-              <Ring tone="done" />
-              导出到 Anki
-              <span>依据 · 测试 24/24</span>
-            </p>
-            <p>
-              <Ring tone="progress" />
-              从 Readwise 导入
-              <span className="wk-why-c-who">
-                <span>Claude Code 在做</span>
-                <span>Codex 接着做</span>
-              </span>
-            </p>
-            <p className="wk-why-c-wait">
-              <Ring tone="attention" />
-              长划线不再截断
-              <span>等你验收</span>
-            </p>
-            <p className="wk-why-c-tool">
-              <ClipboardCheck />
-              发布前检查台
-              <span>4/4 通过 · 你做的</span>
-            </p>
-          </div>
-          <p className="wk-why-c-f">
-            <HardDrive />
-            本机 · ~/Molis Work/划线卡片
+      <div className="wk-scene wk-why-rec" data-theme="dark">
+        <div className="wk-why-rec-top">
+          <Target />
+          <p>
+            <small>划线卡片</small>
+            v1.1：导出到 Anki
           </p>
         </div>
+        <div className="wk-why-rows">
+          <p className="wk-why-row">
+            <span className="wk-why-l">定过的事</span>
+            <span className="wk-why-v">划线只存本地，不上云</span>
+            <span className="wk-why-st" />
+            <Who who={['me']} />
+          </p>
+          <p className="wk-why-row">
+            <span className="wk-why-l">要求</span>
+            <span className="wk-why-v">
+              <Ring tone="done" />
+              导出到 Anki
+            </span>
+            <span className="wk-why-st wk-state" data-tone="done">
+              依据 · 测试 24/24
+            </span>
+            <Who who={['cc', 'cx']} />
+          </p>
+          <p className="wk-why-row" data-more="">
+            <span className="wk-why-l" />
+            <span className="wk-why-v">
+              <Ring tone="attention" />
+              长划线不再截断
+            </span>
+            <span className="wk-why-st wk-state" data-tone="attention">
+              等你验收
+            </span>
+            <Who who={['ni', 'cx']} />
+          </p>
+          <p className="wk-why-row" data-more="">
+            <span className="wk-why-l" />
+            <span className="wk-why-v">
+              <Ring tone="progress" />
+              从 Readwise 导入
+            </span>
+            <span className="wk-why-st wk-state" data-tone="progress">
+              在做
+            </span>
+            <Who who={['cx']} />
+          </p>
+          <p className="wk-why-row">
+            <span className="wk-why-l">工具</span>
+            <span className="wk-why-v">
+              <ClipboardCheck />
+              发布前检查台
+            </span>
+            <span className="wk-why-st wk-state" data-tone="done">
+              4/4 通过
+            </span>
+            <Who who={['me']} />
+          </p>
+        </div>
+        <p className="wk-why-rec-f">
+          <HardDrive />
+          本机 · ~/Molis Work/划线卡片
+        </p>
       </div>
     </div>
   );
 }
 
 export function Why({ head }: { head: ReactNode }) {
-  const [on, setOn] = useState<WhyId>('carry');
-  const [held, setHeld] = useState(false);
-  const still = useStill();
-  const ref = useRef<HTMLDivElement>(null);
-  const shown = useOnScreen(ref, 0.4);
-
-  // 在视口里、没被鼠标停住时，一条一条往下轮
-  useEffect(() => {
-    if (still || held || !shown) return;
-    const timer = window.setTimeout(
-      () => setOn((now) => IDS[(IDS.indexOf(now) + 1) % IDS.length]),
-      HOLD,
-    );
-    return () => window.clearTimeout(timer);
-  }, [on, still, held, shown]);
-
-  const pick = (id: WhyId) => {
-    setOn(id);
-    setHeld(true);
-  };
-
+  const [carry, ...rest] = workWhy.points;
   return (
-    <div
-      ref={ref}
-      className="m-wrap wk-why"
-      data-on={on}
-      data-still={still || undefined}
-      data-run={(!still && !held && shown) || undefined}
-    >
+    <div className="m-wrap wk-why">
       <div className="wk-why-text">
         {head}
-        <ol className="wk-why-list">
-          {workWhy.points.map((point) => (
-            <li key={point.id} data-active={point.id === on || undefined}>
-              <button
-                type="button"
-                className="wk-why-pt"
-                aria-pressed={point.id === on}
-                onClick={() => pick(point.id)}
-                onMouseEnter={() => pick(point.id)}
-                onMouseLeave={() => setHeld(false)}
-                onFocus={() => pick(point.id)}
-                onBlur={() => setHeld(false)}
-              >
-                {point.claim}
-              </button>
-              <div className="wk-why-more">
-                <p>
-                  <Phrases text={point.here} />
-                </p>
-              </div>
+        <div className="wk-why-main">
+          <p className="wk-why-claim">{carry.claim}</p>
+          <p className="wk-why-here">
+            <Phrases text={carry.here} />
+          </p>
+        </div>
+        <ul className="wk-why-also">
+          {rest.map((point) => (
+            <li key={point.id}>
+              <b>{point.claim}</b>
+              <span>
+                <Phrases text={point.here} />
+              </span>
             </li>
           ))}
-        </ol>
+        </ul>
         <p className="wk-why-coda">
           <span>{workWhy.coda[0]}</span>
           <span>{workWhy.coda[1]}</span>

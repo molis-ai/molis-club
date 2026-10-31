@@ -29,7 +29,7 @@
 .gen { display: flex; align-items: center; gap: 0.35em; color: var(--a-faint); }
 .gen > span { display: inline-flex; align-items: center; gap: 0.3em; padding: 0.15em 0.6em; border-radius: 1em; white-space: nowrap; transition: background-color 0.3s var(--ease), color 0.3s var(--ease); }
 .gen > span .i { display: none; width: 0.95em; height: 0.95em; stroke-width: 2.4; }
-.gen > span[data-s='now'] { background: var(--a-act); color: #fff; }
+.gen > span[data-s='now'] { background: var(--a-act); color: var(--a-on-act); }
 .gen > span[data-s='done'] { color: var(--fn); }
 .gen > span[data-s='done'] .i { display: inline; }
 .gen > i { width: 0.8em; height: 1px; background: var(--a-line-2); }
@@ -42,7 +42,7 @@
   padding: 0.9em 0.95em 0.8em;
   border-radius: 0.85em;
   background: var(--a-paper);
-  box-shadow: 0 0 0 1px var(--a-line), 0 0.25em 0.7em -0.45em rgb(40 30 20 / 0.16);
+  box-shadow: 0 0 0 1px var(--a-line), 0 0.25em 0.7em -0.45em rgb(0 0 0 / 0.4);
   transition: box-shadow 0.35s var(--ease), background-color 0.6s var(--ease);
 }
 .plug.real .tc { opacity: 0; transform: translateY(0.6em); transition: opacity 0.45s var(--ease), transform 0.55s var(--ease), box-shadow 0.35s var(--ease), background-color 0.6s var(--ease); }
@@ -55,7 +55,7 @@
 .rvw > span .i { width: 0.9em; height: 0.9em; }
 .rvw[data-s='pass'] > .r-pass, .rvw[data-s='adjust'] > .r-adj, .rvw[data-s='research'] > .r-res { opacity: 1; }
 .r-pass { background: var(--fn-soft); color: var(--fn); }
-.r-adj { background: #fbf2e3; color: #9a6614; }
+.r-adj { background: #33291b; color: #e0b36a; }
 .r-res { background: var(--ai-soft); color: var(--ai); }
 .tc-t { font-size: 1.08em; font-weight: 500; line-height: 1.42; color: var(--a-ink); }
 .tc-f { display: grid; gap: 0.3em; margin: 0; }
@@ -65,14 +65,14 @@
 .src-chip { display: inline-flex; align-items: center; gap: 0.3em; margin: 0 0.25em 0.2em 0; padding: 0.02em 0.5em; border-radius: 0.4em; background: var(--a-paper); box-shadow: inset 0 0 0 1px var(--a-line-2); white-space: nowrap; color: var(--a-ink-2); transition: background-color 0.4s var(--ease), color 0.4s var(--ease), box-shadow 0.4s var(--ease); }
 .src-chip .i { width: 0.85em; height: 0.85em; color: var(--a-mute); }
 .src-chip .bad { display: none; }
-.src-chip[data-bad] { background: #fdf0ea; box-shadow: inset 0 0 0 1px #edc2ad; color: #a4552f; }
+.src-chip[data-bad] { background: #3a261d; box-shadow: inset 0 0 0 1px #6a4130; color: #f0a37c; }
 .src-chip[data-bad] .bad { display: inline; }
 .tc-note { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 0fr; transition: grid-template-rows 0.45s var(--ease); }
 .tc-note[data-on] { grid-template-rows: 1fr; }
 .tc-note > span { min-height: 0; overflow: hidden; }
 .tc-note em { display: inline-flex; align-items: center; gap: 0.35em; padding: 0.18em 0.6em; border-radius: 0.45em; font-style: normal; font-size: 0.92em; }
 .tc-note em .i { width: 0.9em; height: 0.9em; }
-.tc-note.adj em { background: #fbf2e3; color: #9a6614; }
+.tc-note.adj em { background: #33291b; color: #e0b36a; }
 .tc-note.res em { background: var(--ai-soft); color: var(--ai); }
 /* 写过没有：你中途要的那一行 */
 .tc-seen { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 0fr; transition: grid-template-rows 0.55s var(--ease); }
@@ -90,7 +90,7 @@
 .tc-act .adopt .got .i { width: 0.95em; height: 0.95em; }
 .tc[data-adopted] .adopt .btn { opacity: 0; }
 .tc[data-adopted] .adopt .got { opacity: 1; }
-.tc[data-adopted] { box-shadow: 0 0 0 1.5px var(--fn), 0 0.4em 1em -0.6em rgb(35 134 90 / 0.45); }
+.tc[data-adopted] { box-shadow: 0 0 0 1.5px var(--fn), 0 0.4em 1em -0.6em rgb(63 158 110 / 0.4); }
 /* 没推的：一行，理由跟着 */
 .skip { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4em 0.9em; padding: 0.55em 0.8em; border-radius: 0.65em; background: var(--a-soft); color: var(--a-mute); }
 .skip > b { font-weight: 500; color: var(--a-ink-2); }
@@ -116,7 +116,7 @@
   padding: 0.75em 0.85em 0.8em;
   border-radius: 0.8em;
   background: var(--a-paper);
-  box-shadow: 0 0 0 1px var(--a-line-2), 0 1em 2.2em -1em rgb(40 30 20 / 0.45);
+  box-shadow: 0 0 0 1px var(--a-line-2), 0 1em 2.2em -1em rgb(0 0 0 / 0.65);
   font-size: 0.62em;
   opacity: 0;
   transform: translateY(-0.4em);
@@ -127,10 +127,10 @@
 .sp-h { display: flex; align-items: center; gap: 0.5em; color: var(--a-mute); }
 .sp-h .src-ic { width: 1.7em; height: 1.7em; border-radius: 0.5em; }
 .sp-q { margin-top: 0.5em !important; line-height: 1.6; color: var(--a-ink); }
-.sp-bad { display: flex; align-items: center; gap: 0.4em; margin-top: 0.5em !important; color: #a4552f; }
+.sp-bad { display: flex; align-items: center; gap: 0.4em; margin-top: 0.5em !important; color: #f0a37c; }
 .sp-bad .i { width: 1em; height: 1em; }
 .src-ic { display: grid; place-items: center; flex: none; width: 2.4em; height: 2.4em; border-radius: 0.7em; }
-.src-ic[data-k='xhs'] { background: #fde8ea; color: #e0334a; }
+.src-ic[data-k='xhs'] { background: #3b1f26; color: #f36b7e; }
 .src-ic > b { font-size: 0.95em; font-weight: 600; line-height: 1; }
 
 /* 底栏上方的助理：说一句，它就改 */
@@ -147,12 +147,12 @@
   opacity: 0;
 }
 .asheet[data-on] { grid-template-rows: 1fr; opacity: 1; }
-.as-in { min-height: 0; overflow: hidden; border-radius: 1em; background: var(--a-paper); box-shadow: 0 0 0 1px var(--a-line-2), 0 1.2em 2.8em -1.2em rgb(40 30 20 / 0.42); }
+.as-in { min-height: 0; overflow: hidden; border-radius: 1em; background: var(--a-paper); box-shadow: 0 0 0 1px var(--a-line-2), 0 1.2em 2.8em -1.2em rgb(0 0 0 / 0.65); }
 .as-in > .wrap { display: grid; gap: 0.55em; padding: 0.8em 0.95em 0.9em; font-size: 0.65em; }
 .as-head { display: flex; align-items: center; gap: 0.5em; color: var(--a-mute); }
 .as-head .av { width: 1.7em; height: 1.7em; font-size: 0.92em; }
 .as-head b { font-weight: 500; color: var(--a-ink); }
-.as-me { justify-self: end; max-width: 85%; padding: 0.45em 0.85em; border-radius: 0.95em 0.95em 0.3em 0.95em; background: #f2efea; color: var(--a-ink); }
+.as-me { justify-self: end; max-width: 85%; padding: 0.45em 0.85em; border-radius: 0.95em 0.95em 0.3em 0.95em; background: #333437; color: var(--a-ink); }
 .as-ai { display: grid; gap: 0.25em; color: var(--a-ink-2); }
 .as-ai > span { display: flex; align-items: center; gap: 0.45em; }
 .as-ai .i { width: 1em; height: 1em; }
