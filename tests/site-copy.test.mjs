@@ -20,7 +20,7 @@ const { studio, story } = await import('../content/site/studio.ts');
 const { productIds, products, relations } =
   await import('../content/site/products.ts');
 const { workQuoted } = await import('../content/site/work.ts');
-const { toolProgress } = await import('../content/site/tool.ts');
+const { toolProgress, toolQuoted } = await import('../content/site/tool.ts');
 
 // 新站文案取自 docs/studio-intro.md 的原句（specs/site-rebuild/spec.md 第 9 节）。
 // 这里逐句核对：收进 content/site 的「原句」都还在底稿里，一个字都没改。
@@ -79,6 +79,8 @@ void test('各产品页「当前进展」里标为原句的部分都在底稿里
   const quoted = [
     // Work 页（2026-10-24 重做）用到的底稿原句；其余是新写的界面文字
     ...workQuoted,
+    // Tool 页（2026-11-02 改成 Work 页的形态）用到的底稿原句
+    ...toolQuoted,
     ...toolProgress.have,
     ...toolProgress.notYet,
     // toolProgress.now 是新写的引导句；Life、Story、World 直接用 products 里第 4 章的原句（上面已核对）
