@@ -1,11 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { workCases, workEnd, workHero, workWhy, type WorkBeatId } from '../../../content/site/work';
+import { workCases, workEnd, workHand, workHero, workStage, workWhy, type WorkBeatId } from '../../../content/site/work';
 import { contactHref } from '../../_site/routes';
 import { Btn, mediaOf, Phrases, Status } from '../../_site/ui';
-import { Chat, H, Ring, Term, W, Window, type Shown } from './desk';
-import { Pickup, usePickup } from './pickup';
+import { Chat, H, Kinds, Ring, Term, W, Window, type Over, type Shown } from './desk';
+import { Pickup, usePickup, useSel } from './pickup';
 
 // 大屏：一扇窗从头到尾不离场。舞台钉住，照片一直在一块圆角台面里，离屏幕边一指宽；
 // 每屏的标题在台面上方的纸上，镜头只在台面里推拉，一次只亮一处，字贴在亮处旁边。
@@ -41,7 +41,7 @@ type Side = 'r' | 'l' | 'b';
 type Plate = 'hero' | 'one' | 'two' | 'full';
 
 type Beat = {
-  id: 'hero' | 'use' | WorkBeatId | 'why' | 'coda' | 'end';
+  id: 'hero' | 'use' | 'hand' | WorkBeatId | 'why' | 'coda' | 'end';
   /** 这一拍占几屏的滚动 */
   len: number;
   /** 前面这一段镜头停着，后面这段推向下一拍 */
@@ -64,23 +64,51 @@ const BEATS: Beat[] = [
   { id: 'hero', len: 1.1, hold: 0.04, plate: 'hero', fit: 0.58, cam: { ho: 1 } },
   { id: 'use', len: 0.9, hold: 0.45, cam: {} },
   { id: 'u1', len: 1, hold: 0.5, focus: 'goal', side: 'r', cam: { w: 1.02, sx: 0.37, sy: 0.5, ...NEAR } },
-  { id: 'u2', len: 1, hold: 0.5, focus: 'rec2', side: 'l', cam: { w: 1.02, sx: 0.64, sy: 0.42, ...NEAR } },
-  { id: 'u3', len: 1, hold: 0.5, focus: 'doc', side: 'b', cam: { w: 0.9, sx: 0.5, sy: 0.44, ...NEAR } },
+  { id: 'feed', len: 1, hold: 0.5, focus: 'inbox', side: 'b', cam: { w: 0.94, sx: 0.46, sy: 0.4, ...NEAR } },
+  { id: 'talk', len: 1, hold: 0.5, focus: 'talk', side: 'l', cam: { w: 1.02, sx: 0.66, sy: 0.46, ...NEAR } },
+  { id: 'code', len: 1.1, hold: 0.55, focus: 'code', side: 'b', cam: { w: 0.92, sx: 0.48, sy: 0.42, ...NEAR } },
+  { id: 'wait', len: 1, hold: 0.5, focus: 'wait', side: 'l', cam: { w: 1, sx: 0.66, sy: 0.52, ...NEAR } },
+  { id: 'hand', len: 0.9, hold: 0.45, cam: {} },
+  { id: 'help', len: 1, hold: 0.5, focus: 'help', side: 'r', cam: { w: 1, sx: 0.4, sy: 0.5, ...NEAR } },
+  { id: 'pick', len: 1.3, hold: 0.62, focus: 'pick', side: 'b', cam: { w: 0.94, sx: 0.48, sy: 0.4, ...NEAR } },
+  { id: 'kinds', len: 1.1, hold: 0.5, cam: { w: 0.5, sx: 0.72, sy: 0.52, dim: 1, pd: 0.06 } },
+  { id: 'shelf', len: 1, hold: 0.5, focus: 'shelf', side: 'b', cam: { w: 0.9, sx: 0.5, sy: 0.42, ...NEAR } },
+  { id: 'mcp', len: 1, hold: 0.5, focus: 'mcp', side: 'r', cam: { w: 1, sx: 0.4, sy: 0.56, ...NEAR } },
+  { id: 'grow', len: 1, hold: 0.5, focus: 'grow', side: 'r', cam: { w: 1, sx: 0.3, sy: 0.5, ...NEAR } },
   { id: 'why', len: 1.1, hold: 0.5, cam: { w: 0.5, sx: 0.72, sy: 0.52, dim: 1, pd: 0.06 } },
   { id: 'c1', len: 1.3, hold: 0.62, focus: 'goal', side: 'r', ny: 0.3, cam: { w: 1.02, sx: 0.33, sy: 0.5, ...NEAR } },
-  { id: 'c2', len: 1, hold: 0.5, focus: 'wed', side: 'l', cam: { w: 1.02, sx: 0.66, sy: 0.46, ...NEAR } },
+  { id: 'c2', len: 1, hold: 0.5, focus: 'fix', side: 'l', cam: { w: 1.02, sx: 0.66, sy: 0.46, ...NEAR } },
   { id: 'c3', len: 1, hold: 0.5, focus: 'head', side: 'r', cam: { w: 0.86, sx: 0.4, sy: 0.42, ...NEAR } },
   { id: 'coda', len: 1, hold: 0.5, plate: 'two', cam: { w: 0.56 } },
   { id: 'end', len: 1.2, hold: 1, plate: 'full', cam: { w: 0.3, wo: 0 } },
 ];
 
-const NOTES: Partial<Record<Beat['id'], string>> = { ...workCases.notes, ...workWhy.notes };
+const NOTES: Partial<Record<Beat['id'], string>> = { ...workCases.notes, ...workHand.notes, ...workWhy.notes };
 
 const I = Object.fromEntries(BEATS.map((beat, index) => [beat.id, index])) as Record<Beat['id'], number>;
 const TOTAL = BEATS.reduce((sum, beat) => sum + beat.len, 0);
 const KEYS = Object.keys(BASE) as (keyof Cam)[];
 
 type Box = { x: number; y: number; w: number; h: number };
+
+/** 这几拍窗上浮着一张卡 */
+const OVER: Partial<Record<Beat['id'], Over>> = { wait: 'wait', help: 'help', mcp: 'mcp', grow: 'dock' };
+
+/** 每一拍窗里的样子：工作面开哪一页、事情走到哪、右栏开哪一栏、浮着哪张卡 */
+function shownAt(at: number, sel: 'a' | 'b', read?: 'a' | 'b'): Shown {
+  const id = BEATS[at].id;
+  const step = at >= I.hand ? 5 : at >= I.wait ? 4 : at >= I.code ? 3 : at >= I.talk ? 2 : at >= I.feed ? 1 : 0;
+  return {
+    view: id === 'feed' || id === 'talk' ? 'inbox' : id === 'code' ? 'code' : at >= I.hand && at <= I.grow ? 'doc' : 'goal',
+    step,
+    side: id === 'talk' ? 'talk' : id === 'shelf' ? 'shelf' : 'log',
+    over: OVER[id],
+    facts: at > I.help ? 'in' : 'typing',
+    sel: id === 'pick' ? sel : undefined,
+    shot: at > I.shelf ? 'in' : id === 'shelf' ? 'lift' : undefined,
+    read: id === 'c1' ? read : undefined,
+  };
+}
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 const ease = (k: number) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
@@ -146,15 +174,11 @@ export function Flow() {
   const kick = useRef(() => {});
 
   const beat = BEATS[at];
-  const shown: Shown = {
-    tab: at === I.u3 ? 'doc' : 'goal',
-    codex: at >= I.u2,
-    later: at >= I.why,
-    read: at === I.c1 ? pickup.read : undefined,
-  };
+  const sel = useSel(at === I.pick);
+  const shown = shownAt(at, sel, pickup.read);
   const focus = beat.focus;
 
-  // 往回滚到三屏之前，换过的 AI 也还原
+  // 往回滚到四屏之前，换过的 AI 也还原
   const { reset } = pickup;
   const before = at < I.c1;
   useEffect(() => {
@@ -177,8 +201,7 @@ export function Flow() {
     }
     kick.current();
   }, []);
-  const later = shown.later;
-  useLayoutEffect(() => measure(), [measure, at, later, fonts]);
+  useLayoutEffect(() => measure(), [measure, at, fonts]);
 
   useEffect(() => {
     void document.fonts?.ready.then(() => setFonts((n) => n + 1));
@@ -327,10 +350,13 @@ export function Flow() {
   const lastSpot = lastFocus ? boxes[lastFocus] : undefined;
   const text = NOTES[beat.id];
   const lastNoted = BEATS.slice(0, at + 1).findLast((b) => NOTES[b.id] && b.side);
-  const shownNote = lastNoted ? { text: NOTES[lastNoted.id]!, side: lastNoted.side! } : undefined;
+  const shownNote = lastNoted
+    ? { text: NOTES[lastNoted.id]!, side: lastNoted.side!, stage: workStage[lastNoted.id as WorkBeatId] }
+    : undefined;
   const [say, done] = workWhy.coda;
-  const screen2 = at >= I.use && at <= I.u3;
-  const screen3 = at >= I.why && at <= I.c3;
+  const screen2 = at >= I.use && at <= I.wait;
+  const screen3 = at >= I.hand && at <= I.grow;
+  const screen4 = at >= I.why && at <= I.c3;
 
   return (
     <>
@@ -369,6 +395,9 @@ export function Flow() {
             {workCases.title}
           </h2>
           <h2 className="wk-h" data-on={screen3 || undefined}>
+            {workHand.title}
+          </h2>
+          <h2 className="wk-h" data-on={screen4 || undefined}>
             {workWhy.title}
           </h2>
           <p className="wk-h wk-coda" data-on={at === I.coda || undefined}>
@@ -399,7 +428,7 @@ export function Flow() {
             </figure>
 
             <Term id="u1" on={at === I.u1} />
-            <Term id="u2" on={at === I.u2} />
+            <Kinds on={at === I.kinds} />
             <Pickup on={at === I.c1} ai={pickup.ai} tried={pickup.reads > 0} onPick={pickup.pick} />
             <Chat on={at === I.why} />
 
@@ -435,6 +464,11 @@ export function Flow() {
             <i className="wk-note-line" />
             <p key={shownNote?.text} className="wk-note-card">
               {shownNote?.text}
+              {shownNote?.stage ? (
+                <span className="wk-note-tag">
+                  <Status concept={shownNote.stage === '规划中'}>{shownNote.stage}</Status>
+                </span>
+              ) : null}
             </p>
           </div>
         </div>

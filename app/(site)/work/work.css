@@ -273,7 +273,7 @@
 
 /* ---------- 窗里的零件（大屏的窗、窄屏单独摆出来的几块共用） ---------- */
 
-:is(.wk-win, .wk-part) .lucide {
+:is(.wk-win, .wk-part, .wk-pop, .wk-kinds) .lucide {
   width: 15px;
   height: 15px;
   stroke-width: 1.8;
@@ -579,6 +579,22 @@
   color: #fff;
 }
 
+.wk-by i[data-w='co'] {
+  background: #3d3f43;
+  color: #fff;
+}
+
+.wk-by i[data-w='zh'] {
+  background: #e6dfd3;
+  color: #5b4a33;
+}
+
+.wk-by i .lucide {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2;
+}
+
 /* 按钮（画面里的，不能点） */
 .wk-btn {
   display: inline-flex;
@@ -652,20 +668,47 @@
   padding-left: 32px;
 }
 
-/* 右栏：记录 */
+/* 右栏：记录、讨论、Shelf，一次开一栏 */
 .wk-rail {
+  position: relative;
   flex: 1;
   min-width: 0;
-  padding: 18px 16px;
+  padding: 14px 16px;
   border-radius: 12px;
   background: var(--a-paper);
   box-shadow: 0 0 0 1px var(--a-line);
 }
 
 .wk-rail-h {
-  margin-bottom: 14px;
-  font-size: 13px;
-  color: var(--a-mute);
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.wk-rail-h span {
+  padding: 4px 10px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  color: var(--a-faint);
+  transition:
+    background-color 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+
+.wk-rail-h span[data-on] {
+  background: var(--a-rail);
+  color: var(--a-ink);
+}
+
+.wk-side {
+  position: absolute;
+  inset: 54px 16px 16px;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+
+.wk-side[data-on] {
+  opacity: 1;
 }
 
 .wk-rec {
@@ -740,6 +783,829 @@
   background: var(--a-line-2);
   font: 600 12px / 1 var(--latin);
   color: var(--a-ink);
+}
+
+/* 窗底：插件按钮开着、等你验收 */
+.wk-dock {
+  transition:
+    background-color 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+
+.wk-dock[data-on] {
+  background: var(--a-ink);
+  color: var(--a-desk);
+}
+
+.wk-wait-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: var(--a-amber-soft);
+  font-size: 12.5px;
+  color: var(--a-amber);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+
+.wk-wait-chip[data-on] {
+  opacity: 1;
+}
+
+/* 「你」：冰蓝名牌，左上角削尖就是指针的尖 */
+.wk-you {
+  position: absolute;
+  top: 70%;
+  left: 58%;
+  z-index: 2;
+  display: block;
+  pointer-events: none;
+  padding: 0.36em 0.62em 0.38em 0.6em;
+  border-radius: 0.08em 0.7em 0.7em 0.7em;
+  background: var(--you);
+  box-shadow:
+    0 0 0 1px var(--you-edge),
+    0 0.25em 0.6em -0.15em rgb(0 0 0 / 0.3);
+  font: 600 14px / 1 var(--sans);
+  font-style: normal;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  color: var(--you-ink);
+  animation: wk-bob 1.6s ease-in-out infinite;
+}
+
+/* Inbox：要紧的几条排到最上面，每条标好下一步 */
+.wk-ibx-list {
+  margin-top: 22px;
+}
+
+.wk-ibx-hot {
+  border-radius: 10px;
+}
+
+.wk-ibx-row {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--a-line);
+  font-size: 14.5px;
+  color: var(--a-mute);
+}
+
+.wk-ibx-hot .wk-ibx-row {
+  color: var(--a-ink);
+}
+
+.wk-ibx-hot .wk-ibx-row:last-child {
+  border-bottom: 0;
+}
+
+.wk-ava {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--a-rail);
+  box-shadow: inset 0 0 0 1px var(--a-line-2);
+  font: 600 11px / 1 var(--sans);
+  font-style: normal;
+  color: var(--a-ink-2);
+}
+
+.wk-ibx-row em {
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--a-rail);
+  font-style: normal;
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--a-mute);
+}
+
+.wk-ibx-row em[data-hot] {
+  background: var(--a-amber-soft);
+  box-shadow: inset 0 0 0 1px rgb(138 92 24 / 0.22);
+  color: var(--a-amber);
+}
+
+.wk-flow[data-at='feed'] .wk-ibx-row em {
+  animation: wk-tag-in 0.5s var(--ease) both;
+}
+
+.wk-flow[data-at='feed'] .wk-ibx-hot .wk-ibx-row:nth-child(1) em {
+  animation-delay: 0.4s;
+}
+
+.wk-flow[data-at='feed'] .wk-ibx-hot .wk-ibx-row:nth-child(2) em {
+  animation-delay: 0.55s;
+}
+
+.wk-flow[data-at='feed'] .wk-ibx-hot .wk-ibx-row:nth-child(3) em {
+  animation-delay: 0.7s;
+}
+
+.wk-flow[data-at='feed'] .wk-ibx-list > .wk-ibx-row em {
+  animation-delay: 0.9s;
+}
+
+@keyframes wk-tag-in {
+  from {
+    opacity: 0;
+    translate: 8px 0;
+  }
+}
+
+/* 讨论：人和 AI 一条接一条 */
+.wk-talk {
+  display: grid;
+  gap: 14px;
+}
+
+.wk-msg {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--a-ink-2);
+}
+
+.wk-msg-name {
+  display: block;
+  margin-bottom: 1px;
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--a-mute);
+}
+
+.wk-msg p > b:not(.wk-msg-name) {
+  font-weight: 500;
+  color: #2f5fa8;
+}
+
+.wk-flow[data-at='talk'] .wk-msg {
+  animation: wk-rec-in 0.6s var(--ease) both;
+  animation-delay: calc(0.35s + var(--i, 0) * 0.45s);
+}
+
+/* Coding：左边一步步做了什么，右边按手机宽度打开的预览 */
+.wk-code-f {
+  display: grid;
+  grid-template-columns: 1fr 268px;
+  gap: 32px;
+  margin-top: 22px;
+}
+
+.wk-run {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.wk-step p {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--a-ink-2);
+}
+
+.wk-step p b {
+  flex: none;
+  font-weight: 500;
+  color: var(--a-green);
+}
+
+.wk-diff {
+  display: grid;
+  margin: 8px 0 0 22px;
+  padding: 8px 0;
+  border-radius: 8px;
+  background: var(--a-soft);
+  box-shadow: inset 0 0 0 1px var(--a-line);
+  font: 400 12.5px / 1.75 var(--mono);
+}
+
+.wk-diff span {
+  padding: 0 12px;
+}
+
+.wk-diff [data-d='-'] {
+  background: rgb(160 74 60 / 0.07);
+  color: #a04a3c;
+}
+
+.wk-diff [data-d='+'] {
+  background: var(--a-green-soft);
+  color: var(--a-green);
+}
+
+.wk-run-go {
+  margin-top: 4px;
+  padding-left: 22px;
+}
+
+.wk-phone {
+  position: relative;
+  height: 452px;
+  overflow: hidden;
+  padding: 10px;
+  border-radius: 28px;
+  background: #1d1e20;
+  box-shadow: 0 24px 40px -24px rgb(27 26 24 / 0.5);
+}
+
+.wk-phone-url {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  margin-bottom: 10px;
+  padding: 0 10px;
+  border-radius: 13px;
+  background: rgb(255 255 255 / 0.08);
+  font: 400 11px / 1 var(--mono);
+  color: #b9b7b2;
+}
+
+.wk-phone-url .lucide {
+  width: 12px;
+  height: 12px;
+}
+
+.wk-phone-card {
+  position: relative;
+  padding: 18px 16px;
+  border-radius: 16px;
+  background: #fbfaf7;
+  color: var(--a-ink);
+}
+
+.wk-phone-card + .wk-phone-card {
+  margin-top: 8px;
+}
+
+.wk-phone-k {
+  margin-bottom: 6px;
+  font-size: 11px;
+  color: var(--a-faint);
+}
+
+.wk-phone-q {
+  margin-bottom: 18px;
+  font: 400 15px / 1.75 var(--serif);
+}
+
+.wk-phone-a {
+  font-size: 13px;
+  color: var(--a-ink-2);
+}
+
+/* Coding 的名牌：石墨色，自己去点那张卡 */
+.wk-agent {
+  position: absolute;
+  top: 22px;
+  left: 62%;
+  padding: 5px 9px;
+  border-radius: 2px 9px 9px 9px;
+  background: var(--a-ink);
+  box-shadow: 0 6px 14px -6px rgb(0 0 0 / 0.5);
+  font: 600 12px / 1 var(--sans);
+  color: #fff;
+}
+
+.wk-click {
+  position: absolute;
+  top: 22px;
+  left: 62%;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border: 2px solid var(--a-ink);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.wk-flash {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #fff;
+  opacity: 0;
+}
+
+.wk-flow[data-at='code'] .wk-step {
+  animation: wk-rec-in 0.5s var(--ease) both;
+  animation-delay: calc(0.3s + var(--i, 0) * 0.4s);
+}
+
+.wk-flow[data-at='code'] .wk-agent {
+  animation: wk-agent-go 0.9s var(--ease) 0.9s both;
+}
+
+.wk-flow[data-at='code'] .wk-click {
+  animation: wk-click 0.7s ease-out 1.8s both;
+}
+
+.wk-flow[data-at='code'] .wk-flash {
+  animation: wk-flash 0.6s ease-out 2.5s both;
+}
+
+@keyframes wk-agent-go {
+  from {
+    opacity: 0;
+    translate: 70px 140px;
+  }
+}
+
+@keyframes wk-click {
+  from {
+    opacity: 0.9;
+    scale: 0.4;
+  }
+
+  to {
+    opacity: 0;
+    scale: 1.5;
+  }
+}
+
+@keyframes wk-flash {
+  30% {
+    opacity: 0.85;
+  }
+}
+
+/* 浮在窗上的卡：等你验收、新接上的工具、插件 */
+.wk-over {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+}
+
+.wk-over[data-on] {
+  opacity: 1;
+}
+
+.wk-pop {
+  padding: 14px 16px 16px;
+  border-radius: 14px;
+  background: var(--a-paper);
+  box-shadow:
+    0 0 0 1px var(--a-line-2),
+    0 22px 44px -18px rgb(27 26 24 / 0.38);
+  font: 400 14px / 1.5 var(--sans);
+  color: var(--a-ink);
+}
+
+.wk-over .wk-pop {
+  position: absolute;
+  bottom: 62px;
+  transform: translateY(12px);
+  transition: transform 0.7s var(--ease);
+}
+
+.wk-over[data-on] .wk-pop {
+  transform: none;
+}
+
+.wk-pop[data-k='wait'] {
+  right: 16px;
+  width: 350px;
+}
+
+.wk-pop[data-k='mcp'] {
+  left: 150px;
+  width: 410px;
+}
+
+.wk-pop[data-k='dock'] {
+  left: 12px;
+  width: 340px;
+}
+
+.wk-pop-h {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--a-mute);
+}
+
+.wk-pop-h em {
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--a-rail);
+  font-style: normal;
+  font-size: 11px;
+  color: var(--a-mute);
+}
+
+.wk-pop[data-k='mcp'] .wk-pop-h .lucide {
+  color: var(--a-green);
+}
+
+.wk-go {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.wk-go .wk-btn {
+  position: relative;
+}
+
+.wk-wait-t,
+.wk-new-t {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--a-ink-2);
+}
+
+.wk-new-t {
+  font-size: 14.5px;
+  color: var(--a-ink);
+}
+
+.wk-wait .wk-shots {
+  margin: 12px 0 0 32px;
+}
+
+:is(.wk-wait, .wk-pop[data-k='mcp']) .wk-go {
+  padding-left: 32px;
+}
+
+/* 三张手机截图的缩略 */
+.wk-shots {
+  display: inline-flex;
+  flex: none;
+  gap: 8px;
+}
+
+.wk-shots i {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  width: 40px;
+  height: 72px;
+  padding: 10px 6px;
+  border: 3px solid #2a2b2e;
+  border-radius: 9px;
+  background: #fbfaf7;
+}
+
+.wk-shots b {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--a-line-2);
+}
+
+.wk-shots b:nth-child(2) {
+  width: 80%;
+}
+
+.wk-shots b:nth-child(3) {
+  width: 55%;
+}
+
+/* 发布说明：选中的一处、助理按这一处给的几样 */
+.wk-doc .wk-p {
+  max-width: 560px;
+}
+
+/* 浮条挂在两处选区共用的那一块上，换一处选区只换里面的几样，整块留够浮条的高度 */
+.wk-sels {
+  position: relative;
+}
+
+.wk-sels[data-sel] {
+  min-height: 142px;
+  margin-bottom: 20px;
+}
+
+.wk-sel-t {
+  padding: 2px 0;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-color 0.4s var(--ease);
+}
+
+.wk-sel[data-on] .wk-sel-t {
+  background: rgb(143 182 247 / 0.36);
+  color: var(--a-ink);
+}
+
+.wk-at {
+  position: relative;
+  display: inline-block;
+  width: 0;
+  height: 1em;
+  vertical-align: text-bottom;
+}
+
+.wk-at .wk-you {
+  top: -0.1em;
+  left: 8px;
+}
+
+.wk-float {
+  position: absolute;
+  top: 2px;
+  left: 584px;
+  display: grid;
+  gap: 2px;
+  width: 150px;
+  padding: 10px 6px 6px;
+  border-radius: 12px;
+  background: var(--a-paper);
+  box-shadow:
+    0 0 0 1px var(--a-line-2),
+    0 16px 32px -16px rgb(27 26 24 / 0.4);
+  animation: wk-float-in 0.45s var(--ease) both;
+}
+
+.wk-float .lucide {
+  margin: 0 0 4px 10px;
+  color: var(--a-green);
+}
+
+.wk-float span {
+  padding: 6px 10px;
+  border-radius: 7px;
+  font-size: 13px;
+  color: var(--a-ink);
+}
+
+.wk-float span:first-of-type {
+  background: var(--a-rail);
+}
+
+@keyframes wk-float-in {
+  from {
+    opacity: 0;
+    translate: -6px 0;
+  }
+}
+
+.wk-caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.15em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: var(--a-ink);
+  animation: wk-blink 1.1s steps(1) infinite;
+}
+
+@keyframes wk-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* 助理递过来的一条：正写着，它自己出来 */
+.wk-help {
+  max-width: 560px;
+  margin: 2px 0 18px;
+  padding: 14px 16px 16px;
+  border-radius: 12px;
+  background: var(--a-paper);
+  box-shadow:
+    0 0 0 1px var(--a-line-2),
+    0 20px 40px -18px rgb(27 26 24 / 0.38);
+  font-size: 14.5px;
+  color: var(--a-ink);
+}
+
+.wk-help-h {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 12.5px;
+  color: var(--a-mute);
+}
+
+.wk-flow[data-at='help'] .wk-help {
+  animation: wk-pop-in 0.7s var(--ease) 0.7s both;
+}
+
+.wk-flow[data-at='help'] .wk-help-h i {
+  animation: wk-ping 1.4s ease-out 1.3s 2;
+}
+
+@keyframes wk-pop-in {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+    scale: 0.97;
+  }
+}
+
+@keyframes wk-ping {
+  from {
+    box-shadow:
+      0 0 0 2px var(--a-paper),
+      0 0 0 2px rgb(66 119 93 / 0.55);
+  }
+
+  to {
+    box-shadow:
+      0 0 0 2px var(--a-paper),
+      0 0 0 12px rgb(66 119 93 / 0);
+  }
+}
+
+/* 截图落进页面：拿起来时先预示落在哪，放下以后就是页面里的一块 */
+.wk-slot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 560px;
+  margin: 2px 0 18px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--a-soft);
+  box-shadow: inset 0 0 0 1px var(--a-line);
+}
+
+.wk-slot figcaption {
+  font-size: 13px;
+  color: var(--a-mute);
+}
+
+.wk-slot[data-s='lift'] {
+  background: rgb(143 182 247 / 0.1);
+  box-shadow: none;
+  outline: 1.5px dashed rgb(47 95 168 / 0.55);
+  outline-offset: -1.5px;
+}
+
+.wk-slot[data-s='lift'] > * {
+  opacity: 0.45;
+}
+
+.wk-flow[data-at='shelf'] .wk-slot {
+  animation: wk-pop-in 0.6s var(--ease) 1s both;
+}
+
+/* Shelf */
+.wk-shelf {
+  display: grid;
+  gap: 8px;
+}
+
+.wk-shelf-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--a-soft);
+  box-shadow: inset 0 0 0 1px var(--a-line);
+  transition:
+    transform 0.6s var(--ease),
+    box-shadow 0.6s var(--ease),
+    background-color 0.6s var(--ease);
+}
+
+.wk-shelf-t b {
+  display: block;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--a-ink);
+}
+
+.wk-shelf-t small {
+  font-size: 11.5px;
+  color: var(--a-faint);
+}
+
+.wk-shelf-item .wk-shots {
+  gap: 3px;
+}
+
+.wk-shelf-item .wk-shots i {
+  gap: 3px;
+  width: 16px;
+  height: 30px;
+  padding: 5px 2px;
+  border-width: 2px;
+  border-radius: 4px;
+}
+
+.wk-shelf-item .wk-shots b {
+  height: 2px;
+}
+
+.wk-thumb {
+  flex: none;
+  width: 54px;
+  height: 34px;
+  border-radius: 6px;
+  background: var(--a-rail);
+  box-shadow: inset 0 0 0 1px var(--a-line-2);
+}
+
+.wk-thumb[data-k='chart'] {
+  background: var(--a-green-soft);
+}
+
+.wk-thumb[data-k='pdf'] {
+  background: #f6ebe7;
+}
+
+.wk-shelf-item[data-lift] {
+  background: var(--a-paper);
+  box-shadow:
+    0 0 0 1px var(--a-line-2),
+    0 22px 40px -16px rgb(27 26 24 / 0.45);
+  transform: translate(-8px, -4px) rotate(-1.5deg);
+}
+
+.wk-shelf-item .wk-you {
+  top: 78%;
+  left: 12%;
+}
+
+/* 插件：装了哪些、哪个是你做的；缺的说一句 */
+.wk-plug {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 8px;
+}
+
+.wk-plug p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 7px;
+  font-size: 13px;
+  white-space: nowrap;
+  color: var(--a-ink-2);
+}
+
+.wk-plug p[data-tag] {
+  grid-column: 1 / -1;
+  background: var(--a-soft);
+  color: var(--a-ink);
+}
+
+.wk-plug em {
+  margin-left: auto;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: rgb(143 182 247 / 0.16);
+  font-style: normal;
+  font-size: 11px;
+  color: #2f5fa8;
+}
+
+.wk-make {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--a-line);
+}
+
+.wk-make-h {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--a-mute);
+}
+
+.wk-make-h .lucide {
+  color: var(--a-green);
+}
+
+.wk-make-say {
+  padding: 9px 12px;
+  border-radius: 9px;
+  background: var(--a-soft);
+  box-shadow: inset 0 0 0 1px var(--a-line);
+  font-size: 14px;
+  color: var(--a-ink);
+}
+
+.wk-make .wk-go {
+  justify-content: flex-end;
+  margin-top: 10px;
 }
 
 /* ---------- 窗外：终端、对话、标注、「你」 ---------- */
@@ -909,6 +1775,47 @@
   color: var(--ink);
 }
 
+/* 同一个助理，在不同插件里判断的事不一样 */
+.wk-kinds-list {
+  display: grid;
+  gap: 12px;
+}
+
+.wk-kind {
+  padding: 14px 18px 16px;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.96);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 24px 48px -26px rgb(var(--shade) / 0.5);
+  color: var(--ink);
+}
+
+.wk-kind-h {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--mute);
+}
+
+.wk-kind-item {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.wk-kind-say {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 9px;
+  background: #e9f2ec;
+  font-size: 14px;
+  color: #2f5c46;
+}
+
 /* ---------- 大屏里窗外几样的位置与进出 ---------- */
 
 .wk-flow .wk-term {
@@ -974,6 +1881,30 @@
   opacity: 1;
   transform: none;
   transition-delay: 0.15s;
+}
+
+.wk-flow .wk-kinds {
+  position: absolute;
+  top: calc(var(--pt, 30vh) + 4vh);
+  left: var(--gutter);
+  width: min(440px, 36vw);
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s var(--ease),
+    transform 0.8s var(--ease);
+  pointer-events: none;
+}
+
+.wk-flow .wk-kinds[data-on] {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.15s;
+}
+
+.wk-flow .wk-kinds[data-on] .wk-kind {
+  animation: wk-rec-in 0.6s var(--ease) both;
+  animation-delay: calc(0.3s + var(--i, 0) * 0.3s);
 }
 
 .wk-flow .wk-chat-note {
@@ -1047,6 +1978,12 @@
     opacity: 0;
     translate: 0 8px;
   }
+}
+
+.wk-note-tag {
+  display: inline-flex;
+  margin-left: 14px;
+  vertical-align: 2px;
 }
 
 .wk-note[data-side='r'] .wk-note-line,
@@ -1320,11 +2257,36 @@
   font-size: 22px;
 }
 
+/* 右栏在窄屏只显示开着的那一栏 */
+.wk-part .wk-rail-h {
+  margin-bottom: 14px;
+}
+
+.wk-part .wk-side {
+  position: static;
+  display: none;
+}
+
+.wk-part .wk-side[data-on] {
+  display: block;
+}
+
+/* 浮在窗上的卡在窄屏直接摆在台面上 */
+.wk-stack .wk-pop {
+  max-width: 420px;
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.14),
+    0 40px 80px -36px rgb(var(--shade) / 0.5);
+}
+
 /* 这一拍亮的那一处 */
-.wk-part[data-hot='rec2'] [data-f='rec2'],
-.wk-part[data-hot='wed'] [data-f='wed'],
+.wk-part[data-hot='fix'] [data-f='fix'],
 .wk-part[data-hot='head'] [data-f='head'],
-.wk-part[data-hot='doc'] [data-f='doc'] {
+.wk-part[data-hot='inbox'] [data-f='inbox'],
+.wk-part[data-hot='talk'] [data-f='talk'],
+.wk-part[data-hot='help'] [data-f='help'],
+.wk-part[data-hot='pick'] [data-f='pick'],
+.wk-part[data-hot='shelf'] [data-f='shelf'] {
   position: relative;
   border-radius: 10px;
   background: rgb(143 182 247 / 0.1);
@@ -1338,12 +2300,59 @@
   padding: 10px 12px;
 }
 
-.wk-part[data-hot='doc'] [data-f='doc'] {
-  padding: 4px 10px 0;
+.wk-part[data-hot='inbox'] [data-f='inbox'],
+.wk-part[data-hot='talk'] [data-f='talk'] {
+  padding: 4px 8px;
+}
+
+.wk-part[data-hot='pick'] [data-f='pick'] {
+  padding: 8px 10px 2px;
+}
+
+/* 窄的工作面：Coding 的预览放到下面，浮条排成一行，反馈的标签换到下一行 */
+@container (max-width: 640px) {
+  .wk-code-f {
+    grid-template-columns: 1fr;
+  }
+
+  .wk-phone {
+    width: min(268px, 100%);
+    height: 380px;
+  }
+
+  .wk-sels[data-sel] {
+    min-height: 0;
+    margin-bottom: 0;
+  }
+
+  .wk-float {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: auto;
+    margin: -4px 0 16px;
+    padding: 6px;
+  }
+
+  .wk-float .lucide {
+    margin: 0 4px 0 8px;
+  }
 }
 
 /* 窄的工作面：状态换到名字下面一行 */
 @container (max-width: 480px) {
+  .wk-ibx-row {
+    grid-template-columns: 24px 1fr;
+    padding: 10px 4px;
+  }
+
+  .wk-ibx-row em {
+    grid-column: 2;
+    justify-self: start;
+    white-space: normal;
+  }
+
   .wk-row {
     grid-template-columns: 16px 1fr auto;
     grid-template-areas:
@@ -1406,12 +2415,52 @@
 /* ---------- 减少动态：镜头不推拉（flow.tsx 直接停在每一拍），这里关掉过渡与小动画 ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .wk-flow :is(.wk-h, .wk-spot, .wk-term, .wk-chat, .wk-note, .wk-end, .wk-foot, .wk-pane, .wk-tab),
+  .wk-flow
+    :is(
+      .wk-h,
+      .wk-spot,
+      .wk-term,
+      .wk-chat,
+      .wk-kinds,
+      .wk-note,
+      .wk-end,
+      .wk-foot,
+      .wk-pane,
+      .wk-tab,
+      .wk-side,
+      .wk-rail-h span,
+      .wk-over,
+      .wk-pop,
+      .wk-dock,
+      .wk-wait-chip,
+      .wk-sel-t,
+      .wk-shelf-item
+    ),
   .wk-bg::after {
     transition: none !important;
   }
 
-  .wk :is(.wk-pick-hand, .wk-note-card, .wk-rec, .wk-term-l, .wk-row) {
+  .wk
+    :is(
+      .wk-pick-hand,
+      .wk-you,
+      .wk-note-card,
+      .wk-rec,
+      .wk-term-l,
+      .wk-row,
+      .wk-msg,
+      .wk-step,
+      .wk-agent,
+      .wk-click,
+      .wk-flash,
+      .wk-float,
+      .wk-caret,
+      .wk-help,
+      .wk-help-h i,
+      .wk-slot,
+      .wk-kind,
+      .wk-ibx-row em
+    ) {
     animation: none !important;
   }
 }

@@ -1,11 +1,30 @@
 'use client';
 
 import { useEffect, useRef, type ReactNode } from 'react';
-import { workCases, workEnd, workHero, workWhy } from '../../../content/site/work';
+import { workCases, workEnd, workHand, workHero, workStage, workWhy, type WorkBeatId } from '../../../content/site/work';
 import { contactHref } from '../../_site/routes';
-import { Btn, mediaOf, Phrases, type Vars } from '../../_site/ui';
-import { Chat, Doc, Goal, Rail, Ring, Term, W, Window, type Shown } from './desk';
-import { Pickup, usePickup } from './pickup';
+import { Btn, mediaOf, Phrases, Status, type Vars } from '../../_site/ui';
+import {
+  Chat,
+  Coding,
+  Doc,
+  Goal,
+  Inbox,
+  Kinds,
+  LATER,
+  NewTool,
+  Plugins,
+  Rail,
+  Ring,
+  Shelf,
+  START,
+  Term,
+  W,
+  Wait,
+  Window,
+  type Shown,
+} from './desk';
+import { Pickup, usePickup, useSel } from './pickup';
 
 // 窄屏、矮屏、没有 JS：和大屏同样几拍，上下排。每一拍一块照片台面，台面上摆窗里亮的那一块（按真实字号排）和你自己的终端，
 // 亮处旁边那句话写在台面上方。首屏的字在 flow.tsx（两套共用一份）；首屏和收尾放整扇窗，缩到台面里。
@@ -13,9 +32,9 @@ import { Pickup, usePickup } from './pickup';
 const STAGE = mediaOf('work-stage');
 const SRCSET = STAGE.srcset.map(([src, w]) => `${src} ${w}w`).join(', ');
 
-const START: Shown = { tab: 'goal', codex: false, later: false };
-const CODEX: Shown = { tab: 'goal', codex: true, later: false };
-const LATER: Shown = { tab: 'goal', codex: true, later: true };
+const TALK: Shown = { view: 'inbox', step: 2, side: 'talk' };
+const HELP: Shown = { view: 'doc', step: 5, side: 'log', facts: 'typing', over: 'help' };
+const LIFT: Shown = { view: 'doc', step: 5, side: 'shelf', facts: 'in', shot: 'lift' };
 
 /** 照片台面：同一张湖面晨雾，每块取景高低不同 */
 function Plate({ y, label, eager, children }: { y: string; label?: boolean; eager?: boolean; children: ReactNode }) {
@@ -54,10 +73,24 @@ function Fit({ s, label }: { s: Shown; label: string }) {
   );
 }
 
-function Beat({ note, children }: { note?: string; children: ReactNode }) {
+const NOTES: Partial<Record<WorkBeatId, string>> = { ...workCases.notes, ...workHand.notes, ...workWhy.notes };
+
+/** 一拍：台面上方那句话（还没做好的带个小牌子），下面是台面 */
+function Beat({ id, children }: { id?: WorkBeatId; children: ReactNode }) {
+  const note = id ? NOTES[id] : undefined;
+  const stage = id ? workStage[id] : undefined;
   return (
     <figure className="wk-s-beat">
-      {note ? <figcaption className="wk-s-note">{note}</figcaption> : null}
+      {note ? (
+        <figcaption className="wk-s-note">
+          {note}
+          {stage ? (
+            <span className="wk-note-tag">
+              <Status concept={stage === '规划中'}>{stage}</Status>
+            </span>
+          ) : null}
+        </figcaption>
+      ) : null}
       {children}
     </figure>
   );
@@ -72,11 +105,25 @@ function Part({ hot, children }: { hot?: string; children: ReactNode }) {
   );
 }
 
+/** 选的不一样，给的就不一样：发布说明里来回选两处，右边助理给的跟着换 */
+function PickBeat() {
+  const sel = useSel(true);
+  return (
+    <Beat id="pick">
+      <Plate y="64%">
+        <Part hot="pick">
+          <Doc s={{ ...LATER, view: 'doc', shot: undefined, sel }} />
+        </Part>
+      </Plate>
+    </Beat>
+  );
+}
+
 /** 换一家 AI 接着做：点上面的 AI，工作面上它读到的几行跟着亮一下 */
 function PickupBeat() {
   const pickup = usePickup();
   return (
-    <Beat note={workWhy.notes.c1}>
+    <Beat id="c1">
       <Plate y="70%">
         <Part>
           <Goal s={{ ...LATER, read: pickup.read }} />
@@ -99,7 +146,7 @@ export function Stack() {
         <h2 className="wk-s-h" id="wk-s-use">
           <Phrases text={workCases.title} />
         </h2>
-        <Beat note={workCases.notes.u1}>
+        <Beat id="u1">
           <Plate y="58%" label>
             <Part>
               <Goal s={START} />
@@ -107,19 +154,66 @@ export function Stack() {
             <Term id="u1" />
           </Plate>
         </Beat>
-        <Beat note={workCases.notes.u2}>
+        <Beat id="feed">
           <Plate y="22%">
-            <Part hot="rec2">
-              <Rail s={CODEX} />
+            <Part hot="inbox">
+              <Inbox />
             </Part>
-            <Term id="u2" />
           </Plate>
         </Beat>
-        <Beat note={workCases.notes.u3}>
-          <Plate y="82%">
-            <Part hot="doc">
-              <Doc />
+        <Beat id="talk">
+          <Plate y="44%">
+            <Part hot="talk">
+              <Rail s={TALK} />
             </Part>
+          </Plate>
+        </Beat>
+        <Beat id="code">
+          <Plate y="82%">
+            <Part>
+              <Coding />
+            </Part>
+          </Plate>
+        </Beat>
+        <Beat id="wait">
+          <Plate y="30%">
+            <Wait />
+          </Plate>
+        </Beat>
+      </section>
+
+      <section className="wk-s-sec" aria-labelledby="wk-s-hand">
+        <h2 className="wk-s-h" id="wk-s-hand">
+          <Phrases text={workHand.title} />
+        </h2>
+        <Beat id="help">
+          <Plate y="52%" label>
+            <Part hot="help">
+              <Doc s={HELP} />
+            </Part>
+          </Plate>
+        </Beat>
+        <PickBeat />
+        <Beat>
+          <Plate y="40%">
+            <Kinds />
+          </Plate>
+        </Beat>
+        <Beat id="shelf">
+          <Plate y="70%">
+            <Part hot="shelf">
+              <Shelf s={LIFT} />
+            </Part>
+          </Plate>
+        </Beat>
+        <Beat id="mcp">
+          <Plate y="26%">
+            <NewTool />
+          </Plate>
+        </Beat>
+        <Beat id="grow">
+          <Plate y="58%">
+            <Plugins />
           </Plate>
         </Beat>
       </section>
@@ -134,14 +228,14 @@ export function Stack() {
           </Plate>
         </Beat>
         <PickupBeat />
-        <Beat note={workWhy.notes.c2}>
+        <Beat id="c2">
           <Plate y="30%">
-            <Part hot="wed">
+            <Part hot="fix">
               <Rail s={LATER} />
             </Part>
           </Plate>
         </Beat>
-        <Beat note={workWhy.notes.c3}>
+        <Beat id="c3">
           <Plate y="52%">
             <Part hot="head">
               <Goal s={LATER} />

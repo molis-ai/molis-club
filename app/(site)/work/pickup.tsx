@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AIS, Lines, PICKUP, type Ai } from './desk';
 
 /** 换一家 AI：换了几次（窗里读到的几行跟着亮一下）、现在是哪一家 */
@@ -16,6 +16,20 @@ export function usePickup() {
     setReads(0);
   }, []);
   return { ai, reads, read: reads ? ((reads % 2 ? 'a' : 'b') as 'a' | 'b') : undefined, pick, reset };
+}
+
+/** 发布说明里来回选两处（一长句、一行数据）：on 的时候每隔一会儿换一处，减少动态时停在第一处 */
+export function useSel(on: boolean) {
+  const [turns, setTurns] = useState(0);
+  useEffect(() => {
+    if (!on || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const timer = setInterval(() => setTurns((n) => n + 1), 2600);
+    return () => {
+      clearInterval(timer);
+      setTurns(0);
+    };
+  }, [on]);
+  return on && turns % 2 ? 'b' : 'a';
 }
 
 /** 终端上方三家 AI 来回换，读到的还是同一页；「你」的名牌停在下一家上，换过一次就收起 */
