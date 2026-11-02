@@ -92,18 +92,22 @@
     ]
   },
   "work-stage": {
-    "width": 1440,
-    "height": 960,
-    "avg": "#93897b",
-    "src": "/site/work-stage-1440.webp",
+    "width": 4000,
+    "height": 2667,
+    "avg": "#aba9ac",
+    "src": "/site/work-stage-2880.webp",
     "srcset": [
-      [
-        "/site/work-stage-960.webp",
-        960
-      ],
       [
         "/site/work-stage-1440.webp",
         1440
+      ],
+      [
+        "/site/work-stage-2160.webp",
+        2160
+      ],
+      [
+        "/site/work-stage-2880.webp",
+        2880
       ]
     ]
   },
