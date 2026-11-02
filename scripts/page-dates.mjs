@@ -18,7 +18,7 @@ const pages = {
     'content/site/studio.ts',
   ],
   '/work': [`${site}/work`, 'content/site/work.ts', 'app/_site/cue.ts', ...product],
-  '/tool': [`${site}/tool`, 'content/site/tool.ts', 'app/_site/cue.ts', ...product],
+  '/tool': [`${site}/tool`, 'content/site/tool.ts', 'content/site/products.ts'],
   '/life': [
     `${site}/life`,
     'content/site/life.ts',

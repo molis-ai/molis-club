@@ -20,13 +20,12 @@ export const homeProducts: Record<
 export const homeClosing = {
   /** 第 1.4 节：「……让产品有自己的性格，让口味相近的人认出彼此。」按语气分两行，不改字 */
   lead: ['让口味相近的人', '认出彼此。'],
-  /** 末屏的照片（Unsplash · Marsumilae，法国阿拉维山，负责人 2026-10-24 挑）；替代文字是新写的界面文字 */
-  photoAlt: '薄雾里一层层淡去的远山，近处草坡的山脊上，远远站着一个人。',
+  /** 末屏的照片（Unsplash · Maxim Boldyrev，负责人 2026-10-31 挑）；替代文字是新写的界面文字 */
+  photoAlt: '雾里的海面上，一个人站在桨板上，远远地划着。',
   paths: [
     {
       id: 'enterprise',
       label: '企业合作',
-      en: 'Enterprise',
       /** 第 5 章开头句 */
       title: ['把 AI 用进业务，', '把能力留在团队。'],
       link: '了解企业合作',
@@ -34,7 +33,6 @@ export const homeClosing = {
     {
       id: 'community',
       label: '社区',
-      en: 'Community',
       /** 第 6 章开头句的前半 */
       title: ['试试有意思的作品，', '看看它们怎么做出来。'],
       link: '去社区看看',
@@ -42,7 +40,6 @@ export const homeClosing = {
     {
       id: 'about',
       label: '关于我们',
-      en: 'About',
       /** 第 7 章标题 */
       title: ['一群同类，', '一起创造。'],
       link: '认识我们',
