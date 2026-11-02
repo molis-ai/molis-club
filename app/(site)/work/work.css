@@ -1,339 +1,9 @@
-/* =====================================================================
-   Molis Work 页（2026-10-24）。页面本身守官网的规矩：纸色、Jost 与苹方、一条缓动、一屏一件事；
-   画面里的 Molis Work 照最新桌面端的 Soft Workbench：珍珠灰桌面、白色工作面、石墨主按钮、铜色进行中，
-   状态色、插件标签的色相都取自 Molis Work 的 palette.ts（2026-10-24 main）。
-   画面里只有「你」是冰蓝的名牌；AI 在写时亮一个插入光标和灰名牌。
-   尺寸：画框是一个容器，窗口宽 64u（--u = 画框宽 / 64），里面全用 em，放大缩小都清楚。
-   ===================================================================== */
+/* Molis Work（2026-11-02 第三轮）：一扇窗从头到尾不离场。
+   大屏（.wk-flow）：钉住的舞台 + 跟着滚动推拉的镜头，窗是 1200×760 的设计尺寸，整体缩放；
+   窄屏、矮屏、没有 JS（.wk-stack）：同样几拍上下排，窗里的几块单独摆在照片台面上。
+   窗里照 Molis Work 桌面端的浅色 Soft Workbench：珍珠灰桌面、白色工作面、石墨主按钮、铜色 Claude Code；你自己的终端是深色。 */
 
 .wk {
-  --ai: #6f6b63;
-  --wall: #f1efea;
-  /* 「你」的颜色：冰蓝，深浅两种底上都看得清；不用杏橙，免得和 AI 产品的品牌色混在一起 */
-  --you: #8fb6f7;
-  --you-ink: #0e1d36;
-  --you-edge: rgb(14 29 54 / 0.45);
-  --sel: rgb(143 182 247 / 0.32);
-}
-
-/* ---------- A 台面（2026-10-31，specs/work-product-page/redesign.md）----------
-   每屏一块大圆角台面，离屏幕边一指宽（--inset），比版心宽一点；台面的底是一张光的照片或一层浅灰（paper-2），
-   上面只放一扇窗，「界面示意」标注在窗下沿左对齐。字在台面外的纸上，对齐版心。
-   字只有四档：名字（--t-name）> 屏标题（--t-head）> 副标题与导语（--t-sub、--t-lead）> 小字。标题两色：铺垫是灰，最后一句是墨色。
-   所有窗口同一个圆角（1.05em）、同一道暖色落地影子（--win-shadow，em 跟着窗宽走）。 */
-.wk {
-  --t-name: clamp(52px, 6.2vw, 96px);
-  --t-head: clamp(28px, 2.9vw, 44px);
-  --t-sub: clamp(19px, 1.7vw, 25px);
-  --inset: clamp(10px, 1.4vw, 20px);
-  --plate-r: clamp(18px, 2vw, 28px);
-  --win-shadow:
-    0 0 0 1px rgb(27 26 24 / 0.07),
-    0 2.6em 5.2em -2.4em rgb(var(--shade) / 0.5);
-}
-.wk-plate {
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  place-content: center;
-  margin: 0 calc(var(--inset) - var(--gutter));
-  border-radius: var(--plate-r);
-  background: var(--paper-2);
-}
-.wk-plate .m-note {
-  border-color: rgb(27 26 24 / 0.28);
-  background: rgb(255 255 255 / 0.72);
-  color: var(--ink-2);
-}
-:is(.wk-hero-title, .wk-head-title) .m-phrase:not(:last-child) {
-  color: var(--mute);
-}
-
-/* ---------- 首屏：上面一行字（左边名字、开场与口号，右边「是什么」与报名），下面一块照片台面（work-stage，湖面晨雾），
-   项目首页那扇窗端端正正放在台面中央，你自己的终端压在窗口左边。宽屏时字和台面正好一屏 ---------- */
-.wk-open {
-  padding-top: var(--header);
-}
-.wk-open-plate {
-  display: none;
-}
-.wk-open-hero {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: clamp(24px, 4vh, 44px);
-  height: max(600px, calc(100svh - var(--header)));
-  padding-block: clamp(24px, 4vh, 44px) var(--inset);
-}
-.wk-hero {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  row-gap: 24px;
-  align-items: end;
-}
-.wk-hero-lead {
-  grid-column: 1 / span 7;
-  display: grid;
-  justify-items: start;
-  gap: clamp(8px, 1.4vh, 14px);
-}
-.wk-hero-side {
-  grid-column: 8 / -1;
-  display: grid;
-  justify-items: start;
-  gap: clamp(16px, 2.6vh, 26px);
-  padding-bottom: 4px;
-}
-.wk-hero .m-phero-name {
-  margin-top: 0;
-  font-size: var(--t-name);
-}
-.wk-hero-title {
-  font: 400 var(--t-sub) / 1.45 var(--sans);
-  letter-spacing: 0.02em;
-  font-feature-settings: 'palt' 1;
-}
-.wk-hero-slogan {
-  font: italic 300 var(--t-lead) / 1.6 var(--sans);
-  letter-spacing: 0.01em;
-  color: var(--mute);
-  text-wrap: balance;
-}
-.wk-hero-what {
-  max-width: 26em;
-  font: 400 var(--t-lead) / 1.85 var(--sans);
-  color: var(--ink-2);
-}
-
-/* 台面按剩下的高度排：窗宽取「台面宽的 58%」和「台面高扣掉标注那一行后能放下的宽」里小的那个（窗是 64 : 40） */
-.wk-stage {
-  container-type: size;
-  background: none;
-}
-.wk-stage-photo {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  border-radius: inherit;
-  background: var(--avg);
-}
-.wk-stage-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 32%;
-  filter: var(--grade);
-  animation: wk-dawn 1.6s var(--ease) both;
-}
-.wk-stage-set {
-  display: grid;
-  gap: 14px;
-  width: min(58cqw, calc((100cqh - 96px) * 1.6));
-}
-.wk-stage-win {
-  position: relative;
-  container-type: inline-size;
-}
-.wk-stage-win > .wk-frame {
-  animation: wk-settle 1.4s var(--ease) 0.45s backwards;
-}
-@keyframes wk-dawn {
-  from {
-    opacity: 0;
-  }
-}
-/* 落定：从高一点、小一点的地方落下来，影子跟着收紧 */
-@keyframes wk-settle {
-  from {
-    opacity: 0;
-    transform: translateY(26px) scale(0.982);
-  }
-}
-
-/* 终端压在窗口左边，和窗口同一个尺寸单位（窗宽的 1/64） */
-.wk-stage .wk-term {
-  top: 44%;
-  left: -13%;
-  width: 43%;
-  font-size: calc(100cqi / 64 * 1.32);
-  pointer-events: none;
-  animation: m-rise 1.1s var(--ease) 1.25s backwards;
-}
-.wk-stage .wk-term-l {
-  white-space: nowrap;
-  transition:
-    opacity 0.55s var(--ease),
-    transform 0.75s var(--ease);
-}
-/* 跟着窗口里的事件走（编排接管时才藏，平时就是做完的样子）：
-   检查台那条出来，终端开始修 #12；助理那条出来，测试过了；Codex 那条出来，终端交回 */
-.wk-stage:has(.wk-frame[data-run]):not(:has([data-c='h-0'][data-on])) .wk-term-l[data-l='1'],
-.wk-stage:has(.wk-frame[data-run]):not(:has([data-c='h-1'][data-on])) .wk-term-l[data-l='2'],
-.wk-stage:has(.wk-frame[data-run]):not(:has([data-c='h-2'][data-on])) .wk-term-l[data-l='3'] {
-  opacity: 0;
-  transform: translateY(0.45em);
-}
-
-/* ---------- 首屏推近成全景（stages.tsx 的 Opening） ----------
-   平常（窄屏、矮屏、减少动态、没有 JS）：首屏在上、全景在下，照常排。
-   宽屏（≥901 宽、≥700 高，stages.tsx 写上 data-push）：首屏和全景叠在同一个钉住的一屏里，多出一屏的滚动用来推近。--pin 由 useSiteMotion 写入（跟随缓动），
-   --t 是推近走到哪（--pin 0.06–0.72），--e 是它的 S 形曲线；--dx、--dy、--s 由 stages.tsx 量出：两扇窗中心的平移和宽的比；
-   --ax…--ah、--bx…--bh 是两块台面的位置和大小。全景的窗一般比首屏那扇大，就一路放大到底、停在那么大；
-   只有全景的窗比首屏那扇还小时（很矮的宽屏），--b 让路上先多推近一截再落定。
-   推得最近时一下换窗，像标签从「项目首页」换到「发布说明」。首屏的字先退开，照片往里推、淡掉，
-   底下那块浅灰台面从首屏台面的位置长到全景台面的位置；全景的标题、六段和标注最后浮上来。 */
-@media (min-width: 901px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
-  .js .wk-open[data-push] {
-    --t: clamp(0, (var(--pin, 0) - 0.06) / 0.66, 1);
-    --e: calc(var(--t) * var(--t) * (3 - 2 * var(--t)));
-    --size: calc(1 + (var(--s, 1) - 1) * var(--e) + var(--b, 0) * sin(var(--e) * 3.14159));
-    --swap: clamp(0, (var(--e) - 0.46) / 0.1, 1);
-    --rise: clamp(0, (var(--e) - 0.74) / 0.26, 1);
-    position: relative;
-    height: calc(200svh - var(--header));
-  }
-  .js .wk-open[data-push] .wk-open-pin {
-    position: sticky;
-    top: var(--header);
-    height: calc(100svh - var(--header));
-  }
-  .js .wk-open[data-push] :is(.wk-open-hero, .wk-open-tour) {
-    position: absolute;
-    inset: 0;
-    height: auto;
-    min-height: 0;
-  }
-  .js .wk-open[data-push] .wk-open-plate {
-    position: absolute;
-    display: block;
-    top: calc((var(--ay, 0) + (var(--by, 0) - var(--ay, 0)) * var(--e)) * 1px);
-    left: calc((var(--ax, 0) + (var(--bx, 0) - var(--ax, 0)) * var(--e)) * 1px);
-    width: calc((var(--aw, 0) + (var(--bw, 0) - var(--aw, 0)) * var(--e)) * 1px);
-    height: calc((var(--ah, 0) + (var(--bh, 0) - var(--ah, 0)) * var(--e)) * 1px);
-    border-radius: var(--plate-r);
-    background: var(--paper-2);
-    opacity: clamp(0, var(--e) * 12, 1);
-  }
-  .js .wk-open[data-push] .wk-open-tour {
-    padding-block: 0;
-  }
-  .js .wk-open[data-push] .wk-tour-plate {
-    background: none;
-  }
-  .js .wk-open[data-push] .wk-hero {
-    opacity: calc(1 - 3 * var(--e));
-    translate: 0 calc(var(--e) * -36px);
-  }
-  /* 照片跟着那块台面走：边一直和浅灰台面重合，像台面长大时露出更多的湖面，同时淡掉 */
-  .js .wk-open[data-push] .wk-stage-photo {
-    inset: auto;
-    top: calc((var(--by, 0) - var(--ay, 0)) * var(--e) * 1px);
-    left: calc((var(--bx, 0) - var(--ax, 0)) * var(--e) * 1px);
-    width: calc((var(--aw, 0) + (var(--bw, 0) - var(--aw, 0)) * var(--e)) * 1px);
-    height: calc((var(--ah, 0) + (var(--bh, 0) - var(--ah, 0)) * var(--e)) * 1px);
-    opacity: calc(1 - 1.6 * var(--e));
-  }
-  .js .wk-open[data-push] .wk-stage-img {
-    transform-origin: 50% 40%;
-    transform: scale(calc(1 + 0.16 * var(--e)));
-  }
-  .js .wk-open[data-push] .wk-stage :is(.wk-term, .wk-foot) {
-    opacity: calc(1 - 3.5 * var(--e));
-  }
-  .js .wk-open[data-push] .wk-stage-win {
-    transform: translate(calc(var(--dx, 0) * var(--e) * 1px), calc(var(--dy, 0) * var(--e) * 1px)) scale(var(--size));
-    opacity: calc(1 - var(--swap));
-  }
-  .js .wk-open[data-push] .wk-tour-frame {
-    transform: translate(calc(var(--dx, 0) * (var(--e) - 1) * 1px), calc(var(--dy, 0) * (var(--e) - 1) * 1px))
-      scale(calc(var(--size) / var(--s, 1)));
-    opacity: var(--swap);
-  }
-  .js .wk-open[data-push] .wk-open-tour :is(.wk-tour > .wk-head, .wk-tour-side, .wk-tour-plate .wk-foot) {
-    opacity: var(--rise);
-    translate: 0 calc((1 - var(--rise)) * 14px);
-    transition: none;
-  }
-  .js .wk-open[data-push]:not([data-arrived]) .wk-open-tour,
-  .js .wk-open[data-push][data-arrived] .wk-open-hero {
-    pointer-events: none;
-  }
-}
-
-/* 窗下沿：诚实标注 + 暂停键 */
-.wk-foot {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 28px;
-}
-.wk-toggle {
-  all: unset;
-  box-sizing: border-box;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  margin-left: auto;
-  border-radius: 50%;
-  color: var(--mute);
-  cursor: pointer;
-  transition:
-    background-color 0.3s var(--ease),
-    color 0.3s var(--ease);
-}
-.wk-toggle:hover,
-.wk-toggle:focus-visible {
-  background: rgb(27 26 24 / 0.07);
-  color: var(--ink);
-}
-.wk-toggle:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 2px;
-}
-
-/* ---------- 区块 ---------- */
-.wk-head {
-  display: grid;
-  gap: 14px;
-  margin-bottom: clamp(32px, 6vh, 64px);
-}
-.wk-head-title {
-  font: 400 var(--t-head) / 1.32 var(--sans);
-  letter-spacing: 0.01em;
-  font-feature-settings: 'palt' 1;
-  text-wrap: balance;
-}
-.wk-head-lead {
-  max-width: 22em;
-  font-size: var(--t-lead);
-  line-height: 1.85;
-  color: var(--ink-2);
-}
-
-/* =====================================================================
-   画面：Molis Work 的窗口
-   ===================================================================== */
-.wk-frame {
-  position: relative;
-  container-type: inline-size;
-}
-.wk-scene {
-  position: relative;
-  font-size: calc(100cqi / 64);
-  line-height: 1.5;
-  letter-spacing: 0.01em;
-  font-family: var(--sans);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-.wk-scene p {
-  margin: 0;
-}
-.wk-scene {
   --a-desk: #eeefef;
   --a-paper: #ffffff;
   --a-soft: #fafaf9;
@@ -344,2927 +14,1404 @@
   --a-faint: #9a9ca0;
   --a-line: #e9e9e7;
   --a-line-2: #d5d6d4;
-  --a-copper: #93604b;
-  --a-copper-soft: #f6eee8;
-  --a-act: #292a2c;
-  --a-on-act: #ffffff;
   --a-green: #42775d;
   --a-green-soft: #e9f2ec;
   --a-amber: #8a5c18;
   --a-amber-soft: #f7f0e3;
-  --a-red: #b03d45;
-  --a-red-soft: #fbecec;
-  --a-cyan: #3d6f78;
-  --a-hover: rgb(41 42 44 / 0.06);
-  --a-shadow: 40 30 20;
-  color: var(--a-ink);
+  --a-copper: #93604b;
+  --you: #8fb6f7;
+  --you-ink: #0e1d36;
+  --you-edge: rgb(14 29 54 / 0.45);
+  --serif: 'Songti SC', 'STSong', 'Noto Serif SC', serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, monospace;
 }
-.wk-scene svg {
-  width: 1em;
-  height: 1em;
-  flex: none;
-  stroke-width: 1.7;
+
+/* 两套排法都在服务端出好，一次只显示一套（不显示的那套也不进读屏） */
+.wk-flow {
+  display: none;
+}
+
+@media (min-width: 1024px) and (min-height: 600px) {
+  .js .wk-flow {
+    display: block;
+  }
+
+  .js .wk-stack {
+    display: none;
+  }
+}
+
+/* ---------- 大屏：钉住的舞台 ---------- */
+
+.wk-track {
+  position: relative;
+}
+
+.wk-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+/* 台面：照片一直在一块圆角台面里，窗、终端、对话都放在台面上，出了台面就裁掉 */
+.wk-plate {
+  position: absolute;
+  inset: 0;
+  will-change: clip-path;
+  pointer-events: none;
+}
+
+.wk-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #aba9ac;
+}
+
+.wk-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 32%;
+  filter: var(--grade);
+  transform: scale(var(--kb, 1.1));
+  transform-origin: 50% 40%;
+}
+
+.wk-shade {
+  position: absolute;
+  inset: 0;
+  background: rgb(52 48 44);
+  opacity: 0;
+}
+
+/* 最后一屏：照片铺一层纸色，信写在上面 */
+.wk-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(251 250 247 / 0.74);
+  opacity: 0;
+  transition: opacity 1.2s var(--ease);
+}
+
+.wk-flow[data-at='end'] .wk-bg::after {
+  opacity: 1;
+}
+
+/* 首屏的字：只有一份。窄屏就是页面开头；大屏是一枚高度为 0 的钉子，字挂在它下面、压在舞台上，随镜头淡出 */
+.wk-hero-in {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+  padding: calc(var(--header) + clamp(32px, 7vh, 64px)) var(--gutter) clamp(28px, 5vh, 44px);
+}
+
+.wk-name {
+  margin: 0.14em 0 0.12em -0.04em;
+  font: 300 clamp(48px, 12vw, 80px) / 1 var(--latin);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.wk-lead {
+  font: 400 var(--t-h3) / 1.4 var(--sans);
+  color: var(--ink);
+}
+
+.wk-slogan {
+  margin-top: 6px;
+  font: 400 var(--t-body) / 1.5 var(--latin);
+  letter-spacing: 0.01em;
+  color: var(--mute);
+}
+
+.wk-hero-side {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+  max-width: 30em;
+}
+
+.wk-what {
+  font: 400 var(--t-lead) / 1.75 var(--sans);
+  color: var(--ink-2);
+}
+
+@media (min-width: 1024px) and (min-height: 600px) {
+  .js .wk-hero {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    height: 0;
+  }
+
+  .js .wk-hero-in {
+    position: absolute;
+    top: var(--header);
+    left: var(--gutter);
+    right: var(--gutter);
+    min-height: calc(37vh - var(--header));
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 48px;
+    padding: 0 0 clamp(20px, 3.4vh, 34px);
+    will-change: opacity, transform;
+  }
+
+  .js .wk-hero:not([data-at='hero']) .wk-hero-in {
+    pointer-events: none;
+  }
+
+  .js .wk-name {
+    font-size: clamp(56px, 6.2vw, 96px);
+  }
+
+  .js .wk-hero-side {
+    max-width: 380px;
+  }
+}
+
+/* 每屏的标题：在台面上方的纸上，对齐版心 */
+.wk-h {
+  position: absolute;
+  top: calc(var(--header) + clamp(20px, 3.2vh, 32px));
+  left: var(--gutter);
+  font: 400 clamp(28px, 3vw, 44px) / 1.3 var(--sans);
+  white-space: nowrap;
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s var(--ease),
+    transform 0.9s var(--ease);
+  pointer-events: none;
+}
+
+.wk-h[data-on] {
+  opacity: 1;
+  transform: none;
+}
+
+.wk-coda {
+  display: grid;
+}
+
+.wk-coda span:first-child {
+  color: var(--mute);
+}
+
+/* 镜头和窗 */
+.wk-cam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1200px;
+  height: 760px;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+
+.wk-flow[data-at='end'] .wk-cam {
+  pointer-events: none;
 }
 
 .wk-win {
   position: relative;
-  width: 100%;
-  aspect-ratio: 64 / 40;
+  display: flex;
+  flex-direction: column;
+  width: 1200px;
+  height: 760px;
   overflow: hidden;
-  border-radius: 1.05em;
+  border-radius: 18px;
   background: var(--a-desk);
   color: var(--a-ink);
-  box-shadow: var(--win-shadow);
-  transition:
-    background-color 0.6s var(--ease),
-    color 0.6s var(--ease);
-}
-.wk-scene[data-theme='dark'] .wk-win {
+  font: 400 14px / 1.5 var(--sans);
+  /* 浅色窗口落在照片亮处也要分得出：边线实一点，近处补一层影子 */
   box-shadow:
-    0 0 0 1px rgb(0 0 0 / 0.4),
-    0 1.6em 3.4em -2em rgb(0 0 0 / 0.55);
-}
-.wk-scene[data-theme='dark'] {
-  --a-desk: #1c1d20;
-  --a-paper: #242528;
-  --a-soft: #292a2d;
-  --a-rail: #2e2f32;
-  --a-ink: #f0efed;
-  --a-ink-2: #c0beba;
-  --a-mute: #a2a19e;
-  --a-faint: #807f7c;
-  --a-line: #36373b;
-  --a-line-2: #4c4d50;
-  --a-copper: #d6a18a;
-  --a-copper-soft: #382f2b;
-  --a-act: #ecebe8;
-  --a-on-act: #252628;
-  --a-green: #8db99d;
-  --a-green-soft: #1f2b24;
-  --a-amber: #d9b67b;
-  --a-amber-soft: #33291b;
-  --a-red: #ee858c;
-  --a-red-soft: #3a2024;
-  --a-cyan: #86c0c7;
-  --a-hover: rgb(240 239 237 / 0.08);
+    0 0 0 1px rgb(27 26 24 / 0.14),
+    0 2px 4px rgb(var(--shade) / 0.12),
+    0 12px 28px -12px rgb(var(--shade) / 0.3),
+    0 48px 90px -36px rgb(var(--shade) / 0.55);
 }
 
-/* 标签：一个插件一组，组带插件的色相；当前那张是白的，带一根小下划线和关闭 */
-.wk-top {
+.wk-wdim {
   position: absolute;
-  inset: 0 0 auto;
-  height: 2.35em;
-  display: flex;
-  align-items: center;
-  gap: 0.8em;
-  padding: 0 0.9em;
-  color: var(--a-faint);
+  inset: 0;
+  z-index: 5;
+  background: var(--a-desk);
+  opacity: 0;
+  pointer-events: none;
 }
-.wk-nav {
-  display: inline-flex;
-  gap: 0.7em;
-  font-size: 0.82em;
-}
-.wk-tabs {
-  display: flex;
-  align-items: center;
-  gap: 0.32em;
-  min-width: 0;
-}
-.wk-top-end {
-  display: inline-flex;
-  gap: 0.9em;
-  margin-left: auto;
-  font-size: 0.82em;
-}
-.wk-tab {
-  --hue: #5c6570;
-  --hue-soft: transparent;
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45em;
-  height: 2.05em;
-  max-width: 15em;
-  padding: 0 0.8em;
-  border-radius: 0.6em;
-  background: var(--hue-soft);
-  font-size: 0.7em;
-  white-space: nowrap;
-  color: var(--hue);
+
+/* 亮处：墨色细边、一圈冰蓝，底下垫一层影子把它托起来，四周雾白 */
+.wk-spot {
+  position: absolute;
+  z-index: 6;
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 1.5px rgb(41 42 44 / 0.6),
+    0 0 0 8px rgb(143 182 247 / 0.32),
+    0 28px 56px -24px rgb(27 26 24 / 0.34),
+    0 0 0 3000px rgb(232 233 233 / 0.8);
+  opacity: 0;
+  pointer-events: none;
   transition:
-    background-color 0.5s var(--ease),
-    color 0.5s var(--ease),
-    box-shadow 0.5s var(--ease),
-    opacity 0.45s var(--ease);
+    left 0.7s var(--ease),
+    top 0.7s var(--ease),
+    width 0.7s var(--ease),
+    height 0.7s var(--ease),
+    opacity 0.5s var(--ease);
 }
-.wk-tab[data-hue='gray'] {
-  --hue: var(--a-ink-2);
+
+.wk-spot[data-on] {
+  opacity: 1;
 }
-/* 插件的色相（标签组、插件方标、文档里挂着的目标签都用这一套） */
-.wk-scene [data-hue='blue'] {
-  --hue: #3c6fc6;
-  --hue-soft: #e8eef9;
+
+/* ---------- 窗里的零件（大屏的窗、窄屏单独摆出来的几块共用） ---------- */
+
+:is(.wk-win, .wk-part) .lucide {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.8;
+  flex: none;
 }
-.wk-scene [data-hue='cyan'] {
-  --hue: #3d6f78;
-  --hue-soft: #e7f2f3;
+
+/* 窗顶：标签页 */
+.wk-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 14px;
+  color: var(--a-mute);
 }
-.wk-scene [data-hue='indigo'] {
-  --hue: #5e6ad2;
-  --hue-soft: #eef0fb;
-}
-.wk-scene [data-hue='green'] {
-  --hue: #4b7a3f;
-  --hue-soft: #edf4e8;
-}
-.wk-scene [data-hue='mint'] {
-  --hue: #2f7d6d;
-  --hue-soft: #e4f3ef;
-}
-.wk-scene [data-hue='orange'] {
-  --hue: #b0602e;
-  --hue-soft: #fbeee5;
-}
-.wk-scene [data-hue='yellow'] {
-  --hue: #8a6a10;
-  --hue-soft: #f8f1db;
-}
-.wk-scene [data-hue='purple'] {
-  --hue: #7a5aa6;
-  --hue-soft: #f2edf8;
-}
-.wk-scene[data-theme='dark'] [data-hue='blue'] {
-  --hue: #8fb2f5;
-  --hue-soft: #1c2740;
-}
-.wk-scene[data-theme='dark'] [data-hue='cyan'] {
-  --hue: #86c0c7;
-  --hue-soft: #1b2e32;
-}
-.wk-scene[data-theme='dark'] [data-hue='indigo'] {
-  --hue: #8b93f1;
-  --hue-soft: #262848;
-}
-.wk-scene[data-theme='dark'] [data-hue='green'] {
-  --hue: #9cc58c;
-  --hue-soft: #1f2a1c;
-}
-.wk-scene[data-theme='dark'] [data-hue='mint'] {
-  --hue: #7cc6b5;
-  --hue-soft: #1a2d29;
-}
-.wk-scene[data-theme='dark'] [data-hue='orange'] {
-  --hue: #eda274;
-  --hue-soft: #3a281d;
-}
-.wk-scene[data-theme='dark'] [data-hue='yellow'] {
-  --hue: #d9bd6a;
-  --hue-soft: #322a16;
-}
-.wk-scene[data-theme='dark'] [data-hue='purple'] {
-  --hue: #b79ae0;
-  --hue-soft: #2c2438;
-}
-.wk-tab-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.wk-tab-x {
-  display: none;
-  font-size: 0.85em;
+
+.wk-nav {
+  display: flex;
+  gap: 10px;
+  margin-right: 10px;
   color: var(--a-faint);
 }
-/* 当前的标签：白底一圈细线，名字下面一根短线 */
-.wk-tab[data-tab-on],
-[data-run] .wk-tab[data-was-on]:not([data-off]) {
+
+.wk-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  transition:
+    background-color 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+
+.wk-tab[data-on] {
+  background: var(--a-rail);
+  color: var(--a-ink);
+}
+
+.wk-top-plus {
+  margin-left: 4px;
+  color: var(--a-faint);
+}
+
+.wk-body {
+  display: flex;
+  flex: 1;
+  gap: 10px;
+  min-height: 0;
+  padding: 0 10px;
+}
+
+.wk-card {
+  position: relative;
+  width: 874px;
+  flex: none;
+  overflow: hidden;
+  border-radius: 12px;
   background: var(--a-paper);
   box-shadow: 0 0 0 1px var(--a-line);
 }
-.wk-tab[data-tab-on] .wk-tab-x,
-[data-run] .wk-tab[data-was-on]:not([data-off]) .wk-tab-x {
-  display: block;
-}
-.wk-tab[data-tab-on]::after,
-[data-run] .wk-tab[data-was-on]:not([data-off])::after {
-  content: '';
+
+.wk-pane {
   position: absolute;
-  left: 50%;
-  bottom: 0.32em;
-  width: 1.4em;
-  height: 0.13em;
-  margin-left: -0.7em;
-  border-radius: 0.1em;
-  background: var(--hue);
-  opacity: 0.8;
-}
-.wk-tab[data-hue='gray'][data-tab-on] {
-  color: var(--a-ink);
+  inset: 0;
+  padding: 44px 64px 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease);
 }
 
-/* 白色工作面与右栏 */
-.wk-body {
-  position: absolute;
-  inset: 2.35em 0.55em 3.95em;
-  display: flex;
-  gap: 0.55em;
-}
-.wk-card,
-.wk-rail {
-  position: relative;
-  overflow: hidden;
-  border-radius: 0.8em;
-  background: var(--a-paper);
-  transition: background-color 0.6s var(--ease);
-}
-.wk-card {
-  flex: 1;
-  min-width: 0;
-}
-.wk-rail {
-  flex: none;
-  width: 17.5em;
+.wk-pane[data-on] {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-/* 底栏：插件组、助理输入框、右栏开关与头像 */
-.wk-bar {
-  position: absolute;
-  inset: auto 0.55em 0;
-  height: 3.95em;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 27em) minmax(0, 1fr);
-  align-items: center;
-  gap: 0.9em;
+.wk-win .wk-goal {
+  width: 600px;
 }
-.wk-dock {
-  justify-self: start;
+
+.wk-kicker {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.25em;
-  height: 2.75em;
-  padding: 0 0.45em 0 0.65em;
-  border-radius: 0.9em;
-  background: color-mix(in srgb, var(--a-ink) 3.5%, var(--a-desk));
-  box-shadow: inset 0 0 0 1px var(--a-line);
-  color: var(--a-ink-2);
+  gap: 8px;
+  font-size: 13px;
+  color: var(--a-mute);
 }
-.wk-dock-cur {
+
+.wk-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.4em;
-  padding-right: 0.3em;
-  font-size: 0.68em;
+  gap: 6px;
+  height: 24px;
+  margin-left: 6px;
+  padding: 0 10px 0 8px;
+  border-radius: 999px;
+  background: var(--a-soft);
+  box-shadow: 0 0 0 1px var(--a-line);
+  font-size: 12px;
   white-space: nowrap;
-}
-.wk-dock-up {
-  font-size: 0.75em;
-  color: var(--a-faint);
-}
-.wk-dock-sep {
-  width: 1px;
-  height: 1.2em;
-  margin: 0 0.25em;
-  background: var(--a-line-2);
-}
-.wk-dock-ic {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 2em;
-  height: 2em;
-  border-radius: 0.6em;
-  font-size: 0.92em;
   color: var(--a-ink-2);
-  transition:
-    width 0.6s var(--ease),
-    opacity 0.5s var(--ease),
-    background-color 0.4s var(--ease);
 }
-.wk-dock-ic svg {
-  font-size: 0.95em;
-}
-.wk-dock-ic[data-dock-on] {
-  background: var(--a-paper);
-  box-shadow: 0 0.06em 0.2em rgb(0 0 0 / 0.06);
+
+.wk-title {
+  margin: 12px 0 8px;
+  font: 500 26px / 1.3 var(--sans);
   color: var(--a-ink);
 }
-.wk-dock-ic[data-dock-on]::after {
-  content: '';
-  position: absolute;
-  bottom: 0.18em;
-  width: 0.2em;
-  height: 0.2em;
-  border-radius: 50%;
-  background: var(--a-ink-2);
-}
-.wk-dock-more {
-  padding: 0 0.4em;
-  font-size: 0.62em;
+
+.wk-sub {
+  font-size: 13px;
   color: var(--a-faint);
 }
-.wk-input {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  height: 2.75em;
-  padding: 0 0.45em 0 0.8em;
-  border-radius: 0.85em;
-  background: var(--a-paper);
-  box-shadow:
-    0 0 0 1px var(--a-line),
-    0 0.3em 0.9em -0.5em rgb(0 0 0 / 0.1);
-  transition: background-color 0.6s var(--ease);
+
+.wk-label {
+  margin: 26px 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--a-faint);
 }
-.wk-input-in {
-  position: relative;
+
+.wk-reqs {
+  margin-top: 26px;
+  border-radius: 10px;
+}
+
+.wk-reqs .wk-label {
+  margin: 0 0 6px;
+}
+
+.wk-row {
+  display: grid;
+  grid-template-columns: 16px 1fr auto 60px;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--a-line);
+}
+
+.wk-reqs .wk-row:last-child,
+.wk-row-plain {
+  border-bottom: 0;
+}
+
+/* 换一家 AI 读这一页：它读到的几行依次亮一下（a、b 两套一样的动画，换一次切一套，才能重放） */
+.wk-goal[data-read='a'] .wk-row {
+  animation: wk-read-a 1.1s var(--ease) both;
+}
+
+.wk-goal[data-read='b'] .wk-row {
+  animation: wk-read-b 1.1s var(--ease) both;
+}
+
+.wk-goal[data-read] .wk-row-plain {
+  animation-delay: 0.55s;
+}
+
+.wk-goal[data-read] .wk-reqs .wk-row:nth-of-type(1) {
+  animation-delay: 0.71s;
+}
+
+.wk-goal[data-read] .wk-reqs .wk-row:nth-of-type(2) {
+  animation-delay: 0.87s;
+}
+
+.wk-goal[data-read] .wk-reqs .wk-row:nth-of-type(3) {
+  animation-delay: 1.03s;
+}
+
+@keyframes wk-read-a {
+  30% {
+    background: rgb(143 182 247 / 0.16);
+  }
+}
+
+@keyframes wk-read-b {
+  30% {
+    background: rgb(143 182 247 / 0.16);
+  }
+}
+
+.wk-dot {
+  width: 6px;
+  height: 6px;
+  margin-left: 5px;
+  border-radius: 50%;
+  background: var(--a-faint);
+}
+
+.wk-row-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  font-size: 15px;
+  color: var(--a-ink);
+}
+
+.wk-row-name em {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgb(143 182 247 / 0.16);
+  box-shadow: inset 0 0 0 1px rgb(47 95 168 / 0.3);
+  font-style: normal;
+  font-size: 11.5px;
+  color: #2f5fa8;
+}
+
+.wk-row-state {
+  font-size: 13px;
+  color: var(--a-mute);
+  white-space: nowrap;
+  transition: color 0.4s var(--ease);
+}
+
+.wk-row-state[data-s='idle'] {
+  color: var(--a-faint);
+}
+
+.wk-row-state[data-s='done'] {
+  color: var(--a-green);
+}
+
+/* 状态圈 */
+.wk-ring {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wk-ring circle {
+  stroke: var(--a-line-2);
+}
+
+.wk-ring[data-s='idle'] circle {
+  stroke-dasharray: 2.2 2.4;
+}
+
+.wk-ring-arc {
+  stroke: var(--a-ink-2);
+}
+
+.wk-ring[data-s='attention'] circle {
+  stroke: var(--a-amber);
+  fill: var(--a-amber-soft);
+}
+
+.wk-ring[data-s='done'] circle {
+  stroke: var(--a-green);
+  fill: var(--a-green);
+}
+
+.wk-ring-tick {
+  stroke: var(--a-desk);
+  stroke-width: 1.9;
+}
+
+/* 头像：你是冰蓝，Claude Code 铜色，助理绿色 */
+.wk-by {
+  display: inline-flex;
+  justify-content: flex-end;
+}
+
+.wk-by i {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--a-paper);
+  font: 600 10px / 1 var(--sans);
+  font-style: normal;
+  background: var(--a-line-2);
+  color: var(--a-ink);
+}
+
+.wk-by i + i {
+  margin-left: -5px;
+}
+
+.wk-by i[data-w='me'] {
+  background: var(--you);
+  box-shadow:
+    0 0 0 1px var(--you-edge),
+    0 0 0 2px var(--a-paper);
+  color: var(--you-ink);
+}
+
+.wk-by i[data-w='cc'] {
+  background: var(--a-copper);
+  color: #fff;
+}
+
+.wk-by i[data-w='ai'] {
+  background: var(--a-green);
+  color: #fff;
+}
+
+/* 按钮（画面里的，不能点） */
+.wk-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: var(--a-rail);
+  box-shadow: inset 0 0 0 1px var(--a-line-2);
+  font: 500 13px / 1 var(--sans);
+  color: var(--a-ink);
+}
+
+.wk-btn[data-main] {
+  background: var(--a-ink);
+  box-shadow: none;
+  color: var(--a-desk);
+}
+
+/* 页面（评论） */
+.wk-doc .wk-title {
+  margin-bottom: 20px;
+}
+
+.wk-p {
+  max-width: 620px;
+  margin-bottom: 14px;
+  font: 400 15.5px / 1.9 var(--sans);
+  color: var(--a-ink-2);
+}
+
+.wk-p-mute {
+  color: var(--a-faint);
+}
+
+.wk-doc-f {
+  max-width: 620px;
+}
+
+.wk-p mark {
+  padding: 2px 0;
+  background: rgb(147 96 75 / 0.12);
+  box-shadow: 0 1px 0 rgb(147 96 75 / 0.45);
+  color: var(--a-ink);
+}
+
+.wk-thread {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--a-soft);
+  box-shadow: inset 0 0 0 1px var(--a-line);
+}
+
+.wk-thread p {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--a-ink-2);
+}
+
+.wk-thread .wk-by {
+  flex: none;
+  margin-top: -1px;
+}
+
+.wk-thread-go {
+  padding-left: 32px;
+}
+
+/* 右栏：记录 */
+.wk-rail {
   flex: 1;
   min-width: 0;
+  padding: 18px 16px;
+  border-radius: 12px;
+  background: var(--a-paper);
+  box-shadow: 0 0 0 1px var(--a-line);
+}
+
+.wk-rail-h {
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--a-mute);
+}
+
+.wk-rec {
+  display: grid;
+  grid-template-columns: 30px auto 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 6px;
+  border-top: 1px solid var(--a-line);
+  font-size: 13px;
+  animation: wk-rec-in 0.6s var(--ease) both;
+}
+
+.wk-rec-day {
+  color: var(--a-faint);
+  font-size: 12px;
+}
+
+.wk-rec-t {
+  color: var(--a-ink-2);
+}
+
+@keyframes wk-rec-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* 窗底 */
+.wk-bar {
   display: flex;
   align-items: center;
-  overflow: hidden;
-  font-size: 0.68em;
-  white-space: nowrap;
+  gap: 12px;
+  height: 56px;
+  padding: 0 16px;
+  color: var(--a-mute);
 }
-.wk-ph {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--a-faint);
-}
-.wk-input-plus {
-  font-size: 0.8em;
-  color: var(--a-faint);
-}
-.wk-send {
-  display: grid;
-  place-items: center;
-  width: 1.85em;
-  height: 1.85em;
-  border-radius: 0.55em;
+
+.wk-dock {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
   background: var(--a-rail);
-  font-size: 0.95em;
+  font-size: 13px;
   color: var(--a-ink-2);
 }
-.wk-send svg {
-  font-size: 0.85em;
-}
-.wk-bar-end {
-  justify-self: end;
+
+.wk-input {
   display: flex;
   align-items: center;
-  gap: 0.55em;
-}
-.wk-side {
-  display: grid;
-  place-items: center;
-  width: 2.35em;
-  height: 2.35em;
-  border-radius: 0.75em;
+  justify-content: space-between;
+  flex: 1;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: var(--a-soft);
   box-shadow: inset 0 0 0 1px var(--a-line);
-  color: var(--a-ink-2);
+  font-size: 13px;
+  color: var(--a-faint);
 }
+
 .wk-me {
   display: grid;
   place-items: center;
-  width: 3.2em;
-  height: 3.2em;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: #8f5b45;
-  font-size: 0.66em;
-  color: #fff;
-}
-
-/* 状态环与状态签（Molis Work 的 state-ring：进行中铜色半圈，轮到你琥珀，完成绿色带勾） */
-.wk-ring {
-  width: 1em;
-  height: 1em;
-  flex: none;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-}
-.wk-ring[data-tone='progress'] circle {
-  opacity: 0.32;
-}
-.wk-state {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  white-space: nowrap;
-  color: var(--a-mute);
-}
-.wk-state[data-tone='progress'] {
-  color: var(--a-copper);
-}
-.wk-state[data-tone='attention'] {
-  color: var(--a-amber);
-}
-.wk-state[data-tone='done'] {
-  color: var(--a-green);
-}
-.wk-state[data-tone='blocked'] {
-  color: var(--a-red);
-}
-.wk-shift > span {
-  align-items: center;
-  gap: 0.4em;
-}
-.wk-shift > span[data-now] {
-  display: inline-flex;
-}
-.wk-shift [data-was] {
-  display: none;
-}
-[data-run] .wk-shift:not([data-on]) [data-was] {
-  display: inline-flex;
-}
-[data-run] .wk-shift:not([data-on]) [data-now] {
-  display: none;
-}
-
-/* 等你的计数：输入框左边的一颗琥珀色小签 */
-.wk-wait {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  flex: none;
-  margin-right: 0.7em;
-  padding: 0.18em 0.6em;
-  border-radius: 0.45em;
-  background: var(--a-amber-soft);
-  color: var(--a-amber);
-}
-.wk-wait svg {
-  font-size: 0.92em;
-}
-.wk-wait-wrap {
-  display: inline-flex;
-}
-
-.wk-h {
-  font-size: 1.45em;
-  font-weight: 500;
-  line-height: 1.3;
-  letter-spacing: 0.01em;
+  background: var(--a-line-2);
+  font: 600 12px / 1 var(--latin);
   color: var(--a-ink);
 }
-.wk-sub {
-  margin-top: 0.4em !important;
-  font-size: 0.68em;
-  color: var(--a-mute);
+
+/* ---------- 窗外：终端、对话、标注、「你」 ---------- */
+
+.wk-term {
+  padding: 12px 16px 14px;
+  border-radius: 12px;
+  background: rgb(16 17 19 / 0.92);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.08),
+    0 24px 48px -20px rgb(0 0 0 / 0.6);
+  font: 400 13px / 1.75 var(--mono);
+  color: #d9d7d2;
 }
-.wk-btn,
-.wk-btn-line {
-  display: inline-flex;
+
+.wk-term-h {
+  display: flex;
   align-items: center;
-  gap: 0.4em;
-  height: 2.1em;
-  padding: 0 0.95em;
-  border-radius: 0.6em;
-  font-size: 0.66em;
-  font-weight: 500;
-  white-space: nowrap;
+  gap: 6px;
+  margin-bottom: 6px;
+  font: 500 12px / 1 var(--sans);
+  color: #9b9994;
 }
-.wk-btn {
-  background: var(--a-act);
-  color: var(--a-on-act);
+
+.wk-term-h i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3a3b3e;
 }
-.wk-btn-line {
-  background: var(--a-paper);
-  box-shadow: inset 0 0 0 1px var(--a-line-2);
-  color: var(--a-ink);
+
+.wk-term-h i:last-of-type {
+  margin-right: 6px;
 }
-.wk-dim {
-  color: var(--a-faint);
+
+.wk-term-l {
+  display: flex;
+  gap: 10px;
 }
-.wk-tagh {
-  display: inline-flex;
-  align-items: center;
-  margin-left: 0.6em;
-  padding: 0.05em 0.6em;
-  border-radius: 1em;
-  box-shadow: inset 0 0 0 1px var(--a-line-2);
-  font-size: 0.82em;
-  white-space: nowrap;
-  color: var(--a-mute);
-}
-.wk-made {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.02em 0.5em;
-  border-radius: 0.35em;
-  box-shadow: inset 0 0 0 1px var(--a-line-2);
-  font-size: 0.86em;
+
+.wk-term-l b {
+  width: 1ch;
+  flex: none;
   font-weight: 400;
-  white-space: nowrap;
-  color: var(--a-ink-2);
+  color: #807f7c;
 }
-.wk-file {
-  display: inline-block;
-  flex: none;
-  width: 0.85em;
-  height: 1.05em;
-  border-radius: 0.15em;
-  background: #e7eaf2;
-  box-shadow: inset 0 0 0 1px rgb(100 125 181 / 0.35);
+
+.wk-term-l[data-ok] b {
+  color: #8db99d;
 }
-.wk-file[data-kind='img'] {
-  background: #efe6ef;
-  box-shadow: inset 0 0 0 1px rgb(146 112 177 / 0.35);
+
+/* 三屏：终端上方三家 AI 来回换 */
+.wk-pick .wk-term-h {
+  flex-wrap: wrap;
+  margin-bottom: 18px;
 }
-.wk-file[data-kind='sheet'] {
-  background: #e8f4ee;
-  box-shadow: inset 0 0 0 1px rgb(45 122 90 / 0.35);
+
+.wk-pick-tabs {
+  display: inline-flex;
+  gap: 4px;
 }
-.wk-scene[data-theme='dark'] .wk-file {
-  background: #2a3346;
-  box-shadow: inset 0 0 0 1px rgb(143 170 230 / 0.4);
-}
-.wk-scene[data-theme='dark'] .wk-file[data-kind='img'] {
-  background: #3a2c3c;
-  box-shadow: inset 0 0 0 1px rgb(200 160 220 / 0.4);
-}
-.wk-scene[data-theme='dark'] .wk-file[data-kind='sheet'] {
-  background: #213229;
-  box-shadow: inset 0 0 0 1px rgb(130 200 160 / 0.4);
-}
-.wk-check-box {
-  display: inline-grid;
-  place-items: center;
-  flex: none;
-  width: 1.15em;
-  height: 1.15em;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1.4px var(--a-line-2);
-  color: transparent;
+
+.wk-pick-tab {
+  position: relative;
+  height: 24px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: 500 12px / 1 var(--sans);
+  color: #a3a19c;
+  cursor: pointer;
   transition:
-    background-color 0.4s var(--ease),
-    box-shadow 0.4s var(--ease),
+    background 0.3s var(--ease),
     color 0.3s var(--ease);
 }
-.wk-check-box svg {
-  font-size: 0.72em;
-  stroke-width: 2.6;
+
+.wk-pick-tab:hover {
+  color: #d9d7d2;
 }
 
-/* ---------- 两种光标 ---------- */
-/* AI 在写：插入光标跟在那行字后面，灰名牌挂在上方；写完收起 */
-.wk-ai {
-  position: relative;
-  display: inline-block;
-  width: 0.11em;
-  height: 1.1em;
-  margin-left: 0.18em;
-  vertical-align: -0.18em;
-  border-radius: 0.05em;
-  background: var(--ai);
-  opacity: 0;
-  transition: opacity 0.3s var(--ease);
-  animation: wk-blink 1s steps(1) infinite;
-  pointer-events: none;
-}
-.wk-ai::after {
-  content: attr(data-n);
-  position: absolute;
-  right: -0.1em;
-  bottom: 100%;
-  margin-bottom: 0.2em;
-  padding: 0.25em 0.5em;
-  border-radius: 0.3em 0.3em 0 0.3em;
-  background: var(--ai);
-  font-size: 0.66em;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  color: #fff;
-}
-[data-run] .wk-ai[data-on]:not([data-off]) {
-  opacity: 1;
-}
-@keyframes wk-blink {
-  50% {
-    background-color: rgb(111 107 99 / 0.28);
-  }
-}
-/* AI 写出来的字：从左往右显出来 */
-.wk-w {
-  display: inline-block;
-  clip-path: inset(0 0 0 0);
-  transition: clip-path 1.05s steps(18, end);
-}
-[data-run] .wk-w:not([data-on]) {
-  clip-path: inset(0 100% 0 0);
-  transition: none;
+.wk-pick-tab[aria-pressed='true'] {
+  background: rgb(255 255 255 / 0.1);
+  color: #f0efed;
 }
 
-/* 你：一枚冰蓝的名牌，左上角削尖就是指针的尖；由编排移动（transform）和按下（.wk-hand-in 缩一下）。
-   选字时名牌退到右下，尖上换成一根冰蓝的 I 形 */
-.wk-hand {
+.wk-pick-tab:focus-visible {
+  outline: 2px solid var(--you);
+  outline-offset: 1px;
+}
+
+/* 「你」：冰蓝名牌，左上角削尖就是指针的尖，停在下一家 AI 上 */
+.wk-pick-hand {
   position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 40;
-  width: 1em;
-  height: 1.33em;
-  font-size: max(15px, calc(100cqi / 64 * 1.3));
-  opacity: 0;
+  top: 78%;
+  left: 64%;
+  z-index: 2;
+  display: block;
   pointer-events: none;
-  transition: opacity 0.3s var(--ease);
-}
-.wk-hand[data-on] {
-  opacity: 1;
-}
-.wk-hand-in {
-  position: absolute;
-  inset: 0;
-  transform-origin: 0 0;
-}
-.wk-hand-name {
-  position: absolute;
-  top: 0;
-  left: 0;
   padding: 0.36em 0.62em 0.38em 0.6em;
   border-radius: 0.08em 0.7em 0.7em 0.7em;
   background: var(--you);
   box-shadow:
     0 0 0 1px var(--you-edge),
     0 0.25em 0.6em -0.15em rgb(0 0 0 / 0.4);
-  font-size: 0.66em;
-  font-weight: 600;
-  line-height: 1;
+  font: 600 15px / 1 var(--sans);
   letter-spacing: 0.04em;
-  white-space: nowrap;
   color: var(--you-ink);
-  transition: transform 0.18s var(--ease);
-}
-.wk-hand-in::before {
-  content: '';
-  position: absolute;
-  top: -0.62em;
-  left: -0.06em;
-  width: 0.12em;
-  height: 1.24em;
-  border-radius: 0.06em;
-  background: var(--you);
-  box-shadow: 0 0 0 1px var(--you-edge);
-  opacity: 0;
-  transition: opacity 0.12s linear;
-}
-.wk-hand[data-shape='beam'] .wk-hand-name {
-  transform: translate(0.35em, 0.95em);
-}
-.wk-hand[data-shape='beam'] .wk-hand-in::before {
-  opacity: 1;
+  animation: wk-bob 1.6s ease-in-out infinite;
 }
 
-/* 要你定的那一下：访客的鼠标变成「你」，画面里的「你」先隐去，能按的那几样亮一圈 */
-[data-ask],
-[data-ask] *,
-.wk-ask-opt,
-.wk-ask-opt * {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='26'%3E%3Cpath d='M2 2h22a7 7 0 0 1 7 7v7a7 7 0 0 1-7 7H9a7 7 0 0 1-7-7z' fill='%238fb6f7' stroke='%230e1d36' stroke-opacity='.45'/%3E%3Ctext x='16.5' y='17.5' font-size='12' font-weight='600' fill='%230e1d36' text-anchor='middle' font-family='PingFang SC,sans-serif'%3E你%3C/text%3E%3C/svg%3E")
-      2 2,
-    pointer;
+@keyframes wk-bob {
+  50% {
+    translate: 3px 4px;
+  }
 }
-[data-ask] .wk-hand {
-  opacity: 0 !important;
+
+/* 对照：新开的对话 */
+.wk-chat-card {
+  padding: 16px 18px 20px;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 0.96);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 30px 60px -30px rgb(var(--shade) / 0.5);
+  font-size: 14px;
+  color: var(--ink);
 }
-.wk-opt,
-.wk-okbtn {
+
+.wk-chat-h {
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: var(--mute);
+}
+
+.wk-chat-me {
+  width: fit-content;
+  max-width: 82%;
+  margin: 0 0 12px auto;
+  padding: 9px 14px;
+  border-radius: 14px 14px 4px 14px;
+  background: var(--paper-2);
+  line-height: 1.6;
+}
+
+.wk-chat-ai {
+  display: flex;
+  gap: 10px;
+  line-height: 1.7;
+}
+
+.wk-chat-ai i {
+  flex: none;
+  font-style: normal;
+  color: var(--mute);
+}
+
+.wk-chat-note {
+  width: fit-content;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--paper);
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 16px 32px -18px rgb(var(--shade) / 0.5);
+  font-size: 17px;
+  color: var(--ink);
+}
+
+/* ---------- 大屏里窗外几样的位置与进出 ---------- */
+
+.wk-flow .wk-term {
+  position: absolute;
+  bottom: calc(var(--pi, 20px) + clamp(48px, 7vh, 68px));
+  width: min(440px, 34vw);
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.5s var(--ease),
+    transform 0.7s var(--ease);
   pointer-events: none;
 }
-[data-ask] .wk-opt,
-[data-ask] .wk-okbtn {
+
+.wk-flow .wk-term:is([data-id='u1'], [data-id='c1']) {
+  right: var(--gutter);
+}
+
+.wk-flow .wk-term[data-id='u2'] {
+  left: var(--gutter);
+}
+
+.wk-flow .wk-term.wk-pick {
+  width: min(470px, 36vw);
+}
+
+.wk-flow .wk-term[data-on] {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.2s;
+}
+
+.wk-flow .wk-pick[data-on] {
   pointer-events: auto;
 }
 
-/* ---------- 编排的接线（app/_site/cue.ts） ----------
-   data-step：演到那一拍才出现，演完留着；data-mid：只在中途；data-gone：开头在、演完不在。
-   没有 data-run（没有 JS、减少动态、演完交回）就是做完的样子。 */
-.wk-scene [data-step],
-.wk-scene [data-mid],
-.wk-scene [data-gone] {
-  transition:
-    opacity 0.45s var(--ease),
-    transform 0.6s var(--ease),
-    visibility 0s linear 0.45s;
-}
-.wk-scene [data-mid],
-.wk-scene [data-gone] {
-  opacity: 0;
-  visibility: hidden;
-}
-[data-run] .wk-scene [data-gone]:not([data-off]),
-[data-run] .wk-scene [data-mid][data-on]:not([data-off]) {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  transition:
-    opacity 0.55s var(--ease) 0.05s,
-    transform 0.75s var(--ease),
-    visibility 0s;
-}
-[data-run] .wk-scene [data-step]:not([data-on]) {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(0.45em);
-}
-[data-run] .wk-scene [data-step][data-on] {
-  transition:
-    opacity 0.55s var(--ease) 0.05s,
-    transform 0.75s var(--ease),
-    visibility 0s;
-}
-[data-run] .wk-scene [data-mid]:not([data-on]) {
-  transform: translateY(0.45em);
-}
-/* 标签与底栏的图标：不在时不占地方 */
-.wk-scene .wk-tab[data-gone],
-.wk-scene .wk-tab[data-mid],
-[data-run] .wk-scene .wk-tab[data-step]:not([data-on]),
-[data-run] .wk-scene .wk-tab[data-gone][data-off],
-[data-run] .wk-scene .wk-tab[data-mid][data-off] {
-  display: none;
-}
-[data-run] .wk-scene .wk-tab[data-gone]:not([data-off]),
-[data-run] .wk-scene .wk-tab[data-mid][data-on]:not([data-off]) {
-  display: inline-flex;
-}
-[data-run] .wk-scene .wk-dock-ic[data-step]:not([data-on]) {
-  width: 0;
-  transform: scale(0.4);
-}
-/* 列表里收起的那一行、那张卡：不留空位 */
-.wk-scene .wk-ask[data-gone],
-.wk-scene .wk-goal-wait[data-gone],
-[data-run] .wk-scene .wk-ask[data-off],
-[data-run] .wk-scene .wk-goal-wait[data-off] {
-  display: none;
-}
-[data-run] .wk-scene .wk-ask[data-gone]:not([data-off]) {
-  display: grid;
-}
-[data-run] .wk-scene .wk-goal-wait[data-gone]:not([data-off]) {
-  display: flex;
-}
-/* 一遍演完：画面淡下去，趁看不见摆回空白（snap），再亮起来 */
-[data-snap] *,
-[data-snap] *::before,
-[data-snap] *::after {
-  transition: none !important;
-}
-[data-veil] :is(.wk-card > *, .wk-rail > *, .wk-input-in, .wk-tabs, .wk-cam > .wk-pop, .wk-cam > .wk-term) {
-  transition: opacity 0.45s var(--ease) !important;
-}
-[data-veil=''] :is(.wk-card > *, .wk-rail > *, .wk-input-in, .wk-tabs, .wk-cam > .wk-pop, .wk-cam > .wk-term) {
-  opacity: 0 !important;
+.wk-flow .wk-term[data-on] .wk-term-l {
+  animation: wk-type 0.4s var(--ease) both;
+  animation-delay: calc(0.35s + var(--i, 0) * 0.16s);
 }
 
-/* 浮层：白底，一圈细线，带一层很淡的暖影 */
-.wk-pop {
-  position: absolute;
-  z-index: 12;
-  border-radius: 1em;
-  background: var(--a-paper, #fff);
-  box-shadow:
-    0 0 0 1px var(--a-line, #e9e9e7),
-    0 1.4em 3em -1.6em rgb(var(--shade) / 0.45);
-  color: var(--a-ink, #292a2c);
-}
-.wk-pop-h {
-  font-size: 0.82em;
-  font-weight: 500;
-}
-/* 终端：你自己的终端窗口（不属于 Molis Work）。比深色的 Molis Work 再深一档，一圈浅色细边和一道重影，看得出是压在上面的另一扇窗 */
-.wk-term {
-  position: absolute;
-  z-index: 14;
-  overflow: hidden;
-  border-radius: 0.8em;
-  background: #0f0f11;
-  box-shadow:
-    0 0 0 1px rgb(255 255 255 / 0.16),
-    0 0 0 2px rgb(0 0 0 / 0.5),
-    0 1.8em 3.4em -1.2em rgb(0 0 0 / 0.7);
-  font-family: ui-monospace, 'SF Mono', Menlo, var(--sans);
-  color: #e9e9ec;
-}
-.wk-term-h {
-  display: flex;
-  align-items: center;
-  gap: 0.35em;
-  height: 2.1em;
-  padding: 0 0.8em;
-  border-bottom: 1px solid #26262b;
-  background: #18181b;
-  font-family: var(--sans);
-  font-size: 0.62em;
-  color: #9a9aa3;
-}
-.wk-term-h i {
-  width: 0.75em;
-  height: 0.75em;
-  border-radius: 50%;
-  background: #3a3a40;
-}
-.wk-term-h i:last-of-type {
-  margin-right: 0.5em;
-}
-.wk-term-l {
-  padding: 0.55em 1.2em 0;
-  font-size: 0.66em;
-  line-height: 1.6;
-}
-.wk-term-l:last-of-type {
-  padding-bottom: 0.9em;
-}
-.wk-term .wk-dim {
-  color: #8a8a94;
-}
-.wk-term .wk-warn {
-  color: #e8b765;
-}
-.wk-term .wk-ok {
-  color: #8fc6a2;
-}
-.wk-term .wk-ai {
-  background: #c9c9cf;
-}
-.wk-term .wk-ai::after {
-  background: #4a4a52;
-}
-
-/* =====================================================================
-   首屏：周一早上的项目首页
-   ===================================================================== */
-.wk-home {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  align-content: start;
-  gap: 0.85em;
-  width: 44em;
-  max-width: calc(100% - 3em);
-  margin: 0 auto;
-  padding: 1.9em 0 0;
-}
-.wk-days {
-  display: flex;
-  gap: 0.35em;
-}
-.wk-days span {
-  display: grid;
-  justify-items: center;
-  width: 2.7em;
-  padding: 0.3em 0 0.35em;
-  border-radius: 0.55em;
-  color: var(--a-ink-2);
-}
-.wk-days small {
-  font-size: 0.56em;
-  color: var(--a-mute);
-}
-.wk-days b {
-  font-size: 1.02em;
-  font-weight: 500;
-  line-height: 1.25;
-}
-.wk-days span[data-today] {
-  background: var(--a-act);
-  color: var(--a-on-act);
-}
-.wk-days span[data-today] small {
-  color: var(--a-on-act);
-  opacity: 0.75;
-}
-.wk-goalcard {
-  display: grid;
-  gap: 0.35em;
-  padding: 1em 1.3em 1.05em;
-  border-radius: 0.95em;
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--a-copper) 9%, var(--a-paper)),
-    color-mix(in srgb, var(--a-copper) 3%, var(--a-paper)) 70%
-  );
-}
-.wk-goalcard-k {
-  display: flex;
-  align-items: center;
-  gap: 0.4em;
-  font-size: 0.62em;
-  color: var(--a-mute);
-}
-.wk-goalcard-k .wk-state {
-  margin-left: auto;
-}
-.wk-goalcard-t {
-  font-size: 1.12em;
-  font-weight: 500;
-}
-.wk-goalcard-d {
-  font-size: 0.66em;
-  color: var(--a-ink-2);
-}
-.wk-goalcard-f {
-  display: flex;
-  align-items: center;
-  gap: 1.2em;
-  margin-top: 0.4em !important;
-}
-.wk-goalcard-n {
-  font-size: 0.62em;
-  color: var(--a-mute);
-}
-.wk-events-h {
-  font-size: 0.7em;
-  font-weight: 500;
-}
-.wk-events-h span {
-  margin-left: 0.4em;
-  font-weight: 400;
-  color: var(--a-mute);
-}
-.wk-ev {
-  display: grid;
-  grid-template-columns: 3em 2em minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.75em;
-  padding: 0.6em 0;
-  border-top: 1px solid var(--a-line);
-}
-.wk-ev-time {
-  font-size: 0.62em;
-  color: var(--a-mute);
-  font-variant-numeric: tabular-nums;
-}
-.wk-ev-ic {
-  display: grid;
-  place-items: center;
-  width: 1.75em;
-  height: 1.75em;
-  border-radius: 0.5em;
-  background: var(--a-rail);
-  color: var(--a-ink-2);
-}
-.wk-ev-ic svg {
-  font-size: 0.85em;
-}
-.wk-ev-main {
-  display: grid;
-  gap: 0.1em;
-  min-width: 0;
-}
-.wk-ev-title {
-  font-size: 0.74em;
-  white-space: nowrap;
-}
-.wk-ev-meta {
-  font-size: 0.58em;
-  color: var(--a-mute);
-}
-.wk-ev-tag {
-  font-size: 0.62em;
-}
-.wk-ev-tag > span {
-  display: inline-flex;
-  padding: 0.2em 0.5em;
-  margin: -0.2em -0.5em;
-  border-radius: 0.5em;
-  transition: background-color 0.4s var(--ease);
-}
-[data-cue~='hover'] [data-c='h-2-tag'] {
-  background: var(--a-amber-soft);
-}
-.wk-hero-scene .wk-home {
-  font-size: 1.1em;
-  gap: 0.75em;
-  padding-top: 1.3em;
-}
-.wk-hero-scene .wk-input-in {
-  font-size: 0.66em;
-}
-
-/* =====================================================================
-   全景
-   ===================================================================== */
-/* 一屏：从顶栏下沿到视口底。上面一行：左边标题，右边六段（纯文字，选中的是墨色）和这一段的说明；
-   下面一块浅灰台面，窗口放在台面中央，标注、配色和暂停在窗下沿。窗宽和首屏一样按台面剩下的高度算 */
-.wk-tour-sec {
-  display: grid;
-  height: max(640px, 100svh);
-  padding-block: calc(var(--header) + clamp(20px, 3.2vh, 32px)) var(--inset);
-}
-.wk-tour-sec > .m-wrap {
-  min-height: 0;
-}
-.wk-tour {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: auto minmax(0, 1fr);
-  grid-template-areas: 'head side' 'plate plate';
-  align-items: end;
-  gap: clamp(16px, 2.6vh, 28px) 32px;
-  height: 100%;
-}
-.js .wk-open[data-push] .wk-open-tour > .m-wrap {
-  height: 100%;
-  padding-block: clamp(20px, 3.2vh, 32px) var(--inset);
-}
-.wk-tour > .wk-head {
-  grid-area: head;
-  margin: 0;
-}
-.wk-tour-side {
-  grid-area: side;
-  display: grid;
-  gap: 8px;
-  width: min(30em, 40vw);
-}
-.wk-tour-plate {
-  grid-area: plate;
-  align-self: stretch;
-  container-type: size;
-}
-.wk-tour-set {
-  display: grid;
-  gap: 14px;
-  width: min(88cqw, calc((100cqh - 96px) * 1.6));
-  container-type: inline-size;
-}
-/* 画框就是窗口的边：圆角、细线和影子都在画框上，和首屏那扇同一种。镜头推近时窗口在框里放大，框外的裁掉 */
-.wk-tour-frame {
-  overflow: hidden;
-  border-radius: 1.05em;
-  font-size: calc(100cqi / 64);
-  box-shadow: var(--win-shadow);
-  isolation: isolate;
-}
-.wk-tour-scene {
-  padding-top: 0;
-}
-.wk-tour-scene .wk-win {
-  border-radius: 0;
-  box-shadow: none;
-}
-/* 镜头：整扇窗和浮在上面的几样一起推近（stages.tsx 算 translate 与 scale）；光标在镜头外面，不跟着放大 */
-.wk-cam {
-  position: relative;
-  transform-origin: 0 0;
-  transition: transform 1.1s cubic-bezier(0.62, 0, 0.24, 1);
-}
-.wk-cam > .wk-pop,
-.wk-cam > .wk-term {
-  z-index: 16;
-}
-
-/* 发布说明：一页正在写的文档，挂在目标下面，引用了资料，有一张改动表和助理整理的已知问题 */
-.wk-doc {
-  position: absolute;
-  inset: 0;
-  padding: 2em 3.4em;
-}
-.wk-doc-k {
-  display: flex;
-  justify-content: space-between;
-  gap: 1em;
-  margin-bottom: 0.45em !important;
-  font-size: 0.62em;
-  color: var(--a-mute);
-}
-.wk-doc-k span {
-  color: var(--a-faint);
-}
-.wk-doc-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45em;
-  margin-top: 0.75em !important;
-}
-.wk-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
-  padding: 0.3em 0.7em;
-  border-radius: 0.5em;
-  background: var(--a-rail);
-  font-size: 0.6em;
-  white-space: nowrap;
-  color: var(--a-ink-2);
-}
-.wk-chip[data-hue] {
-  background: var(--hue-soft);
-  color: var(--hue);
-}
-.wk-doc-p {
-  margin-top: 1.05em !important;
-  font-size: 0.76em;
-  line-height: 1.85;
-  color: var(--a-ink);
-}
-.wk-doc-h2 {
-  display: flex;
-  align-items: baseline;
-  gap: 0.9em;
-  margin-top: 1.45em !important;
-  font-size: 0.84em;
-  font-weight: 500;
-}
-.wk-doc-by {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  font-size: 0.72em;
-  font-weight: 400;
-  color: var(--a-mute);
-}
-.wk-tb {
-  margin-top: 0.65em;
-  overflow: hidden;
-  border-radius: 0.7em;
-  box-shadow: inset 0 0 0 1px var(--a-line);
-  font-size: 0.66em;
-}
-.wk-tb-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 7em 9.5em;
-  align-items: center;
-  gap: 1em;
-  padding: 0.62em 1.1em;
-  border-top: 1px solid var(--a-line);
-  white-space: nowrap;
-}
-.wk-tb-head {
-  padding-block: 0.5em;
-  border-top: 0;
-  background: var(--a-soft);
-  font-size: 0.92em;
-  color: var(--a-mute);
-}
-.wk-tb-from {
-  color: var(--a-mute);
-}
-.wk-swap {
-  display: inline-grid;
-}
-.wk-swap > * {
-  grid-area: 1 / 1;
-}
-.wk-by {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45em;
-  white-space: nowrap;
-  color: var(--a-ink);
-}
-.wk-by i {
-  display: grid;
-  place-items: center;
-  width: 1.5em;
-  height: 1.5em;
-  border-radius: 30%;
-  background: linear-gradient(150deg, #8f7dc4, #5d4d90);
-  font-size: 0.78em;
-  font-style: normal;
-  color: #fff;
-}
-.wk-doc-ul {
-  display: grid;
-  gap: 0.3em;
-  margin: 0.55em 0 0;
-  padding: 0;
-  list-style: none;
-  font-size: 0.74em;
-  line-height: 1.75;
-  color: var(--a-ink-2);
-}
-.wk-doc-ul li {
-  position: relative;
-  display: flex;
-  gap: 0.7em;
-}
-.wk-doc-ul li::before {
-  content: '';
-  flex: none;
-  width: 0.32em;
-  height: 0.32em;
-  margin-top: 0.75em;
-  border-radius: 50%;
-  background: var(--a-faint);
-}
-.wk-hl {
-  border-radius: 0.15em;
-  background: linear-gradient(var(--sel), var(--sel)) no-repeat 0 0 / 0% 100%;
-}
-.wk-hl[data-sel],
-.wk-tour-frame[data-focus='ask']:not([data-run]) .wk-hl {
-  background-size: 100% 100%;
-}
-/* 选中后递过来的浮条 */
-.wk-ctx {
-  position: absolute;
-  left: 0.6em;
-  top: calc(100% + 0.35em);
-  z-index: 11;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.15em;
-  padding: 0.25em;
-  border-radius: 0.75em;
-  background: var(--a-paper);
-  box-shadow:
-    0 0 0 1px var(--a-line),
-    0 0.9em 1.8em -1em rgb(var(--shade) / 0.5);
-  font-size: 0.9em;
-  white-space: nowrap;
-}
-.wk-ctx > span {
-  padding: 0.3em 0.65em;
-  border-radius: 0.5em;
-  color: var(--a-ink-2);
-}
-.wk-ctx .wk-ctx-chip {
-  background: var(--a-rail);
-  color: var(--a-mute);
-}
-.wk-ctx [data-c='t-give'] {
-  color: var(--a-ink);
-}
-.wk-ctx-more {
-  color: var(--a-faint) !important;
-}
-
-/* 右栏 Shelf：材料、网页、生成结果，右边一行小字是来源或数量 */
-.wk-rail-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2em;
-  padding: 0.7em 0.7em 0.5em;
-  font-size: 0.58em;
-  color: var(--a-ink-2);
-}
-.wk-rail-tabs span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  padding: 0.35em 0.6em;
-  border-radius: 0.5em;
-}
-.wk-rail-tabs span[data-rail-on] {
-  background: var(--a-rail);
-  color: var(--a-ink);
-}
-.wk-rail-h {
-  display: flex;
-  align-items: center;
-  gap: 0.45em;
-  padding: 0.85em 1.1em 0.3em;
-  font-size: 0.6em;
-  color: var(--a-ink-2);
-}
-.wk-rail-h span {
-  margin-left: auto;
-  color: var(--a-faint);
-}
-.wk-rail-it {
-  display: flex;
-  align-items: center;
-  gap: 0.55em;
-  margin: 0 0.5em !important;
-  padding: 0.42em 0.7em 0.42em 1.6em;
-  border-radius: 0.5em;
-  font-size: 0.58em;
-  white-space: nowrap;
-  overflow: hidden;
-  color: var(--a-ink);
-}
-.wk-rail-it svg {
-  color: var(--a-mute);
-}
-.wk-rail-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.wk-rail-meta {
-  margin-left: auto;
-  padding-left: 0.6em;
-  color: var(--a-faint);
-}
-
-/* 右栏的两页：Shelf 和讨论叠在同一格，讨论盖在上面（白底），点「讨论」才出来 */
-.wk-tour-scene .wk-rail {
-  display: flex;
-  flex-direction: column;
-}
-.wk-rail-panes {
-  display: grid;
-  flex: 1;
-  min-height: 0;
-}
-.wk-rail-panes > * {
-  grid-area: 1 / 1;
-  min-height: 0;
-}
-:is([data-cue~='talk'], .wk-tour-frame[data-focus='talk']:not([data-run])) .wk-rail-tabs span[data-rail-on] {
-  background: none;
-  color: var(--a-ink-2);
-}
-:is([data-cue~='talk'], .wk-tour-frame[data-focus='talk']:not([data-run])) [data-c='t-talk-tab'] {
-  background: var(--a-rail);
-  color: var(--a-ink);
-}
-.wk-tour-frame[data-focus='talk']:not([data-run]) [data-c='t-talk'] {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* 讨论：这个项目的群，人和 AI 都在里面说话 */
-.wk-talk {
-  display: flex;
-  flex-direction: column;
-  background: var(--a-paper);
-}
-.wk-talk-head {
-  padding: 0.5em 1.1em 0.7em;
-  border-bottom: 1px solid var(--a-line);
-}
-.wk-talk-t {
-  font-size: 0.72em;
-  font-weight: 500;
-}
-.wk-talk-sub {
-  margin-top: 0.15em !important;
-  font-size: 0.52em;
-  color: var(--a-mute);
-}
-.wk-talk-ch {
-  display: flex;
-  gap: 0.35em;
-  margin-top: 0.6em !important;
-}
-.wk-talk-ch span {
-  padding: 0.28em 0.65em;
-  border-radius: 0.5em;
-  background: var(--a-rail);
-  font-size: 0.52em;
-  white-space: nowrap;
-  color: var(--a-ink-2);
-}
-.wk-talk-ch span[data-ch-on] {
-  background: var(--a-act);
-  color: var(--a-on-act);
-}
-.wk-talk-msgs {
-  display: grid;
-  flex: 1;
-  align-content: start;
-  gap: 0.75em;
-  min-height: 0;
-  padding: 0.85em 1em;
-  overflow: hidden;
-}
-.wk-msg {
-  display: grid;
-  grid-template-columns: 1.55em minmax(0, 1fr);
-  gap: 0.55em;
-  align-items: start;
-}
-.wk-av {
-  display: grid;
-  place-items: center;
-  width: 1.55em;
-  height: 1.55em;
-  border-radius: 50%;
-  color: #fff;
-}
-.wk-av b {
-  font-size: 0.55em;
-  font-weight: 500;
-}
-.wk-av svg {
-  width: 0.8em;
-  height: 0.8em;
-}
-.wk-av[data-who='zhou'] {
-  background: linear-gradient(150deg, #8495b6, #5f6f92);
-}
-.wk-av[data-who='ning'] {
-  background: linear-gradient(150deg, #c99aa6, #a26f7e);
-}
-.wk-av[data-who='assist'] {
-  border-radius: 30%;
-  background: linear-gradient(150deg, #b98a70, #8a543d);
-}
-.wk-av[data-who='codex'] {
-  border-radius: 30%;
-  background: linear-gradient(150deg, #48474a, #1d1d1f);
-}
-.wk-av[data-who='me'] {
-  background: var(--you);
-  color: var(--you-ink);
-}
-.wk-scene[data-theme='dark'] .wk-av[data-who='codex'] {
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18);
-}
-.wk-msg-b {
-  display: grid;
-  gap: 0.1em;
-  min-width: 0;
-}
-.wk-msg-n {
-  font-size: 0.56em;
-  font-weight: 500;
-  color: var(--a-ink);
-}
-.wk-msg-n small {
-  margin-left: 0.6em;
-  font-size: 0.9em;
-  font-weight: 400;
-  color: var(--a-faint);
-}
-.wk-msg-t {
-  font-size: 0.58em;
-  line-height: 1.6;
-  color: var(--a-ink);
-}
-.wk-msg-t b {
-  font-weight: 500;
-  color: var(--a-cyan);
-}
-.wk-talk-ref {
-  display: flex;
-  align-items: center;
-  gap: 0.4em;
-  width: fit-content;
-  margin-top: 0.45em;
-  padding: 0.3em 0.65em;
-  border-radius: 0.5em;
-  background: var(--a-rail);
-  font-size: 0.9em;
-  color: var(--a-ink-2);
-}
-.wk-talk-in {
-  margin: 0.7em !important;
-  padding: 0.6em 0.85em;
-  border-radius: 0.7em;
-  box-shadow: inset 0 0 0 1px var(--a-line);
-  font-size: 0.56em;
-  color: var(--a-faint);
-}
-
-/* 插件：底栏胶囊往上展开，每个插件一块带色相的小方标 */
-.wk-plugins {
-  left: 0.8em;
-  bottom: 4.4em;
-  width: 25em;
-  padding: 1em 0.9em 0.85em;
-}
-.wk-pop-h {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 0 0.45em;
-  font-size: 0.78em;
-  font-weight: 500;
-}
-.wk-pop-h span {
-  font-size: 0.8em;
-  font-weight: 400;
-  color: var(--a-faint);
-}
-.wk-pl-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.15em 0.4em;
-  margin-top: 0.65em;
-  padding-bottom: 0.5em;
-  border-bottom: 1px solid var(--a-line);
-}
-.wk-pl {
-  display: flex;
-  align-items: center;
-  gap: 0.6em;
-  min-width: 0;
-  padding: 0.4em 0.45em;
-  border-radius: 0.6em;
-  transition: background-color 0.4s var(--ease);
-}
-.wk-pl[data-lit] {
-  background: var(--a-rail);
-}
-.wk-pl-ic {
-  --hue: var(--a-ink-2);
-  --hue-soft: var(--a-rail);
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 1.75em;
-  height: 1.75em;
-  border-radius: 0.5em;
-  background: var(--hue-soft);
-  color: var(--hue);
-}
-.wk-pl-ic svg {
-  width: 0.92em;
-  height: 0.92em;
-}
-.wk-pl-t {
-  display: grid;
-  min-width: 0;
-  line-height: 1.35;
-}
-.wk-pl-t b {
-  font-size: 0.64em;
-  font-weight: 500;
-  color: var(--a-ink);
-}
-.wk-pl-t small {
-  overflow: hidden;
-  font-size: 0.54em;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  color: var(--a-mute);
-}
-.wk-pl-made {
-  margin-top: 0.45em;
-}
-.wk-pl-made .wk-made {
-  margin-left: auto;
-  font-size: 0.56em;
-}
-.wk-pop-foot {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  margin: 0.55em 0.45em 0 !important;
-  padding-top: 0.65em;
-  border-top: 1px solid var(--a-line);
-  font-size: 0.58em;
-  color: var(--a-mute);
-}
-
-/* 助理：选中的那句带过来，回一句、写明参考了什么，要动手的先给你确认 */
-.wk-askpanel {
-  left: 22em;
-  bottom: 4.4em;
-  width: 27em;
-  display: grid;
-  gap: 0.65em;
-  padding: 1em 1.1em 1.05em;
-}
-.wk-ask-h {
-  display: flex;
-  align-items: center;
-  gap: 0.4em;
-  font-size: 0.64em;
-  font-weight: 500;
-}
-.wk-ask-h span {
-  font-weight: 400;
-  color: var(--a-faint);
-}
-.wk-ask-h span::before {
-  content: '·';
-  margin-right: 0.4em;
-}
-.wk-ask-quote {
-  padding: 0.45em 0.8em;
-  border-left: 0.2em solid var(--a-line-2);
-  border-radius: 0 0.4em 0.4em 0;
-  background: var(--a-soft);
-  font-size: 0.62em;
-  color: var(--a-ink-2);
-}
-.wk-ask-say {
-  font-size: 0.68em;
-  line-height: 1.7;
-}
-/* 插入光标跟在字后面，不占一行 */
-.wk-ask-say .wk-ai {
-  position: absolute;
-}
-.wk-ask-src {
-  font-size: 0.56em;
-  color: var(--a-mute);
-}
-.wk-opcard {
-  display: grid;
-  gap: 0.4em;
-  padding: 0.8em 0.9em;
-  border-radius: 0.8em;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--a-amber) 45%, transparent);
-}
-.wk-opcard-k {
-  display: flex;
-  align-items: center;
-  gap: 0.4em;
-  font-size: 0.56em;
-  color: var(--a-amber);
-}
-.wk-opcard-t {
-  font-size: 0.64em;
-  font-weight: 500;
-}
-.wk-opcard-li {
-  display: flex;
-  align-items: center;
-  gap: 0.55em;
-  font-size: 0.62em;
-  color: var(--a-ink);
-}
-.wk-opcard-li small {
-  margin-left: auto;
-  color: var(--a-mute);
-}
-.wk-opcard-f {
-  display: flex;
-  gap: 0.5em;
-  margin-top: 0.25em !important;
-}
-.wk-opcard-f .wk-btn,
-.wk-opcard-f .wk-btn-line {
-  font-size: 0.58em;
-}
-[data-cue~='hover'] :is([data-c='t-allow'], [data-c='t-check']) {
-  background: color-mix(in srgb, var(--a-act) 82%, var(--a-paper));
-}
-
-/* 外部 AI：你自己的终端浮在窗口上，读的是同一份目标 */
-.wk-tour-term {
-  left: 3.2em;
-  top: 24.2em;
-  width: 31em;
-}
-.wk-term-h span {
-  margin-left: auto;
-  color: #6a6a73;
-}
-.wk-term-me {
-  color: #e8b765;
-}
-.wk-term-in {
-  padding-left: 2.6em !important;
-  color: #b9b9c2;
-}
-.wk-term-in::before {
-  content: '└ ';
-  color: #55555d;
-}
-.wk-agents {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35em;
-  margin-top: 0.3em !important;
-  padding: 0.65em 1.2em 0.9em;
-  border-top: 1px solid #2c2c31;
-  font-family: var(--sans);
-}
-.wk-agents-k {
-  margin-right: 0.3em;
-  font-size: 0.56em;
-  color: #8a8a94;
-}
-.wk-agents span:not(.wk-agents-k) {
-  padding: 0.3em 0.65em;
-  border-radius: 1em;
-  background: #26262b;
-  font-size: 0.56em;
-  color: #d7d7dc;
-  opacity: 1;
-  transition: opacity 0.5s var(--ease) calc(var(--i) * 140ms);
-}
-[data-run] .wk-agents:not([data-on]) span {
-  opacity: 0;
-  transition: none;
-}
-
-/* 等你：两件，各写清谁交来的、在哪、什么时候，旁边就是去处理的按钮 */
-.wk-waitlist {
-  left: 18.6em;
-  bottom: 4.4em;
-  width: 27em;
-  padding: 0.85em 0.6em 0.55em;
-}
-.wk-wl-h {
-  display: flex;
-  gap: 0.4em;
-  padding: 0 0.5em 0.55em;
-  font-size: 0.64em;
-  font-weight: 500;
-}
-.wk-wl-h span {
-  color: var(--a-amber);
-}
-.wk-wl-it {
-  display: flex;
-  align-items: center;
-  gap: 0.65em;
-  padding: 0.6em 0.5em;
-  border-top: 1px solid var(--a-line);
-}
-.wk-wl-it .wk-ring {
-  font-size: 0.8em;
-  color: var(--a-amber);
-}
-.wk-wl-t {
-  display: grid;
-  flex: 1;
-  min-width: 0;
-  line-height: 1.4;
-}
-.wk-wl-t b {
-  font-size: 0.64em;
-  font-weight: 500;
-}
-.wk-wl-t small {
-  overflow: hidden;
-  font-size: 0.54em;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  color: var(--a-mute);
-}
-.wk-wl-it .wk-btn,
-.wk-wl-it .wk-btn-line {
-  font-size: 0.56em;
-}
-
-/* 第一段：几张标签依次亮一下 */
-[data-cue~='tabs'] .wk-tab {
-  animation: wk-tab-glance 2.2s var(--ease) both;
-}
-[data-cue~='tabs'] .wk-tab:nth-child(2) {
-  animation-delay: 0.3s;
-}
-[data-cue~='tabs'] .wk-tab:nth-child(3) {
-  animation-delay: 0.6s;
-}
-[data-cue~='tabs'] .wk-tab:nth-child(4) {
-  animation-delay: 0.9s;
-}
-[data-cue~='tabs'] .wk-tab:nth-child(5) {
-  animation-delay: 1.2s;
-}
-@keyframes wk-tab-glance {
-  30% {
-    translate: 0 -0.12em;
-  }
-  60% {
-    translate: 0 0;
-  }
-}
-/* 不演的时候（减少动态）：这一段做完的样子 */
-.wk-tour-frame[data-focus='plugins']:not([data-run]) [data-c='t-plugins'],
-.wk-tour-frame[data-focus='ask']:not([data-run]) [data-c='t-ask'],
-.wk-tour-frame[data-focus='agents']:not([data-run]) [data-c='t-term'],
-.wk-tour-frame[data-focus='wait']:not([data-run]) [data-c='t-waitlist'] {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* 这一段的说明：标题墨色、说明浅一档，连成一句；留两行的高度，换段时整屏不上下跳 */
-.wk-tour-cap {
-  min-height: calc(2 * 1.7em);
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--mute);
-}
-.wk-tour-cap p {
-  animation: wk-in 0.7s var(--ease) both;
-}
-.wk-tour-cap-t {
-  margin-right: 0.6em;
-  color: var(--ink);
-}
-@keyframes wk-in {
+@keyframes wk-type {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    translate: -4px 0;
   }
 }
-/* 选择器只有一种：纯文字，选中的是墨色，其余是灰；不用框、点、线 */
-.wk-tour-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 1.3em;
-}
-.wk-tour-tab,
-.wk-theme button {
-  padding: 2px 0;
-  border: 0;
-  border-radius: 4px;
-  background: none;
-  font: 400 16px / 1.5 var(--sans);
-  letter-spacing: 0.02em;
-  color: var(--mute);
-  cursor: pointer;
-  transition: color 0.35s var(--ease);
-}
-.wk-tour-tab:hover,
-.wk-tour-tab[aria-selected='true'],
-.wk-theme button:hover,
-.wk-theme button[aria-pressed='true'] {
-  color: var(--ink);
-}
-.wk-tour-tab:focus-visible,
-.wk-theme button:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 3px;
-}
-.wk-theme {
-  display: inline-flex;
-  gap: 1em;
-  min-width: 0;
-  margin: 0 0 0 auto;
-  border: 0;
-  padding: 0;
-}
-.wk-theme button {
-  font-size: var(--t-ui);
-}
-.wk-theme + .wk-toggle {
-  margin-left: 4px;
-}
 
-/* =====================================================================
-   用起来：两种人，各走两条闭环（和团队一起、长出自己的工具）
-   左边 4 栏字：标题、角色、闭环、五步，都是纯文字（选中的墨色，当下这一步展开一行说明，其余灰）；
-   右边 8 栏一块浅灰台面，台面上一扇窗按时间演（画面在 cases/，挂在 shadow root 里）
-   ===================================================================== */
-.wk-cs-sec {
-  display: grid;
-  align-content: center;
-  min-height: max(640px, 100svh);
-  padding-block: calc(var(--header) + clamp(20px, 3.2vh, 32px)) clamp(20px, 3.2vh, 32px);
-}
-.wk-cs {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--col-gap);
-  align-items: center;
-}
-.wk-cs-text {
-  grid-column: 1 / span 4;
-  display: grid;
-  gap: clamp(24px, 4vh, 40px);
-}
-.wk-cs-text .wk-head {
-  margin-bottom: 0;
-}
-.wk-cs-pick {
-  display: grid;
-  gap: 14px;
-}
-/* 你主要做什么：一对分段按钮，选中的那半是白的 */
-.wk-cs-roles {
-  display: inline-flex;
-  justify-self: start;
-  min-width: 0;
-  margin: 0;
-  border: 0;
-  padding: 3px;
-  border-radius: 12px;
-  background: rgb(27 26 24 / 0.06);
-}
-.wk-cs-roles button {
-  padding: 8px 18px;
-  border: 0;
-  border-radius: 9px;
-  background: none;
-  font: 400 15px / 1.4 var(--sans);
-  letter-spacing: 0.03em;
-  color: var(--ink-2);
-  cursor: pointer;
-  transition:
-    background-color 0.3s var(--ease),
-    box-shadow 0.3s var(--ease),
-    color 0.3s var(--ease);
-}
-.wk-cs-roles button:hover {
-  color: var(--ink);
-}
-.wk-cs-roles button[aria-pressed='true'] {
-  background: var(--white);
-  box-shadow:
-    0 0 0 1px var(--hair),
-    0 1px 3px rgb(var(--shade) / 0.12);
-  color: var(--ink);
-}
-/* 两条闭环：两张卡，上面是哪一条，下面是这个角色在这条上做的事；选中的那张是白的 */
-.wk-cs-loops {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-.wk-cs-loop {
-  display: grid;
-  align-content: start;
-  gap: 4px;
-  padding: 12px 14px 13px;
-  border: 0;
-  border-radius: 12px;
-  background: none;
-  box-shadow: inset 0 0 0 1px var(--hair-2);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    background-color 0.35s var(--ease),
-    box-shadow 0.35s var(--ease);
-}
-.wk-cs-loop:hover {
-  background: rgb(255 255 255 / 0.6);
-}
-.wk-cs-loop[aria-selected='true'] {
-  background: var(--white);
-  box-shadow:
-    0 0 0 1px var(--hair),
-    0 10px 22px -14px rgb(var(--shade) / 0.45);
-}
-.wk-cs-loop-k {
-  font-size: 12.5px;
-  letter-spacing: 0.06em;
-  color: var(--mute);
-}
-.wk-cs-loop-t {
-  font-size: 15.5px;
-  line-height: 1.5;
-  letter-spacing: 0.02em;
-  color: var(--ink-2);
-}
-.wk-cs-loop[aria-selected='true'] .wk-cs-loop-t {
-  font-weight: 500;
-  color: var(--ink);
-}
-/* 五步：一根竖线串起五个编号；走过的实心，当下这一步描一圈、字加粗，下面展开说明 */
-.wk-cs-steps {
-  --dot: 22px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  counter-reset: wk-step;
-}
-.wk-cs-steps li {
-  position: relative;
-  counter-increment: wk-step;
-}
-.wk-cs-steps li::after {
-  content: '';
+.wk-flow .wk-chat {
   position: absolute;
-  left: calc(var(--dot) / 2 - 0.5px);
-  top: calc(var(--dot) + 9px);
-  bottom: -7px;
-  width: 1px;
-  background: var(--hair-2);
-  transition: background-color 0.6s var(--ease);
-}
-.wk-cs-steps li:last-child::after {
-  display: none;
-}
-.wk-cs-steps li:has(> [data-done])::after {
-  background: var(--ink);
-}
-.wk-cs-step {
-  position: relative;
-  display: grid;
-  grid-template-rows: auto 0fr;
-  width: 100%;
-  padding: 7px 0 7px calc(var(--dot) + 14px);
-  border: 0;
-  border-radius: 10px;
-  background: none;
-  font: 400 16px / 1.5 var(--sans);
-  letter-spacing: 0.02em;
-  text-align: left;
-  color: var(--ink-2);
-  cursor: pointer;
-  transition:
-    color 0.35s var(--ease),
-    grid-template-rows 0.5s var(--ease);
-}
-.wk-cs-step::before {
-  content: counter(wk-step);
-  position: absolute;
-  top: 7px;
-  left: 0;
-  display: grid;
-  place-items: center;
-  width: var(--dot);
-  height: var(--dot);
-  border-radius: 50%;
-  background: var(--paper);
-  box-shadow: inset 0 0 0 1px var(--hair-2);
-  font: 500 11.5px / 1 var(--sans);
-  color: var(--mute);
-  transition:
-    background-color 0.4s var(--ease),
-    box-shadow 0.4s var(--ease),
-    color 0.4s var(--ease);
-}
-.wk-cs-step[data-done]::before {
-  background: var(--ink);
-  box-shadow: none;
-  color: var(--paper);
-}
-.wk-cs-step[aria-current='step'] {
-  grid-template-rows: auto 1fr;
-  color: var(--ink);
-}
-.wk-cs-step[aria-current='step']::before {
-  background: var(--white);
-  box-shadow: inset 0 0 0 1.5px var(--ink);
-  color: var(--ink);
-}
-.wk-cs-step:hover {
-  color: var(--ink);
-}
-:is(.wk-cs-roles button, .wk-cs-loop, .wk-cs-step):focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 3px;
-}
-.wk-cs-name {
-  line-height: var(--dot);
-}
-.wk-cs-step[aria-current='step'] .wk-cs-name {
-  font-weight: 500;
-}
-.wk-cs-more {
-  overflow: hidden;
-  min-height: 0;
-  max-width: 24em;
-  font-size: 14.5px;
-  line-height: 1.75;
-  color: var(--ink-2);
+  top: calc(var(--pt, 30vh) + 5vh);
+  left: var(--gutter);
+  width: min(460px, 34vw);
   opacity: 0;
-  transition: opacity 0.4s var(--ease);
-}
-.wk-cs-step[aria-current='step'] .wk-cs-more {
-  padding-top: 4px;
-  opacity: 1;
-  transition: opacity 0.6s var(--ease) 0.15s;
-}
-/* 右边：浅灰台面伸到离屏幕边一指宽，窗放在中间；窗下沿是诚实标注、从头看和暂停 */
-.wk-cs-show {
-  grid-column: 5 / -1;
-  gap: 14px;
-  place-content: normal;
-  margin-left: 0;
-  padding: 5% 6% 4%;
-}
-.wk-cs-frame {
-  aspect-ratio: 56 / 35.5;
-}
-.wk-cs-again {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: auto;
-  padding: 6px 10px;
-  border: 0;
-  border-radius: 999px;
-  background: none;
-  font: 400 var(--t-small) / 1 var(--sans);
-  letter-spacing: 0.03em;
-  color: var(--mute);
-  cursor: pointer;
+  transform: translateY(18px);
   transition:
-    background-color 0.3s var(--ease),
-    color 0.3s var(--ease);
-}
-.wk-cs-again:hover,
-.wk-cs-again:focus-visible {
-  background: rgb(27 26 24 / 0.07);
-  color: var(--ink);
-}
-.wk-cs-show .wk-toggle {
-  margin-left: 0;
+    opacity 0.6s var(--ease),
+    transform 0.8s var(--ease);
+  pointer-events: none;
 }
 
-/* =====================================================================
-   为什么是 Molis（10-31 重做）：核心是「接得上」——同一份工作被几个场景依次接手，上下文都在一处。
-   左边 4 栏字：标题和导语，「接得上」放大做主角，另外三条是辅助，收尾两句。
-   右边 8 栏一块浅灰台面：上面一条时间线，周一到周五四个场景（深色小卡）；四根线汇到下面同一份记录（深色的 Molis Work 窗），
-   记录里每一条挂着留下它的人或 AI：方的是 AI，圆的是人，和上面场景里的一样。
-   ===================================================================== */
-.wk-why-sec {
-  display: grid;
-  align-content: center;
-  min-height: max(640px, 100svh);
-  padding-block: calc(var(--header) + clamp(20px, 3.2vh, 32px)) clamp(20px, 3.2vh, 32px);
-}
-.wk-why {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  align-items: center;
-  column-gap: var(--col-gap);
-}
-.wk-why-text {
-  grid-column: 1 / span 4;
-  display: grid;
-  gap: clamp(20px, 3.4vh, 34px);
-}
-.wk-why-text .wk-head {
-  margin-bottom: 0;
-}
-.wk-why-main {
-  display: grid;
-  gap: 8px;
-}
-.wk-why-claim {
-  margin: 0;
-  font: 400 var(--t-sub) / 1.45 var(--sans);
-  letter-spacing: 0.01em;
-  color: var(--ink);
-}
-.wk-why-here {
-  max-width: 24em;
-  margin: 0;
-  font-size: 15.5px;
-  line-height: 1.85;
-  color: var(--ink-2);
-}
-.wk-why-also {
-  display: grid;
-  gap: 14px;
-  margin: 0;
-  padding: 20px 0 0;
-  border-top: 1px solid var(--hair);
-  list-style: none;
-}
-.wk-why-also li > b {
-  display: block;
-  font-size: 15.5px;
-  font-weight: 500;
-  line-height: 1.55;
-  color: var(--ink);
-}
-.wk-why-also li > span {
-  display: block;
-  max-width: 25em;
-  font-size: 14px;
-  line-height: 1.75;
-  color: var(--ink-2);
-}
-/* 收尾两句：前一句灰，后一句墨色，和标题同一种两色 */
-.wk-why-coda {
-  display: grid;
-  gap: 2px;
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.8;
-  letter-spacing: 0.02em;
-}
-.wk-why-coda > span:first-child {
-  color: var(--mute);
+.wk-flow .wk-chat[data-on] {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.15s;
 }
 
-/* ---------- 右边：浅灰台面伸到离屏幕边一指宽；画布 800 宽，10 个单位一个 em ---------- */
-.wk-why-fig {
-  grid-column: 5 / -1;
-  gap: 14px;
-  place-content: normal;
-  margin-left: 0;
-  padding: 5% 6% 4%;
-  container-type: inline-size;
-}
-.wk-why-stage {
-  display: grid;
-  font-size: calc(100cqi / 80);
-  line-height: 1.45;
-  letter-spacing: 0.01em;
-}
-.wk-why-stage .wk-scene {
-  font-size: 1em;
-  line-height: 1.45;
-}
-.wk-why-stage .lucide {
-  width: 1em;
-  height: 1em;
-  flex: none;
-  stroke-width: 1.8;
+.wk-flow .wk-chat-note {
+  position: absolute;
+  top: calc(100% + 40px);
+  left: 28px;
+  white-space: nowrap;
 }
 
-/* 时间线：一道细线串起四天，最后一天（现在）是实心的点 */
-.wk-why-scenes {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 2em;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.wk-why-scenes::before {
+.wk-flow .wk-chat-note::before {
   content: '';
   position: absolute;
-  top: 0.91em;
-  left: 0.4em;
-  right: calc(25% - 1.5em - 0.4em);
-  height: 1px;
-  background: rgb(27 26 24 / 0.22);
+  bottom: 100%;
+  left: 0;
+  width: 1.5px;
+  height: 40px;
+  background: rgb(255 255 255 / 0.85);
 }
-.wk-why-scene {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
+
+/* 标注：一个点、一根线、一张纸片 */
+.wk-note {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+  pointer-events: none;
 }
-.wk-why-day {
-  position: relative;
-  align-self: flex-start;
-  display: flex;
-  align-items: center;
-  gap: 0.55em;
-  height: 1.4em;
-  padding-right: 0.5em;
-  background: var(--paper-2);
-  font-size: 1.3em;
-  font-weight: 500;
-  letter-spacing: 0.04em;
+
+.wk-note[data-on] {
+  opacity: 1;
+  transition: opacity 0.5s var(--ease) 0.25s;
+}
+
+.wk-note::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--a-ink);
+  box-shadow: 0 0 0 4px rgb(41 42 44 / 0.12);
+}
+
+.wk-note-line {
+  position: absolute;
+  background: rgb(41 42 44 / 0.55);
+}
+
+.wk-note-card {
+  position: absolute;
+  padding: 11px 18px;
+  border-radius: 10px;
+  background: var(--paper);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.1),
+    0 18px 36px -18px rgb(var(--shade) / 0.55);
+  font: 400 clamp(16px, 1.25vw, 18px) / 1.4 var(--sans);
+  white-space: nowrap;
+  color: var(--ink);
+  animation: wk-note-in 0.6s var(--ease) both;
+}
+
+@keyframes wk-note-in {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+.wk-note[data-side='r'] .wk-note-line,
+.wk-note[data-side='l'] .wk-note-line {
+  top: -0.75px;
+  width: 44px;
+  height: 1.5px;
+}
+
+.wk-note[data-side='r'] .wk-note-line {
+  left: 0;
+}
+
+.wk-note[data-side='l'] .wk-note-line {
+  right: 0;
+}
+
+.wk-note[data-side='r'] .wk-note-card {
+  left: 52px;
+  top: 0;
+  transform: translateY(-50%);
+}
+
+.wk-note[data-side='l'] .wk-note-card {
+  right: 52px;
+  top: 0;
+  transform: translateY(-50%);
+}
+
+.wk-note[data-side='b'] .wk-note-line {
+  top: 0;
+  left: -0.75px;
+  width: 1.5px;
+  height: 36px;
+}
+
+.wk-note[data-side='b'] .wk-note-card {
+  top: 44px;
+  left: -18px;
+}
+
+/* ---------- 怎么开始：一封信 ---------- */
+
+.wk-end-origin {
+  font: 400 clamp(17px, 1.45vw, 21px) / 1.8 var(--serif);
   color: var(--ink-2);
 }
-.wk-why-day::before {
-  content: '';
-  width: 0.62em;
-  height: 0.62em;
-  border-radius: 50%;
-  background: var(--paper-2);
-  box-shadow: inset 0 0 0 1.5px var(--ink-2);
+
+.wk-end-belief {
+  margin: 0.3em 0 0.5em;
+  font: 400 clamp(32px, 3.2vw, 46px) / 1.3 var(--serif);
+  letter-spacing: 0.04em;
+  color: var(--ink);
 }
-.wk-why-scene:last-child .wk-why-day::before {
-  background: var(--ink);
+
+.wk-end-text {
+  max-width: 34em;
+  margin-bottom: clamp(24px, 4vh, 40px);
+  font: 400 var(--t-body) / 1.8 var(--sans);
+  color: var(--ink-2);
+}
+
+.wk-end-ask {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  min-width: min(340px, 100%);
+  padding: 18px 22px 22px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px var(--hair),
+    0 30px 60px -30px rgb(var(--shade) / 0.4);
+  text-align: left;
+}
+
+.wk-end-ask .wk-ring {
+  --a-amber: var(--accent);
+  --a-amber-soft: var(--accent-wash);
+}
+
+.wk-end-from {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+
+.wk-end-q {
+  margin-bottom: 6px;
+  font: 400 20px / 1.4 var(--sans);
+  color: var(--ink);
+}
+
+.wk-end-own {
+  margin-top: clamp(20px, 3.6vh, 36px);
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+
+.wk-flow .wk-end {
+  position: absolute;
+  inset: var(--pt, 0) var(--pi, 0) var(--pi, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--gutter);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.8s var(--ease),
+    transform 1s var(--ease);
+  pointer-events: none;
+}
+
+.wk-flow .wk-end[data-on] {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.3s;
+  pointer-events: auto;
+}
+
+/* 诚实标注：压在台面右下角 */
+.wk-foot {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgb(20 20 22 / 0.62);
+  font-size: 12px;
+  color: rgb(255 255 255 / 0.9);
+}
+
+.wk-flow .wk-foot {
+  position: absolute;
+  right: calc(var(--pi, 20px) + 16px);
+  bottom: calc(var(--pi, 20px) + 14px);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+
+.wk-flow .wk-foot[data-on] {
+  opacity: 1;
+}
+
+/* ---------- 窄屏、矮屏、没有 JS：同样几拍上下排 ---------- */
+
+.wk-stack {
+  --inset: clamp(10px, 1.4vw, 20px);
+  padding-bottom: clamp(72px, 12vh, 128px);
+}
+
+/* 照片台面：离屏幕边一指宽、大圆角；台面上的东西按内容撑高 */
+.wk-s-plate {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  margin-inline: var(--inset);
+  padding: clamp(28px, 7vw, 56px) clamp(14px, 4vw, 40px);
+  overflow: hidden;
+  border-radius: clamp(18px, 2vw, 28px);
+  background: #aba9ac;
+  isolation: isolate;
+}
+
+.wk-s-plate > img {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% var(--y, 40%);
+  filter: var(--grade);
+}
+
+.wk-s-plate > :not(img, .wk-fit, .wk-foot) {
+  width: 100%;
+  max-width: 640px;
+}
+
+.wk-s-plate > .wk-foot {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+}
+
+/* 整扇窗缩进台面：--k 由 stack.tsx 量出来；没有 JS 时按屏宽给几档 */
+.wk-fit {
+  --k: 0.25;
+  position: relative;
+  width: calc(1200px * var(--k));
+  height: calc(760px * var(--k));
+}
+
+.wk-fit > .wk-win {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scale(var(--k));
+  transform-origin: 0 0;
+}
+
+@media (min-width: 480px) {
+  .wk-fit {
+    --k: 0.33;
+  }
+}
+
+@media (min-width: 640px) {
+  .wk-fit {
+    --k: 0.45;
+  }
+}
+
+@media (min-width: 900px) {
+  .wk-fit {
+    --k: 0.6;
+  }
+}
+
+.wk-s-sec {
+  padding-top: clamp(72px, 14vh, 128px);
+}
+
+.wk-s-h {
+  margin-bottom: clamp(28px, 5vh, 44px);
+  padding-inline: var(--gutter);
+  font: 400 var(--t-h2) / 1.3 var(--sans);
+  color: var(--ink);
+}
+
+.wk-s-beat + .wk-s-beat {
+  margin-top: clamp(48px, 9vh, 88px);
+}
+
+.wk-s-note {
+  margin-bottom: 16px;
+  padding-inline: var(--gutter);
+  font: 400 var(--t-keys) / 1.5 var(--sans);
+  color: var(--ink);
+}
+
+/* 窗里的一块单独摆出来：白色工作面，按真实字号排 */
+.wk-part {
+  container-type: inline-size;
+  padding: 22px clamp(16px, 4vw, 28px) 18px;
+  border-radius: 14px;
+  background: var(--a-paper);
+  box-shadow:
+    0 0 0 1px rgb(27 26 24 / 0.14),
+    0 12px 28px -12px rgb(var(--shade) / 0.3),
+    0 40px 80px -36px rgb(var(--shade) / 0.5);
+  font: 400 14px / 1.5 var(--sans);
+  color: var(--a-ink);
+}
+
+.wk-part .wk-rail {
+  padding: 0;
+  background: none;
   box-shadow: none;
 }
 
-/* 场景卡：深色，谁、（出了什么事）、做了什么 */
-.wk-why-card {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75em;
-  padding: 1.3em 1.4em 1.5em;
-  border-radius: 1em;
-  background: var(--a-paper);
-  box-shadow:
-    0 0 0 1px rgb(0 0 0 / 0.35),
-    0 1.2em 2.4em -1.4em rgb(0 0 0 / 0.5);
-}
-.wk-why-stage .wk-why-card {
-  font-size: 1.3em;
-}
-.wk-why-by {
-  display: flex;
-  align-items: center;
-  gap: 0.6em;
-}
-.wk-why-by b {
-  overflow: hidden;
-  font-weight: 500;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-.wk-why-tag {
-  align-self: start;
-  padding: 0.25em 0.6em;
-  border-radius: 0.4em;
-  background: var(--a-amber-soft);
-  font-size: 0.85em;
-  color: var(--a-amber);
-}
-.wk-why-did {
-  line-height: 1.6;
-  color: var(--a-ink-2);
+.wk-part .wk-rec {
+  animation: none;
 }
 
-/* 谁：方的是 AI，圆的是人；接手的用一个小箭头连起来 */
-.wk-why-who {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex: none;
-}
-.wk-why-who-one {
-  display: inline-flex;
-  align-items: center;
-}
-.wk-why-who-one .lucide {
-  width: 0.9em;
-  height: 0.9em;
-  margin: 0 0.1em;
-  color: var(--a-faint);
-}
-.wk-why-by .wk-why-who-one .lucide {
-  display: none;
-}
-.wk-why-by .wk-why-who {
-  gap: 0.25em;
-}
-.wk-why-m {
-  display: inline-grid;
-  place-items: center;
-  width: 2em;
-  height: 2em;
-  border-radius: 0.5em;
-  background: #3b3c40;
-  font-size: 0.8em;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0;
-  color: var(--a-ink);
-}
-.wk-why-m[data-w='me'],
-.wk-why-m[data-w='ni'] {
-  border-radius: 50%;
-}
-.wk-why-m[data-w='me'] {
-  background: var(--you);
-  color: var(--you-ink);
-}
-.wk-why-m[data-w='ni'] {
-  background: var(--a-green);
-  color: #11241a;
+.wk-part .wk-title {
+  font-size: 22px;
 }
 
-/* 四根线汇到记录上沿的正中 */
-.wk-why-stage .wk-why-wires {
-  display: block;
-  width: 100%;
-  height: 6.4em;
-  overflow: visible;
-}
-.wk-why-wires path {
-  fill: none;
-  stroke: rgb(27 26 24 / 0.3);
-  stroke-width: 1.2;
-  vector-effect: non-scaling-stroke;
-}
-
-/* 记录：同一份，深色的 Molis Work 窗 */
-.wk-why-rec {
+/* 这一拍亮的那一处 */
+.wk-part[data-hot='rec2'] [data-f='rec2'],
+.wk-part[data-hot='wed'] [data-f='wed'],
+.wk-part[data-hot='head'] [data-f='head'],
+.wk-part[data-hot='doc'] [data-f='doc'] {
   position: relative;
-  margin: 0 4em;
-  border-radius: 1.05em;
-  background: var(--a-paper);
+  border-radius: 10px;
+  background: rgb(143 182 247 / 0.1);
   box-shadow:
-    0 0 0 1px rgb(0 0 0 / 0.4),
-    0 1.6em 3.4em -2em rgb(0 0 0 / 0.55);
-}
-.wk-why-rec::before {
-  content: '';
-  position: absolute;
-  top: -0.35em;
-  left: calc(50% - 0.35em);
-  width: 0.7em;
-  height: 0.7em;
-  border-radius: 50%;
-  background: var(--ink-2);
-}
-.wk-why-rec-top {
-  display: flex;
-  align-items: center;
-  gap: 1em;
-  padding: 1.6em 2.4em 1.2em;
-}
-.wk-why-rec-top .lucide {
-  width: 2.2em;
-  height: 2.2em;
-  padding: 0.5em;
-  border-radius: 0.6em;
-  background: var(--a-soft);
-  box-shadow: inset 0 0 0 1px var(--a-line);
-  color: var(--a-ink-2);
-}
-.wk-why-rec-top p {
-  display: grid;
-  font-size: 1.9em;
-  font-weight: 500;
-  line-height: 1.3;
-}
-.wk-why-rec-top small {
-  font-size: 0.6em;
-  font-weight: 400;
-  color: var(--a-mute);
-}
-.wk-why-rows {
-  padding: 0 2.4em 0.4em;
-  font-size: 1.35em;
-}
-.wk-why-row {
-  display: grid;
-  grid-template-columns: 5.4em minmax(0, 1fr) auto 4.6em;
-  align-items: center;
-  column-gap: 1.2em;
-  padding: 0.78em 0;
-  border-top: 1px solid var(--a-line);
-}
-.wk-why-row[data-more] {
-  border-image: linear-gradient(90deg, transparent 6.6em, var(--a-line) 6.6em) 1;
-}
-.wk-why-l {
-  font-size: 0.9em;
-  color: var(--a-mute);
-}
-.wk-why-v {
-  display: flex;
-  align-items: center;
-  gap: 0.55em;
-  min-width: 0;
-  color: var(--a-ink);
-}
-.wk-why-v .lucide {
-  color: var(--a-ink-2);
-}
-.wk-why-st {
-  font-size: 0.9em;
-}
-.wk-why-rec-f {
-  display: flex;
-  align-items: center;
-  gap: 0.6em;
-  padding: 1.1em 3.24em 1.3em;
-  border-top: 1px solid var(--a-line);
-  font-size: 1.1em;
-  color: var(--a-mute);
+    0 0 0 1.5px rgb(41 42 44 / 0.5),
+    0 0 0 6px rgb(143 182 247 / 0.28);
 }
 
-/* ---------- 窄屏：四个场景排成两行两张，不画连线，记录在下面 ---------- */
-@media (max-width: 900px) {
-  .wk-why-sec {
-    min-height: 0;
-    padding-block: var(--section-top) var(--section-bottom);
+.wk-part[data-hot='head'] [data-f='head'] {
+  margin: -10px -12px 0;
+  padding: 10px 12px;
+}
+
+.wk-part[data-hot='doc'] [data-f='doc'] {
+  padding: 4px 10px 0;
+}
+
+/* 窄的工作面：状态换到名字下面一行 */
+@container (max-width: 480px) {
+  .wk-row {
+    grid-template-columns: 16px 1fr auto;
+    grid-template-areas:
+      'mark name by'
+      '. state by';
+    gap: 2px 12px;
+    padding: 10px 4px;
   }
-  .wk-why {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 36px;
+
+  .wk-row > :first-child {
+    grid-area: mark;
   }
-  .wk-why-text,
-  .wk-why-fig {
-    grid-column: 1 / -1;
+
+  .wk-row-name {
+    grid-area: name;
   }
-  .wk-why-fig {
-    margin-left: calc(var(--inset) - var(--gutter));
-    padding: 7% 5% 5%;
+
+  .wk-row-state {
+    grid-area: state;
   }
-  .wk-why-stage {
-    gap: 2.4em;
-    font-size: 9px;
-  }
-  .wk-why-scenes {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.6em 1.2em;
-  }
-  .wk-why-scenes::before,
-  .wk-why-stage .wk-why-wires,
-  .wk-why-rec::before {
+
+  .wk-row-state:empty {
     display: none;
   }
-  .wk-why-rec {
-    margin: 0;
-  }
-  .wk-why-rec-top,
-  .wk-why-rows {
-    padding-inline: 1.6em;
-  }
-  .wk-why-rec-f {
-    padding-inline: 2.16em;
-  }
-  .wk-why-row {
-    grid-template-columns: 4.6em minmax(0, 1fr) auto;
-    row-gap: 0.2em;
-  }
-  .wk-why-row .wk-why-st {
-    grid-row: 2;
-    grid-column: 2;
-  }
-  .wk-why-row .wk-why-who {
-    grid-row: 1 / span 2;
-    grid-column: 3;
-  }
-  .wk-why-row[data-more] {
-    border-image: linear-gradient(90deg, transparent 5.8em, var(--a-line) 5.8em) 1;
+
+  .wk-row > .wk-by {
+    grid-area: by;
   }
 }
 
-/* =====================================================================
-   缘起与现在（10-31 重做）：前四屏都是「字 + 台面 + 窗」，这一屏不再放台面和照片，收成居中的一封信和一个决定。
-   上面是缘起、信念（屏标题那一档，两色）和它的解释；下面就是 Molis 团队发来的决定请求：一个问题，三个去处，
-   走到哪一步写在各自的选项里。「你」的名牌移到主选项的箭头旁停下；访客的鼠标移上来，自己就成了「你」。
-   ===================================================================== */
-.wk-end-in {
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  gap: clamp(40px, 7vh, 72px);
-  min-height: max(640px, 100svh);
-  padding-block: calc(var(--header) + clamp(24px, 4vh, 44px)) clamp(40px, 8vh, 80px);
+.wk-stack .wk-term-l {
+  animation: none;
 }
-.wk-end-head {
+
+.wk-stack .wk-chat-note {
+  margin-top: 14px;
+  font-size: var(--t-lead);
+}
+
+.wk-s-coda {
   display: grid;
-  justify-items: center;
-  gap: 12px;
+  margin: clamp(72px, 14vh, 128px) 0 clamp(28px, 5vh, 44px);
+  padding-inline: var(--gutter);
+  font: 400 var(--t-h2) / 1.4 var(--sans);
+  color: var(--ink);
+}
+
+.wk-s-coda span:first-child {
+  color: var(--mute);
+}
+
+.wk-s-end {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(96px, 16vh, 160px) var(--gutter) 0;
   text-align: center;
 }
-.wk-end-origin {
-  font-size: var(--t-lead);
-  line-height: 1.8;
-  letter-spacing: 0.04em;
-  color: var(--mute);
-}
-.wk-end-belief {
-  margin-top: 4px;
-  font: 400 var(--t-head) / 1.3 var(--sans);
-  letter-spacing: 0.01em;
-  font-feature-settings: 'palt' 1;
-  text-wrap: balance;
-}
-.wk-end-belief .m-phrase:not(:last-child) {
-  color: var(--mute);
-}
-.wk-end-text {
-  font-size: var(--t-lead);
-  line-height: 1.85;
-  color: var(--ink-2);
-}
 
-/* 决定请求：不画成窗，用页面自己的字排；每个选项一整行，细线分开 */
-.wk-ask {
-  position: relative;
-  width: min(100%, 680px);
-}
-.wk-ask-k {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13.5px;
-  letter-spacing: 0.06em;
-  color: var(--mute);
-}
-.wk-ask-k .wk-ring {
-  width: 15px;
-  height: 15px;
-  color: #a46a1c;
-}
-.wk-ask-k small {
-  margin-left: auto;
-  font: inherit;
-  color: #8a5c18;
-}
-.wk-ask-q {
-  margin-top: 12px;
-  font: 400 var(--t-sub) / 1.4 var(--sans);
-  letter-spacing: 0.02em;
-  font-feature-settings: 'palt' 1;
-}
-.wk-ask-why {
-  margin-top: 4px;
-  font-size: 15px;
-  line-height: 1.8;
-  color: var(--ink-2);
-}
-.wk-ask-opts {
-  margin: 24px 0 0;
-  padding: 0;
-  border-top: 1px solid var(--hair-2);
-  list-style: none;
-}
-.wk-ask-opts li {
-  border-bottom: 1px solid var(--hair-2);
-}
-.wk-ask-opt {
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  column-gap: 20px;
-  padding: 18px 4px;
-  color: var(--ink);
-  text-decoration: none;
-}
-.wk-ask-opt::before {
-  content: '';
-  position: absolute;
-  inset: 4px -16px;
-  z-index: -1;
-  border-radius: 14px;
-  background: rgb(27 26 24 / 0.045);
-  opacity: 0;
-  transition: opacity 0.3s var(--ease);
-}
-.wk-ask-opt:hover::before {
-  opacity: 1;
-}
-.wk-ask-opt:focus-visible {
-  outline: 1.5px solid var(--ink);
-  outline-offset: 2px;
-  border-radius: 10px;
-}
-.wk-ask-t {
-  font: 400 19px / 1.45 var(--sans);
-  letter-spacing: 0.02em;
-}
-.wk-ask-opt[data-main] .wk-ask-t {
-  font-weight: 500;
-}
-.wk-ask-d {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 2px 10px;
-  margin-top: 3px;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--mute);
-}
-.wk-ask-d .m-status {
-  font-size: 13px;
-  letter-spacing: 0.04em;
-}
-.wk-ask-go {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px var(--hair-2);
-  color: var(--ink);
-  font-style: normal;
-  transition:
-    background-color 0.35s var(--ease),
-    color 0.35s var(--ease),
-    box-shadow 0.35s var(--ease);
-}
-.wk-ask-opt:hover .wk-ask-go,
-.wk-ask-opt[data-main] .wk-ask-go {
-  background: var(--ink);
-  box-shadow: none;
-  color: var(--paper);
-}
-.wk-ask-foot {
-  margin-top: 14px;
-  font-size: 12.5px;
-  letter-spacing: 0.04em;
-  color: var(--mute);
-}
-/* 「你」：和画面里同一枚冰蓝名牌，左上角的尖点在主选项的箭头上 */
-.wk-ask-hand {
-  position: absolute;
-  right: -14px;
-  top: calc(50% + 6px);
-  padding: 6px 10px 6px 10px;
-  border-radius: 1px 11px 11px 11px;
-  background: var(--you);
-  box-shadow:
-    0 0 0 1px var(--you-edge),
-    0 4px 10px -3px rgb(var(--shade) / 0.45);
-  font: 600 13px / 1 var(--sans);
-  letter-spacing: 0.04em;
-  color: var(--you-ink);
-  pointer-events: none;
-  transition: opacity 0.2s var(--ease);
-}
-.wk-ask:hover .wk-ask-hand {
-  opacity: 0;
-}
-/* 信浮上来以后，「你」从右下移过来，停在主选项上，箭头这时才变实；没有 JS、减少动态时直接是停好的样子 */
-.js .wk-ask:not(.is-in) .wk-ask-hand {
-  opacity: 0;
-}
-.js .wk-ask.is-in .wk-ask-hand {
-  animation: wk-ask-hand 1.1s var(--ease) 1.6s both;
-}
-.js .wk-ask.is-in .wk-ask-opt[data-main] .wk-ask-go {
-  animation: wk-ask-pick 0.5s var(--ease) 2.5s both;
-}
-@keyframes wk-ask-hand {
-  from {
-    opacity: 0;
-    transform: translate(64px, 48px);
-  }
-  30% {
-    opacity: 1;
-  }
-}
-@keyframes wk-ask-pick {
-  from {
-    background-color: transparent;
-    box-shadow: inset 0 0 0 1px var(--hair-2);
-    color: var(--ink);
-  }
-}
+/* ---------- 减少动态：镜头不推拉（flow.tsx 直接停在每一拍），这里关掉过渡与小动画 ---------- */
 
-/* =====================================================================
-   全景窗里的界面，向首屏那扇看齐（负责人 10-30：二屏的 app 看起来比首屏差，滑下来有割裂感）。
-   首屏那扇好看在：一个重心（大标题）、内容收在中间一栏、几乎只有墨色、细线分行、行距舒展。
-   所以这里：标签不铺底色，只留图标的色相；文档收成居中的一栏、标题放大；文档里的标签换成描边；
-   表格去掉表头底色和外框，只剩细线分行；右栏页签排一行、文件方标统一成灰、行距放松。
-   只改样子，内容和编排的接线（data-c、data-spot）不动。
-   ===================================================================== */
-.wk-tour-scene .wk-tab:not([data-tab-on]) {
-  background: transparent;
-  color: var(--a-ink-2);
-}
-.wk-tour-scene .wk-tab[data-tab-on] {
-  color: var(--a-ink);
-}
-.wk-tour-scene .wk-tab svg {
-  color: var(--hue);
-}
-.wk-tour-scene .wk-doc {
-  padding: 2.6em max(3.4em, calc(50% - 19em)) 2em;
-}
-.wk-tour-scene .wk-doc .wk-h {
-  margin-top: 0.15em !important;
-  font-size: 1.75em;
-}
-.wk-tour-scene .wk-doc-chips {
-  margin-top: 0.9em !important;
-}
-.wk-tour-scene .wk-chip,
-.wk-tour-scene .wk-chip[data-hue] {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--a-line);
-  color: var(--a-ink-2);
-}
-.wk-tour-scene .wk-chip[data-hue] svg {
-  color: var(--hue);
-}
-.wk-tour-scene .wk-doc-p {
-  margin-top: 1.2em !important;
-  font-size: 0.8em;
-  line-height: 1.9;
-}
-.wk-tour-scene .wk-doc-h2 {
-  margin-top: 1.8em !important;
-  font-size: 0.9em;
-}
-.wk-tour-scene .wk-tb {
-  margin-top: 0.7em;
-  border-radius: 0;
-  box-shadow: none;
-}
-.wk-tour-scene .wk-tb-row {
-  padding: 0.8em 0.6em;
-}
-.wk-tour-scene .wk-tb-head {
-  padding-block: 0.35em;
-  background: none;
-}
-.wk-tour-scene .wk-tb-row:last-child {
-  border-bottom: 1px solid var(--a-line);
-}
-.wk-tour-scene .wk-doc-ul {
-  font-size: 0.78em;
-}
-.wk-tour-scene .wk-rail-tabs {
-  flex-wrap: nowrap;
-  gap: 0.1em;
-  padding: 0.85em 0.6em 0.45em;
-}
-.wk-tour-scene .wk-rail-tabs span {
-  flex: none;
-  gap: 0.3em;
-  padding: 0.35em 0.45em;
-}
-.wk-tour-scene .wk-file,
-.wk-tour-scene .wk-file[data-kind] {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--a-mute);
-  opacity: 0.6;
-}
-.wk-tour-scene .wk-rail-it {
-  padding-block: 0.55em;
-}
-
-/* =====================================================================
-   窄屏
-   ===================================================================== */
-@media (max-width: 900px) {
-  .wk-hero-lead,
-  .wk-hero-side {
-    grid-column: 1 / -1;
-  }
-  /* 窄屏：字和台面照常上下排；台面竖一点，窗口几乎占满宽，终端压住窗口的左下角 */
-  .wk-open-hero {
-    height: auto;
-    grid-template-rows: auto auto;
-  }
-  .wk-stage {
-    aspect-ratio: 4 / 3.6;
-  }
-  .wk-stage-set {
-    width: 88cqw;
-  }
-  .wk-stage .wk-term {
-    top: auto;
-    bottom: 4%;
-    left: -3%;
-    width: 52%;
-    font-size: calc(100cqi / 64 * 1.2);
-  }
-  .wk-tour-sec {
-    height: auto;
-    padding-block: var(--section-top) var(--section-bottom);
-  }
-  .wk-tour {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'head' 'side' 'plate';
-    align-items: start;
-  }
-  .wk-tour-side {
-    width: auto;
-  }
-  .wk-tour-plate {
-    container-type: inline-size;
-    padding: 7cqw 0 5cqw;
-  }
-  .wk-tour-set {
-    width: 90cqw;
-  }
-  .wk-tour-plate .wk-foot {
-    flex-wrap: wrap;
-  }
-  .wk-cs-sec {
-    min-height: 0;
-    padding-block: var(--section-top) var(--section-bottom);
-  }
-  .wk-cs {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 24px;
-  }
-  .wk-cs-show {
-    margin-left: calc(var(--inset) - var(--gutter));
-    padding: 8% 6% 5%;
-  }
-  .wk-cs-text {
-    display: contents;
-  }
-  .wk-cs-pick {
-    order: 1;
-  }
-  .wk-cs-show {
-    order: 2;
-  }
-  .wk-cs-steps {
-    order: 3;
-  }
-  .wk-cs-frame {
-    aspect-ratio: 23 / 47;
-  }
-  .wk-end-in {
-    min-height: 0;
-    padding-block: var(--section-top) var(--section-bottom);
-  }
-  .wk-ask-hand {
-    right: -6px;
-  }
-  .wk-hand {
-    font-size: max(13px, calc(100cqi / 64 * 1.5));
-  }
-}
-
-/* 手机上终端的字小到读不出来，台面上只留窗口 */
-@media (max-width: 520px) {
-  .wk-stage .wk-term {
-    display: none;
-  }
-}
-
-/* 减少动态：演示停在做完的样子（编排不接管），过渡都关掉；舞台不再落定，直接摆好 */
 @media (prefers-reduced-motion: reduce) {
-  .wk-ask-hand,
-  .wk-ask-go,
-  .wk-ask-opt::before,
-  .wk-stage-img,
-  .wk-stage-win > .wk-frame,
-  .wk-stage .wk-term,
-  .wk-scene *,
-  .wk-cs-roles button,
-  .wk-cs-loop,
-  .wk-cs-step,
-  .wk-cs-step::before,
-  .wk-cs-steps li::after,
-  .wk-cs-more,
-  .wk-cam,
-  .wk-tour-cap p {
+  .wk-flow :is(.wk-h, .wk-spot, .wk-term, .wk-chat, .wk-note, .wk-end, .wk-foot, .wk-pane, .wk-tab),
+  .wk-bg::after {
     transition: none !important;
-    animation: none !important;
   }
-}
 
-@media print {
-  .wk-toggle,
-  .wk-cs-again,
-  .wk-hand,
-  .wk-tour-tabs,
-  .wk-theme {
-    display: none;
+  .wk :is(.wk-pick-hand, .wk-note-card, .wk-rec, .wk-term-l, .wk-row) {
+    animation: none !important;
   }
 }

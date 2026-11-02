@@ -121,19 +121,16 @@ assert.match(home, new RegExp(`rel="canonical" href="${canonicalOrigin}/?"`));
 // 产品页：阶段、诚实标注；没有伪装可用的下载入口
 const work = await html('/work');
 assert.match(work, /界面示意/);
-// Work（2026-10-24 重做）：一句开场、全景、用起来（两种人各两条闭环，能切换角色）、为什么是 Molis；功能按做好的样子演，
-// 走到哪一步只在结尾写一次，状态只分「已发布」「开发中」；Issue 插件是内部工具，不上官网
+// Work（第三轮）：是什么、怎么用、为什么不用我现在的（换个 AI，不用从头讲）、怎么开始；一扇窗从头到尾不离场，
+// 状态只写「开发中」，入口只有报名内测；Issue 插件是内部工具，不上官网
 assert.match(work, /不止于 AI 对话/);
-assert.match(work, /一张工作台/);
 assert.match(work, /从开头接到做完/);
-assert.match(work, /做内容、运营/);
-assert.match(work, /工作只有一份/);
-assert.match(work, /已发布 · v0\.2\.0/);
+assert.match(work, /换个 AI，不用从头讲/);
+assert.match(work, /判断归人，执行可以托付/);
 assert.match(work, /开发中/);
+assert(work.includes('href="/contact?topic='), 'work: sign up via contact');
 assert(!work.includes('Issue'), 'work: no internal Issue plugin');
 assert(!/下载 Molis|安装包下载|立即下载/.test(work), 'work: no download entry');
-assert(work.includes('href="https://github.com/molis-ai/molis-work"'));
-assert(work.includes('https://github.com/molis-ai/molis-work#run-from-source'));
 const tool = await html('/tool');
 assert.match(tool, /示意/, '/tool: honest label');
 assert(
