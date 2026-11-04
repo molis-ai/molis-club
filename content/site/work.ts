@@ -1,3 +1,5 @@
+import { WORK_LICENSE } from './products';
+
 // Molis Work 页（2026-10-24 重做；2026-11-02 第三轮：一扇窗从头到尾不离场，提案见「Molis Work 页第三轮提案」）。
 // 按读者的问题排：是什么（首屏）→ 怎么用（一件事从开头接到做完）→ AI 在哪儿帮我（就在手边）→ 为什么不用我现在的（换个 AI，不用从头讲）→ 怎么开始（一封信）。
 // 开场三句是负责人 10-30 改定的：「工作，不止于 AI 对话。」、英文口号和一句「是什么」，讲的是对话之后工作接得上。
@@ -93,7 +95,7 @@ export const workWhy = {
 
 /**
  * 怎么开始（2026-11-02 第三轮）：去掉台面，一封信——缘起、信念和它的解释；下面是一张「来自 Molis 团队」的小卡，
- * 只留内测报名。源码入口先拿掉，开源的新说法等底稿定了再改。photoAlt 是改版前那张照片的替代文字，现在页面不用，删不删等负责人定。
+ * 内测报名与使用许可。photoAlt 是改版前那张照片的替代文字，现在页面不用，删不删等负责人定。
  */
 export const workEnd = {
   origin: '一开始，我们只是想做一个让自己团队用得更顺的工具。',
@@ -107,5 +109,5 @@ export const workEnd = {
 };
 
 /** 页面上用到的 docs/studio-intro.md 原句（tests/site-copy.test.mjs 逐句核对） */
-export const workQuoted = [workWhy.own, workEnd.belief, workEnd.beliefText];
+export const workQuoted = [workWhy.own, workEnd.belief, workEnd.beliefText, WORK_LICENSE.terms];
 

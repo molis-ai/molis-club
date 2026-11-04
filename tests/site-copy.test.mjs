@@ -68,10 +68,10 @@ void test('五件产品的标题、一句话、适合的时刻、阶段与正文
   for (const text of strings(relations)) assertVerbatim(text, 'relations');
 });
 
-void test('阶段按第 3 章：Work 开源开发中；Tool 开发中；Life 原型探索中；Story 开发中；World 概念设计', () => {
+void test('阶段按第 3 章：Work 开发中；Tool 开发中；Life 原型探索中；Story 开发中；World 概念设计', () => {
   assert.deepEqual(
     productIds.map((id) => products[id].stage),
-    ['开源开发中', '开发中', '原型探索中', '开发中', '概念设计'],
+    ['开发中', '开发中', '原型探索中', '开发中', '概念设计'],
   );
 });
 

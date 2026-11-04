@@ -1,3 +1,5 @@
+import { WORK_LICENSE } from './site/products';
+
 // Folio 的 Molis Work 详情页文案。依据 molis-ai/molis-work 仓库 docs/product-intro/v2-2026-10-08.md
 // （产品介绍 V2，按 main @ 1cdb31d 核对），并按 2026-10-08 一骏对 Work 的描述突出亮点：
 // 可扩展的 AI 工作平台；工具操作与 AI 的理解、判断融进工作流程；到处有 AI，但不是到处是对话。
@@ -23,7 +25,7 @@ export const hero = {
   agentsLabel: '内置接入',
   agents: ['Codex', 'Claude Code', 'OpenCode', 'Pi Agent', 'Grok Build'],
   agentsMore: '其他 Agent 经 MCP',
-  status: ['v0.2.0 已开源', '0.3.0 开发中', 'macOS'],
+  status: ['v0.2.0', '0.3.0 开发中', 'macOS'],
   actions: { how: '看它怎么工作', github: '在 GitHub 查看' },
 };
 
@@ -402,10 +404,10 @@ export const bounds = {
 /** 现在能用什么：原来的「功能全景」27 项按「能不能下载到」收成三栏白话，状态与产品介绍 V2 一致 */
 export const access = {
   kicker: '现在能用什么',
-  title: '先用开源版，或者等下一版。',
+  title: '现在能用哪个版本？',
   now: {
     label: '现在 · v0.2.0',
-    title: '开源版本',
+    title: '从源码安装',
     items: [
       '目标与核对（Goals）：完成要显式收尾',
       '回到各个工具继续的会话（Sessions）',
@@ -413,7 +415,7 @@ export const access = {
       '把某一版成果固定下来（基础版）',
       '五家 Agent 内置接入，先预览再写入',
     ],
-    text: 'MIT 开源，在 macOS 上从源码安装。',
+    text: WORK_LICENSE.terms,
     install: '看安装步骤',
     github: '在 GitHub 查看',
   },

@@ -1,5 +1,5 @@
 // 五件产品的事实与正文：摘自 docs/studio-intro.md 第 3 章「产品总览」与第 4 章「产品介绍」（2026-10-15 版），原句不改写。
-// 阶段一律按第 3 章：Work 开源开发中；Tool 开发中；Life 原型探索中；Story 开发中；World 概念设计。
+// 阶段一律按第 3 章：Work 开发中；Tool 开发中；Life 原型探索中；Story 开发中；World 概念设计。
 // 产品页的画面、演示文字都是示意，写在各产品页自己的模块里，不放在这里。
 
 export type ProductId = 'work' | 'tool' | 'life' | 'story' | 'world';
@@ -50,7 +50,7 @@ export const products: Record<ProductId, Product> = {
     what: '一张可以按需要组合工具、让人与 AI 共同工作的工作台。',
     overview: '一张可以按需组合工具、让人与 AI 共同工作的工作台。',
     fit: '要持续推进一段工作，让资料、工具和 AI 接着已有进展配合。',
-    stage: '开源开发中',
+    stage: '开发中',
     stageNote: '已有工作台与多种工具的开发实现，持续打磨人与 AI 的协作体验。',
     form: '工作台',
     opening: [
@@ -88,7 +88,7 @@ export const products: Record<ProductId, Product> = {
       },
     ],
     progress: [
-      'Molis Work 正在开源开发中，目前以个人在本机使用为主。工作台、内置工具与 AI 协作能力已有开发实现，正在持续打磨；插件创作仍处于预览阶段，团队空间、多设备同步和插件分享属于后续方向。',
+      'Molis Work 正在开发中，目前以个人在本机使用为主。工作台、内置工具与 AI 协作能力已有开发实现，正在持续打磨；插件创作仍处于预览阶段，团队空间、多设备同步和插件分享属于后续方向。',
       '工作数据保存在本机，使用 AI 时会调用你配置的模型服务。可以按仓库说明从源码构建；公开历史版本与当前开发中的工作台需要分别查看，正在开发的新版尚未提供正式安装包。',
     ],
   },
@@ -321,6 +321,11 @@ export const relations = {
 };
 
 export const WORK_GITHUB = 'https://github.com/molis-ai/molis-work';
+export const WORK_LICENSE = {
+  name: 'Molis AI Cooperation Source License',
+  href: WORK_GITHUB + '/blob/main/LICENSE',
+  terms: '合法取得的软件副本可用于个人或企业内部工作。对外分发或对外商业使用，须事先取得书面授权。',
+};
 /** 仓库 README 的「Run from source」一节（2026-10-15 核对） */
 export const WORK_BUILD =
   'https://github.com/molis-ai/molis-work#run-from-source';
