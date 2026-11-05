@@ -88,7 +88,7 @@ const home = await html('/');
 assert.match(home, /<h1[^>]*>Molis AI<\/h1>/);
 assert.match(home, /We build/);
 assert.match(home, /Beyond/);
-for (const stage of ['开源开发中', '开发中', '探索中，敬请期待'])
+for (const stage of ['重点推进 · 开发中', '开发中', '探索中，敬请期待'])
   assert(home.includes(stage), `home stage ${stage}`);
 // 「我们相信」与「这些产品怎样联系」不放首页（负责人 2026-10-15）
 assert(
@@ -97,7 +97,7 @@ assert(
 );
 assert(!home.includes('这些产品怎样联系'), 'no product relations on home');
 assert(!home.includes('目前如何了解与体验'), 'home: removed access overview');
-assert.match(home, /开源代码/);
+assert.match(home, /源代码/);
 // 产品舞台去产品页只留圆形箭头，读屏名写清是哪件（E3）；Life、Story、World 暂不开放，不放箭头
 for (const name of ['Work', 'Tool'])
   assert(
@@ -128,6 +128,8 @@ assert.match(work, /从开头接到做完/);
 assert.match(work, /换个 AI，不用从头讲/);
 assert.match(work, /判断归人，执行可以托付/);
 assert.match(work, /开发中/);
+assert.match(work, /对外分发或对外商业使用，须事先取得书面授权。/);
+assert(work.includes('href="https://github.com/molis-ai/molis-work/blob/main/LICENSE"'), 'work: license terms link to the current license');
 assert(work.includes('href="/contact?topic='), 'work: sign up via contact');
 assert(!work.includes('Issue'), 'work: no internal Issue plugin');
 assert(!/下载 Molis|安装包下载|立即下载/.test(work), 'work: no download entry');

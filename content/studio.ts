@@ -24,7 +24,7 @@ export const coreProduct = {
   name: 'Molis Work',
   line: 'AI 原生的工作台：目标、资料和 Agent 在同一处。',
   highlights: ['目标只有一份', '换一个 AI 也接得上', '完成要核对'],
-  status: ['v0.2.0', 'MIT 开源', 'macOS'],
+  status: ['v0.2.0', 'macOS'],
   actions: { more: '了解 Molis Work', github: '在 GitHub 查看' },
 };
 

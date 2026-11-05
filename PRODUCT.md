@@ -12,7 +12,7 @@ Molis AI 是一间围绕工作、生活与体验研发 AI 产品的工作室。�
 想了解 Molis 在做什么、口味是否相投的访客；想持续推进工作、处理手边材料、照顾生活或进入一段体验的潜在用户；想把 AI 用进业务的企业团队；愿意试作品、带走方法、再带作品回来的创作者与开发者。
 
 ## Operating Context
-桌面与移动 Web，中文为主。目前为 owner-only 私有 Sites 试用，不公开收录。未开放的产品、OAuth 与邮件功能不冒充可用；下载、安装入口只给真实存在的（Molis Work 开源代码与从源码构建说明；社区里 DropAgent 的公开发布）。
+桌面与移动 Web，中文为主。目前为 owner-only 私有 Sites 试用，不公开收录。未开放的产品、OAuth 与邮件功能不冒充可用；下载、安装入口只给真实存在的（Molis Work 源代码与从源码构建说明；社区里 DropAgent 的公开发布）。
 
 ## Capabilities and Constraints
 信息架构见 `specs/site-rebuild/spec.md` 第 3 节：首页；五个产品页（`/work` `/tool` `/life` `/story` `/world`，每页一个标志性交互，演示一律标示意）；企业合作（`/enterprise`，问题 → 合作路径上的建议起点，末尾表单）；社区（`/community` 与方法目录 `/community/methods`，艺术家 Skill 可下载、网页与动效可复制 Prompt）；关于我们、团队、文章（《人的尺度》《落地主义》）、沿途（附录 A 的具体尝试）；联系（`/contact`，按 `?topic=` 预选来意）；登录 / 注册、账号、隐私、404。

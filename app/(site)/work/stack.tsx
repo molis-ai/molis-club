@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type ReactNode } from 'react';
+import { WorkLicense } from './license';
 import { workCases, workEnd, workHand, workHero, workStage, workWhy, type WorkBeatId } from '../../../content/site/work';
 import { contactHref } from '../../_site/routes';
 import { Btn, mediaOf, Phrases, Status, type Vars } from '../../_site/ui';
@@ -275,6 +276,7 @@ export function Stack() {
           <Btn href={contactHref('work')}>{workHero.go}</Btn>
         </div>
         <p className="wk-end-own">{workWhy.own}</p>
+        <WorkLicense />
       </section>
     </div>
   );

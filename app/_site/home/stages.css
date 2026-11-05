@@ -239,7 +239,7 @@
   font-feature-settings: 'palt' 1;
 }
 
-/* ---------- 列表里的阶段小圆点：开源开发中 / 开发中 实心，原型半实心，概念虚线 ---------- */
+/* ---------- 列表里的阶段小圆点：开发中 / 开发中 实心，原型半实心，概念虚线 ---------- */
 .m-prow-name .ix-row-note {
   display: flex;
   align-items: center;
