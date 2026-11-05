@@ -29,6 +29,27 @@
       "when": 1791744463281,
       "tag": "0003_applications_multiple_submissions",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1793807586002,
+      "tag": "0004_central_account_sessions",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1793833533939,
+      "tag": "0005_central_account_transactions",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1793866431726,
+      "tag": "0006_light_prism",
+      "breakpoints": true
     }
   ]
 }

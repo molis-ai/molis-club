@@ -2,6 +2,7 @@ import { sites } from '@openai/sites-vite-plugin';
 import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
 import { defineConfig, type Plugin } from 'vite';
+import { readClubAccountConfig } from './lib/account/config';
 import hostingConfig from './.openai/hosting.json' with { type: 'json' };
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
@@ -24,10 +25,11 @@ const cloudflareDatabaseId = requireCloudflareDeployValue(
 const cloudflareDatabaseName = requireCloudflareDeployValue(
   'CLOUDFLARE_D1_DATABASE_NAME',
 );
-const betterAuthUrl = requireCloudflareDeployValue('BETTER_AUTH_URL');
 const runtimeVars: Record<string, string> = {};
-if (isCloudflareDeploy) {
-  runtimeVars.BETTER_AUTH_URL = betterAuthUrl!;
+const accountConfig = requireCloudflareDeployValue('MOLIS_CLUB_ACCOUNT_CONFIG');
+if (accountConfig !== undefined) {
+  readClubAccountConfig(accountConfig);
+  runtimeVars.MOLIS_CLUB_ACCOUNT_CONFIG = accountConfig;
 }
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.

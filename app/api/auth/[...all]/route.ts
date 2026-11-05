@@ -1,4 +1,8 @@
-import { getAuth } from '../../../../lib/auth';
-const handler = (request: Request) => getAuth().handler(request);
-export const GET = handler;
-export const POST = handler;
+import { retiredAccountEntry } from '../../../../lib/account/retired-entry';
+export const GET = retiredAccountEntry;
+export const POST = retiredAccountEntry;
+export const PUT = retiredAccountEntry;
+export const PATCH = retiredAccountEntry;
+export const DELETE = retiredAccountEntry;
+export const OPTIONS = retiredAccountEntry;
+export const HEAD = retiredAccountEntry;
