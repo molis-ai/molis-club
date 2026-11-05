@@ -1,5 +1,3 @@
-import { WORK_LICENSE } from './site/products';
-
 // Molis Work 产品介绍页的文案，五个品牌方向共用这一份；各方向只换视觉。
 // 依据 molis-ai/molis-work 仓库 docs/product-intro/v1-2026-10-05.md（产品介绍 V1，
 // 按 molis-work main @ 7ac6fc4 核对），页面顺序照其中「给官网的建议」。
@@ -505,7 +503,7 @@ export const short = {
     kicker: 'Molis Work · v0.2.0',
     title: '换一个 AI，工作也接得上。',
     lead: 'AI 原生的工作台：目标、资料和 Agent 在同一处，做没做完可以核对。',
-    status: ['开发中', 'macOS'],
+    status: ['免费', 'MIT 开源', 'macOS'],
     start: '三步开始',
   },
   audience: {
@@ -611,7 +609,7 @@ export const short = {
     title: '你可能想先知道的。',
     teamAction: '聊聊解决方案',
     items: [
-      { q: '可以怎样使用 Molis Work？', a: WORK_LICENSE.terms },
+      { q: '多少钱？', a: '免费，MIT 开源。' },
       { q: '支持什么系统？', a: '目前只支持 macOS。' },
       { q: '数据存在哪？', a: '在你自己的电脑上。' },
       {
