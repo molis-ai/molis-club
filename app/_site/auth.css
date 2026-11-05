@@ -144,3 +144,71 @@
   flex-wrap: wrap;
   gap: 10px 24px;
 }
+
+.m-auth-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-bottom: 28px;
+}
+.m-auth-modes [aria-pressed='true'] {
+  color: var(--ink);
+  font-weight: 500;
+}
+.m-auth-social {
+  margin-top: 28px;
+}
+
+.m-account-card {
+  width: min(100%, 42rem);
+}
+.m-account-section {
+  display: grid;
+  gap: 18px;
+  padding-top: 24px;
+}
+.m-account-section h2 {
+  font: 400 var(--t-h3) / 1.4 var(--sans);
+}
+.m-account-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+}
+.m-account-methods {
+  display: grid;
+  gap: 24px;
+  padding: 0;
+  list-style: none;
+}
+.m-account-methods li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.m-account-methods p {
+  overflow-wrap: anywhere;
+}
+.m-account-section input[type='file'] {
+  max-width: 100%;
+  font-size: 13px;
+}
+
+.m .m-account-fields {
+  display: grid;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  min-width: 0;
+}
+.m .m-account-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.m .m-account-methods li > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

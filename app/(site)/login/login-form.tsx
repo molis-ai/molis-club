@@ -1,221 +1,440 @@
 'use client';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState, type SubmitEvent } from 'react';
-import { authClient } from '../../../lib/auth-client';
 import { formText } from '../../../lib/forms';
-import { authCopy } from '../../../content/site/auth';
-import { ACCOUNT, LOGIN, PRIVACY } from '../../_site/routes';
+import { useEffect, useRef, useState, type SubmitEvent } from 'react';
+import { useSearchParams } from 'next/navigation';
+import {
+  createBrowserAccount,
+  accountErrorText,
+  AccountRequestError,
+} from '../../_site/central-account-client';
+import type {
+  AccountView,
+  ProductTransactionView,
+  ProductSubmitResult,
+} from '../../../lib/account/contracts/types';
+import { ACCOUNT, PRIVACY } from '../../_site/routes';
+import { AccountAccessHelp } from '../../_site/account-access-help';
 
-// 登录 / 注册（新站视觉）：认证行为与旧版一致——better-auth 邮箱密码登录与注册，至少 12 位密码；
-// Google / GitHub 只有服务端配置了才出现（/api/auth-options），没配置时不摆出不能用的按钮。
-
-type Providers = { google: boolean; github: boolean };
-
+type Mode = 'login' | 'phone' | 'signup' | 'reset';
+const labels: Record<Mode, string> = {
+  login: '邮箱登录',
+  phone: '手机验证码',
+  signup: '邮箱注册',
+  reset: '找回密码',
+};
 export function LoginForm() {
-  const t = authCopy;
-  const [mode, setMode] = useState<'login' | 'signup'>('login');
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-  const [providers, setProviders] = useState<Providers | null>(null);
-  const [providersFailed, setProvidersFailed] = useState(false);
-  const searchParams = useSearchParams();
-  const { data: session } = authClient.useSession();
-
+  const [client] = useState(createBrowserAccount),
+    [mode, setMode] = useState<Mode>('login');
+  const [transaction, setTransaction] = useState<ProductTransactionView | null>(
+      null,
+    ),
+    [challenge, setChallenge] = useState<string | null>(null);
+  const [ready, setReady] = useState(false),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState(''),
+    [message, setMessage] = useState('');
+  const [account, setAccount] = useState<AccountView | null>(null),
+    [resetReady, setResetReady] = useState(false),
+    [address, setAddress] = useState('');
+  const [wait, setWait] = useState(0);
+  const active = useRef<ProductTransactionView | null>(null),
+    generation = useRef(0),
+    formRef = useRef<HTMLFormElement>(null);
+  const search = useSearchParams();
+  const keep = (value: ProductTransactionView | null) => {
+    active.current = value;
+    setTransaction(value);
+  };
   useEffect(() => {
+    const holder = active;
+    const epoch = generation;
     let alive = true;
-    fetch('/api/auth-options')
-      .then((response) => {
-        if (!response.ok) throw Error();
-        return response.json() as Promise<Providers>;
+    client
+      .session()
+      .then(async (value) => {
+        if (alive) {
+          setAccount(value);
+          setReady(true);
+          if (
+            value.state === 'AUTHENTICATED' &&
+            document.visibilityState === 'visible'
+          )
+            await client.activity();
+        }
       })
-      .then((value) => {
-        if (alive) setProviders(value);
-      })
-      .catch(() => {
-        if (alive) setProvidersFailed(true);
+      .catch((reason) => {
+        if (alive) setError(accountErrorText(reason));
       });
     return () => {
       alive = false;
+      epoch.current++;
+      const pending = holder.current;
+      holder.current = null;
+      if (pending)
+        void client.cancel(pending.handle).catch(() => {
+          /* Server expiry also fences abandoned transactions. */
+        });
     };
-  }, []);
-
-  async function submit(event: SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
+  }, [client]);
+  useEffect(() => {
+    if (!wait) return;
+    const timer = setTimeout(
+      () => setWait((value) => Math.max(0, value - 1)),
+      1000,
+    );
+    return () => clearTimeout(timer);
+  }, [wait]);
+  function handleFailure(reason: unknown) {
+    setError(accountErrorText(reason));
+    if (reason instanceof AccountRequestError && reason.retryAfterSeconds)
+      setWait(reason.retryAfterSeconds);
+  }
+  async function run(task: () => Promise<void>) {
     if (busy) return;
     setBusy(true);
     setError('');
-    const form = new FormData(event.currentTarget);
+    setMessage('');
     try {
-      const values = {
-        email: formText(form, 'email').trim(),
-        password: formText(form, 'password'),
-      };
-      const result =
-        mode === 'signup'
-          ? await authClient.signUp.email({
-              ...values,
-              name: formText(form, 'name').trim(),
-            })
-          : await authClient.signIn.email(values);
-      if (result.error) {
-        setError(
-          result.error.status === 429
-            ? t.errors.rate
-            : result.error.status >= 500 || result.error.status === 0
-              ? t.errors.service
-              : mode === 'login'
-                ? t.errors.login
-                : t.errors.signup,
-        );
+      await task();
+    } catch (reason) {
+      handleFailure(reason);
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function switchMode(next: Mode) {
+    await run(async () => {
+      generation.current++;
+      if (active.current)
+        await client.cancel(active.current.handle).catch((reason) => {
+          if (
+            !(reason instanceof AccountRequestError) ||
+            ![
+              'TRANSACTION_EXPIRED',
+              'PROOF_CONSUMED',
+              'VERSION_CONFLICT',
+            ].includes(reason.code)
+          )
+            throw reason;
+        });
+      keep(null);
+      setChallenge(null);
+      setResetReady(false);
+      setAddress('');
+      setWait(0);
+      setMode(next);
+      formRef.current?.reset();
+    });
+  }
+  async function complete(handle: string) {
+    const result = await client.submit(handle, { step: 'COMPLETE' });
+    if ('account' in result) {
+      keep(null);
+      setAccount(result.account);
+      formRef.current?.reset();
+    } else if ('operationReady' in result) {
+      setResetReady(true);
+      setChallenge(null);
+      formRef.current?.reset();
+    } else throw new AccountRequestError('AUTH_UNAVAILABLE');
+  }
+  async function submit(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget),
+      epoch = generation.current;
+    await run(async () => {
+      const password = formText(form, 'password');
+      if (form.has('confirm') && password !== form.get('confirm')) {
+        setError('两次输入的密码不一致。');
         return;
       }
-      window.location.assign(ACCOUNT);
-    } catch {
-      setError(t.errors.service);
-    } finally {
-      setBusy(false);
-    }
-  }
+      if (resetReady && transaction) {
+        await client.reset(transaction.handle, password);
+        keep(null);
+        setResetReady(false);
+        setMode('login');
+        formRef.current?.reset();
+        setMessage('密码已重设，请重新登录。');
+        return;
+      }
+      let tx = transaction;
+      if (!tx) {
+        tx = await client.create(
+          mode === 'login'
+            ? { purpose: 'LOGIN', method: 'EMAIL_PASSWORD' }
+            : mode === 'phone'
+              ? { purpose: 'LOGIN', method: 'PHONE_OTP' }
+              : {
+                  purpose:
+                    mode === 'signup' ? 'EMAIL_SIGNUP' : 'PASSWORD_RESET',
+                  method: 'EMAIL_CODE',
+                },
+        );
+        if (epoch !== generation.current) {
+          await client.cancel(tx.handle);
+          return;
+        }
+        keep(tx);
+      }
+      let result: ProductSubmitResult;
+      if (challenge) {
+        result = await client.submit(tx.handle, {
+          step: 'VERIFY_CHALLENGE',
+          challengeHandle: challenge,
+          credential: formText(form, 'code'),
+        });
+        if (!('handle' in result))
+          throw new AccountRequestError('AUTH_UNAVAILABLE');
+        keep(result);
+        setChallenge(null);
+        formRef.current?.reset();
+        if (result.nextStep === 'PHONE_LOGIN') {
+          await client.submit(tx.handle, { step: 'PHONE_LOGIN' });
+          await complete(tx.handle);
+        } else if (result.nextStep === 'COMPLETE') await complete(tx.handle);
+        return;
+      }
+      if (tx.nextStep === 'EMAIL_SIGNUP') {
+        await client.submit(tx.handle, {
+          step: 'EMAIL_SIGNUP',
+          email: address,
+          password,
+        });
+        await complete(tx.handle);
+        return;
+      }
+      const target =
+        (mode === 'phone' ? '+86' : '') + formText(form, 'address').trim();
+      setAddress(target);
+      if (mode === 'login') {
+        await client.submit(tx.handle, {
+          step: 'PASSWORD_LOGIN',
+          email: target,
+          password,
+        });
+        await complete(tx.handle);
+      } else {
+        result = await client.submit(tx.handle, {
+          step: 'REQUEST_CHALLENGE',
+          address: target,
+        });
+        if (!('challengeHandle' in result))
+          throw new AccountRequestError('AUTH_UNAVAILABLE');
+        setChallenge(result.challengeHandle);
+        setWait(result.retryAfterSeconds);
 
-  async function social(provider: 'google' | 'github') {
-    setBusy(true);
-    setError('');
-    try {
-      const result = await authClient.signIn.social({
-        provider,
-        callbackURL: ACCOUNT,
-        errorCallbackURL: `${LOGIN}?error=oauth`,
-      });
-      if (result.error) setError(t.errors.social);
-    } catch {
-      setError(t.errors.service);
-    } finally {
-      setBusy(false);
-    }
+        setMessage('验证码请求已受理。隔离测试请从 mock 投递记录获取验证码。');
+        formRef.current?.reset();
+      }
+    });
   }
-
-  if (session)
+  async function social(method: 'GOOGLE' | 'GITHUB') {
+    await run(async () => {
+      if (active.current) await client.cancel(active.current.handle);
+      const tx = await client.create({ purpose: 'LOGIN', method });
+      keep(tx);
+      const result = await client.submit(tx.handle, { step: 'START_PROVIDER' });
+      if (!('browserStartUrl' in result))
+        throw new AccountRequestError('AUTH_UNAVAILABLE');
+      // The BFF validates this exact Auth-origin browser-start URL. No identity or Token is accepted from the page.
+      active.current = null;
+      window.location.assign(result.browserStartUrl);
+    });
+  }
+  if (account?.state === 'AUTHENTICATED' || account?.state === 'OFFLINE_CACHED')
     return (
       <div className="m-auth-done">
-        <h1>{t.signedIn.title}</h1>
-        <p>{t.signedIn.hello(session.user.name)}</p>
-        <Link className="m-btn" href={ACCOUNT} data-dir="right">
-          {t.signedIn.go}
-          <ArrowRight size={14} aria-hidden="true" />
+        <h1>{account.user.displayName}</h1>
+        <p>
+          {account.state === 'AUTHENTICATED'
+            ? '已登录 Molis 账号'
+            : '当前离线，账号状态暂不可确认。'}
+        </p>
+        <Link className="m-btn" href={ACCOUNT}>
+          我的账号
         </Link>
       </div>
     );
-
-  const copy = mode === 'login' ? t.login : t.signup;
-  const anyProvider = Boolean(providers?.google || providers?.github);
+  const passwordStage = transaction?.nextStep === 'EMAIL_SIGNUP' || resetReady;
   return (
     <>
       <header className="m-auth-head">
-        <h1>{copy.title}</h1>
-        <p>{copy.lead}</p>
+        <h1>{resetReady ? '设置新密码' : labels[mode]}</h1>
       </header>
-      {anyProvider ? (
-        <div className="m-auth-social">
-          {providers?.google ? (
+      <div className="m-auth-modes" aria-label="登录与注册方式">
+        {(Object.keys(labels) as Mode[]).map((value) => (
+          <button
+            key={value}
+            type="button"
+            className="m-link"
+            aria-pressed={mode === value}
+            disabled={busy || !ready}
+            onClick={() => switchMode(value)}
+          >
+            {labels[value]}
+          </button>
+        ))}
+      </div>
+      <form
+        className="m-auth-form"
+        ref={formRef}
+        onSubmit={submit}
+        aria-busy={busy}
+      >
+        {challenge ? (
+          <>
+            <label className="m-field">
+              <span>六位验证码</span>
+              <input
+                name="code"
+                autoComplete="one-time-code"
+                inputMode="numeric"
+                pattern="[0-9]{6}"
+                minLength={6}
+                maxLength={6}
+                required
+              />
+            </label>
             <button
               type="button"
-              className="m-btn m-btn-line"
-              disabled={busy}
-              onClick={() => social('google')}
+              className="m-link"
+              disabled={busy || wait > 0}
+              onClick={() =>
+                run(async () => {
+                  if (transaction) await client.resend(transaction.handle);
+                  setWait(60);
+
+                  setMessage('验证码已重新发送。');
+                })
+              }
             >
-              {t.providers.google}
+              {wait ? `重新发送（${wait}s）` : '重新发送'}
             </button>
-          ) : null}
-          {providers?.github ? (
-            <button
-              type="button"
-              className="m-btn m-btn-line"
-              disabled={busy}
-              onClick={() => social('github')}
-            >
-              {t.providers.github}
-            </button>
-          ) : null}
-          <p className="m-auth-or">{t.providers.or}</p>
-        </div>
-      ) : (
-        <p className="m-auth-note">
-          {providersFailed ? t.providers.unknown : t.providers.note}
-        </p>
-      )}
-      <form className="m-auth-form" onSubmit={submit}>
-        {mode === 'signup' ? (
-          <label className="m-field">
-            <span>{t.fields.name}</span>
-            <input
-              name="name"
-              autoComplete="name"
-              required
-              maxLength={40}
-              placeholder={t.fields.namePlaceholder}
-            />
-          </label>
+          </>
+        ) : passwordStage ? (
+          <>
+            <label className="m-field">
+              <span>新密码（至少 12 位）</span>
+              <input
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                minLength={12}
+                maxLength={128}
+                required
+              />
+            </label>
+            <label className="m-field">
+              <span>再次输入新密码</span>
+              <input
+                name="confirm"
+                type="password"
+                autoComplete="new-password"
+                minLength={12}
+                maxLength={128}
+                required
+              />
+            </label>
+          </>
+        ) : (
+          <>
+            <label className="m-field">
+              <span>{mode === 'phone' ? '中国大陆手机号（+86）' : '邮箱'}</span>
+              <input
+                name="address"
+                type={mode === 'phone' ? 'tel' : 'email'}
+                autoComplete={mode === 'phone' ? 'tel-national' : 'email'}
+                pattern={mode === 'phone' ? '1[3-9][0-9]{9}' : undefined}
+                maxLength={mode === 'phone' ? 11 : 254}
+                required
+              />
+            </label>
+            {mode === 'login' ? (
+              <label className="m-field">
+                <span>密码</span>
+                <input
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  maxLength={128}
+                  required
+                />
+              </label>
+            ) : null}
+          </>
+        )}
+        {mode === 'phone' ? (
+          <p className="m-auth-note">未注册手机号验证后将自动注册。</p>
         ) : null}
-        <label className="m-field">
-          <span>{t.fields.email}</span>
-          <input
-            type="email"
-            name="email"
-            required
-            autoComplete="email"
-            maxLength={254}
-            placeholder="you@example.com"
-          />
-        </label>
-        <label className="m-field">
-          <span>{t.fields.password}</span>
-          <input
-            type="password"
-            name="password"
-            required
-            minLength={12}
-            maxLength={128}
-            autoComplete={
-              mode === 'login' ? 'current-password' : 'new-password'
-            }
-            placeholder={t.fields.passwordPlaceholder}
-          />
-        </label>
-        {mode === 'signup' ? (
+        {mode === 'signup' && passwordStage ? (
           <label className="m-check">
             <input type="checkbox" required />
             <span>
-              {t.signup.consent[0]}
+              我已阅读并同意
               <Link className="m-inline" href={PRIVACY}>
-                {t.signup.consent[1]}
+                隐私政策
               </Link>
-              {t.signup.consent[2]}
+              。
             </span>
           </label>
         ) : null}
-        <button className="m-btn m-auth-submit" disabled={busy}>
-          {busy ? t.busy : copy.submit}
+        <button className="m-btn m-auth-submit" disabled={!ready || busy}>
+          {busy
+            ? '请稍候…'
+            : challenge
+              ? '验证并继续'
+              : resetReady
+                ? '重设密码'
+                : passwordStage
+                  ? '完成注册'
+                  : mode === 'login'
+                    ? '登录'
+                    : '发送验证码'}
         </button>
-        <p className="m-auth-error" role="alert">
-          {error || (searchParams.has('error') ? t.errors.oauth : '')}
-        </p>
       </form>
-      <p className="m-auth-switch">
-        {copy.switchText}
+      <p className="m-auth-error" role="alert">
+        {error ||
+          (!search.has('auth')
+            ? ''
+            : search.get('auth') === 'cancelled'
+              ? '已取消第三方登录。'
+              : search.get('auth') === 'failed'
+                ? '第三方登录未完成，请重新发起。'
+                : '')}
+      </p>
+      <output className="m-auth-ok" aria-live="polite">
+        {message}
+      </output>
+      {error ? (
         <button
           type="button"
           className="m-link"
-          onClick={() => {
-            setMode(mode === 'login' ? 'signup' : 'login');
-            setError('');
-          }}
+          disabled={busy}
+          onClick={() => window.location.reload()}
         >
-          {copy.switchAction}
+          重新开始
         </button>
-      </p>
-      <p className="m-auth-foot">{t.footnote}</p>
+      ) : null}
+      <div className="m-auth-social">
+        <button
+          type="button"
+          className="m-btn m-btn-line"
+          disabled={busy || !ready}
+          onClick={() => social('GOOGLE')}
+        >
+          使用 Google 登录
+        </button>
+        <button
+          type="button"
+          className="m-btn m-btn-line"
+          disabled={busy || !ready}
+          onClick={() => social('GITHUB')}
+        >
+          使用 GitHub 登录
+        </button>
+      </div>
+      <AccountAccessHelp />
     </>
   );
 }
