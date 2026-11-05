@@ -27,13 +27,13 @@
 | --- | --- |
 | `CLOUDFLARE_D1_DATABASE_NAME` | 预览 D1 名称，首次为 `molis-club-preview`。 |
 | `CLOUDFLARE_D1_DATABASE_ID` | Cloudflare 创建 D1 后返回的数据库 ID。 |
-| `BETTER_AUTH_URL` | 完整的 HTTPS `workers.dev` origin，不含路径。 |
+| `MOLIS_CLUB_ACCOUNT_CONFIG` | 与中央登记一致的环境/客户端 JSON；来源、精确回调及 MOCK/LIVE 策略见登录配置。 |
 
-`BETTER_AUTH_SECRET` 必须作为 Worker 的加密 Secret 注入，不能保存为普通构建变量、仓库变量或文档内容。Google/GitHub OAuth 和邮件变量在首次验证中不启用。
+`MOLIS_CLUB_ACCOUNT_KEY` 必须作为 Worker 的运行时 Secret 注入，使用随机 32 字节的无填充 base64url，不能保存为普通构建变量、仓库变量或文档内容。Google/GitHub 与投递配置由中央 Auth 管理，旧 BETTER_AUTH 配置不再启用认证。正式域名和真实提供方尚未准备，本轮仅本地或隔离 mock，不执行部署。
 
 ## 数据库初始化
 
-创建空的预览 D1 后，按顺序且每个文件仅执行一次：
+下列命令是旧站结构初始化记录，仅适用于另行获准创建的空预览 D1。本轮不执行远程命令；当前中央账号还需按迁移日志应用 `0004` 至 `0006`，真实存量须先审核[切换方案](ACCOUNT-CUTOVER.md)。
 
 ```sh
 npx wrangler d1 execute molis-club-preview --remote --file drizzle/0000_jittery_lady_deathstrike.sql
@@ -50,13 +50,13 @@ npx wrangler d1 execute molis-club-preview --remote --file drizzle/0003_applicat
 
 1. 部署令牌仅授权 Workers Scripts、D1 和本项目构建所需账户权限；不得使用 Global API Key。
 2. Worker 在首次公开请求前启用 Cloudflare Access，策略只允许当前 Cloudflare 账号成员。
-3. `BETTER_AUTH_SECRET` 使用 32 字节以上随机值，只在 Cloudflare Secret 存储中保留。
+3. `MOLIS_CLUB_ACCOUNT_KEY` 使用上述独立随机密钥，只在运行时 Secret 存储中保留；实例重启保持相同。
 4. 部署日志不得打印 Secret、会话令牌、OAuth Token、用户邮箱、IP 或表单内容。
 5. 预览通过后再建立独立 Production D1、独立 Secret 和正式域名；不得把预览数据库直接晋升为 Production。
 6. `adeptify.me` 的 Nameserver 和自定义域名绑定属于后续独立变更，首次预览不得修改。
 
 ## 回滚
 
-- Worker 回滚到上一个已验证版本，不回滚或覆盖 D1。
+- Worker 只能回退到仍保持旧认证入口关闭、能处理当前映射及可空邮箱结构的已验证版本；不回滚或覆盖 D1。不能重新接受旧 Cookie 或恢复旧写入口，详见[切换回退](ACCOUNT-CUTOVER.md)。
 - 数据库迁移执行前保留导出或 Time Travel 恢复点；结构变更必须另行审查。
 - 若首次部署失败，删除失败的预览 Worker 和空预览 D1，GitHub 与域名控制权不受影响。

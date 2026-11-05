@@ -2,7 +2,7 @@
 
 Molis AI 官网的代码仓库（仓库名 molis-club；对外品牌始终是 Molis AI）。Molis AI 是一间围绕工作、生活与体验研发 AI 产品的工作室，官网介绍五件产品、企业合作、社区与工作室本身。
 
-单一 React + Vinext 应用，源码在仓库根目录。页面与接口跑在 Cloudflare Workers 上，数据在 D1，账号用 Better Auth。
+单一 React + Vinext 应用，源码在仓库根目录。页面与接口跑在 Cloudflare Workers 上，数据在 D1，账号通过 Club BFF 接入中央 Auth。
 
 ## 网站有什么
 
@@ -15,8 +15,8 @@ Molis AI 官网的代码仓库（仓库名 molis-club；对外品牌始终是 Mo
 | 关于（四间展厅）：认识我们、我们相信什么、文章、沿途 | `/team`、`/about`、`/essays`、`/along-the-way`                   |
 | 联系、登录、账号、隐私说明                           | `/contact`、`/login`、`/account`、`/privacy`                     |
 
-- 后端只有三件事：邮箱密码账号（注册、登录、退出、改密）、联系表单（`/api/join`，内容只进团队私密收件箱）、留言（`/api/notes`）。
-- 还没开放的不摆出来：Google / GitHub 登录要等 OAuth 凭据；邮箱验证、找回密码的邮件还没做。
+- 账号入口提供注册登录、个人资料、租户成员、订阅席位、权益及平台管理；另有联系表单（`/api/join`，内容只进团队私密收件箱）和保留的留言接口（`/api/notes`）。
+- 短信、邮件、Google / GitHub 使用隔离 mock；真实账号迁移、支付和业务共享尚未实施。旧 Better Auth API 已关闭，旧账号与历史数据保留。
 - `/demos/**` 是历轮比稿的评审页，留作参照，不改；正式官网不从里面引用代码。
 
 ## 在哪里能看到
@@ -35,9 +35,9 @@ npm ci
 cp .dev.vars.example .dev.vars
 ```
 
-在 `.dev.vars` 填入至少 32 字符的随机 `BETTER_AUTH_SECRET`（可用 `openssl rand -hex 32` 生成），本地 `BETTER_AUTH_URL` 保持 `http://localhost:3000`。不要提交真实凭据。
+在 `.dev.vars` 填入独立的 `MOLIS_CLUB_ACCOUNT_KEY`，并按隔离 Auth 登记设置 `MOLIS_CLUB_ACCOUNT_CONFIG`。格式及生成命令见[登录配置](docs/AUTH-SETUP.md)。不要提交真实凭据。
 
-首次启动前，构建本地 Worker 配置并按序初始化本地数据库：
+以下初始化命令只适用于新建的合成数据库；已有数据先核对迁移记录，不直接照抄执行：
 
 ```bash
 npm run build
@@ -45,6 +45,9 @@ npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/se
 npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0001_nebulous_power_man.sql
 npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0002_curved_ultron.sql
 npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0003_applications_multiple_submissions.sql
+npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0004_central_account_sessions.sql
+npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0005_central_account_transactions.sql
+npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0006_light_prism.sql
 npm run dev
 ```
 
@@ -57,11 +60,10 @@ npm run check   # 类型检查
 npm run lint
 npm test
 npm run build
-# 另一个终端保持 npm run dev 运行
-npm run test:http
+node scripts/test-account-routes.mjs # 临时 Worker/D1，验证构建产物旧入口关闭
 ```
 
-`test:http` 只对本地开发服务跑：会建本地测试账号，检查每一页、真实认证、留言与表单。
+中央账号测试与联合演练见[登录配置](docs/AUTH-SETUP.md)及[切换验收](docs/ACCOUNT-CUTOVER.md)。`tests/auth-http.mjs` 现在是只读旧入口检查，需显式 `MOLIS_CLUB_TEST_ORIGIN=http://127.0.0.1:3000`；现有 `test:http` 还包含向开发服务写入表单的历史站点/社区检查，不属于隔离迁移演练，不对保留真实数据的环境运行。
 
 ## 日常维护
 
