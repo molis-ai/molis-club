@@ -2085,6 +2085,18 @@
   color: var(--mute);
 }
 
+.wk-license {
+  max-width: 48ch;
+  margin: 0.75rem auto 0;
+  font-size: var(--t-small);
+  color: var(--mute);
+}
+
+.wk-license a {
+  display: inline-block;
+  text-decoration: underline;
+}
+
 .wk-flow .wk-end {
   position: absolute;
   inset: var(--pt, 0) var(--pi, 0) var(--pi, 0);

@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { WorkLicense } from './license';
 import { workCases, workEnd, workHand, workHero, workStage, workWhy, type WorkBeatId } from '../../../content/site/work';
 import { contactHref } from '../../_site/routes';
 import { Btn, mediaOf, Phrases, Status } from '../../_site/ui';
@@ -447,6 +448,7 @@ export function Flow() {
                 <Btn href={contactHref('work')}>{workHero.go}</Btn>
               </div>
               <p className="wk-end-own">{workWhy.own}</p>
+              <WorkLicense />
             </div>
 
             <p className="wk-foot" data-on={at < I.end || undefined}>

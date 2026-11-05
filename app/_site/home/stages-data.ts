@@ -40,7 +40,7 @@ export type IntroProduct = {
   soon?: boolean;
   /** 去处按钮 */
   more: string;
-  /** 第二个去处（Work 的开源代码） */
+  /** 第二个去处（Work 的源代码） */
   extra?: { label: string; href: string };
   /** 还是概念 */
   concept?: boolean;
@@ -84,7 +84,7 @@ const local: Record<
   }
 > = {
   work: {
-    rowNote: '重点推进 · 开源开发中',
+    rowNote: '重点推进 · 开发中',
     extra: { label: homeProducts.work.github ?? '', href: WORK_GITHUB },
     chapters: titles('work', 0, 3).map((title) => ({ title })),
     sceneNote: desk.note,
