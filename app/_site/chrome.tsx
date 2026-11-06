@@ -13,13 +13,13 @@ import {
 import pageDates from '../../content/site/page-dates.json';
 import {
   ABOUT,
+  ACCOUNT,
   ALONG,
   COMMUNITY,
   CONTACT,
   ENTERPRISE,
   ESSAYS,
   GITHUB,
-  LOGIN,
   METHODS,
   PRIVACY,
   productHref,
@@ -218,8 +218,12 @@ export function Header() {
         </Link>
       </nav>
       <div className="m-head-end">
-        <Link className="m-login" href={LOGIN}>
-          {nav.login}
+        <Link
+          className="m-login"
+          href={ACCOUNT}
+          aria-current={path === ACCOUNT ? 'page' : undefined}
+        >
+          {nav.account}
         </Link>
         <Link
           className="m-btn m-chat"
@@ -251,7 +255,7 @@ export function Header() {
             <Link href={ENTERPRISE}>{nav.enterprise}</Link>
             <Link href={COMMUNITY}>{nav.community}</Link>
             <Link href={ABOUT}>{nav.about}</Link>
-            <Link href={LOGIN}>{nav.login}</Link>
+            <Link href={ACCOUNT}>{nav.account}</Link>
             <Link className="m-btn" href={CONTACT}>
               {nav.chat}
             </Link>
@@ -344,7 +348,7 @@ export function Footer() {
                   <Link href={CONTACT}>{nav.chat}</Link>
                 </li>
                 <li>
-                  <Link href={LOGIN}>{nav.login}</Link>
+                  <Link href={ACCOUNT}>{nav.account}</Link>
                 </li>
                 <li>
                   <Link href={PRIVACY}>{footer.privacy}</Link>

@@ -1,4 +1,10 @@
-import { sqliteTable, text, index, integer } from 'drizzle-orm/sqlite-core';
+import {
+  sqliteTable,
+  text,
+  index,
+  uniqueIndex,
+  integer,
+} from 'drizzle-orm/sqlite-core';
 export const notes = sqliteTable(
   'notes',
   {
@@ -46,7 +52,7 @@ const dates = () => ({
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
-  email: text('email').notNull().unique(),
+  email: text('email').unique(),
   emailVerified: integer('email_verified', { mode: 'boolean' })
     .notNull()
     .default(false),
@@ -109,3 +115,80 @@ export const rateLimit = sqliteTable('rate_limit', {
   count: integer('count').notNull(),
   lastRequest: integer('last_request').notNull(),
 });
+
+// Central Auth sessions are separate from Better Auth and from local business users.
+// The primary key is a digest of the opaque browser Cookie, never its bearer value.
+export const centralAccountSessions = sqliteTable(
+  'central_account_sessions',
+  {
+    id: text('id').primaryKey(),
+    context: text('context').notNull(),
+    state: text('state').notNull(),
+    epoch: integer('epoch').notNull().default(0),
+    version: integer('version').notNull().default(0),
+    userId: text('user_id'),
+    loginId: text('login_id'),
+    tokenBox: text('token_box'),
+    accessExpiresAt: integer('access_expires_at'),
+    expiresAt: integer('expires_at').notNull(),
+    publicUser: text('public_user'),
+    publicSession: text('public_session'),
+    pendingNonce: text('pending_nonce'),
+    pendingExpires: integer('pending_expires'),
+    refreshLease: text('refresh_lease'),
+    refreshUntil: integer('refresh_until'),
+    logoutKey: text('logout_key'),
+    logoutScope: text('logout_scope'),
+    logoutResult: text('logout_result'),
+    logoutUntil: integer('logout_until'),
+    createdAt: integer('created_at').notNull(),
+  },
+  (t) => [
+    index('central_account_context_user').on(t.context, t.userId),
+    uniqueIndex('central_account_context_login').on(t.context, t.loginId),
+  ],
+);
+
+// Pending credential proofs are encrypted and bound to the browser login permit.
+export const centralAccountTransactions = sqliteTable(
+  'central_account_transactions',
+  {
+    id: text('id').primaryKey(),
+    context: text('context').notNull(),
+    browserDigest: text('browser_digest').notNull(),
+    centralId: text('central_id').notNull(),
+    state: text('state').notNull(),
+    version: integer('version').notNull().default(0),
+    expiresAt: integer('expires_at').notNull(),
+    leaseUntil: integer('lease_until'),
+    box: text('box'),
+  },
+  (t) => [
+    uniqueIndex('central_account_transaction_upstream').on(
+      t.context,
+      t.centralId,
+    ),
+  ],
+);
+
+// A local business user can be linked to exactly one reviewed central identity.
+export const centralBusinessIdentities = sqliteTable(
+  'central_business_identities',
+  {
+    localUserId: text('local_user_id')
+      .primaryKey()
+      .references(() => user.id),
+    issuer: text('issuer').notNull(),
+    authUserId: text('auth_user_id').notNull(),
+    evidence: text('evidence').notNull(),
+    evidenceReference: text('evidence_reference').notNull(),
+    reviewedBy: text('reviewed_by').notNull(),
+    reviewedAt: text('reviewed_at').notNull(),
+    sourceDigest: text('source_digest').notNull(),
+    decisionDigest: text('decision_digest').notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (t) => [
+    uniqueIndex('central_business_identity_subject').on(t.issuer, t.authUserId),
+  ],
+);

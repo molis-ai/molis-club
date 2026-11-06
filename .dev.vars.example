@@ -1,8 +1,7 @@
-# Generate a random value with: openssl rand -hex 32
-BETTER_AUTH_SECRET=
-BETTER_AUTH_URL=http://localhost:3000
-# Optional: configure both keys for a provider before enabling its login.
-# GOOGLE_CLIENT_ID=
-# GOOGLE_CLIENT_SECRET=
-# GITHUB_CLIENT_ID=
-# GITHUB_CLIENT_SECRET=
+# Local synthetic Auth registration must match these origins and client IDs.
+# Generate once: node -e "process.stdout.write(require('node:crypto').randomBytes(32).toString('base64url'))"
+# Keep the key stable across restarts; never commit the real value.
+MOLIS_CLUB_ACCOUNT_KEY=
+MOLIS_CLUB_ACCOUNT_CONFIG='{"applicationId":"molis-club-unified-local-app","redirectUri":"http://127.0.0.1:3000/account/callback","client":{"environmentId":"unified-local","environmentKind":"LOCAL","authOrigin":"http://127.0.0.1:8787","productOrigin":"http://127.0.0.1:3000","clientId":"molis-club-unified-local","policyProfile":"unified-account-v2","redirectAllowlist":["http://127.0.0.1:3000/account/callback"],"deliveryMode":"MOCK","providerMode":"MOCK"}}'
+# Delivery and Google/GitHub providers are configured in Auth, not Club.
+# Former BETTER_AUTH_* and provider credentials do not enable retired /api/auth routes.

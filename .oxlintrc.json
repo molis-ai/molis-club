@@ -53,5 +53,15 @@
     "typescript/no-unnecessary-type-constraint": "error",
     "typescript/no-unsafe-function-type": "error",
     "nextjs/no-img-element": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["lib/account/contracts/validate.ts"],
+      "rules": {
+        "eslint/no-control-regex": "off",
+        "typescript/no-misused-spread": "off",
+        "typescript/no-base-to-string": "off"
+      }
+    }
+  ]
 }

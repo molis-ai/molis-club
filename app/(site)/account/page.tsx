@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Account } from './account';
+import { CentralAccount } from './central-account';
 import '../../_site/auth.css';
 
 export const metadata: Metadata = {
@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 export default function AccountPage() {
   return (
     <div className="m-auth m-top">
-      <div className="m-auth-card">
+      <div className="m-auth-card m-account-card">
         <h1 className="m-kicker">我的账号</h1>
-        <Account />
+        <CentralAccount />
       </div>
     </div>
   );

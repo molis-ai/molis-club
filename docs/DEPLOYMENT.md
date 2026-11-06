@@ -6,6 +6,8 @@ molis-club 社区网站的前后端位于仓库根目录，部署目标为 Sites
 
 Sites 托管的账号、配额与收费由 Sites 当前政策决定，不能用 Cloudflare 自有账号的免费额度承诺 Sites 永久免费。此次没有购买域名或开通付费云服务。
 
+当前分支的统一账号环境与切换要求以 [AUTH-SETUP.md](AUTH-SETUP.md) 为准；下方旧站成本记录不是当前中央 Auth 的实测容量或上线结论。
+
 ## 自有账号最低运行成本方案
 
 推荐 Cloudflare Workers Static Assets + Workers API + D1。前端静态资源由边缘网络提供，API 负责留言、申请、身份与未来审核；D1 保存结构化数据。初期图片随版本打包，不需要 R2；将来允许用户上传时才加对象存储。
@@ -58,6 +60,6 @@ npm run build
 
 ## 当前部署标识
 
-站点标签与应用名统一为 molis-club，仍复用 .openai/hosting.json 指定的同一私有 Site 与 D1。生产认证只配置 BETTER_AUTH_SECRET（secret）和 BETTER_AUTH_URL；Google/GitHub 尚无外部凭据。迁移文件保留历史留言与申请，不因更名重建表。账号接入详见 [AUTH-SETUP.md](./AUTH-SETUP.md)。
+站点标签与应用名统一为 molis-club，仍复用 .openai/hosting.json 指定的同一私有 Site 与 D1。原 Better Auth 配置属于历史记录，当前分支已改用中央配置与独立运行时密钥，并关闭旧入口；本轮没有核对或变更真实部署。Google/GitHub 与投递仍为隔离 mock。迁移文件保留历史留言与申请，不因更名重建表。账号接入详见 [AUTH-SETUP.md](./AUTH-SETUP.md)。
 
 本次整理的验证结果见 [需求与验收](../specs/molis-club/spec.md)。上方价格资料记录于2026-09-06，开通服务前应再核对提供商价格。

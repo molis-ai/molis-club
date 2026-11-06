@@ -1,3 +1,2 @@
-import { authOptions } from '../../../lib/auth';
-export const GET = () =>
-  Response.json(authOptions(), { headers: { 'Cache-Control': 'no-store' } });
+import { retiredAccountEntry } from '../../../lib/account/retired-entry';
+export const GET = retiredAccountEntry;
