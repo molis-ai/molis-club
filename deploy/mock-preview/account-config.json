@@ -1,0 +1,17 @@
+{
+  "applicationId": "molis-club-unified-mock-preview-app",
+  "redirectUri": "https://molis-club-preview.sparkling-silence-0a49.workers.dev/account/callback",
+  "client": {
+    "environmentId": "unified-mock-preview-20261106",
+    "environmentKind": "TEST",
+    "authOrigin": "https://molis-auth-preview.sparkling-silence-0a49.workers.dev",
+    "productOrigin": "https://molis-club-preview.sparkling-silence-0a49.workers.dev",
+    "clientId": "molis-club-unified-mock-preview",
+    "policyProfile": "unified-account-v2",
+    "redirectAllowlist": [
+      "https://molis-club-preview.sparkling-silence-0a49.workers.dev/account/callback"
+    ],
+    "deliveryMode": "MOCK",
+    "providerMode": "MOCK"
+  }
+}

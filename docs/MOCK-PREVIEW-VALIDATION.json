@@ -1,0 +1,117 @@
+{
+  "recordedAt": "2026-11-06T15:50:22.695115+00:00",
+  "status": "LOCAL_VALIDATION_PASS_CLOUDFLARE_LOGIN_BLOCKED",
+  "scope": "Synthetic-only TEST/MOCK preview preparation; not a completed deployment.",
+  "bases": {
+    "auth": "67904ef1b378b49386163c6d9eaa4a9c34a7dd0c",
+    "club": "ec1efb28b8ef58a6f0ea260ed9faf67b2f33a238"
+  },
+  "environment": {
+    "environmentId": "unified-mock-preview-20261106",
+    "environmentKind": "TEST",
+    "authOrigin": "https://molis-auth-preview.sparkling-silence-0a49.workers.dev",
+    "productOrigin": "https://molis-club-preview.sparkling-silence-0a49.workers.dev",
+    "clientId": "molis-club-unified-mock-preview",
+    "policyProfile": "unified-account-v2",
+    "redirectAllowlist": [
+      "https://molis-club-preview.sparkling-silence-0a49.workers.dev/account/callback"
+    ],
+    "deliveryMode": "MOCK",
+    "providerMode": "MOCK"
+  },
+  "planned": {
+    "authWorker": "molis-auth-preview",
+    "clubWorker": "molis-club-preview",
+    "authDatabase": "molis-auth-mock-preview-20261106",
+    "clubDatabase": "molis-club-mock-preview-20261106"
+  },
+  "local": {
+    "authBuild": {
+      "exitCode": 0,
+      "path": "/private/tmp/molis-mock-preview-20261106/auth-build.log",
+      "bytes": 2515,
+      "sha256": "215dad44a7cc99a2431ab21e7e07aade428291d4eea02e5b1bbfda341f3eecae"
+    },
+    "authPreviewPackage": {
+      "exitCode": 0,
+      "path": "/private/tmp/molis-mock-preview-20261106/auth-mock-package.log",
+      "bytes": 1801,
+      "sha256": "d31503676dbfbaf63dbc7945e6eef627e2671b6795bd1c45d899a299ad08151f"
+    },
+    "authTests": {
+      "command": "node /Users/ninebot/workspace/ypf/code/molis-work/scripts/machine-slot.mjs run browser --label \"Auth isolated mock preview configuration\" -- node --test --test-concurrency=1 worker/tests/unified-configuration.test.ts worker/tests/deployment.test.ts worker/tests/mock-preview.test.ts",
+      "cwd": "/Users/ninebot/workspace/ypf/code/auth/.claude/worktrees/mock-account-preview",
+      "exitCode": 0,
+      "testFiles": 3,
+      "passed": 11,
+      "failed": 0,
+      "logPath": "/private/tmp/molis-mock-preview-20261106/auth-preview-config-tests.log",
+      "bytes": 1149,
+      "sha256": "daec4997a334e22cc294830347b5767c5704bfb138ae27c5b6915b32d597b8ca",
+      "scope": "Offline tests with newly-created in-memory SQLite databases only; all actual Auth migrations 0001 through 0011, mock preview seed, configured DB/client/callback agreement. Does not validate a remote deployment."
+    },
+    "clubBuild": {
+      "exitCode": 0,
+      "path": "/private/tmp/molis-mock-preview-20261106/club-build.log",
+      "bytes": 17587,
+      "sha256": "ac0979e7b90dbc6d4bcd947b56e76ea3136c2e8d8b802188a7875a76b0f327d3",
+      "d1Id": "00000000-0000-4000-8000-000000000000",
+      "d1IdPurpose": "Local build placeholder only, not a remote deployment target."
+    },
+    "clubTests": {
+      "exitCode": 0,
+      "passed": 7,
+      "failed": 0,
+      "path": "/private/tmp/molis-mock-preview-20261106/club-account-config-tests.log",
+      "bytes": 948,
+      "sha256": "7b03293fcc8aa82e9a30f5a43969b6d6519d18bd4afc16bb99fa02a93f877448"
+    },
+    "missingConfigRejection": {
+      "expectedNonzero": true,
+      "passed": true,
+      "path": "/private/tmp/molis-mock-preview-20261106/club-missing-config-rejection.log",
+      "bytes": 1756,
+      "sha256": "2da8265f3b769beac7879e23b74d8887d46dc9db29179d92cdad2a960d2d83e8"
+    },
+    "builtClubProfileMatches": true,
+    "authFinalConfigRecheck": {
+      "exitCode": 0,
+      "passed": 2,
+      "scope": "Rerun of the same two new tests after documentation update; not additional distinct tests.",
+      "path": "/private/tmp/molis-mock-preview-20261106/auth-preview-final-tests.log",
+      "bytes": 326,
+      "sha256": "c833b4c6cd81d4fc68ea411b9f58031e973b07e0d058abf9d6559e18e47d3fed"
+    }
+  },
+  "remote": {
+    "wranglerLoginCompleted": false,
+    "newDatabasesCreated": false,
+    "runtimeSecretsGenerated": false,
+    "runtimeSecretsUploaded": false,
+    "authDeployed": false,
+    "clubDeployed": false,
+    "onlineLoginVerified": false,
+    "experienceUrl": null,
+    "realDataAccessed": false
+  },
+  "blocker": {
+    "reason": "Cloudflare OAuth/device/login pages remain on loading in both agent-controlled Chrome and user attempt. Wrangler OAuth did not complete before expiry. System proxy is required for CLI connectivity; using existing proxy reaches Cloudflare API but does not replace login.",
+    "userApprovedScopes": [
+      "account:read",
+      "user:read",
+      "workers_scripts:write",
+      "workers_tail:read",
+      "d1:write",
+      "offline_access"
+    ]
+  },
+  "remaining": [
+    "Complete Cloudflare login with already approved scopes using the existing system proxy.",
+    "Create the two named fresh D1 databases and record returned UUIDs; never substitute existing databases.",
+    "Apply Auth 0001-0011 and Club 0000-0006 only to those new databases; execute the Auth mock seed once.",
+    "Generate separate runtime keys and upload PROVIDER_STATE_KEY to Auth and MOLIS_CLUB_ACCOUNT_KEY to Club.",
+    "Set Club Cloudflare build variables with the actual new D1 ID and checked-in TEST/MOCK account profile.",
+    "Deploy both exact preview Workers, preserve access policy, then verify both mock providers, email/phone flows, reload and logout online.",
+    "Publish verified experience URL and synthetic login instructions only after end-to-end success."
+  ]
+}
