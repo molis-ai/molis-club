@@ -226,3 +226,8 @@ CLUB-09 配置复验：Cloudflare 构建使用明确合成 D1 标识与中央 LO
 - **K03-02** 登录页及“登录方式与密码”区域共用“无法使用登录方式？”折叠帮助，指引仍可用方式验证换绑、邮箱找回、全部丢失找回原方式；明确无人工恢复及新账号不继承原内容。展开/收起保留表单，可继续既有注册和账号管理。证明：`scripts/test-account-browser.mjs` 中 K03-02 / UAS-08（真实 Auth/BFF、临时 D1、Chrome）。
 
 帮助组件为 `app/_site/account-access-help.tsx`；未新增账号恢复 API，未修改历史业务身份和数据。外部提供方继续 mock。共享资源的 VIEW/DOWNLOAD 合同由 Auth `worker/rust-tests/shared-resource-fixture.ts` 与真实 Auth 场景验证，未增加 Club 共享产品路由。阶段结果由 Auth 交付记录汇总。
+
+
+## T-01 开发分支验证（2026-11-06）
+
+Cloudflare 非生产分支自动构建已按授权关闭，开发分支 push 由 `.github/workflows/development-checks.yml` 只运行类型、lint、测试和合成配置构建。流程不引用生产凭据，不上传产物或 Worker 版本、不部署、不操作远程数据库；账号配置为回环来源的 LOCAL/MOCK，D1 为占位 ID。生产构建仍必须提供有效账号配置，缺失拒绝保持。本地类型、lint、77/77 测试与该配置的完整构建通过；准确提交、流水线文件摘要、后续远端检查由 Auth 交付记录统一维护。
