@@ -27,6 +27,9 @@ const cloudflareDatabaseName = requireCloudflareDeployValue(
 );
 const runtimeVars: Record<string, string> = {};
 const accountConfig = requireCloudflareDeployValue('MOLIS_CLUB_ACCOUNT_CONFIG');
+const authService = isCloudflareDeploy
+  ? process.env.MOLIS_CLUB_AUTH_SERVICE?.trim()
+  : undefined;
 if (accountConfig !== undefined) {
   readClubAccountConfig(accountConfig);
   runtimeVars.MOLIS_CLUB_ACCOUNT_CONFIG = accountConfig;
@@ -73,6 +76,9 @@ const localBindingConfig = {
   main: 'vinext/server/fetch-handler',
   compatibility_flags: ['nodejs_compat'],
   vars: runtimeVars,
+  services: authService
+    ? [{ binding: 'MOLIS_CLUB_AUTH', service: authService }]
+    : [],
   d1_databases: d1
     ? [
         {

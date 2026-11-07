@@ -189,7 +189,7 @@ void test('CLUB-01/UAS-01/11/26: fixed server operations preserve versions and i
     'Bearer ' + session.accessToken,
   );
   assert.equal(sent.headers.has('Cookie'), false);
-  assert.equal(sent.redirect, 'error');
+  assert.equal(sent.redirect, 'manual');
   assert.equal(sent.credentials, 'omit');
   assert.deepEqual(await sent.json(), {
     displayName: 'Changed',
