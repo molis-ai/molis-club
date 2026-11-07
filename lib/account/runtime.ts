@@ -8,7 +8,7 @@ import { createClubSessionManager } from './sessions.ts';
 import { AccountFailure, accountFailure } from './errors.ts';
 
 /** The D1 owner persists sessions across requests, Worker instances, and restarts. */
-export async function handleAccountRequest(
+async function handleRequest(
   request: Request,
   businessSlugs?: string[],
 ): Promise<Response> {
@@ -16,7 +16,11 @@ export async function handleAccountRequest(
     const config = readClubAccountConfig(env.MOLIS_CLUB_ACCOUNT_CONFIG);
     if (!config || !env.DB)
       throw new AccountFailure(503, 'UNIFIED_CONFIGURATION_INVALID');
-    const client = createCentralAccountClient(config);
+    const authService = env.MOLIS_CLUB_AUTH;
+    const client = createCentralAccountClient(
+      config,
+      authService ? (request) => authService.fetch(request) : undefined,
+    );
     const owner = await createClubSessionManager({
       db: env.DB,
       client,
@@ -60,4 +64,15 @@ export async function handleAccountRequest(
       headers: { 'Cache-Control': 'no-store' },
     });
   }
+}
+
+export function handleAccountRequest(request: Request): Promise<Response> {
+  return handleRequest(request);
+}
+
+export function handleAccountNoteRequest(
+  request: Request,
+  slugs: string[],
+): Promise<Response> {
+  return handleRequest(request, slugs);
 }

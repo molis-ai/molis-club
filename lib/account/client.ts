@@ -156,7 +156,8 @@ export function createCentralAccountClient(
         new Request(pinned.client.authOrigin + path, {
           method: entry.method,
           headers,
-          redirect: 'error',
+          // Workers accepts manual redirects. Reject them before reading the body.
+          redirect: 'manual',
           credentials: 'omit',
           cache: 'no-store',
           signal,
@@ -166,7 +167,8 @@ export function createCentralAccountClient(
         }),
       );
       requireAccount(
-        !response.redirected &&
+        (response.status < 300 || response.status >= 400) &&
+          !response.redirected &&
           (response.url === '' ||
             new URL(response.url).origin === pinned.client.authOrigin),
       );

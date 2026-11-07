@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
+import { configuration } from '../tests/fixtures/account-sessions.mjs';
+import { randomSessionSecret } from '../lib/account/session-crypto.ts';
 const origin = 'http://127.0.0.1:3000';
 const built = JSON.parse(await readFile('dist/server/wrangler.json', 'utf8'));
 const modulePaths = (await readdir('dist/server', { recursive: true })).filter(
@@ -14,24 +16,22 @@ const modules = [built.main, ...modulePaths].map((path) => ({
   path: resolve('dist/server', path),
 }));
 // Submit a complete byte body through Miniflare, avoiding Wrangler's streaming dev proxy.
-const mf = new Miniflare(
-  convertV4MiniflareOptions({
-    modules,
-    modulesRoot: resolve('dist/server'),
-    compatibilityDate: built.compatibility_date,
-    compatibilityFlags: built.compatibility_flags,
-    assets: {
-      directory: resolve('dist/server', built.assets.directory),
-      routerConfig: { has_user_worker: true },
-    },
-    d1Databases: { DB: 'club09-synthetic' },
-    d1Persist: false,
-    bindings: {},
-    outboundService() {
-      throw Error('External fetch forbidden in route rehearsal');
-    },
-  }),
-);
+const runtimeOptions = {
+  modules,
+  modulesRoot: resolve('dist/server'),
+  compatibilityDate: built.compatibility_date,
+  compatibilityFlags: built.compatibility_flags,
+  assets: {
+    directory: resolve('dist/server', built.assets.directory),
+    routerConfig: { has_user_worker: true },
+  },
+  d1Databases: { DB: 'club09-synthetic' },
+  d1Persist: false,
+  outboundService() {
+    throw Error('External fetch forbidden in route rehearsal');
+  },
+};
+const mf = new Miniflare(convertV4MiniflareOptions(runtimeOptions));
 try {
   for (const path of [
     '/api/auth',
@@ -92,8 +92,78 @@ try {
     (await missing.json()).error.code,
     'UNIFIED_CONFIGURATION_INVALID',
   );
+
+  // A configured session request exercises Vinext's real route context argument.
+  const config = configuration();
+  let authCalls = 0;
+  await mf.setOptions(
+    convertV4MiniflareOptions({
+      ...runtimeOptions,
+      bindings: {
+        MOLIS_CLUB_ACCOUNT_CONFIG: JSON.stringify(config),
+        MOLIS_CLUB_ACCOUNT_KEY: randomSessionSecret(),
+      },
+      serviceBindings: {
+        MOLIS_CLUB_AUTH(request) {
+          authCalls++;
+          assert.equal(request.method, 'POST');
+          assert.equal(
+            request.url,
+            config.client.authOrigin + '/api/v2/auth/transactions',
+          );
+          assert.equal(request.headers.get('origin'), origin);
+          assert.equal(request.headers.has('cookie'), false);
+          if (authCalls === 2)
+            return Response.redirect('https://untrusted.example.test/', 307);
+          return Response.json(
+            {
+              requestId: crypto.randomUUID(),
+              error: { code: 'INVALID_REQUEST' },
+            },
+            { status: 400 },
+          );
+        },
+      },
+    }),
+  );
+  const db = await mf.getD1Database('DB');
+  const sessionSchema = await readFile(
+    'drizzle/0004_central_account_sessions.sql',
+    'utf8',
+  );
+  await db.batch(
+    sessionSchema
+      .split('--> statement-breakpoint')
+      .map((sql) => db.prepare(sql.trim())),
+  );
+  const session = await mf.dispatchFetch(origin + '/api/account/session');
+  const sessionBody = await session.json();
+  assert.equal(session.status, 200, JSON.stringify(sessionBody));
+  assert.deepEqual(sessionBody.data, { state: 'ANONYMOUS' });
+  assert.ok(session.headers.has('set-cookie'));
+  assert.ok(session.headers.has('x-csrf-token'));
+  const startTransaction = () =>
+    mf.dispatchFetch(origin + '/api/account/auth/transactions', {
+      method: 'POST',
+      headers: {
+        Origin: origin,
+        'Content-Type': 'application/json',
+        Cookie: session.headers.get('set-cookie').split(';')[0],
+        'X-CSRF-Token': session.headers.get('x-csrf-token'),
+      },
+      body: JSON.stringify({ purpose: 'LOGIN', method: 'GOOGLE' }),
+    });
+  const transaction = await startTransaction();
+  const transactionBody = await transaction.json();
+  assert.equal(authCalls, 1, JSON.stringify(transactionBody));
+  assert.equal(transaction.status, 400, JSON.stringify(transactionBody));
+  assert.equal(transactionBody.error.code, 'INVALID_REQUEST');
+  const redirected = await startTransaction();
+  assert.equal(authCalls, 2);
+  assert.equal(redirected.status, 503);
+  assert.equal((await redirected.json()).error.code, 'UPSTREAM_UNAVAILABLE');
   console.log(
-    'PASS CLUB09 built Vinext: former APIs return 410, central navigation/pages mounted, missing configuration never restores old authentication.',
+    'PASS built Vinext: retired APIs return 410, central pages and anonymous sessions work, missing config and upstream redirects fail closed, and transactions reach the Auth binding.',
   );
 } finally {
   await mf.dispose();
