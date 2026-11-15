@@ -234,7 +234,7 @@ try {
   await end();
   tx = await create('LOGIN', 'PHONE_OTP');
   await verify(tx, '+8613800000604');
-  await step(tx, { step: 'PHONE_LOGIN' });
+  await step(tx, { step: 'CODE_LOGIN' });
   assert.equal(
     (await step(tx, { step: 'COMPLETE' })).account.state,
     'AUTHENTICATED',
@@ -304,14 +304,18 @@ try {
   const commit = async (path, body, status = 200, key = crypto.randomUUID()) =>
     api(path, body, status, { 'Idempotency-Key': key });
   methods = await api('/login-methods');
-  let r = await reauth('UNLINK_METHOD', {
-    bindingId: methods.loginMethods[0].bindingId,
-  });
-  await commit(
-    '/login-methods/' + methods.loginMethods[0].bindingId + '/unlink',
-    { reauthHandle: r.handle, expectedVersion: methods.version },
-    409,
+  // Current Auth owns email through administration; reject before issuing any proof.
+  await api(
+    '/reauthentications',
+    {
+      method: 'EMAIL_PASSWORD',
+      operation: 'UNLINK_METHOD',
+      target: { bindingId: methods.loginMethods[0].bindingId },
+    },
+    403,
   );
+  assert.equal((await api('/login-methods')).version, methods.version);
+  let r;
   // CLUB-04: cancel either proof after both BFF claims but before sending the mutation.
   // Both leases must still be current; no request may reach Auth and no receipt may survive.
   for (const [cancelReauth, target] of [

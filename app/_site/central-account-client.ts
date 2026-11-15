@@ -3,6 +3,9 @@ import { createPlatformAccount } from './platform-account-client';
 import { createBillingAccount } from './billing-account-client';
 import type {
   AccountView,
+  ProductLoginResult,
+  LoginVerification,
+  MeView,
   ProductTransactionView,
   ProductSubmitResult,
   ProductSubmitRequest,
@@ -45,6 +48,9 @@ export function accountErrorText(error: unknown): string {
     CAPACITY_CONFLICT: '席位容量或分配已变化，请重新读取后操作。',
     SUBSCRIPTION_INACTIVE: '该订阅当前未生效，不能分配或换绑席位。',
     AUTH_UNAVAILABLE: '账号服务暂不可用，当前状态无法确认。',
+    UPSTREAM_UNAVAILABLE: '验证码或第三方登录服务暂时无法连接，请稍后再试。',
+    POLICY_MISMATCH: '登录服务配置暂不一致，请稍后再试。',
+    PROVIDER_CANCELLED: '已取消第三方登录。',
   };
   return messages[code] ?? '暂时无法完成，请重试或重新开始。';
 }
@@ -81,12 +87,26 @@ export function createBrowserAccount() {
         result.error?.code ?? 'AUTH_UNAVAILABLE',
         result.error?.retryAfterSeconds ?? 0,
       );
+    if (
+      path === '/logout' ||
+      path === '/profile' ||
+      (result.data &&
+        typeof result.data === 'object' &&
+        'account' in result.data)
+    ) {
+      // Header consumes only a notification; identity is re-read from the session owner.
+      window.dispatchEvent(new Event('molis:account-changed'));
+    }
     return result.data as T;
   }
   return {
     ...createTenantAccount(call),
     ...createBillingAccount(call),
     ...createPlatformAccount(call),
+    loginPassword: (identifier: string, password: string) => call<ProductLoginResult>('/auth/login/password',{identifier,password}),
+    sendVerification: (channel: 'EMAIL' | 'SMS', address: string) => call<LoginVerification>('/auth/verification-codes',{purpose:'LOGIN',channel,address}),
+    loginCode: (verificationId: string, code: string) => call<ProductLoginResult>('/auth/login/code',{verificationId,code}),
+    me: () => call<MeView>('/me'),
     methods: () => call<LoginMethodsView>('/login-methods'),
     profile: (body: ProfileUpdateRequest, key = crypto.randomUUID()) =>
       call<UserView>('/profile', body, { 'Idempotency-Key': key }, 'PATCH'),

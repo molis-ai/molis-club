@@ -1,3 +1,4 @@
+import { createManagementHandoffHandler } from './management-handoff.ts';
 import { createBusinessNotesHandler } from './business-notes.ts';
 import { env } from 'cloudflare:workers';
 import { readClubAccountConfig } from './config.ts';
@@ -37,6 +38,12 @@ async function handleRequest(
         )(request),
       );
     const path = new URL(request.url).pathname;
+    if (
+      path === '/api/account/management' ||
+      (path === '/account/callback' &&
+        new URL(request.url).searchParams.has('handoff'))
+    )
+      return createManagementHandoffHandler(client, owner)(request);
     if (
       path.startsWith('/api/account/auth/') ||
       path === '/api/account/password/reset' ||

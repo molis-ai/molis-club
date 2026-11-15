@@ -244,6 +244,14 @@ export function createCentralAccountClient(
     input: CallInput<K> = {},
     context: CallContext = {},
   ): Promise<CentralOperations[K]['output']> {
+    if (id === 'listLoginMethods') {
+      // One authoritative profile snapshot; never reconstruct display labels here.
+      const result = await call('getMe', input as CallInput<'getMe'>, context);
+      return {
+        ...result,
+        data: { loginMethods: result.data.loginMethods, version: result.data.user.version },
+      } as CentralOperations[K]['output'];
+    }
     const entry = operationById(id, '/api/v2/');
     const sessionRequired =
       entry.operation.security.length > 0 &&
@@ -253,7 +261,7 @@ export function createCentralAccountClient(
       await readAccount(context.session, context.signal, context.assertCurrent);
     const body = input.body as Record<string, unknown> | undefined;
     if (
-      ['createTransaction', 'createReauthentication', 'exchangeToken'].includes(
+      ['createTransaction', 'createReauthentication', 'exchangeToken', 'loginPassword', 'sendLoginVerification'].includes(
         id,
       )
     ) {

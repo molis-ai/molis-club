@@ -163,6 +163,7 @@ export function fakeAuth() {
             issuer: cfg.client.authOrigin,
             userId: family.userId,
             displayName: 'Session User',
+            email: null,
             avatarUrl: null,
             version: 0,
           },

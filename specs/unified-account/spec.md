@@ -223,7 +223,7 @@ CLUB-09 配置复验：Cloudflare 构建使用明确合成 D1 标识与中央 LO
 
 ## K-03 登录方式丢失帮助（2026-11-05）
 
-- **K03-02** 登录页及“登录方式与密码”区域共用“无法使用登录方式？”折叠帮助，指引仍可用方式验证换绑、邮箱找回、全部丢失找回原方式；明确无人工恢复及新账号不继承原内容。展开/收起保留表单，可继续既有注册和账号管理。证明：`scripts/test-account-browser.mjs` 中 K03-02 / UAS-08（真实 Auth/BFF、临时 D1、Chrome）。
+- **K03-02** 2026-11-13 按用户要求移除登录页和账号页的“无法使用登录方式？”入口及帮助内容，保留既有注册、找回密码和账号管理流程。证明：`scripts/test-account-browser.mjs` 中 K03-02 检查两处入口均不存在。
 
 帮助组件为 `app/_site/account-access-help.tsx`；未新增账号恢复 API，未修改历史业务身份和数据。外部提供方继续 mock。共享资源的 VIEW/DOWNLOAD 合同由 Auth `worker/rust-tests/shared-resource-fixture.ts` 与真实 Auth 场景验证，未增加 Club 共享产品路由。阶段结果由 Auth 交付记录汇总。
 
@@ -231,3 +231,35 @@ CLUB-09 配置复验：Cloudflare 构建使用明确合成 D1 标识与中央 LO
 ## T-01 开发分支验证（2026-11-06）
 
 Cloudflare 非生产分支自动构建已按授权关闭，开发分支 push 由 `.github/workflows/development-checks.yml` 只运行类型、lint、测试和合成配置构建。流程不引用生产凭据，不上传产物或 Worker 版本、不部署、不操作远程数据库；账号配置为回环来源的 LOCAL/MOCK，D1 为占位 ID。生产构建仍必须提供有效账号配置，缺失拒绝保持。本地类型、lint、77/77 测试与该配置的完整构建通过；准确提交、流水线文件摘要、后续远端检查由 Auth 交付记录统一维护。
+
+## 2026-11-13：Club LIVE 登录接入
+
+状态：实现与隔离验收完成；保留现有 Club 页面交互与视觉，未推送、部署或迁移真实账号。
+
+- CLUB-LIVE-01：同步 Auth #7 的完整合同，在真实 Auth WASM + 隔离 D1 + Club BFF 下验证 LIVE 邮件注册/重置、密码、短信、Google/GitHub 登录与资料；外网响应拦截，不发送真实消息。证明：`scripts/test-account-live-login.mjs`。
+- CLUB-LIVE-02：错误验证码、外部服务不可用、用户取消提示分别准确显示，不暴露底层响应。证明：`tests/account-login-errors.test.mjs`。
+- CLUB-LIVE-03：复用原页面、模式切换、表单步骤、顶层第三方跳转、回调重定向和响应式样式；CSS/布局不变。证明：`scripts/test-account-browser.mjs` 的 CLUB-LIVE-03 检查与截图。
+
+本轮验证：`npm run check`、`npm run lint`、78/78 单元测试、`npm run build`、合同生成检查通过；使用 Auth #7 对应 WASM 的 `scripts/test-account-authentication.mjs`、`scripts/test-account-live-login.mjs`、`scripts/test-account-browser.mjs` 与构建产物 `scripts/test-account-routes.mjs` 全部通过。浏览器覆盖 1440/1024/390 宽度，截图保存在本机 `/private/tmp/club03-ui-evidence`，未入库。样式与页面结构未改，登录页仅替换 mock 投递提示；第三方仍沿原整页跳转。
+
+测试接续修正：默认 Auth seed 现在会登记固定 8787 环境，动态端口浏览器夹具改为不加载默认 seed、显式登记自身来源；最新 Auth 禁止用户解绑邮箱，测试在再认证创建时断言 403 并核对原绑定未变；Google 无可信邮箱的 mock 身份按现行返回显示“Google 账号”。均保留安全拒绝断言，未为通过放宽策略。新增 LIVE 测试对匿名取消、退出后取消分别严格断言 ANONYMOUS / EXPIRED，并验证第三方回调重放失败、上游失败不回退 MOCK。
+
+运行限制：本轮未发送真实短信或邮件，未使用真实 Google/GitHub 授权。独立工作树的忽略 `.dev.vars` 配置 LOCAL/LIVE Auth 8788 和 Club 3000；服务启动前仍需确认 Auth 运行的是上述版本、已应用迁移并登记客户端。没有启动或改写现有真实数据库。
+
+### Club 登录入口调整（2026-11-13）
+- **CLUB-LOGIN-04** 顶部提供账号登录（邮箱或已绑定手机号与账号密码）、邮箱验证码登录、手机验证码登录；第三方按钮保持原位。忘记密码在密码框下方靠左，注册独立入口保留。邮箱验证码只登录已验证且有效的已有账号，不自动创建账号。
+- Auth 新增 LOGIN/ACCOUNT_PASSWORD 和 LOGIN/EMAIL_CODE 合同；Club 只通过 BFF 消费，密码校验、身份绑定判断及验证码验证仍由 Auth 负责。0017 迁移保留事务、证明及外键；本地存量副本核验通过。
+- 证明：`scripts/test-account-live-login.mjs` 的 CLUB-LOGIN-04 覆盖邮箱验证码（含错误验证码）、邮箱/手机号密码、错误密码和解绑后的拒绝。合同快照暂对应 Auth 未提交工作树扩展，合并前须固定最终提交。
+
+2026-11-13 用户修订 CLUB-LOGIN-04：Club 仅展示邮箱密码、手机验证码两个登录页签；邮箱输入不接受手机号。删除邮箱验证码登录的 API 合同及后端分支，注册/绑定/找回密码仍保留邮箱验证。测试改为断言 LOGIN/EMAIL_CODE 被拒绝。前次 ACCOUNT_PASSWORD 接口仍保留，但 Club 不使用。
+
+2026-11-13 用户再次明确 CLUB-LOGIN-04：密码页签名称改为“账号密码”，允许邮箱或已绑定手机号（大陆 11 位号码规范化为 +86），调用已有 ACCOUNT_PASSWORD 接口；仍不支持邮箱验证码登录。
+
+- **CLUB-LOGIN-05** 手机验证码页不显示邮箱注册。验证后由 Auth 自动注册新手机号；已登录但未设置密码的手机号账号进入设置/确认密码步骤，有密码则直接完成登录。是否需要设置由 Auth MeView.passwordEnabled 判断，通过已有会话授权 CHANGE_PASSWORD，刷新仍能继续引导。API 回归在 `scripts/test-account-live-login.mjs`，浏览器证明在账号租户/订阅夹具的 CLUB-LOGIN-05。
+
+### 2026-11-15：统一验证码登录与首次注册（取代此前 CLUB-LOGIN-04/05）
+
+- **CLUB-LOGIN-04** 三个入口为账号密码、邮箱验证、手机验证，取消单独邮箱注册入口；Google/GitHub 保留。邮箱与手机号均可使用账号密码。
+- **CLUB-LOGIN-05** Auth 验证邮箱/手机号后，已有账号直接登录；新账号原子创建用户和已验证身份并登录，不强制设置密码。密码可在账号管理中设置；未设置密码的账号仍可验证码登录，不能凭任意密码登录。
+- **CLUB-LOGIN-06** 密码登录调用 `/api/v2/auth/login/password`；验证码登录调用 `/api/v2/auth/verification-codes` 与 `/api/v2/auth/login/code`。浏览器只接收 `verificationId`，发起证明、PKCE 和 token 交换留在 BFF。管理、找回密码和第三方授权使用独立用途。
+- 证明：`scripts/test-account-live-login.mjs` 覆盖首次验证前无身份、错误验证码、跨浏览器、重发旧编号、重复提交、过期、新账号无密码直接登录，以及已有账号和密码登录。`scripts/test-account-authentication.mjs` 覆盖找回密码、第三方、绑定与再次验证。本轮未重新运行浏览器布局验收。
