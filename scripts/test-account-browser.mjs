@@ -260,6 +260,7 @@ try {
     );
   };
   await page.fill('input[name=address]', 'help-draft@example.test');
+  await assertNoAccessHelp();
   for (const width of [1440, 1024, 390]) {
     await page.viewport(width, 900);
     await page.screenshot(join(evidence, `login-${width}.png`));
@@ -355,7 +356,7 @@ try {
     beforeHelp,
   );
   process.stdout.write(
-    'PASS K03-02 Club: recovery-help entry absent from login/security, forms retained\n',
+    'PASS K03-02 Club: recovery-help entry absent from login, forms retained\n',
   );
   const { PNG } = createRequire(resolve(source, 'worker/package.json'))(
     'pngjs',
