@@ -110,6 +110,7 @@ export async function exerciseTenantAccountUi({
     );
     await click(member, '手机验证');
     await member.fill('input[name=address]', phone.slice(3));
+    await member.click('input[type=checkbox]');
     await member.click('.m-auth-submit');
     await member.wait("Boolean(document.querySelector('input[name=code]'))");
     await member.fill('input[name=code]', await getCode(phone));
@@ -120,23 +121,9 @@ export async function exerciseTenantAccountUi({
     )
       await member.click('input[type=checkbox]');
     await member.click('.m-auth-submit');
-    // CLUB-LOGIN-05: a newly registered phone account sets its initial password.
-    await member.wait("Boolean(document.querySelector('input[name=confirm]'))");
-    assert.equal(
-      await member.evaluate("document.body.textContent.includes('邮箱注册')"),
-      false,
-    );
-    await member.fill(
-      'input[name=password]',
-      'Phone-first-login-password-2026!',
-    );
-    await member.fill(
-      'input[name=confirm]',
-      'Phone-first-login-password-2026!',
-    );
-    await member.click('.m-check input[type=checkbox]');
-    await member.click('.m-auth-submit');
-    await member.wait("(location.pathname==='/'&&Boolean(document.querySelector('.m-header-account-menu')))");
+    // CLUB-LOGIN-05: verified phone accounts register and sign in directly.
+    await member.wait("document.body.textContent.includes('已登录 Molis 账号')");
+    assert.equal(await member.evaluate("Boolean(document.querySelector('input[name=confirm]'))"), false);
     await member.command('Page.navigate', { url: origin + '/account' });
     await member.wait("document.body.textContent.includes('确认加入')");
     assert.equal(
