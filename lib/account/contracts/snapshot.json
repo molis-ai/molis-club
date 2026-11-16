@@ -2,7 +2,7 @@
   "contractVersion": "1.3.0",
   "sourceRepository": "https://github.com/molis-ai/auth",
   "sourceDirectory": "contracts/unified-account",
-  "sourceRevision": "c41725c164122ede0a1fa58bf0ae115f31d91f7c",
+  "sourceRevision": "8ade260f3e3e8fe4994cc0c0e71d392ed7e97ed0",
   "files": {
     "schemas.json": "02ae9396da4dee2935027cb88cc3673e29ace4ad611abb6d167e17275f8e1c13",
     "openapi.json": "b6cf3c6884ff5ea7f6d014d5b0ddbc6a08e354a827471fc1b9dc5a0001b54164",

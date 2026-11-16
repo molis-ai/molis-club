@@ -1,6 +1,6 @@
 # 登录一致性 P1
 
-状态：本地测试与构建通过，GitHub CI 验证中；尚未部署。
+状态：本地测试与构建通过，最终 CI 结果以 PR 检查为准；尚未部署。
 
 ## Task list
 
@@ -8,7 +8,7 @@
 - [x] 真实 Auth WASM/D1 与 Club BFF 联调：密码、邮箱、手机号、Google/GitHub、错误凭据、取消、重放及迟到操作保持安全边界。
 - [x] Club 已有的绑定回调完成、事务 GET 只读语义保留，Auth 对齐。
 - [x] 能力接口绑定服务端客户端配置，登录页面仅渲染可用入口；能力读取失败显示错误，不能启用登录。
-- [x] GitHub Actions 固定 Auth 提交并核对六份合同、版本、来源、摘要与生成类型，随后执行类型检查、lint、测试、Cloudflare 构建及真实 Auth 联调。
+- [x] GitHub Actions 固定 Auth 提交并核对六份合同、版本、来源、摘要与生成类型，并执行类型检查、lint、测试、Cloudflare 构建及真实 Auth 联调。
 
 ## 证据与边界
 
