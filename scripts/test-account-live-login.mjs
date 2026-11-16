@@ -289,6 +289,7 @@ try {
     .bind(JSON.stringify([authOrigin]))
     .run();
   await api('/session');
+  assert.deepEqual((await api('/auth/capabilities')).methods, ['ACCOUNT_PASSWORD','EMAIL_CODE','PHONE_OTP','GOOGLE','GITHUB']);
   let tx = await create('EMAIL_SIGNUP', 'EMAIL_CODE');
   await verify(tx, email);
   assert.equal((await api('/auth/transactions/' + tx.handle)).nextStep, 'EMAIL_SIGNUP');

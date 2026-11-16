@@ -3,6 +3,7 @@ import { createPlatformAccount } from './platform-account-client';
 import { createBillingAccount } from './billing-account-client';
 import type {
   AccountView,
+  LoginCapabilities,
   ProductLoginResult,
   LoginVerification,
   MeView,
@@ -136,6 +137,7 @@ export function createBrowserAccount() {
       call<PasswordChangeResult>('/password/change', body, {
         'Idempotency-Key': key,
       }),
+    capabilities: () => call<LoginCapabilities>('/auth/capabilities'),
     session: () => call<AccountView>('/session'),
     activity: () =>
       call('/activity', { eventId: crypto.randomUUID(), kind: 'OPEN' }),

@@ -3,7 +3,10 @@ name: Development checks
 # Validation only. Cloudflare non-production branch builds are disabled.
 on:
   push:
-    branches-ignore: [main]
+    branches: [main, "codex/**"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -16,7 +19,7 @@ jobs:
   validate:
     name: Club build and tests
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     env:
       CI: 'true'
       WRANGLER_SEND_METRICS: 'false'
@@ -27,6 +30,24 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24.22.1
+      - name: Read immutable Auth source
+        id: auth
+        run: |
+          node --input-type=module <<'NODE'
+          import {readFileSync, appendFileSync} from 'node:fs';
+          const metadata = JSON.parse(readFileSync('lib/account/contracts/snapshot.json'));
+          const revision = metadata.sourceRevision;
+          if (!/^[a-f0-9]{40}$/.test(revision)) throw Error('Auth revision must be an immutable SHA');
+          appendFileSync(process.env.GITHUB_OUTPUT, `revision=${revision}\n`);
+          NODE
+      - uses: actions/checkout@v6
+        with:
+          repository: molis-ai/auth
+          ref: ${{ steps.auth.outputs.revision }}
+          path: .claude/auth-ci
+          persist-credentials: false
+      - name: Verify contract source, version, hashes and generated types
+        run: node .claude/auth-ci/contracts/unified-account/verify-product.mjs club "$GITHUB_WORKSPACE"
       - name: Install locked dependencies
         run: npm ci
       - name: Check types, lint and run isolated tests
@@ -40,3 +61,8 @@ jobs:
         run: npm run build:cloudflare
       # Build output stays on the ephemeral runner. No upload/deploy step,
       # remote database operation, production bindings or production secrets.
+      - uses: ./.claude/auth-ci/.github/actions/account-fixture
+        with:
+          source: .claude/auth-ci
+      - name: Login regression against real Auth WASM
+        run: MOLIS_AUTH_SOURCE="$GITHUB_WORKSPACE/.claude/auth-ci" node scripts/test-account-live-login.mjs
