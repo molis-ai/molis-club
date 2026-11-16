@@ -30,6 +30,19 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24.22.1
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check types, lint and run isolated tests
+        run: npm run check && npm run lint && npm test
+      - name: Build with synthetic bindings and mock account providers
+        env:
+          CLOUDFLARE_D1_DATABASE_ID: '00000000-0000-4000-8000-000000000000'
+          CLOUDFLARE_D1_DATABASE_NAME: 'club-ci-synthetic'
+          MOLIS_CLUB_ACCOUNT_CONFIG: >-
+            {"applicationId":"molis-club-unified-local-app","redirectUri":"http://127.0.0.1:3000/account/callback","client":{"environmentId":"unified-local","authOrigin":"http://127.0.0.1:8787","productOrigin":"http://127.0.0.1:3000","clientId":"molis-club-unified-local","policyProfile":"unified-account-v2","redirectAllowlist":["http://127.0.0.1:3000/account/callback"],"environmentKind":"LOCAL","deliveryMode":"MOCK","providerMode":"MOCK"}}
+        run: npm run build:cloudflare
+      # Build output stays on the ephemeral runner. No upload/deploy step,
+      # remote database operation, production bindings or production secrets.
       - name: Read immutable Auth source
         id: auth
         run: |
@@ -48,19 +61,6 @@ jobs:
           persist-credentials: false
       - name: Verify contract source, version, hashes and generated types
         run: node .claude/auth-ci/contracts/unified-account/verify-product.mjs club "$GITHUB_WORKSPACE"
-      - name: Install locked dependencies
-        run: npm ci
-      - name: Check types, lint and run isolated tests
-        run: npm run check && npm run lint && npm test
-      - name: Build with synthetic bindings and mock account providers
-        env:
-          CLOUDFLARE_D1_DATABASE_ID: '00000000-0000-4000-8000-000000000000'
-          CLOUDFLARE_D1_DATABASE_NAME: 'club-ci-synthetic'
-          MOLIS_CLUB_ACCOUNT_CONFIG: >-
-            {"applicationId":"molis-club-unified-local-app","redirectUri":"http://127.0.0.1:3000/account/callback","client":{"environmentId":"unified-local","authOrigin":"http://127.0.0.1:8787","productOrigin":"http://127.0.0.1:3000","clientId":"molis-club-unified-local","policyProfile":"unified-account-v2","redirectAllowlist":["http://127.0.0.1:3000/account/callback"],"environmentKind":"LOCAL","deliveryMode":"MOCK","providerMode":"MOCK"}}
-        run: npm run build:cloudflare
-      # Build output stays on the ephemeral runner. No upload/deploy step,
-      # remote database operation, production bindings or production secrets.
       - uses: ./.claude/auth-ci/.github/actions/account-fixture
         with:
           source: .claude/auth-ci
