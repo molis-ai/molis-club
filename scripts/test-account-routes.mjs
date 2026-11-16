@@ -126,6 +126,18 @@ try {
       },
     }),
   );
+  // Account management belongs to Auth. Query parameters cannot override the destination.
+  const management = await mf.dispatchFetch(
+    origin + '/account?returnTo=https://untrusted.example.test/',
+    { redirect: 'manual' },
+  );
+  assert.equal(management.status, 307);
+  assert.equal(management.headers.get('location'), '/api/account/management');
+  assert.equal(
+    authCalls,
+    0,
+    'navigation never exchanges or exposes credentials',
+  );
   const db = await mf.getD1Database('DB');
   const sessionSchema = await readFile(
     'drizzle/0004_central_account_sessions.sql',
@@ -142,6 +154,13 @@ try {
   assert.deepEqual(sessionBody.data, { state: 'ANONYMOUS' });
   assert.ok(session.headers.has('set-cookie'));
   assert.ok(session.headers.has('x-csrf-token'));
+  // CLUB-LOGIN-05: the real framework route must exist, not just the BFF handler.
+  const me = await mf.dispatchFetch(origin + '/api/account/me', {
+    headers: { Cookie: session.headers.get('set-cookie').split(';')[0] },
+  });
+  const meBody = await me.json();
+  assert.equal(me.status, 401, JSON.stringify(meBody));
+  assert.equal(meBody.error.code, 'SESSION_EXPIRED');
   const startTransaction = () =>
     mf.dispatchFetch(origin + '/api/account/auth/transactions', {
       method: 'POST',

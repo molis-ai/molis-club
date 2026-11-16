@@ -1,7 +1,7 @@
 import { exercisePlatformAccountUi } from '../tests/fixtures/account-platform-browser.mjs';
 import { exerciseBillingAccountUi } from '../tests/fixtures/account-billing-browser.mjs';
 import { exerciseTenantAccountUi } from '../tests/fixtures/account-tenants-browser.mjs';
-// CLUB-03: exact production LoginForm and BFF, real Auth/temporary D1, isolated React browser harness.
+// CLUB-LIVE-03 / CLUB-03: exact production LoginForm and BFF, real Auth/temporary D1, isolated React browser harness.
 // The harness substitutes only Next navigation wrappers; Vinext route mounting is checked by the full build.
 import assert from 'node:assert/strict';
 import http from 'node:http';
@@ -61,7 +61,10 @@ async function forward(req, res, handler, base) {
       referrerPolicy: response.headers.get('referrer-policy'),
       location: response.headers.get('location')?.split('?')[0],
     });
-    res.writeHead(response.status, Object.fromEntries(response.headers));
+    const headers = Object.fromEntries(response.headers);
+    const cookies = response.headers.getSetCookie();
+    if (cookies.length) headers['set-cookie'] = cookies;
+    res.writeHead(response.status, headers);
     res.end(Buffer.from(await response.arrayBuffer()));
   } catch {
     res.writeHead(500);
@@ -172,7 +175,8 @@ try {
       deliveryMode: 'MOCK',
     }),
   });
-  await initializeLocalRuntime(proxy);
+  // Seed only the explicit origins below; the default seed registers fixed port 8787.
+  await initializeLocalRuntime(proxy, false);
   for (const file of [
     resolve(source, 'worker/unified-account-local-seed.sql'),
     resolve(source, 'worker/mock-provider-local-seed.sql'),
@@ -199,7 +203,7 @@ try {
   const shim = join(directory, 'navigation.tsx');
   await writeFile(
     shim,
-    "import React from 'react';export const useSearchParams=()=>new URLSearchParams(location.search);export const usePathname=()=>location.pathname;export default function Link(props){return React.createElement('a',props);}",
+    "import React from 'react';export const useRouter=()=>({replace:(url)=>{if(location.pathname!==url)location.replace(url)}});export const useSearchParams=()=>new URLSearchParams(location.search);export const usePathname=()=>location.pathname;export default function Link(props){return React.createElement('a',props);}",
   );
   const bundled = await build({
     stdin: {
@@ -234,38 +238,29 @@ try {
   );
   const clickText = async (text) => {
     await page.command('Page.bringToFront');
+    await page.wait(`[...document.querySelectorAll('button')].some(b=>b.textContent===${JSON.stringify(text)}&&!b.disabled&&b.getClientRects().length>0&&!b.closest('details:not([open])'))`);
     await page.evaluate(
-      `{const b=[...document.querySelectorAll('button')].find(b=>b.textContent===${JSON.stringify(text)});if(!b)throw Error('Button missing');document.querySelectorAll('[data-test-click]').forEach(e=>e.removeAttribute('data-test-click'));b.dataset.testClick='';}`,
+      `{const b=[...document.querySelectorAll('button')].find(b=>b.textContent===${JSON.stringify(text)}&&!b.disabled&&b.getClientRects().length>0&&!b.closest('details:not([open])'));if(!b)throw Error('Button missing');document.querySelectorAll('[data-test-click]').forEach(e=>e.removeAttribute('data-test-click'));b.dataset.testClick='';}`,
     );
     await page.click('[data-test-click]');
   };
-  // K03-02 / UAS-08: anonymous and security help uses the same guidance and preserves the current flow.
-  const accessHelp = async () => {
-    await page.click('[data-account-help] summary');
-    await page.wait('document.querySelector("[data-account-help]").open');
-    const text = await page.evaluate(
-      'document.querySelector("[data-account-help]").innerText',
-    );
-    for (const part of [
-      '还有可用方式',
-      '找回密码',
-      '邮箱服务商',
-      '手机运营商',
-      'Google',
-      'GitHub',
-      '暂不提供人工账号恢复',
-      '不会自动继承',
-    ])
-      assert.ok(text.includes(part), part);
+  // K03-02: login and account pages no longer include the recovery-help entry.
+  const assertNoAccessHelp = async () => {
     assert.equal(
       await page.evaluate(
-        'document.querySelectorAll("[data-account-help] button,[data-account-help] form").length',
+        'document.querySelector("[data-account-help]") === null',
       ),
-      0,
+      true,
+    );
+    assert.equal(
+      await page.evaluate(
+        'document.body.textContent.includes("无法使用登录方式？")',
+      ),
+      false,
     );
   };
   await page.fill('input[name=address]', 'help-draft@example.test');
-  await accessHelp();
+  await assertNoAccessHelp();
   for (const width of [1440, 1024, 390]) {
     await page.viewport(width, 900);
     await page.screenshot(join(evidence, `login-${width}.png`));
@@ -273,7 +268,6 @@ try {
       await page.evaluate('document.documentElement.scrollWidth<=innerWidth'),
     );
   }
-  await page.click('[data-account-help] summary');
   assert.equal(
     await page.evaluate('document.querySelector("input[name=address]").value'),
     'help-draft@example.test',
@@ -303,8 +297,9 @@ try {
   await page.wait(
     "document.querySelector('.m-auth-submit')&&!document.querySelector('.m-auth-submit').disabled",
   );
-  await clickText('邮箱注册');
+  await clickText('邮箱验证');
   await page.fill('input[name=address]', 'club-browser@example.test');
+  await page.click('input[type=checkbox]');
   await page.click('.m-auth-submit');
   await page.wait("Boolean(document.querySelector('input[name=code]'))");
   const row = await proxy.env.DB.prepare(
@@ -312,15 +307,32 @@ try {
   ).first();
   await page.fill('input[name=code]', row.credential);
   await page.click('.m-auth-submit');
+  await page.wait("document.body.textContent.includes('已登录 Molis 账号')");
+  await navigate(() => page.click('.m-login'));
+  await page.wait("[...document.querySelectorAll('button')].some(b=>b.textContent==='退出登录')");
+  await clickText('退出登录');
+  await page.wait("document.body.textContent.includes('已退出登录。')");
+  await navigate(() => page.command('Page.navigate', {url: origin + '/login'}));
+  await page.wait("document.querySelector('.m-auth-submit')&&!document.querySelector('.m-auth-submit').disabled");
+  // Advance only this synthetic address's resend cooldown before the reset flow.
+  await proxy.env.DB.prepare('UPDATE auth_rate_bucket SET expires_at=0 WHERE bucket_hash=?').bind((await import('node:crypto')).createHash('sha256').update('v2-delivery-resend:EMAIL:club-browser@example.test').digest('hex')).run();
+  await clickText('找回密码');
+  await page.fill('input[name=address]', 'club-browser@example.test');
+  await page.click('.m-auth-submit');
+  await page.wait("Boolean(document.querySelector('input[name=code]'))");
+  const resetCode = await proxy.env.DB.prepare("SELECT m.credential FROM auth_mock_delivery m JOIN auth_verification_challenge c ON c.delivery_id=m.delivery_id WHERE c.canonical_target='club-browser@example.test' ORDER BY c.created_at DESC LIMIT 1").first();
+  await page.fill('input[name=code]', resetCode.credential);
+  await page.click('.m-auth-submit');
   await page.wait("Boolean(document.querySelector('input[name=confirm]'))");
   const password = randomBytes(20).toString('base64url');
   await page.fill('input[name=password]', password);
   await page.fill('input[name=confirm]', password);
-  await page.click('input[type=checkbox]');
   await page.click('.m-auth-submit');
-  await page.wait(
-    "document.querySelector('.m-auth-done')?.textContent.includes('已登录')",
-  );
+  await page.wait("document.body.textContent.includes('密码已重设')");
+  await page.fill('input[name=address]', 'club-browser@example.test');
+  await page.fill('input[name=password]', password);
+  await page.click('.m-auth-submit');
+  await page.wait("document.body.textContent.includes('已登录 Molis 账号')");
   await navigate(() => page.click('.m-login'));
   await page.wait(
     "[...document.querySelectorAll('button')].some(b=>b.textContent==='退出登录')",
@@ -332,21 +344,19 @@ try {
   const beforeHelp = await page.evaluate(
     'document.querySelector("input[name=name]").value',
   );
-  await accessHelp();
   for (const width of [1440, 1024, 390]) {
     await page.viewport(width, 900);
-    await page.screenshot(join(evidence, `security-help-${width}.png`));
+    await page.screenshot(join(evidence, `security-${width}.png`));
     assert.ok(
       await page.evaluate('document.documentElement.scrollWidth<=innerWidth'),
     );
   }
-  await page.click('[data-account-help] summary');
   assert.equal(
     await page.evaluate('document.querySelector("input[name=name]").value'),
     beforeHelp,
   );
   process.stdout.write(
-    'PASS K03-02 / UAS-08 Club: lost-method help from login/security, forms retained\n',
+    'PASS K03-02 Club: recovery-help entry absent from login, forms retained\n',
   );
   const { PNG } = createRequire(resolve(source, 'worker/package.json'))(
     'pngjs',
@@ -451,7 +461,7 @@ try {
   await page.wait("document.body.textContent.includes('验证已完成')");
   await clickText('确认绑定');
   await page.wait(
-    "document.body.textContent.includes('GOOGLE ·')&&document.body.textContent.includes('登录方式已更新')",
+    "document.body.textContent.includes('Google 账号')&&document.body.textContent.includes('登录方式已更新')",
   );
   process.stdout.write('CLUB-04 Chrome: Google bound\n');
   await clickText('设置或修改密码');
@@ -528,18 +538,36 @@ try {
     await page.wait(
       "document.querySelector('.m-auth-submit')&&!document.querySelector('.m-auth-submit').disabled",
     );
-    await navigate(() => clickText('使用 ' + name + ' 登录'));
-    await page.wait(
-      "location.pathname.includes('/mock/')&&Boolean(document.querySelector('form'))",
-    );
-    await page.screenshot(join(evidence, name.toLowerCase() + '-mock.png'));
-    await navigate(() => page.click('button[name=outcome][value=SUCCESS]'));
+    const originalUrl = await page.evaluate('location.href');
+    const before = new Set((await browser.command('Target.getTargets')).targetInfos.map(t => t.targetId));
+    await clickText('使用 ' + name + ' 登录');
+    await page.wait("document.body.textContent.includes('正在等待授权')");
+    assert.equal(await page.evaluate('location.href'), originalUrl);
+    const target = (await browser.command('Target.getTargets')).targetInfos.find(t => t.type === 'page' && !before.has(t.targetId));
+    assert.ok(target, 'third-party login opens its own authorization window');
+    const providerPage = await browser.page(target.targetId);
+    for (let attempt = 0; ; attempt++) {
+      try {
+        await providerPage.wait("location.pathname.includes('/mock/')&&Boolean(document.querySelector('button[name=outcome]'))");
+        break;
+      } catch (error) {
+        if (attempt >= 3 || !/context was destroyed|target navigated/i.test(error.message)) throw error;
+      }
+    }
+    await providerPage.screenshot(join(evidence, name.toLowerCase() + '-mock.png'));
+    await providerPage.click('button[name=outcome][value=SUCCESS]');
     try {
-      await page.wait(
-        'location.origin===' +
-          JSON.stringify(origin) +
-          "&&Boolean(document.querySelector('.m-auth-done'))",
-      );
+      for (let attempt = 0; ; attempt++) {
+        try {
+          await page.wait(
+            'location.origin===' + JSON.stringify(origin) +
+            "&&(document.body.textContent.includes('已登录 Molis 账号'))",
+          );
+          break;
+        } catch (error) {
+          if (attempt >= 3 || !/context was destroyed|target navigated/i.test(error.message)) throw error;
+        }
+      }
     } catch (error) {
       process.stderr.write(JSON.stringify(responses.slice(-12)) + '\n');
       process.stderr.write(
@@ -552,7 +580,7 @@ try {
       page.command('Page.navigate', { url: origin + '/account' }),
     );
     await page.wait(
-      "[...document.querySelectorAll('button')].some(b=>b.textContent==='退出登录'&&!b.disabled)",
+      "[...document.querySelectorAll('button')].some(b=>b.textContent==='退出登录'&&!b.disabled&&!b.closest('details:not([open])'))",
     );
     await clickText('退出登录');
     await page.wait("document.body.textContent.includes('已退出登录。')");

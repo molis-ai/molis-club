@@ -5,6 +5,9 @@ import { AccountFailure, accountFailure, requireAccount } from './errors.ts';
 import { validateNamed } from './contracts/validate.ts';
 import type {
   ProductTransactionRequest,
+  ProductLoginPasswordRequest,
+  ProductSendVerificationRequest,
+  LoginCodeRequest,
   ProductSubmitRequest,
   ProductPasswordResetRequest,
   ProductReauthenticationRequest,
@@ -58,7 +61,13 @@ export function createAuthenticationHandler(
         result = await auth.callback(request);
       } else if (request.method === 'POST') {
         const body = await boundedJson(request);
-        if (url.pathname === '/api/account/auth/transactions')
+        if (url.pathname === '/api/account/auth/login/password')
+          result = await auth.loginStart(request, body as ProductLoginPasswordRequest);
+        else if (url.pathname === '/api/account/auth/verification-codes')
+          result = await auth.loginStart(request, body as ProductSendVerificationRequest);
+        else if (url.pathname === '/api/account/auth/login/code')
+          result = await auth.loginCode(request, body as LoginCodeRequest);
+        else if (url.pathname === '/api/account/auth/transactions')
           result = await auth.create(
             request,
             body as ProductTransactionRequest,
@@ -120,33 +129,12 @@ export function createAuthenticationHandler(
       } else if (request.method === 'GET' && match && !match[2])
         result = await auth.get(request, match[1]);
       else throw new AccountFailure(404, 'NOT_FOUND');
-      const response =
-        redirect &&
-        callback &&
-        result &&
-        typeof result === 'object' &&
-        'verificationHandle' in result
-          ? new Response(
-              '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Molis AI</title><h1>验证流程已结束</h1><p>请回到账号页面查看结果，可关闭此窗口。</p></html>',
-              {
-                headers: {
-                  'Content-Type': 'text/html; charset=utf-8',
-                  'Content-Security-Policy':
-                    "default-src 'none'; frame-ancestors 'none'; base-uri 'none'",
-                },
-              },
-            )
-          : redirect && callback
-            ? new Response(null, {
-                status: 303,
-                headers: {
-                  Location:
-                    '/login?auth=' +
-                    ((result as { status?: string }).status?.toLowerCase() ??
-                      'complete'),
-                },
-              })
-            : Response.json({ data: result, requestId: crypto.randomUUID() });
+      const response = redirect && callback
+        ? new Response(
+            '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Molis AI</title><h1>授权流程已结束</h1><p>请回到原页面查看结果，可关闭此窗口。</p></html>',
+            { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none'; base-uri 'none'" } },
+          )
+        : Response.json({ data: result, requestId: crypto.randomUUID() });
       response.headers.set('Referrer-Policy', 'no-referrer');
       response.headers.set('X-Content-Type-Options', 'nosniff');
       return owner.decorate(request, response);
@@ -155,10 +143,11 @@ export function createAuthenticationHandler(
       return owner.decorate(
         request,
         redirect && callback
-          ? new Response(null, {
-              status: 303,
+          ? new Response('<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>Molis AI</title><h1>授权未完成</h1><p>请关闭此窗口，回到原页面重新登录。</p></html>', {
+              status: failure.status,
               headers: {
-                Location: '/login?auth=failed',
+                'Content-Type': 'text/html; charset=utf-8',
+                'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none'; base-uri 'none'",
                 'Referrer-Policy': 'no-referrer',
               },
             })

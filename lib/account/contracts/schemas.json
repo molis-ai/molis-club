@@ -142,6 +142,16 @@
         "displayName": {
           "$ref": "#/$defs/DisplayName"
         },
+        "email": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Email"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "avatarUrl": {
           "oneOf": [
             {
@@ -167,6 +177,7 @@
         "issuer",
         "userId",
         "displayName",
+        "email",
         "avatarUrl",
         "version"
       ],
@@ -251,7 +262,15 @@
         "CATALOG_WRITE",
         "SUBSCRIPTION_READ",
         "SUBSCRIPTION_WRITE",
-        "AUDIT_READ"
+        "AUDIT_READ",
+        "APPLICATION_READ",
+        "APPLICATION_WRITE",
+        "CLIENT_READ",
+        "CLIENT_WRITE",
+        "USER_READ",
+        "USER_STATUS",
+        "USER_EMAIL_WRITE",
+        "PLATFORM_PERMISSION_WRITE"
       ]
     },
     "MeView": {
@@ -280,7 +299,7 @@
             "$ref": "#/$defs/PlatformCapability"
           },
           "minItems": 0,
-          "maxItems": 7
+          "maxItems": 15
         }
       },
       "required": [
@@ -618,6 +637,90 @@
               "$ref": "#/$defs/S256Challenge"
             },
             "purpose": {
+              "const": "LOGIN"
+            },
+            "method": {
+              "const": "ACCOUNT_PASSWORD"
+            }
+          },
+          "required": [
+            "clientId",
+            "redirectUri",
+            "state",
+            "codeChallenge",
+            "codeChallengeMethod",
+            "initiatorChallenge",
+            "purpose",
+            "method"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "clientId": {
+              "$ref": "#/$defs/Id"
+            },
+            "redirectUri": {
+              "$ref": "#/$defs/HttpUrl"
+            },
+            "state": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 512
+            },
+            "codeChallenge": {
+              "$ref": "#/$defs/S256Challenge"
+            },
+            "codeChallengeMethod": {
+              "const": "S256"
+            },
+            "initiatorChallenge": {
+              "$ref": "#/$defs/S256Challenge"
+            },
+            "purpose": {
+              "const": "LOGIN"
+            },
+            "method": {
+              "const": "EMAIL_CODE"
+            }
+          },
+          "required": [
+            "clientId",
+            "redirectUri",
+            "state",
+            "codeChallenge",
+            "codeChallengeMethod",
+            "initiatorChallenge",
+            "purpose",
+            "method"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "clientId": {
+              "$ref": "#/$defs/Id"
+            },
+            "redirectUri": {
+              "$ref": "#/$defs/HttpUrl"
+            },
+            "state": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 512
+            },
+            "codeChallenge": {
+              "$ref": "#/$defs/S256Challenge"
+            },
+            "codeChallengeMethod": {
+              "const": "S256"
+            },
+            "initiatorChallenge": {
+              "$ref": "#/$defs/S256Challenge"
+            },
+            "purpose": {
               "const": "EMAIL_SIGNUP"
             },
             "method": {
@@ -679,6 +782,9 @@
                 "method"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -738,6 +844,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -797,6 +906,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -856,6 +968,9 @@
                 "kind"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -915,6 +1030,9 @@
                 "method"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -974,6 +1092,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -1033,6 +1154,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -1092,6 +1216,9 @@
                 "kind"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -1151,6 +1278,9 @@
                 "method"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -1210,6 +1340,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -1269,6 +1402,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -1328,6 +1464,9 @@
                 "kind"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -1387,6 +1526,9 @@
                 "method"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -1446,6 +1588,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -1505,6 +1650,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -1564,6 +1712,9 @@
                 "kind"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2018,6 +2169,9 @@
                 "method"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2073,6 +2227,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2128,6 +2285,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2183,6 +2343,9 @@
                 "kind"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2238,6 +2401,9 @@
                 "method"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2293,6 +2459,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2348,6 +2517,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2403,6 +2575,9 @@
                 "kind"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2458,6 +2633,9 @@
                 "method"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2513,6 +2691,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2568,6 +2749,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2623,6 +2807,9 @@
                 "kind"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2678,6 +2865,9 @@
                 "method"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2733,6 +2923,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2788,6 +2981,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2843,6 +3039,9 @@
                 "kind"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -2868,6 +3067,7 @@
         "PASSWORD_LOGIN",
         "EMAIL_SIGNUP",
         "PHONE_LOGIN",
+        "CODE_LOGIN",
         "START_PROVIDER",
         "WAIT_PROVIDER",
         "COMPLETE",
@@ -2881,14 +3081,19 @@
           "$ref": "#/$defs/Id"
         },
         "status": {
-          "const": "PENDING"
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "VERIFIED"
+          ]
         },
         "nextStep": {
           "type": "string",
           "enum": [
             "REQUEST_CHALLENGE",
             "PASSWORD_LOGIN",
-            "START_PROVIDER"
+            "START_PROVIDER",
+            "COMPLETE"
           ]
         },
         "expiresAt": {
@@ -2922,6 +3127,7 @@
                 "PASSWORD_LOGIN",
                 "EMAIL_SIGNUP",
                 "PHONE_LOGIN",
+                "CODE_LOGIN",
                 "START_PROVIDER",
                 "WAIT_PROVIDER"
               ]
@@ -3083,20 +3289,47 @@
       "additionalProperties": false
     },
     "PasswordLoginRequest": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "$ref": "#/$defs/Email"
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "email": {
+              "$ref": "#/$defs/Email"
+            },
+            "password": {
+              "$ref": "#/$defs/LoginPassword"
+            }
+          },
+          "required": [
+            "email",
+            "password"
+          ],
+          "additionalProperties": false
         },
-        "password": {
-          "$ref": "#/$defs/LoginPassword"
+        {
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/Email"
+                },
+                {
+                  "$ref": "#/$defs/Phone"
+                }
+              ]
+            },
+            "password": {
+              "$ref": "#/$defs/LoginPassword"
+            }
+          },
+          "required": [
+            "identifier",
+            "password"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "email",
-        "password"
-      ],
-      "additionalProperties": false
+      ]
     },
     "EmailSignupRequest": {
       "type": "object",
@@ -3129,6 +3362,331 @@
         "verificationProof"
       ],
       "additionalProperties": false
+    },
+    "CodeLoginRequest": {
+      "type": "object",
+      "properties": {
+        "verificationProof": {
+          "$ref": "#/$defs/OpaqueSecret"
+        }
+      },
+      "required": [
+        "verificationProof"
+      ],
+      "additionalProperties": false
+    },
+    "LoginContext": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/Id"
+        },
+        "redirectUri": {
+          "$ref": "#/$defs/HttpUrl"
+        },
+        "state": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 512
+        },
+        "codeChallenge": {
+          "$ref": "#/$defs/S256Challenge"
+        },
+        "codeChallengeMethod": {
+          "const": "S256"
+        },
+        "initiatorChallenge": {
+          "$ref": "#/$defs/S256Challenge"
+        }
+      },
+      "required": [
+        "clientId",
+        "redirectUri",
+        "state",
+        "codeChallenge",
+        "codeChallengeMethod",
+        "initiatorChallenge"
+      ],
+      "additionalProperties": false
+    },
+    "LoginPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/Id"
+        },
+        "redirectUri": {
+          "$ref": "#/$defs/HttpUrl"
+        },
+        "state": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 512
+        },
+        "codeChallenge": {
+          "$ref": "#/$defs/S256Challenge"
+        },
+        "codeChallengeMethod": {
+          "const": "S256"
+        },
+        "initiatorChallenge": {
+          "$ref": "#/$defs/S256Challenge"
+        },
+        "identifier": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Email"
+            },
+            {
+              "$ref": "#/$defs/Phone"
+            }
+          ]
+        },
+        "password": {
+          "$ref": "#/$defs/LoginPassword"
+        }
+      },
+      "required": [
+        "clientId",
+        "redirectUri",
+        "state",
+        "codeChallenge",
+        "codeChallengeMethod",
+        "initiatorChallenge",
+        "identifier",
+        "password"
+      ],
+      "additionalProperties": false
+    },
+    "SendLoginVerificationRequest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "clientId": {
+              "$ref": "#/$defs/Id"
+            },
+            "redirectUri": {
+              "$ref": "#/$defs/HttpUrl"
+            },
+            "state": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 512
+            },
+            "codeChallenge": {
+              "$ref": "#/$defs/S256Challenge"
+            },
+            "codeChallengeMethod": {
+              "const": "S256"
+            },
+            "initiatorChallenge": {
+              "$ref": "#/$defs/S256Challenge"
+            },
+            "purpose": {
+              "const": "LOGIN"
+            },
+            "channel": {
+              "const": "EMAIL"
+            },
+            "address": {
+              "$ref": "#/$defs/Email"
+            }
+          },
+          "required": [
+            "clientId",
+            "redirectUri",
+            "state",
+            "codeChallenge",
+            "codeChallengeMethod",
+            "initiatorChallenge",
+            "purpose",
+            "channel",
+            "address"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "clientId": {
+              "$ref": "#/$defs/Id"
+            },
+            "redirectUri": {
+              "$ref": "#/$defs/HttpUrl"
+            },
+            "state": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 512
+            },
+            "codeChallenge": {
+              "$ref": "#/$defs/S256Challenge"
+            },
+            "codeChallengeMethod": {
+              "const": "S256"
+            },
+            "initiatorChallenge": {
+              "$ref": "#/$defs/S256Challenge"
+            },
+            "purpose": {
+              "const": "LOGIN"
+            },
+            "channel": {
+              "const": "SMS"
+            },
+            "address": {
+              "$ref": "#/$defs/Phone"
+            }
+          },
+          "required": [
+            "clientId",
+            "redirectUri",
+            "state",
+            "codeChallenge",
+            "codeChallengeMethod",
+            "initiatorChallenge",
+            "purpose",
+            "channel",
+            "address"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "LoginVerification": {
+      "type": "object",
+      "properties": {
+        "verificationId": {
+          "$ref": "#/$defs/Id"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "retryAfterSeconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3600
+        }
+      },
+      "required": [
+        "verificationId",
+        "expiresAt",
+        "retryAfterSeconds"
+      ],
+      "additionalProperties": false
+    },
+    "LoginCodeRequest": {
+      "type": "object",
+      "properties": {
+        "verificationId": {
+          "$ref": "#/$defs/Id"
+        },
+        "code": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 6,
+          "pattern": "^[0-9]{6}$"
+        }
+      },
+      "required": [
+        "verificationId",
+        "code"
+      ],
+      "additionalProperties": false
+    },
+    "LoginResult": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "LOGIN_CODE"
+        },
+        "code": {
+          "$ref": "#/$defs/OpaqueSecret"
+        },
+        "state": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 512
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/Timestamp"
+        }
+      },
+      "required": [
+        "kind",
+        "code",
+        "state",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "ProductLoginPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Email"
+            },
+            {
+              "$ref": "#/$defs/Phone"
+            }
+          ]
+        },
+        "password": {
+          "$ref": "#/$defs/LoginPassword"
+        }
+      },
+      "required": [
+        "identifier",
+        "password"
+      ],
+      "additionalProperties": false
+    },
+    "ProductSendVerificationRequest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "purpose": {
+              "const": "LOGIN"
+            },
+            "channel": {
+              "const": "EMAIL"
+            },
+            "address": {
+              "$ref": "#/$defs/Email"
+            }
+          },
+          "required": [
+            "purpose",
+            "channel",
+            "address"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "purpose": {
+              "const": "LOGIN"
+            },
+            "channel": {
+              "const": "SMS"
+            },
+            "address": {
+              "$ref": "#/$defs/Phone"
+            }
+          },
+          "required": [
+            "purpose",
+            "channel",
+            "address"
+          ],
+          "additionalProperties": false
+        }
+      ]
     },
     "VerifiedResult": {
       "type": "object",
@@ -3699,6 +4257,63 @@
       ],
       "additionalProperties": false
     },
+    "TenantMember": {
+      "type": "object",
+      "properties": {
+        "membershipId": {
+          "$ref": "#/$defs/Id"
+        },
+        "tenantId": {
+          "$ref": "#/$defs/Id"
+        },
+        "userId": {
+          "$ref": "#/$defs/Id"
+        },
+        "role": {
+          "$ref": "#/$defs/TenantRole"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "LEFT",
+            "REMOVED"
+          ]
+        },
+        "version": {
+          "$ref": "#/$defs/Version"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 120
+        },
+        "email": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 254,
+              "format": "email"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "membershipId",
+        "tenantId",
+        "userId",
+        "role",
+        "status",
+        "version",
+        "displayName",
+        "email"
+      ],
+      "additionalProperties": false
+    },
     "TenantUpdateRequest": {
       "type": "object",
       "properties": {
@@ -3734,6 +4349,553 @@
         "name",
         "ownerUserId",
         "reason"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformApplication": {
+      "type": "object",
+      "properties": {
+        "applicationId": {
+          "$ref": "#/$defs/Id"
+        },
+        "name": {
+          "$ref": "#/$defs/DisplayName"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "DISABLED"
+          ]
+        },
+        "version": {
+          "$ref": "#/$defs/Version"
+        }
+      },
+      "required": [
+        "applicationId",
+        "name",
+        "status",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformApplicationPage": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PlatformApplication"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "nextCursor": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "items",
+        "nextCursor"
+      ],
+      "additionalProperties": false
+    },
+    "ApplicationCreateRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/DisplayName"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "ApplicationUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/DisplayName"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "DISABLED"
+          ]
+        },
+        "expectedVersion": {
+          "$ref": "#/$defs/Version"
+        }
+      },
+      "required": [
+        "name",
+        "status",
+        "expectedVersion"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformLoginClient": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/Id"
+        },
+        "applicationId": {
+          "$ref": "#/$defs/Id"
+        },
+        "clientType": {
+          "type": "string",
+          "enum": [
+            "WEB",
+            "MACOS",
+            "CLI"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "DISABLED"
+          ]
+        },
+        "version": {
+          "$ref": "#/$defs/Version"
+        },
+        "environmentId": {
+          "$ref": "#/$defs/Id"
+        },
+        "policyVersion": {
+          "$ref": "#/$defs/Version"
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048,
+            "format": "http-origin"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "redirectAllowlist": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HttpUrl"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "product": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "WORK",
+                "CLUB"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "clientId",
+        "applicationId",
+        "clientType",
+        "status",
+        "version",
+        "environmentId",
+        "policyVersion",
+        "allowedOrigins",
+        "redirectAllowlist",
+        "product"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformLoginClientPage": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PlatformLoginClient"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "nextCursor": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "items",
+        "nextCursor"
+      ],
+      "additionalProperties": false
+    },
+    "LoginClientCreateRequest": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/Id"
+        },
+        "clientType": {
+          "type": "string",
+          "enum": [
+            "WEB",
+            "MACOS",
+            "CLI"
+          ]
+        },
+        "environmentId": {
+          "$ref": "#/$defs/Id"
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048,
+            "format": "http-origin"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "redirectAllowlist": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HttpUrl"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "product": {
+          "type": "string",
+          "enum": [
+            "WORK",
+            "CLUB"
+          ]
+        }
+      },
+      "required": [
+        "clientId",
+        "clientType",
+        "environmentId",
+        "allowedOrigins",
+        "redirectAllowlist"
+      ],
+      "additionalProperties": false
+    },
+    "LoginClientUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "DISABLED"
+          ]
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048,
+            "format": "http-origin"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "redirectAllowlist": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HttpUrl"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "expectedPolicyVersion": {
+          "$ref": "#/$defs/Version"
+        },
+        "expectedVersion": {
+          "$ref": "#/$defs/Version"
+        }
+      },
+      "required": [
+        "status",
+        "allowedOrigins",
+        "redirectAllowlist",
+        "expectedPolicyVersion",
+        "expectedVersion"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformUser": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "$ref": "#/$defs/Id"
+        },
+        "displayName": {
+          "$ref": "#/$defs/DisplayName"
+        },
+        "email": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 254,
+              "format": "email"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "DISABLED"
+          ]
+        },
+        "version": {
+          "$ref": "#/$defs/Version"
+        }
+      },
+      "required": [
+        "userId",
+        "displayName",
+        "email",
+        "status",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformUserPage": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PlatformUser"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "nextCursor": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "items",
+        "nextCursor"
+      ],
+      "additionalProperties": false
+    },
+    "UserEmailRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 254,
+          "format": "email"
+        },
+        "expectedVersion": {
+          "$ref": "#/$defs/Version"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "email",
+        "expectedVersion",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "UserStatusRequest": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "DISABLED"
+          ]
+        },
+        "expectedVersion": {
+          "$ref": "#/$defs/Version"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "status",
+        "expectedVersion",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformPermission": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "$ref": "#/$defs/Id"
+        },
+        "capability": {
+          "$ref": "#/$defs/PlatformCapability"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "REVOKED"
+          ]
+        },
+        "version": {
+          "$ref": "#/$defs/Version"
+        }
+      },
+      "required": [
+        "userId",
+        "capability",
+        "status",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformPermissionPage": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PlatformPermission"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "nextCursor": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "items",
+        "nextCursor"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformPermissionRequest": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "expectedVersion": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Version"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "enabled",
+        "expectedVersion",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "SelfTenantCreateRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/DisplayName"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "TenantCreationPolicyView": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "SELF_SERVICE",
+            "PLATFORM_ONLY"
+          ]
+        }
+      },
+      "required": [
+        "mode"
       ],
       "additionalProperties": false
     },
@@ -5038,7 +6200,7 @@
         "items": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/Membership"
+            "$ref": "#/$defs/TenantMember"
           },
           "minItems": 0,
           "maxItems": 100
@@ -5381,7 +6543,7 @@
                 "$ref": "#/$defs/PlatformCapability"
               },
               "minItems": 0,
-              "maxItems": 7
+              "maxItems": 15
             }
           },
           "required": [
@@ -5492,6 +6654,50 @@
             },
             "method": {
               "const": "GITHUB"
+            }
+          },
+          "required": [
+            "purpose",
+            "method"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "returnTo": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "format": "local-path"
+            },
+            "purpose": {
+              "const": "LOGIN"
+            },
+            "method": {
+              "const": "ACCOUNT_PASSWORD"
+            }
+          },
+          "required": [
+            "purpose",
+            "method"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "returnTo": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "format": "local-path"
+            },
+            "purpose": {
+              "const": "LOGIN"
+            },
+            "method": {
+              "const": "EMAIL_CODE"
             }
           },
           "required": [
@@ -5792,6 +6998,9 @@
                 "method"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -5821,6 +7030,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -5850,6 +7062,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -5879,6 +7094,9 @@
                 "kind"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -5908,6 +7126,9 @@
                 "method"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -5937,6 +7158,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -5966,6 +7190,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -5995,6 +7222,9 @@
                 "kind"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -6024,6 +7254,9 @@
                 "method"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -6053,6 +7286,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -6082,6 +7318,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -6111,6 +7350,9 @@
                 "kind"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -6140,6 +7382,9 @@
                 "method"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -6169,6 +7414,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -6198,6 +7446,9 @@
                 "bindingId"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -6227,6 +7478,9 @@
                 "kind"
               ],
               "additionalProperties": false
+            },
+            "useSession": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -6257,6 +7511,7 @@
                 "PASSWORD_LOGIN",
                 "EMAIL_SIGNUP",
                 "PHONE_LOGIN",
+                "CODE_LOGIN",
                 "START_PROVIDER",
                 "WAIT_PROVIDER"
               ]
@@ -6400,6 +7655,33 @@
           "type": "object",
           "properties": {
             "step": {
+              "const": "PASSWORD_LOGIN"
+            },
+            "identifier": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/Email"
+                },
+                {
+                  "$ref": "#/$defs/Phone"
+                }
+              ]
+            },
+            "password": {
+              "$ref": "#/$defs/LoginPassword"
+            }
+          },
+          "required": [
+            "step",
+            "identifier",
+            "password"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "step": {
               "const": "EMAIL_SIGNUP"
             },
             "email": {
@@ -6413,6 +7695,18 @@
             "step",
             "email",
             "password"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "step": {
+              "const": "CODE_LOGIN"
+            }
+          },
+          "required": [
+            "step"
           ],
           "additionalProperties": false
         },
@@ -7836,6 +9130,102 @@
         }
       ]
     },
+    "ManagementHandoffRequest": {
+      "type": "object",
+      "properties": {
+        "redirectUri": {
+          "$ref": "#/$defs/HttpUrl"
+        },
+        "initiatorChallenge": {
+          "$ref": "#/$defs/OpaqueSecret"
+        }
+      },
+      "required": [
+        "redirectUri",
+        "initiatorChallenge"
+      ],
+      "additionalProperties": false
+    },
+    "ManagementHandoffApproval": {
+      "type": "object",
+      "properties": {
+        "handoffId": {
+          "$ref": "#/$defs/Id"
+        },
+        "initiatorProof": {
+          "$ref": "#/$defs/OpaqueSecret"
+        }
+      },
+      "required": [
+        "handoffId",
+        "initiatorProof"
+      ],
+      "additionalProperties": false
+    },
+    "ManagementHandoffView": {
+      "type": "object",
+      "properties": {
+        "handoffId": {
+          "$ref": "#/$defs/Id"
+        },
+        "redirectUrl": {
+          "$ref": "#/$defs/HttpUrl"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/Timestamp"
+        }
+      },
+      "required": [
+        "handoffId",
+        "redirectUrl",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "ProductLoginResult": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/$defs/AccountView"
+        }
+      },
+      "required": [
+        "account"
+      ],
+      "additionalProperties": false
+    },
+    "LoginResultResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/LoginResult"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "LoginVerificationResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/LoginVerification"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
     "TransactionCreatedResponse": {
       "type": "object",
       "properties": {
@@ -7953,6 +9343,22 @@
       "properties": {
         "data": {
           "$ref": "#/$defs/ProviderStartResult"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "ManagementHandoffViewResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/ManagementHandoffView"
         },
         "requestId": {
           "$ref": "#/$defs/Id"
@@ -8108,11 +9514,155 @@
       ],
       "additionalProperties": false
     },
+    "PlatformUserPageResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/PlatformUserPage"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformUserResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/PlatformUser"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformPermissionPageResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/PlatformPermissionPage"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformPermissionResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/PlatformPermission"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformApplicationPageResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/PlatformApplicationPage"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformApplicationResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/PlatformApplication"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformLoginClientPageResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/PlatformLoginClientPage"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "PlatformLoginClientResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/PlatformLoginClient"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
     "MyTenantsPageResponse": {
       "type": "object",
       "properties": {
         "data": {
           "$ref": "#/$defs/MyTenantsPage"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "TenantCreationPolicyViewResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/TenantCreationPolicyView"
         },
         "requestId": {
           "$ref": "#/$defs/Id"
@@ -8481,6 +10031,22 @@
       "properties": {
         "data": {
           "$ref": "#/$defs/EntitlementCheckResult"
+        },
+        "requestId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "data",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "ProductLoginResultResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/ProductLoginResult"
         },
         "requestId": {
           "$ref": "#/$defs/Id"

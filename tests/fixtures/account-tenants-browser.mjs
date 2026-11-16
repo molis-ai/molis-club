@@ -108,8 +108,9 @@ export async function exerciseTenantAccountUi({
     await member.wait(
       "Boolean(document.querySelector('.m-auth-submit'))&&!document.querySelector('.m-auth-submit').disabled",
     );
-    await click(member, '手机验证码');
+    await click(member, '手机验证');
     await member.fill('input[name=address]', phone.slice(3));
+    await member.click('input[type=checkbox]');
     await member.click('.m-auth-submit');
     await member.wait("Boolean(document.querySelector('input[name=code]'))");
     await member.fill('input[name=code]', await getCode(phone));
@@ -120,7 +121,9 @@ export async function exerciseTenantAccountUi({
     )
       await member.click('input[type=checkbox]');
     await member.click('.m-auth-submit');
-    await member.wait("Boolean(document.querySelector('.m-auth-done'))");
+    // CLUB-LOGIN-05: verified phone accounts register and sign in directly.
+    await member.wait("document.body.textContent.includes('已登录 Molis 账号')");
+    assert.equal(await member.evaluate("Boolean(document.querySelector('input[name=confirm]'))"), false);
     await member.command('Page.navigate', { url: origin + '/account' });
     await member.wait("document.body.textContent.includes('确认加入')");
     assert.equal(

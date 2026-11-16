@@ -2,6 +2,10 @@ import type { CentralAccountClient, CallInput } from './client.ts';
 import type { ClubSessionManager, LoginPermit } from './sessions.ts';
 import type {
   CentralOperationId,
+  ProductLoginPasswordRequest,
+  ProductSendVerificationRequest,
+  LoginCodeRequest,
+  LoginResult,
   ProductTransactionRequest,
   ProductSubmitRequest,
   ProductTransactionView,
@@ -40,6 +44,15 @@ interface Pending {
   challenge?: { id: string; handle: string };
   verification?: string;
   reset?: string;
+}
+/** Validate the complete status/nextStep pair before exposing a product handle. */
+function productView(value: unknown): ProductTransactionView {
+  requireAccount(
+    validateNamed('ProductTransactionView', value),
+    503,
+    'AUTH_UNAVAILABLE',
+  );
+  return value as ProductTransactionView;
 }
 export async function createClubAuthentication(
   db: D1Database,
@@ -130,7 +143,16 @@ export async function createClubAuthentication(
           !pending.receipt);
       await store.save(
         row,
-        ended ? null : await seal(pending, row),
+        ended
+          ? pending.purpose === 'LOGIN' && ['GOOGLE', 'GITHUB'].includes(pending.method)
+            ? await cryptography.seal({
+              view: pending.view,
+              ...('account' in (result as object)
+                ? { loginSessionId: (result as { account: { session: { loginSessionId: string } } }).account.session.loginSessionId }
+                : { permit: pending.permit }),
+            }, row.id, row.browser_digest)
+            : null
+          : await seal(pending, row),
         ended ? 'CONSUMED' : 'READY',
       );
       committed = true;
@@ -259,8 +281,11 @@ export async function createClubAuthentication(
       p.view = { ...p.view, status: 'CONSUMED', nextStep: 'NONE' };
       return { operationReady: true };
     }
+    return acceptLogin(request, p, result.data as LoginResult);
+  }
+  async function acceptLogin(request: Request, p: Pending, result: LoginResult) {
     requireAccount(
-      result.data.kind === 'LOGIN_CODE' && result.data.state === p.state,
+      result.kind === 'LOGIN_CODE' && result.state === p.state,
       403,
       'FORBIDDEN',
     );
@@ -272,7 +297,7 @@ export async function createClubAuthentication(
       body: {
         grantType: 'authorization_code',
         clientId: config.client.clientId,
-        code: result.data.code,
+        code: result.code,
         redirectUri: config.redirectUri,
         codeVerifier: p.verifier,
       },
@@ -310,7 +335,9 @@ export async function createClubAuthentication(
     }
     if (input.step === 'PASSWORD_LOGIN')
       await invoke(p, row, call, 'verifyPassword', {
-        email: input.email,
+        ...('identifier' in input
+          ? { identifier: input.identifier }
+          : { email: input.email }),
         password: input.password,
       });
     else if (input.step === 'EMAIL_SIGNUP') {
@@ -323,6 +350,12 @@ export async function createClubAuthentication(
       await invoke(p, row, call, 'signUpEmail', {
         email: input.email,
         password: input.password,
+        verificationProof: p.verification,
+      });
+      delete p.verification;
+    } else if (input.step === 'CODE_LOGIN') {
+      requireAccount(p.verification, 403, 'FORBIDDEN');
+      await invoke(p, row, call, 'signInCode', {
         verificationProof: p.verification,
       });
       delete p.verification;
@@ -414,7 +447,14 @@ export async function createClubAuthentication(
       reauth ? 'createReauthentication' : 'createTransaction',
       {
         body: (reauth
-          ? { ...common, operation: input.operation, target: input.target }
+          ? {
+              ...common,
+              operation: input.operation,
+              target: input.target,
+              ...(input.useSession === undefined
+                ? {}
+                : { useSession: input.useSession }),
+            }
           : {
               ...common,
               purpose: input.purpose,
@@ -450,7 +490,7 @@ export async function createClubAuthentication(
               ? { bindingId: input.bindingId }
               : {}),
           }),
-      view: { ...view, handle: id },
+      view: productView({ ...view, handle: id }),
     };
     const row: AuthRow = {
       id,
@@ -466,6 +506,38 @@ export async function createClubAuthentication(
     row.box = await seal(pending, row);
     await store.create(row);
     return pending.view;
+  }
+  async function loginStart(request: Request, input: ProductLoginPasswordRequest | ProductSendVerificationRequest) {
+    const sending = 'channel' in input;
+    requireAccount(validateNamed(sending ? 'ProductSendVerificationRequest' : 'ProductLoginPasswordRequest', input));
+    const permit = await owner.beginLogin(request), proof = randomSessionSecret(), verifier = randomSessionSecret(), state = randomSessionSecret();
+    const common = { clientId: config.client.clientId, redirectUri: config.redirectUri, state, codeChallenge: await digestSessionSecret(verifier), codeChallengeMethod: 'S256' as const, initiatorChallenge: await digestSessionSecret(proof) };
+    const id = crypto.randomUUID();
+    const p: Pending = { permit, proof, verifier, state, purpose: 'LOGIN', method: sending ? input.channel === 'SMS' ? 'PHONE_OTP' : 'EMAIL_CODE' : 'ACCOUNT_PASSWORD', view: {handle:id,status:'PENDING',nextStep:'VERIFY_CHALLENGE',expiresAt:new Date(Date.now()+300000).toISOString()} };
+    try {
+      const context = { signal: request.signal, assertCurrent: () => owner.assertLogin(request, permit) };
+      if (!sending) {
+        const result = await client.call('loginPassword', {body:{...common,...input},initiatorProof:proof},context);
+        return acceptLogin(request,p,result.data);
+      }
+      const result = await client.call('sendLoginVerification',{body:{...common,...input},initiatorProof:proof},context);
+      p.view.expiresAt = result.data.expiresAt;
+      const row: AuthRow = {id,context: await digestSessionSecret(JSON.stringify(config)),browser_digest:permit.browserDigest,central_id:result.data.verificationId,state:'READY',version:0,expires_at:Date.parse(result.data.expiresAt),lease_until:null,box:null};
+      row.box = await seal(p,row);
+      await store.create(row);
+      return {...result.data,verificationId:id};
+    } catch (error) {
+      await owner.cancelLogin(request,permit).catch(() => { /* A newer login owns this browser. */ });
+      throw error;
+    }
+  }
+  async function loginCode(request: Request, input: LoginCodeRequest) {
+    requireAccount(validateNamed('LoginCodeRequest',input));
+    return operation(request,input.verificationId,async (p,row,call) => {
+      requireAccount(p.purpose === 'LOGIN' && ['PHONE_OTP','EMAIL_CODE'].includes(p.method) && !p.challenge,403,'FORBIDDEN');
+      const result = await call('loginCode',{body:{verificationId:row.central_id,code:input.code},initiatorProof:p.proof});
+      return acceptLogin(request,p,result.data);
+    });
   }
   async function commit(
     request: Request,
@@ -589,6 +661,8 @@ export async function createClubAuthentication(
       return createSensitive(request, input);
     },
     commit,
+    loginStart,
+    loginCode,
     async create(request: Request, input: ProductTransactionRequest) {
       requireAccount(validateNamed('ProductTransactionRequest', input));
       if (input.purpose === 'BIND' || input.purpose === 'REPLACE')
@@ -626,7 +700,7 @@ export async function createClubAuthentication(
           state,
           purpose: input.purpose,
           method: input.method,
-          view: { ...view, handle: id },
+          view: productView({ ...view, handle: id }),
         };
         const row: AuthRow = {
           id,
@@ -650,7 +724,25 @@ export async function createClubAuthentication(
       }
     },
     async get(request: Request, handle: string) {
-      return (await load(request, await store.get(handle), true)).pending.view;
+      const row = await store.get(handle);
+      if (row?.state === 'CONSUMED' && row.box && row.expires_at > Date.now()) {
+        const receipt = await cryptography.open(row.box, row.id, row.browser_digest) as {
+          view: ProductTransactionView;
+          loginSessionId?: string;
+          permit?: LoginPermit;
+        };
+        const view = productView(receipt.view);
+        requireAccount(view.handle === handle && ['CONSUMED', 'CANCELLED'].includes(view.status), 403, 'FORBIDDEN');
+        if (receipt.loginSessionId) {
+          const { identity } = await owner.authenticationBinding(request, undefined, true);
+          requireAccount(identity.loginId === receipt.loginSessionId, 403, 'FORBIDDEN');
+        } else {
+          requireAccount(receipt.permit, 403, 'FORBIDDEN');
+          await owner.assertLogin(request, receipt.permit, true);
+        }
+        return view;
+      }
+      return (await load(request, row, true)).pending.view;
     },
     async submit(
       request: Request,

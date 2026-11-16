@@ -88,7 +88,7 @@ async function login(address) {
     challengeHandle: challenge.challengeHandle,
     credential: delivery.credential,
   });
-  await api(b, path, { step: 'PHONE_LOGIN' });
+  await api(b, path, { step: 'CODE_LOGIN' });
   const { account } = await api(b, path, { step: 'COMPLETE' });
   return { b, id: account.user.userId };
 }

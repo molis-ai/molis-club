@@ -40,6 +40,7 @@ const me = () => ({
     issuer: 'http://127.0.0.1:8787',
     userId: 'test-user',
     displayName: 'Test',
+    email: null,
     avatarUrl: null,
     version: 1,
   },
@@ -443,4 +444,19 @@ void test('CLUB-01/UAS-11/26: BFF validates same-origin CSRF, fixed scope/path a
     (await createAccountBff(client, stopped)(req('/session'))).status,
     503,
   );
+});
+
+void test('CLUB-01: profile and login methods use only Auth me and preserve server display labels', async () => {
+  const value = me();
+  value.user.version = 7;
+  value.loginMethods = [{ bindingId: 'binding-phone', type: 'PHONE', maskedLabel: 'Auth-owned display label', verified: true, usableForLogin: true }];
+  const { client, requests } = harness(() => envelope(value));
+  const context = { session: binding() };
+  const profile = await client.call('getMe', {}, context);
+  const methods = await client.call('listLoginMethods', {}, context);
+  assert.deepEqual(methods.data, { loginMethods: profile.data.loginMethods, version: profile.data.user.version });
+  assert.ok(requests.every((r) => new URL(r.url).pathname === '/api/v2/users/me'));
+  await assert.rejects(client.call('listLoginMethods', { body: {} }, context));
+  const wrong = harness(() => envelope({ ...value, user: { ...value.user, userId: 'other-user' } }));
+  await assert.rejects(wrong.client.call('listLoginMethods', {}, context), (e) => e.envelope.error.code === 'POLICY_MISMATCH');
 });
