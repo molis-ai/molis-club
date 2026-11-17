@@ -56,7 +56,10 @@ export function createAuthenticationHandler(
           url.pathname,
         );
       let result: unknown;
-      if (callback) {
+      if (url.pathname === '/api/account/auth/capabilities') {
+        requireAccount(request.method === 'GET');
+        result = (await client.call('getLoginCapabilities', { query: { clientId: client.config.client.clientId } }, { signal: request.signal })).data;
+      } else if (callback) {
         requireAccount(request.method === 'GET');
         result = await auth.callback(request);
       } else if (request.method === 'POST') {

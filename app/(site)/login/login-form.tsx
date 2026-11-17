@@ -10,6 +10,7 @@ import {
 } from '../../_site/central-account-client';
 import type {
   AccountView,
+  LoginCapabilities,
   ProductTransactionView,
   ProductSubmitResult,
 } from '../../../lib/account/contracts/types';
@@ -29,6 +30,7 @@ export function LoginForm() {
       null,
     ),
     [challenge, setChallenge] = useState<string | null>(null);
+  const [methods, setMethods] = useState<LoginCapabilities['methods']>([]);
   const [ready, setReady] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
@@ -55,6 +57,11 @@ export function LoginForm() {
       .then(async (value) => {
         if (alive) {
           setAccount(value);
+          if (value.state !== 'AUTHENTICATED') {
+            const capabilities = await client.capabilities();
+            if (!alive) return;
+            setMethods(capabilities.methods);
+          }
           setReady(true);
           if (
             value.state === 'AUTHENTICATED' &&
@@ -312,7 +319,7 @@ export function LoginForm() {
         <h1>欢迎回来</h1>
       </header>
       <div className="m-auth-modes" aria-label="登录与注册方式">
-        {(['login', 'email', 'phone'] as const).map((value) => (
+        {(['login', 'email', 'phone'] as const).filter(value => methods.includes(({login:'ACCOUNT_PASSWORD',email:'EMAIL_CODE',phone:'PHONE_OTP'} as const)[value])).map((value) => (
           <button
             key={value}
             type="button"
@@ -451,7 +458,7 @@ export function LoginForm() {
           {mode === 'login' || mode === 'reset' ? (
             <div className="m-auth-account-links">
               {mode === 'reset' ? <button type="button" className="m-link" disabled={busy || !ready} onClick={() => switchMode('login')}>返回登录</button> : null}
-              {mode === 'login' && !challenge && !passwordStage ? (
+              {mode === 'login' && methods.includes('EMAIL_CODE') && !challenge && !passwordStage ? (
                 <button
                   type="button"
                   className="m-link m-auth-forgot"
@@ -517,22 +524,22 @@ export function LoginForm() {
         ) : null}
       </div>
       <div className="m-auth-social">
-        <button
+        {methods.includes('GOOGLE') && <button
           type="button"
           className="m-btn m-btn-line"
           disabled={busy || !ready}
           onClick={() => social('GOOGLE')}
         >
           使用 Google 登录
-        </button>
-        <button
+        </button>}
+        {methods.includes('GITHUB') && <button
           type="button"
           className="m-btn m-btn-line"
           disabled={busy || !ready}
           onClick={() => social('GITHUB')}
         >
           使用 GitHub 登录
-        </button>
+        </button>}
       </div>
     </>
   );
