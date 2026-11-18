@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { LoginScene } from '../../_site/login-scene';
+import '../../_site/home/r8.css';
+import '../../_site/home/home.css';
 import { LoginForm } from './login-form';
 import '../../_site/auth.css';
 
@@ -8,18 +11,16 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-// 登录 / 注册：白纸中间一张卡片。
+// 登录表单与首页首屏共用天空；沿用站点 template 的换页动画。
 export default function LoginPage() {
   return (
-    <div className="m-auth m-top">
-      <div className="m-auth-card">
+    <LoginScene>
         <p className="m-kicker" lang="en">
           Molis AI
         </p>
         <Suspense>
           <LoginForm />
         </Suspense>
-      </div>
-    </div>
+    </LoginScene>
   );
 }

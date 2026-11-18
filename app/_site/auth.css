@@ -212,3 +212,166 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
+/* 登录页收拢重复留白，账号设置继续使用原来的卡片间距。 */
+.m-auth-login.m-top {
+  padding-top: calc(var(--header) + 24px);
+  padding-bottom: 24px;
+}
+.m-auth-login .m-auth-card {
+  gap: 16px;
+  padding: 24px;
+}
+.m-auth-login .m-auth-social {
+  margin-top: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair-2);
+}
+.m-auth-login .m-auth-error:empty,
+.m-auth-login .m-auth-ok:empty {
+  display: none;
+}
+
+.m-auth-account-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+.m-auth-account-links .m-link {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  padding-inline: 0;
+  color: #5067bd;
+}
+.m-auth-account-links .m-link:hover:enabled {
+  color: #354b9d;
+}
+
+.m-auth-login .m-auth-modes {
+  gap: 24px;
+  margin-bottom: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hair-2);
+}
+.m-auth-login .m-auth-modes .m-link {
+  padding: 6px 0;
+  border-radius: 0;
+  box-shadow: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--mute);
+}
+.m-auth-login .m-auth-modes .m-link[aria-pressed='true'] {
+  border-bottom-color: var(--ink);
+  color: var(--ink);
+}
+
+.m-auth-recipient {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.m-auth-login .m-field input {
+  padding: 10px 12px;
+  border: 1px solid var(--hair-2);
+  border-radius: 8px;
+  background: var(--white);
+}
+.m-auth-login .m-field input:focus {
+  border-color: var(--ink);
+}
+.m-auth-login .m-field input:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* Reserve the same content area for password, phone, registration and code steps.
+   The social buttons and page footer stay anchored while the active fields change. */
+.m-auth-login .m-auth-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 288px;
+}
+.m-auth-login .m-auth-stage > .m-auth-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.m-auth-login .m-auth-stage .m-auth-submit {
+  margin-top: auto;
+}
+.m-auth-login .m-auth-stage > .m-auth-form:has(.m-auth-recipient),
+.m-auth-login .m-auth-stage > .m-auth-form:has(.m-check) {
+  gap: 10px;
+}
+
+/* Login stays on the first-screen sky; the existing route transition remains in the template. */
+.m-auth-sky {
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  place-items: center;
+  padding-top: calc(var(--header) + 12px);
+  padding-bottom: 60px;
+}
+.m-auth-sky-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.m-auth-sky .m-auth-card {
+  --mute: #535f68;
+  background: rgb(232 240 244 / 0.86);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.28);
+}
+.m-auth-sky .m-field input {
+  background: rgb(250 252 253 / 0.94);
+}
+.m-auth-sky .m-auth-account-links .m-link {
+  color: #4057a1;
+}
+.m-auth-sky .m-real-foot {
+  opacity: 1;
+  animation: none;
+}
+.m-auth-sky .m-auth-card :focus-visible {
+  outline-color: var(--ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-auth-sky .m-sky {
+    animation: none;
+  }
+}
+
+/* Close stays outside the form flow so switching steps does not move it. */
+.m-auth-login .m-auth-card { position: relative; }
+.m-auth-close {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--mute);
+  transition: color .18s ease, background-color .18s ease;
+}
+.m-auth-close:hover {
+  color: var(--ink);
+  background: rgb(255 255 255 / .35);
+}
