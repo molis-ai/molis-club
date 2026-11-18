@@ -10,6 +10,7 @@ import {
   products,
   stageOf,
 } from '../../content/site/products';
+import { HeaderAccount } from './header-account';
 import pageDates from '../../content/site/page-dates.json';
 import {
   ABOUT,
@@ -92,6 +93,7 @@ type Tone = 'film' | 'light' | 'paper';
 /** 首屏是满幅照片的页：服务端渲染时就按压在照片上画（没有 JS 时也是这个样子） */
 const topTone: Record<string, Tone> = {
   '/': 'film',
+  '/login': 'film',
   [ENTERPRISE]: 'light',
   // 「关于」第二版首屏是压暗的白展厅，白字（负责人 2026-10-19）
   [ABOUT]: 'film',
@@ -218,13 +220,7 @@ export function Header() {
         </Link>
       </nav>
       <div className="m-head-end">
-        <Link
-          className="m-login"
-          href={ACCOUNT}
-          aria-current={path === ACCOUNT ? 'page' : undefined}
-        >
-          {nav.account}
-        </Link>
+        <HeaderAccount path={path} />
         <Link
           className="m-btn m-chat"
           href={CONTACT}

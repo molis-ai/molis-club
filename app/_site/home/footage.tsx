@@ -274,6 +274,19 @@ export function FootageToggle({
   );
 }
 
+/** Shared first-screen sky, including its poster and seamless video playback. */
+export function SkyFootage({ playing }: { playing: boolean }) {
+  return (
+    <LoopFootage
+      name="home-sky"
+      playing={playing}
+      className="m-sky m-film-a"
+      seam={4.6}
+      eager
+    />
+  );
+}
+
 /**
  * 一卷胶片：首屏的天空钉在视口里，首屏和那句话从它上面滚过去；读到那句话时画面慢慢溶进海边那张。
  * 用 data-scene 拿到 --pin（钉住的这一段读了多少），第二张的不透明度跟着它走。
@@ -304,13 +317,7 @@ export function Film({
       ref={ref}
     >
       <div className="m-film-media" aria-hidden="true">
-        <LoopFootage
-          name="home-sky"
-          playing={skyPlaying}
-          className="m-sky m-film-a"
-          seam={4.6}
-          eager
-        />
+        <SkyFootage playing={skyPlaying} />
         {seasideVariant === 'b' ? (
           <SeasideBridge playing={seasidePlaying} scene={seasideScene} />
         ) : (
