@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { internalReturnPath } from '../../lib/account/return-path';
 import { UserRound, LogOut } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
@@ -8,11 +10,16 @@ import {
   accountErrorText,
 } from './central-account-client';
 import type { AccountView } from '../../lib/account/contracts/types';
-import { ACCOUNT, LOGIN } from './routes';
+import { LOGIN } from './routes';
 import './header-account.css';
 
 /** Display only: the existing server session owner remains authoritative. */
 export function HeaderAccount({ path }: { path: string }) {
+  const router = useRouter();
+  const loginHref = (from: string) => {
+    const target = internalReturnPath(from);
+    return target ? LOGIN + '?returnTo=' + encodeURIComponent(target) : LOGIN;
+  };
   const [client] = useState(createBrowserAccount);
   const [view, setView] = useState<AccountView | null>(null);
   const [busy, setBusy] = useState(false);
@@ -51,9 +58,10 @@ export function HeaderAccount({ path }: { path: string }) {
     try {
       await client.logout('CURRENT_LOGIN');
       setView({ state: 'ANONYMOUS' });
-      window.location.assign(LOGIN);
+      router.replace(LOGIN);
     } catch (reason) {
       setError(accountErrorText(reason));
+    } finally {
       setBusy(false);
     }
   }
@@ -87,11 +95,11 @@ export function HeaderAccount({ path }: { path: string }) {
             )}
           </summary>
           <div className="m-drop-panel m-header-account-panel">
-            <strong>{user.displayName || 'Molis 用户'}</strong>
             {view?.state === 'OFFLINE_CACHED' ? <small>当前离线</small> : null}
-            <a href={ACCOUNT}>
+            {/* oxlint-disable-next-line next/no-html-link-for-pages -- 此接口通过整页跳转交接 Auth 会话，不能预取。 */}
+            <a href="/api/account/management" target="_blank" rel="noopener noreferrer">
               <UserRound size={16} strokeWidth={1.5} aria-hidden="true" />
-              管理 Molis 账号
+              个人资料
             </a>
             <button type="button" disabled={busy} onClick={logout}>
               <LogOut size={16} strokeWidth={1.5} aria-hidden="true" />
@@ -101,7 +109,12 @@ export function HeaderAccount({ path }: { path: string }) {
           </div>
         </details>
       ) : (
-        <Link href={LOGIN}>登录</Link>
+        <Link href={loginHref(path)} onNavigate={(event) => {
+          if (path === LOGIN) return;
+          event.preventDefault();
+          const { pathname, search, hash } = window.location;
+          router.push(loginHref(pathname + search + hash));
+        }}>登录</Link>
       )}
     </div>
   );

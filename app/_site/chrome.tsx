@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { footer, nav } from '../../content/site/nav';
@@ -135,6 +135,14 @@ function useTone(path: string) {
 
 export function Header() {
   const path = usePathname() ?? '/';
+  const router = useRouter();
+  const accountHref = path === ACCOUNT ? ACCOUNT : `${ACCOUNT}?returnTo=${encodeURIComponent(path)}`;
+  const openAccount = (event: { preventDefault(): void }) => {
+    if (path === ACCOUNT) return;
+    event.preventDefault();
+    const { pathname, search, hash } = window.location;
+    router.push(`${ACCOUNT}?returnTo=${encodeURIComponent(pathname + search + hash)}`);
+  };
   const ref = useCloseDetails(path);
   const { tone, scrolled } = useTone(path);
   const productCurrent = productIds.some((id) =>
@@ -251,7 +259,7 @@ export function Header() {
             <Link href={ENTERPRISE}>{nav.enterprise}</Link>
             <Link href={COMMUNITY}>{nav.community}</Link>
             <Link href={ABOUT}>{nav.about}</Link>
-            <Link href={ACCOUNT}>{nav.account}</Link>
+            <Link href={accountHref} onNavigate={openAccount}>{nav.account}</Link>
             <Link className="m-btn" href={CONTACT}>
               {nav.chat}
             </Link>

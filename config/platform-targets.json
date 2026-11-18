@@ -1,0 +1,24 @@
+{
+  "platformAccountId": "200c8682734af6babc8d4ae4afaff221",
+  "dev": {
+    "workerName": "molis-club-local",
+    "databaseName": "molis-club-local",
+    "databaseId": "00000000-0000-4000-8000-000000000000",
+    "productOrigin": "http://127.0.0.1:3000",
+    "authOrigin": "http://127.0.0.1:8787"
+  },
+  "test": {
+    "workerName": "molis-club-staging",
+    "databaseName": "molis-club-staging",
+    "databaseId": "bee80a41-8fb5-4271-840c-cfa0493add48",
+    "productOrigin": "https://test.molis.ai",
+    "authOrigin": "https://auth.test.molis.ai"
+  },
+  "prod": {
+    "workerName": "molis-club-production",
+    "databaseName": "molis-club-production",
+    "databaseId": "0ec787b0-74f5-4943-ac03-306a438e80e5",
+    "productOrigin": null,
+    "authOrigin": "https://molis-auth-production.sparkling-silence-0a49.workers.dev"
+  }
+}

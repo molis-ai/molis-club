@@ -715,3 +715,15 @@ void test('CLUB-02 UAS-11: cancelled completion revokes only its newly issued se
   );
   assert.equal((await state(b, h)).state, 'AUTHENTICATED');
 });
+
+void test('ENV-12/13: returning to the same Club origin cannot restore an earlier generation', async (t) => {
+  const h = await harness(t);
+  const { browser: b } = await login(h);
+  const config = { ...configuration(), generation: crypto.randomUUID() };
+  const client = createCentralAccountClient(config, request => h.auth.send(request));
+  const afterSwitch = await createClubSessionManager({ db: h.db, client, encryptionKey: h.key });
+  const request = b.request();
+  assert.equal(await afterSwitch.sessions.read(request), null);
+  const response = await createAccountBff(client, afterSwitch.sessions)(request);
+  assert.equal((await response.json()).data.state, 'ANONYMOUS');
+});

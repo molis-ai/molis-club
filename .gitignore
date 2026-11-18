@@ -52,3 +52,5 @@ Thumbs.db
 !.dev.vars.example
 # 各自本机的预览端口配置，不进 Git
 /.claude/launch.json
+
+/secrets/

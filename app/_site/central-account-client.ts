@@ -55,6 +55,18 @@ export function accountErrorText(error: unknown): string {
   };
   return messages[code] ?? '暂时无法完成，请重试或重新开始。';
 }
+// The header and login form can mount together before the first session cookie exists.
+let pendingSession: Promise<Response> | undefined;
+function readSession() {
+  if (!pendingSession) {
+    const request = fetch('/api/account/session', { credentials: 'same-origin', cache: 'no-store', redirect: 'error' });
+    pendingSession = request;
+    const clear = () => { if (pendingSession === request) pendingSession = undefined; };
+    request.then(clear, clear);
+  }
+  return pendingSession.then(response => response.clone());
+}
+
 /** Only same-origin product routes. No tokens or credentials are stored in the browser. */
 export function createBrowserAccount() {
   let csrf = '';
@@ -64,7 +76,8 @@ export function createBrowserAccount() {
     extra?: Record<string, string>,
     method?: 'PATCH',
   ): Promise<T> {
-    const response = await fetch('/api/account' + path, {
+    if (body !== undefined) pendingSession = undefined;
+    const response = path === '/session' ? await readSession() : await fetch('/api/account' + path, {
       method: method ?? (body === undefined ? 'GET' : 'POST'),
       credentials: 'same-origin',
       cache: 'no-store',

@@ -2,39 +2,13 @@ import { sites } from '@openai/sites-vite-plugin';
 import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
 import { defineConfig, type Plugin } from 'vite';
-import { readClubAccountConfig } from './lib/account/config';
+import { clubEnvironment } from './scripts/club-environment.mjs';
 import hostingConfig from './.openai/hosting.json' with { type: 'json' };
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   '00000000-0000-4000-8000-000000000000';
 
 const { d1, r2 } = hostingConfig;
-const isCloudflareDeploy = process.env.CLOUDFLARE_DEPLOY === '1';
-
-function requireCloudflareDeployValue(name: string) {
-  const value = process.env[name]?.trim();
-  if (isCloudflareDeploy && !value) {
-    throw new Error(`${name} is required for a Cloudflare deployment build.`);
-  }
-  return value;
-}
-
-const cloudflareDatabaseId = requireCloudflareDeployValue(
-  'CLOUDFLARE_D1_DATABASE_ID',
-);
-const cloudflareDatabaseName = requireCloudflareDeployValue(
-  'CLOUDFLARE_D1_DATABASE_NAME',
-);
-const runtimeVars: Record<string, string> = {};
-const accountConfig = requireCloudflareDeployValue('MOLIS_CLUB_ACCOUNT_CONFIG');
-const authService = isCloudflareDeploy
-  ? process.env.MOLIS_CLUB_AUTH_SERVICE?.trim()
-  : undefined;
-if (accountConfig !== undefined) {
-  readClubAccountConfig(accountConfig);
-  runtimeVars.MOLIS_CLUB_ACCOUNT_CONFIG = accountConfig;
-}
-
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
 
@@ -75,17 +49,14 @@ const clientDependencyDefines: Plugin = {
 const localBindingConfig = {
   main: 'vinext/server/fetch-handler',
   compatibility_flags: ['nodejs_compat'],
-  vars: runtimeVars,
-  services: authService
-    ? [{ binding: 'MOLIS_CLUB_AUTH', service: authService }]
-    : [],
+  vars: {},
   d1_databases: d1
     ? [
         {
           binding: d1,
-          database_name: cloudflareDatabaseName ?? 'site-creator-d1',
+          database_name: 'site-creator-d1',
           database_id:
-            cloudflareDatabaseId ?? SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
+            SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
         },
       ]
     : [],
@@ -99,7 +70,10 @@ const localBindingConfig = {
     : [],
 };
 
-export default defineConfig(async () => {
+export async function createClubViteConfig(
+  config: NonNullable<Parameters<typeof import('@cloudflare/vite-plugin').cloudflare>[0]>['config'] = localBindingConfig,
+  options: { local?: 'dev' | 'test'; deployed?: 'test' | 'prod'; configPath?: string } = {},
+) {
   // Keep Wrangler and Miniflare state project-local. These are non-secret tool
   // settings; application environment belongs in ignored `.env*` files.
   process.env.WRANGLER_WRITE_LOGS ??= 'false';
@@ -110,18 +84,34 @@ export default defineConfig(async () => {
   const { cloudflare } = await import('@cloudflare/vite-plugin');
 
   return {
+    define: {
+      __MOLIS_ENVIRONMENT__: JSON.stringify(options.local ?? options.deployed ?? null),
+    },
     css: { postcss: { plugins: [tailwindcss()] } },
-    server: isCodexSeatbeltSandbox
-      ? { watch: { useFsEvents: false, usePolling: true } }
-      : undefined,
+    server: {
+      host: '127.0.0.1', port: 3000, strictPort: true,
+      ...(isCodexSeatbeltSandbox ? { watch: { useFsEvents: false, usePolling: true } } : {}),
+    },
     plugins: [
       vinext(),
       clientDependencyDefines,
-      ...(isCloudflareDeploy ? [] : [sites()]),
+      ...(options.local || options.deployed ? [] : [sites()]),
       cloudflare({
         viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },
-        config: localBindingConfig,
+        config,
+        ...(options.configPath ? { configPath: options.configPath } : {}),
+        ...(options.local ? {
+          inspectorPort: false as const,
+          persistState: { path: options.local === 'dev' ? '.wrangler/state' : '.wrangler/state-test' },
+        } : {}),
       }),
     ],
   };
+}
+
+export default defineConfig(async ({ command, mode }) => {
+  if (command === 'serve') throw new Error('Use npm start -- --env dev|test');
+  if (mode !== 'test' && mode !== 'prod') return createClubViteConfig();
+  const { worker } = clubEnvironment(mode, false);
+  return createClubViteConfig(worker, { deployed: mode });
 });

@@ -26,32 +26,14 @@ Molis AI 官网的代码仓库（仓库名 molis-club；对外品牌始终是 Mo
 
 ## 本地运行
 
-需要 Node.js 22.13+。
+需要 Node.js 22.13+。在 `config/<env>.properties` 配置对应环境，按 [登录配置](docs/AUTH-SETUP.md) 准备密钥及本地 D1。
 
-```bash
-git clone https://github.com/molis-ai/molis-club.git
-cd molis-club
+```sh
 npm ci
-cp .dev.vars.example .dev.vars
+npm start -- --env dev
 ```
 
-在 `.dev.vars` 填入独立的 `MOLIS_CLUB_ACCOUNT_KEY`，并按隔离 Auth 登记设置 `MOLIS_CLUB_ACCOUNT_CONFIG`。格式及生成命令见[登录配置](docs/AUTH-SETUP.md)。不要提交真实凭据。
-
-以下初始化命令只适用于新建的合成数据库；已有数据先核对迁移记录，不直接照抄执行：
-
-```bash
-npm run build
-npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0000_jittery_lady_deathstrike.sql
-npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0001_nebulous_power_man.sql
-npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0002_curved_ultron.sql
-npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0003_applications_multiple_submissions.sql
-npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0004_central_account_sessions.sql
-npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0005_central_account_transactions.sql
-npx wrangler d1 execute DB --local --persist-to .wrangler/state --config dist/server/wrangler.json --file drizzle/0006_light_prism.sql
-npm run dev
-```
-
-已有本地数据库时不要重复执行迁移，只执行还没执行过的新文件。本地数据在忽略的 `.wrangler/state` 里，与正式数据库分开；它不是缓存，不要清掉。
+本地 test 使用 `npm start -- --env test`。两个环境固定监听 `127.0.0.1:3000`。dev 连接本机 Auth 和本地 D1，test 连接测试 Auth 和远程测试 D1。启动会检查现有库和登记，开发测试可使用各测试脚本显式创建的独立夹具。
 
 ## 检查
 

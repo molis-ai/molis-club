@@ -1,8 +1,9 @@
 'use client';
 import Link from 'next/link';
+import { internalReturnPath } from '../../../lib/account/return-path';
 import { formText } from '../../../lib/forms';
 import { useEffect, useRef, useState, type SubmitEvent } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   createBrowserAccount,
   accountErrorText,
@@ -14,7 +15,8 @@ import type {
   ProductTransactionView,
   ProductSubmitResult,
 } from '../../../lib/account/contracts/types';
-import { ACCOUNT, PRIVACY } from '../../_site/routes';
+import { showLoginToastOnArrival } from '../../_site/login-toast';
+import { ACCOUNT, HOME, PRIVACY } from '../../_site/routes';
 
 type Mode = 'login' | 'phone' | 'email' | 'reset';
 const labels: Record<Mode, string> = {
@@ -44,6 +46,12 @@ export function LoginForm() {
     generation = useRef(0),
     formRef = useRef<HTMLFormElement>(null);
   const search = useSearchParams();
+  const router = useRouter();
+  const destination = internalReturnPath(search.get('returnTo')) ?? HOME;
+  function finishLogin(value: AccountView) {
+    if (value.state === 'AUTHENTICATED') showLoginToastOnArrival(destination);
+    setAccount(value);
+  }
   const providerWindow = useRef<Window | null>(null);
   const keep = (value: ProductTransactionView | null) => {
     active.current = value;
@@ -146,7 +154,7 @@ export function LoginForm() {
     const result = await client.submit(handle, { step: 'COMPLETE' });
     if ('account' in result) {
       keep(null);
-      setAccount(result.account);
+      finishLogin(result.account);
       formRef.current?.reset();
     } else if ('operationReady' in result) {
       setResetReady(true);
@@ -177,14 +185,14 @@ export function LoginForm() {
       if (mode !== 'reset') {
         if (challenge) {
           const result = await client.loginCode(challenge, formText(form, 'code'));
-          setAccount(result.account);
+          finishLogin(result.account);
           setChallenge(null);
         } else {
           const raw = formText(form, 'address').trim();
           const target = mode === 'phone' || (mode === 'login' && /^1[3-9][0-9]{9}$/.test(raw)) ? '+86' + raw : raw;
           if (mode === 'login') {
             const result = await client.loginPassword(target, password);
-            setAccount(result.account);
+            finishLogin(result.account);
           } else {
             const result = await client.sendVerification(mode === 'phone' ? 'SMS' : 'EMAIL', target);
             setAddress(target);
@@ -276,7 +284,7 @@ export function LoginForm() {
               throw new AccountRequestError('SESSION_EXPIRED');
             succeeded = true;
             keep(null);
-            setAccount(session);
+            finishLogin(session);
             return;
           }
           if (['CANCELLED', 'EXPIRED'].includes(status.status) || popup.closed) {
@@ -298,15 +306,17 @@ export function LoginForm() {
       }
     });
   }
-  if (account?.state === 'AUTHENTICATED' || account?.state === 'OFFLINE_CACHED')
+  useEffect(() => {
+    if (account?.state === 'AUTHENTICATED') router.replace(destination);
+  }, [account?.state, destination, router]);
+
+  if (account?.state === 'AUTHENTICATED') return <span hidden data-login-complete />;
+
+  if (account?.state === 'OFFLINE_CACHED')
     return (
       <div className="m-auth-done">
         <h1>{account.user.displayName}</h1>
-        <p>
-          {account.state === 'AUTHENTICATED'
-            ? '已登录 Molis 账号'
-            : '当前离线，账号状态暂不可确认。'}
-        </p>
+        <p>当前离线，账号状态暂不可确认。</p>
         <Link className="m-btn" href={ACCOUNT}>
           我的账号
         </Link>

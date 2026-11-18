@@ -6,11 +6,9 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "dev": "vinext dev",
+    "dev": "node scripts/club-environment-command.mjs start",
     "build": "vinext build",
-    "build:cloudflare": "CLOUDFLARE_DEPLOY=1 vinext build",
-    "deploy:cloudflare": "wrangler deploy --config dist/server/wrangler.json",
-    "start": "wrangler dev --config dist/server/wrangler.json",
+    "start": "node scripts/club-environment-command.mjs start",
     "lint": "oxlint",
     "format": "oxfmt",
     "db:generate": "drizzle-kit generate",
@@ -20,7 +18,8 @@
     "build:folio-preview": "npm run build && node scripts/export-folio-preview.mjs",
     "build:site-preview": "npm run build && node scripts/export-site-preview.mjs",
     "dates": "node scripts/page-dates.mjs",
-    "media": "node scripts/site-media.mjs && node scripts/about-light-shade.mjs"
+    "media": "node scripts/site-media.mjs && node scripts/about-light-shade.mjs",
+    "deploy": "node scripts/club-environment-command.mjs deploy"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.7.3",
@@ -53,7 +52,7 @@
     "wrangler": "4.133.0"
   },
   "type": "module",
-  "description": "molis-club — a community for AI creators, products, and thoughtful feedback",
+  "description": "molis-club \u2014 a community for AI creators, products, and thoughtful feedback",
   "repository": {
     "type": "git",
     "url": "https://github.com/molis-ai/molis-club.git"

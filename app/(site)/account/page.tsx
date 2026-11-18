@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { CentralAccount } from './central-account';
 import '../../_site/auth.css';
@@ -13,7 +14,7 @@ export default function AccountPage() {
     <div className="m-auth m-top">
       <div className="m-auth-card m-account-card">
         <h1 className="m-kicker">我的账号</h1>
-        <CentralAccount />
+        <Suspense><CentralAccount /></Suspense>
       </div>
     </div>
   );

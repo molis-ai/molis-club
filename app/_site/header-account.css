@@ -51,13 +51,6 @@
   max-width: calc(100vw - 32px);
   padding: 8px;
 }
-.m-header-account-panel strong {
-  display: block;
-  padding: 8px 12px 10px;
-  font: 400 12.5px/1.5 var(--sans);
-  color: var(--mute);
-  overflow-wrap: anywhere;
-}
 .m-header-account-panel.m-drop-panel a,
 .m-header-account-panel.m-drop-panel button {
   display: flex;

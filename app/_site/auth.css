@@ -334,6 +334,9 @@
   background: rgb(232 240 244 / 0.86);
   box-shadow: 0 0 0 1px rgb(255 255 255 / 0.28);
 }
+.m-auth-sky .m-auth-card:has([data-login-complete]) {
+  display: none;
+}
 .m-auth-sky .m-field input {
   background: rgb(250 252 253 / 0.94);
 }

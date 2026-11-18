@@ -125,7 +125,7 @@ export function createManagementHandoffHandler(
           headers: { Location: '/login', 'Cache-Control': 'no-store' },
         });
       return new Response(
-        '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Molis 账号</title><main><h1>暂时无法打开账号管理</h1><p>请返回原页面，重新点击管理 Molis 账号。</p><a href="/">返回 Molis AI</a></main></html>',
+        '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Molis 账号</title><main><h1>暂时无法打开账号管理</h1><p>请返回原页面，重新点击「个人资料」。</p><a href="/">返回 Molis AI</a></main></html>',
         {
           status: 400,
           headers: {

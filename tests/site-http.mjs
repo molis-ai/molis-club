@@ -39,20 +39,21 @@ for (const path of pages) {
   assert.equal(count(page, /<h1[\s>]/g), 1, `${path}: exactly one h1`);
   assert.match(page, /<meta name="robots" content="noindex, nofollow"/, path);
   assert.match(page, /<html lang="zh-CN"/, path);
-  // 顶栏：产品 ▾ · 企业合作 · 社区 · 关于 ｜ 登录 · 聊一聊；页尾目录里有文章、沿途
+  // 顶栏提供账号入口，带上发起页路径；页尾目录里有文章、沿途。
   for (const href of [
     '/enterprise',
     '/community',
     '/about',
     '/essays',
     '/along-the-way',
-    '/login',
     '/contact',
   ])
     assert(
       page.includes(`href="${href}"`),
       `${path}: header/footer link ${href}`,
     );
+  const accountHref = path === '/account' ? path : `/account?returnTo=${encodeURIComponent(path)}`;
+  assert(page.includes(`href="${accountHref}"`), `${path}: account entry preserves path`);
   for (const href of ['/work', '/tool'])
     assert(page.includes(`href="${href}"`), `${path}: product link ${href}`);
   // 「关于」是一整页：顶栏不下拉，不再链到退役的「认识我们」，也没有展厅名牌与「下一个展厅」。
