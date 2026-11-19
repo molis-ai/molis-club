@@ -7,7 +7,8 @@
   --film-tint: 16 24 36;
 }
 /* 画面载入前的底色：按天空封面帧从上到下取的六个颜色，一进来就是天，不是一块灰 */
-.m-film .m-film-media {
+.m-film .m-film-media,
+.m-auth-sky-media {
   background: linear-gradient(
     rgb(76 134 155),
     rgb(127 167 177) 20%,

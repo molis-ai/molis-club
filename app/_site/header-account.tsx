@@ -1,14 +1,14 @@
 'use client';
 
-import Link from 'next/link';
 import { UserRound, LogOut } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   createBrowserAccount,
   accountErrorText,
 } from './central-account-client';
 import type { AccountView } from '../../lib/account/contracts/types';
-import { ACCOUNT, LOGIN } from './routes';
+import { LoginDialog } from './login-dialog';
+import { LOGIN } from './routes';
 import './header-account.css';
 
 /** Display only: the existing server session owner remains authoritative. */
@@ -18,16 +18,29 @@ export function HeaderAccount({ path }: { path: string }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [failedAvatar, setFailedAvatar] = useState<string | null>(null);
+  const [loginPath, setLoginPath] = useState<string | null>(null);
+  if (loginPath !== null && loginPath !== path) setLoginPath(null);
+  const loginActive = useRef<string | null>(null);
+  const refreshRevision = useRef(0);
+  const closeLogin = useCallback(() => {
+    loginActive.current = null;
+    setLoginPath(null);
+  }, []);
+  const acceptLogin = useCallback((account: AccountView) => {
+    setView(account);
+    closeLogin();
+  }, [closeLogin]);
   useEffect(() => {
-    let active = true,
-      revision = 0;
+    let active = true;
     const refresh = async () => {
-      const current = ++revision;
+      // The dialog reads the shared session and returns the new account to the header.
+      if (loginActive.current === path) return;
+      const current = ++refreshRevision.current;
       try {
         const next = await client.session();
-        if (active && current === revision) setView(next);
+        if (active && current === refreshRevision.current) setView(next);
       } catch {
-        if (active && current === revision) setView(previous => previous ?? { state: 'ANONYMOUS' });
+        if (active && current === refreshRevision.current) setView(previous => previous ?? { state: 'ANONYMOUS' });
       }
     };
     const visible = () => {
@@ -39,6 +52,7 @@ export function HeaderAccount({ path }: { path: string }) {
     document.addEventListener('visibilitychange', visible);
     return () => {
       active = false;
+      if (loginActive.current === path) loginActive.current = null;
       window.removeEventListener('molis:account-changed', refresh);
       window.removeEventListener('focus', refresh);
       document.removeEventListener('visibilitychange', visible);
@@ -51,9 +65,9 @@ export function HeaderAccount({ path }: { path: string }) {
     try {
       await client.logout('CURRENT_LOGIN');
       setView({ state: 'ANONYMOUS' });
-      window.location.assign(LOGIN);
     } catch (reason) {
       setError(accountErrorText(reason));
+    } finally {
       setBusy(false);
     }
   }
@@ -63,12 +77,7 @@ export function HeaderAccount({ path }: { path: string }) {
       : null;
   return (
     <div className="m-header-account">
-      {view === null ? (
-        <span
-          className="m-header-account-placeholder"
-          aria-label="正在确认登录状态"
-        />
-      ) : user ? (
+      {user ? (
         <details className="m-header-account-menu">
           <summary aria-label={`账号菜单：${user.displayName || '我的账号'}`}>
             {user.avatarUrl && user.avatarUrl !== failedAvatar ? (
@@ -87,11 +96,11 @@ export function HeaderAccount({ path }: { path: string }) {
             )}
           </summary>
           <div className="m-drop-panel m-header-account-panel">
-            <strong>{user.displayName || 'Molis 用户'}</strong>
             {view?.state === 'OFFLINE_CACHED' ? <small>当前离线</small> : null}
-            <a href={ACCOUNT}>
+            {/* oxlint-disable-next-line next/no-html-link-for-pages -- 此接口通过整页跳转交接 Auth 会话，不能预取。 */}
+            <a href="/api/account/management" target="_blank" rel="noopener noreferrer">
               <UserRound size={16} strokeWidth={1.5} aria-hidden="true" />
-              管理 Molis 账号
+              个人资料
             </a>
             <button type="button" disabled={busy} onClick={logout}>
               <LogOut size={16} strokeWidth={1.5} aria-hidden="true" />
@@ -100,9 +109,16 @@ export function HeaderAccount({ path }: { path: string }) {
             {error ? <p role="alert">{error}</p> : null}
           </div>
         </details>
-      ) : (
-        <Link href={LOGIN}>登录</Link>
+      ) : path !== LOGIN && (
+        <button type="button" className="m-header-login" aria-haspopup="dialog" onClick={() => {
+          loginActive.current = path;
+          refreshRevision.current++;
+          setLoginPath(path);
+        }}>
+          登录
+        </button>
       )}
+      {loginPath === path && <LoginDialog accountClient={client} onClose={closeLogin} onAuthenticated={acceptLogin} />}
     </div>
   );
 }

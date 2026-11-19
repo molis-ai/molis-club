@@ -41,7 +41,8 @@ let proxy,
   origin,
   authOrigin,
   js = '',
-  failEntitlements = false;
+  failEntitlements = false,
+  delayedCapabilities;
 async function forward(req, res, handler, base) {
   try {
     const chunks = [];
@@ -119,6 +120,7 @@ const product = http.createServer((req, res) => {
           encryptionKey: key,
         });
         const path = new URL(request.url).pathname;
+        if (path === '/api/account/auth/capabilities') await delayedCapabilities;
         if (failEntitlements && path === '/api/account/entitlements/check')
           return Response.json(
             { error: { code: 'AUTH_UNAVAILABLE' } },
@@ -203,12 +205,33 @@ try {
   const shim = join(directory, 'navigation.tsx');
   await writeFile(
     shim,
-    "import React from 'react';export const useRouter=()=>({replace:(url)=>{if(location.pathname!==url)location.replace(url)}});export const useSearchParams=()=>new URLSearchParams(location.search);export const usePathname=()=>location.pathname;export default function Link(props){return React.createElement('a',props);}",
+    `import React, { useSyncExternalStore } from 'react';
+     const replace = url => { history.replaceState(null, '', url); dispatchEvent(new Event('popstate')); };
+     const router = { replace };
+     const subscribe = update => { addEventListener('popstate', update); return () => removeEventListener('popstate', update); };
+     export const useRouter = () => router;
+     export const useSearchParams = () => new URLSearchParams(location.search);
+     export const usePathname = () => useSyncExternalStore(subscribe, () => location.pathname);
+     export default function Link({onNavigate, ...props}) { return React.createElement('a', props); }`,
   );
   const bundled = await build({
     stdin: {
       contents:
-        "import React from 'react';import {createRoot} from 'react-dom/client';import {LoginForm} from './app/(site)/login/login-form';import {CentralAccount} from './app/(site)/account/central-account';import {Header,Footer} from './app/_site/chrome';import './app/_site/auth.css';createRoot(document.getElementById('root')).render(<div className='m'><Header/><main><div className='m-auth m-top'><div className={location.pathname==='/account'?'m-auth-card m-account-card':'m-auth-card'}><p className='m-kicker'>Molis AI</p>{location.pathname==='/account'?<CentralAccount/>:<LoginForm/>}</div></div></main><Footer/></div>);",
+        `import React from 'react';
+         import { createRoot } from 'react-dom/client';
+         import { usePathname } from 'next/navigation';
+         import { LoginForm } from './app/(site)/login/login-form';
+         import { CentralAccount } from './app/(site)/account/central-account';
+         import { LoginToast } from './app/_site/login-toast';
+         import { Header, Footer } from './app/_site/chrome';
+         import './app/_site/auth.css';
+         function Site() {
+           const path = usePathname();
+           return <div className="m"><Header/><main>{path === '/' ? <div className="m-real-copy"><h1>Molis AI</h1><p>Amplify Ideas</p></div> :
+             <div className="m-auth m-top"><div className="m-auth-card">{path === '/account' ? <CentralAccount/> : <LoginForm/>}</div></div>}
+             <LoginToast/></main><Footer/></div>;
+         }
+         createRoot(document.getElementById('root')).render(<Site/>);`,
       resolveDir: process.cwd(),
       loader: 'tsx',
     },
@@ -272,12 +295,12 @@ try {
     await page.evaluate('document.querySelector("input[name=address]").value'),
     'help-draft@example.test',
   );
-  // CLUB09-02: all production navigation entries lead to the same central account page.
+  // The header menu and footer retain access to the product account page.
   assert.equal(
     await page.evaluate(
-      'document.querySelectorAll(\'header a[href="/account"],footer a[href="/account"]\').length',
+      'document.querySelectorAll(\'header a[href^="/account?"],footer a[href="/account"]\').length',
     ),
-    3,
+    2,
   );
   await page.command('Network.setCookie', {
     name: 'better-auth.session_token',
@@ -289,29 +312,53 @@ try {
     410,
   );
   await page.viewport(1440, 900);
-  await navigate(() => page.click('.m-login'));
+  await navigate(() => page.click('footer a[href="/account"]'));
   await page.wait(
     "document.querySelector('.m-auth-head h2')?.textContent==='尚未登录'",
   );
-  await navigate(() => page.click('.m-auth-card a[href="/login"]'));
+  await navigate(() => page.command('Page.navigate', { url: origin + '/' }));
+  await page.wait("document.querySelector('.m-header-login')");
+  await page.evaluate("void (window.clubLoginSource = document.querySelector('main'))");
+  const sameLoginSource = "location.pathname==='/'&&window.clubLoginSource===document.querySelector('main')";
+  const heroText = "getComputedStyle(document.querySelector('.m-real-copy')).visibility";
+  const methodsGate = Promise.withResolvers();
+  delayedCapabilities = methodsGate.promise;
+  await page.click('.m-header-login');
+  await page.wait("document.querySelector('dialog.m-auth-dialog[open] input[name=password]')");
+  assert.equal(await page.evaluate(heroText), 'hidden');
+  assert.deepEqual(
+    await page.evaluate("[...document.querySelectorAll('dialog .m-auth-modes button,dialog .m-auth-social button')].map(b=>b.textContent.trim())"),
+    ['账号密码', '邮箱验证', '手机验证', '使用 Google 登录', '使用 GitHub 登录'],
+  );
+  assert.equal(await page.evaluate("document.querySelector('dialog .m-auth-submit').disabled"), false);
+  await page.click('dialog .m-auth-close');
+  await page.wait("!document.querySelector('dialog.m-auth-dialog')");
+  assert.equal(await page.evaluate(sameLoginSource), true);
+  assert.equal(await page.evaluate(heroText), 'visible');
+  await page.click('.m-header-login');
   await page.wait(
-    "document.querySelector('.m-auth-submit')&&!document.querySelector('.m-auth-submit').disabled",
+    "document.querySelector('dialog.m-auth-dialog[open] .m-auth-submit:enabled')",
   );
   await clickText('邮箱验证');
   await page.fill('input[name=address]', 'club-browser@example.test');
   await page.click('input[type=checkbox]');
   await page.click('.m-auth-submit');
+  await page.wait("document.querySelector('dialog .m-auth-submit').textContent==='请稍候…'");
+  methodsGate.resolve();
+  delayedCapabilities = undefined;
   await page.wait("Boolean(document.querySelector('input[name=code]'))");
   const row = await proxy.env.DB.prepare(
     "SELECT m.credential FROM auth_mock_delivery m JOIN auth_verification_challenge c ON c.delivery_id=m.delivery_id WHERE c.canonical_target='club-browser@example.test' ORDER BY c.created_at DESC LIMIT 1",
   ).first();
   await page.fill('input[name=code]', row.credential);
   await page.click('.m-auth-submit');
-  await page.wait("document.body.textContent.includes('已登录 Molis 账号')");
-  await navigate(() => page.click('.m-login'));
-  await page.wait("[...document.querySelectorAll('button')].some(b=>b.textContent==='退出登录')");
-  await clickText('退出登录');
-  await page.wait("document.body.textContent.includes('已退出登录。')");
+  await page.wait("!document.querySelector('dialog.m-auth-dialog')&&document.querySelector('.m-login-toast')?.textContent==='登录成功'");
+  assert.equal(await page.evaluate(sameLoginSource), true);
+  assert.equal(await page.evaluate(heroText), 'visible');
+  await page.click('.m-header-account-menu summary');
+  await page.click('.m-header-account-menu button');
+  await page.wait("document.querySelector('.m-header-login')");
+  assert.equal(await page.evaluate(sameLoginSource), true);
   await navigate(() => page.command('Page.navigate', {url: origin + '/login'}));
   await page.wait("document.querySelector('.m-auth-submit')&&!document.querySelector('.m-auth-submit').disabled");
   // Advance only this synthetic address's resend cooldown before the reset flow.
@@ -332,8 +379,8 @@ try {
   await page.fill('input[name=address]', 'club-browser@example.test');
   await page.fill('input[name=password]', password);
   await page.click('.m-auth-submit');
-  await page.wait("document.body.textContent.includes('已登录 Molis 账号')");
-  await navigate(() => page.click('.m-login'));
+  await page.wait("location.pathname==='/'&&document.querySelector('.m-login-toast')?.textContent==='登录成功'");
+  await navigate(() => page.click('footer a[href="/account"]'));
   await page.wait(
     "[...document.querySelectorAll('button')].some(b=>b.textContent==='退出登录')",
   );
@@ -561,7 +608,7 @@ try {
         try {
           await page.wait(
             'location.origin===' + JSON.stringify(origin) +
-            "&&(document.body.textContent.includes('已登录 Molis 账号'))",
+            "&&(location.pathname==='/'&&document.querySelector('.m-login-toast')?.textContent==='登录成功')",
           );
           break;
         } catch (error) {

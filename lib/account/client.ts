@@ -83,7 +83,8 @@ export function createCentralAccountClient(
   send: AccountFetch = fetch,
 ) {
   assertServer();
-  const pinned = readClubAccountConfig(JSON.stringify(config))!;
+  const { generation, ...registration } = config;
+  const pinned = readClubAccountConfig(JSON.stringify(registration), generation)!;
   function checkSession(session: SessionView): void {
     requireAccount(
       session.clientId === pinned.client.clientId &&

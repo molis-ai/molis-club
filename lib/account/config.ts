@@ -6,6 +6,7 @@ export interface ClubAccountConfig {
   client: ClientEnvironmentConfig;
   applicationId: string;
   redirectUri: string;
+  generation?: string;
 }
 function object(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -16,6 +17,7 @@ function loopback(url: URL): boolean {
 /** A deployment binding, never a request DTO. Missing means explicitly disabled. */
 export function readClubAccountConfig(
   raw: string | undefined,
+  generation?: string,
 ): ClubAccountConfig | null {
   assertServer();
   if (raw === undefined) return null;
@@ -44,7 +46,9 @@ export function readClubAccountConfig(
       requireAccount(loopback(auth) && loopback(product));
     else
       requireAccount(
-        auth.protocol === 'https:' && product.protocol === 'https:',
+        auth.protocol === 'https:' &&
+          (product.protocol === 'https:' ||
+            (c.environmentKind === 'TEST' && product.origin === 'http://127.0.0.1:3000')),
       );
     if (c.environmentKind === 'PRODUCTION')
       requireAccount(!loopback(auth) && !loopback(product));
@@ -61,6 +65,7 @@ export function readClubAccountConfig(
     }
     return Object.freeze({
       ...config,
+      ...(generation ? { generation } : {}),
       client: Object.freeze({
         ...c,
         redirectAllowlist: Object.freeze([

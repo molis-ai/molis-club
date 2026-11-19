@@ -122,7 +122,7 @@ export async function exerciseTenantAccountUi({
       await member.click('input[type=checkbox]');
     await member.click('.m-auth-submit');
     // CLUB-LOGIN-05: verified phone accounts register and sign in directly.
-    await member.wait("document.body.textContent.includes('已登录 Molis 账号')");
+    await member.wait("location.pathname==='/'&&document.querySelector('.m-login-toast')?.textContent==='登录成功'");
     assert.equal(await member.evaluate("Boolean(document.querySelector('input[name=confirm]'))"), false);
     await member.command('Page.navigate', { url: origin + '/account' });
     await member.wait("document.body.textContent.includes('确认加入')");

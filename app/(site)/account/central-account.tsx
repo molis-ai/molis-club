@@ -1,5 +1,7 @@
 'use client';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { internalReturnPath } from '../../../lib/account/return-path';
 import { useEffect, useState } from 'react';
 import {
   createBrowserAccount,
@@ -14,6 +16,7 @@ import type {
   LoginMethodsView,
 } from '../../../lib/account/contracts/types';
 export function CentralAccount() {
+  const returnTo = internalReturnPath(useSearchParams().get('returnTo')) ?? '/account';
   const [client] = useState(createBrowserAccount),
     [platform, setPlatform] = useState(false),
     [view, setView] = useState<AccountView | null>(null),
@@ -145,7 +148,7 @@ export function CentralAccount() {
           </button>
         </div>
       ) : view ? (
-        <Link className="m-btn" href="/login">
+        <Link className="m-btn" href={`/login?returnTo=${encodeURIComponent(returnTo)}`}>
           登录 / 注册
         </Link>
       ) : null}

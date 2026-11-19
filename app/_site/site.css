@@ -631,6 +631,23 @@ body:has(.m) .skip-link {
 .m-page {
   animation: m-page-in 0.7s var(--ease) both;
 }
+.m-page:has(.m-home, .m-auth-sky, .m-login-toast) {
+  animation-duration: 0s;
+}
+.m-login-toast {
+  position: fixed;
+  z-index: 60;
+  top: calc(var(--header) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: #242b30;
+  color: #fff;
+  font: 500 14px/1.5 var(--sans);
+  box-shadow: 0 4px 18px rgb(0 0 0 / 16%);
+  pointer-events: none;
+}
 @keyframes m-page-in {
   from {
     opacity: 0;
@@ -1110,4 +1127,22 @@ body:has(.m) .skip-link {
   max-width: 30em;
   font: 300 var(--t-lead) / 1.9 var(--sans);
   color: var(--ink-2);
+}
+
+.m-env-status {
+  position: fixed;
+  right: max(12px, env(safe-area-inset-right));
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 1000;
+  margin: 0;
+  padding: 3px 9px;
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 999px;
+  background: #343943;
+  color: #fff;
+  font: 500 11px/16px system-ui, sans-serif;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
 }

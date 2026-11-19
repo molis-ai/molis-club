@@ -14,14 +14,12 @@ async function handleRequest(
   businessSlugs?: string[],
 ): Promise<Response> {
   try {
-    const config = readClubAccountConfig(env.MOLIS_CLUB_ACCOUNT_CONFIG);
+    const config = readClubAccountConfig(env.MOLIS_CLUB_ACCOUNT_CONFIG, env.MOLIS_LOCAL_GENERATION);
     if (!config || !env.DB)
       throw new AccountFailure(503, 'UNIFIED_CONFIGURATION_INVALID');
-    const authService = env.MOLIS_CLUB_AUTH;
-    const client = createCentralAccountClient(
-      config,
-      authService ? (request) => authService.fetch(request) : undefined,
-    );
+    if (new URL(request.url).origin !== config.client.productOrigin)
+      throw new AccountFailure(403, 'FORBIDDEN');
+    const client = createCentralAccountClient(config);
     const owner = await createClubSessionManager({
       db: env.DB,
       client,

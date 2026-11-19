@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 import { runInNewContext } from 'node:vm';
 import { resolveConfig } from 'vite';
 import { rolldown } from 'rolldown';
+import { createClubViteConfig } from '../vite.config.ts';
 
 await test('prebundled navigation runs in a browser without a Node process global', async () => {
-  const config = await resolveConfig({ logLevel: 'silent' }, 'serve');
+  const config = await resolveConfig({ ...await createClubViteConfig(), configFile: false, logLevel: 'silent' }, 'serve');
   // Use the project's actual client optimizer options and the installed router.
   // This reproduces the stageAppNavigationFailureTarget error from a Link click.
   const options = config.environments.client.optimizeDeps.rolldownOptions;
