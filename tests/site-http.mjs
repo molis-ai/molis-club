@@ -5,6 +5,11 @@ import assert from 'node:assert/strict';
 const origin = process.env.TEST_ORIGIN || 'http://localhost:3000';
 const canonicalOrigin = 'https://molis-club.yijunw0212.chatgpt.site';
 
+const health = await fetch(origin + '/health');
+assert.equal(health.status, 200);
+assert.equal(health.headers.get('cache-control'), 'no-store');
+assert.deepEqual(await health.json(), { status: 'UP' });
+
 async function html(path) {
   const response = await fetch(`${origin}${path}`);
   assert.equal(response.status, 200, path);
