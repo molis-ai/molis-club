@@ -41,7 +41,8 @@ let proxy,
   origin,
   authOrigin,
   js = '',
-  failEntitlements = false;
+  failEntitlements = false,
+  delayedCapabilities;
 async function forward(req, res, handler, base) {
   try {
     const chunks = [];
@@ -119,6 +120,7 @@ const product = http.createServer((req, res) => {
           encryptionKey: key,
         });
         const path = new URL(request.url).pathname;
+        if (path === '/api/account/auth/capabilities') await delayedCapabilities;
         if (failEntitlements && path === '/api/account/entitlements/check')
           return Response.json(
             { error: { code: 'AUTH_UNAVAILABLE' } },
@@ -225,7 +227,7 @@ try {
          import './app/_site/auth.css';
          function Site() {
            const path = usePathname();
-           return <div className="m"><Header/><main>{path === '/' ? <h1>Molis AI</h1> :
+           return <div className="m"><Header/><main>{path === '/' ? <div className="m-real-copy"><h1>Molis AI</h1><p>Amplify Ideas</p></div> :
              <div className="m-auth m-top"><div className="m-auth-card">{path === '/account' ? <CentralAccount/> : <LoginForm/>}</div></div>}
              <LoginToast/></main><Footer/></div>;
          }
@@ -314,25 +316,49 @@ try {
   await page.wait(
     "document.querySelector('.m-auth-head h2')?.textContent==='尚未登录'",
   );
-  await navigate(() => page.command('Page.navigate', { url: origin + '/login' }));
+  await navigate(() => page.command('Page.navigate', { url: origin + '/' }));
+  await page.wait("document.querySelector('.m-header-login')");
+  await page.evaluate("void (window.clubLoginSource = document.querySelector('main'))");
+  const sameLoginSource = "location.pathname==='/'&&window.clubLoginSource===document.querySelector('main')";
+  const heroText = "getComputedStyle(document.querySelector('.m-real-copy')).visibility";
+  const methodsGate = Promise.withResolvers();
+  delayedCapabilities = methodsGate.promise;
+  await page.click('.m-header-login');
+  await page.wait("document.querySelector('dialog.m-auth-dialog[open] input[name=password]')");
+  assert.equal(await page.evaluate(heroText), 'hidden');
+  assert.deepEqual(
+    await page.evaluate("[...document.querySelectorAll('dialog .m-auth-modes button,dialog .m-auth-social button')].map(b=>b.textContent.trim())"),
+    ['账号密码', '邮箱验证', '手机验证', '使用 Google 登录', '使用 GitHub 登录'],
+  );
+  assert.equal(await page.evaluate("document.querySelector('dialog .m-auth-submit').disabled"), false);
+  await page.click('dialog .m-auth-close');
+  await page.wait("!document.querySelector('dialog.m-auth-dialog')");
+  assert.equal(await page.evaluate(sameLoginSource), true);
+  assert.equal(await page.evaluate(heroText), 'visible');
+  await page.click('.m-header-login');
   await page.wait(
-    "document.querySelector('.m-auth-submit')&&!document.querySelector('.m-auth-submit').disabled",
+    "document.querySelector('dialog.m-auth-dialog[open] .m-auth-submit:enabled')",
   );
   await clickText('邮箱验证');
   await page.fill('input[name=address]', 'club-browser@example.test');
   await page.click('input[type=checkbox]');
   await page.click('.m-auth-submit');
+  await page.wait("document.querySelector('dialog .m-auth-submit').textContent==='请稍候…'");
+  methodsGate.resolve();
+  delayedCapabilities = undefined;
   await page.wait("Boolean(document.querySelector('input[name=code]'))");
   const row = await proxy.env.DB.prepare(
     "SELECT m.credential FROM auth_mock_delivery m JOIN auth_verification_challenge c ON c.delivery_id=m.delivery_id WHERE c.canonical_target='club-browser@example.test' ORDER BY c.created_at DESC LIMIT 1",
   ).first();
   await page.fill('input[name=code]', row.credential);
   await page.click('.m-auth-submit');
-  await page.wait("location.pathname==='/'&&document.querySelector('.m-login-toast')?.textContent==='登录成功'");
-  await navigate(() => page.click('footer a[href="/account"]'));
-  await page.wait("[...document.querySelectorAll('button')].some(b=>b.textContent==='退出登录')");
-  await clickText('退出登录');
-  await page.wait("document.body.textContent.includes('已退出登录。')");
+  await page.wait("!document.querySelector('dialog.m-auth-dialog')&&document.querySelector('.m-login-toast')?.textContent==='登录成功'");
+  assert.equal(await page.evaluate(sameLoginSource), true);
+  assert.equal(await page.evaluate(heroText), 'visible');
+  await page.click('.m-header-account-menu summary');
+  await page.click('.m-header-account-menu button');
+  await page.wait("document.querySelector('.m-header-login')");
+  assert.equal(await page.evaluate(sameLoginSource), true);
   await navigate(() => page.command('Page.navigate', {url: origin + '/login'}));
   await page.wait("document.querySelector('.m-auth-submit')&&!document.querySelector('.m-auth-submit').disabled");
   // Advance only this synthetic address's resend cooldown before the reset flow.

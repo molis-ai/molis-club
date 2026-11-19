@@ -1,40 +1,46 @@
 'use client';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { internalReturnPath } from '../../lib/account/return-path';
 import { UserRound, LogOut } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   createBrowserAccount,
   accountErrorText,
 } from './central-account-client';
 import type { AccountView } from '../../lib/account/contracts/types';
+import { LoginDialog } from './login-dialog';
 import { LOGIN } from './routes';
 import './header-account.css';
 
 /** Display only: the existing server session owner remains authoritative. */
 export function HeaderAccount({ path }: { path: string }) {
-  const router = useRouter();
-  const loginHref = (from: string) => {
-    const target = internalReturnPath(from);
-    return target ? LOGIN + '?returnTo=' + encodeURIComponent(target) : LOGIN;
-  };
   const [client] = useState(createBrowserAccount);
   const [view, setView] = useState<AccountView | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [failedAvatar, setFailedAvatar] = useState<string | null>(null);
+  const [loginPath, setLoginPath] = useState<string | null>(null);
+  if (loginPath !== null && loginPath !== path) setLoginPath(null);
+  const loginActive = useRef<string | null>(null);
+  const refreshRevision = useRef(0);
+  const closeLogin = useCallback(() => {
+    loginActive.current = null;
+    setLoginPath(null);
+  }, []);
+  const acceptLogin = useCallback((account: AccountView) => {
+    setView(account);
+    closeLogin();
+  }, [closeLogin]);
   useEffect(() => {
-    let active = true,
-      revision = 0;
+    let active = true;
     const refresh = async () => {
-      const current = ++revision;
+      // The dialog reads the shared session and returns the new account to the header.
+      if (loginActive.current === path) return;
+      const current = ++refreshRevision.current;
       try {
         const next = await client.session();
-        if (active && current === revision) setView(next);
+        if (active && current === refreshRevision.current) setView(next);
       } catch {
-        if (active && current === revision) setView(previous => previous ?? { state: 'ANONYMOUS' });
+        if (active && current === refreshRevision.current) setView(previous => previous ?? { state: 'ANONYMOUS' });
       }
     };
     const visible = () => {
@@ -46,6 +52,7 @@ export function HeaderAccount({ path }: { path: string }) {
     document.addEventListener('visibilitychange', visible);
     return () => {
       active = false;
+      if (loginActive.current === path) loginActive.current = null;
       window.removeEventListener('molis:account-changed', refresh);
       window.removeEventListener('focus', refresh);
       document.removeEventListener('visibilitychange', visible);
@@ -58,7 +65,6 @@ export function HeaderAccount({ path }: { path: string }) {
     try {
       await client.logout('CURRENT_LOGIN');
       setView({ state: 'ANONYMOUS' });
-      router.replace(LOGIN);
     } catch (reason) {
       setError(accountErrorText(reason));
     } finally {
@@ -71,12 +77,7 @@ export function HeaderAccount({ path }: { path: string }) {
       : null;
   return (
     <div className="m-header-account">
-      {view === null ? (
-        <span
-          className="m-header-account-placeholder"
-          aria-label="正在确认登录状态"
-        />
-      ) : user ? (
+      {user ? (
         <details className="m-header-account-menu">
           <summary aria-label={`账号菜单：${user.displayName || '我的账号'}`}>
             {user.avatarUrl && user.avatarUrl !== failedAvatar ? (
@@ -108,14 +109,16 @@ export function HeaderAccount({ path }: { path: string }) {
             {error ? <p role="alert">{error}</p> : null}
           </div>
         </details>
-      ) : (
-        <Link href={loginHref(path)} onNavigate={(event) => {
-          if (path === LOGIN) return;
-          event.preventDefault();
-          const { pathname, search, hash } = window.location;
-          router.push(loginHref(pathname + search + hash));
-        }}>登录</Link>
+      ) : path !== LOGIN && (
+        <button type="button" className="m-header-login" aria-haspopup="dialog" onClick={() => {
+          loginActive.current = path;
+          refreshRevision.current++;
+          setLoginPath(path);
+        }}>
+          登录
+        </button>
       )}
+      {loginPath === path && <LoginDialog accountClient={client} onClose={closeLogin} onAuthenticated={acceptLogin} />}
     </div>
   );
 }

@@ -9,7 +9,6 @@ export const port = Number(new URL(loopback).port);
 export function clubEnvironment(name, local, configRoot = root) {
   if (local && name === 'prod') throw new Error('Club prod is deploy only');
   const target = targets[name];
-  if (target?.productOrigin === null) throw new Error('Club production route has no approved target');
   const { config, secrets } = loadProperties(configRoot, name, {
     workerName: oneOf(target?.workerName),
     accountId: oneOf(name === 'dev' ? undefined : targets.platformAccountId),
@@ -25,6 +24,7 @@ export function clubEnvironment(name, local, configRoot = root) {
   if (name === 'test' && config.clientId === config.localClientId)
     throw new Error('Club test needs distinct remote and loopback client registrations');
   const productOrigin = local ? loopback : config.productOrigin;
+  const domains = [new URL(productOrigin).hostname, ...(target.additionalDomains ?? [])];
   const redirectUri = productOrigin + '/account/callback';
   const account = {
     applicationId: config.applicationId,
@@ -49,7 +49,7 @@ export function clubEnvironment(name, local, configRoot = root) {
       compatibility_flags: ['nodejs_compat'],
       preview_urls: false,
       workers_dev: false,
-      ...(!local ? { routes: [{ pattern: new URL(productOrigin).hostname, custom_domain: true }] } : {}),
+      ...(!local ? { routes: domains.map(pattern => ({ pattern, custom_domain: true })) } : {}),
       vars: {
         MOLIS_CLUB_ACCOUNT_CONFIG: JSON.stringify(account),
         MOLIS_ENVIRONMENT: name,

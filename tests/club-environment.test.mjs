@@ -50,22 +50,20 @@ void test('V2-01: test deployment properties cannot select another account, Work
   const wrongTargets = {
     workerName: 'molis-club-production',
     productOrigin: 'https://molis.ai',
-    authOrigin: 'https://molis-auth-production.sparkling-silence-0a49.workers.dev',
-    databaseName: 'molis-club-production',
-    databaseId: '0ec787b0-74f5-4943-ac03-306a438e80e5',
+    authOrigin: 'https://auth.molis.ai',
+    databaseName: 'molis-club-prod',
+    databaseId: 'db7f0788-1ace-4d83-aaff-c3096a8145f3',
     accountId: 'f'.repeat(32),
   };
   for (const [key, wrong] of Object.entries(wrongTargets)) {
     writeFileSync(configPath, config.replace(new RegExp(`^${key}=.*$`, 'mu'), `${key}=${wrong}`));
     assert.throws(() => clubEnvironment('test', false, root), new RegExp(`invalid field ${key}`, 'u'));
   }
-  assert.throws(() => clubEnvironment('prod', false, root), /no approved target/u);
-
   writeFileSync(configPath, config);
   const { worker } = clubEnvironment('test', false, root);
-  assert.equal(worker.name, 'molis-club-staging');
+  assert.equal(worker.name, 'molis-club-test');
   assert.deepEqual(worker.routes, [{ pattern: 'test.molis.ai', custom_domain: true }]);
-  assert.equal(worker.d1_databases[0].database_id, 'bee80a41-8fb5-4271-840c-cfa0493add48');
+  assert.equal(worker.d1_databases[0].database_id, '2674c055-5caf-4db9-96be-d92019729a7b');
   assert.equal(worker.d1_databases[0].remote, undefined);
   const local = clubEnvironment('test', true, root);
   assert.equal(local.account.redirectUri, 'http://127.0.0.1:3000/account/callback');
@@ -75,4 +73,19 @@ void test('V2-01: test deployment properties cannot select another account, Work
   assert.throws(() => validateClubBuild({ ...worker, routes: [{ pattern: 'molis.ai', custom_domain: true }] }, worker), /routes/u);
   assert.throws(() => validateClubBuild({ ...worker, d1_databases: [...worker.d1_databases, { binding: 'OTHER' }] }, worker), /D1/u);
   assert.throws(() => validateClubBuild({ ...worker, services: [{ binding: 'OTHER', service: 'prod' }] }, worker), /services/u);
+
+  const prodConfig = readFileSync(new URL('../config/prod.properties', import.meta.url), 'utf8');
+  writeFileSync(new URL('config/prod.properties', root), prodConfig);
+  writeFileSync(new URL('secrets/prod.properties', root), `MOLIS_CLUB_ACCOUNT_KEY=${'A'.repeat(43)}\n`);
+  assert.throws(() => clubEnvironment('prod', true, root), /deploy only/u);
+  const prod = clubEnvironment('prod', false, root);
+  assert.equal(prod.account.client.authOrigin, 'https://auth.molis.ai');
+  assert.equal(prod.account.redirectUri, 'https://molis.ai/account/callback');
+  assert.deepEqual(prod.worker.routes, [
+    { pattern: 'molis.ai', custom_domain: true },
+    { pattern: 'adeptify.me', custom_domain: true },
+  ]);
+  assert.equal(prod.worker.d1_databases[0].database_name, 'molis-club-prod');
+  assert.equal(prod.worker.d1_databases[0].database_id, 'db7f0788-1ace-4d83-aaff-c3096a8145f3');
+  assert.throws(() => validateClubBuild({ ...prod.worker, routes: prod.worker.routes.slice(0, 1) }, prod.worker), /routes/u);
 });

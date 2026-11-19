@@ -8,17 +8,18 @@
     "authOrigin": "http://127.0.0.1:8787"
   },
   "test": {
-    "workerName": "molis-club-staging",
-    "databaseName": "molis-club-staging",
-    "databaseId": "bee80a41-8fb5-4271-840c-cfa0493add48",
+    "workerName": "molis-club-test",
+    "databaseName": "molis-club-test",
+    "databaseId": "2674c055-5caf-4db9-96be-d92019729a7b",
     "productOrigin": "https://test.molis.ai",
     "authOrigin": "https://auth.test.molis.ai"
   },
   "prod": {
     "workerName": "molis-club-production",
-    "databaseName": "molis-club-production",
-    "databaseId": "0ec787b0-74f5-4943-ac03-306a438e80e5",
-    "productOrigin": null,
-    "authOrigin": "https://molis-auth-production.sparkling-silence-0a49.workers.dev"
+    "databaseName": "molis-club-prod",
+    "databaseId": "db7f0788-1ace-4d83-aaff-c3096a8145f3",
+    "productOrigin": "https://molis.ai",
+    "authOrigin": "https://auth.molis.ai",
+    "additionalDomains": ["adeptify.me"]
   }
 }

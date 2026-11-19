@@ -19,22 +19,32 @@ import { showLoginToastOnArrival } from '../../_site/login-toast';
 import { ACCOUNT, HOME, PRIVACY } from '../../_site/routes';
 
 type Mode = 'login' | 'phone' | 'email' | 'reset';
+type LoginMethod = LoginCapabilities['methods'][number];
+const methodsByMode: Record<Mode, LoginMethod> = {
+  login: 'ACCOUNT_PASSWORD',
+  phone: 'PHONE_OTP',
+  email: 'EMAIL_CODE',
+  reset: 'EMAIL_CODE',
+};
 const labels: Record<Mode, string> = {
   login: '账号密码',
   phone: '手机验证',
   email: '邮箱验证',
   reset: '找回密码',
 };
-export function LoginForm() {
-  const [client] = useState(createBrowserAccount),
+export function LoginForm({ accountClient, onAuthenticated }: {
+  accountClient?: ReturnType<typeof createBrowserAccount>;
+  onAuthenticated?: (account: AccountView) => void;
+}) {
+  const [client] = useState(() => accountClient ?? createBrowserAccount()),
     [mode, setMode] = useState<Mode>('login');
   const [transaction, setTransaction] = useState<ProductTransactionView | null>(
       null,
     ),
     [challenge, setChallenge] = useState<string | null>(null);
-  const [methods, setMethods] = useState<LoginCapabilities['methods']>([]);
-  const [ready, setReady] = useState(false),
-    [busy, setBusy] = useState(false),
+  const [methods, setMethods] = useState<LoginCapabilities['methods'] | null>(null);
+  const preparation = useRef<Promise<LoginCapabilities['methods'] | null> | null>(null);
+  const [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
     [message, setMessage] = useState('');
   const [account, setAccount] = useState<AccountView | null>(null),
@@ -42,14 +52,17 @@ export function LoginForm() {
     [address, setAddress] = useState('');
   const [wait, setWait] = useState(0);
   const [terminal, setTerminal] = useState<'expired' | 'existing' | null>(null);
+  const [setupAttempt, setSetupAttempt] = useState(0);
+  const [setupError, setSetupError] = useState('');
   const active = useRef<ProductTransactionView | null>(null),
     generation = useRef(0),
     formRef = useRef<HTMLFormElement>(null);
   const search = useSearchParams();
   const router = useRouter();
-  const destination = internalReturnPath(search.get('returnTo')) ?? HOME;
+  const destination = onAuthenticated ? null : internalReturnPath(search.get('returnTo')) ?? HOME;
   function finishLogin(value: AccountView) {
-    if (value.state === 'AUTHENTICATED') showLoginToastOnArrival(destination);
+    if (value.state === 'AUTHENTICATED')
+      showLoginToastOnArrival(destination ?? window.location.pathname);
     setAccount(value);
   }
   const providerWindow = useRef<Window | null>(null);
@@ -60,26 +73,26 @@ export function LoginForm() {
   useEffect(() => {
     const epoch = generation;
     let alive = true;
-    client
+    preparation.current = client
       .session()
       .then(async (value) => {
-        if (alive) {
-          setAccount(value);
-          if (value.state !== 'AUTHENTICATED') {
-            const capabilities = await client.capabilities();
-            if (!alive) return;
-            setMethods(capabilities.methods);
-          }
-          setReady(true);
-          if (
-            value.state === 'AUTHENTICATED' &&
-            document.visibilityState === 'visible'
-          )
-            await client.activity();
+        if (!alive) return null;
+        setAccount(value);
+        if (value.state === 'AUTHENTICATED') {
+          if (document.visibilityState === 'visible')
+            void client.activity().catch(() => {});
+          return null;
         }
+        if (value.state === 'OFFLINE_CACHED') return null;
+        const { methods: available } = await client.capabilities();
+        if (!alive) return null;
+        setMethods(available);
+        setMode(current => available.includes(methodsByMode[current]) ? current : 'login');
+        return available;
       })
       .catch((reason) => {
-        if (alive) setError(accountErrorText(reason));
+        if (alive) setSetupError(accountErrorText(reason));
+        return null;
       });
     return () => {
       alive = false;
@@ -90,7 +103,15 @@ export function LoginForm() {
       // Fence late results above; only explicit flow changes cancel transactions.
       // Abandoned transactions remain bounded by Auth's server-side expiry.
     };
-  }, [client]);
+  }, [client, setupAttempt]);
+  const showsMethod = (method: LoginMethod) => methods?.includes(method) ?? true;
+  async function canSubmit(method: LoginMethod, epoch: number) {
+    const available = await preparation.current;
+    if (!available || epoch !== generation.current) return false;
+    if (available.includes(method)) return true;
+    setError('此登录方式暂不可用。');
+    return false;
+  }
   useEffect(() => {
     if (!wait) return;
     const timer = setTimeout(
@@ -151,7 +172,9 @@ export function LoginForm() {
     });
   }
   async function complete(handle: string) {
+    const epoch = generation.current;
     const result = await client.submit(handle, { step: 'COMPLETE' });
+    if (epoch !== generation.current) return;
     if ('account' in result) {
       keep(null);
       finishLogin(result.account);
@@ -173,6 +196,7 @@ export function LoginForm() {
         setError('两次输入的密码不一致。');
         return;
       }
+      if (!await canSubmit(methodsByMode[mode], epoch)) return;
       if (resetReady && transaction) {
         await client.reset(transaction.handle, password);
         keep(null);
@@ -185,6 +209,7 @@ export function LoginForm() {
       if (mode !== 'reset') {
         if (challenge) {
           const result = await client.loginCode(challenge, formText(form, 'code'));
+          if (epoch !== generation.current) return;
           finishLogin(result.account);
           setChallenge(null);
         } else {
@@ -192,6 +217,7 @@ export function LoginForm() {
           const target = mode === 'phone' || (mode === 'login' && /^1[3-9][0-9]{9}$/.test(raw)) ? '+86' + raw : raw;
           if (mode === 'login') {
             const result = await client.loginPassword(target, password);
+            if (epoch !== generation.current) return;
             finishLogin(result.account);
           } else {
             const result = await client.sendVerification(mode === 'phone' ? 'SMS' : 'EMAIL', target);
@@ -263,6 +289,7 @@ export function LoginForm() {
     let succeeded = false;
     await run(async () => {
       try {
+        if (!await canSubmit(method, epoch) || popup.closed) return;
         if (active.current) await client.cancel(active.current.handle);
         const tx = await client.create({ purpose: 'LOGIN', method });
         handle = tx.handle;
@@ -307,8 +334,10 @@ export function LoginForm() {
     });
   }
   useEffect(() => {
-    if (account?.state === 'AUTHENTICATED') router.replace(destination);
-  }, [account?.state, destination, router]);
+    if (account?.state !== 'AUTHENTICATED') return;
+    if (onAuthenticated) onAuthenticated(account);
+    else if (destination) router.replace(destination);
+  }, [account, destination, onAuthenticated, router]);
 
   if (account?.state === 'AUTHENTICATED') return <span hidden data-login-complete />;
 
@@ -322,20 +351,23 @@ export function LoginForm() {
         </Link>
       </div>
     );
+  const heading = (
+    <header className="m-auth-head">
+      {onAuthenticated ? <h2>欢迎回来</h2> : <h1>欢迎回来</h1>}
+    </header>
+  );
   const passwordStage = resetReady;
   return (
     <>
-      <header className="m-auth-head">
-        <h1>欢迎回来</h1>
-      </header>
+      {heading}
       <div className="m-auth-modes" aria-label="登录与注册方式">
-        {(['login', 'email', 'phone'] as const).filter(value => methods.includes(({login:'ACCOUNT_PASSWORD',email:'EMAIL_CODE',phone:'PHONE_OTP'} as const)[value])).map((value) => (
+        {(['login', 'email', 'phone'] as const).filter(value => showsMethod(methodsByMode[value])).map((value) => (
           <button
             key={value}
             type="button"
             className="m-link"
             aria-pressed={mode === value}
-            disabled={busy || !ready}
+            disabled={busy}
             onClick={() => switchMode(value)}
           >
             {labels[value]}
@@ -467,12 +499,12 @@ export function LoginForm() {
           )}
           {mode === 'login' || mode === 'reset' ? (
             <div className="m-auth-account-links">
-              {mode === 'reset' ? <button type="button" className="m-link" disabled={busy || !ready} onClick={() => switchMode('login')}>返回登录</button> : null}
-              {mode === 'login' && methods.includes('EMAIL_CODE') && !challenge && !passwordStage ? (
+              {mode === 'reset' ? <button type="button" className="m-link" disabled={busy} onClick={() => switchMode('login')}>返回登录</button> : null}
+              {mode === 'login' && showsMethod('EMAIL_CODE') && !challenge && !passwordStage ? (
                 <button
                   type="button"
                   className="m-link m-auth-forgot"
-                  disabled={busy || !ready}
+                  disabled={busy}
                   onClick={() => switchMode('reset')}
                 >
                   找回密码
@@ -495,7 +527,7 @@ export function LoginForm() {
               </span>
             </label>
           ) : null}
-          <button className="m-btn m-auth-submit" disabled={!ready || busy || !!terminal}>
+          <button className="m-btn m-auth-submit" disabled={busy || !!terminal || !!setupError}>
             {busy
               ? '请稍候…'
               : challenge
@@ -510,8 +542,8 @@ export function LoginForm() {
           </button>
         </form>
         <p className="m-auth-error" role="alert">
-          {error ||
-            (!search.has('auth')
+          {setupError || error ||
+            (onAuthenticated || !search.has('auth')
               ? ''
               : search.get('auth') === 'cancelled'
                 ? '已取消第三方登录。'
@@ -519,6 +551,10 @@ export function LoginForm() {
                   ? '第三方登录未完成，请重新发起。'
                   : '')}
         </p>
+        {setupError && <button type="button" className="m-link" onClick={() => {
+          setSetupError('');
+          setSetupAttempt(attempt => attempt + 1);
+        }}>重试</button>}
         <output className="m-auth-ok" aria-live="polite">
           {message}
         </output>
@@ -534,18 +570,18 @@ export function LoginForm() {
         ) : null}
       </div>
       <div className="m-auth-social">
-        {methods.includes('GOOGLE') && <button
+        {showsMethod('GOOGLE') && <button
           type="button"
           className="m-btn m-btn-line"
-          disabled={busy || !ready}
+          disabled={busy || !!setupError}
           onClick={() => social('GOOGLE')}
         >
           使用 Google 登录
         </button>}
-        {methods.includes('GITHUB') && <button
+        {showsMethod('GITHUB') && <button
           type="button"
           className="m-btn m-btn-line"
-          disabled={busy || !ready}
+          disabled={busy || !!setupError}
           onClick={() => social('GITHUB')}
         >
           使用 GitHub 登录

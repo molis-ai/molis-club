@@ -8,9 +8,16 @@
   height: 44px;
   font-size: 14px;
 }
-.m-header-account-placeholder {
-  width: 32px;
-  height: 32px;
+.m-header-login {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-shadow: inherit;
+  cursor: pointer;
 }
 .m-header-account-menu summary {
   display: grid;

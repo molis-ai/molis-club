@@ -59,7 +59,7 @@ export function accountErrorText(error: unknown): string {
 let pendingSession: Promise<Response> | undefined;
 function readSession() {
   if (!pendingSession) {
-    const request = fetch('/api/account/session', { credentials: 'same-origin', cache: 'no-store', redirect: 'error' });
+    const request = fetch('/api/account/session', { credentials: 'same-origin', cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(15_000) });
     pendingSession = request;
     const clear = () => { if (pendingSession === request) pendingSession = undefined; };
     request.then(clear, clear);
@@ -70,18 +70,21 @@ function readSession() {
 /** Only same-origin product routes. No tokens or credentials are stored in the browser. */
 export function createBrowserAccount() {
   let csrf = '';
+  let csrfRevision = 0;
   async function call<T>(
     path: string,
     body?: unknown,
     extra?: Record<string, string>,
     method?: 'PATCH',
   ): Promise<T> {
+    const revision = csrfRevision;
     if (body !== undefined) pendingSession = undefined;
     const response = path === '/session' ? await readSession() : await fetch('/api/account' + path, {
       method: method ?? (body === undefined ? 'GET' : 'POST'),
       credentials: 'same-origin',
       cache: 'no-store',
       redirect: 'error',
+      ...(path === '/auth/capabilities' ? { signal: AbortSignal.timeout(15_000) } : {}),
       headers: {
         ...(body === undefined
           ? {}
@@ -91,7 +94,11 @@ export function createBrowserAccount() {
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });
     const next = response.headers.get('x-csrf-token');
-    if (next) csrf = next;
+    // A session read that started before a sign-in must not restore its old token.
+    if (next && (body !== undefined || revision === csrfRevision)) {
+      csrf = next;
+      if (body !== undefined) csrfRevision++;
+    }
     const result = (await response.json()) as {
       data: T;
       error?: { code?: string; retryAfterSeconds?: number };
@@ -173,10 +180,19 @@ export function createBrowserAccount() {
       ),
     reset: (handle: string, newPassword: string) =>
       call('/password/reset', { resetHandle: handle, newPassword }),
-    logout: (scope: 'CURRENT_LOGIN' | 'ALL_MOLIS_PRODUCTS') =>
-      call<{
+    logout: async (scope: 'CURRENT_LOGIN' | 'ALL_MOLIS_PRODUCTS') => {
+      const headers = { 'Idempotency-Key': crypto.randomUUID() };
+      const request = () => call<{
         localCleared: true;
         remoteRevocation: 'CONFIRMED' | 'UNCONFIRMED';
-      }>('/logout', { scope }, { 'Idempotency-Key': crypto.randomUUID() }),
+      }>('/logout', { scope }, headers);
+      try {
+        return await request();
+      } catch (error) {
+        if (!(error instanceof AccountRequestError) || error.code !== 'VERSION_CONFLICT') throw error;
+        // A concurrent session read can update the row before logout acquires it.
+        return request();
+      }
+    },
   };
 }
