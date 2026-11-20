@@ -13,4 +13,5 @@ export function saveNote(
 export function saveApplication(
   request: Request,
   db: D1Database,
+  observe?: (outcome: 'created' | 'duplicate' | 'invalid' | 'write_failed') => void,
 ): Promise<Response>;

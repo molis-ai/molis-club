@@ -26,7 +26,8 @@ function dbFixture() {
           const stmt = sql.prepare(query);
           return {
             async run() {
-              return stmt.run(...values);
+              const { changes } = stmt.run(...values);
+              return { meta: { changes } };
             },
             async first() {
               return stmt.get(...values);
@@ -163,8 +164,11 @@ void test('同一次提交重试只存一次；不带 id 的旧请求仍然成�
       idea: '网络断了一下，我又点了一次。',
       consent: true,
     };
-  assert.equal((await saveApplication(req('join', d), db)).status, 201);
-  assert.equal((await saveApplication(req('join', d), db)).status, 201);
+  const outcomes = [];
+  const observe = outcome => outcomes.push(outcome);
+  assert.equal((await saveApplication(req('join', d), db, observe)).status, 201);
+  assert.equal((await saveApplication(req('join', d), db, observe)).status, 201);
+  assert.deepEqual(outcomes, ['created', 'duplicate']);
   const count = () =>
     db.sql.prepare('SELECT count(*) AS n FROM applications').get().n;
   assert.equal(count(), 1);

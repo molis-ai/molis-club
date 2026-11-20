@@ -17,9 +17,11 @@ export function clubEnvironment(name, local, configRoot = root) {
     productOrigin: oneOf(target?.productOrigin),
     authOrigin: oneOf(target?.authOrigin),
     environmentId: id, applicationId: id, clientId: id,
+    grafanaLogsDestination: value => value === undefined || (name === 'prod' && id(value)),
     localClientId: name === 'test' ? id : oneOf(undefined),
   }, {
     MOLIS_CLUB_ACCOUNT_KEY: value => typeof value === 'string' && /^[A-Za-z0-9_-]{43}$/u.test(value) && Buffer.from(value, 'base64url').toString('base64url') === value,
+    MOLIS_CLUB_METRICS_TOKEN: value => value === undefined || (name === 'prod' && /^[A-Za-z0-9_-]{43}$/u.test(value)),
   });
   if (name === 'test' && config.clientId === config.localClientId)
     throw new Error('Club test needs distinct remote and loopback client registrations');
@@ -49,6 +51,20 @@ export function clubEnvironment(name, local, configRoot = root) {
       compatibility_flags: ['nodejs_compat'],
       preview_urls: false,
       workers_dev: false,
+      ...(!local && config.grafanaLogsDestination ? {
+        observability: {
+          enabled: true,
+          redact_query_string: true,
+          logs: {
+            enabled: true,
+            invocation_logs: false,
+            head_sampling_rate: 1,
+            persist: false,
+            destinations: [config.grafanaLogsDestination],
+          },
+          traces: { enabled: false },
+        },
+      } : {}),
       ...(!local ? { routes: domains.map(pattern => ({ pattern, custom_domain: true })) } : {}),
       vars: {
         MOLIS_CLUB_ACCOUNT_CONFIG: JSON.stringify(account),
@@ -66,7 +82,7 @@ export function clubEnvironment(name, local, configRoot = root) {
 export function validateClubBuild(built, expected) {
   if (built.route !== undefined || built.env !== undefined)
     throw new Error('Club build added an alternate route or environment');
-  for (const field of ['name', 'account_id', 'routes', 'workers_dev', 'preview_urls', 'vars']) {
+  for (const field of ['name', 'account_id', 'routes', 'workers_dev', 'preview_urls', 'vars', 'observability']) {
     if (!isDeepStrictEqual(built[field], expected[field]))
       throw new Error(`Club build changed deployment field ${field}`);
   }

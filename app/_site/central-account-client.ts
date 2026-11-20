@@ -71,6 +71,7 @@ function readSession() {
 export function createBrowserAccount() {
   let csrf = '';
   let csrfRevision = 0;
+  const flowHeaders = (id?: string) => id ? { 'X-Molis-Login-Flow': id } : undefined;
   async function call<T>(
     path: string,
     body?: unknown,
@@ -124,8 +125,10 @@ export function createBrowserAccount() {
     ...createTenantAccount(call),
     ...createBillingAccount(call),
     ...createPlatformAccount(call),
-    loginPassword: (identifier: string, password: string) => call<ProductLoginResult>('/auth/login/password',{identifier,password}),
-    sendVerification: (channel: 'EMAIL' | 'SMS', address: string) => call<LoginVerification>('/auth/verification-codes',{purpose:'LOGIN',channel,address}),
+    loginPassword: (identifier: string, password: string, flow?: string) =>
+      call<ProductLoginResult>('/auth/login/password', { identifier, password }, flowHeaders(flow)),
+    sendVerification: (channel: 'EMAIL' | 'SMS', address: string, flow?: string) =>
+      call<LoginVerification>('/auth/verification-codes', { purpose: 'LOGIN', channel, address }, flowHeaders(flow)),
     loginCode: (verificationId: string, code: string) => call<ProductLoginResult>('/auth/login/code',{verificationId,code}),
     me: () => call<MeView>('/me'),
     methods: () => call<LoginMethodsView>('/login-methods'),
@@ -161,8 +164,8 @@ export function createBrowserAccount() {
     session: () => call<AccountView>('/session'),
     activity: () =>
       call('/activity', { eventId: crypto.randomUUID(), kind: 'OPEN' }),
-    create: (body: ProductTransactionRequest) =>
-      call<ProductTransactionView>('/auth/transactions', body),
+    create: (body: ProductTransactionRequest, flow?: string) =>
+      call<ProductTransactionView>('/auth/transactions', body, flowHeaders(flow)),
     submit: (handle: string, body: ProductSubmitRequest) =>
       call<ProductSubmitResult>(
         '/auth/transactions/' + encodeURIComponent(handle) + '/submit',

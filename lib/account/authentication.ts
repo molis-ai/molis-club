@@ -21,8 +21,10 @@ import { AccountFailure, requireAccount } from './errors.ts';
 import { digestSessionSecret, randomSessionSecret } from './session-crypto.ts';
 import { createAuthCryptography } from './auth-crypto.ts';
 import { createAuthStore, type AuthRow } from './auth-store.ts';
+import { loginFailureReason, openLoginFlow, updateLoginFlow } from '../club-metrics.mjs';
 
 interface Pending {
+  metricsFlow?: Awaited<ReturnType<typeof openLoginFlow>>;
   permit?: LoginPermit;
   identity?: Awaited<
     ReturnType<ClubSessionManager['authenticationBinding']>
@@ -158,6 +160,8 @@ export async function createClubAuthentication(
       committed = true;
       return result;
     } catch (error) {
+      const issue = error instanceof AccountFailure ? loginFailureReason(error.envelope.error.code) : null;
+      if (issue) await updateLoginFlow(db, pending.metricsFlow, issue);
       // A lost response must never replay a consumed proof or authorization code.
       if (!committed) {
         const retry =
@@ -302,9 +306,16 @@ export async function createClubAuthentication(
         codeVerifier: p.verifier,
       },
     });
-    return {
-      account: await owner.completeLogin(request, p.permit, tokens.data),
-    };
+    let account;
+    try {
+      account = await owner.completeLogin(request, p.permit, tokens.data);
+    } catch (error) {
+      const issue = error instanceof AccountFailure ? loginFailureReason(error.envelope.error.code) : 'session_setup_failed';
+      if (issue) await updateLoginFlow(db, p.metricsFlow, issue);
+      throw error;
+    }
+    await updateLoginFlow(db, p.metricsFlow, 'completed');
+    return { account };
   }
   async function step(
     request: Request,
@@ -510,10 +521,12 @@ export async function createClubAuthentication(
   async function loginStart(request: Request, input: ProductLoginPasswordRequest | ProductSendVerificationRequest) {
     const sending = 'channel' in input;
     requireAccount(validateNamed(sending ? 'ProductSendVerificationRequest' : 'ProductLoginPasswordRequest', input));
+    const method = sending ? input.channel === 'SMS' ? 'PHONE_OTP' : 'EMAIL_CODE' : 'ACCOUNT_PASSWORD';
+    const metricsFlow = await openLoginFlow(db, request, method);
     const permit = await owner.beginLogin(request), proof = randomSessionSecret(), verifier = randomSessionSecret(), state = randomSessionSecret();
     const common = { clientId: config.client.clientId, redirectUri: config.redirectUri, state, codeChallenge: await digestSessionSecret(verifier), codeChallengeMethod: 'S256' as const, initiatorChallenge: await digestSessionSecret(proof) };
     const id = crypto.randomUUID();
-    const p: Pending = { permit, proof, verifier, state, purpose: 'LOGIN', method: sending ? input.channel === 'SMS' ? 'PHONE_OTP' : 'EMAIL_CODE' : 'ACCOUNT_PASSWORD', view: {handle:id,status:'PENDING',nextStep:'VERIFY_CHALLENGE',expiresAt:new Date(Date.now()+300000).toISOString()} };
+    const p: Pending = { permit, proof, verifier, state, purpose: 'LOGIN', method, metricsFlow, view: {handle:id,status:'PENDING',nextStep:'VERIFY_CHALLENGE',expiresAt:new Date(Date.now()+300000).toISOString()} };
     try {
       const context = { signal: request.signal, assertCurrent: () => owner.assertLogin(request, permit) };
       if (!sending) {
@@ -525,8 +538,11 @@ export async function createClubAuthentication(
       const row: AuthRow = {id,context: await digestSessionSecret(JSON.stringify(config)),browser_digest:permit.browserDigest,central_id:result.data.verificationId,state:'READY',version:0,expires_at:Date.parse(result.data.expiresAt),lease_until:null,box:null};
       row.box = await seal(p,row);
       await store.create(row);
+      await updateLoginFlow(db, metricsFlow, null);
       return {...result.data,verificationId:id};
     } catch (error) {
+      const issue = error instanceof AccountFailure ? loginFailureReason(error.envelope.error.code) : null;
+      if (issue) await updateLoginFlow(db, metricsFlow, issue);
       await owner.cancelLogin(request,permit).catch(() => { /* A newer login owns this browser. */ });
       throw error;
     }
@@ -667,6 +683,9 @@ export async function createClubAuthentication(
       requireAccount(validateNamed('ProductTransactionRequest', input));
       if (input.purpose === 'BIND' || input.purpose === 'REPLACE')
         return createSensitive(request, input);
+      const metricsFlow = input.purpose === 'LOGIN'
+        ? await openLoginFlow(db, request, input.method)
+        : undefined;
       const permit = await owner.beginLogin(request),
         proof = randomSessionSecret(),
         verifier = randomSessionSecret(),
@@ -700,6 +719,7 @@ export async function createClubAuthentication(
           state,
           purpose: input.purpose,
           method: input.method,
+          metricsFlow,
           view: productView({ ...view, handle: id }),
         };
         const row: AuthRow = {
@@ -717,6 +737,8 @@ export async function createClubAuthentication(
         await store.create(row);
         return p.view;
       } catch (error) {
+        const issue = error instanceof AccountFailure ? loginFailureReason(error.envelope.error.code) : null;
+        if (issue) await updateLoginFlow(db, metricsFlow, issue);
         await owner.cancelLogin(request, permit).catch(() => {
           /* Newer login/exit may already own this browser. */
         });
@@ -765,6 +787,7 @@ export async function createClubAuthentication(
       const binding = await authorize(request, pending);
       if (pending.permit) await owner.cancelLogin(request, pending.permit);
       await store.cancel(row);
+      await updateLoginFlow(db, pending.metricsFlow, 'cancelled');
       await client
         .call(
           'cancelTransaction',
@@ -833,6 +856,9 @@ export async function createClubAuthentication(
           if (params.get('result') !== 'VERIFIED') {
             requireAccount(p.view.status === 'CANCELLED', 403, 'FORBIDDEN');
             p.view = { ...p.view, status: 'CANCELLED', nextStep: 'NONE' };
+            await updateLoginFlow(
+              db, p.metricsFlow, params.get('result') === 'CANCELLED' ? 'cancelled' : 'auth_unavailable',
+            );
             return {
               status: params.get('result'),
               ...(p.identity ? { verificationHandle: p.view.handle } : {}),

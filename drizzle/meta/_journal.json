@@ -50,6 +50,13 @@
       "when": 1793866431726,
       "tag": "0006_light_prism",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1795148037623,
+      "tag": "0007_club_business_metrics",
+      "breakpoints": true
     }
   ]
 }

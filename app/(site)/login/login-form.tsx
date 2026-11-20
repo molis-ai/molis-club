@@ -20,6 +20,13 @@ import { ACCOUNT, HOME, PRIVACY } from '../../_site/routes';
 
 type Mode = 'login' | 'phone' | 'email' | 'reset';
 type LoginMethod = LoginCapabilities['methods'][number];
+type MetricsFlow = { method: LoginMethod; id: string; expiresAt: number };
+function currentMetricsFlow(flow: MetricsFlow | null, method: LoginMethod): MetricsFlow | null {
+  if (!globalThis.crypto?.randomUUID) return null;
+  const now = Date.now();
+  if (flow?.method === method && flow.expiresAt > now) return flow;
+  return { method, id: crypto.randomUUID(), expiresAt: now + 30 * 60 * 1000 };
+}
 const methodsByMode: Record<Mode, LoginMethod> = {
   login: 'ACCOUNT_PASSWORD',
   phone: 'PHONE_OTP',
@@ -54,13 +61,19 @@ export function LoginForm({ accountClient, onAuthenticated }: {
   const [terminal, setTerminal] = useState<'expired' | 'existing' | null>(null);
   const [setupAttempt, setSetupAttempt] = useState(0);
   const [setupError, setSetupError] = useState('');
+  const metricsFlow = useRef<MetricsFlow | null>(null);
   const active = useRef<ProductTransactionView | null>(null),
     generation = useRef(0),
     formRef = useRef<HTMLFormElement>(null);
   const search = useSearchParams();
   const router = useRouter();
   const destination = onAuthenticated ? null : internalReturnPath(search.get('returnTo')) ?? HOME;
+  function flowFor(method: LoginMethod) {
+    metricsFlow.current = currentMetricsFlow(metricsFlow.current, method);
+    return metricsFlow.current?.id;
+  }
   function finishLogin(value: AccountView) {
+    metricsFlow.current = null;
     if (value.state === 'AUTHENTICATED')
       showLoginToastOnArrival(destination ?? window.location.pathname);
     setAccount(value);
@@ -149,6 +162,7 @@ export function LoginForm({ accountClient, onAuthenticated }: {
   async function switchMode(next: Mode) {
     await run(async () => {
       generation.current++;
+      metricsFlow.current = null;
       if (active.current)
         await client.cancel(active.current.handle).catch((reason) => {
           if (
@@ -216,11 +230,13 @@ export function LoginForm({ accountClient, onAuthenticated }: {
           const raw = formText(form, 'address').trim();
           const target = mode === 'phone' || (mode === 'login' && /^1[3-9][0-9]{9}$/.test(raw)) ? '+86' + raw : raw;
           if (mode === 'login') {
-            const result = await client.loginPassword(target, password);
+            const result = await client.loginPassword(target, password, flowFor('ACCOUNT_PASSWORD'));
             if (epoch !== generation.current) return;
             finishLogin(result.account);
           } else {
-            const result = await client.sendVerification(mode === 'phone' ? 'SMS' : 'EMAIL', target);
+            const result = await client.sendVerification(
+              mode === 'phone' ? 'SMS' : 'EMAIL', target, flowFor(methodsByMode[mode]),
+            );
             setAddress(target);
             setChallenge(result.verificationId);
             setWait(result.retryAfterSeconds);
@@ -291,7 +307,8 @@ export function LoginForm({ accountClient, onAuthenticated }: {
       try {
         if (!await canSubmit(method, epoch) || popup.closed) return;
         if (active.current) await client.cancel(active.current.handle);
-        const tx = await client.create({ purpose: 'LOGIN', method });
+        metricsFlow.current = null;
+        const tx = await client.create({ purpose: 'LOGIN', method }, flowFor(method));
         handle = tx.handle;
         if (epoch !== generation.current) return;
         keep(tx);
@@ -412,7 +429,9 @@ export function LoginForm({ accountClient, onAuthenticated }: {
                 onClick={() =>
                   run(async () => {
                     if (mode !== 'reset') {
-                      const result = await client.sendVerification(mode === 'phone' ? 'SMS' : 'EMAIL',address);
+                      const result = await client.sendVerification(
+                        mode === 'phone' ? 'SMS' : 'EMAIL', address, flowFor(methodsByMode[mode]),
+                      );
                       setChallenge(result.verificationId);
                       setWait(result.retryAfterSeconds);
                     } else if (transaction) {

@@ -45,6 +45,24 @@ export const applications = sqliteTable('applications', {
   createdAt: text('created_at').notNull(),
 });
 
+export const clubContactRequests = sqliteTable('club_contact_requests', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  occurredAt: integer('occurred_at').notNull(),
+  entry: text('entry').notNull(),
+  outcome: text('outcome').notNull(),
+  durationMs: integer('duration_ms').notNull(),
+}, (table) => [index('idx_club_contact_time').on(table.occurredAt)]);
+
+export const clubLoginFlows = sqliteTable('club_login_flows', {
+  id: text('id').primaryKey(),
+  method: text('method').notNull(),
+  startedAt: integer('started_at').notNull(),
+  expiresAt: integer('expires_at').notNull(),
+  endedAt: integer('ended_at'),
+  outcome: text('outcome'),
+  lastIssue: text('last_issue'),
+}, (table) => [index('idx_club_login_time').on(table.startedAt)]);
+
 const dates = () => ({
   createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp_ms' }).notNull(),

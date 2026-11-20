@@ -13,6 +13,8 @@ const local = operation === 'start';
 const name = selectEnvironment(args, operation, local ? [] : ['--dry-run']);
 const config = clubEnvironment(name, local);
 const db = config.worker.d1_databases[0];
+if (name === 'prod' && !args.includes('--dry-run') && !config.secrets.MOLIS_CLUB_METRICS_TOKEN)
+  throw new Error('Club prod requires the internal metrics read token');
 
 process.env.CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV = 'false';
 process.env.CLOUDFLARE_INCLUDE_PROCESS_ENV = 'false';
@@ -105,6 +107,10 @@ if (local) {
         'SELECT * FROM central_business_identities LIMIT 0',
         'SELECT * FROM applications LIMIT 0',
         'SELECT * FROM notes LIMIT 0',
+        ...(name === 'prod' ? [
+          'SELECT occurred_at, outcome, duration_ms FROM club_contact_requests LIMIT 0',
+          'SELECT method, started_at, expires_at, ended_at, outcome, last_issue FROM club_login_flows LIMIT 0',
+        ] : []),
       ].join('; ');
       await run('node_modules/wrangler/bin/wrangler.js', [
         'd1', 'execute', db.database_id, '--remote', '--config', deployConfig, '--command', schema,
