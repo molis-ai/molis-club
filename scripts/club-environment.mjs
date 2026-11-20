@@ -51,8 +51,8 @@ export function clubEnvironment(name, local, configRoot = root) {
       compatibility_flags: ['nodejs_compat'],
       preview_urls: false,
       workers_dev: false,
-      ...(!local && config.grafanaLogsDestination ? {
-        observability: {
+      ...(!local ? {
+        observability: config.grafanaLogsDestination ? {
           enabled: true,
           redact_query_string: true,
           logs: {
@@ -63,7 +63,7 @@ export function clubEnvironment(name, local, configRoot = root) {
             destinations: [config.grafanaLogsDestination],
           },
           traces: { enabled: false },
-        },
+        } : { enabled: true },
       } : {}),
       ...(!local ? { routes: domains.map(pattern => ({ pattern, custom_domain: true })) } : {}),
       vars: {
